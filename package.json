@@ -1,0 +1,12 @@
+{
+  "name": "qoodish",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:yusuke-suzuki/qoodish-web.git",
+  "author": "Yusuke Suzuki",
+  "license": "MIT",
+  "engines": {
+    "node": "8.2.1",
+    "yarn": "0.27.5"
+  }
+}
