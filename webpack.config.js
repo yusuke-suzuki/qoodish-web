@@ -8,7 +8,8 @@ const plugins = [
   new CleanWebpackPlugin(['./public/javascripts/*'], {}),
   new AssetsPlugin(),
   new webpack.EnvironmentPlugin([
-    'API_ENDPOINT'
+    'ENDPOINT',
+    'npm_package_version'
   ])
 ];
 

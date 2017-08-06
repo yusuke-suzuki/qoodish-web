@@ -6,16 +6,17 @@ const routes = (app) => {
   const router = new Router();
 
   render(app, {
-    root: path.join(__dirname, '../app/views'),
+    root: path.join(__dirname, './app/views'),
     layout: false
   });
 
   const pageRoutes = [
-    '/'
+    '/',
+    '/login'
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
-    let manifestPath = '../webpack-assets.json';
+    let manifestPath = './webpack-assets.json';
     if (process.env.NODE_ENV != 'production') {
       delete require.cache[require.resolve(manifestPath)];
     }
