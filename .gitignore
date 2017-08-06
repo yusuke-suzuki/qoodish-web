@@ -60,3 +60,5 @@ typings/
 webpack-assets.json
 
 public
+
+.vscode

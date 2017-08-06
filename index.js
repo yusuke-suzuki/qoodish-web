@@ -4,7 +4,7 @@ import logger from 'koa-logger';
 import serve from 'koa-static';
 import bodyParser from 'koa-bodyparser';
 import json from 'koa-json';
-import routes from './config/routes';
+import routes from './routes';
 import dotenv from 'dotenv';
 import error from 'koa-json-error';
 import ApplicationError from './app/models/errors/ApplicationError';
