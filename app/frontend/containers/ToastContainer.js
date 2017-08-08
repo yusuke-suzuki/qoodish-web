@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import Toast from '../ui/Toast.jsx';
-import closeToast from '../actions/closeToast.js';
+import Toast from '../ui/Toast';
+import closeToast from '../actions/closeToast';
 
 const mapStateToProps = (state) => {
   return {

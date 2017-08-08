@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import App from '../ui/App.jsx';
-import updateWindowSize from '../actions/updateWindowSize.js';
+import App from '../ui/App';
+import updateWindowSize from '../actions/updateWindowSize';
 
 const mapStateToProps = (state) => {
   return {
