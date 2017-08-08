@@ -6,6 +6,16 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
 import DashboardContainer from '../containers/DashboardContainer';
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import createPalette from 'material-ui/styles/palette';
+import { amber, lightBlue } from 'material-ui/colors';
+
+const theme = createMuiTheme({
+  palette: createPalette({
+    primary: amber,
+    accent: lightBlue
+  })
+});
 
 class App extends Component {
   componentWillMount() {
@@ -18,14 +28,16 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.authenticated ? <NavBarContainer /> : null}
+      <MuiThemeProvider theme={theme}>
         <div>
-          {this.props.authenticated ? this.renderUserOnly() : this.renderGuestOnly()}
+          {this.props.authenticated ? <NavBarContainer /> : null}
+          <div>
+            {this.props.authenticated ? this.renderUserOnly() : this.renderGuestOnly()}
+          </div>
+          <ToastContainer />
+          <BlockUiContainer />
         </div>
-        <ToastContainer />
-        <BlockUiContainer />
-      </div>
+      </MuiThemeProvider>
     );
   }
 

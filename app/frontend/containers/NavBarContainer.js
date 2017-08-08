@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import NavBar from '../ui/NavBar.jsx';
-import signOut from '../actions/signOut.js';
-import requestStart from '../actions/requestStart.js';
-import requestFinish from '../actions/requestFinish.js';
-import openToast from '../actions/openToast.js';
+import NavBar from '../ui/NavBar';
+import signOut from '../actions/signOut';
+import requestStart from '../actions/requestStart';
+import requestFinish from '../actions/requestFinish';
+import openToast from '../actions/openToast';
+import firebase from 'firebase';
 
 const mapStateToProps = (state) => {
   return {
@@ -17,9 +18,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    signOut: () => {
+    signOut: async () => {
+      dispatch(requestStart());
+      await firebase.auth().signOut();
+      dispatch(requestFinish());
       dispatch(signOut());
-      dispatch(openToast('Signed out successfully!'));
     },
 
     requestHome: () => {

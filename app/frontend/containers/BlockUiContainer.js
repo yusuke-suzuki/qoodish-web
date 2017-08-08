@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import BlockUi from '../ui/BlockUi.jsx';
+import BlockUi from '../ui/BlockUi';
 
 const mapStateToProps = (state) => {
   return {

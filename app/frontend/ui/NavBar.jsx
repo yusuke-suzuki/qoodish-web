@@ -9,16 +9,24 @@ import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import HomeIcon from 'material-ui-icons/Home';
 import Hidden from 'material-ui/Hidden';
+import Avatar from 'material-ui/Avatar';
+import Menu, { MenuItem } from 'material-ui/Menu';
 
 const styles = {
   title: {
-    cursor: 'pointer',
-  },
-  pageTitle: {
     cursor: 'pointer'
   },
+  menuButton: {
+    color: 'white'
+  },
+  pageTitle: {
+    cursor: 'pointer',
+    color: 'white'
+  },
   rightContents: {
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    paddingLeft: 30,
+    paddingRight: 30
   }
 };
 
@@ -28,10 +36,27 @@ class NavBar extends Component {
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
     this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
+    this.handleAvatarClick = this.handleAvatarClick.bind(this);
+    this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(this);
 
     this.state = {
-      drawerOpen: false
+      drawerOpen: false,
+      anchorEl: undefined,
+      accountMenuOpen: false
     };
+  }
+
+  handleAvatarClick(event) {
+    this.setState({
+      accountMenuOpen: true,
+      anchorEl: event.currentTarget
+    });
+  }
+
+  handleRequestAvatarMenuClose(event) {
+    this.setState({
+      accountMenuOpen: false
+    });
   }
 
   handleToggleDrawer(event) {
@@ -54,15 +79,15 @@ class NavBar extends Component {
     return (
       <div>
         <AppBar position='fixed'>
-          <Toolbar>
-            <IconButton color='contrast'>
-              <MenuIcon onClick={this.handleToggleDrawer} />
+          <Toolbar disableGutters>
+            <IconButton color='contrast' onClick={this.handleToggleDrawer}>
+              <MenuIcon style={styles.menuButton} />
             </IconButton>
             <Typography type='headline' color='inherit' style={styles.pageTitle}>
               {this.props.pageTitle}
             </Typography>
             <div style={styles.rightContents}>
-              <Button color='contrast' onClick={this.props.signOut}>Logout</Button>
+              {this.renderAvatarMenu()}
             </div>
           </Toolbar>
         </AppBar>
@@ -70,10 +95,34 @@ class NavBar extends Component {
           open={this.state.drawerOpen}
           onRequestClose={this.handleCloseDrawer}
           onClick={this.handleCloseDrawer}
-          docked
+          docked={false}
         >
           {this.renderDrawerContents()}
         </Drawer>
+      </div>
+    );
+  }
+
+  renderAvatarMenu() {
+    return (
+      <div>
+        <IconButton
+          aria-label='Account'
+          aria-owns={this.state.accountMenuOpen ? 'account-menu' : null}
+          aria-owns='account-menu'
+          aria-haspopup='true'
+          onClick={this.handleAvatarClick}
+        >
+          <Avatar src={this.props.currentUser ? this.props.currentUser.image_url : ''} />
+        </IconButton>
+        <Menu
+          id='account-menu'
+          anchorEl={this.state.anchorEl}
+          open={this.state.accountMenuOpen}
+          onRequestClose={this.handleRequestAvatarMenuClose}
+        >
+          <MenuItem onClick={this.props.signOut}>Logout</MenuItem>
+        </Menu>
       </div>
     );
   }
