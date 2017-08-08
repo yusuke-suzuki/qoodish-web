@@ -14,13 +14,29 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: async (params) => {
+    signIn: async (currentUser, credential, redirectUrl) => {
+      dispatch(requestStart());
+      let accessToken = await currentUser.getToken();
+      let provider = currentUser.providerData.find((data) => {
+        return data.providerId == credential.providerId;
+      });
+      let params = {
+        user: {
+          uid: currentUser.uid,
+          provider_uid: provider.uid,
+          email: provider.email,
+          provider: provider.providerId,
+          display_name: provider.displayName,
+          photo_url: provider.photoURL,
+          token: accessToken,
+          provider_token: credential.accessToken
+        }
+      };
+      const apiClient = new ApiClient;
       try {
-        dispatch(requestStart());
-        const apiClient = new ApiClient;
-        const response = await apiClient.signIn(params);
+        let response = await apiClient.signIn(params);
         dispatch(requestFinish());
-        dispatch(signIn(response.access_token, response.user));
+        dispatch(signIn(response.token, response.user));
         dispatch(openToast('Signed in successfully!'));
       } catch (e) {
         dispatch(requestFinish());
