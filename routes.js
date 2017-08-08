@@ -3,6 +3,13 @@ import render from 'koa-ejs';
 import path from 'path';
 
 import Auth from './app/controllers/Auth';
+import Maps from './app/controllers/Maps';
+import Collaborators from './app/controllers/Collaborators';
+import Spots from './app/controllers/Spots';
+import Reviews from './app/controllers/Reviews';
+import Follows from './app/controllers/Follows';
+
+import { detectLanguage } from './app/models/Utils';
 
 const routes = (app) => {
   const router = new Router();
@@ -14,7 +21,10 @@ const routes = (app) => {
 
   const pageRoutes = [
     '/',
-    '/login'
+    '/login',
+    '/maps',
+    '/maps/:mapId',
+    '/maps/:mapId/reports/:reviewId'
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
@@ -22,13 +32,91 @@ const routes = (app) => {
     if (process.env.NODE_ENV != 'production') {
       delete require.cache[require.resolve(manifestPath)];
     }
+    let googleMapUrl = `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`;
     let manifest = require(manifestPath);
-    await ctx.render('index', { bundle: manifest.main.js });
+    let currentLocale = detectLanguage(ctx.request);
+    await ctx.render('index', { bundle: manifest.main.js, googleMapUrl: googleMapUrl, currentLocale: currentLocale });
   });
 
   router.post('/api/auth', async (ctx, next) => {
     const auth = new Auth;
     ctx.body = await auth.create(ctx.request.body);
+  });
+
+  router.get('/api/maps', async (ctx, next) => {
+    const maps = new Maps;
+    ctx.body = await maps.index(ctx.request.headers.authorization, ctx.query);
+  });
+
+  router.get('/api/maps/:mapId', async (ctx, next) => {
+    const maps = new Maps;
+    ctx.body = await maps.show(ctx.request.headers.authorization, ctx.params.mapId);
+  });
+
+  router.post('/api/maps', async (ctx, next) => {
+    const maps = new Maps;
+    ctx.body = await maps.create(ctx.request.headers.authorization, ctx.request.body);
+  });
+
+  router.put('/api/maps/:mapId', async (ctx, next) => {
+    const maps = new Maps;
+    ctx.body = await maps.update(ctx.request.headers.authorization, ctx.request.body, ctx.params.mapId);
+  });
+
+  router.del('/api/maps/:mapId', async (ctx, next) => {
+    const maps = new Maps;
+    await maps.delete(ctx.request.headers.authorization, ctx.params.mapId);
+    ctx.status = 204;
+  });
+
+  router.get('/api/maps/:mapId/collaborators', async (ctx, next) => {
+    const collaborators = new Collaborators;
+    ctx.body = await collaborators.index(ctx.request.headers.authorization, ctx.params.mapId);
+  });
+
+  router.get('/api/maps/:mapId/spots', async (ctx, next) => {
+    const spots = new Spots;
+    ctx.body = await spots.index(ctx.request.headers.authorization, ctx.params.mapId, detectLanguage(ctx.request));
+  });
+
+  router.get('/api/maps/:mapId/spots/:spotId', async (ctx, next) => {
+    const spots = new Spots;
+    ctx.body = await spots.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.spotId, detectLanguage(ctx.request));
+  });
+
+  router.post('/api/maps/:mapId/reviews', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.create(ctx.request.headers.authorization, ctx.params.mapId, ctx.request.body);
+  });
+
+  router.put('/api/reviews/:reviewId', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.update(ctx.request.headers.authorization, ctx.params.reviewId, ctx.request.body);
+  });
+
+  router.del('/api/reviews/:reviewId', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.delete(ctx.request.headers.authorization, ctx.params.reviewId);
+  });
+
+  router.get('/api/maps/:mapId/reviews', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.params.mapId, ctx.query);
+  });
+
+  router.get('/api/maps/:mapId/reviews/:reviewId', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.reviewId);
+  });
+
+  router.post('/api/maps/:mapId/follow', async (ctx, next) => {
+    const follows = new Follows;
+    ctx.body = await follows.create(ctx.request.headers.authorization, ctx.params.mapId);
+  });
+
+  router.del('/api/maps/:mapId/follow', async (ctx, next) => {
+    const follows = new Follows;
+    ctx.body = await follows.destroy(ctx.request.headers.authorization, ctx.params.mapId);
   });
 
   app.use(router.routes());

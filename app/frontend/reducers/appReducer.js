@@ -5,8 +5,7 @@ import {
 
 const initialState = {
   authenticated: false,
-  accessToken: null,
-  currentUser: {}
+  currentUser: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -14,14 +13,12 @@ const reducer = (state = initialState, action) => {
     case SIGN_IN:
       return Object.assign({}, state, {
         authenticated: true,
-        accessToken: action.payload.token,
         currentUser: action.payload.user
       });
     case SIGN_OUT:
       return Object.assign({}, state, {
         authenticated: false,
-        accessToken: null,
-        currentUser: {}
+        currentUser: null
       });
     default:
       return state;

@@ -15,7 +15,8 @@ const plugins = [
     'FIREBASE_DB_URL',
     'FIREBASE_STORAGE_BUCKET',
     'FIREBASE_MESSAGING_SENDER_ID',
-    'FIREBASE_CDN_URL'
+    'FIREBASE_IMAGE_BUCKET',
+    'FB_APP_ID'
   ])
 ];
 
@@ -35,6 +36,13 @@ module.exports = {
         test: /.jsx?$/,
         exclude: /node_modules/,
         loaders: ['babel-loader']
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loaders: [
+          'file-loader',
+          'image-webpack-loader'
+        ]
       }
     ]
   },

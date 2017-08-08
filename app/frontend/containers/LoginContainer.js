@@ -33,14 +33,14 @@ const mapDispatchToProps = (dispatch) => {
         }
       };
       const apiClient = new ApiClient;
-      try {
-        let response = await apiClient.signIn(params);
-        dispatch(requestFinish());
-        dispatch(signIn(response.token, response.user));
+      let response = await apiClient.signIn(params);
+      dispatch(requestFinish());
+      let json = await response.json();
+      if (response.ok) {
+        dispatch(signIn(json.user));
         dispatch(openToast('Signed in successfully!'));
-      } catch (e) {
-        dispatch(requestFinish());
-        dispatch(openToast(e.message));
+      } else {
+        dispatch(openToast(json.detail));
       }
     }
   }

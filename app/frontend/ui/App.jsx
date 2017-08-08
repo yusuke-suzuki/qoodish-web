@@ -5,10 +5,12 @@ import BlockUiContainer from '../containers/BlockUiContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
 import DashboardContainer from '../containers/DashboardContainer';
+import MapDetailContainer from '../containers/MapDetailContainer';
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import createPalette from 'material-ui/styles/palette';
 import { amber, lightBlue } from 'material-ui/colors';
+import firebase from 'firebase';
 
 const theme = createMuiTheme({
   palette: createPalette({
@@ -18,12 +20,50 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      waitForInitialize: true
+    };
+    this.retryCount = 0;
+    this.maxRetryCount = 10;
+  }
+
   componentWillMount() {
     this.props.handleWindowSizeChange(this.props.width);
+    this.retryCount = 0;
+    if (this.props.authenticated) {
+      this.setTimerForInitialize();
+    }
   }
 
   componentWillReceiveProps(props) {
+    this.retryCount = 0;
     this.props.handleWindowSizeChange(props.width);
+    if (props.authenticated) {
+      this.setTimerForInitialize();
+    }
+  }
+
+  setTimerForInitialize() {
+    if (!this.state.waitForInitialize) {
+      return;
+    }
+    const timer = setInterval(() => {
+      console.log('Wait for initialize...');
+      this.waitForCurrentUser(timer);
+      this.retryCount++;
+    }, 1000);
+  }
+
+  waitForCurrentUser(timer) {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser || this.retryCount > this.maxRetryCount) {
+      clearInterval(timer);
+      this.setState({
+        waitForInitialize: false
+      });
+    }
   }
 
   render() {
@@ -42,10 +82,17 @@ class App extends Component {
   }
 
   renderUserOnly() {
+    if (this.state.waitForInitialize) {
+      return null;
+    }
+
     return (
       <div>
         <Switch>
           <Route exact path='/' component={DashboardContainer} />
+          <Route exact path='/maps' component={DashboardContainer} />
+          <Route exact path='/maps/:mapId' component={MapDetailContainer} />
+          <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
           <Redirect from='*' to='/' />
         </Switch>
       </div>
