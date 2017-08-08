@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "es6-error": "^4.0.2",
+    "firebase": "^4.2.0",
+    "firebaseui": "^2.3.0",
     "history": "^4.6.3",
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
