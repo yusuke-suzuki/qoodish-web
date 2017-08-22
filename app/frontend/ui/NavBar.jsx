@@ -16,17 +16,33 @@ const styles = {
   title: {
     cursor: 'pointer'
   },
+  toolbar: {
+    paddingLeft: 10,
+    paddingRight: 10
+  },
   menuButton: {
     color: 'white'
   },
-  pageTitle: {
+  logo: {
     cursor: 'pointer',
-    color: 'white'
+    color: 'white',
+    paddingLeft: 8
+  },
+  pageTitleLarge: {
+    cursor: 'pointer',
+    color: 'white',
+    borderLeft: '1px solid rgba(255,255,255,0.2)',
+    paddingLeft: 24,
+    marginLeft: 24
+  },
+  pageTitleSmall: {
+    cursor: 'pointer',
+    color: 'white',
+    marginLeft: 10
   },
   rightContents: {
     marginLeft: 'auto',
-    paddingLeft: 30,
-    paddingRight: 30
+    paddingRight: 10
   }
 };
 
@@ -35,7 +51,6 @@ class NavBar extends Component {
     super(props);
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
     this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
-    this.handleHomeClick = this.handleHomeClick.bind(this);
     this.handleAvatarClick = this.handleAvatarClick.bind(this);
     this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(this);
 
@@ -44,6 +59,10 @@ class NavBar extends Component {
       anchorEl: undefined,
       accountMenuOpen: false
     };
+  }
+
+  handleTitleClick() {
+    window.scrollTo(0, 0);
   }
 
   handleAvatarClick(event) {
@@ -65,25 +84,27 @@ class NavBar extends Component {
     });
   }
 
-  handleCloseDrawer(event) {
+  handleCloseDrawer() {
     this.setState({
       drawerOpen: false
     });
-  }
-
-  handleHomeClick() {
-    this.props.requestHome();
   }
 
   render() {
     return (
       <div>
         <AppBar position='fixed'>
-          <Toolbar disableGutters>
+          <Toolbar disableGutters style={styles.toolbar}>
             <IconButton color='contrast' onClick={this.handleToggleDrawer}>
               <MenuIcon style={styles.menuButton} />
             </IconButton>
-            <Typography type='headline' color='inherit' style={styles.pageTitle}>
+            {this.props.large ? this.renderLogo() : null}
+            <Typography
+              type='headline'
+              color='inherit'
+              style={this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall}
+              onClick={this.handleTitleClick}
+            >
               {this.props.pageTitle}
             </Typography>
             <div style={styles.rightContents}>
@@ -103,13 +124,20 @@ class NavBar extends Component {
     );
   }
 
+  renderLogo() {
+    return (
+      <Typography type='headline' color='inherit' style={styles.logo} onClick={this.props.requestHome}>
+        Qoodish
+      </Typography>
+    );
+  }
+
   renderAvatarMenu() {
     return (
       <div>
         <IconButton
           aria-label='Account'
           aria-owns={this.state.accountMenuOpen ? 'account-menu' : null}
-          aria-owns='account-menu'
           aria-haspopup='true'
           onClick={this.handleAvatarClick}
         >
@@ -135,7 +163,7 @@ class NavBar extends Component {
             <ListItem divider={true}>
               <ListItemText disableTypography primary={this.renderTitle()} secondary={this.renderTitleSecondary()} />
             </ListItem>
-            <ListItem button onClick={this.handleHomeClick}>
+            <ListItem button onClick={this.props.requestHome}>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
@@ -149,7 +177,7 @@ class NavBar extends Component {
 
   renderTitle() {
     return (
-      <Typography type='headline' color='secondary' style={styles.title} onClick={this.handleHomeClick}>
+      <Typography type='headline' color='secondary' style={styles.title} onClick={this.props.requestHome}>
         Qoodish
       </Typography>
     );

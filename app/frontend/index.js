@@ -12,6 +12,10 @@ import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-r
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
+import dashboardReducer from './reducers/dashboardReducer';
+import mapDetailReducer from './reducers/mapDetailReducer';
+import mapReviewsReducer from './reducers/mapReviewsReducer';
+import gMapReducer from './reducers/gMapReducer';
 
 import persistState from 'redux-localstorage';
 
@@ -45,7 +49,11 @@ if (process.env.NODE_ENV != 'production') {
 const reducer = combineReducers({
   router: routerReducer,
   app: appReducer,
-  shared: sharedReducer
+  shared: sharedReducer,
+  dashboard: dashboardReducer,
+  mapDetail: mapDetailReducer,
+  mapReviews: mapReviewsReducer,
+  gMap: gMapReducer
 });
 
 const store = compose(

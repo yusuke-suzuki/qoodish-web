@@ -1,10 +1,10 @@
+import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
-class Auth {
+class Auth extends Application {
   async create(params) {
     const client = new QoodishClient;
     const response = await client.signIn(params);
-    console.log(response);
     return response;
   }
 }

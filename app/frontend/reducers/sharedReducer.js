@@ -4,7 +4,9 @@ import {
   REQUEST_START,
   REQUEST_FINISH,
   UPDATE_WINDOW_SIZE,
-  UPDATE_PAGE_TITLE
+  UPDATE_PAGE_TITLE,
+  OPEN_ISSUE_DIALOG,
+  CLOSE_ISSUE_DIALOG
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -14,7 +16,9 @@ const initialState = {
   blocking: false,
   width: '',
   large: true,
-  pageTitle: ''
+  pageTitle: '',
+  issueDialogOpen: false,
+  issueTarget: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -44,6 +48,16 @@ const reducer = (state = initialState, action) => {
     case UPDATE_PAGE_TITLE:
       return Object.assign({}, state, {
         pageTitle: action.payload.title ? action.payload.title : ''
+      });
+    case OPEN_ISSUE_DIALOG:
+      return Object.assign({}, state, {
+        issueDialogOpen: true,
+        issueTarget: action.payload.review
+      });
+    case CLOSE_ISSUE_DIALOG:
+      return Object.assign({}, state, {
+        issueDialogOpen: false,
+        issueTarget: null
       });
     default:
       return state;

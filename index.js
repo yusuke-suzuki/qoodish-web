@@ -10,6 +10,7 @@ import error from 'koa-json-error';
 import ApplicationError from './app/models/errors/ApplicationError';
 
 const formatError = (error) => {
+  console.log(error);
   let json;
   if (error instanceof ApplicationError) {
     json = {

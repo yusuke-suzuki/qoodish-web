@@ -1,10 +1,9 @@
 import { SIGN_IN } from '../actionTypes';
 
-const signIn = (token, user) => {
+const signIn = (user) => {
   return {
     type: SIGN_IN,
     payload: {
-      token: token,
       user: user
     }
   }

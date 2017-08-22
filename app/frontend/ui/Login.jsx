@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
+import Typography from 'material-ui/Typography';
 
 const styles = {
   loginContainer: {
     textAlign: 'center',
-    marginTop: 104,
-    marginBottom: 200
+    paddingTop: 104,
+    paddingBottom: 200
   }
 };
 
@@ -41,8 +42,12 @@ export default class Login extends Component {
     return (
       <div>
         <div style={styles.loginContainer}>
-          <h1>みんなで作る、冒険の地図。</h1>
-          <p>次はどこ行く？</p>
+          <Typography type='display4' gutterBottom>
+            みんなで作る、冒険の地図。
+          </Typography>
+          <Typography type='display2' gutterBottom>
+            次はどこ行く？
+          </Typography>
           <div id='firebaseui-auth-container' />
         </div>
       </div>
