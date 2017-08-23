@@ -12,6 +12,7 @@ import PlaceIcon from 'material-ui-icons/Place';
 import PhotoCameraIcon from 'material-ui-icons/PhotoCamera';
 import CancelIcon from 'material-ui-icons/Cancel';
 import Button from 'material-ui/Button';
+import { canvasToBlob } from '../containers/Utils';
 
 const styles = {
   imagePreviewContainer: {
@@ -67,6 +68,8 @@ class EditReviewDialog extends Component {
         placeName: currentReview.spot.name,
         imagePreviewUrl: imagePreviewUrl,
         disabled: false
+      }, () => {
+        this.drawImagePreview(imagePreviewUrl);
       });
     } else {
       this.clearInputs();
@@ -101,7 +104,7 @@ class EditReviewDialog extends Component {
     });
   }
 
-  handleSaveButtonClick() {
+  async handleSaveButtonClick() {
     let params = {
       comment: this.state.comment,
       place_id: this.state.placeId
@@ -109,7 +112,8 @@ class EditReviewDialog extends Component {
 
     let image = null;
     if (this.state.imagePreviewUrl && this.state.image) {
-      image = this.state.image;
+      let canvas = document.getElementById('canvas');
+      image = await canvasToBlob(canvas);
     }
 
     if (this.props.currentReview) {
@@ -132,13 +136,33 @@ class EditReviewDialog extends Component {
     }
 
     reader.onloadend = () => {
+      let dataUrl = reader.result;
       this.setState({
         image: file,
-        imagePreviewUrl: reader.result
+        imagePreviewUrl: dataUrl
       });
+
+      this.drawImagePreview(dataUrl);
     }
 
     reader.readAsDataURL(file);
+  }
+
+  drawImagePreview(imageUrl) {
+    let canvas = document.getElementById('canvas');
+    if (!canvas) {
+      return;
+    }
+    if (canvas.getContext) {
+      let context = canvas.getContext('2d');
+      let image = new Image();
+      image.src = imageUrl;
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+      };
+    }
   }
 
   handleClearImageClick() {
@@ -248,7 +272,7 @@ class EditReviewDialog extends Component {
         >
           <CancelIcon />
         </IconButton>
-        <img src={this.state.imagePreviewUrl} style={styles.imagePreview} />
+        <canvas id='canvas' style={styles.imagePreview}></canvas>
       </div>
     );
   }
