@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import AuthenticationFailed from './errors/AuthenticationFailed';
+import DeleteUserFailed from './errors/DeleteUserFailed';
 import FetchMapsFailed from './errors/FetchMapsFailed';
 import FetchMapFailed from './errors/FetchMapFailed';
 import CreateMapFailed from './errors/CreateMapFailed';
@@ -30,6 +31,25 @@ class QoodishClient {
       return json;
     } else {
       throw new AuthenticationFailed;
+    }
+  }
+
+  async deleteAccount(token, userId) {
+    const url = `${process.env.API_ENDPOINT}/users/${userId}`;
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    if (response.ok) {
+      return;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      const json = await response.json();
+      throw new DeleteUserFailed(response.status, json.detail);
     }
   }
 

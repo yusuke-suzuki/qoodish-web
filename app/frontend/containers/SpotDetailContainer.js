@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
     drawerOpen: state.mapDetail.spotDetailOpen,
     currentSpot: state.mapDetail.currentSpot,
     spotReviews: state.mapDetail.spotReviews,
-    currentPosition: state.gMap.currentPosition
+    currentPosition: state.gMap.currentPosition,
+    large: state.shared.large
   }
 }
 

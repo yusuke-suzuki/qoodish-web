@@ -8,6 +8,7 @@ import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import HomeIcon from 'material-ui-icons/Home';
+import SettingsIcon from 'material-ui-icons/Settings';
 import Hidden from 'material-ui/Hidden';
 import Avatar from 'material-ui/Avatar';
 import Menu, { MenuItem } from 'material-ui/Menu';
@@ -149,6 +150,7 @@ class NavBar extends Component {
           open={this.state.accountMenuOpen}
           onRequestClose={this.handleRequestAvatarMenuClose}
         >
+          <MenuItem onClick={this.props.requestSettings}>Settings</MenuItem>
           <MenuItem onClick={this.props.signOut}>Logout</MenuItem>
         </Menu>
       </div>
@@ -168,6 +170,12 @@ class NavBar extends Component {
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary='Home' />
+            </ListItem>
+            <ListItem button onClick={this.props.requestSettings}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary='Settings' />
             </ListItem>
           </div>
         </List>
