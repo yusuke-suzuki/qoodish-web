@@ -194,7 +194,8 @@ class EditMapDialog extends Component {
   render() {
     const inputProps = {
       value: this.state.placeInput,
-      onChange: this.handleInputChange
+      onChange: this.handleInputChange,
+      placeholder: 'Search places...'
     };
 
     return (
@@ -272,7 +273,8 @@ class EditMapDialog extends Component {
         onChange={this.handleMapNameChange}
         error={this.state.errorMapName ? true : false}
         helperText={this.state.errorMapName}
-        fullWidth={true}
+        fullWidth
+        autoFocus
         value={this.state.name}
       />
     );
@@ -285,7 +287,8 @@ class EditMapDialog extends Component {
         onChange={this.handleMapNameChange}
         error={this.state.errorMapName ? true : false}
         helperText={this.state.errorMapName}
-        fullWidth={true}
+        fullWidth
+        autoFocus
       />
     );
   }
@@ -297,7 +300,7 @@ class EditMapDialog extends Component {
         onChange={this.handleMapDescriptionChange}
         error={this.state.errorDescription ? true : false}
         helperText={this.state.errorDescription}
-        fullWidth={true}
+        fullWidth
         value={this.state.description}
       />
     );
@@ -310,7 +313,7 @@ class EditMapDialog extends Component {
         onChange={this.handleMapDescriptionChange}
         error={this.state.errorDescription ? true : false}
         helperText={this.state.errorDescription}
-        fullWidth={true}
+        fullWidth
       />
     );
   }

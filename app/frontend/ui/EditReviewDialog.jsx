@@ -244,6 +244,7 @@ class EditReviewDialog extends Component {
         fullWidth
         value={this.state.comment}
         multiline
+        autoFocus
         rows='4'
       />
     );
@@ -258,6 +259,7 @@ class EditReviewDialog extends Component {
         helperText={this.state.errorComment}
         fullWidth
         multiline
+        autoFocus
         rows='4'
       />
     );
