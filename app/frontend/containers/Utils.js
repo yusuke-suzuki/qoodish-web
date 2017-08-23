@@ -63,3 +63,11 @@ export const sleep = (msec) => {
     setTimeout(resolve, msec);
   });
 }
+
+export const canvasToBlob = (canvas) => {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      resolve(blob);
+    }, 'image/jpeg', 0.5);
+  });
+}
