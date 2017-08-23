@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import AppContainer from './containers/AppContainer.js';
+import AppContainer from './containers/AppContainer';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
@@ -16,6 +16,7 @@ import dashboardReducer from './reducers/dashboardReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
 import mapReviewsReducer from './reducers/mapReviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
+import settingsReducer from './reducers/settingsReducer';
 
 import persistState from 'redux-localstorage';
 
@@ -53,7 +54,8 @@ const reducer = combineReducers({
   dashboard: dashboardReducer,
   mapDetail: mapDetailReducer,
   mapReviews: mapReviewsReducer,
-  gMap: gMapReducer
+  gMap: gMapReducer,
+  settings: settingsReducer
 });
 
 const store = compose(

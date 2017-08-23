@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import DeleteMapDialog from '../ui/DeleteMapDialog';
+import DeleteAccountDialog from '../ui/DeleteAccountDialog';
+import closeDeleteAccountDialog from '../actions/closeDeleteAccountDialog';
 import ApiClient from './ApiClient';
-import deleteMap from '../actions/deleteMap';
-import closeDeleteMapDialog from '../actions/closeDeleteMapDialog';
+import signOut from '../actions/signOut';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
@@ -11,28 +11,28 @@ import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    currentMap: state.mapDetail.currentMap,
-    dialogOpen: state.mapDetail.deleteMapDialogOpen
+    dialogOpen: state.settings.deleteAccountDialogOpen,
+    currentUser: state.app.currentUser
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     handleRequestDialogClose: () => {
-      dispatch(closeDeleteMapDialog());
+      dispatch(closeDeleteAccountDialog());
     },
 
-    handleDeleteButtonClick: async () => {
+    handleDeleteButtonClick: async (currentUser) => {
       dispatch(requestStart());
       const client = new ApiClient;
-      await client.deleteMap(ownProps.mapId);
+      await client.deleteAccount(currentUser.uid);
       dispatch(requestFinish());
-      dispatch(deleteMap(ownProps.mapId));
-      dispatch(closeDeleteMapDialog());
+      dispatch(closeDeleteAccountDialog());
       // 少し待たないと dialog を close した際のエラー (material-ui 起因?) に巻き込まれて遷移できない
       await sleep(1000);
-      dispatch(push('/maps'));
-      dispatch(openToast('Delete map successfully'));
+      dispatch(signOut());
+      dispatch(closeDeleteAccountDialog());
+      dispatch(openToast('Delete account successfully'));
     }
   }
 }
@@ -40,4 +40,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DeleteMapDialog);
+)(DeleteAccountDialog);

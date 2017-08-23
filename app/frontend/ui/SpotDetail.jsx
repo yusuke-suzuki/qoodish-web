@@ -23,10 +23,16 @@ const styles = {
     position: 'fixed',
     zIndex: 1
   },
-  cardContainer: {
+  cardContainerLarge: {
     marginTop: 64,
     overflowY: 'scroll',
     width: 330,
+    height: '100%'
+  },
+  cardContainerSmall: {
+    marginTop: 56,
+    overflowY: 'scroll',
+    width: '100%',
     height: '100%'
   },
   card: {
@@ -115,7 +121,7 @@ class SpotDetail extends Component {
 
   renderSpotSummary(spot) {
     return (
-      <div style={styles.cardContainer}>
+      <div style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
         <Toolbar style={styles.spotToolbar} disableGutters>
           <div>
             <IconButton

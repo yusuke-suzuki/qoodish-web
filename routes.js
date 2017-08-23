@@ -3,6 +3,7 @@ import render from 'koa-ejs';
 import path from 'path';
 
 import Auth from './app/controllers/Auth';
+import Users from './app/controllers/Users';
 import Maps from './app/controllers/Maps';
 import Collaborators from './app/controllers/Collaborators';
 import Spots from './app/controllers/Spots';
@@ -24,7 +25,8 @@ const routes = (app) => {
     '/login',
     '/maps',
     '/maps/:mapId',
-    '/maps/:mapId/reports/:reviewId'
+    '/maps/:mapId/reports/:reviewId',
+    '/settings'
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
@@ -41,6 +43,12 @@ const routes = (app) => {
   router.post('/api/auth', async (ctx, next) => {
     const auth = new Auth;
     ctx.body = await auth.create(ctx.request.body);
+  });
+
+  router.del('/api/users/:userId', async (ctx, next) => {
+    const users = new Users;
+    await users.delete(ctx.request.headers.authorization, ctx.params.userId);
+    ctx.status = 204;
   });
 
   router.get('/api/maps', async (ctx, next) => {
