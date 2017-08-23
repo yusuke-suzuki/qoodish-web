@@ -19,6 +19,10 @@ const styles = {
 };
 
 export default class Footer extends Component {
+  componentWillMount() {
+    this.props.updatePageTitle();
+  }
+
   render() {
     return (
       <div style={styles.root}>
