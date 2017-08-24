@@ -376,6 +376,32 @@ class QoodishClient {
       throw new LeaveMapFailed(response.status, json.detail);
     }
   }
+
+  async fetchMapMetadata(mapId) {
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/metadata`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchReviewMetadata(reviewId) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/metadata`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default QoodishClient;

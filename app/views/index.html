@@ -2,11 +2,13 @@
 <html>
   <head>
     <title>Qoodish</title>
+    <%- include('./_metaTags', { metadata: metadata }) %>
     <script type='text/javascript'>
       window.currentLocale = '<%= currentLocale %>';
     </script>
     <script type='text/javascript' src='<%= googleMapUrl %>'></script>
     <script type='text/javascript' src='<%= bundle %>'></script>
+    <link rel='icon' href='<%= process.env.SUBSTITUTE_URL %>' type='image/x-icon'>
     <link type='text/css' rel='stylesheet' href='<%= process.env.FIREBASE_CDN_URL %>' />
   </head>
   <body style='background-color: #f1f1f1;'>

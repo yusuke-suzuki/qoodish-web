@@ -10,7 +10,7 @@ import Spots from './app/controllers/Spots';
 import Reviews from './app/controllers/Reviews';
 import Follows from './app/controllers/Follows';
 
-import { detectLanguage } from './app/models/Utils';
+import { detectLanguage, generateMetadata } from './app/models/Utils';
 
 const routes = (app) => {
   const router = new Router();
@@ -30,14 +30,19 @@ const routes = (app) => {
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
+    let metadata = await generateMetadata(ctx.request, ctx.params);
     let manifestPath = './webpack-assets.json';
     if (process.env.NODE_ENV != 'production') {
       delete require.cache[require.resolve(manifestPath)];
     }
-    let googleMapUrl = `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`;
     let manifest = require(manifestPath);
-    let currentLocale = detectLanguage(ctx.request);
-    await ctx.render('index', { bundle: manifest.main.js, googleMapUrl: googleMapUrl, currentLocale: currentLocale });
+    let params = {
+      bundle: manifest.main.js,
+      googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
+      currentLocale: detectLanguage(ctx.request),
+      metadata: metadata
+    };
+    await ctx.render('index', params);
   });
 
   router.post('/api/auth', async (ctx, next) => {
