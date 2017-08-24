@@ -7,6 +7,21 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import PlacesAutocomplete from 'react-places-autocomplete';
+import PlaceIcon from 'material-ui-icons/Place';
+
+const styles = {
+  titleText: {
+    marginLeft: 30
+  },
+  dialogContent: {
+    overflow: 'initial'
+  },
+  placeIcon: {
+    marginTop: -2,
+    marginRight: 10,
+    position: 'absolute'
+  }
+};
 
 const autoCompleteStyles = {
   root: {
@@ -58,7 +73,9 @@ class PlaceSelectDialog extends Component {
   render() {
     const inputProps = {
       value: this.state.placeInput,
-      onChange: this.handleInputChange
+      onChange: this.handleInputChange,
+      placeholder: 'Search places...',
+      autoFocus: true
     };
 
     return (
@@ -67,11 +84,9 @@ class PlaceSelectDialog extends Component {
         onRequestClose={this.props.onRequestClose}
       >
       　<DialogTitle>
-          Select Place
+          <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-          </DialogContentText>
+        <DialogContent style={styles.dialogContent}>
           <PlacesAutocomplete
             inputProps={inputProps}
             onSelect={this.handlePlaceSelected}
