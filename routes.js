@@ -32,13 +32,17 @@ const routes = (app) => {
 
   router.get(pageRoutes, async (ctx, next) => {
     let metadata = await generateMetadata(ctx.request, ctx.params);
-    let manifestPath = './webpack-assets.json';
-    if (process.env.NODE_ENV != 'production') {
+    let assetPath;
+    if (process.env.NODE_ENV === 'production') {
+      assetPath = process.env.ASSET_PATH;
+    } else {
+      let manifestPath = './webpack-assets.json';
       delete require.cache[require.resolve(manifestPath)];
+      let manifest = require(manifestPath);
+      assetPath = manifest.main.js;
     }
-    let manifest = require(manifestPath);
     let params = {
-      bundle: manifest.main.js,
+      bundle: assetPath,
       googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
       currentLocale: detectLanguage(ctx.request),
       metadata: metadata

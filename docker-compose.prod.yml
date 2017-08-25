@@ -1,0 +1,27 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: docker/web/Dockerfile
+      args:
+        - AWS_REGION=ap-northeast-1
+        - AWS_ACCESS_KEY=accesskey
+        - AWS_SECRET_KEY=secret
+        - SLACK_WEBHOOK=https://localhost
+        - SLACK_CHANNEL=#qoodish-notice
+        - S3_BUCKET_ASSETS=qoodish-test
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - ASSET_PATH=path
+    expose:
+      - '5000'
+    command: yarn start
+  nginx:
+    build: docker/nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - web
