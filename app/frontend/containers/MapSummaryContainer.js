@@ -6,6 +6,7 @@ import openDeleteMapDialog from '../actions/openDeleteMapDialog';
 import openJoinMapDialog from '../actions/openJoinMapDialog';
 import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import openToast from '../actions/openToast';
+import openIssueDialog from '../actions/openIssueDialog';
 
 const mapStateToProps = (state) => {
   return {
@@ -53,6 +54,10 @@ const mapDispatchToProps = (dispatch) => {
     handleDeleteMapButtonClick: () => {
       dispatch(openDeleteMapDialog());
     },
+
+    handleIssueButtonClick: (map) => {
+      dispatch(openIssueDialog(map.id, 'map'))
+    }
   }
 }
 

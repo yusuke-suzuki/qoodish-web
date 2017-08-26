@@ -5,6 +5,7 @@ import closeReviewDialog from '../actions/closeReviewDialog';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
 import openDeleteReviewDialog from '../actions/openDeleteReviewDialog';
 import openToast from '../actions/openToast';
+import openIssueDialog from '../actions/openIssueDialog';
 
 const mapStateToProps = (state) => {
   return {
@@ -41,6 +42,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleDeleteReviewButtonClick: (review) => {
       dispatch(openDeleteReviewDialog(review));
+    },
+
+    handleIssueButtonClick: (review) => {
+      dispatch(openIssueDialog(review.id, 'review'))
     }
   }
 }

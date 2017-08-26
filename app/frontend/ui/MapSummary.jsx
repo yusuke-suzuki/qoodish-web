@@ -267,7 +267,6 @@ class MapSummary extends Component {
             aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
             aria-haspopup='true'
             onClick={this.handleVertButtonClick}
-            disabled={!this.props.currentMap.editable}
           >
             <MoreVertIcon style={styles.mapMenuIcon} />
           </IconButton>
@@ -279,6 +278,15 @@ class MapSummary extends Component {
           >
             {this.props.currentMap.editable ? this.renderEditButton() : null}
             {this.props.currentMap.editable ? this.renderDeleteButton() : null}
+            <MenuItem
+              key='issue'
+              onClick={() => {
+                this.handleRequestVertMenuClose();
+                this.props.handleIssueButtonClick(this.props.currentMap);
+              }}
+            >
+              Issue
+            </MenuItem>
           </Menu>
         </div>
       </Toolbar>

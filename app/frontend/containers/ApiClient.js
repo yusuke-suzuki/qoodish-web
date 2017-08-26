@@ -253,6 +253,21 @@ class ApiClient {
     const response = await fetch(url, options);
     return response;
   }
+
+  async issueContent(params) {
+    const url = `${process.env.ENDPOINT}/api/inappropriate_contents`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify(params)
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default ApiClient;
