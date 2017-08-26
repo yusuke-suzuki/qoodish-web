@@ -18,7 +18,8 @@ const initialState = {
   large: true,
   pageTitle: '',
   issueDialogOpen: false,
-  issueTarget: null
+  issueTargetId: null,
+  issueTargetType: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -52,12 +53,14 @@ const reducer = (state = initialState, action) => {
     case OPEN_ISSUE_DIALOG:
       return Object.assign({}, state, {
         issueDialogOpen: true,
-        issueTarget: action.payload.review
+        issueTargetId: action.payload.contentId,
+        issueTargetType: action.payload.contentType
       });
     case CLOSE_ISSUE_DIALOG:
       return Object.assign({}, state, {
         issueDialogOpen: false,
-        issueTarget: null
+        issueTargetId: null,
+        issueTargetType: null
       });
     default:
       return state;

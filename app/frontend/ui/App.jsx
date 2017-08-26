@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NavBarContainer from '../containers/NavBarContainer';
 import ToastContainer from '../containers/ToastContainer';
 import BlockUiContainer from '../containers/BlockUiContainer';
+import IssueDialogContainer from '../containers/IssueDialogContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
 import DashboardContainer from '../containers/DashboardContainer';
@@ -77,6 +78,7 @@ class App extends Component {
           </div>
           <ToastContainer />
           <BlockUiContainer />
+          <IssueDialogContainer />
         </div>
       </MuiThemeProvider>
     );

@@ -1,10 +1,11 @@
 import { OPEN_ISSUE_DIALOG } from '../actionTypes';
 
-const openIssueDialog = (report) => {
+const openIssueDialog = (contentId, contentType) => {
   return {
     type: OPEN_ISSUE_DIALOG,
     payload: {
-      report: report
+      contentId: contentId,
+      contentType: contentType
     }
   }
 }

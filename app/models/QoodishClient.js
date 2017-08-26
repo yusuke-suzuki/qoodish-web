@@ -16,6 +16,7 @@ import FetchReviewFailed from './errors/FetchReviewFailed';
 import FetchCollaboratorsFailed from './errors/FetchCollaboratorsFailed';
 import JoinMapFailed from './errors/JoinMapFailed';
 import LeaveMapFailed from './errors/LeaveMapFailed';
+import IssueContentFailed from './errors/IssueContentFailed';
 
 class QoodishClient {
   async signIn(params) {
@@ -401,6 +402,27 @@ class QoodishClient {
     };
     const response = await fetch(url, options);
     return response;
+  }
+
+  async issueContent(token, params) {
+    console.log(params);
+    const url = `${process.env.API_ENDPOINT}/inappropriate_contents`;
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      },
+      body: JSON.stringify(params)
+    };
+    const response = await fetch(url, options);
+    if (response.ok) {
+      return;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new IssueContentFailed(response.status, json.detail);
+    }
   }
 }
 

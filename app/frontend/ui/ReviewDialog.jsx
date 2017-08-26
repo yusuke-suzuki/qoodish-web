@@ -166,7 +166,6 @@ class ReviewDialog extends Component {
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
         aria-haspopup='true'
         onClick={this.handleVertButtonClick}
-        disabled={!this.props.currentReview.editable}
       >
         <MoreVertIcon />
       </IconButton>
@@ -183,6 +182,15 @@ class ReviewDialog extends Component {
       >
         {this.props.currentReview.editable ? this.renderEditButton() : null}
         {this.props.currentReview.editable ? this.renderDeleteButton() : null}
+        <MenuItem
+          key='issue'
+          onClick={() => {
+            this.handleRequestVertMenuClose();
+            this.props.handleIssueButtonClick(this.props.currentReview);
+          }}
+        >
+          Issue
+        </MenuItem>
       </Menu>
     );
   }

@@ -9,6 +9,7 @@ import Collaborators from './app/controllers/Collaborators';
 import Spots from './app/controllers/Spots';
 import Reviews from './app/controllers/Reviews';
 import Follows from './app/controllers/Follows';
+import InappropriateContents from './app/controllers/InappropriateContents';
 
 import { detectLanguage, generateMetadata } from './app/models/Utils';
 
@@ -130,6 +131,12 @@ const routes = (app) => {
   router.del('/api/maps/:mapId/follow', async (ctx, next) => {
     const follows = new Follows;
     ctx.body = await follows.destroy(ctx.request.headers.authorization, ctx.params.mapId);
+  });
+
+  router.post('/api/inappropriate_contents', async (ctx, next) => {
+    const inappropriateContents = new InappropriateContents;
+    await inappropriateContents.create(ctx.request.headers.authorization, ctx.request.body);
+    ctx.status = 204;
   });
 
   app.use(router.routes());
