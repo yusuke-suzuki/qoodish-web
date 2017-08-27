@@ -383,8 +383,7 @@ class QoodishClient {
     let options = {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
+        'Content-Type': 'application/json'
       }
     };
     const response = await fetch(url, options);
@@ -396,8 +395,7 @@ class QoodishClient {
     let options = {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
+        'Content-Type': 'application/json'
       }
     };
     const response = await fetch(url, options);
