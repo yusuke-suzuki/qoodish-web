@@ -25,12 +25,12 @@ const styles = {
   },
   cardContainer: {
     marginTop: 64,
-    overflowY: 'scroll',
     width: 330,
-    height: '100%'
+    height: 'calc(100% - 56px)'
   },
   card: {
-    paddingBottom: 160
+    height: '100%',
+    overflowY: 'scroll'
   },
   media: {
     height: 330

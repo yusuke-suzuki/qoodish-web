@@ -25,18 +25,17 @@ const styles = {
   },
   cardContainerLarge: {
     marginTop: 64,
-    overflowY: 'scroll',
     width: 330,
-    height: '100%'
+    height: 'calc(100% - 64px)'
   },
   cardContainerSmall: {
     marginTop: 56,
-    overflowY: 'scroll',
-    width: '100%',
-    height: '100%'
+    width: 330,
+    height: 'calc(100% - 56px)'
   },
   card: {
-    paddingBottom: 320
+    height: '100%',
+    overflowY: 'scroll'
   },
   media: {
     height: 330
@@ -83,7 +82,7 @@ const styles = {
     height: 40
   },
   tileBar: {
-    marginBottom: 3,
+    marginBottom: 7,
     paddingTop: 16,
     paddingBottom: 16,
     height: 'initial'
