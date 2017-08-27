@@ -14,7 +14,9 @@
     "build": "webpack --colors --progress",
     "watch:start": "nodemon index.js --exec babel-node",
     "watch:build": "webpack --hot --watch --colors --progress",
-    "test:chrome": "testcafe chrome tests/"
+    "test:chrome": "testcafe chrome tests/",
+    "build:prod": "webpack -p --colors --progress",
+    "upload": "node tasks/upload_assets_to_s3.js"
   },
   "dependencies": {
     "es6-error": "^4.0.2",
@@ -48,6 +50,7 @@
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.1",
+    "aws-sdk": "^2.103.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
@@ -62,6 +65,7 @@
     "file-loader": "^0.11.2",
     "image-webpack-loader": "^3.3.1",
     "nodemon": "^1.11.0",
+    "slack-node": "^0.1.8",
     "testcafe": "^0.17.0",
     "testcafe-react-selectors": "^0.0.5",
     "webpack": "^3.4.1",

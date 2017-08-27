@@ -62,3 +62,5 @@ webpack-assets.json
 public
 
 .vscode
+
+docker-compose.yml
