@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
       const response = await client.deleteReview(review.id);
       dispatch(requestFinish());
       if (response.ok) {
-        if (review.image.custom) {
+        if (review.image.custom && !review.image.url.includes('amazonaws')) {
           deleteFromStorage(review.image.file_name);
         }
         dispatch(deleteReview(review.id));

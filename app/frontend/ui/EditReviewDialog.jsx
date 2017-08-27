@@ -111,7 +111,7 @@ class EditReviewDialog extends Component {
     };
 
     let image = null;
-    if (this.state.imagePreviewUrl && this.state.image) {
+    if (this.state.imagePreviewUrl && this.state.image != null) {
       let canvas = document.getElementById('canvas');
       image = await canvasToBlob(canvas);
     }

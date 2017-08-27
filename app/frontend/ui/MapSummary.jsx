@@ -26,7 +26,7 @@ const styles = {
   cardContainer: {
     marginTop: 64,
     width: 330,
-    height: 'calc(100% - 56px)'
+    height: 'calc(100% - 64px)'
   },
   card: {
     height: '100%',
