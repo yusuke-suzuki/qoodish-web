@@ -40,6 +40,9 @@ const styles = {
   media: {
     height: 330
   },
+  spotName: {
+    whiteSpace: 'initial'
+  },
   spotAddress: {
     whiteSpace: 'initial'
   },
@@ -82,7 +85,7 @@ const styles = {
     height: 40
   },
   tileBar: {
-    marginBottom: 7,
+    marginBottom: 3,
     paddingTop: 16,
     paddingBottom: 16,
     height: 'initial'
@@ -136,7 +139,7 @@ class SpotDetail extends Component {
             <img src={this.props.currentSpot.image_url} style={styles.media} />
             <GridListTileBar
               title={
-                <Typography type='headline' component='h2' color='inherit' gutterBottom>
+                <Typography type='headline' component='h2' color='inherit' gutterBottom style={styles.spotName} >
                   <PlaceIcon /> {spot.name}
                 </Typography>
               }
