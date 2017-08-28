@@ -44,7 +44,7 @@ export const detectLanguage = (request) => {
 
 export const generateMetadata = async (request, params) => {
   let title = 'Qoodish (β)';
-  let description = 'Qoodish では友だちとマップを作成してお気に入りのお店などの情報をシェアすることができます。';
+  let description = 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
   let pageUrl = process.env.ENDPOINT;
   let imageUrl = process.env.OG_IMAGE_URL;
 

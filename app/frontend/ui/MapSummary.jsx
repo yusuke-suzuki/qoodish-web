@@ -26,7 +26,8 @@ const styles = {
   cardContainer: {
     marginTop: 64,
     width: 330,
-    height: 'calc(100% - 64px)'
+    height: 'calc(100% - 64px)',
+    overflow: 'hidden'
   },
   card: {
     height: '100%',
@@ -276,8 +277,16 @@ class MapSummary extends Component {
             open={this.state.vertMenuOpen}
             onRequestClose={this.handleRequestVertMenuClose}
           >
-            {this.props.currentMap.editable ? this.renderEditButton() : null}
-            {this.props.currentMap.editable ? this.renderDeleteButton() : null}
+            {() => {
+              if (this.props.currentMap.editable) {
+                this.renderEditButton();
+              }
+            }}
+            {() => {
+              if (this.props.currentMap.editable) {
+                this.renderDeleteButton();
+              }
+            }}
             <MenuItem
               key='issue'
               onClick={() => {
