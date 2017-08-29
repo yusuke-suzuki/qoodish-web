@@ -10,7 +10,8 @@ import openIssueDialog from '../actions/openIssueDialog';
 const mapStateToProps = (state) => {
   return {
     dialogOpen: state.reviews.reviewDialogOpen,
-    currentReview: state.reviews.currentReview
+    currentReview: state.reviews.currentReview,
+    large: state.shared.large
   }
 }
 

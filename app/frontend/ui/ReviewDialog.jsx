@@ -15,9 +15,12 @@ import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 const styles = {
-  dialogContent: {
+  dialogContentLarge: {
     padding: 0,
     minWidth: 600
+  },
+  dialogContentSmall: {
+    padding: 0
   },
   profileImage: {
     width: 40
@@ -89,7 +92,7 @@ class ReviewDialog extends Component {
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
       >
-        <DialogContent style={styles.dialogContent}>
+        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           {this.props.currentReview ? this.renderReviewCard(this.props.currentReview) : null}
         </DialogContent>
         <DialogActions style={styles.dialogActions}>
