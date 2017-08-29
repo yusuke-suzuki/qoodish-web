@@ -4,6 +4,7 @@ import RateReviewIcon from 'material-ui-icons/RateReview';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
+import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
@@ -29,6 +30,13 @@ const styles = {
     marginTop: 40,
     marginBottom: 20
   },
+  buttonContainer: {
+    textAlign: 'center',
+    marginTop: 20
+  },
+  loadMoreButton: {
+    width: '100%'
+  },
   progress: {
     textAlign: 'center',
     padding: 10,
@@ -49,35 +57,37 @@ const styles = {
 };
 
 export default class Feed extends Component {
+  constructor(props) {
+    super(props);
+    this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
+  }
+
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.refreshReviews();
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', () => {
-      if (this.props.loadingReviews || this.props.loadingMoreReviews || this.props.noMoreReviews) {
-        return;
-      }
-
-      let height = window.innerHeight;
-      let scrollHeight = document.body.scrollHeight;
-      let scrollTop = document.body.scrollTop;
-
-      if ((scrollHeight - height) < (scrollTop + 5)) {
-        this.props.loadMoreReviews(this.props.nextTimestamp);
-      }
-    });
-  }
-
-  componenWillUnmount() {
-    window.removeEventListener('scroll');
+  handleClickLoadMoreButton() {
+    this.props.loadMoreReviews(this.props.nextTimestamp);
   }
 
   renderProgress() {
     return (
       <div style={styles.progress}>
         <CircularProgress />
+      </div>
+    );
+  }
+
+  renderLoadMoreButton() {
+    if (this.props.noMoreReviews) {
+      return null;
+    }
+    return (
+      <div style={styles.buttonContainer}>
+        <Button raised onClick={this.handleClickLoadMoreButton} style={styles.loadMoreButton}>
+          Load More
+        </Button>
       </div>
     );
   }
@@ -110,7 +120,7 @@ export default class Feed extends Component {
       return (
         <div>
           {this.renderReviewCards(reviews)}
-          {this.props.loadingMoreReviews ? this.renderProgress() : null}
+          {this.props.loadingMoreReviews ? this.renderProgress() : this.renderLoadMoreButton()}
         </div>
       );
     } else {
