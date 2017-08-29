@@ -38,7 +38,7 @@ const styles = {
     overflowY: 'scroll'
   },
   media: {
-    height: 330
+    width: '100%'
   },
   spotName: {
     whiteSpace: 'initial'
@@ -153,7 +153,7 @@ class SpotDetail extends Component {
           </CardMedia>
           <BottomNavigation showLabels>
             <BottomNavigationButton
-              label='Post'
+              label='Add'
               icon={<AddLocationIcon />}
               onClick={() => this.props.handleAddReviewButtonClick(spot)}
               disabled={!this.ableToPost(this.props.currentMap)}
