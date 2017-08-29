@@ -5,6 +5,7 @@ import BlockUiContainer from '../containers/BlockUiContainer';
 import IssueDialogContainer from '../containers/IssueDialogContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
+import FeedContainer from '../containers/FeedContainer';
 import DashboardContainer from '../containers/DashboardContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
@@ -92,7 +93,7 @@ class App extends Component {
     return (
       <div>
         <Switch>
-          <Route exact path='/' component={DashboardContainer} />
+          <Route exact path='/' component={FeedContainer} />
           <Route exact path='/maps' component={DashboardContainer} />
           <Route exact path='/maps/:mapId' component={MapDetailContainer} />
           <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />

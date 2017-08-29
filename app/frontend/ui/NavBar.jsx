@@ -8,6 +8,7 @@ import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import HomeIcon from 'material-ui-icons/Home';
+import MapIcon from 'material-ui-icons/Map';
 import SettingsIcon from 'material-ui-icons/Settings';
 import Hidden from 'material-ui/Hidden';
 import Avatar from 'material-ui/Avatar';
@@ -170,6 +171,12 @@ class NavBar extends Component {
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary='Home' />
+            </ListItem>
+            <ListItem button onClick={this.props.requestMaps}>
+              <ListItemIcon>
+                <MapIcon />
+              </ListItemIcon>
+              <ListItemText primary='Maps' />
             </ListItem>
             <ListItem button onClick={this.props.requestSettings}>
               <ListItemIcon>

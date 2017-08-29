@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   return {
     dialogOpen: state.mapDetail.editReviewDialogOpen,
     selectedPlace: state.mapDetail.selectedPlace,
-    currentReview: state.mapReviews.currentReview
+    currentReview: state.reviews.currentReview
   }
 }
 

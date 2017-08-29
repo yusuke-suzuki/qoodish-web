@@ -18,7 +18,7 @@ const initialState = {
   loadingMaps: false,
   loadingPopularMaps: false,
   createMapDialogOpen: false
-}
+};
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {

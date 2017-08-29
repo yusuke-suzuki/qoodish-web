@@ -107,6 +107,11 @@ const routes = (app) => {
     ctx.body = await reviews.create(ctx.request.headers.authorization, ctx.params.mapId, ctx.request.body);
   });
 
+  router.get('/api/reviews', async (ctx, next) => {
+    const reviews = new Reviews;
+    ctx.body = await reviews.index(ctx.request.headers.authorization, null, ctx.query);
+  });
+
   router.put('/api/reviews/:reviewId', async (ctx, next) => {
     const reviews = new Reviews;
     ctx.body = await reviews.update(ctx.request.headers.authorization, ctx.params.reviewId, ctx.request.body);

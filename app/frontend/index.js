@@ -14,7 +14,7 @@ import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
 import dashboardReducer from './reducers/dashboardReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
-import mapReviewsReducer from './reducers/mapReviewsReducer';
+import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
 
@@ -53,7 +53,7 @@ const reducer = combineReducers({
   shared: sharedReducer,
   dashboard: dashboardReducer,
   mapDetail: mapDetailReducer,
-  mapReviews: mapReviewsReducer,
+  reviews: reviewsReducer,
   gMap: gMapReducer,
   settings: settingsReducer
 });
