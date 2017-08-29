@@ -2,22 +2,22 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class Reviews extends Application {
-  async index(token, mapId = null, params) {
+  async index(token, locale, mapId = null, params) {
     const client = new QoodishClient;
     let reviews;
     if (mapId && params.place_id) {
-      reviews = await client.fetchSpotReviews(token, mapId, params.place_id);
+      reviews = await client.fetchSpotReviews(token, locale, mapId, params.place_id);
     } else if (params.next_timestamp) {
-      reviews = await client.fetchReviews(token, params.next_timestamp);
+      reviews = await client.fetchReviews(token, locale, params.next_timestamp);
     } else {
-      reviews = await client.fetchReviews(token);
+      reviews = await client.fetchReviews(token, locale);
     }
     return reviews;
   }
 
-  async show(token, mapId, reviewId) {
+  async show(token, locale, mapId, reviewId) {
     const client = new QoodishClient;
-    let review = await client.fetchReview(token, mapId, reviewId);
+    let review = await client.fetchReview(token, locale, mapId, reviewId);
     return review;
   }
 
