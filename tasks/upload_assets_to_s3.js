@@ -25,9 +25,10 @@ var fileStream = fs.createReadStream(assetPath);
 fileStream.on('error', function(err) {
   console.log('File Error', err);
 });
+var bundleName = path.basename(assetPath);
 var params = {
   Bucket: process.env.S3_BUCKET_ASSETS,
-  Key: path.basename(assetPath),
+  Key: bundleName,
   Body: fileStream,
   ContentType: 'text/javascript',
   ACL: 'public-read'
@@ -35,10 +36,10 @@ var params = {
 s3.upload (params, function (err, data) {
   if (err) {
     console.log('Error', err);
-    slackParams.text = `Build failed!`;
+    slackParams.text = 'Build failed!';
   } if (data) {
     console.log('Upload Success', data.Location);
-    slackParams.text = `Successfully built!`;
+    slackParams.text = 'Successfully built! Bundle: ' + bundleName;
   }
 
   slack.webhook(slackParams, function(err, response) {
