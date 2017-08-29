@@ -271,34 +271,44 @@ class MapSummary extends Component {
           >
             <MoreVertIcon style={styles.mapMenuIcon} />
           </IconButton>
-          <Menu
-            id='vert-menu'
-            anchorEl={this.state.anchorElVert}
-            open={this.state.vertMenuOpen}
-            onRequestClose={this.handleRequestVertMenuClose}
-          >
-            {() => {
-              if (this.props.currentMap.editable) {
-                this.renderEditButton();
-              }
-            }}
-            {() => {
-              if (this.props.currentMap.editable) {
-                this.renderDeleteButton();
-              }
-            }}
-            <MenuItem
-              key='issue'
-              onClick={() => {
-                this.handleRequestVertMenuClose();
-                this.props.handleIssueButtonClick(this.props.currentMap);
-              }}
-            >
-              Issue
-            </MenuItem>
-          </Menu>
+          {this.props.currentMap.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}
         </div>
       </Toolbar>
+    );
+  }
+
+  renderMenuForOwner() {
+    return(
+      <Menu
+        id='vert-menu'
+        anchorEl={this.state.anchorElVert}
+        open={this.state.vertMenuOpen}
+        onRequestClose={this.handleRequestVertMenuClose}
+      >
+        {this.renderEditButton()}
+        {this.renderDeleteButton()}
+      </Menu>
+    );
+  }
+
+  renderMenuForMember() {
+    return (
+      <Menu
+        id='vert-menu'
+        anchorEl={this.state.anchorElVert}
+        open={this.state.vertMenuOpen}
+        onRequestClose={this.handleRequestVertMenuClose}
+      >
+        <MenuItem
+          key='issue'
+          onClick={() => {
+            this.handleRequestVertMenuClose();
+            this.props.handleIssueButtonClick(this.props.currentMap);
+          }}
+        >
+          Issue
+        </MenuItem>
+      </Menu>
     );
   }
 
