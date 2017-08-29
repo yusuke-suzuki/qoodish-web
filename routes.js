@@ -109,7 +109,7 @@ const routes = (app) => {
 
   router.get('/api/reviews', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, null, ctx.query);
+    ctx.body = await reviews.index(ctx.request.headers.authorization, detectLanguage(ctx.request), null, ctx.query);
   });
 
   router.put('/api/reviews/:reviewId', async (ctx, next) => {
@@ -124,12 +124,12 @@ const routes = (app) => {
 
   router.get('/api/maps/:mapId/reviews', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.params.mapId, ctx.query);
+    ctx.body = await reviews.index(ctx.request.headers.authorization, detectLanguage(ctx.request), ctx.params.mapId, ctx.query);
   });
 
   router.get('/api/maps/:mapId/reviews/:reviewId', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.reviewId);
+    ctx.body = await reviews.show(ctx.request.headers.authorization, detectLanguage(ctx.request), ctx.params.mapId, ctx.params.reviewId);
   });
 
   router.post('/api/maps/:mapId/follow', async (ctx, next) => {

@@ -278,7 +278,7 @@ class QoodishClient {
     }
   }
 
-  async fetchReviews(token, timestamp = null) {
+  async fetchReviews(token, locale, timestamp = null) {
     let url = `${process.env.API_ENDPOINT}/reviews`;
     if (timestamp) {
       url += `?next_timestamp=${timestamp}`;
@@ -287,7 +287,8 @@ class QoodishClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
       }
     };
     const response = await fetch(url, options);
@@ -301,13 +302,14 @@ class QoodishClient {
     }
   }
 
-  async fetchSpotReviews(token, mapId, placeId) {
+  async fetchSpotReviews(token, locale, mapId, placeId) {
     const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews?place_id=${placeId}`;
     let options = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
       }
     };
     const response = await fetch(url, options);
@@ -321,13 +323,14 @@ class QoodishClient {
     }
   }
 
-  async fetchReview(token, mapId, reviewId) {
+  async fetchReview(token, locale, mapId, reviewId) {
     const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews/${reviewId}`;
     let options = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${token}`
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
       }
     };
     const response = await fetch(url, options);
