@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent
-} from 'material-ui/Dialog';
-import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
@@ -15,9 +11,11 @@ import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 const styles = {
-  dialogContent: {
-    padding: 0,
-    minWidth: 600
+  card: {
+    marginBottom: 20
+  },
+  mapName: {
+    cursor: 'pointer'
   },
   profileImage: {
     width: 40
@@ -42,7 +40,7 @@ const styles = {
   }
 };
 
-class ReviewDialog extends Component {
+class ReviewCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -85,23 +83,55 @@ class ReviewDialog extends Component {
 
   render() {
     return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onRequestClose={this.props.handleRequestDialogClose}
-      >
-        <DialogContent style={styles.dialogContent}>
-          {this.props.currentReview ? this.renderReviewCard(this.props.currentReview) : null}
-        </DialogContent>
-        <DialogActions style={styles.dialogActions}>
-          {this.props.currentReview ? this.renderShareButton() : null}
-          {this.props.currentReview ? this.renderShareMenu() : null}
-          {this.props.currentReview ? this.renderMoreVertButton() : null}
-          {this.props.currentReview ? this.renderMoreVertMenu() : null}
-          <Button onClick={this.props.handleRequestDialogClose} style={styles.closeButton}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <div>
+        {this.renderReviewCard(this.props.currentReview)}
+      </div>
+    );
+  }
+
+  renderReviewCard(review) {
+    return (
+      <Card style={styles.card}>
+        <CardHeader
+          avatar={
+            <Avatar>
+              <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
+            </Avatar>
+          }
+          title={review.author.name}
+          subheader={this.fromNow(review)}
+        />
+        <CardContent style={styles.cardContent}>
+          <Typography style={styles.mapName} type='subheading' color='secondary' gutterBottom onClick={this.props.handleMapClick}>
+            {review.map_name}
+          </Typography>
+          <Typography type='headline' component='h2' gutterBottom>
+            {review.spot.name}
+          </Typography>
+          <Typography component='p'>
+            {review.comment}
+          </Typography>
+        </CardContent>
+        {review.image.custom ? this.renderCardMedia(review) : null}
+        <CardActions disableActionSpacing>
+          {this.renderShareButton()}
+          {this.renderShareMenu()}
+          {this.renderMoreVertButton()}
+          {this.props.currentReview.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
+        </CardActions>
+      </Card>
+    );
+  }
+
+  fromNow(review) {
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
+  }
+
+  renderCardMedia(review) {
+    return (
+      <CardMedia style={styles.cardMedia}>
+        <img src={review.image.url} style={styles.media} />
+      </CardMedia>
     );
   }
 
@@ -174,25 +204,28 @@ class ReviewDialog extends Component {
 
   renderMoreVertMenu() {
     return (
-      <div>{this.props.currentReview.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}</div>
-    );
-  }
-
-  renderMenuForOwner() {
-    return (
       <Menu
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onRequestClose={this.handleRequestVertMenuClose}
       >
-        {this.renderEditButton()}
-        {this.renderDeleteButton()}
+        {this.props.currentReview.editable ? this.renderEditButton() : null}
+        {this.props.currentReview.editable ? this.renderDeleteButton() : null}
+        <MenuItem
+          key='issue'
+          onClick={() => {
+            this.handleRequestVertMenuClose();
+            this.props.handleIssueButtonClick(this.props.currentReview);
+          }}
+        >
+          Issue
+        </MenuItem>
       </Menu>
     );
   }
 
-  renderMenuForMember() {
+  renderMoreVertMenu() {
     return (
       <Menu
         id='vert-menu'
@@ -209,6 +242,20 @@ class ReviewDialog extends Component {
         >
           Issue
         </MenuItem>
+      </Menu>
+    );
+  }
+
+  renderMoreVertMenuForEdit() {
+    return (
+      <Menu
+        id='vert-menu'
+        anchorEl={this.state.anchorElVert}
+        open={this.state.vertMenuOpen}
+        onRequestClose={this.handleRequestVertMenuClose}
+      >
+        {this.renderEditButton()}
+        {this.renderDeleteButton()}
       </Menu>
     );
   }
@@ -240,39 +287,6 @@ class ReviewDialog extends Component {
       </MenuItem>
     );
   }
-
-  renderReviewCard(review) {
-    return (
-      <Card>
-        <CardHeader
-          avatar={
-            <Avatar>
-              <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
-            </Avatar>
-          }
-          title={review.author.name}
-          subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
-        />
-        <CardContent style={styles.cardContent}>
-          <Typography type='headline' component='h2' gutterBottom>
-            {review.spot.name}
-          </Typography>
-          <Typography component='p'>
-            {review.comment}
-          </Typography>
-        </CardContent>
-        {review.image.custom ? this.renderCardMedia(review) : null}
-      </Card>
-    );
-  }
-
-  renderCardMedia(review) {
-    return (
-      <CardMedia style={styles.cardMedia}>
-        <img src={review.image.url} style={styles.media} />
-      </CardMedia>
-    );
-  }
 }
 
-export default ReviewDialog;
+export default ReviewCard;

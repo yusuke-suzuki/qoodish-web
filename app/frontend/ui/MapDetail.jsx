@@ -150,7 +150,7 @@ export default class MapDetail extends Component {
         {this.ableToPost(this.props.currentMap) ? this.renderCreateReviewButton() : null}
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
-        <DeleteReviewDialogContainer />
+        <DeleteReviewDialogContainer mapId={this.props.match.params.mapId} />
         <EditMapDialogContainer />
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />

@@ -13,12 +13,12 @@ import { deleteFromStorage } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    currentReview: state.mapReviews.currentReview,
+    currentReview: state.reviews.currentReview,
     dialogOpen: state.mapDetail.deleteReviewDialogOpen
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeDeleteReviewDialog());
@@ -33,16 +33,18 @@ const mapDispatchToProps = (dispatch) => {
         if (review.image.custom && !review.image.url.includes('amazonaws')) {
           deleteFromStorage(review.image.file_name);
         }
-        dispatch(deleteReview(review.id));
         dispatch(closeDeleteReviewDialog());
-        dispatch(closeReviewDialog());
-        dispatch(openToast('Delete report successfully'));
-        let spotResponse = await client.fetchSpots(review.map_id)
-        if (spotResponse.ok) {
-          let spots = await spotResponse.json();
-          dispatch(fetchSpots(spots));
+        if (ownProps.mapId) {
+          dispatch(closeReviewDialog());
+          let spotResponse = await client.fetchSpots(review.map_id)
+          if (spotResponse.ok) {
+            let spots = await spotResponse.json();
+            dispatch(fetchSpots(spots));
+          }
+          dispatch(push(`/maps/${review.map_id}`))
         }
-        dispatch(push(`/maps/${review.map_id}`))
+        dispatch(deleteReview(review.id));
+        dispatch(openToast('Delete report successfully'));
       } else {
         dispatch(openToast(json.detail));
       }

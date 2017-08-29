@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import ReviewDialog from '../ui/ReviewDialog';
-import closeReviewDialog from '../actions/closeReviewDialog';
+import ReviewCard from '../ui/ReviewCard';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
 import openDeleteReviewDialog from '../actions/openDeleteReviewDialog';
 import openToast from '../actions/openToast';
@@ -9,16 +8,13 @@ import openIssueDialog from '../actions/openIssueDialog';
 
 const mapStateToProps = (state) => {
   return {
-    dialogOpen: state.reviews.reviewDialogOpen,
-    currentReview: state.reviews.currentReview
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleRequestDialogClose: () => {
-      dispatch(closeReviewDialog());
-      dispatch(push(`/maps/${ownProps.mapId}`))
+    handleMapClick: () => {
+      dispatch(push(`/maps/${ownProps.currentReview.map_id}`));
     },
 
     handleTweetButtonClick: (review) => {
@@ -53,4 +49,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ReviewDialog);
+)(ReviewCard);
