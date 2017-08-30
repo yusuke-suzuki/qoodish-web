@@ -66,7 +66,6 @@ const styles = {
 
 export default class Dashboard extends Component {
   componentWillMount() {
-    this.props.updatePageTitle();
     this.props.refreshMaps();
     this.props.refreshPopularMaps();
   }
