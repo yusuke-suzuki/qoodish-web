@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import Feed from '../ui/Feed';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
-import updatePageTitle from '../actions/updatePageTitle';
 import signOut from '../actions/signOut';
 import { push } from 'react-router-redux';
 import fetchReviews from '../actions/fetchReviews';
@@ -25,10 +24,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle('Feed'));
-    },
-
     refreshReviews: async () => {
       dispatch(loadReviewsStart());
       const client = new ApiClient;

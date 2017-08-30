@@ -17,7 +17,7 @@ import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContain
 const styles = {
   rootLarge: {
     margin: '94px auto 200px',
-    width: '50%'
+    width: '40%'
   },
   rootSmall: {
     margin: '64px auto 200px',
@@ -33,9 +33,6 @@ const styles = {
   buttonContainer: {
     textAlign: 'center',
     marginTop: 20
-  },
-  loadMoreButton: {
-    width: '100%'
   },
   progress: {
     textAlign: 'center',
@@ -63,7 +60,6 @@ export default class Feed extends Component {
   }
 
   componentWillMount() {
-    this.props.updatePageTitle();
     this.props.refreshReviews();
   }
 
@@ -85,7 +81,7 @@ export default class Feed extends Component {
     }
     return (
       <div style={styles.buttonContainer}>
-        <Button raised onClick={this.handleClickLoadMoreButton} style={styles.loadMoreButton}>
+        <Button raised color='primary' onClick={this.handleClickLoadMoreButton}>
           Load More
         </Button>
       </div>
@@ -130,7 +126,7 @@ export default class Feed extends Component {
 
   renderReviewCards(reviews) {
     return reviews.map((review) => (
-      <ReviewCardContainer currentReview={review} />
+      <ReviewCardContainer currentReview={review} key={review.id} />
     ));
   }
 }
