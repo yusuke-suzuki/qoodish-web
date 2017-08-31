@@ -52,7 +52,7 @@ const reducer = (state = initialState, action) => {
       });
     case FETCH_MORE_REVIEWS:
       return Object.assign({}, state, {
-        reviews: (action.payload.reviews.length > 0) ? [...state.currentReviews, ...action.payload.reviews] : state.currentReviews,
+        currentReviews: (action.payload.reviews.length > 0) ? [...state.currentReviews, ...action.payload.reviews] : state.currentReviews,
         noMoreReviews: !(action.payload.reviews.length > 0),
         nextTimestamp: (action.payload.reviews.length > 0) ? action.payload.reviews[action.payload.reviews.length - 1].created_at : ''
       });
