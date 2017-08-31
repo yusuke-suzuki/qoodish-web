@@ -4,6 +4,7 @@ import path from 'path';
 
 import Auth from './app/controllers/Auth';
 import Users from './app/controllers/Users';
+import Devices from './app/controllers/Devices';
 import Maps from './app/controllers/Maps';
 import Collaborators from './app/controllers/Collaborators';
 import Spots from './app/controllers/Spots';
@@ -53,6 +54,12 @@ const routes = (app) => {
   router.post('/api/auth', async (ctx, next) => {
     const auth = new Auth;
     ctx.body = await auth.create(ctx.request.body);
+  });
+
+  router.post('/api/devices', async (ctx, next) => {
+    const devices = new Devices;
+    ctx.body = await devices.create(ctx.request.headers.authorization, ctx.request.body);
+    ctx.status = 204;
   });
 
   router.del('/api/users/:userId', async (ctx, next) => {

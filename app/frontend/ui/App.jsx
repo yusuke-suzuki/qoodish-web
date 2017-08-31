@@ -65,6 +65,7 @@ class App extends Component {
       this.setState({
         waitForInitialize: false
       });
+      this.props.initMessaging();
     }
   }
 
