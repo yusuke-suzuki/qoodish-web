@@ -12,7 +12,6 @@ import PlaceIcon from 'material-ui-icons/Place';
 import PhotoCameraIcon from 'material-ui-icons/PhotoCamera';
 import CancelIcon from 'material-ui-icons/Cancel';
 import Button from 'material-ui/Button';
-import { canvasToBlob } from '../containers/Utils';
 
 const styles = {
   imagePreviewContainer: {
@@ -58,7 +57,7 @@ class EditReviewDialog extends Component {
     let currentReview = nextProps.currentReview;
     if (currentReview) {
       let imagePreviewUrl = '';
-      if (currentReview.image.custom) {
+      if (currentReview.image) {
         imagePreviewUrl = currentReview.image.url;
       }
       this.setState({
@@ -104,23 +103,20 @@ class EditReviewDialog extends Component {
     });
   }
 
-  async handleSaveButtonClick() {
+  handleSaveButtonClick() {
     let params = {
       comment: this.state.comment,
       place_id: this.state.placeId
     };
-
-    let image = null;
-    if (this.state.imagePreviewUrl && this.state.image != null) {
-      let canvas = document.getElementById('canvas');
-      image = await canvasToBlob(canvas);
+    let canvas = document.getElementById('canvas');
+    if (this.props.currentReview.image && this.state.imagePreviewUrl === this.props.currentReview.image.url) {
+      canvas = null;
     }
-
     if (this.props.currentReview) {
       params.review_id = this.state.id;
-      this.props.handleClickEditButton(this.props.currentReview, params, this.state.imagePreviewUrl, image);
+      this.props.handleClickEditButton(this.props.currentReview, params, canvas);
     } else {
-      this.props.handleClickCreateButton(this.props.mapId, params, image);
+      this.props.handleClickCreateButton(this.props.mapId, params, canvas);
     }
   }
 
@@ -129,6 +125,9 @@ class EditReviewDialog extends Component {
   }
 
   handleImageChange(e) {
+    // 一回リセットしないと canvas の CORS エラーになる
+    this.handleClearImageClick();
+
     let reader = new FileReader();
     let file = e.target.files[0];
     if (!file.type.match(/image\/*/)) {

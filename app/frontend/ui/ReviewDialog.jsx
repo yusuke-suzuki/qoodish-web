@@ -264,7 +264,7 @@ class ReviewDialog extends Component {
             {review.comment}
           </Typography>
         </CardContent>
-        {review.image.custom ? this.renderCardMedia(review) : null}
+        {review.image ? this.renderCardMedia(review) : null}
       </Card>
     );
   }

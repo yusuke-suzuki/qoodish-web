@@ -58,9 +58,8 @@ const reducer = (state = initialState, action) => {
       });
     case EDIT_REVIEW:
       if (state.currentReviews.length == 0) {
-        Object.assign(state.currentReview, action.payload.review);
         return Object.assign({}, state, {
-          currentReview: state.currentReview
+          currentReview: action.payload.review
         });
       } else {
         let index = state.currentReviews.findIndex((review) => { return review.id == action.payload.review.id; });
