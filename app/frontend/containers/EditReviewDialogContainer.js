@@ -8,7 +8,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
-import { uploadToStorage, deleteFromStorage } from './Utils';
+import { uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -20,11 +20,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleClickCreateButton: async (mapId, params, image = null) => {
+    handleClickCreateButton: async (mapId, params, canvas) => {
       dispatch(requestStart());
       let fileName;
-      if (image) {
-        let response = await uploadToStorage(image);
+      if (canvas) {
+        let blob = await canvasToBlob(canvas);
+        let response = await uploadToStorage(blob);
         params.image_url = response.imageUrl;
         fileName = response.fileName;
       }
@@ -48,15 +49,16 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    handleClickEditButton: async (oldReview, params, imagePreviewUrl = null, image = null) => {
+    handleClickEditButton: async (oldReview, params, canvas) => {
       dispatch(requestStart());
       let fileName;
-      if (image) {
-        let response =  await uploadToStorage(image);
+      if (canvas) {
+        let blob = await canvasToBlob(canvas);
+        let response = await uploadToStorage(blob);
         params.image_url = response.imageUrl;
         fileName = response.fileName;
       }
-      if (!imagePreviewUrl) {
+      if (!canvas) {
         params.image_url = '';
       }
       const client = new ApiClient;
@@ -64,7 +66,7 @@ const mapDispatchToProps = (dispatch) => {
       let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        if (oldReview.image.custom && !imagePreviewUrl && !oldReview.image.url.includes('amazonaws')) {
+        if (oldReview.image && canvas && !oldReview.image.url.includes('amazonaws')) {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
