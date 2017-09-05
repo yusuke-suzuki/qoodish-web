@@ -59,7 +59,8 @@ typings/
 
 webpack-assets.json
 
-public
+public/javascripts
+public/firebase-messaging-sw.js
 
 .vscode
 

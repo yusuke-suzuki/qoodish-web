@@ -12,6 +12,25 @@ class ApiClient {
     return response;
   }
 
+  async sendRegistrationToken(registrationToken) {
+    let params = {
+      registration_token: registrationToken
+    };
+    const userId = firebase.auth().currentUser.uid;
+    const url = `${process.env.ENDPOINT}/api/devices`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify(params)
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchCurrentMaps() {
     const url = `${process.env.ENDPOINT}/api/maps`;
     const token = await firebase.auth().currentUser.getIdToken();

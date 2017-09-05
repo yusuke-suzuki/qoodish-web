@@ -1,12 +1,14 @@
 import {
   SIGN_IN,
-  SIGN_OUT
+  SIGN_OUT,
+  FETCH_REGISTRATION_TOKEN
 } from '../actionTypes';
 
 const initialState = {
   authenticated: false,
-  currentUser: null
-}
+  currentUser: null,
+  registrationToken: null
+};
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -18,7 +20,12 @@ const reducer = (state = initialState, action) => {
     case SIGN_OUT:
       return Object.assign({}, state, {
         authenticated: false,
-        currentUser: null
+        currentUser: null,
+        registrationToken: null
+      });
+    case FETCH_REGISTRATION_TOKEN:
+      return Object.assign({}, state, {
+        registrationToken: action.payload.token
       });
     default:
       return state;
