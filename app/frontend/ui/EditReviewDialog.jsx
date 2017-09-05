@@ -109,7 +109,7 @@ class EditReviewDialog extends Component {
       place_id: this.state.placeId
     };
     let canvas = document.getElementById('canvas');
-    if (this.props.currentReview.image && this.state.imagePreviewUrl === this.props.currentReview.image.url) {
+    if (this.props.currentReview && this.props.currentReview.image && this.state.imagePreviewUrl === this.props.currentReview.image.url) {
       canvas = null;
     }
     if (this.props.currentReview) {
