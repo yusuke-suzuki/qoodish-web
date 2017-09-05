@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import uuidv1 from 'uuid/v1';
+import 'blueimp-canvas-to-blob';
 
 export const fetchCurrentPosition = (options = {}) => {
   return new Promise((resolve, reject) => {

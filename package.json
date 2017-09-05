@@ -19,6 +19,7 @@
     "upload": "node tasks/upload_assets_to_s3.js"
   },
   "dependencies": {
+    "blueimp-canvas-to-blob": "^3.14.0",
     "es6-error": "^4.0.2",
     "firebase": "^4.2.0",
     "firebaseui": "^2.3.0",
