@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
-        dispatch(openToast('Failed to join map'));
+        dispatch(openToast('Failed to leave map'));
       }
     }
   }

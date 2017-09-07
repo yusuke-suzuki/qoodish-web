@@ -42,7 +42,7 @@ export const detectLanguage = (request) => {
   }
 }
 
-export const generateMetadata = async (request, params) => {
+export const generateMetadata = async (request, params, locale) => {
   let title = 'Qoodish (β)';
   let description = 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
   let pageUrl = process.env.ENDPOINT;
@@ -53,7 +53,7 @@ export const generateMetadata = async (request, params) => {
     let response;
     let json;
     if (params.reviewId) {
-      response = await client.fetchReviewMetadata(params.reviewId);
+      response = await client.fetchReviewMetadata(params.reviewId, locale);
       if (response.ok) {
         json = await response.json();
         title = `${json.title} | Qoodish (β)`
@@ -62,7 +62,7 @@ export const generateMetadata = async (request, params) => {
         pageUrl = request.originalUrl;
       }
     } else if (params.mapId) {
-      response = await client.fetchMapMetadata(params.mapId);
+      response = await client.fetchMapMetadata(params.mapId, locale);
       if (response.ok) {
         json = await response.json();
         title = `${json.title} | Qoodish (β)`
