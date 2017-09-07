@@ -32,7 +32,7 @@ const routes = (app) => {
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
-    let metadata = await generateMetadata(ctx.request, ctx.params);
+    let metadata = await generateMetadata(ctx.request, ctx.params, detectLanguage(ctx.request));
     let assetPath;
     if (process.env.NODE_ENV === 'production') {
       assetPath = process.env.ASSET_PATH;
