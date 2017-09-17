@@ -15,7 +15,6 @@ import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
 import selectMap from  '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
-import closeCreateMapDialog from '../actions/closeCreateMapDialog';
 
 const mapStateToProps = (state) => {
   return {

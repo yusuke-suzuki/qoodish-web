@@ -29,6 +29,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(push('/'));
     },
 
+    requestTimeline: () => {
+      dispatch(push('/timeline'));
+    },
+
     requestMaps: () => {
       dispatch(push('/maps'));
     },
