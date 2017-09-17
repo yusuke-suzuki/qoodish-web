@@ -13,6 +13,10 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
+import ListSubheader from 'material-ui/List/ListSubheader';
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import MapIcon from 'material-ui-icons/Map';
+import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 
 const styles = {
   rootLarge: {
@@ -39,18 +43,33 @@ const styles = {
     padding: 10,
     marginTop: 20
   },
-  noReviewsContainer: {
+  noContentsContainer: {
     textAlign: 'center',
     color: '#9e9e9e',
     marginTop: 20
   },
-  noReviewsIcon: {
+  noContentsIcon: {
     width: 150,
     height: 150
   },
   profileImage: {
     width: 40
   },
+  mapsContainer: {
+    position: 'absolute',
+    top: 94,
+    left: 0,
+    marginLeft: 20,
+    minWidth: 'calc(30% - 40px)'
+  },
+  mapImage: {
+    width: 40,
+    height: 40
+  },
+  raisedButton: {
+    width: '100%',
+    marginBottom: 10
+  }
 };
 
 export default class Feed extends Component {
@@ -62,6 +81,7 @@ export default class Feed extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.refreshReviews();
+    this.props.refreshMaps();
   }
 
   handleClickLoadMoreButton() {
@@ -82,7 +102,7 @@ export default class Feed extends Component {
     }
     return (
       <div style={styles.buttonContainer}>
-        <Button raised color='primary' onClick={this.handleClickLoadMoreButton}>
+        <Button raised onClick={this.handleClickLoadMoreButton} style={styles.raisedButton}>
           Load More
         </Button>
       </div>
@@ -95,19 +115,75 @@ export default class Feed extends Component {
         <div style={styles.container}>
           {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
         </div>
+        {this.props.large ? this.renderFollowingMapContainer() : null}
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
+        <CreateMapDialogContainer />
       </div>
     );
   }
 
+  renderFollowingMapContainer() {
+    return (
+      <div style={styles.mapsContainer}>
+        <List subheader={<ListSubheader>Following Maps</ListSubheader>}>
+          {this.props.loadingMaps ? this.renderProgress() : this.renderFollowingMaps(this.props.currentMaps)}
+        </List>
+        <Button raised onClick={this.props.handleCreateMapButtonClick} style={styles.raisedButton}>
+          Create New Map
+        </Button>
+        <Button raised onClick={this.props.handleDashboardLinkClick} style={styles.raisedButton}>
+          Search Maps
+        </Button>
+      </div>
+    )
+  }
+
+  renderNoMaps() {
+    return (
+      <div style={styles.noContentsContainer}>
+        <MapIcon style={styles.noContentsIcon} />
+        <Typography type='subheading' color='inherit'>
+          Currently you are not following any maps.
+        </Typography>
+        <br/>
+      </div>
+    );
+  }
+
+  renderFollowingMaps(maps) {
+    if (maps.length > 0) {
+      return maps.map((map) => (
+        <ListItem
+          button
+          key={map.id}
+          onClick={() => this.props.handleClickMap(map)}
+        >
+          <Avatar>
+            <img src={map.image_url} style={styles.mapImage} />
+          </Avatar>
+          <ListItemText primary={map.name} />
+        </ListItem>
+      ));
+    } else {
+      return this.renderNoMaps();
+    }
+  }
+
   renderNoReviews() {
     return (
-      <div style={styles.noReviewsContainer}>
-        <RateReviewIcon style={styles.noReviewsIcon} />
+      <div style={styles.noContentsContainer}>
+        <RateReviewIcon style={styles.noContentsIcon} />
         <Typography type='subheading' color='inherit'>
-          No posts.
+          When you create or follow maps, you will see posts here.
         </Typography>
+        <br/>
+        <Button raised onClick={this.props.handleCreateMapButtonClick} style={styles.raisedButton}>
+          Create New Map
+        </Button>
+        <Button raised onClick={this.props.handleDashboardLinkClick} style={styles.raisedButton}>
+          Search Maps
+        </Button>
       </div>
     );
   }

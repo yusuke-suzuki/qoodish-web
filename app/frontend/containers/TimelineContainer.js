@@ -12,6 +12,13 @@ import loadMoreReviewsStart from '../actions/loadMoreReviewsStart';
 import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
 import updatePageTitle from '../actions/updatePageTitle';
 
+import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
+import fetchMaps from '../actions/fetchMaps';
+import loadMapsStart from '../actions/loadMapsStart';
+import loadMapsEnd from '../actions/loadMapsEnd';
+import selectMap from  '../actions/selectMap';
+import openCreateMapDialog from '../actions/openCreateMapDialog';
+
 const mapStateToProps = (state) => {
   return {
     currentReviews: state.reviews.currentReviews,
@@ -19,7 +26,9 @@ const mapStateToProps = (state) => {
     loadingMoreReviews: state.reviews.loadingMoreReviews,
     noMoreReviews: state.reviews.noMoreReviews,
     nextTimestamp: state.reviews.nextTimestamp,
-    large: state.shared.large
+    large: state.shared.large,
+    currentMaps: state.dashboard.currentMaps,
+    loadingMaps: state.dashboard.loadingMaps
   }
 }
 
@@ -59,6 +68,36 @@ const mapDispatchToProps = (dispatch) => {
       } else {
         dispatch(openToast('Failed to fetch reports.'));
       }
+    },
+
+    refreshMaps: async () => {
+      dispatch(loadMapsStart());
+      const client = new ApiClient;
+      let response = await client.fetchCurrentMaps();
+      let maps = await response.json();
+      dispatch(loadMapsEnd());
+      if (response.ok) {
+        dispatch(fetchMaps(maps));
+      } else if (response.status == 401) {
+        dispatch(signOut());
+        dispatch(openToast('Authenticate failed'));
+      } else {
+        dispatch(openToast('Failed to fetch Maps.'));
+      }
+    },
+
+    handleClickMap: (map) => {
+      dispatch(selectMap(map));
+      dispatch(push(`/maps/${map.id}`));
+      dispatch(openToast(`Log in to ${map.name}!`));
+    },
+
+    handleDashboardLinkClick: () => {
+      dispatch(push('/'));
+    },
+
+    handleCreateMapButtonClick: () => {
+      dispatch(openCreateMapDialog());
     }
   }
 }
