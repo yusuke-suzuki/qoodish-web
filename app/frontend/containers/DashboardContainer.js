@@ -15,9 +15,11 @@ import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
 import selectMap from  '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
+import pickUpMap from '../actions/pickUpMap';
 
 const mapStateToProps = (state) => {
   return {
+    mapPickedUp: state.dashboard.mapPickedUp,
     currentMaps: state.dashboard.currentMaps,
     popularMaps: state.dashboard.popularMaps,
     loadingMaps: state.dashboard.loadingMaps,
@@ -32,6 +34,15 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleCreateMapButtonClick: () => {
       dispatch(openCreateMapDialog());
+    },
+
+    pickUpMap: async () => {
+      const client = new ApiClient;
+      let response = await client.fetchMap(process.env.PICKED_UP_MAP_ID);
+      let map = await response.json();
+      if (response.ok) {
+        dispatch(pickUpMap(map));
+      }
     },
 
     fetchRecentReviews: async () => {

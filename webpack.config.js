@@ -17,7 +17,8 @@ const plugins = [
     'FIREBASE_STORAGE_BUCKET',
     'FIREBASE_MESSAGING_SENDER_ID',
     'FIREBASE_IMAGE_BUCKET',
-    'FB_APP_ID'
+    'FB_APP_ID',
+    'PICKED_UP_MAP_ID'
   ])
 ];
 

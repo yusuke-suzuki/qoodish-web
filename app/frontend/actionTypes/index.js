@@ -10,6 +10,7 @@ export const UPDATE_PAGE_TITLE = 'UPDATE_PAGE_TITLE';
 export const OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG';
 export const CLOSE_ISSUE_DIALOG = 'CLOSE_ISSUE_DIALOG';
 
+export const PICK_UP_MAP = 'PICK_UP_MAP';
 export const FETCH_MAPS = 'FETCH_MAPS';
 export const CREATE_MAP = 'CREATE_MAP';
 export const EDIT_MAP = 'EDIT_MAP';

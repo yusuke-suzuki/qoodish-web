@@ -12,10 +12,12 @@ import {
   DELETE_MAP,
   FETCH_RECENT_REVIEWS,
   LOAD_RECENT_REVIEWS_START,
-  LOAD_RECENT_REVIEWS_END
+  LOAD_RECENT_REVIEWS_END,
+  PICK_UP_MAP
 } from '../actionTypes';
 
 const initialState = {
+  mapPickedUp: null,
   recentReviews: [],
   currentMaps: [],
   popularMaps: [],
@@ -94,6 +96,10 @@ const reducer = (state = initialState, action) => {
     case FETCH_RECENT_REVIEWS:
       return Object.assign({}, state, {
         recentReviews: action.payload.reviews
+      });
+    case PICK_UP_MAP:
+      return Object.assign({}, state, {
+        mapPickedUp: action.payload.map
       });
     default:
       return state;

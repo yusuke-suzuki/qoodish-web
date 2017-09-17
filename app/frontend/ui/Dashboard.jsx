@@ -4,6 +4,7 @@ import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
+import ExploreIcon from 'material-ui-icons/Explore';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
@@ -25,14 +26,21 @@ const styles = {
     marginTop: 40,
     marginBottom: 20
   },
-  reviewGridList: {
+  pickUpCard: {
     width: '100%'
   },
-  mapGridList: {
+  gridList: {
     width: '100%'
   },
   gridTile: {
     cursor: 'pointer'
+  },
+  pickUpTile: {
+    cursor: 'pointer',
+    height: 330
+  },
+  pickUpTileBar: {
+    height: '100%'
   },
   lockIcon: {
     marginRight: 10
@@ -89,6 +97,7 @@ const styles = {
 
 export default class Dashboard extends Component {
   componentWillMount() {
+    this.props.pickUpMap();
     this.props.fetchRecentReviews();
     this.props.refreshPopularMaps();
   }
@@ -106,14 +115,21 @@ export default class Dashboard extends Component {
       <div style={styles.root}>
         <div style={styles.container}>
           <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
-            <RateReviewIcon style={styles.mapTypeIcon} /> Recent reports
+            <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
+          </Typography>
+          <br/>
+          {this.props.mapPickedUp ? this.renderPickUp(this.props.mapPickedUp) : null}
+        </div>
+        <div style={styles.container}>
+          <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
+            <RateReviewIcon style={styles.mapTypeIcon} /> Recent Reports
           </Typography>
           <br/>
           {this.props.loadingRecentReviews ? this.renderProgress() : this.renderRecentReviewContainer(this.props.recentReviews)}
         </div>
         <div style={styles.container}>
           <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
-            <TrendingUpIcon style={styles.mapTypeIcon} /> Popular maps
+            <TrendingUpIcon style={styles.mapTypeIcon} /> Trending Maps
           </Typography>
           {this.props.loadingPopularMaps ? this.renderProgress() : this.renderMapContainer(this.props.popularMaps)}
         </div>
@@ -127,6 +143,39 @@ export default class Dashboard extends Component {
         </Button>
         <CreateMapDialogContainer />
       </div>
+    );
+  }
+
+  renderPickUp(map) {
+    return (
+      <GridList
+        cols={1}
+        style={styles.gridList}
+        spacing={20}
+      >
+        <GridListTile
+          key={map.id}
+          onClick={() => this.props.handleClickMap(map)}
+          style={styles.pickUpTile}
+        >
+          <img src={map.image_url} />
+          <GridListTileBar
+            title={
+              <Typography type='display4' color='inherit' gutterBottom>
+                {map.name}
+              </Typography>
+            }
+            subtitle={
+              <Typography type='display1' color='inherit'>
+                <span>
+                  by: {map.owner_name}
+                </span>
+              </Typography>
+            }
+            style={styles.pickUpTileBar}
+          />
+        </GridListTile>
+      </GridList>
     );
   }
 
@@ -157,7 +206,7 @@ export default class Dashboard extends Component {
       return (
         <GridList
           cols={this.props.large ? 4 : 1}
-          style={styles.reviewGridList}
+          style={styles.gridList}
           spacing={20}
         >
           {this.renderRecentReviews(reviews)}
@@ -206,7 +255,7 @@ export default class Dashboard extends Component {
       return (
         <GridList
           cols={this.props.large ? 4 : 1}
-          style={styles.mapGridList}
+          style={styles.gridList}
           spacing={20}
         >
           {this.renderMaps(maps)}
