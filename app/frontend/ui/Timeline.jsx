@@ -62,6 +62,11 @@ const styles = {
     marginLeft: 20,
     minWidth: 'calc(30% - 40px)'
   },
+  mapList: {
+    position: 'fixed',
+    height: 'calc(100% - 124px)',
+    minWidth: 'calc(30% - 40px)'
+  },
   mapImage: {
     width: 40,
     height: 40
@@ -126,15 +131,12 @@ export default class Feed extends Component {
   renderFollowingMapContainer() {
     return (
       <div style={styles.mapsContainer}>
-        <List subheader={<ListSubheader>Following Maps</ListSubheader>}>
+        <List
+          subheader={<ListSubheader>Following Maps</ListSubheader>}
+          style={styles.mapList}
+        >
           {this.props.loadingMaps ? this.renderProgress() : this.renderFollowingMaps(this.props.currentMaps)}
         </List>
-        <Button raised onClick={this.props.handleCreateMapButtonClick} style={styles.raisedButton}>
-          Create New Map
-        </Button>
-        <Button raised onClick={this.props.handleDashboardLinkClick} style={styles.raisedButton}>
-          Search Maps
-        </Button>
       </div>
     )
   }
