@@ -324,6 +324,27 @@ class QoodishClient {
     }
   }
 
+  async fetchRecentReviews(token, locale) {
+    const url = `${process.env.API_ENDPOINT}/reviews?recent=true`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchReviewsFailed;
+    }
+  }
+
   async fetchSpotReviews(token, locale, mapId, placeId) {
     const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews?place_id=${placeId}`;
     let options = {

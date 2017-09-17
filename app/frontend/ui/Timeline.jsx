@@ -59,13 +59,12 @@ const styles = {
     position: 'absolute',
     top: 94,
     left: 0,
-    marginLeft: 20,
-    minWidth: 'calc(30% - 40px)'
+    marginLeft: 20
   },
   mapList: {
     position: 'fixed',
     height: 'calc(100% - 124px)',
-    minWidth: 'calc(30% - 40px)'
+    width: 'calc(30% - 40px)'
   },
   mapImage: {
     width: 40,

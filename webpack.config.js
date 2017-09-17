@@ -10,13 +10,15 @@ const plugins = [
   new webpack.EnvironmentPlugin([
     'ENDPOINT',
     'npm_package_version',
+    'SUBSTITUTE_URL',
     'FIREBASE_API_KEY',
     'FIREBASE_AUTH_DOMAIN',
     'FIREBASE_DB_URL',
     'FIREBASE_STORAGE_BUCKET',
     'FIREBASE_MESSAGING_SENDER_ID',
     'FIREBASE_IMAGE_BUCKET',
-    'FB_APP_ID'
+    'FB_APP_ID',
+    'PICKED_UP_MAP_ID'
   ])
 ];
 

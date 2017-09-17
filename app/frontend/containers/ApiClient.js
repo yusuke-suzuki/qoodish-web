@@ -234,6 +234,20 @@ class ApiClient {
     return response;
   }
 
+  async fetchRecentReviews() {
+    const url = `${process.env.ENDPOINT}/api/reviews?recent=true`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchCollaborators(mapId) {
     const url = `${process.env.ENDPOINT}/api/maps/${mapId}/collaborators`;
     const token = await firebase.auth().currentUser.getIdToken();
