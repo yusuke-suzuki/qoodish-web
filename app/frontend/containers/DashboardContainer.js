@@ -7,10 +7,10 @@ import { push } from 'react-router-redux';
 import { GridList, GridListTile } from 'material-ui/GridList';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
-import fetchMaps from '../actions/fetchMaps';
+import fetchRecentReviews from '../actions/fetchRecentReviews';
 import fetchPopularMaps from '../actions/fetchPopularMaps';
-import loadMapsStart from '../actions/loadMapsStart';
-import loadMapsEnd from '../actions/loadMapsEnd';
+import loadRecentReviewsStart from '../actions/loadRecentReviewsStart';
+import loadRecentReviewsEnd from '../actions/loadRecentReviewsEnd';
 import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
 import selectMap from  '../actions/selectMap';
@@ -22,7 +22,9 @@ const mapStateToProps = (state) => {
     popularMaps: state.dashboard.popularMaps,
     loadingMaps: state.dashboard.loadingMaps,
     loadingPopularMaps: state.dashboard.loadingPopularMaps,
-    large: state.shared.large
+    large: state.shared.large,
+    recentReviews: state.dashboard.recentReviews,
+    loadingRecentReviews: state.dashboard.loadingRecentReviews
   }
 }
 
@@ -32,19 +34,19 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(openCreateMapDialog());
     },
 
-    refreshMaps: async () => {
-      dispatch(loadMapsStart());
+    fetchRecentReviews: async () => {
+      dispatch(loadRecentReviewsStart());
       const client = new ApiClient;
-      let response = await client.fetchCurrentMaps();
-      let maps = await response.json();
-      dispatch(loadMapsEnd());
+      let response = await client.fetchRecentReviews();
+      let reviews = await response.json();
+      dispatch(loadRecentReviewsEnd());
       if (response.ok) {
-        dispatch(fetchMaps(maps));
+        dispatch(fetchRecentReviews(reviews));
       } else if (response.status == 401) {
         dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else {
-        dispatch(openToast('Failed to fetch Maps.'));
+        dispatch(openToast('Failed to fetch recent reviews.'));
       }
     },
 
@@ -61,6 +63,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(selectMap(map));
       dispatch(push(`/maps/${map.id}`));
       dispatch(openToast(`Log in to ${map.name}!`));
+    },
+
+    handleClickReview: (review) => {
+      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     }
   }
 }

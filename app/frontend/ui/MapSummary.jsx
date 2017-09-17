@@ -33,6 +33,9 @@ const styles = {
     height: '100%',
     overflowY: 'scroll'
   },
+  mapName: {
+    wordWrap: 'break-word'
+  },
   media: {
     width: '100%'
   },
@@ -162,7 +165,7 @@ class MapSummary extends Component {
             <img src={map.image_url} style={styles.media} />
           </CardMedia>
           <CardContent>
-            <Typography type='headline' component='h2' gutterBottom>
+            <Typography type='headline' component='h2' gutterBottom style={styles.mapName}>
               {map.name}
             </Typography>
             <Typography component='p'>

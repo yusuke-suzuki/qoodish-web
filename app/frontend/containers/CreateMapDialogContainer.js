@@ -7,6 +7,7 @@ import closeCreateMapDialog from '../actions/closeCreateMapDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
+import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -29,9 +30,9 @@ const mapDispatchToProps = (dispatch) => {
         let newMap = await response.json();
         dispatch(createMap(newMap));
         dispatch(closeCreateMapDialog());
+        await sleep(1000);
+        dispatch(push(`/maps/${newMap.id}`));
         dispatch(openToast('Successfuly created the map!'));
-        // not working...
-        // dispatch(push(`/maps/${newMap.id}`));
       } else if (response.status == 409) {
         dispatch(openToast(e.message));
       } else {

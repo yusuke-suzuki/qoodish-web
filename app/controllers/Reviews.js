@@ -5,7 +5,9 @@ class Reviews extends Application {
   async index(token, locale, mapId = null, params) {
     const client = new QoodishClient;
     let reviews;
-    if (mapId && params.place_id) {
+    if (params.recent) {
+      reviews = await client.fetchRecentReviews(token, locale);
+    } else if (mapId && params.place_id) {
       reviews = await client.fetchSpotReviews(token, locale, mapId, params.place_id);
     } else if (params.next_timestamp) {
       reviews = await client.fetchReviews(token, locale, params.next_timestamp);

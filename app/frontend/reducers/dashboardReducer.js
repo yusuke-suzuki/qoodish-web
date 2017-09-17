@@ -9,15 +9,20 @@ import {
   OPEN_CREATE_MAP_DIALOG,
   CLOSE_CREATE_MAP_DIALOG,
   EDIT_MAP,
-  DELETE_MAP
+  DELETE_MAP,
+  FETCH_RECENT_REVIEWS,
+  LOAD_RECENT_REVIEWS_START,
+  LOAD_RECENT_REVIEWS_END
 } from '../actionTypes';
 
 const initialState = {
+  recentReviews: [],
   currentMaps: [],
   popularMaps: [],
   loadingMaps: false,
   loadingPopularMaps: false,
-  createMapDialogOpen: false
+  createMapDialogOpen: false,
+  loadingRecentReviews: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -77,6 +82,18 @@ const reducer = (state = initialState, action) => {
       let rejected = state.currentMaps.filter((map) => { return map.id != action.payload.id; });
       return Object.assign({}, state, {
         currentMaps: rejected
+      });
+    case LOAD_RECENT_REVIEWS_START:
+      return Object.assign({}, state, {
+        loadingRecentReviews: true
+      });
+    case LOAD_RECENT_REVIEWS_END:
+      return Object.assign({}, state, {
+        loadingRecentReviews: false
+      });
+    case FETCH_RECENT_REVIEWS:
+      return Object.assign({}, state, {
+        recentReviews: action.payload.reviews
       });
     default:
       return state;

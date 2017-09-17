@@ -4,11 +4,14 @@ import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
-import GroupIcon from 'material-ui-icons/Group';
+import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Typography from 'material-ui/Typography';
+import Card, { CardHeader, CardMedia, CardContent} from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
+import moment from 'moment';
 
 const styles = {
   root: {
@@ -22,7 +25,10 @@ const styles = {
     marginTop: 40,
     marginBottom: 20
   },
-  gridList: {
+  reviewGridList: {
+    width: '100%'
+  },
+  mapGridList: {
     width: '100%'
   },
   gridTile: {
@@ -44,12 +50,12 @@ const styles = {
     padding: 10,
     marginTop: 20
   },
-  noMapsContainer: {
+  noContentsContainer: {
     textAlign: 'center',
     color: '#9e9e9e',
     marginTop: 20
   },
-  noMapsIcon: {
+  noContentsIcon: {
     width: 150,
     height: 150
   },
@@ -61,12 +67,29 @@ const styles = {
   mapTypeIcon: {
     marginLeft: 10,
     marginRight: 10
+  },
+  reviewCardText: {
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden'
+  },
+  profileImage: {
+    width: 40
+  },
+  cardContent: {
+    paddingTop: 0
+  },
+  cardMedia: {
+    marginBottom: -5
+  },
+  reviewImage: {
+    width: '100%'
   }
 };
 
 export default class Dashboard extends Component {
   componentWillMount() {
-    this.props.refreshMaps();
+    this.props.fetchRecentReviews();
     this.props.refreshPopularMaps();
   }
 
@@ -83,10 +106,10 @@ export default class Dashboard extends Component {
       <div style={styles.root}>
         <div style={styles.container}>
           <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
-            <GroupIcon style={styles.mapTypeIcon} /> Maps you currently joined
+            <RateReviewIcon style={styles.mapTypeIcon} /> Recent reports
           </Typography>
           <br/>
-          {this.props.loadingMaps ? this.renderProgress() : this.renderMapContainer(this.props.currentMaps)}
+          {this.props.loadingRecentReviews ? this.renderProgress() : this.renderRecentReviewContainer(this.props.recentReviews)}
         </div>
         <div style={styles.container}>
           <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
@@ -109,8 +132,8 @@ export default class Dashboard extends Component {
 
   renderNoMaps() {
     return (
-      <div style={styles.noMapsContainer}>
-        <MapIcon style={styles.noMapsIcon} />
+      <div style={styles.noContentsContainer}>
+        <MapIcon style={styles.noContentsIcon} />
         <Typography type='subheading' color='inherit'>
           No maps.
         </Typography>
@@ -118,12 +141,72 @@ export default class Dashboard extends Component {
     );
   }
 
+  renderNoReviews() {
+    return (
+      <div style={styles.noContentsContainer}>
+        <RateReviewIcon style={styles.noContentsIcon} />
+        <Typography type='subheading' color='inherit'>
+          No reports.
+        </Typography>
+      </div>
+    );
+  }
+
+  renderRecentReviewContainer(reviews) {
+    if (reviews.length > 0) {
+      return (
+        <GridList
+          cols={this.props.large ? 4 : 1}
+          style={styles.reviewGridList}
+          spacing={20}
+        >
+          {this.renderRecentReviews(reviews)}
+        </GridList>
+      );
+    } else {
+      return this.renderNoReviews();
+    }
+  }
+
+  renderRecentReviews(reviews) {
+    return reviews.map((review) => (
+      <GridListTile
+        key={review.id}
+        onClick={() => this.props.handleClickReview(review)}
+        style={styles.gridTile}
+      >
+        <Card>
+          <CardHeader
+            avatar={
+              <Avatar>
+                <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
+              </Avatar>
+            }
+            title={review.author.name}
+            subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
+          />
+          <CardContent style={styles.cardContent}>
+            <Typography type='subheading' color='secondary' gutterBottom style={styles.reviewCardText}>
+              {review.map_name}
+            </Typography>
+            <Typography type='headline' component='h2' gutterBottom style={styles.reviewCardText}>
+              {review.spot.name}
+            </Typography>
+            <Typography component='p' style={styles.reviewCardText}>
+              {review.comment}
+            </Typography>
+          </CardContent>
+        </Card>
+      </GridListTile>
+    ));
+  }
+
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
         <GridList
           cols={this.props.large ? 4 : 1}
-          style={styles.gridList}
+          style={styles.mapGridList}
           spacing={20}
         >
           {this.renderMaps(maps)}
