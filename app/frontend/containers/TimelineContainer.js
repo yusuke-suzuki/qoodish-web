@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Feed from '../ui/Feed';
+import Timeline from '../ui/Timeline';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
@@ -10,6 +10,7 @@ import loadReviewsStart from '../actions/loadReviewsStart';
 import loadReviewsEnd from '../actions/loadReviewsEnd';
 import loadMoreReviewsStart from '../actions/loadMoreReviewsStart';
 import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
+import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = (state) => {
   return {
@@ -24,6 +25,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    updatePageTitle: () => {
+      dispatch(updatePageTitle('Timeline'));
+    },
+
     refreshReviews: async () => {
       dispatch(loadReviewsStart());
       const client = new ApiClient;
@@ -61,4 +66,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Feed);
+)(Timeline);

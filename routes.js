@@ -24,6 +24,7 @@ const routes = (app) => {
 
   const pageRoutes = [
     '/',
+    '/timeline',
     '/login',
     '/maps',
     '/maps/:mapId',

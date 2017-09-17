@@ -85,7 +85,7 @@ const styles = {
     height: 40
   },
   tileBar: {
-    marginBottom: 3,
+    marginBottom: 7,
     paddingTop: 16,
     paddingBottom: 16,
     height: 'initial'

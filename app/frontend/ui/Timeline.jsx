@@ -60,6 +60,7 @@ export default class Feed extends Component {
   }
 
   componentWillMount() {
+    this.props.updatePageTitle();
     this.props.refreshReviews();
   }
 
