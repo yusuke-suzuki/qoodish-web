@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
-import RateReviewIcon from 'material-ui-icons/RateReview';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
@@ -16,7 +15,11 @@ import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContain
 import ListSubheader from 'material-ui/List/ListSubheader';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import MapIcon from 'material-ui-icons/Map';
+import GroupIcon from 'material-ui-icons/Group';
+import RateReviewIcon from 'material-ui-icons/RateReview';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
+import Card, { CardHeader } from 'material-ui/Card';
+import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 
 const styles = {
   rootLarge: {
@@ -55,6 +58,25 @@ const styles = {
   profileImage: {
     width: 40
   },
+  userProfileContainer: {
+    position: 'fixed',
+    top: 94,
+    left: 0,
+    marginLeft: 20,
+    width: 'calc(30% - 40px)'
+  },
+  bigAvatar: {
+    width: 60,
+    height: 60,
+  },
+  bigProfileImage: {
+    width: 60
+  },
+  cardText: {
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden'
+  },
   mapsContainer: {
     position: 'absolute',
     top: 94,
@@ -64,7 +86,8 @@ const styles = {
   mapList: {
     position: 'fixed',
     height: 'calc(100% - 124px)',
-    width: 'calc(30% - 40px)'
+    width: 'calc(30% - 40px)',
+    right: 20
   },
   mapImage: {
     width: 40,
@@ -86,6 +109,7 @@ export default class Feed extends Component {
     this.props.updatePageTitle();
     this.props.refreshReviews();
     this.props.refreshMaps();
+    this.props.fetchMyProfile(this.props.currentUser.uid);
   }
 
   handleClickLoadMoreButton() {
@@ -119,10 +143,46 @@ export default class Feed extends Component {
         <div style={styles.container}>
           {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
         </div>
+        {this.props.large ? this.renderUserProfile(this.props.currentUser) : null}
         {this.props.large ? this.renderFollowingMapContainer() : null}
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
         <CreateMapDialogContainer />
+      </div>
+    );
+  }
+
+  renderUserProfile(user) {
+    return (
+      <div style={styles.userProfileContainer}>
+        <Card>
+          <CardHeader
+            avatar={
+              <Avatar style={styles.bigAvatar}>
+                <img src={user.image_url} alt={user.name} style={styles.bigProfileImage} />
+              </Avatar>
+            }
+            title={
+              <Typography type='display1' style={styles.cardText}>
+                {user.name}
+              </Typography>
+            }
+          />
+          <BottomNavigation showLabels>
+            <BottomNavigationButton
+              label={user.maps_count || 0}
+              icon={<MapIcon />}
+            />
+            <BottomNavigationButton
+              label={user.following_maps_count || 0}
+              icon={<GroupIcon />}
+            />
+            <BottomNavigationButton
+              label={user.reviews_count || 0}
+              icon={<RateReviewIcon />}
+            />
+          </BottomNavigation>
+        </Card>
       </div>
     );
   }

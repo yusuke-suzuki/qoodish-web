@@ -4,6 +4,7 @@ import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
 import { push } from 'react-router-redux';
+import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchReviews from '../actions/fetchReviews';
 import fetchMoreReviews from '../actions/fetchMoreReviews';
 import loadReviewsStart from '../actions/loadReviewsStart';
@@ -21,6 +22,7 @@ import openCreateMapDialog from '../actions/openCreateMapDialog';
 
 const mapStateToProps = (state) => {
   return {
+    currentUser: state.app.currentUser,
     currentReviews: state.reviews.currentReviews,
     loadingReviews: state.reviews.loadingReviews,
     loadingMoreReviews: state.reviews.loadingMoreReviews,
@@ -36,6 +38,17 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Timeline'));
+    },
+
+    fetchMyProfile: async (userId) => {
+      const client = new ApiClient;
+      let response = await client.fetchUser(userId);
+      let user = await response.json();
+      if (response.ok) {
+        dispatch(fetchMyProfile(user));
+      } else {
+        dispatch(openToast('Failed to fetch user profile.'));
+      }
     },
 
     refreshReviews: async () => {

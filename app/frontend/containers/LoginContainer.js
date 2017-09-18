@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(requestFinish());
       let json = await response.json();
       if (response.ok) {
-        dispatch(signIn(json.user));
+        dispatch(signIn(json));
         dispatch(openToast('Signed in successfully!'));
       } else {
         dispatch(openToast(json.detail));

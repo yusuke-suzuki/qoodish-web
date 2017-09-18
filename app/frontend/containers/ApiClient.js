@@ -31,6 +31,20 @@ class ApiClient {
     return response;
   }
 
+  async fetchUser(id) {
+    const url = `${process.env.ENDPOINT}/api/users/${id}`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchCurrentMaps() {
     const url = `${process.env.ENDPOINT}/api/maps`;
     const token = await firebase.auth().currentUser.getIdToken();

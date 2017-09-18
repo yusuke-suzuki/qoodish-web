@@ -1,6 +1,7 @@
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
 export const FETCH_REGISTRATION_TOKEN = 'FETCH_REGISTRATION_TOKEN';
+export const FETCH_MY_PROFILE = 'FETCH_MY_PROFILE';
 export const REQUEST_START = 'REQUEST_START';
 export const REQUEST_FINISH = 'REQUEST_FINISH';
 export const OPEN_TOAST = 'OPEN_TOAST';
