@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import AuthenticationFailed from './errors/AuthenticationFailed';
+import FetchUserFailed from './errors/FetchUserFailed';
 import CreateDeviceFailed from './errors/CreateDeviceFailed';
 import DeleteUserFailed from './errors/DeleteUserFailed';
 import FetchMapsFailed from './errors/FetchMapsFailed';
@@ -33,6 +34,27 @@ class QoodishClient {
       return json;
     } else {
       throw new AuthenticationFailed;
+    }
+  }
+
+  async fetchUser(token, userId) {
+    const url = `${process.env.API_ENDPOINT}/users/${userId}`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      const json = await response.json();
+      throw new FetchUserFailed(response.status, json.detail);
     }
   }
 

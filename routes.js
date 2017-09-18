@@ -63,6 +63,11 @@ const routes = (app) => {
     ctx.status = 204;
   });
 
+  router.get('/api/users/:userId', async (ctx, next) => {
+    const users = new Users;
+    ctx.body = await users.show(ctx.request.headers.authorization, ctx.params.userId);
+  });
+
   router.del('/api/users/:userId', async (ctx, next) => {
     const users = new Users;
     await users.delete(ctx.request.headers.authorization, ctx.params.userId);
