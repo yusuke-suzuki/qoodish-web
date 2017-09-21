@@ -33,11 +33,19 @@ const styles = {
   mapContainer: {
     height: '100%'
   },
-  createButton: {
+  createButtonLarge: {
     zIndex: 1100,
     position: 'fixed',
     bottom: 32,
     right: 32,
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  createButtonSmall: {
+    zIndex: 1100,
+    position: 'fixed',
+    bottom: 20,
+    right: 20,
     backgroundColor: 'red',
     color: 'white'
   }
@@ -172,7 +180,7 @@ export default class MapDetail extends Component {
       <Button
         fab
         aria-label='add'
-        style={styles.createButton}
+        style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
         onClick={this.props.handleCreateReviewClick}
       >
         <AddLocationIcon />

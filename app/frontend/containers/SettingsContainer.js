@@ -5,6 +5,7 @@ import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = (state) => {
   return {
+    large: state.shared.large
   }
 }
 

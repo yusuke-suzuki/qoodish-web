@@ -11,8 +11,11 @@ import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 const styles = {
-  card: {
+  cardLarge: {
     marginBottom: 20
+  },
+  cardSmall: {
+    marginBottom: 0
   },
   mapName: {
     cursor: 'pointer'
@@ -91,7 +94,7 @@ class ReviewCard extends Component {
 
   renderReviewCard(review) {
     return (
-      <Card style={styles.card}>
+      <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
         <CardHeader
           avatar={
             <Avatar>

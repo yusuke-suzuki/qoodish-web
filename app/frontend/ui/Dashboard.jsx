@@ -15,9 +15,12 @@ import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
 
 const styles = {
-  root: {
+  rootLarge: {
     margin: '104px auto 200px',
     width: '80%'
+  },
+  rootSmall: {
+    margin: '76px auto 0'
   },
   container: {
     display: 'flex',
@@ -45,11 +48,19 @@ const styles = {
   lockIcon: {
     marginRight: 10
   },
-  createButton: {
+  createButtonLarge: {
     position: 'fixed',
     zIndex: 2,
     bottom: 32,
     right: 32,
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  createButtonSmall: {
+    position: 'fixed',
+    zIndex: 2,
+    bottom: 20,
+    right: 20,
     backgroundColor: 'red',
     color: 'white'
   },
@@ -112,7 +123,7 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div style={styles.root}>
+      <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <div style={styles.container}>
           <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
             <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
@@ -136,7 +147,7 @@ export default class Dashboard extends Component {
         <Button
           fab
           aria-label='add'
-          style={styles.createButton}
+          style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
           onClick={this.props.handleCreateMapButtonClick}
         >
           <AddIcon />
