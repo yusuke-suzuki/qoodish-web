@@ -12,14 +12,10 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
-import ListSubheader from 'material-ui/List/ListSubheader';
-import List, { ListItem, ListItemText } from 'material-ui/List';
 import MapIcon from 'material-ui-icons/Map';
-import GroupIcon from 'material-ui-icons/Group';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Card, { CardHeader } from 'material-ui/Card';
-import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 
 const styles = {
   rootLarge: {
@@ -58,41 +54,6 @@ const styles = {
   profileImage: {
     width: 40
   },
-  userProfileContainer: {
-    position: 'fixed',
-    top: 94,
-    left: 0,
-    marginLeft: 20,
-    width: 'calc(30% - 40px)'
-  },
-  bigAvatar: {
-    width: 60,
-    height: 60,
-  },
-  bigProfileImage: {
-    width: 60
-  },
-  cardText: {
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden'
-  },
-  mapsContainer: {
-    position: 'absolute',
-    top: 94,
-    left: 0,
-    marginLeft: 20
-  },
-  mapList: {
-    position: 'fixed',
-    height: 'calc(100% - 124px)',
-    width: 'calc(30% - 40px)',
-    right: 20
-  },
-  mapImage: {
-    width: 40,
-    height: 40
-  },
   raisedButton: {
     width: '100%',
     marginBottom: 10
@@ -108,8 +69,6 @@ export default class Feed extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.refreshReviews();
-    this.props.refreshMaps();
-    this.props.fetchMyProfile(this.props.currentUser.uid);
   }
 
   handleClickLoadMoreButton() {
@@ -143,92 +102,11 @@ export default class Feed extends Component {
         <div style={styles.container}>
           {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        {this.props.large ? this.renderUserProfile(this.props.currentUser) : null}
-        {this.props.large ? this.renderFollowingMapContainer() : null}
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
         <CreateMapDialogContainer />
       </div>
     );
-  }
-
-  renderUserProfile(user) {
-    return (
-      <div style={styles.userProfileContainer}>
-        <Card>
-          <CardHeader
-            avatar={
-              <Avatar style={styles.bigAvatar}>
-                <img src={user.image_url} alt={user.name} style={styles.bigProfileImage} />
-              </Avatar>
-            }
-            title={
-              <Typography type='display1' style={styles.cardText}>
-                {user.name}
-              </Typography>
-            }
-          />
-          <BottomNavigation showLabels>
-            <BottomNavigationButton
-              label={user.maps_count || 0}
-              icon={<MapIcon />}
-            />
-            <BottomNavigationButton
-              label={user.following_maps_count || 0}
-              icon={<GroupIcon />}
-            />
-            <BottomNavigationButton
-              label={user.reviews_count || 0}
-              icon={<RateReviewIcon />}
-            />
-          </BottomNavigation>
-        </Card>
-      </div>
-    );
-  }
-
-  renderFollowingMapContainer() {
-    return (
-      <div style={styles.mapsContainer}>
-        <List
-          subheader={<ListSubheader>Following Maps</ListSubheader>}
-          style={styles.mapList}
-        >
-          {this.props.loadingMaps ? this.renderProgress() : this.renderFollowingMaps(this.props.currentMaps)}
-        </List>
-      </div>
-    )
-  }
-
-  renderNoMaps() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MapIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
-          Currently you are not following any maps.
-        </Typography>
-        <br/>
-      </div>
-    );
-  }
-
-  renderFollowingMaps(maps) {
-    if (maps.length > 0) {
-      return maps.map((map) => (
-        <ListItem
-          button
-          key={map.id}
-          onClick={() => this.props.handleClickMap(map)}
-        >
-          <Avatar>
-            <img src={map.image_url} style={styles.mapImage} />
-          </Avatar>
-          <ListItemText primary={map.name} />
-        </ListItem>
-      ));
-    } else {
-      return this.renderNoMaps();
-    }
   }
 
   renderNoReviews() {

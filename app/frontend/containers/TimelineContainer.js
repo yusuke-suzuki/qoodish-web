@@ -22,15 +22,12 @@ import openCreateMapDialog from '../actions/openCreateMapDialog';
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.app.currentUser,
     currentReviews: state.reviews.currentReviews,
     loadingReviews: state.reviews.loadingReviews,
     loadingMoreReviews: state.reviews.loadingMoreReviews,
     noMoreReviews: state.reviews.noMoreReviews,
     nextTimestamp: state.reviews.nextTimestamp,
-    large: state.shared.large,
-    currentMaps: state.dashboard.currentMaps,
-    loadingMaps: state.dashboard.loadingMaps
+    large: state.shared.large
   }
 }
 
@@ -38,17 +35,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Timeline'));
-    },
-
-    fetchMyProfile: async (userId) => {
-      const client = new ApiClient;
-      let response = await client.fetchUser(userId);
-      let user = await response.json();
-      if (response.ok) {
-        dispatch(fetchMyProfile(user));
-      } else {
-        dispatch(openToast('Failed to fetch user profile.'));
-      }
     },
 
     refreshReviews: async () => {
@@ -81,28 +67,6 @@ const mapDispatchToProps = (dispatch) => {
       } else {
         dispatch(openToast('Failed to fetch reports.'));
       }
-    },
-
-    refreshMaps: async () => {
-      dispatch(loadMapsStart());
-      const client = new ApiClient;
-      let response = await client.fetchCurrentMaps();
-      let maps = await response.json();
-      dispatch(loadMapsEnd());
-      if (response.ok) {
-        dispatch(fetchMaps(maps));
-      } else if (response.status == 401) {
-        dispatch(signOut());
-        dispatch(openToast('Authenticate failed'));
-      } else {
-        dispatch(openToast('Failed to fetch Maps.'));
-      }
-    },
-
-    handleClickMap: (map) => {
-      dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`));
-      dispatch(openToast(`Log in to ${map.name}!`));
     },
 
     handleDashboardLinkClick: () => {
