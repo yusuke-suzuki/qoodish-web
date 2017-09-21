@@ -3,10 +3,14 @@ import firebase from 'firebase';
 import Typography from 'material-ui/Typography';
 
 const styles = {
-  loginContainer: {
+  loginContainerLarge: {
     textAlign: 'center',
     paddingTop: 104,
-    paddingBottom: 200
+    paddingBottom: 100
+  },
+  loginContainerSmall: {
+    textAlign: 'center',
+    paddingTop: 20
   }
 };
 
@@ -41,11 +45,11 @@ export default class Login extends Component {
   render() {
     return (
       <div>
-        <div style={styles.loginContainer}>
-          <Typography type='display4' gutterBottom>
+        <div style={this.props.large ? styles.loginContainerLarge : styles.loginContainerSmall}>
+          <Typography type={this.props.large ? 'display4' : 'display3'} gutterBottom>
             みんなで作る、冒険の地図。
           </Typography>
-          <Typography type='display2' gutterBottom>
+          <Typography type={this.props.large ? 'display2' : 'display1'} gutterBottom>
             次はどこ行く？
           </Typography>
           <div id='firebaseui-auth-container' />

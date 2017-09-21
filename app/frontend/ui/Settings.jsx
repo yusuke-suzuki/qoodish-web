@@ -5,12 +5,17 @@ import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 
 const styles = {
-  root: {
+  rootLarge: {
     padding: 40,
     margin: '0 auto',
     marginTop: 64,
     maxWidth: 600,
     minWidth: 320
+  },
+  rootSmall: {
+    padding: 20,
+    margin: '0 auto',
+    marginTop: 56
   },
   deleteButton: {
     color: 'white',
@@ -25,7 +30,7 @@ export default class Footer extends Component {
 
   render() {
     return (
-      <div style={styles.root}>
+      <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <Card>
           <CardContent>
             <Typography type='headline' component='h2' gutterBottom>

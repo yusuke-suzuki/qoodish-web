@@ -23,15 +23,14 @@ const styles = {
     width: '40%'
   },
   rootSmall: {
-    margin: '64px auto 200px',
+    margin: '56px auto 0',
     width: '100%'
   },
   container: {
-    display: 'flex',
+    display: 'inline-block',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginTop: 40,
-    marginBottom: 20
+    width: '100%'
   },
   buttonContainer: {
     textAlign: 'center',
@@ -54,9 +53,13 @@ const styles = {
   profileImage: {
     width: 40
   },
-  raisedButton: {
+  raisedButtonLarge: {
     width: '100%',
-    marginBottom: 10
+    marginBottom: 20
+  },
+  raisedButtonSmall: {
+    width: '90%',
+    marginBottom: 20
   }
 };
 
@@ -89,7 +92,7 @@ export default class Feed extends Component {
     }
     return (
       <div style={styles.buttonContainer}>
-        <Button raised onClick={this.handleClickLoadMoreButton} style={styles.raisedButton}>
+        <Button raised onClick={this.handleClickLoadMoreButton} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Load More
         </Button>
       </div>
@@ -117,10 +120,10 @@ export default class Feed extends Component {
           When you create or follow maps, you will see posts here.
         </Typography>
         <br/>
-        <Button raised onClick={this.props.handleCreateMapButtonClick} style={styles.raisedButton}>
+        <Button raised onClick={this.props.handleCreateMapButtonClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Create New Map
         </Button>
-        <Button raised onClick={this.props.handleDashboardLinkClick} style={styles.raisedButton}>
+        <Button raised onClick={this.props.handleDashboardLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Search Maps
         </Button>
       </div>

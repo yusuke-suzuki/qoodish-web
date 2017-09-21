@@ -8,6 +8,7 @@ import openIssueDialog from '../actions/openIssueDialog';
 
 const mapStateToProps = (state) => {
   return {
+    large :state.shared.large
   }
 }
 
