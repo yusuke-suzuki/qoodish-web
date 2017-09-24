@@ -9,8 +9,8 @@ import requestFinish from '../actions/requestFinish';
 
 const mapStateToProps = (state) => {
   return {
-    dialogOpen: state.mapDetail.editMapDialogOpen,
-    currentMap: state.mapDetail.currentMap
+    dialogOpen: state.maps.editMapDialogOpen,
+    currentMap: state.maps.targetMap
   }
 }
 

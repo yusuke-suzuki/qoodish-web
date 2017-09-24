@@ -12,7 +12,8 @@ import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-r
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
-import dashboardReducer from './reducers/dashboardReducer';
+import homeReducer from './reducers/homeReducer';
+import mapsReducer from './reducers/mapsReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
 import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
@@ -51,7 +52,8 @@ const reducer = combineReducers({
   router: routerReducer,
   app: appReducer,
   shared: sharedReducer,
-  dashboard: dashboardReducer,
+  home: homeReducer,
+  maps: mapsReducer,
   mapDetail: mapDetailReducer,
   reviews: reviewsReducer,
   gMap: gMapReducer,

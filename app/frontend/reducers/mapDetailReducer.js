@@ -2,15 +2,6 @@ import {
   SELECT_MAP,
   OPEN_PLACE_SELECT_DIALOG,
   CLOSE_PLACE_SELECT_DIALOG,
-  SELECT_PLACE_FOR_REVIEW,
-  OPEN_EDIT_REVIEW_DIALOG,
-  CLOSE_EDIT_REVIEW_DIALOG,
-  OPEN_DELETE_REVIEW_DIALOG,
-  CLOSE_DELETE_REVIEW_DIALOG,
-  OPEN_EDIT_MAP_DIALOG,
-  CLOSE_EDIT_MAP_DIALOG,
-  OPEN_DELETE_MAP_DIALOG,
-  CLOSE_DELETE_MAP_DIALOG,
   EDIT_MAP,
   TOGGLE_RIGHT_DRAWER,
   OPEN_SPOT_DETAIL,
@@ -33,11 +24,6 @@ import {
 const initialState = {
   currentMap: null,
   placeSelectDialogOpen: false,
-  selectedPlace: null,
-  editReviewDialogOpen: false,
-  deleteReviewDialogOpen: false,
-  editMapDialogOpen: false,
-  deleteMapDialogOpen: false,
   mapSummaryOpen: false,
   spotDetailOpen: false,
   currentSpot: null,
@@ -60,43 +46,6 @@ const reducer = (state = initialState, action) => {
     case CLOSE_PLACE_SELECT_DIALOG:
       return Object.assign({}, state, {
         placeSelectDialogOpen: false
-      });
-    case SELECT_PLACE_FOR_REVIEW:
-      return Object.assign({}, state, {
-        selectedPlace: action.payload.place,
-        editReviewDialogOpen: true
-      });
-    case OPEN_EDIT_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        editReviewDialogOpen: true
-      });
-    case CLOSE_EDIT_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        editReviewDialogOpen: false
-      });
-    case OPEN_DELETE_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        deleteReviewDialogOpen: true
-      });
-    case CLOSE_DELETE_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        deleteReviewDialogOpen: false
-      });
-    case OPEN_EDIT_MAP_DIALOG:
-      return Object.assign({}, state, {
-        editMapDialogOpen: true
-      });
-    case CLOSE_EDIT_MAP_DIALOG:
-      return Object.assign({}, state, {
-        editMapDialogOpen: false
-      });
-    case OPEN_DELETE_MAP_DIALOG:
-      return Object.assign({}, state, {
-        deleteMapDialogOpen: true
-      });
-    case CLOSE_DELETE_MAP_DIALOG:
-      return Object.assign({}, state, {
-        deleteMapDialogOpen: false
       });
     case EDIT_MAP:
       return Object.assign({}, state, {
@@ -189,10 +138,6 @@ const reducer = (state = initialState, action) => {
         currentMap: null,
         placeSelectDialogOpen: false,
         selectedPlace: null,
-        editReviewDialogOpen: false,
-        deleteReviewDialogOpen: false,
-        editMapDialogOpen: false,
-        deleteMapDialogOpen: false,
         mapSummaryOpen: false,
         spotDetailOpen: false,
         currentSpot: null,

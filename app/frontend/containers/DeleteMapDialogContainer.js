@@ -11,8 +11,8 @@ import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    currentMap: state.mapDetail.currentMap,
-    dialogOpen: state.mapDetail.deleteMapDialogOpen
+    currentMap: state.maps.targetMap,
+    dialogOpen: state.maps.deleteMapDialogOpen
   }
 }
 

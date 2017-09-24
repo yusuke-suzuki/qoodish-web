@@ -13,6 +13,7 @@ import {
   CLOSE_DELETE_REVIEW_DIALOG,
   OPEN_REVIEW_DIALOG,
   CLOSE_REVIEW_DIALOG,
+  SELECT_PLACE_FOR_REVIEW,
   CLEAR_MAP_STATE
 } from '../actionTypes';
 
@@ -23,7 +24,10 @@ const initialState = {
   loadingReviews: false,
   loadingMoreReviews: false,
   noMoreReviews: false,
-  nextTimestamp: ''
+  nextTimestamp: '',
+  editReviewDialogOpen: false,
+  deleteReviewDialogOpen: false,
+  selectedPlace: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -56,6 +60,11 @@ const reducer = (state = initialState, action) => {
         noMoreReviews: !(action.payload.reviews.length > 0),
         nextTimestamp: (action.payload.reviews.length > 0) ? action.payload.reviews[action.payload.reviews.length - 1].created_at : ''
       });
+    case SELECT_PLACE_FOR_REVIEW:
+      return Object.assign({}, state, {
+        selectedPlace: action.payload.place,
+        editReviewDialogOpen: true
+      });
     case EDIT_REVIEW:
       if (state.currentReviews.length == 0) {
         return Object.assign({}, state, {
@@ -87,11 +96,23 @@ const reducer = (state = initialState, action) => {
       });
     case OPEN_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: action.payload.review
+        currentReview: action.payload.review,
+        editReviewDialogOpen: true
+      });
+    case CLOSE_EDIT_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        currentReview: null,
+        editReviewDialogOpen: false
       });
     case OPEN_DELETE_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: action.payload.review
+        currentReview: action.payload.review,
+        deleteReviewDialogOpen: true
+      });
+    case CLOSE_DELETE_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        currentReview: null,
+        deleteReviewDialogOpen: false
       });
     case OPEN_REVIEW_DIALOG:
       return Object.assign({}, state, {
