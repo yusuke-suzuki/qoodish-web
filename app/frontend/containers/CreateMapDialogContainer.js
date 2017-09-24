@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import EditMapDialog from '../ui/EditMapDialog';
 import ApiClient from './ApiClient';
+import selectMap from  '../actions/selectMap';
 import createMap from '../actions/createMap';
 import closeCreateMapDialog from '../actions/closeCreateMapDialog';
 import openToast from '../actions/openToast';
@@ -11,7 +12,7 @@ import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    dialogOpen: state.dashboard.createMapDialogOpen
+    dialogOpen: state.maps.createMapDialogOpen
   }
 }
 
@@ -30,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
         let newMap = await response.json();
         dispatch(createMap(newMap));
         dispatch(closeCreateMapDialog());
+        dispatch(selectMap(newMap));
         await sleep(1000);
         dispatch(push(`/maps/${newMap.id}`));
         dispatch(openToast('Successfuly created the map!'));

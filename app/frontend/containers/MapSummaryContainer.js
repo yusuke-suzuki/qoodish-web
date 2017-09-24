@@ -47,12 +47,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(openToast('Copied!'));
     },
 
-    handleEditMapButtonClick: () => {
-      dispatch(openEditMapDialog());
+    handleEditMapButtonClick: (map) => {
+      dispatch(openEditMapDialog(map));
     },
 
-    handleDeleteMapButtonClick: () => {
-      dispatch(openDeleteMapDialog());
+    handleDeleteMapButtonClick: (map) => {
+      dispatch(openDeleteMapDialog(map));
     },
 
     handleIssueButtonClick: (map) => {

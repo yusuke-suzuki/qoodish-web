@@ -321,7 +321,7 @@ class MapSummary extends Component {
         key='edit'
         onClick={() => {
           this.handleRequestVertMenuClose();
-          this.props.handleEditMapButtonClick();
+          this.props.handleEditMapButtonClick(this.props.currentMap);
         }}
       >
         Edit
@@ -335,7 +335,7 @@ class MapSummary extends Component {
         key='delete'
         onClick={() => {
           this.handleRequestVertMenuClose();
-          this.props.handleDeleteMapButtonClick();
+          this.props.handleDeleteMapButtonClick(this.props.currentMap);
         }}
       >
         Delete

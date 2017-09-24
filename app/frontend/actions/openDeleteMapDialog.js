@@ -1,8 +1,11 @@
 import { OPEN_DELETE_MAP_DIALOG } from '../actionTypes';
 
-const openDeleteMapDialog = () => {
+const openDeleteMapDialog = (map) => {
   return {
-    type: OPEN_DELETE_MAP_DIALOG
+    type: OPEN_DELETE_MAP_DIALOG,
+    payload: {
+      map: map
+    }
   }
 }
 

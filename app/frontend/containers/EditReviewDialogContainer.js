@@ -12,8 +12,8 @@ import { uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    dialogOpen: state.mapDetail.editReviewDialogOpen,
-    selectedPlace: state.mapDetail.selectedPlace,
+    dialogOpen: state.reviews.editReviewDialogOpen,
+    selectedPlace: state.reviews.selectedPlace,
     currentReview: state.reviews.currentReview
   }
 }
@@ -58,7 +58,7 @@ const mapDispatchToProps = (dispatch) => {
         params.image_url = response.imageUrl;
         fileName = response.fileName;
       }
-      if (!canvas) {
+      if (!canvas && !oldReview.image) {
         params.image_url = '';
       }
       const client = new ApiClient;
