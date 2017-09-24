@@ -8,7 +8,7 @@ class Maps extends Application {
     if (params.popular) {
       maps = await client.listPopularMaps(token);
     } else {
-      maps = await client.listCurrentMaps(token);
+      maps = await client.listFollowingMaps(token);
     }
     return maps;
   }

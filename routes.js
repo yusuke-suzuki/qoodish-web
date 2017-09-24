@@ -6,6 +6,7 @@ import Auth from './app/controllers/Auth';
 import Users from './app/controllers/Users';
 import Devices from './app/controllers/Devices';
 import Maps from './app/controllers/Maps';
+import UserMaps from './app/controllers/UserMaps';
 import Collaborators from './app/controllers/Collaborators';
 import Spots from './app/controllers/Spots';
 import Reviews from './app/controllers/Reviews';
@@ -72,6 +73,11 @@ const routes = (app) => {
     const users = new Users;
     await users.delete(ctx.request.headers.authorization, ctx.params.userId);
     ctx.status = 204;
+  });
+
+  router.get('/api/users/:userId/maps', async (ctx, next) => {
+    const userMaps = new UserMaps;
+    ctx.body = await userMaps.index(ctx.request.headers.authorization, ctx.params.userId);
   });
 
   router.get('/api/maps', async (ctx, next) => {

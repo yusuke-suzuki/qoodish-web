@@ -2,6 +2,7 @@ import {
   EDIT_MAP,
   DELETE_MAP,
   FETCH_MY_MAPS,
+  FETCH_FOLLOWING_MAPS,
   CREATE_MAP,
   OPEN_CREATE_MAP_DIALOG,
   CLOSE_CREATE_MAP_DIALOG,
@@ -9,14 +10,18 @@ import {
   CLOSE_EDIT_MAP_DIALOG,
   OPEN_DELETE_MAP_DIALOG,
   CLOSE_DELETE_MAP_DIALOG,
-  LOAD_MAPS_START,
-  LOAD_MAPS_END
+  LOAD_MY_MAPS_START,
+  LOAD_MY_MAPS_END,
+  LOAD_FOLLOWING_MAPS_START,
+  LOAD_FOLLOWING_MAPS_END
 } from '../actionTypes';
 
 const initialState = {
   targetMap: null,
   loadingMyMaps: false,
+  loadingFollowingMaps: false,
   myMaps: [],
+  followingMaps: [],
   createMapDialogOpen: false,
   editMapDialogOpen: false,
   deleteMapDialogOpen: false
@@ -24,17 +29,29 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case LOAD_MAPS_START:
+    case LOAD_MY_MAPS_START:
       return Object.assign({}, state, {
         loadingMyMaps: true
       });
-    case LOAD_MAPS_END:
+    case LOAD_MY_MAPS_END:
       return Object.assign({}, state, {
         loadingMyMaps: false
+      });
+    case LOAD_FOLLOWING_MAPS_START:
+      return Object.assign({}, state, {
+        loadingFollowingMaps: true
+      });
+    case LOAD_FOLLOWING_MAPS_END:
+      return Object.assign({}, state, {
+        loadingFollowingMaps: false
       });
     case FETCH_MY_MAPS:
       return Object.assign({}, state, {
         myMaps: action.payload.maps
+      });
+    case FETCH_FOLLOWING_MAPS:
+      return Object.assign({}, state, {
+        followingMaps: action.payload.maps
       });
     case CREATE_MAP:
       return Object.assign({}, state, {

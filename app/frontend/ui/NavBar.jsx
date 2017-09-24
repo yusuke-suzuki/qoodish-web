@@ -7,8 +7,10 @@ import MenuIcon from 'material-ui-icons/Menu';
 import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import HomeIcon from 'material-ui-icons/Home';
 import TimelineIcon from 'material-ui-icons/Timeline';
+import MapIcon from 'material-ui-icons/Map';
 import SettingsIcon from 'material-ui-icons/Settings';
 import Avatar from 'material-ui/Avatar';
 import Menu, { MenuItem } from 'material-ui/Menu';
@@ -177,6 +179,13 @@ class NavBar extends Component {
               </ListItemIcon>
               <ListItemText primary='Timeline' />
             </ListItem>
+            <ListItem button onClick={this.props.requestMaps}>
+              <ListItemIcon>
+                <MapIcon />
+              </ListItemIcon>
+              <ListItemText primary='Maps' />
+            </ListItem>
+            <Divider />
             <ListItem button onClick={this.props.requestSettings}>
               <ListItemIcon>
                 <SettingsIcon />

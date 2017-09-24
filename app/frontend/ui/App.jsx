@@ -7,6 +7,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
 import HomeContainer from '../containers/HomeContainer';
 import TimelineContainer from '../containers/TimelineContainer';
+import MapsContainer from '../containers/MapsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
@@ -96,6 +97,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' component={HomeContainer} />
           <Route exact path='/timeline' component={TimelineContainer} />
+          <Route exact path='/maps' component={MapsContainer} />
           <Route exact path='/maps/:mapId' component={MapDetailContainer} />
           <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
           <Route exact path='/settings' component={SettingsContainer} />

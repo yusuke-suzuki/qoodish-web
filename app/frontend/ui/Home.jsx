@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
 import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
-import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
 import ExploreIcon from 'material-ui-icons/Explore';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Typography from 'material-ui/Typography';
 import Card, { CardHeader, CardMedia, CardContent} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
@@ -47,22 +45,6 @@ const styles = {
   },
   lockIcon: {
     marginRight: 10
-  },
-  createButtonLarge: {
-    position: 'fixed',
-    zIndex: 2,
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    position: 'fixed',
-    zIndex: 2,
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   progress: {
     textAlign: 'center',
@@ -145,15 +127,6 @@ export default class Home extends Component {
           </Typography>
           {this.props.loadingPopularMaps ? this.renderProgress() : this.renderMapContainer(this.props.popularMaps)}
         </div>
-        <Button
-          fab
-          aria-label='add'
-          style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
-          onClick={this.props.handleCreateMapButtonClick}
-        >
-          <AddIcon />
-        </Button>
-        <CreateMapDialogContainer />
       </div>
     );
   }
@@ -173,7 +146,7 @@ export default class Home extends Component {
           <img src={map.image_url} />
           <GridListTileBar
             title={
-              <Typography type='display4' color='inherit' gutterBottom>
+              <Typography type={this.props.large ? 'display4' : 'display3'} color='inherit' gutterBottom>
                 {map.name}
               </Typography>
             }
@@ -266,7 +239,7 @@ export default class Home extends Component {
     if (maps.length > 0) {
       return (
         <GridList
-          cols={this.props.large ? 4 : 1}
+          cols={this.props.large ? 4 : 2}
           style={styles.gridList}
           spacing={20}
         >
