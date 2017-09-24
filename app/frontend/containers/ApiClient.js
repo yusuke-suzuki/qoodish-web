@@ -45,8 +45,23 @@ class ApiClient {
     return response;
   }
 
-  async fetchCurrentMaps() {
+  async fetchFollowingMaps() {
     const url = `${process.env.ENDPOINT}/api/maps`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchMyMaps() {
+    const userId = firebase.auth().currentUser.uid;
+    const url = `${process.env.ENDPOINT}/api/users/${userId}/maps`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',

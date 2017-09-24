@@ -14,10 +14,6 @@ import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
 import updatePageTitle from '../actions/updatePageTitle';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
-import fetchMaps from '../actions/fetchMaps';
-import loadMapsStart from '../actions/loadMapsStart';
-import loadMapsEnd from '../actions/loadMapsEnd';
-import selectMap from  '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 
 const mapStateToProps = (state) => {
@@ -69,7 +65,7 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    handleDashboardLinkClick: () => {
+    handleHomeLinkClick: () => {
       dispatch(push('/'));
     },
 

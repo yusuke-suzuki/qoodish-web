@@ -98,7 +98,27 @@ class QoodishClient {
     }
   }
 
-  async listCurrentMaps(token) {
+  async listMyMaps(token, userId) {
+    const url = `${process.env.API_ENDPOINT}/users/${userId}/maps`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchMapsFailed;
+    }
+  }
+
+  async listFollowingMaps(token) {
     const url = `${process.env.API_ENDPOINT}/maps`;
     let options = {
       method: 'GET',
