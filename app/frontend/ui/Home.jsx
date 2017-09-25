@@ -241,7 +241,7 @@ export default class Home extends Component {
         <GridList
           cols={this.props.large ? 4 : 2}
           style={styles.gridList}
-          spacing={20}
+          spacing={this.props.large ? 20 : 10}
         >
           {this.renderMaps(maps)}
         </GridList>
