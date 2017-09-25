@@ -88,7 +88,7 @@ const styles = {
   }
 };
 
-export default class Home extends Component {
+export default class Discover extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.pickUpMap();
