@@ -183,7 +183,7 @@ export default class Maps extends Component {
         <GridList
           cols={this.props.large ? 4 : 2}
           style={styles.gridList}
-          spacing={this.props.large ? 20 : 0}
+          spacing={this.props.large ? 20 : 10}
         >
           {this.renderMaps(maps)}
         </GridList>
