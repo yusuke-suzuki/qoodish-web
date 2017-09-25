@@ -65,8 +65,8 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    handleHomeLinkClick: () => {
-      dispatch(push('/'));
+    handleDiscoverLinkClick: () => {
+      dispatch(push('/discover'));
     },
 
     handleCreateMapButtonClick: () => {

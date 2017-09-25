@@ -12,7 +12,7 @@ import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-r
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
-import homeReducer from './reducers/homeReducer';
+import discoverReducer from './reducers/discoverReducer';
 import mapsReducer from './reducers/mapsReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
 import reviewsReducer from './reducers/reviewsReducer';
@@ -52,7 +52,7 @@ const reducer = combineReducers({
   router: routerReducer,
   app: appReducer,
   shared: sharedReducer,
-  home: homeReducer,
+  discover: discoverReducer,
   maps: mapsReducer,
   mapDetail: mapDetailReducer,
   reviews: reviewsReducer,

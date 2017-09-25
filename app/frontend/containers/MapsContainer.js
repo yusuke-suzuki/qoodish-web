@@ -61,8 +61,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 
-    handleHomeLinkClick: () => {
-      dispatch(push('/'));
+    handleDiscoverLinkClick: () => {
+      dispatch(push('/discover'));
     }
   }
 }

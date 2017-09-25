@@ -16,7 +16,7 @@ const styles = {
     width: '80%'
   },
   rootSmall: {
-    margin: '104px auto 0'
+    margin: '114px auto 0'
   },
   tabBarLarge: {
     top: 64
@@ -170,7 +170,7 @@ export default class Maps extends Component {
         <Button raised onClick={this.props.handleCreateMapButtonClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Create New Map
         </Button>
-        <Button raised onClick={this.props.handleHomeLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
+        <Button raised onClick={this.props.handleDiscoverLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Search Maps
         </Button>
       </div>

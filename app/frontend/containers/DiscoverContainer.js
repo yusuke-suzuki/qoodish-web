@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Home from '../ui/Home';
+import Discover from '../ui/Discover';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
@@ -20,19 +20,19 @@ import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = (state) => {
   return {
-    mapPickedUp: state.home.mapPickedUp,
-    popularMaps: state.home.popularMaps,
-    loadingPopularMaps: state.home.loadingPopularMaps,
+    mapPickedUp: state.discover.mapPickedUp,
+    popularMaps: state.discover.popularMaps,
+    loadingPopularMaps: state.discover.loadingPopularMaps,
     large: state.shared.large,
-    recentReviews: state.home.recentReviews,
-    loadingRecentReviews: state.home.loadingRecentReviews
+    recentReviews: state.discover.recentReviews,
+    loadingRecentReviews: state.discover.loadingRecentReviews
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Home'));
+      dispatch(updatePageTitle('Discover'));
     },
 
     handleCreateMapButtonClick: () => {
@@ -88,4 +88,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(Discover);
