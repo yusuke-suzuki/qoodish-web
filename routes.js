@@ -13,7 +13,7 @@ import Reviews from './app/controllers/Reviews';
 import Follows from './app/controllers/Follows';
 import InappropriateContents from './app/controllers/InappropriateContents';
 
-import { detectLanguage, generateMetadata } from './app/models/Utils';
+import { generateMetadata } from './app/models/Utils';
 
 const routes = (app) => {
   const router = new Router();
@@ -45,7 +45,7 @@ const routes = (app) => {
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
-    let metadata = await generateMetadata(ctx.request, ctx.params, detectLanguage(ctx.request));
+    let metadata = await generateMetadata(ctx.request, ctx.params, ctx.currentLocale);
     let assetPath;
     if (process.env.NODE_ENV === 'production') {
       assetPath = process.env.ASSET_PATH;
@@ -58,7 +58,7 @@ const routes = (app) => {
     let params = {
       bundle: assetPath,
       googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
-      currentLocale: detectLanguage(ctx.request),
+      currentLocale: ctx.currentLocale,
       metadata: metadata
     };
     await ctx.render('index', params);
@@ -124,12 +124,12 @@ const routes = (app) => {
 
   router.get('/api/maps/:mapId/spots', async (ctx, next) => {
     const spots = new Spots;
-    ctx.body = await spots.index(ctx.request.headers.authorization, ctx.params.mapId, detectLanguage(ctx.request));
+    ctx.body = await spots.index(ctx.request.headers.authorization, ctx.params.mapId, ctx.currentLocale);
   });
 
   router.get('/api/maps/:mapId/spots/:spotId', async (ctx, next) => {
     const spots = new Spots;
-    ctx.body = await spots.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.spotId, detectLanguage(ctx.request));
+    ctx.body = await spots.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.spotId, ctx.currentLocale);
   });
 
   router.post('/api/maps/:mapId/reviews', async (ctx, next) => {
@@ -139,7 +139,7 @@ const routes = (app) => {
 
   router.get('/api/reviews', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, detectLanguage(ctx.request), null, ctx.query);
+    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.currentLocale, null, ctx.query);
   });
 
   router.put('/api/reviews/:reviewId', async (ctx, next) => {
@@ -154,12 +154,12 @@ const routes = (app) => {
 
   router.get('/api/maps/:mapId/reviews', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, detectLanguage(ctx.request), ctx.params.mapId, ctx.query);
+    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.currentLocale, ctx.params.mapId, ctx.query);
   });
 
   router.get('/api/maps/:mapId/reviews/:reviewId', async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.show(ctx.request.headers.authorization, detectLanguage(ctx.request), ctx.params.mapId, ctx.params.reviewId);
+    ctx.body = await reviews.show(ctx.request.headers.authorization, ctx.currentLocale, ctx.params.mapId, ctx.params.reviewId);
   });
 
   router.post('/api/maps/:mapId/follow', async (ctx, next) => {

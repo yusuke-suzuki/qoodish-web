@@ -8,6 +8,7 @@ import routes from './routes';
 import dotenv from 'dotenv';
 import error from 'koa-json-error';
 import ApplicationError from './app/models/errors/ApplicationError';
+import detectLocale from './app/middlewares/detectLocale';
 
 const formatError = (error) => {
   console.log(error);
@@ -38,6 +39,7 @@ app.use(json());
 app.use(bodyParser());
 app.use(logger());
 app.use(serve(__dirname + '/public'));
+app.use(detectLocale);
 
 routes(app);
 

@@ -1,6 +1,5 @@
 import QoodishClient from './QoodishClient';
 
-const DEFAULT_LOCALE = 'en';
 const BOTS = [
   '\\+https:\\/\\/developers.google.com\\/\\+\\/web\\/snippet\\/',
   'googlebot',
@@ -32,15 +31,6 @@ const isBot = (request) => {
   }
   return isBot;
 };
-
-export const detectLanguage = (request) => {
-  const acceptLanguage = request.headers['accept-language'];
-  if (!acceptLanguage || !acceptLanguage.split(',')[0]) {
-    return DEFAULT_LOCALE;
-  } else {
-    return acceptLanguage.split(',')[0];
-  }
-}
 
 export const generateMetadata = async (request, params, locale) => {
   let title = 'Qoodish (β)';
