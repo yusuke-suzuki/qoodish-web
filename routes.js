@@ -23,9 +23,20 @@ const routes = (app) => {
     layout: false
   });
 
+  const ignoredPaths = [
+    '/favicon.ico',
+    '/robots.txt',
+    '/apple-touch-icon-152x152-precomposed.png'
+  ];
+
+  router.get(ignoredPaths, async (ctx, next) => {
+    ctx.status = 204;
+  });
+
   const pageRoutes = [
     '/',
     '/timeline',
+    '/discover',
     '/login',
     '/maps',
     '/maps/:mapId',

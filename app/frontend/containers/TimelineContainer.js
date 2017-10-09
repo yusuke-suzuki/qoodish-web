@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Timeline'));
+      dispatch(updatePageTitle('Home'));
     },
 
     refreshReviews: async () => {
