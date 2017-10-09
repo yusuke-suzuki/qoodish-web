@@ -2,38 +2,38 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class Maps extends Application {
-  async index(token, params) {
+  async index(ctx) {
     const client = new QoodishClient;
     let maps;
-    if (params.popular) {
-      maps = await client.listPopularMaps(token);
+    if (ctx.query.popular) {
+      maps = await client.listPopularMaps(ctx.request.headers.authorization);
     } else {
-      maps = await client.listFollowingMaps(token);
+      maps = await client.listFollowingMaps(ctx.request.headers.authorization);
     }
     return maps;
   }
 
-  async show(token, mapId) {
+  async show(ctx) {
     const client = new QoodishClient;
-    let map = await client.fetchMap(token, mapId);
+    let map = await client.fetchMap(ctx.request.headers.authorization, ctx.params.mapId);
     return map;
   }
 
-  async create(token, params) {
+  async create(ctx) {
     const client = new QoodishClient;
-    let map = await client.createMap(token, params);
+    let map = await client.createMap(ctx.request.headers.authorization, ctx.request.body);
     return map;
   }
 
-  async update(token, params, mapId) {
+  async update(ctx) {
     const client = new QoodishClient;
-    let map = await client.updateMap(token, params, mapId);
+    let map = await client.updateMap(ctx.request.headers.authorization, ctx.request.body, ctx.params.mapId);
     return map;
   }
 
-  async delete(token, mapId) {
+  async delete(ctx) {
     const client = new QoodishClient;
-    await client.deleteMap(token, mapId);
+    await client.deleteMap(ctx.request.headers.authorization, ctx.params.mapId);
   }
 }
 

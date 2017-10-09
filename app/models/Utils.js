@@ -1,6 +1,5 @@
 import QoodishClient from './QoodishClient';
 
-const DEFAULT_LOCALE = 'en';
 const BOTS = [
   '\\+https:\\/\\/developers.google.com\\/\\+\\/web\\/snippet\\/',
   'googlebot',
@@ -33,42 +32,33 @@ const isBot = (request) => {
   return isBot;
 };
 
-export const detectLanguage = (request) => {
-  const acceptLanguage = request.headers['accept-language'];
-  if (!acceptLanguage || !acceptLanguage.split(',')[0]) {
-    return DEFAULT_LOCALE;
-  } else {
-    return acceptLanguage.split(',')[0];
-  }
-}
-
-export const generateMetadata = async (request, params, locale) => {
+export const generateMetadata = async (ctx) => {
   let title = 'Qoodish (β)';
   let description = 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
   let pageUrl = process.env.ENDPOINT;
   let imageUrl = process.env.OG_IMAGE_URL;
 
-  if (isBot(request)) {
+  if (isBot(ctx.request)) {
     const client = new QoodishClient;
     let response;
     let json;
-    if (params.reviewId) {
-      response = await client.fetchReviewMetadata(params.reviewId, locale);
+    if (ctx.params.reviewId) {
+      response = await client.fetchReviewMetadata(ctx.params.reviewId, ctx.currentLocale);
       if (response.ok) {
         json = await response.json();
         title = `${json.title} | Qoodish (β)`
         description = json.description;
         imageUrl = json.image_url;
-        pageUrl = request.originalUrl;
+        pageUrl = ctx.request.originalUrl;
       }
-    } else if (params.mapId) {
-      response = await client.fetchMapMetadata(params.mapId, locale);
+    } else if (ctx.params.mapId) {
+      response = await client.fetchMapMetadata(ctx.params.mapId, ctx.currentLocale);
       if (response.ok) {
         json = await response.json();
         title = `${json.title} | Qoodish (β)`
         description = json.description;
         imageUrl = json.image_url;
-        pageUrl = request.originalUrl;
+        pageUrl = ctx.request.originalUrl;
       }
     }
   }
