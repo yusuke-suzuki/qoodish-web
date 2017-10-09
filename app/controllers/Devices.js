@@ -2,9 +2,9 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class Devices extends Application {
-  async create(token, params) {
+  async create(ctx) {
     const client = new QoodishClient;
-    await client.createDevice(token, params);
+    await client.createDevice(ctx.request.headers.authorization, ctx.request.body);
     return;
   }
 }

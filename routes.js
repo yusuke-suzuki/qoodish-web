@@ -67,7 +67,7 @@ const routes = (app) => {
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
-    let metadata = await generateMetadata(ctx.request, ctx.params, ctx.currentLocale);
+    let metadata = await generateMetadata(ctx);
     let assetPath;
     if (process.env.NODE_ENV === 'production') {
       assetPath = process.env.ASSET_PATH;
@@ -88,115 +88,115 @@ const routes = (app) => {
 
   router.post('/api/auth', error(formatError), async (ctx, next) => {
     const auth = new Auth;
-    ctx.body = await auth.create(ctx.request.body);
+    ctx.body = await auth.create(ctx);
   });
 
   router.post('/api/devices', error(formatError), async (ctx, next) => {
     const devices = new Devices;
-    ctx.body = await devices.create(ctx.request.headers.authorization, ctx.request.body);
+    ctx.body = await devices.create(ctx);
     ctx.status = 204;
   });
 
   router.get('/api/users/:userId', error(formatError), async (ctx, next) => {
     const users = new Users;
-    ctx.body = await users.show(ctx.request.headers.authorization, ctx.params.userId);
+    ctx.body = await users.show(ctx);
   });
 
   router.del('/api/users/:userId', error(formatError), async (ctx, next) => {
     const users = new Users;
-    await users.delete(ctx.request.headers.authorization, ctx.params.userId);
+    await users.delete(ctx);
     ctx.status = 204;
   });
 
   router.get('/api/users/:userId/maps', error(formatError), async (ctx, next) => {
     const userMaps = new UserMaps;
-    ctx.body = await userMaps.index(ctx.request.headers.authorization, ctx.params.userId);
+    ctx.body = await userMaps.index(ctx);
   });
 
   router.get('/api/maps', error(formatError), async (ctx, next) => {
     const maps = new Maps;
-    ctx.body = await maps.index(ctx.request.headers.authorization, ctx.query);
+    ctx.body = await maps.index(ctx);
   });
 
   router.get('/api/maps/:mapId', error(formatError), async (ctx, next) => {
     const maps = new Maps;
-    ctx.body = await maps.show(ctx.request.headers.authorization, ctx.params.mapId);
+    ctx.body = await maps.show(ctx);
   });
 
   router.post('/api/maps', error(formatError), async (ctx, next) => {
     const maps = new Maps;
-    ctx.body = await maps.create(ctx.request.headers.authorization, ctx.request.body);
+    ctx.body = await maps.create(ctx);
   });
 
   router.put('/api/maps/:mapId', error(formatError), async (ctx, next) => {
     const maps = new Maps;
-    ctx.body = await maps.update(ctx.request.headers.authorization, ctx.request.body, ctx.params.mapId);
+    ctx.body = await maps.update(ctx);
   });
 
   router.del('/api/maps/:mapId', error(formatError), async (ctx, next) => {
     const maps = new Maps;
-    await maps.delete(ctx.request.headers.authorization, ctx.params.mapId);
+    await maps.delete(ctx);
     ctx.status = 204;
   });
 
   router.get('/api/maps/:mapId/collaborators', error(formatError), async (ctx, next) => {
     const collaborators = new Collaborators;
-    ctx.body = await collaborators.index(ctx.request.headers.authorization, ctx.params.mapId);
+    ctx.body = await collaborators.index(ctx);
   });
 
   router.get('/api/maps/:mapId/spots', error(formatError), async (ctx, next) => {
     const spots = new Spots;
-    ctx.body = await spots.index(ctx.request.headers.authorization, ctx.params.mapId, ctx.currentLocale);
+    ctx.body = await spots.index(ctx);
   });
 
   router.get('/api/maps/:mapId/spots/:spotId', error(formatError), async (ctx, next) => {
     const spots = new Spots;
-    ctx.body = await spots.show(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.spotId, ctx.currentLocale);
+    ctx.body = await spots.show(ctx);
   });
 
   router.post('/api/maps/:mapId/reviews', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.create(ctx.request.headers.authorization, ctx.params.mapId, ctx.request.body);
+    ctx.body = await reviews.create(ctx);
   });
 
   router.get('/api/reviews', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.currentLocale, null, ctx.query);
+    ctx.body = await reviews.index(ctx);
   });
 
   router.put('/api/reviews/:reviewId', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.update(ctx.request.headers.authorization, ctx.params.reviewId, ctx.request.body);
+    ctx.body = await reviews.update(ctx);
   });
 
   router.del('/api/reviews/:reviewId', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.delete(ctx.request.headers.authorization, ctx.params.reviewId);
+    ctx.body = await reviews.delete(ctx);
   });
 
   router.get('/api/maps/:mapId/reviews', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.index(ctx.request.headers.authorization, ctx.currentLocale, ctx.params.mapId, ctx.query);
+    ctx.body = await reviews.index(ctx);
   });
 
   router.get('/api/maps/:mapId/reviews/:reviewId', error(formatError), async (ctx, next) => {
     const reviews = new Reviews;
-    ctx.body = await reviews.show(ctx.request.headers.authorization, ctx.currentLocale, ctx.params.mapId, ctx.params.reviewId);
+    ctx.body = await reviews.show(ctx);
   });
 
   router.post('/api/maps/:mapId/follow', error(formatError), async (ctx, next) => {
     const follows = new Follows;
-    ctx.body = await follows.create(ctx.request.headers.authorization, ctx.params.mapId);
+    ctx.body = await follows.create(ctx);
   });
 
   router.del('/api/maps/:mapId/follow', error(formatError), async (ctx, next) => {
     const follows = new Follows;
-    ctx.body = await follows.destroy(ctx.request.headers.authorization, ctx.params.mapId);
+    ctx.body = await follows.destroy(ctx);
   });
 
   router.post('/api/inappropriate_contents', error(formatError), async (ctx, next) => {
     const inappropriateContents = new InappropriateContents;
-    await inappropriateContents.create(ctx.request.headers.authorization, ctx.request.body);
+    await inappropriateContents.create(ctx);
     ctx.status = 204;
   });
 

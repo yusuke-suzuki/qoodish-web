@@ -2,42 +2,44 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class Reviews extends Application {
-  async index(token, locale, mapId = null, params) {
+  async index(ctx) {
     const client = new QoodishClient;
     let reviews;
-    if (params.recent) {
-      reviews = await client.fetchRecentReviews(token, locale);
-    } else if (mapId && params.place_id) {
-      reviews = await client.fetchSpotReviews(token, locale, mapId, params.place_id);
-    } else if (params.next_timestamp) {
-      reviews = await client.fetchReviews(token, locale, params.next_timestamp);
+    let token = ctx.request.headers.authorization;
+    let query = ctx.request.query;
+    if (query.recent) {
+      reviews = await client.fetchRecentReviews(token, ctx.currentLocale);
+    } else if (ctx.params.mapId && query.place_id) {
+      reviews = await client.fetchSpotReviews(token, ctx.currentLocale, ctx.params.mapId, query.place_id);
+    } else if (query.next_timestamp) {
+      reviews = await client.fetchReviews(token, ctx.currentLocale, query.next_timestamp);
     } else {
-      reviews = await client.fetchReviews(token, locale);
+      reviews = await client.fetchReviews(token, ctx.currentLocale);
     }
     return reviews;
   }
 
-  async show(token, locale, mapId, reviewId) {
+  async show(ctx) {
     const client = new QoodishClient;
-    let review = await client.fetchReview(token, locale, mapId, reviewId);
+    let review = await client.fetchReview(ctx.request.headers.authorization, ctx.currentLocale, ctx.params.mapId, ctx.params.reviewId);
     return review;
   }
 
-  async create(token, mapId, params) {
+  async create(ctx) {
     const client = new QoodishClient;
-    let review = await client.createReview(token, mapId, params);
+    let review = await client.createReview(ctx.request.headers.authorization, ctx.params.mapId, ctx.request.body);
     return review;
   }
 
-  async update(token, reviewId, params) {
+  async update(ctx) {
     const client = new QoodishClient;
-    let review = await client.updateReview(token, reviewId, params);
+    let review = await client.updateReview(ctx.request.headers.authorization, ctx.params.reviewId, ctx.request.body);
     return review;
   }
 
-  async delete(token, reviewId) {
+  async delete(ctx) {
     const client = new QoodishClient;
-    let review = await client.deleteReview(token, reviewId);
+    let review = await client.deleteReview(ctx.request.headers.authorization, ctx.params.reviewId);
     return review;
   }
 }

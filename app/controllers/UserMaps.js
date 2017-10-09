@@ -2,9 +2,9 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class UserMaps extends Application {
-  async index(token, userId) {
+  async index(ctx) {
     const client = new QoodishClient;
-    let maps = await client.listMyMaps(token, userId);
+    let maps = await client.listMyMaps(ctx.request.headers.authorization, ctx.params.userId);
     return maps;
   }
 }

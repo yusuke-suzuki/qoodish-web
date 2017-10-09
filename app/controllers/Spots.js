@@ -2,15 +2,15 @@ import Application from './Application';
 import QoodishClient from '../models/QoodishClient';
 
 class Spots extends Application {
-  async index(token, mapId, locale) {
+  async index(ctx) {
     const client = new QoodishClient;
-    let spots = await client.fetchSpots(token, mapId, locale);
+    let spots = await client.fetchSpots(ctx.request.headers.authorization, ctx.params.mapId, ctx.currentLocale);
     return spots;
   }
 
-  async show(token, mapId, spotId, locale) {
+  async show(ctx) {
     const client = new QoodishClient;
-    let spot = await client.fetchSpot(token, mapId, spotId, locale);
+    let spot = await client.fetchSpot(ctx.request.headers.authorization, ctx.params.mapId, ctx.params.spotId, ctx.currentLocale);
     return spot;
   }
 }
