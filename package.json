@@ -6,8 +6,8 @@
   "author": "Yusuke Suzuki",
   "license": "MIT",
   "engines": {
-    "node": "8.2.1",
-    "yarn": "0.27.5"
+    "node": "8.9.1",
+    "yarn": "1.3.2"
   },
   "scripts": {
     "start": "node -r babel-register index.js",

@@ -61,6 +61,7 @@ webpack-assets.json
 
 public/javascripts
 public/firebase-messaging-sw.js
+public/*.hot-update.*
 
 .vscode
 
