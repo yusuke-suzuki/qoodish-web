@@ -4,6 +4,13 @@ const AssetsPlugin = require('assets-webpack-plugin');
 
 require('dotenv').config();
 
+const serviceWorkerPlugins = [
+  new CleanWebpackPlugin(['./public/firebase-messaging-sw.js'], {}),
+  new webpack.EnvironmentPlugin([
+    'FIREBASE_MESSAGING_SENDER_ID'
+  ])
+];
+
 const plugins = [
   new CleanWebpackPlugin(['./public/javascripts/*'], {}),
   new AssetsPlugin(),
@@ -22,31 +29,54 @@ const plugins = [
   ])
 ];
 
-module.exports = {
-  entry: ['whatwg-fetch', 'babel-polyfill', './app/frontend/index.js'],
-  output: {
-    path: __dirname + '/public/javascripts',
-    publicPath: '/javascripts/',
-    filename: 'bundle-[hash].js'
+module.exports = [
+  {
+    entry: ['babel-polyfill', './app/service_workers/firebase-messaging-sw.js'],
+    output: {
+      path: __dirname + '/public',
+      publicPath: '/',
+      filename: 'firebase-messaging-sw.js'
+    },
+    resolve: {
+      extensions: ['.js']
+    },
+    module: {
+      loaders: [
+        {
+          test: /.js$/,
+          exclude: /node_modules/,
+          loaders: ['babel-loader']
+        }
+      ]
+    },
+    plugins: serviceWorkerPlugins
   },
-  resolve: {
-    extensions: ['.js', '.jsx', '*']
-  },
-  module: {
-    loaders: [
-      {
-        test: /.jsx?$/,
-        exclude: /node_modules/,
-        loaders: ['babel-loader']
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
-          'file-loader',
-          'image-webpack-loader'
-        ]
-      }
-    ]
-  },
-  plugins: plugins
-};
+  {
+    entry: ['whatwg-fetch', 'babel-polyfill', './app/frontend/index.js'],
+    output: {
+      path: __dirname + '/public/javascripts',
+      publicPath: '/javascripts/',
+      filename: 'bundle-[hash].js'
+    },
+    resolve: {
+      extensions: ['.js', '.jsx', '*']
+    },
+    module: {
+      loaders: [
+        {
+          test: /.jsx?$/,
+          exclude: /node_modules/,
+          loaders: ['babel-loader']
+        },
+        {
+          test: /\.(jpe?g|png|gif|svg)$/i,
+          loaders: [
+            'file-loader',
+            'image-webpack-loader'
+          ]
+        }
+      ]
+    },
+    plugins: plugins
+  }
+];
