@@ -15,6 +15,7 @@ import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
 import { GridListTileBar } from 'material-ui/GridList';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
+import CloseIcon from 'material-ui-icons/Close';
 import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 
@@ -29,9 +30,7 @@ const styles = {
     height: 'calc(100% - 64px)'
   },
   cardContainerSmall: {
-    marginTop: 56,
-    width: 330,
-    height: 'calc(100% - 56px)'
+    maxHeight: '50vh'
   },
   card: {
     height: '100%',
@@ -111,7 +110,7 @@ class SpotDetail extends Component {
   render() {
     return (
       <Drawer
-        anchor='right'
+        anchor={this.props.large ? 'right' : 'bottom'}
         open={this.props.drawerOpen}
         docked
         style={styles.drawer}
@@ -130,7 +129,7 @@ class SpotDetail extends Component {
               color='contrast'
               onClick={this.props.handleCloseSpotButtonClick}
             >
-              <ChevronRightIcon style={styles.spotToobarIcon} />
+              {this.renderCloseButton()}
             </IconButton>
           </div>
         </Toolbar>
@@ -186,6 +185,14 @@ class SpotDetail extends Component {
         </Card>
       </div>
     );
+  }
+
+  renderCloseButton() {
+    if (this.props.large) {
+      return <ChevronRightIcon style={styles.spotToobarIcon} />;
+    } else {
+      return <CloseIcon style={styles.spotToobarIcon} />
+    }
   }
 
   renderSpotReviews(reviews) {
