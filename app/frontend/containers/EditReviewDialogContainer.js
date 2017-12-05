@@ -58,7 +58,8 @@ const mapDispatchToProps = (dispatch) => {
         params.image_url = response.imageUrl;
         fileName = response.fileName;
       }
-      if (!canvas && !oldReview.image) {
+      if (!canvas) {
+        console.log(oldReview);
         params.image_url = '';
       }
       const client = new ApiClient;
