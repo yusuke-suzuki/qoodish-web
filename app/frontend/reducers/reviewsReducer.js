@@ -101,7 +101,6 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: null,
         editReviewDialogOpen: false
       });
     case OPEN_DELETE_REVIEW_DIALOG:
@@ -111,7 +110,6 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_DELETE_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: null,
         deleteReviewDialogOpen: false
       });
     case OPEN_REVIEW_DIALOG:
@@ -121,8 +119,7 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        reviewDialogOpen: false,
-        currentReview: null
+        reviewDialogOpen: false
       });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
