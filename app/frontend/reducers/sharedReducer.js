@@ -6,7 +6,10 @@ import {
   UPDATE_WINDOW_SIZE,
   UPDATE_PAGE_TITLE,
   OPEN_ISSUE_DIALOG,
-  CLOSE_ISSUE_DIALOG
+  CLOSE_ISSUE_DIALOG,
+  LOAD_PLACES_START,
+  LOAD_PLACES_END,
+  SEARCH_PLACES
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -19,8 +22,10 @@ const initialState = {
   pageTitle: '',
   issueDialogOpen: false,
   issueTargetId: null,
-  issueTargetType: null
-}
+  issueTargetType: null,
+  pickedPlaces: [],
+  loadingPlaces: false
+};
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -61,6 +66,18 @@ const reducer = (state = initialState, action) => {
         issueDialogOpen: false,
         issueTargetId: null,
         issueTargetType: null
+      });
+    case LOAD_PLACES_START:
+      return Object.assign({}, state, {
+        loadingPlaces: true
+      });
+    case LOAD_PLACES_END:
+      return Object.assign({}, state, {
+        loadingPlaces: false
+      });
+    case SEARCH_PLACES:
+      return Object.assign({}, state, {
+        pickedPlaces: action.payload.places
       });
     default:
       return state;

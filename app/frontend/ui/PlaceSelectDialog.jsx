@@ -6,8 +6,10 @@ import Dialog, {
   DialogTitle,
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import PlacesAutocomplete from 'react-places-autocomplete';
 import PlaceIcon from 'material-ui-icons/Place';
+import TextField from 'material-ui/TextField';
+import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 
 const styles = {
   titleText: {
@@ -23,61 +25,27 @@ const styles = {
   }
 };
 
-const autoCompleteStyles = {
-  root: {
-    paddingRight: 22
-  },
-  autocompleteContainer: {
-    zIndex: 2
-  }
-};
-
 class PlaceSelectDialog extends Component {
   constructor(props) {
     super(props);
     this.handlePlaceSelected = this.handlePlaceSelected.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.state = {
-      placeInput: '',
-      placeId: '',
-      description: ''
-    };
   }
 
-  handleInputChange(input) {
-    if (!input) {
-      this.setState({
-        placeId: '',
-        description: ''
-      });
+  handleInputChange(e) {
+    let input = e.target.value;
+    if (this.props.loadingPlaces || !input) {
+      return;
     }
-    this.setState({
-      placeInput: input
-    });
+    this.props.handleInputChange(input);
   }
 
-  handlePlaceSelected(name, placeId) {
-    this.setState({
-      placeId: placeId,
-      description: name,
-      placeInput: name
-    });
-    let place = {
-      placeId: placeId,
-      description: name
-    };
+  handlePlaceSelected(place) {
     this.props.onRequestClose();
     this.props.onPlaceSelected(place);
   }
 
   render() {
-    const inputProps = {
-      value: this.state.placeInput,
-      onChange: this.handleInputChange,
-      placeholder: 'Search places...',
-      autoFocus: true
-    };
-
     return (
       <Dialog
         open={this.props.dialogOpen}
@@ -87,11 +55,15 @@ class PlaceSelectDialog extends Component {
           <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>
         </DialogTitle>
         <DialogContent style={styles.dialogContent}>
-          <PlacesAutocomplete
-            inputProps={inputProps}
-            onSelect={this.handlePlaceSelected}
-            styles={autoCompleteStyles}
+          <TextField
+            label='Search places...'
+            onChange={this.handleInputChange}
+            fullWidth
+            autoFocus
           />
+          <List>
+            {this.renderPlaces()}
+          </List>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.onRequestClose}>
@@ -100,6 +72,25 @@ class PlaceSelectDialog extends Component {
         </DialogActions>
       </Dialog>
     );
+  }
+
+  renderPlaces() {
+    return this.props.places.map((place) => (
+      <ListItem
+        button
+        key={place.place_id}
+        onClick={() => this.handlePlaceSelected(place)}
+      >
+        <ListItemAvatar>
+          <Avatar>
+            <PlaceIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={place.description}
+        />
+      </ListItem>
+    ));
   }
 }
 

@@ -347,6 +347,34 @@ class ApiClient {
     const response = await fetch(url, options);
     return response;
   }
+
+  async searchPlaces(input) {
+    const url = `${process.env.ENDPOINT}/api/places?input=${input}`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async searchNearPlaces(lat, lng) {
+    const url = `${process.env.ENDPOINT}/api/places?lat=${lat}&lng=${lng}`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default ApiClient;

@@ -23,6 +23,7 @@ import mapZoomChanged from '../actions/mapZoomChanged';
 import mapCenterChanged from '../actions/mapCenterChanged';
 import { fetchCurrentPosition } from './Utils';
 import openReviewDialog from '../actions/openReviewDialog';
+import searchPlaces from '../actions/searchPlaces';
 
 const mapStateToProps = (state) => {
   return {
@@ -77,6 +78,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(requestMapBase());
       } else {
         dispatch(requestCurrentPosition());
+      }
+      const client = new ApiClient;
+      let response = await client.searchNearPlaces(position.coords.latitude, position.coords.longitude);
+      let places = await response.json();
+      if (response.ok) {
+        dispatch(searchPlaces(places));
       }
     },
 

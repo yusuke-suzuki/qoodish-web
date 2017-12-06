@@ -14,6 +14,7 @@ import Spots from './app/controllers/Spots';
 import Reviews from './app/controllers/Reviews';
 import Follows from './app/controllers/Follows';
 import InappropriateContents from './app/controllers/InappropriateContents';
+import Places from './app/controllers/Places';
 
 import { generateMetadata } from './app/models/Utils';
 
@@ -198,6 +199,11 @@ const routes = (app) => {
     const inappropriateContents = new InappropriateContents;
     await inappropriateContents.create(ctx);
     ctx.status = 204;
+  });
+
+  router.get('/api/places', error(formatError), async (ctx, next) => {
+    const places = new Places;
+    ctx.body = await places.index(ctx);
   });
 
   app.use(router.routes());

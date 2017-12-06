@@ -40,7 +40,6 @@
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^15.6.1",
     "react-google-maps": "next",
-    "react-places-autocomplete": "^5.4.2",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "next",
