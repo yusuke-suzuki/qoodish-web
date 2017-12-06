@@ -18,6 +18,8 @@ import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 import CloseIcon from 'material-ui-icons/Close';
 import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
+import Dialog, { DialogContent } from 'material-ui/Dialog';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   drawer: {
@@ -30,7 +32,6 @@ const styles = {
     height: 'calc(100% - 64px)'
   },
   cardContainerSmall: {
-    maxHeight: '50vh'
   },
   card: {
     height: '100%',
@@ -88,6 +89,9 @@ const styles = {
     paddingTop: 16,
     paddingBottom: 16,
     height: 'initial'
+  },
+  dialogContent: {
+    padding: 0
   }
 };
 
@@ -109,14 +113,36 @@ class SpotDetail extends Component {
 
   render() {
     return (
+      <div>
+        {this.props.large ? this.renderDrawer() : this.renderDialog()}
+      </div>
+    );
+  }
+
+  renderDrawer() {
+    return (
       <Drawer
-        anchor={this.props.large ? 'right' : 'bottom'}
+        anchor='right'
         open={this.props.drawerOpen}
         docked
         style={styles.drawer}
       >
         {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
       </Drawer>
+    );
+  }
+
+  renderDialog() {
+    return (
+      <Dialog
+        fullScreen
+        open={!this.props.large && this.props.drawerOpen}
+        transition={<Slide direction='up' />}
+      >
+        <DialogContent style={styles.dialogContent}>
+          {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
+        </DialogContent>
+      </Dialog>
     );
   }
 

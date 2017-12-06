@@ -176,7 +176,6 @@ class MapSummary extends Component {
       <Dialog
         fullScreen
         open={!this.props.large && this.props.drawerOpen}
-        onRequestClose={this.props.handleRequestDialogClose}
         transition={<Slide direction='up' />}
       >
         <DialogContent style={styles.dialogContent}>

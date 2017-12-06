@@ -103,12 +103,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     onSpotMarkerClick: async (spot) => {
-      dispatch(openSpotDetail(spot));
       const client = new ApiClient;
       let response = await client.fetchSpotReviews(ownProps.match.params.mapId, spot.place_id);
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchSpotReviews(reviews));
+        dispatch(openSpotDetail(spot));
       }
     },
 
