@@ -35,7 +35,6 @@ const mapStateToProps = (state) => {
     spots: state.gMap.spots,
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
-    mapSummaryOpen: state.mapDetail.mapSummaryOpen,
     large: state.shared.large
   }
 }
@@ -104,12 +103,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     onSpotMarkerClick: async (spot) => {
-      dispatch(openSpotDetail(spot));
       const client = new ApiClient;
       let response = await client.fetchSpotReviews(ownProps.match.params.mapId, spot.place_id);
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchSpotReviews(reviews));
+        dispatch(openSpotDetail(spot));
       }
     },
 

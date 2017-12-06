@@ -7,6 +7,7 @@ import openJoinMapDialog from '../actions/openJoinMapDialog';
 import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
+import closeMapSummary from '../actions/closeMapSummary';
 
 const mapStateToProps = (state) => {
   return {
@@ -14,7 +15,8 @@ const mapStateToProps = (state) => {
     currentMap: state.mapDetail.currentMap,
     drawerOpen: state.mapDetail.mapSummaryOpen,
     collaborators: state.mapDetail.collaborators,
-    spots: state.gMap.spots
+    spots: state.gMap.spots,
+    large: state.shared.large
   }
 }
 
@@ -57,6 +59,10 @@ const mapDispatchToProps = (dispatch) => {
 
     handleIssueButtonClick: (map) => {
       dispatch(openIssueDialog(map.id, 'map'))
+    },
+
+    handleCloseButtonClick: () => {
+      dispatch(closeMapSummary());
     }
   }
 }

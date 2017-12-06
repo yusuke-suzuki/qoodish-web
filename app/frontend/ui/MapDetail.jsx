@@ -12,6 +12,8 @@ import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
+import Card, { CardContent } from 'material-ui/Card';
+import Typography from 'material-ui/Typography';
 
 const styles = {
   mapWrapperLarge: {
@@ -25,7 +27,7 @@ const styles = {
   mapWrapperSmall: {
     position: 'fixed',
     top: 0,
-    bottom: 0,
+    bottom: 100,
     right: 0,
     left: 0,
     marginTop: 56
@@ -44,10 +46,22 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 20,
+    bottom: 70,
     right: 20,
     backgroundColor: 'red',
     color: 'white'
+  },
+  mapCard: {
+    width: '100%',
+    height: 100,
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 1
+  },
+  mapCardText: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
   }
 }
 
@@ -142,13 +156,14 @@ export default class MapDetail extends Component {
   render() {
     return (
       <div>
-        {this.props.large && this.props.currentMap ? <MapSummaryContainer onSpotMarkerClick={this.props.onSpotMarkerClick} /> : null}
+        {this.props.currentMap ? <MapSummaryContainer onSpotMarkerClick={this.props.onSpotMarkerClick} /> : null}
+        {!this.props.large ? this.renderMapCard() : null}
         <SpotDetailContainer />
         <ReviewDialogContainer mapId={this.props.match.params.mapId} />
         <GoogleMapContainer
           {...this.props}
           containerElement={
-            <div style={this.props.mapSummaryOpen ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
+            <div style={this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
           }
           mapElement={
             <div style={styles.mapContainer} />
@@ -164,6 +179,21 @@ export default class MapDetail extends Component {
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
+    );
+  }
+
+  renderMapCard() {
+    return (
+      <Card style={styles.mapCard} onClick={this.props.openMapSummary}>
+        <CardContent>
+          <Typography type='headline' component='h2' gutterBottom style={styles.mapCardText}>
+            {this.props.currentMap && this.props.currentMap.name}
+          </Typography>
+          <Typography component='p' style={styles.mapCardText}>
+            {this.props.currentMap && this.props.currentMap.description}
+          </Typography>
+        </CardContent>
+      </Card>
     );
   }
 
