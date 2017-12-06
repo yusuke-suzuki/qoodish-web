@@ -19,6 +19,7 @@ import FetchCollaboratorsFailed from './errors/FetchCollaboratorsFailed';
 import JoinMapFailed from './errors/JoinMapFailed';
 import LeaveMapFailed from './errors/LeaveMapFailed';
 import IssueContentFailed from './errors/IssueContentFailed';
+import FetchPlacesFailed from './errors/FetchPlacesFailed';
 
 class QoodishClient {
   async signIn(params) {
@@ -533,6 +534,48 @@ class QoodishClient {
       throw new AuthenticationFailed;
     } else {
       throw new IssueContentFailed(response.status, json.detail);
+    }
+  }
+
+  async searchPlaces(token, input, locale) {
+    const url = `${process.env.API_ENDPOINT}/places?input=${encodeURIComponent(input)}`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchPlacesFailed;
+    }
+  }
+
+  async searchNearPlaces(token, lat, lng, locale) {
+    const url = `${process.env.API_ENDPOINT}/places?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchPlacesFailed;
     }
   }
 }
