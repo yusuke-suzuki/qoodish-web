@@ -35,7 +35,6 @@ const mapStateToProps = (state) => {
     spots: state.gMap.spots,
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
-    mapSummaryOpen: state.mapDetail.mapSummaryOpen,
     large: state.shared.large
   }
 }

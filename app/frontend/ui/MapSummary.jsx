@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
 import Drawer from 'material-ui/Drawer';
+import Dialog, { DialogContent } from 'material-ui/Dialog';
+import CloseIcon from 'material-ui-icons/Close';
+import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -15,18 +18,19 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Divider from 'material-ui/Divider';
 import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
-import openJoinMapDialog from '../actions/openJoinMapDialog';
-import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 const styles = {
   drawer: {
     position: 'fixed'
   },
-  cardContainer: {
+  cardContainerLarge: {
     marginTop: 64,
     width: 330,
     height: 'calc(100% - 64px)',
+    overflow: 'hidden'
+  },
+  cardContainerSmall: {
     overflow: 'hidden'
   },
   card: {
@@ -78,6 +82,9 @@ const styles = {
   spotImage: {
     width: 40,
     height: 40
+  },
+  dialogContent: {
+    padding: 0
   }
 };
 
@@ -146,8 +153,16 @@ class MapSummary extends Component {
 
   render() {
     return (
+      <div>
+        {this.props.large ? this.renderDrawer() : this.renderDialog()}
+      </div>
+    );
+  }
+
+  renderDrawer() {
+    return (
       <Drawer
-        open={this.props.drawerOpen}
+        open={this.props.large && this.props.drawerOpen}
         docked
         style={styles.drawer}
       >
@@ -156,9 +171,24 @@ class MapSummary extends Component {
     );
   }
 
+  renderDialog() {
+    return (
+      <Dialog
+        fullScreen
+        open={!this.props.large && this.props.drawerOpen}
+        onRequestClose={this.props.handleRequestDialogClose}
+        transition={<Slide direction='up' />}
+      >
+        <DialogContent style={styles.dialogContent}>
+          {this.props.currentMap ? this.renderMapSummary(this.props.currentMap) : null}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   renderMapSummary(map) {
     return (
-      <div style={styles.cardContainer}>
+      <div style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
         {this.renderMapToolbar()}
         <Card style={styles.card}>
           <CardMedia>
@@ -221,6 +251,9 @@ class MapSummary extends Component {
   renderMapToolbar() {
     return (
       <Toolbar style={styles.mapToolbar} disableGutters>
+        <div>
+          {!this.props.large && this.renderCloseButton()}
+        </div>
         <div style={styles.toolbarActions}>
           <IconButton
             color='contrast'
@@ -277,6 +310,17 @@ class MapSummary extends Component {
           {this.props.currentMap.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}
         </div>
       </Toolbar>
+    );
+  }
+
+  renderCloseButton() {
+    return (
+      <IconButton
+        color='contrast'
+        onClick={this.props.handleCloseButtonClick}
+      >
+        <CloseIcon style={styles.mapMenuIcon} />
+      </IconButton>
     );
   }
 
