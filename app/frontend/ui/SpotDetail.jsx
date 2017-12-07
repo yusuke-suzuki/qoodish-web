@@ -15,7 +15,7 @@ import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
 import { GridListTileBar } from 'material-ui/GridList';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
-import CloseIcon from 'material-ui-icons/Close';
+import ArrowForwardIcon from 'material-ui-icons/ArrowForward';
 import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
@@ -33,9 +33,15 @@ const styles = {
   },
   cardContainerSmall: {
   },
-  card: {
+  cardLarge: {
     height: '100%',
     overflowY: 'scroll'
+  },
+  cardSmall: {
+    height: '100%',
+    width: '100%',
+    overflowY: 'scroll',
+    position: 'absolute'
   },
   media: {
     width: '100%'
@@ -159,7 +165,7 @@ class SpotDetail extends Component {
             </IconButton>
           </div>
         </Toolbar>
-        <Card style={styles.card}>
+        <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           <CardMedia>
             <img src={this.props.currentSpot.image_url} style={styles.media} />
             <GridListTileBar
@@ -217,7 +223,7 @@ class SpotDetail extends Component {
     if (this.props.large) {
       return <ChevronRightIcon style={styles.spotToobarIcon} />;
     } else {
-      return <CloseIcon style={styles.spotToobarIcon} />
+      return <ArrowForwardIcon style={styles.spotToobarIcon} />
     }
   }
 
