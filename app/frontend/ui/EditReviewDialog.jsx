@@ -40,7 +40,8 @@ class EditReviewDialog extends Component {
       image: null,
       imagePreviewUrl: '',
       errorComment: '',
-      disabled: true
+      disabled: true,
+      imageDeleteRequest: false
     };
     this.handleCommentChange = this.handleCommentChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
@@ -109,15 +110,19 @@ class EditReviewDialog extends Component {
       place_id: this.state.placeId
     };
     let canvas = document.getElementById('canvas');
-    if (this.props.currentReview && this.props.currentReview.image && this.state.imagePreviewUrl == this.props.currentReview.image.url) {
+    if (this.imageNotChanged()) {
       canvas = null;
     }
     if (this.props.currentReview) {
       params.review_id = this.state.id;
-      this.props.handleClickEditButton(this.props.currentReview, params, canvas);
+      this.props.handleClickEditButton(this.props.currentReview, params, canvas, this.state.imageDeleteRequest);
     } else {
       this.props.handleClickCreateButton(this.props.mapId, params, canvas);
     }
+  }
+
+  imageNotChanged() {
+    return this.props.currentReview && this.props.currentReview.image && this.state.imagePreviewUrl == this.props.currentReview.image.url;
   }
 
   handleAddImageClick(e) {
@@ -138,7 +143,8 @@ class EditReviewDialog extends Component {
       let dataUrl = reader.result;
       this.setState({
         image: file,
-        imagePreviewUrl: dataUrl
+        imagePreviewUrl: dataUrl,
+        imageDeleteRequest: false
       });
 
       this.drawImagePreview(dataUrl);
@@ -167,7 +173,8 @@ class EditReviewDialog extends Component {
   handleClearImageClick() {
     this.setState({
       image: null,
-      imagePreviewUrl: ''
+      imagePreviewUrl: '',
+      imageDeleteRequest: true
     });
   }
 
