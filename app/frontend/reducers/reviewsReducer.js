@@ -19,6 +19,7 @@ import {
 
 const initialState = {
   currentReview: null,
+  targetReview: null,
   currentReviews: [],
   reviewDialogOpen: false,
   loadingReviews: false,
@@ -96,20 +97,22 @@ const reducer = (state = initialState, action) => {
       });
     case OPEN_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: action.payload.review,
+        targetReview: action.payload.review,
         editReviewDialogOpen: true
       });
     case CLOSE_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
+        targetReview: null,
         editReviewDialogOpen: false
       });
     case OPEN_DELETE_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        currentReview: action.payload.review,
+        targetReview: action.payload.review,
         deleteReviewDialogOpen: true
       });
     case CLOSE_DELETE_REVIEW_DIALOG:
       return Object.assign({}, state, {
+        targetReview: null,
         deleteReviewDialogOpen: false
       });
     case OPEN_REVIEW_DIALOG:
@@ -127,6 +130,7 @@ const reducer = (state = initialState, action) => {
         loadingReviews: false,
         noMoreReviews: false,
         nextTimestamp: '',
+        targetReview: null,
         currentReview: null,
         reviewDialogOpen: false
       });

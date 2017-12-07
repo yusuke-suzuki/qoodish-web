@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   return {
     dialogOpen: state.reviews.editReviewDialogOpen,
     selectedPlace: state.reviews.selectedPlace,
-    currentReview: state.reviews.currentReview
+    currentReview: state.reviews.targetReview
   }
 }
 
@@ -49,7 +49,7 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    handleClickEditButton: async (oldReview, params, canvas) => {
+    handleClickEditButton: async (oldReview, params, canvas, isImageDeleteRequest = false) => {
       dispatch(requestStart());
       let fileName;
       if (canvas) {
@@ -57,9 +57,7 @@ const mapDispatchToProps = (dispatch) => {
         let response = await uploadToStorage(blob);
         params.image_url = response.imageUrl;
         fileName = response.fileName;
-      }
-      if (!canvas) {
-        console.log(oldReview);
+      } else if (isImageDeleteRequest) {
         params.image_url = '';
       }
       const client = new ApiClient;
