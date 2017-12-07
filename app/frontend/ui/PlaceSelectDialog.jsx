@@ -16,7 +16,7 @@ const styles = {
     marginLeft: 30
   },
   dialogContent: {
-    overflow: 'initial'
+    paddingBottom: 0
   },
   placeIcon: {
     marginTop: -2,
