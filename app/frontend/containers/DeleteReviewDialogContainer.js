@@ -13,7 +13,7 @@ import { deleteFromStorage } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
-    currentReview: state.reviews.currentReview,
+    currentReview: state.reviews.targetReview,
     dialogOpen: state.reviews.deleteReviewDialogOpen
   }
 }
