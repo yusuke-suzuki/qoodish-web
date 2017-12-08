@@ -15,7 +15,7 @@ import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
 import { GridListTileBar } from 'material-ui/GridList';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
-import ArrowForwardIcon from 'material-ui-icons/ArrowForward';
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
@@ -223,7 +223,7 @@ class SpotDetail extends Component {
     if (this.props.large) {
       return <ChevronRightIcon style={styles.spotToobarIcon} />;
     } else {
-      return <ArrowForwardIcon style={styles.spotToobarIcon} />
+      return <ArrowBackIcon style={styles.spotToobarIcon} />
     }
   }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
 import Drawer from 'material-ui/Drawer';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
-import ArrowForwardIcon from 'material-ui-icons/ArrowForward';
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -54,9 +54,7 @@ const styles = {
     position: 'absolute',
     zIndex: 1,
     right: 0,
-    left: 0,
-    paddingLeft: 15,
-    paddingRight: 15
+    left: 0
   },
   toolbar: {
     cursor: 'pointer'
@@ -324,7 +322,7 @@ class MapSummary extends Component {
         color='contrast'
         onClick={this.props.handleCloseButtonClick}
       >
-        <ArrowForwardIcon style={styles.mapMenuIcon} />
+        <ArrowBackIcon style={styles.mapMenuIcon} />
       </IconButton>
     );
   }
