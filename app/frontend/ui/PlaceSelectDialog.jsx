@@ -41,8 +41,12 @@ class PlaceSelectDialog extends Component {
   }
 
   handlePlaceSelected(place) {
+    let params = {
+      placeId: place.place_id,
+      description: place.description
+    };
     this.props.onRequestClose();
-    this.props.onPlaceSelected(place);
+    this.props.onPlaceSelected(params);
   }
 
   render() {
