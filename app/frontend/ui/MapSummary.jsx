@@ -14,11 +14,11 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Toolbar from 'material-ui/Toolbar';
 import ShareIcon from 'material-ui-icons/Share';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Divider from 'material-ui/Divider';
 import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 const styles = {
   drawer: {
@@ -65,16 +65,6 @@ const styles = {
   mapMenuIcon: {
     color: 'white'
   },
-  expandOpen: {
-    transform: 'rotate(180deg)'
-  },
-  expandTitle: {
-    paddingLeft: 16,
-    display: 'inline-flex'
-  },
-  expandContentIcon: {
-    marginRight: 10
-  },
   listItemContent: {
     overflow: 'hidden'
   },
@@ -98,6 +88,9 @@ const styles = {
   },
   roleButton: {
     margin: 0
+  },
+  tabContainer: {
+    marginBottom: 60
   }
 };
 
@@ -105,32 +98,18 @@ class MapSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collaboratorExpanded: true,
-      spotExpanded: true,
       anchorElShare: undefined,
       shareMenuOpen: false,
       anchorElVert: undefined,
-      vertMenuOpen: false
+      vertMenuOpen: false,
+      tabValue: 0
     };
-    this.handleExpandCollaboratorClick = this.handleExpandCollaboratorClick.bind(this);
-    this.handleExpandSpotClick = this.handleExpandSpotClick.bind(this);
     this.handleSpotClick = this.handleSpotClick.bind(this);
     this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
     this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
     this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(this);
     this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(this);
-  }
-
-  handleExpandCollaboratorClick() {
-    this.setState({
-      collaboratorExpanded: !this.state.collaboratorExpanded
-    });
-  }
-
-  handleExpandSpotClick() {
-    this.setState({
-      spotExpanded: !this.state.spotExpanded
-    });
+    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   handleSpotClick(spot) {
@@ -161,6 +140,12 @@ class MapSummary extends Component {
   handleRequestVertMenuClose() {
     this.setState({
       vertMenuOpen: false
+    });
+  }
+
+  handleTabChange(e, value) {
+    this.setState({
+      tabValue: value
     });
   }
 
@@ -218,45 +203,38 @@ class MapSummary extends Component {
             {this.renderRoleButton(map)}
           </CardActions>
           <Divider />
-          <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandSpotClick}>
-            <Typography style={styles.expandTitle} type='title' color='secondary'>
-              <PlaceIcon style={styles.expandContentIcon} /> Spots
-            </Typography>
-            <div style={styles.toolbarActions}>
-              <IconButton
-                aria-expanded={this.state.spotExpanded}
-                aria-label='Show more'
-               >
-                 <ExpandMoreIcon style={this.state.spotExpanded ? styles.expandOpen : {}} />
-              </IconButton>
-            </div>
-          </Toolbar>
-          <Collapse in={this.state.spotExpanded} transitionDuration='auto' unmountOnExit>
-            <List disablePadding>
-              {this.props.spots.length > 0 ? this.renderSpots(this.props.spots) : null}
-            </List>
-          </Collapse>
-          <Divider />
-          <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandCollaboratorClick}>
-            <Typography style={styles.expandTitle} type='title' color='secondary'>
-              <GroupIcon style={styles.expandContentIcon}/> Collaborators
-            </Typography>
-            <div style={styles.toolbarActions}>
-              <IconButton
-                aria-expanded={this.state.collaboratorExpanded}
-                aria-label='Show more'
-               >
-                 <ExpandMoreIcon style={this.state.collaboratorExpanded ? styles.expandOpen : {}} />
-              </IconButton>
-            </div>
-          </Toolbar>
-          <Collapse in={this.state.collaboratorExpanded} transitionDuration='auto' unmountOnExit>
-            <List disablePadding>
-              {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
-            </List>
-          </Collapse>
+          <Tabs
+            value={this.state.tabValue}
+            onChange={this.handleTabChange}
+            fullWidth
+            indicatorColor='primary'
+            textColor='primary'
+          >
+            <Tab icon={<GroupIcon />} label='MEMBER' />
+            <Tab icon={<PlaceIcon />} label='SPOTS' />
+          </Tabs>
+          <div style={styles.tabContainer}>
+            {this.state.tabValue === 0 && this.renderMemberTab()}
+            {this.state.tabValue === 1 && this.renderSpotTab()}
+          </div>
         </Card>
       </div>
+    );
+  }
+
+  renderSpotTab() {
+    return (
+      <List disablePadding>
+        {this.props.spots.length > 0 ? this.renderSpots(this.props.spots) : null}
+      </List>
+    );
+  }
+
+  renderMemberTab() {
+    return (
+      <List disablePadding>
+        {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
+      </List>
     );
   }
 
