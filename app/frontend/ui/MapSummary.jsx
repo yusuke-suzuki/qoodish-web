@@ -89,6 +89,15 @@ const styles = {
   },
   dialogContent: {
     padding: 0
+  },
+  cardContent: {
+    paddingBottom: 0
+  },
+  cardActions: {
+    padding: '8px 16px 8px'
+  },
+  roleButton: {
+    margin: 0
   }
 };
 
@@ -197,7 +206,7 @@ class MapSummary extends Component {
           <CardMedia>
             <img src={map.image_url} style={styles.media} />
           </CardMedia>
-          <CardContent>
+          <CardContent style={styles.cardContent}>
             <Typography type='headline' component='h2' gutterBottom style={styles.mapName}>
               {map.name}
             </Typography>
@@ -205,7 +214,7 @@ class MapSummary extends Component {
               {map.description}
             </Typography>
           </CardContent>
-          <CardActions>
+          <CardActions style={styles.cardActions}>
             {this.renderRoleButton(map)}
           </CardActions>
           <Divider />
@@ -393,19 +402,19 @@ class MapSummary extends Component {
   renderRoleButton(map) {
     if (map.editable) {
       return (
-        <Button raised disabled>
+        <Button raised disabled style={styles.roleButton} >
           Owner
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button raised onClick={this.props.handleLeaveButtonClick}>
+        <Button raised onClick={this.props.handleLeaveButtonClick} style={styles.roleButton}>
           Leave
         </Button>
       ) ;
     } else {
       return (
-        <Button raised onClick={this.props.handleJoinButtonClick} color='primary'>
+        <Button raised onClick={this.props.handleJoinButtonClick} color='primary' style={styles.roleButton}>
           Join
         </Button>
       );
