@@ -24,6 +24,7 @@ import mapCenterChanged from '../actions/mapCenterChanged';
 import { fetchCurrentPosition } from './Utils';
 import openReviewDialog from '../actions/openReviewDialog';
 import searchPlaces from '../actions/searchPlaces';
+import fetchMapReviews from '../actions/fetchMapReviews';
 
 const mapStateToProps = (state) => {
   return {
@@ -87,9 +88,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    fetchSpots: async (mapId = ownProps.match.params.mapId) => {
+    fetchSpots: async () => {
       const client = new ApiClient;
-      let response = await client.fetchSpots(mapId);
+      let response = await client.fetchSpots(ownProps.match.params.mapId);
       if (response.ok) {
         let spots = await response.json();
         dispatch(fetchSpots(spots));
@@ -102,6 +103,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         let collaborators = await response.json();
         dispatch(fetchCollaborators(collaborators));
+      }
+    },
+
+    fetchMapReviews: async () => {
+      const client = new ApiClient;
+      let response = await client.fetchMapReviews(ownProps.match.params.mapId);
+      if (response.ok) {
+        let reviews = await response.json();
+        dispatch(fetchMapReviews(reviews));
       }
     },
 

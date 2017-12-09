@@ -11,6 +11,8 @@ class Reviews extends Application {
       reviews = await client.fetchRecentReviews(token, ctx.currentLocale);
     } else if (ctx.params.mapId && query.place_id) {
       reviews = await client.fetchSpotReviews(token, ctx.currentLocale, ctx.params.mapId, query.place_id);
+    } else if (ctx.params.mapId) {
+      reviews = await client.fetchMapReviews(token, ctx.currentLocale, ctx.params.mapId);
     } else if (query.next_timestamp) {
       reviews = await client.fetchReviews(token, ctx.currentLocale, query.next_timestamp);
     } else {

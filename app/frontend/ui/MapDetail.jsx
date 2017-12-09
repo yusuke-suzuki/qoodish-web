@@ -21,7 +21,7 @@ const styles = {
     top: 0,
     bottom: 0,
     right: 0,
-    left: 330,
+    left: 350,
     marginTop: 64
   },
   mapWrapperSmall: {
@@ -121,12 +121,14 @@ export default class MapDetail extends Component {
     this.props.updatePageTitle();
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
-      this.props.fetchSpots(this.props.currentMap.map_id);
+      this.props.fetchSpots();
       this.props.fetchCollaborators();
+      this.props.fetchMapReviews();
     } else {
       await this.props.fetchMap();
       this.props.fetchSpots();
       this.props.fetchCollaborators();
+      this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
     }
     this.controlMapSummary(this.props);

@@ -5,7 +5,7 @@ import Dialog, { DialogContent } from 'material-ui/Dialog';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
@@ -14,11 +14,13 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Toolbar from 'material-ui/Toolbar';
 import ShareIcon from 'material-ui-icons/Share';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Divider from 'material-ui/Divider';
 import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
+import TimelineIcon from 'material-ui-icons/Timeline';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import moment from 'moment';
 
 const styles = {
   drawer: {
@@ -26,7 +28,7 @@ const styles = {
   },
   cardContainerLarge: {
     marginTop: 64,
-    width: 330,
+    width: 350,
     height: 'calc(100% - 64px)',
     overflow: 'hidden'
   },
@@ -65,16 +67,6 @@ const styles = {
   mapMenuIcon: {
     color: 'white'
   },
-  expandOpen: {
-    transform: 'rotate(180deg)'
-  },
-  expandTitle: {
-    paddingLeft: 16,
-    display: 'inline-flex'
-  },
-  expandContentIcon: {
-    marginRight: 10
-  },
   listItemContent: {
     overflow: 'hidden'
   },
@@ -83,12 +75,34 @@ const styles = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   },
+  activityText: {
+    paddingRight: 20,
+    fontSize: 14
+  },
   spotImage: {
     width: 40,
     height: 40
   },
   dialogContent: {
     padding: 0
+  },
+  cardContent: {
+    paddingBottom: 0
+  },
+  cardActions: {
+    padding: '8px 16px 8px'
+  },
+  roleButton: {
+    margin: 0
+  },
+  tabContainer: {
+    marginBottom: 60
+  },
+  tab: {
+    minWidth: 0
+  },
+  secondaryAvatar: {
+    borderRadius: 0
   }
 };
 
@@ -96,32 +110,18 @@ class MapSummary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collaboratorExpanded: true,
-      spotExpanded: true,
       anchorElShare: undefined,
       shareMenuOpen: false,
       anchorElVert: undefined,
-      vertMenuOpen: false
+      vertMenuOpen: false,
+      tabValue: 0
     };
-    this.handleExpandCollaboratorClick = this.handleExpandCollaboratorClick.bind(this);
-    this.handleExpandSpotClick = this.handleExpandSpotClick.bind(this);
     this.handleSpotClick = this.handleSpotClick.bind(this);
     this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
     this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
     this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(this);
     this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(this);
-  }
-
-  handleExpandCollaboratorClick() {
-    this.setState({
-      collaboratorExpanded: !this.state.collaboratorExpanded
-    });
-  }
-
-  handleExpandSpotClick() {
-    this.setState({
-      spotExpanded: !this.state.spotExpanded
-    });
+    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   handleSpotClick(spot) {
@@ -152,6 +152,12 @@ class MapSummary extends Component {
   handleRequestVertMenuClose() {
     this.setState({
       vertMenuOpen: false
+    });
+  }
+
+  handleTabChange(e, value) {
+    this.setState({
+      tabValue: value
     });
   }
 
@@ -197,7 +203,7 @@ class MapSummary extends Component {
           <CardMedia>
             <img src={map.image_url} style={styles.media} />
           </CardMedia>
-          <CardContent>
+          <CardContent style={styles.cardContent}>
             <Typography type='headline' component='h2' gutterBottom style={styles.mapName}>
               {map.name}
             </Typography>
@@ -205,49 +211,53 @@ class MapSummary extends Component {
               {map.description}
             </Typography>
           </CardContent>
-          <CardActions>
+          <CardActions style={styles.cardActions}>
             {this.renderRoleButton(map)}
           </CardActions>
           <Divider />
-          <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandSpotClick}>
-            <Typography style={styles.expandTitle} type='title' color='secondary'>
-              <PlaceIcon style={styles.expandContentIcon} /> Spots
-            </Typography>
-            <div style={styles.toolbarActions}>
-              <IconButton
-                aria-expanded={this.state.spotExpanded}
-                aria-label='Show more'
-               >
-                 <ExpandMoreIcon style={this.state.spotExpanded ? styles.expandOpen : {}} />
-              </IconButton>
-            </div>
-          </Toolbar>
-          <Collapse in={this.state.spotExpanded} transitionDuration='auto' unmountOnExit>
-            <List disablePadding>
-              {this.props.spots.length > 0 ? this.renderSpots(this.props.spots) : null}
-            </List>
-          </Collapse>
-          <Divider />
-          <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandCollaboratorClick}>
-            <Typography style={styles.expandTitle} type='title' color='secondary'>
-              <GroupIcon style={styles.expandContentIcon}/> Collaborators
-            </Typography>
-            <div style={styles.toolbarActions}>
-              <IconButton
-                aria-expanded={this.state.collaboratorExpanded}
-                aria-label='Show more'
-               >
-                 <ExpandMoreIcon style={this.state.collaboratorExpanded ? styles.expandOpen : {}} />
-              </IconButton>
-            </div>
-          </Toolbar>
-          <Collapse in={this.state.collaboratorExpanded} transitionDuration='auto' unmountOnExit>
-            <List disablePadding>
-              {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
-            </List>
-          </Collapse>
+          <Tabs
+            value={this.state.tabValue}
+            onChange={this.handleTabChange}
+            fullWidth
+            centered
+            indicatorColor='primary'
+            textColor='primary'
+          >
+            <Tab icon={<TimelineIcon />} label='TIMELINE' style={styles.tab} />
+            <Tab icon={<GroupIcon />} label='MEMBER' style={styles.tab} />
+            <Tab icon={<PlaceIcon />} label='SPOTS' style={styles.tab} />
+          </Tabs>
+          <div style={styles.tabContainer}>
+            {this.state.tabValue === 0 && this.renderTimelineTab()}
+            {this.state.tabValue === 1 && this.renderMemberTab()}
+            {this.state.tabValue === 2 && this.renderSpotTab()}
+          </div>
         </Card>
       </div>
+    );
+  }
+
+  renderSpotTab() {
+    return (
+      <List disablePadding>
+        {this.props.spots.length > 0 ? this.renderSpots(this.props.spots) : null}
+      </List>
+    );
+  }
+
+  renderMemberTab() {
+    return (
+      <List disablePadding>
+        {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
+      </List>
+    );
+  }
+
+  renderTimelineTab() {
+    return (
+      <List disablePadding>
+        {this.props.mapReviews.length > 0 ? this.renderActivities(this.props.mapReviews) : null}
+      </List>
     );
   }
 
@@ -393,19 +403,19 @@ class MapSummary extends Component {
   renderRoleButton(map) {
     if (map.editable) {
       return (
-        <Button raised disabled>
+        <Button raised disabled style={styles.roleButton} >
           Owner
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button raised onClick={this.props.handleLeaveButtonClick}>
+        <Button raised onClick={this.props.handleLeaveButtonClick} style={styles.roleButton}>
           Leave
         </Button>
       ) ;
     } else {
       return (
-        <Button raised onClick={this.props.handleJoinButtonClick} color='primary'>
+        <Button raised onClick={this.props.handleJoinButtonClick} color='primary' style={styles.roleButton}>
           Join
         </Button>
       );
@@ -446,6 +456,34 @@ class MapSummary extends Component {
         />
       </ListItem>
     ));
+  }
+
+  renderActivities(mapReviews) {
+    return mapReviews.map((review) => (
+      <ListItem button key={review.id} onClick={() => this.props.handleReviewClick(review)}>
+        <Avatar src={review.author.profile_image_url} />
+        <ListItemText
+          primary={
+            <div style={styles.activityText}>
+              <b>{review.author.name}</b> created a report about <b>{review.spot.name}</b>
+            </div>
+          }
+          secondary={this.fromNow(review)}
+          style={styles.listItemContent}
+        />
+        {review.image &&
+          <ListItemSecondaryAction>
+            <Avatar style={styles.secondaryAvatar}>
+              <img src={review.image.url} style={styles.spotImage} />
+            </Avatar>
+          </ListItemSecondaryAction>
+        }
+      </ListItem>
+    ));
+  }
+
+  fromNow(review) {
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
   }
 }
 
