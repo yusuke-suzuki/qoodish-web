@@ -249,6 +249,20 @@ class ApiClient {
     return response;
   }
 
+  async fetchMapReviews(mapId) {
+    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchReview(mapId, reviewId) {
     const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews/${reviewId}`;
     const token = await firebase.auth().currentUser.getIdToken();

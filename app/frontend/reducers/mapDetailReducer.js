@@ -10,12 +10,14 @@ import {
   CLOSE_MAP_SUMMARY,
   FETCH_SPOT_REVIEWS,
   FETCH_COLLABORATORS,
+  FETCH_MAP_REVIEWS,
   OPEN_JOIN_MAP_DIALOG,
   CLOSE_JOIN_MAP_DIALOG,
   OPEN_LEAVE_MAP_DIALOG,
   CLOSE_LEAVE_MAP_DIALOG,
   JOIN_MAP,
   LEAVE_MAP,
+  CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
   CLEAR_MAP_STATE
@@ -29,6 +31,7 @@ const initialState = {
   currentSpot: null,
   spotReviews: [],
   collaborators: [],
+  mapReviews: [],
   joinMapDialogOpen: false,
   leaveMapDialogOpen: false
 }
@@ -80,6 +83,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         collaborators: action.payload.collaborators
       });
+    case FETCH_MAP_REVIEWS:
+      return Object.assign({}, state, {
+        mapReviews: action.payload.reviews
+      });
     case OPEN_JOIN_MAP_DIALOG:
       return Object.assign({}, state, {
         joinMapDialogOpen: true
@@ -103,6 +110,10 @@ const reducer = (state = initialState, action) => {
     case LEAVE_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.currentMap
+      });
+    case CREATE_REVIEW:
+      return Object.assign({}, state, {
+        mapReviews: [action.payload.review, ...state.mapReviews]
       });
     case EDIT_REVIEW:
       if (state.spotReviews.length == 0) {
@@ -143,6 +154,7 @@ const reducer = (state = initialState, action) => {
         currentSpot: null,
         spotReviews: [],
         collaborators: [],
+        mapReviews: [],
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false
       });

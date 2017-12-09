@@ -28,7 +28,7 @@ const styles = {
   },
   cardContainerLarge: {
     marginTop: 64,
-    width: 330,
+    width: 350,
     height: 'calc(100% - 64px)'
   },
   cardContainerSmall: {

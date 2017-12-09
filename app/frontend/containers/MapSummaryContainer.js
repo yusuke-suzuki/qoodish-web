@@ -8,6 +8,7 @@ import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import closeMapSummary from '../actions/closeMapSummary';
+import openReviewDialog from '../actions/openReviewDialog';
 
 const mapStateToProps = (state) => {
   return {
@@ -16,6 +17,7 @@ const mapStateToProps = (state) => {
     drawerOpen: state.mapDetail.mapSummaryOpen,
     collaborators: state.mapDetail.collaborators,
     spots: state.gMap.spots,
+    mapReviews: state.mapDetail.mapReviews,
     large: state.shared.large
   }
 }
@@ -24,6 +26,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     requestSpotPosition: (spot) => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
+    },
+
+    handleReviewClick: (review) => {
+      dispatch(openReviewDialog(review));
+      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     },
 
     handleJoinButtonClick: () => {

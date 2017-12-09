@@ -5,7 +5,7 @@ import Dialog, { DialogContent } from 'material-ui/Dialog';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
@@ -17,8 +17,10 @@ import ShareIcon from 'material-ui-icons/Share';
 import Divider from 'material-ui/Divider';
 import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
+import TimelineIcon from 'material-ui-icons/Timeline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import moment from 'moment';
 
 const styles = {
   drawer: {
@@ -26,7 +28,7 @@ const styles = {
   },
   cardContainerLarge: {
     marginTop: 64,
-    width: 330,
+    width: 350,
     height: 'calc(100% - 64px)',
     overflow: 'hidden'
   },
@@ -73,6 +75,10 @@ const styles = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   },
+  activityText: {
+    paddingRight: 20,
+    fontSize: 14
+  },
   spotImage: {
     width: 40,
     height: 40
@@ -91,6 +97,12 @@ const styles = {
   },
   tabContainer: {
     marginBottom: 60
+  },
+  tab: {
+    minWidth: 0
+  },
+  secondaryAvatar: {
+    borderRadius: 0
   }
 };
 
@@ -207,15 +219,18 @@ class MapSummary extends Component {
             value={this.state.tabValue}
             onChange={this.handleTabChange}
             fullWidth
+            centered
             indicatorColor='primary'
             textColor='primary'
           >
-            <Tab icon={<GroupIcon />} label='MEMBER' />
-            <Tab icon={<PlaceIcon />} label='SPOTS' />
+            <Tab icon={<TimelineIcon />} label='TIMELINE' style={styles.tab} />
+            <Tab icon={<GroupIcon />} label='MEMBER' style={styles.tab} />
+            <Tab icon={<PlaceIcon />} label='SPOTS' style={styles.tab} />
           </Tabs>
           <div style={styles.tabContainer}>
-            {this.state.tabValue === 0 && this.renderMemberTab()}
-            {this.state.tabValue === 1 && this.renderSpotTab()}
+            {this.state.tabValue === 0 && this.renderTimelineTab()}
+            {this.state.tabValue === 1 && this.renderMemberTab()}
+            {this.state.tabValue === 2 && this.renderSpotTab()}
           </div>
         </Card>
       </div>
@@ -234,6 +249,14 @@ class MapSummary extends Component {
     return (
       <List disablePadding>
         {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
+      </List>
+    );
+  }
+
+  renderTimelineTab() {
+    return (
+      <List disablePadding>
+        {this.props.mapReviews.length > 0 ? this.renderActivities(this.props.mapReviews) : null}
       </List>
     );
   }
@@ -433,6 +456,34 @@ class MapSummary extends Component {
         />
       </ListItem>
     ));
+  }
+
+  renderActivities(mapReviews) {
+    return mapReviews.map((review) => (
+      <ListItem button key={review.id} onClick={() => this.props.handleReviewClick(review)}>
+        <Avatar src={review.author.profile_image_url} />
+        <ListItemText
+          primary={
+            <div style={styles.activityText}>
+              <b>{review.author.name}</b> created a report about <b>{review.spot.name}</b>
+            </div>
+          }
+          secondary={this.fromNow(review)}
+          style={styles.listItemContent}
+        />
+        {review.image &&
+          <ListItemSecondaryAction>
+            <Avatar style={styles.secondaryAvatar}>
+              <img src={review.image.url} style={styles.spotImage} />
+            </Avatar>
+          </ListItemSecondaryAction>
+        }
+      </ListItem>
+    ));
+  }
+
+  fromNow(review) {
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
   }
 }
 
