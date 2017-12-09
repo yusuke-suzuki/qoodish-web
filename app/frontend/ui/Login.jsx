@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import firebase from 'firebase';
 import Typography from 'material-ui/Typography';
+import { FirebaseAuth } from 'react-firebaseui';
 
 const styles = {
   loginContainerLarge: {
@@ -14,17 +15,25 @@ const styles = {
   }
 };
 
-export default class Login extends Component {
-  componentDidMount() {
-    this.renderFirebaseUI();
-  }
+const uiConfig = {
+  callbacks: {
+    signInSuccess: (currentUser, credential, redirectUrl) => {
+      this.props.signIn(currentUser, credential, redirectUrl);
+    }
+  },
+  signInSuccessUrl: process.env.ENDPOINT,
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    firebase.auth.GithubAuthProvider.PROVIDER_ID
+  ],
+  tosUrl: process.env.ENDPOINT
+};
 
-  componentWillUnmount() {
-    window.FirebaseUI.reset();
-  }
-
-  renderFirebaseUI() {
-    let config = {
+class Login extends React.Component {
+  componentWillMount() {
+    this.uiConfig = {
       callbacks: {
         signInSuccess: (currentUser, credential, redirectUrl) => {
           this.props.signIn(currentUser, credential, redirectUrl);
@@ -39,7 +48,6 @@ export default class Login extends Component {
       ],
       tosUrl: process.env.ENDPOINT
     };
-    window.FirebaseUI.start('#firebaseui-auth-container', config);
   }
 
   render() {
@@ -52,9 +60,11 @@ export default class Login extends Component {
           <Typography type={this.props.large ? 'display2' : 'display1'} gutterBottom>
             次はどこ行く？
           </Typography>
-          <div id='firebaseui-auth-container' />
+          <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
         </div>
       </div>
     );
   }
 }
+
+export default Login;
