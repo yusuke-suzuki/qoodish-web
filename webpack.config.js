@@ -74,6 +74,10 @@ module.exports = [
             'file-loader',
             'image-webpack-loader'
           ]
+        },
+        {
+          test: /\.css/,
+          use: ['style-loader', 'css-loader']
         }
       ]
     },
