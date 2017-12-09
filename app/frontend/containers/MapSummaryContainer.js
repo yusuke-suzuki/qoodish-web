@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import MapSummary from '../ui/MapSummary';
 import requestMapCenter from '../actions/requestMapCenter';
 import openEditMapDialog from '../actions/openEditMapDialog';
@@ -29,6 +30,7 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     handleReviewClick: (review) => {
+      dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
       dispatch(openReviewDialog(review));
       dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     },
