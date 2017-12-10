@@ -25,6 +25,7 @@ import { fetchCurrentPosition } from './Utils';
 import openReviewDialog from '../actions/openReviewDialog';
 import searchPlaces from '../actions/searchPlaces';
 import fetchMapReviews from '../actions/fetchMapReviews';
+import selectSpot from '../actions/selectSpot';
 
 const mapStateToProps = (state) => {
   return {
@@ -37,7 +38,8 @@ const mapStateToProps = (state) => {
     spots: state.gMap.spots,
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
-    large: state.shared.large
+    large: state.shared.large,
+    currentSpot: state.mapDetail.currentSpot
   }
 }
 
@@ -125,6 +127,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchSpotReviews(reviews));
+        dispatch(selectSpot(spot));
         dispatch(openSpotDetail(spot));
       }
     },
