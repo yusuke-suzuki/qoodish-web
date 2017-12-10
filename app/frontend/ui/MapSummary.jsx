@@ -45,7 +45,7 @@ const styles = {
     overflowY: 'scroll',
     position: 'absolute'
   },
-  mapName: {
+  mapSummaryText: {
     wordWrap: 'break-word'
   },
   media: {
@@ -76,7 +76,7 @@ const styles = {
     whiteSpace: 'nowrap'
   },
   activityText: {
-    paddingRight: 20,
+    paddingRight: 32,
     fontSize: 14
   },
   spotImage: {
@@ -102,7 +102,8 @@ const styles = {
     minWidth: 0
   },
   secondaryAvatar: {
-    borderRadius: 0
+    borderRadius: 0,
+    marginRight: 12
   }
 };
 
@@ -204,10 +205,10 @@ class MapSummary extends Component {
             <img src={map.image_url} style={styles.media} />
           </CardMedia>
           <CardContent style={styles.cardContent}>
-            <Typography type='headline' component='h2' gutterBottom style={styles.mapName}>
+            <Typography type='headline' component='h2' gutterBottom style={styles.mapSummaryText}>
               {map.name}
             </Typography>
-            <Typography component='p'>
+            <Typography component='p' style={styles.mapSummaryText}>
               {map.description}
             </Typography>
           </CardContent>

@@ -13,6 +13,7 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   dialogContentLarge: {
@@ -91,6 +92,7 @@ class ReviewDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
+        transition={<Slide direction='up' />}
       >
         <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           {this.props.currentReview ? this.renderReviewCard(this.props.currentReview) : null}
