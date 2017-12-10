@@ -4,6 +4,7 @@ import {
   CLOSE_PLACE_SELECT_DIALOG,
   EDIT_MAP,
   TOGGLE_RIGHT_DRAWER,
+  SELECT_SPOT,
   OPEN_SPOT_DETAIL,
   CLOSE_SPOT_DETAIL,
   OPEN_MAP_SUMMARY,
@@ -58,10 +59,13 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spotDetailOpen: !state.spotDetailOpen
       });
+    case SELECT_SPOT:
+      return Object.assign({}, state, {
+        currentSpot: action.payload.spot
+      });
     case OPEN_SPOT_DETAIL:
       return Object.assign({}, state, {
-        spotDetailOpen: true,
-        currentSpot: action.payload.spot
+        spotDetailOpen: true
       });
     case CLOSE_SPOT_DETAIL:
       return Object.assign({}, state, {

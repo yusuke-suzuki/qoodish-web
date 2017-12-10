@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withGoogleMap, GoogleMap, Marker, DirectionsRenderer } from 'react-google-maps';
+import { withGoogleMap, GoogleMap, Marker, DirectionsRenderer, InfoWindow } from 'react-google-maps';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
 import SpotDetailContainer from '../containers/SpotDetailContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
@@ -107,7 +107,13 @@ const GoogleMapContainer = withGoogleMap(props => (
         key={index}
         defaultAnimation={2}
         onClick={() => props.onSpotMarkerClick(spot)}
-      />
+      >
+        {props.currentSpot && props.currentSpot.place_id === spot.place_id &&
+          <InfoWindow>
+            <b>{spot.name}</b>
+          </InfoWindow>
+        }
+      </Marker>
     ))}
     {props.currentPosition.lat && props.currentPosition.lng ?
     <Marker
@@ -169,7 +175,7 @@ export default class MapDetail extends Component {
   render() {
     return (
       <div>
-        {this.props.currentMap ? <MapSummaryContainer onSpotMarkerClick={this.props.onSpotMarkerClick} /> : null}
+        {this.props.currentMap ? <MapSummaryContainer mapId={this.props.match.params.mapId} /> : null}
         {!this.props.large ? this.renderMapCard() : null}
         <SpotDetailContainer />
         <ReviewDialogContainer mapId={this.props.match.params.mapId} />

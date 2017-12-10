@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import ApiClient from './ApiClient';
 import MapSummary from '../ui/MapSummary';
 import requestMapCenter from '../actions/requestMapCenter';
 import openEditMapDialog from '../actions/openEditMapDialog';
@@ -10,6 +11,10 @@ import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import closeMapSummary from '../actions/closeMapSummary';
 import openReviewDialog from '../actions/openReviewDialog';
+import fetchSpotReviews from '../actions/fetchSpotReviews';
+import openSpotDetail from '../actions/openSpotDetail';
+import selectSpot from '../actions/selectSpot';
+import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -23,14 +28,24 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    requestSpotPosition: (spot) => {
+    handleSpotClick: async (spot) => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
+      dispatch(selectSpot(spot));
+      const client = new ApiClient;
+      let response = await client.fetchSpotReviews(ownProps.mapId, spot.place_id);
+      if (response.ok) {
+        let reviews = await response.json();
+        dispatch(fetchSpotReviews(reviews));
+        dispatch(openSpotDetail(spot));
+      }
     },
 
-    handleReviewClick: (review) => {
+    handleReviewClick: async (review) => {
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+      dispatch(selectSpot(review.spot));
+      await sleep(1000);
       dispatch(openReviewDialog(review));
       dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     },

@@ -117,17 +117,11 @@ class MapSummary extends Component {
       vertMenuOpen: false,
       tabValue: 0
     };
-    this.handleSpotClick = this.handleSpotClick.bind(this);
     this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
     this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
     this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(this);
     this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
-  }
-
-  handleSpotClick(spot) {
-    this.props.requestSpotPosition(spot);
-    this.props.onSpotMarkerClick(spot);
   }
 
   handleShareButtonClick(event) {
@@ -437,7 +431,7 @@ class MapSummary extends Component {
 
   renderSpots(spots) {
     return spots.map((spot) => (
-      <ListItem button key={spot.place_id} onClick={() => this.handleSpotClick(spot)}>
+      <ListItem button key={spot.place_id} onClick={() => this.props.handleSpotClick(spot)}>
         <Avatar>
           <img src={spot.image_url} style={styles.spotImage} />
         </Avatar>

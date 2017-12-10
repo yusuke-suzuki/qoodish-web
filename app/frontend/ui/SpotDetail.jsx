@@ -133,7 +133,7 @@ class SpotDetail extends Component {
         docked
         style={styles.drawer}
       >
-        {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
+        {this.props.drawerOpen && this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
       </Drawer>
     );
   }
@@ -146,7 +146,7 @@ class SpotDetail extends Component {
         transition={<Slide direction='up' />}
       >
         <DialogContent style={styles.dialogContent}>
-          {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
+          {this.props.drawerOpen && this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
         </DialogContent>
       </Dialog>
     );
