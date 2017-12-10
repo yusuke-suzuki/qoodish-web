@@ -13,7 +13,9 @@ import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
 import Card, { CardContent } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
+import ExpandLess from 'material-ui-icons/ExpandLess';
+import List, { ListItem, ListItemText } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
 
 const styles = {
   mapWrapperLarge: {
@@ -27,7 +29,7 @@ const styles = {
   mapWrapperSmall: {
     position: 'fixed',
     top: 0,
-    bottom: 100,
+    bottom: 67.84,
     right: 0,
     left: 0,
     marginTop: 56
@@ -46,22 +48,31 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 70,
+    bottom: 87.84,
     right: 20,
     backgroundColor: 'red',
     color: 'white'
   },
   mapCard: {
     width: '100%',
-    height: 100,
     position: 'fixed',
     bottom: 0,
     zIndex: 1
   },
-  mapCardText: {
+  mapCardContent: {
+    padding: 0
+  },
+  listItemText: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
+  },
+  listItemContent: {
+    overflow: 'hidden'
+  },
+  mapAvatarImage: {
+    width: 40,
+    height: 40
   }
 }
 
@@ -186,14 +197,27 @@ export default class MapDetail extends Component {
 
   renderMapCard() {
     return (
-      <Card style={styles.mapCard} onClick={this.props.openMapSummary}>
-        <CardContent>
-          <Typography type='headline' component='h2' gutterBottom style={styles.mapCardText}>
-            {this.props.currentMap && this.props.currentMap.name}
-          </Typography>
-          <Typography component='p' style={styles.mapCardText}>
-            {this.props.currentMap && this.props.currentMap.description}
-          </Typography>
+      <Card style={styles.mapCard}>
+        <CardContent style={styles.mapCardContent}>
+          <ListItem button onClick={this.props.openMapSummary}>
+            <Avatar style={styles.secondaryAvatar}>
+              <img src={this.props.currentMap && this.props.currentMap.image_url} style={styles.mapAvatarImage} />
+            </Avatar>
+            <ListItemText
+              primary={
+                <div style={styles.listItemText}>
+                  {this.props.currentMap && this.props.currentMap.name}
+                </div>
+              }
+              secondary={
+                <div style={styles.listItemText}>
+                  {this.props.currentMap && this.props.currentMap.description}
+                </div>
+              }
+              style={styles.listItemContent}
+            />
+            <ExpandLess />
+          </ListItem>
         </CardContent>
       </Card>
     );
