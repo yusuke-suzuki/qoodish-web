@@ -219,13 +219,13 @@ class MapSummary extends Component {
             textColor='primary'
           >
             <Tab icon={<TimelineIcon />} label='TIMELINE' style={styles.tab} />
-            <Tab icon={<GroupIcon />} label='MEMBER' style={styles.tab} />
             <Tab icon={<PlaceIcon />} label='SPOTS' style={styles.tab} />
+            <Tab icon={<GroupIcon />} label='FOLLOWERS' style={styles.tab} />
           </Tabs>
           <div style={styles.tabContainer}>
             {this.state.tabValue === 0 && this.renderTimelineTab()}
-            {this.state.tabValue === 1 && this.renderMemberTab()}
-            {this.state.tabValue === 2 && this.renderSpotTab()}
+            {this.state.tabValue === 1 && this.renderSpotTab()}
+            {this.state.tabValue === 2 && this.renderMemberTab()}
           </div>
         </Card>
       </div>
@@ -302,7 +302,7 @@ class MapSummary extends Component {
               key='copy'
             >
               <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
-                Copy link to this map
+                Copy URL
               </MenuItem>
             </CopyToClipboard>
           </Menu>
@@ -399,19 +399,19 @@ class MapSummary extends Component {
     if (map.editable) {
       return (
         <Button raised disabled style={styles.roleButton} >
-          Owner
+          OWNER
         </Button>
       );
     } else if (map.following) {
       return (
         <Button raised onClick={this.props.handleLeaveButtonClick} style={styles.roleButton}>
-          Leave
+          UNFOLLOW
         </Button>
       ) ;
     } else {
       return (
         <Button raised onClick={this.props.handleJoinButtonClick} color='primary' style={styles.roleButton}>
-          Join
+          FOLLOW
         </Button>
       );
     }

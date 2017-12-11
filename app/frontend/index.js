@@ -15,6 +15,8 @@ import sharedReducer from './reducers/sharedReducer';
 import discoverReducer from './reducers/discoverReducer';
 import mapsReducer from './reducers/mapsReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
+import spotDetailReducer from './reducers/spotDetailReducer';
+import mapSummaryReducer from './reducers/mapSummaryReducer';
 import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
@@ -52,6 +54,8 @@ const reducer = combineReducers({
   discover: discoverReducer,
   maps: mapsReducer,
   mapDetail: mapDetailReducer,
+  spotDetail: spotDetailReducer,
+  mapSummary: mapSummaryReducer,
   reviews: reviewsReducer,
   gMap: gMapReducer,
   settings: settingsReducer

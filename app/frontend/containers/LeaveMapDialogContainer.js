@@ -33,12 +33,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(closeLeaveMapDialog());
         let map = await response.json();
         dispatch(leaveMap(map));
-        dispatch(openToast('Left map successfully'));
+        dispatch(openToast('Unfollowed map successfully'));
         let colloboratorsResponse = await client.fetchCollaborators(ownProps.mapId)
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
-        dispatch(openToast('Failed to leave map'));
+        dispatch(openToast('Failed to unfollow map'));
       }
     }
   }

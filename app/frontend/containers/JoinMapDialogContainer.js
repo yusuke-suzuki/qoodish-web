@@ -33,12 +33,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(closeJoinMapDialog());
         let map = await followResponse.json();
         dispatch(joinMap(map));
-        dispatch(openToast('Joined map successfully!'));
+        dispatch(openToast('Followed map successfully!'));
         let colloboratorsResponse = await client.fetchCollaborators(ownProps.mapId)
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
-        dispatch(openToast('Failed to join map'));
+        dispatch(openToast('Failed to follow map'));
       }
     }
   }

@@ -3,15 +3,6 @@ import {
   OPEN_PLACE_SELECT_DIALOG,
   CLOSE_PLACE_SELECT_DIALOG,
   EDIT_MAP,
-  TOGGLE_RIGHT_DRAWER,
-  SELECT_SPOT,
-  OPEN_SPOT_DETAIL,
-  CLOSE_SPOT_DETAIL,
-  OPEN_MAP_SUMMARY,
-  CLOSE_MAP_SUMMARY,
-  FETCH_SPOT_REVIEWS,
-  FETCH_COLLABORATORS,
-  FETCH_MAP_REVIEWS,
   OPEN_JOIN_MAP_DIALOG,
   CLOSE_JOIN_MAP_DIALOG,
   OPEN_LEAVE_MAP_DIALOG,
@@ -27,12 +18,6 @@ import {
 const initialState = {
   currentMap: null,
   placeSelectDialogOpen: false,
-  mapSummaryOpen: false,
-  spotDetailOpen: false,
-  currentSpot: null,
-  spotReviews: [],
-  collaborators: [],
-  mapReviews: [],
   joinMapDialogOpen: false,
   leaveMapDialogOpen: false
 }
@@ -54,42 +39,6 @@ const reducer = (state = initialState, action) => {
     case EDIT_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.map
-      });
-    case TOGGLE_RIGHT_DRAWER:
-      return Object.assign({}, state, {
-        spotDetailOpen: !state.spotDetailOpen
-      });
-    case SELECT_SPOT:
-      return Object.assign({}, state, {
-        currentSpot: action.payload.spot
-      });
-    case OPEN_SPOT_DETAIL:
-      return Object.assign({}, state, {
-        spotDetailOpen: true
-      });
-    case CLOSE_SPOT_DETAIL:
-      return Object.assign({}, state, {
-        spotDetailOpen: false
-      });
-    case OPEN_MAP_SUMMARY:
-      return Object.assign({}, state, {
-        mapSummaryOpen: true
-      });
-    case CLOSE_MAP_SUMMARY:
-      return Object.assign({}, state, {
-        mapSummaryOpen: false
-      });
-    case FETCH_SPOT_REVIEWS:
-      return Object.assign({}, state, {
-        spotReviews: action.payload.reviews
-      });
-    case FETCH_COLLABORATORS:
-      return Object.assign({}, state, {
-        collaborators: action.payload.collaborators
-      });
-    case FETCH_MAP_REVIEWS:
-      return Object.assign({}, state, {
-        mapReviews: action.payload.reviews
       });
     case OPEN_JOIN_MAP_DIALOG:
       return Object.assign({}, state, {
@@ -115,50 +64,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentMap: action.payload.currentMap
       });
-    case CREATE_REVIEW:
-      return Object.assign({}, state, {
-        mapReviews: [action.payload.review, ...state.mapReviews]
-      });
-    case EDIT_REVIEW:
-      if (state.spotReviews.length == 0) {
-        return state;
-      }
-
-      let index = state.spotReviews.findIndex((review) => { return review.id == action.payload.review.id; });
-      let currentReview = state.spotReviews[index];
-      if (!currentReview) {
-        return state;
-      }
-
-      Object.assign(currentReview, action.payload.review);
-
-      return Object.assign({}, state, {
-        spotReviews: [
-          ...state.spotReviews.slice(0, index),
-          currentReview,
-          ...state.spotReviews.slice(index + 1)
-        ]
-      });
-    case DELETE_REVIEW:
-      if (state.spotReviews.length == 0) {
-        return state;
-      }
-
-      let rejected = state.spotReviews.filter((review) => { return review.id != action.payload.id; });
-      return Object.assign({}, state, {
-        spotReviews: rejected,
-      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
         placeSelectDialogOpen: false,
-        selectedPlace: null,
-        mapSummaryOpen: false,
-        spotDetailOpen: false,
-        currentSpot: null,
-        spotReviews: [],
-        collaborators: [],
-        mapReviews: [],
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false
       });

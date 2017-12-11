@@ -11,9 +11,9 @@ import openReviewDialog from '../actions/openReviewDialog';
 const mapStateToProps = (state) => {
   return {
     currentMap: state.mapDetail.currentMap,
-    drawerOpen: state.mapDetail.spotDetailOpen,
-    currentSpot: state.mapDetail.currentSpot,
-    spotReviews: state.mapDetail.spotReviews,
+    drawerOpen: state.spotDetail.spotDetailOpen,
+    currentSpot: state.spotDetail.currentSpot,
+    spotReviews: state.spotDetail.spotReviews,
     currentPosition: state.gMap.currentPosition,
     large: state.shared.large
   }

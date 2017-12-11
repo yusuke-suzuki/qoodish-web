@@ -39,7 +39,7 @@ const mapStateToProps = (state) => {
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
     large: state.shared.large,
-    currentSpot: state.mapDetail.currentSpot
+    currentSpot: state.spotDetail.currentSpot
   }
 }
 

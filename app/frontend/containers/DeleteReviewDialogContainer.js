@@ -46,6 +46,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(deleteReview(review.id));
         dispatch(openToast('Delete report successfully'));
       } else {
+        let json = await response.json();
         dispatch(openToast(json.detail));
       }
     }
