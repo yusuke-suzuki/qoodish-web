@@ -233,7 +233,7 @@ export default class MapDetail extends Component {
     if (!map) {
       return false;
     } else {
-      return (map.following && (map.shared || map.editable));
+      return map.editable || (map.shared && !map.private) || (map.private && map.following && map.shared);
     }
   }
 
