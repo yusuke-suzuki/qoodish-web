@@ -19,11 +19,11 @@ import { sleep } from './Utils';
 const mapStateToProps = (state) => {
   return {
     currentUser: state.app.currentUser,
-    currentMap: state.mapDetail.currentMap,
-    drawerOpen: state.mapDetail.mapSummaryOpen,
-    collaborators: state.mapDetail.collaborators,
+    currentMap: state.mapSummary.currentMap,
+    drawerOpen: state.mapSummary.mapSummaryOpen,
+    collaborators: state.mapSummary.collaborators,
     spots: state.gMap.spots,
-    mapReviews: state.mapDetail.mapReviews,
+    mapReviews: state.mapSummary.mapReviews,
     large: state.shared.large
   }
 }
@@ -33,18 +33,24 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleSpotClick: async (spot) => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));
+      dispatch(openSpotDetail(spot));
       const client = new ApiClient;
       let response = await client.fetchSpotReviews(ownProps.mapId, spot.place_id);
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchSpotReviews(reviews));
-        dispatch(openSpotDetail(spot));
       }
     },
 
     handleReviewClick: async (review) => {
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
       dispatch(selectSpot(review.spot));
+      const client = new ApiClient;
+      let response = await client.fetchSpotReviews(ownProps.mapId, review.spot.place_id);
+      if (response.ok) {
+        let reviews = await response.json();
+        dispatch(fetchSpotReviews(reviews));
+      }
       await sleep(1000);
       dispatch(openReviewDialog(review));
       dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));

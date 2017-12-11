@@ -8,7 +8,7 @@ import Card, { CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Collapse from 'material-ui/transitions/Collapse';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import GroupIcon from 'material-ui-icons/Group';
+import RateReviewIcon from 'material-ui-icons/RateReview';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import Divider from 'material-ui/Divider';
@@ -133,7 +133,7 @@ class SpotDetail extends Component {
         docked
         style={styles.drawer}
       >
-        {this.props.drawerOpen && this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
+        {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
       </Drawer>
     );
   }
@@ -146,7 +146,7 @@ class SpotDetail extends Component {
         transition={<Slide direction='up' />}
       >
         <DialogContent style={styles.dialogContent}>
-          {this.props.drawerOpen && this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
+          {this.props.currentSpot ? this.renderSpotSummary(this.props.currentSpot) : null}
         </DialogContent>
       </Dialog>
     );
@@ -184,13 +184,13 @@ class SpotDetail extends Component {
           </CardMedia>
           <BottomNavigation showLabels>
             <BottomNavigationButton
-              label='Add'
+              label='ADD'
               icon={<AddLocationIcon />}
               onClick={() => this.props.handleAddReviewButtonClick(spot)}
               disabled={!this.ableToPost(this.props.currentMap)}
             />
             <BottomNavigationButton
-              label='Directions'
+              label='DIRECTIONS'
               icon={<DirectionsIcon />}
               onClick={() => this.props.handleRouteButtonClick(spot, this.props.currentPosition)}
             />
@@ -198,7 +198,7 @@ class SpotDetail extends Component {
           <Divider />
           <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandReviewClick}>
             <Typography style={styles.expandTitle} type='title' color='secondary'>
-              <GroupIcon style={styles.expandContentIcon}/> Contributors
+              <RateReviewIcon style={styles.expandContentIcon}/> Reports
             </Typography>
             <div style={styles.toolbarActions}>
               <IconButton
