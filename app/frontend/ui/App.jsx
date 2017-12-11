@@ -15,6 +15,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import createPalette from 'material-ui/styles/palette';
 import { amber, lightBlue } from 'material-ui/colors';
 import firebase from 'firebase';
+import { CircularProgress } from 'material-ui/Progress';
 
 const theme = createMuiTheme({
   palette: createPalette({
@@ -22,6 +23,12 @@ const theme = createMuiTheme({
     accent: lightBlue
   })
 });
+const styles = {
+  progress: {
+    textAlign: 'center',
+    marginTop: '50vh'
+  }
+};
 
 class App extends Component {
   constructor(props) {
@@ -89,22 +96,26 @@ class App extends Component {
 
   renderUserOnly() {
     if (this.state.waitForInitialize) {
-      return null;
+      return (
+        <div style={styles.progress}>
+          <CircularProgress />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Switch>
+            <Route exact path='/' component={TimelineContainer} />
+            <Route exact path='/discover' component={DiscoverContainer} />
+            <Route exact path='/maps' component={MapsContainer} />
+            <Route exact path='/maps/:mapId' component={MapDetailContainer} />
+            <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
+            <Route exact path='/settings' component={SettingsContainer} />
+            <Redirect from='*' to='/' />
+          </Switch>
+        </div>
+      );
     }
-
-    return (
-      <div>
-        <Switch>
-          <Route exact path='/' component={TimelineContainer} />
-          <Route exact path='/discover' component={DiscoverContainer} />
-          <Route exact path='/maps' component={MapsContainer} />
-          <Route exact path='/maps/:mapId' component={MapDetailContainer} />
-          <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
-          <Route exact path='/settings' component={SettingsContainer} />
-          <Redirect from='*' to='/' />
-        </Switch>
-      </div>
-    );
   }
 
   renderGuestOnly() {
