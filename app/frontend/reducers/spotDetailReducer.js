@@ -11,7 +11,7 @@ import {
 
 const initialState = {
   spotDetailOpen: false,
-  currentSpot: null,
+  currentSpot: {},
   spotReviews: []
 };
 
@@ -69,7 +69,7 @@ const reducer = (state = initialState, action) => {
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         spotDetailOpen: false,
-        currentSpot: null,
+        currentSpot: {},
         spotReviews: []
       });
     default:
