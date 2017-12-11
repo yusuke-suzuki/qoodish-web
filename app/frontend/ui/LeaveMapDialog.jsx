@@ -15,11 +15,11 @@ class LeaveMapDialog extends Component {
         onRequestClose={this.props.handleRequestDialogClose}
       >
       　<DialogTitle>
-          Are you sure you want to leave this map?
+          Are you sure you want to unfollow this map?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            The reports you've written will not be deleted by leaving the map.
+            The reports you've written will not be deleted by unfollowing the map.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -27,7 +27,7 @@ class LeaveMapDialog extends Component {
             Cancel
           </Button>
           <Button raised onClick={this.props.handleLeaveButtonClick} color='primary'>
-            Leave
+            UNFOLLOW
           </Button>
         </DialogActions>
       </Dialog>

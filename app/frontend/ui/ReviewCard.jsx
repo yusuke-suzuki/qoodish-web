@@ -184,7 +184,7 @@ class ReviewCard extends Component {
           key='copy'
         >
           <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
-            Copy link to this report
+            Copy URL
           </MenuItem>
         </CopyToClipboard>
       </Menu>
