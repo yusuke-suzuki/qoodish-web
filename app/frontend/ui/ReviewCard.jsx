@@ -9,6 +9,8 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import FavoriteIcon from 'material-ui-icons/Favorite';
+import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
 
 const styles = {
   cardLarge: {
@@ -40,6 +42,10 @@ const styles = {
     position: 'absolute',
     right: 8,
     bottom: 9
+  },
+  likesCount: {
+    cursor: 'pointer',
+    width: 'fit-content'
   }
 };
 
@@ -118,11 +124,23 @@ class ReviewCard extends Component {
           </Typography>
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}
+        {review.likes_count > 0 && this.renderLikes(review)}
         <CardActions disableActionSpacing>
+          {this.renderLikeButton(review)}
           {this.renderShareButton()}
           {this.renderShareMenu()}
         </CardActions>
       </Card>
+    );
+  }
+
+  renderLikes(review) {
+    return (
+      <CardContent>
+        <Typography onClick={this.props.handleLikesClick} style={styles.likesCount}>
+          <b>{review.likes_count}</b> likes
+        </Typography>
+      </CardContent>
     );
   }
 
@@ -135,6 +153,17 @@ class ReviewCard extends Component {
       <CardMedia style={styles.cardMedia}>
         <img src={review.image.url} style={styles.media} />
       </CardMedia>
+    );
+  }
+
+  renderLikeButton(review) {
+    return (
+      <IconButton
+        color='contrast'
+        onClick={review.liked ? this.props.handleUnlikeButtonClick : this.props.handleLikeButtonClick}
+      >
+        {review.liked ? <FavoriteIcon color='error' /> : <FavoriteBorderIcon />}
+      </IconButton>
     );
   }
 

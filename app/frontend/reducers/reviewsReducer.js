@@ -14,6 +14,8 @@ import {
   OPEN_REVIEW_DIALOG,
   CLOSE_REVIEW_DIALOG,
   SELECT_PLACE_FOR_REVIEW,
+  LIKE_REVIEW,
+  UNLIKE_REVIEW,
   CLEAR_MAP_STATE
 } from '../actionTypes';
 
@@ -29,7 +31,7 @@ const initialState = {
   editReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
   selectedPlace: null
-}
+};
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -66,6 +68,8 @@ const reducer = (state = initialState, action) => {
         selectedPlace: action.payload.place,
         editReviewDialogOpen: true
       });
+    case LIKE_REVIEW:
+    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       if (state.currentReviews.length == 0) {
         return Object.assign({}, state, {

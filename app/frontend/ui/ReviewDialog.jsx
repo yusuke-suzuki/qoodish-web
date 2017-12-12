@@ -14,6 +14,8 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Slide from 'material-ui/transitions/Slide';
+import FavoriteIcon from 'material-ui-icons/Favorite';
+import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
 
 const styles = {
   dialogContentLarge: {
@@ -43,6 +45,13 @@ const styles = {
     position: 'absolute',
     right: 8,
     bottom: 9
+  },
+  reviewAction: {
+    minWidth: 'auto'
+  },
+  likesCount: {
+    cursor: 'pointer',
+    width: 'fit-content'
   }
 };
 
@@ -102,7 +111,9 @@ class ReviewDialog extends Component {
         <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
         </DialogContent>
+        {this.props.currentReview && this.props.currentReview.likes_count > 0 && this.renderLikes(this.props.currentReview)}
         <DialogActions style={styles.dialogActions}>
+          {this.props.currentReview && this.renderLikeButton(this.props.currentReview)}
           {this.props.currentReview && this.renderShareButton()}
           {this.props.currentReview && this.renderShareMenu()}
           <Button onClick={this.props.handleRequestDialogClose} style={styles.closeButton}>
@@ -110,6 +121,28 @@ class ReviewDialog extends Component {
           </Button>
         </DialogActions>
       </Dialog>
+    );
+  }
+
+  renderLikes(review) {
+    return (
+      <CardContent>
+        <Typography onClick={() => this.props.handleLikesClick(review)} style={styles.likesCount}>
+          <b>{review.likes_count}</b> likes
+        </Typography>
+      </CardContent>
+    );
+  }
+
+  renderLikeButton(review) {
+    return (
+      <IconButton
+        color='contrast'
+        onClick={() => review.liked ? this.props.handleUnlikeButtonClick(review) : this.props.handleLikeButtonClick(review)}
+        style={styles.reviewAction}
+      >
+        {review.liked ? <FavoriteIcon color='error' /> : <FavoriteBorderIcon />}
+      </IconButton>
     );
   }
 
@@ -121,6 +154,7 @@ class ReviewDialog extends Component {
         aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
         aria-haspopup='true'
         onClick={this.handleShareButtonClick}
+        style={styles.reviewAction}
       >
         <ShareIcon />
       </IconButton>

@@ -10,7 +10,9 @@ import {
   DELETE_REVIEW,
   CLEAR_MAP_STATE,
   JOIN_MAP,
-  LEAVE_MAP
+  LEAVE_MAP,
+  LIKE_REVIEW,
+  UNLIKE_REVIEW,
 } from '../actionTypes';
 
 const initialState = {
@@ -58,6 +60,8 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mapReviews: [action.payload.review, ...state.mapReviews]
       });
+    case LIKE_REVIEW:
+    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       if (state.mapReviews.length === 0) {
         return state;

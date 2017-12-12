@@ -3,6 +3,7 @@ import NavBarContainer from '../containers/NavBarContainer';
 import ToastContainer from '../containers/ToastContainer';
 import BlockUiContainer from '../containers/BlockUiContainer';
 import IssueDialogContainer from '../containers/IssueDialogContainer';
+import LikesDialogContainer from '../containers/LikesDialogContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginContainer from '../containers/LoginContainer';
 import DiscoverContainer from '../containers/DiscoverContainer';
@@ -88,6 +89,7 @@ class App extends Component {
           <ToastContainer />
           <BlockUiContainer />
           <IssueDialogContainer />
+          <LikesDialogContainer />
         </div>
       </MuiThemeProvider>
     );
