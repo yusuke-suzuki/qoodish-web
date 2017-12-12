@@ -214,7 +214,7 @@ class EditReviewDialog extends Component {
             label={this.state.placeName}
           />
           <br/>
-          {this.props.currentReview ? this.renderCommentBoxEdit() : this.renderCommentBoxCreate()}
+          {this.renderCommentBox()}
           <br/>
           <br/>
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
@@ -241,7 +241,7 @@ class EditReviewDialog extends Component {
     );
   }
 
-  renderCommentBoxEdit() {
+  renderCommentBox() {
     return (
       <TextField
         label='Comment'
@@ -250,21 +250,6 @@ class EditReviewDialog extends Component {
         helperText={this.state.errorComment}
         fullWidth
         value={this.state.comment}
-        multiline
-        autoFocus
-        rows='4'
-      />
-    );
-  }
-
-  renderCommentBoxCreate() {
-    return (
-      <TextField
-        label='Comment'
-        onChange={this.handleCommentChange}
-        error={this.state.errorComment ? true : false}
-        helperText={this.state.errorComment}
-        fullWidth
         multiline
         autoFocus
         rows='4'

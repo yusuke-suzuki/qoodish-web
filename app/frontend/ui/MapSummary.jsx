@@ -97,7 +97,7 @@ const styles = {
   },
   tab: {
     minWidth: 0,
-    width: 112
+    width: 110
   },
   secondaryAvatar: {
     borderRadius: 0,

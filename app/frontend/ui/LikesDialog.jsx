@@ -6,12 +6,17 @@ import Dialog, {
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   profileImage: {
     width: 40,
     height: 40
   }
+};
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
 }
 
 class LikesDialog extends React.Component {
@@ -21,12 +26,13 @@ class LikesDialog extends React.Component {
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
         fullWidth
+        transition={Transition}
       >
       　<DialogTitle>
           Likes
         </DialogTitle>
         <div>
-          <List>
+          <List disablePadding>
             {this.renderLikes(this.props.likes)}
           </List>
         </div>

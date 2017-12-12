@@ -29,7 +29,7 @@ const styles = {
   mapWrapperSmall: {
     position: 'fixed',
     top: 0,
-    bottom: 79.38,
+    bottom: 64,
     right: 0,
     left: 0,
     marginTop: 56
