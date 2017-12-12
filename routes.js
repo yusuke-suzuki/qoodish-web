@@ -12,6 +12,7 @@ import UserMaps from './app/controllers/UserMaps';
 import Collaborators from './app/controllers/Collaborators';
 import Spots from './app/controllers/Spots';
 import Reviews from './app/controllers/Reviews';
+import Likes from './app/controllers/Likes';
 import Follows from './app/controllers/Follows';
 import InappropriateContents from './app/controllers/InappropriateContents';
 import Places from './app/controllers/Places';
@@ -204,6 +205,21 @@ const routes = (app) => {
   router.get('/api/places', error(formatError), async (ctx, next) => {
     const places = new Places;
     ctx.body = await places.index(ctx);
+  });
+
+  router.get('/api/reviews/:reviewId/likes', error(formatError), async (ctx, next) => {
+    const likes = new Likes;
+    ctx.body = await likes.index(ctx);
+  });
+
+  router.post('/api/reviews/:reviewId/like', error(formatError), async (ctx, next) => {
+    const likes = new Likes;
+    ctx.body = await likes.create(ctx);
+  });
+
+  router.del('/api/reviews/:reviewId/like', error(formatError), async (ctx, next) => {
+    const likes = new Likes;
+    ctx.body = await likes.destroy(ctx);
   });
 
   app.use(router.routes());

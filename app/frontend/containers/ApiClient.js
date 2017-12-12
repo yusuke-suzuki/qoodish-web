@@ -218,6 +218,48 @@ class ApiClient {
     return response;
   }
 
+  async likeReview(id) {
+    const url = `${process.env.ENDPOINT}/api/reviews/${id}/like`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async unlikeReview(id) {
+    const url = `${process.env.ENDPOINT}/api/reviews/${id}/like`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchReviewLikes(reviewId) {
+    let url = `${process.env.ENDPOINT}/api/reviews/${reviewId}/likes`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchReviews(timestamp = null) {
     let url = `${process.env.ENDPOINT}/api/reviews`;
     if (timestamp) {

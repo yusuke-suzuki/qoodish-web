@@ -146,7 +146,10 @@ export default class Discover extends Component {
           <img src={map.image_url} />
           <GridListTileBar
             title={
-              <Typography type={this.props.large ? 'display4' : 'display3'} color='inherit' gutterBottom>
+              <Typography
+                type={this.props.large ? 'display4' : 'display3'}
+                color='inherit'
+              >
                 {map.name}
               </Typography>
             }

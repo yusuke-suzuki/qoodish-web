@@ -20,6 +20,7 @@ import JoinMapFailed from './errors/JoinMapFailed';
 import LeaveMapFailed from './errors/LeaveMapFailed';
 import IssueContentFailed from './errors/IssueContentFailed';
 import FetchPlacesFailed from './errors/FetchPlacesFailed';
+import RequestLikeFailed from './errors/RequestLikeFailed';
 
 class QoodishClient {
   async signIn(params) {
@@ -216,6 +217,7 @@ class QoodishClient {
     } else if (response.status === 401) {
       throw new AuthenticationFailed;
     } else {
+      const json = await response.json();
       throw new DeleteMapFailed(response.status, json.detail);
     }
   }
@@ -339,6 +341,7 @@ class QoodishClient {
     } else if (response.status === 401) {
       throw new AuthenticationFailed;
     } else {
+      const json = await response.json();
       throw new DeleteReviewFailed(response.status, json.detail);
     }
   }
@@ -554,6 +557,7 @@ class QoodishClient {
     } else if (response.status === 401) {
       throw new AuthenticationFailed;
     } else {
+      const json = await response.json();
       throw new IssueContentFailed(response.status, json.detail);
     }
   }
@@ -587,6 +591,68 @@ class QoodishClient {
         'Content-Type': 'application/json',
         'Authorization': `bearer ${token}`,
         'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchPlacesFailed;
+    }
+  }
+
+  async likeReview(token, reviewId, locale) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/like`;
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new RequestLikeFailed(response.status, json.detail);
+    }
+  }
+
+  async unlikeReview(token, reviewId, locale) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/like`;
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new RequestLikeFailed(response.status, json.detail);
+    }
+  }
+
+  async fetchReviewLikes(token, reviewId) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/likes`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
       }
     };
     const response = await fetch(url, options);

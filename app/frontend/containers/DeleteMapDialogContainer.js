@@ -7,7 +7,6 @@ import closeDeleteMapDialog from '../actions/closeDeleteMapDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -29,8 +28,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(requestFinish());
       dispatch(deleteMap(ownProps.mapId));
       dispatch(closeDeleteMapDialog());
-      // 少し待たないと dialog を close した際のエラー (material-ui 起因?) に巻き込まれて遷移できない
-      await sleep(1000);
       dispatch(push('/maps'));
       dispatch(openToast('Delete map successfully'));
     }

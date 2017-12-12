@@ -29,7 +29,7 @@ const styles = {
   mapWrapperSmall: {
     position: 'fixed',
     top: 0,
-    bottom: 67.84,
+    bottom: 79.38,
     right: 0,
     left: 0,
     marginTop: 56
@@ -48,7 +48,7 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 87.84,
+    bottom: 99.38,
     right: 20,
     backgroundColor: 'red',
     color: 'white'

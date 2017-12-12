@@ -47,6 +47,7 @@ class DeleteAccountDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.handleRequestDialogClose}
+        fullWidth
       >
       　<DialogTitle>
           Are you sure you want to DELETE your account?

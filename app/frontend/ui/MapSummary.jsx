@@ -95,17 +95,19 @@ const styles = {
   roleButton: {
     margin: 0
   },
-  tabContainer: {
-    marginBottom: 60
-  },
   tab: {
-    minWidth: 0
+    minWidth: 0,
+    width: 112
   },
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12
   }
 };
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
 
 class MapSummary extends Component {
   constructor(props) {
@@ -168,8 +170,8 @@ class MapSummary extends Component {
     return (
       <Drawer
         open={this.props.large && this.props.drawerOpen}
-        docked
         style={styles.drawer}
+        type='permanent'
       >
         {this.props.currentMap ? this.renderMapSummary(this.props.currentMap) : null}
       </Drawer>
@@ -181,7 +183,7 @@ class MapSummary extends Component {
       <Dialog
         fullScreen
         open={!this.props.large && this.props.drawerOpen}
-        transition={<Slide direction='up' />}
+        transition={Transition}
       >
         <DialogContent style={styles.dialogContent}>
           {this.props.currentMap ? this.renderMapSummary(this.props.currentMap) : null}
@@ -218,11 +220,23 @@ class MapSummary extends Component {
             indicatorColor='primary'
             textColor='primary'
           >
-            <Tab icon={<TimelineIcon />} label='TIMELINE' style={styles.tab} />
-            <Tab icon={<PlaceIcon />} label='SPOTS' style={styles.tab} />
-            <Tab icon={<GroupIcon />} label='FOLLOWERS' style={styles.tab} />
+            <Tab
+              icon={<TimelineIcon />}
+              label='TIMELINE'
+              style={styles.tab}
+            />
+            <Tab
+              icon={<PlaceIcon />}
+              label='SPOTS'
+              style={styles.tab}
+            />
+            <Tab
+              icon={<GroupIcon />}
+              label='FOLLOWERS'
+              style={styles.tab}
+            />
           </Tabs>
-          <div style={styles.tabContainer}>
+          <div>
             {this.state.tabValue === 0 && this.renderTimelineTab()}
             {this.state.tabValue === 1 && this.renderSpotTab()}
             {this.state.tabValue === 2 && this.renderMemberTab()}

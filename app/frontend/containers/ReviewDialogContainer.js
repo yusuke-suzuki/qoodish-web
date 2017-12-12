@@ -6,6 +6,11 @@ import openEditReviewDialog from '../actions/openEditReviewDialog';
 import openDeleteReviewDialog from '../actions/openDeleteReviewDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
+import ApiClient from './ApiClient';
+import likeReview from '../actions/likeReview';
+import unlikeReview from '../actions/unlikeReview';
+import fetchReviewLikes from '../actions/fetchReviewLikes';
+import openLikesDialog from '../actions/openLikesDialog';
 
 const mapStateToProps = (state) => {
   return {
@@ -19,7 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeReviewDialog());
-      dispatch(push(`/maps/${ownProps.mapId}`))
+      dispatch(push(`/maps/${ownProps.mapId}`));
     },
 
     handleTweetButtonClick: (review) => {
@@ -46,7 +51,41 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleIssueButtonClick: (review) => {
-      dispatch(openIssueDialog(review.id, 'review'))
+      dispatch(openIssueDialog(review.id, 'review'));
+    },
+
+    handleLikeButtonClick: async (targetReview) => {
+      const client = new ApiClient;
+      let response = await client.likeReview(targetReview.id);
+      if (response.ok) {
+        let review = await response.json();
+        dispatch(likeReview(review));
+        dispatch(openToast('Liked!'));
+      } else {
+        dispatch(openToast('Request failed.'));
+      }
+    },
+
+    handleUnlikeButtonClick: async (targetReview) => {
+      const client = new ApiClient;
+      let response = await client.unlikeReview(targetReview.id);
+      if (response.ok) {
+        let review = await response.json();
+        dispatch(unlikeReview(review));
+        dispatch(openToast('Unliked!'));
+      } else {
+        dispatch(openToast('Request failed.'));
+      }
+    },
+
+    handleLikesClick: async (review) => {
+      const client = new ApiClient;
+      let response = await client.fetchReviewLikes(review.id);
+      if (response.ok) {
+        let likes = await response.json();
+        dispatch(fetchReviewLikes(likes));
+        dispatch(openLikesDialog());
+      }
     }
   }
 }

@@ -1,10 +1,10 @@
 import { LIKE_REVIEW } from '../actionTypes';
 
-const likeReview = (like) => {
+const likeReview = (review) => {
   return {
     type: LIKE_REVIEW,
     payload: {
-      like: like
+      review: review
     }
   }
 }

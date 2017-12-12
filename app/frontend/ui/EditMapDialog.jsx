@@ -204,6 +204,7 @@ class EditMapDialog extends Component {
         onRequestClose={this.props.handleRequestDialogClose}
         ignoreBackdropClick
         ignoreEscapeKeyUp
+        fullWidth
       >
       　<DialogTitle>
           {this.props.currentMap ? 'Edit Map' : 'Create New Map'}

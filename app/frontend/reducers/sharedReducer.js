@@ -9,7 +9,10 @@ import {
   CLOSE_ISSUE_DIALOG,
   LOAD_PLACES_START,
   LOAD_PLACES_END,
-  SEARCH_PLACES
+  SEARCH_PLACES,
+  OPEN_LIKES_DIALOG,
+  CLOSE_LIKES_DIALOG,
+  FETCH_REVIEW_LIKES
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -24,7 +27,9 @@ const initialState = {
   issueTargetId: null,
   issueTargetType: null,
   pickedPlaces: [],
-  loadingPlaces: false
+  loadingPlaces: false,
+  likes: [],
+  likesDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -78,6 +83,18 @@ const reducer = (state = initialState, action) => {
     case SEARCH_PLACES:
       return Object.assign({}, state, {
         pickedPlaces: action.payload.places
+      });
+    case OPEN_LIKES_DIALOG:
+      return Object.assign({}, state, {
+        likesDialogOpen: true
+      });
+    case CLOSE_LIKES_DIALOG:
+      return Object.assign({}, state, {
+        likesDialogOpen: false
+      });
+    case FETCH_REVIEW_LIKES:
+      return Object.assign({}, state, {
+        likes: action.payload.likes
       });
     default:
       return state;

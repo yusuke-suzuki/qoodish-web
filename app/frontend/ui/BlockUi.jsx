@@ -17,7 +17,7 @@ const styles = {
   },
   progress: {
     textAlign: 'center',
-    marginTop: '25%'
+    marginTop: '50vh'
   }
 };
 

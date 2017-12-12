@@ -15,7 +15,6 @@ import fetchSpotReviews from '../actions/fetchSpotReviews';
 import openSpotDetail from '../actions/openSpotDetail';
 import closeSpotDetail from '../actions/closeSpotDetail';
 import selectSpot from '../actions/selectSpot';
-import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -46,15 +45,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleReviewClick: async (review) => {
       dispatch(selectSpot(review.spot));
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+      dispatch(openReviewDialog(review));
+      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
       const client = new ApiClient;
       let response = await client.fetchSpotReviews(ownProps.mapId, review.spot.place_id);
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchSpotReviews(reviews));
       }
-      await sleep(1000);
-      dispatch(openReviewDialog(review));
-      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     },
 
     handleJoinButtonClick: () => {
