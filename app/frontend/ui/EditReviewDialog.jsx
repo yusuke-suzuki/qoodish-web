@@ -203,6 +203,7 @@ class EditReviewDialog extends Component {
         onRequestClose={this.handleRequestClose}
         ignoreBackdropClick
         ignoreEscapeKeyUp
+        fullWidth
       >
       　<DialogTitle>
           {this.props.currentReview ? 'Edit Report' : 'Create New Report'}

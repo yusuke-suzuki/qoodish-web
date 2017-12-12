@@ -13,7 +13,7 @@ import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
-import { GridListTileBar } from 'material-ui/GridList';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
@@ -91,15 +91,25 @@ const styles = {
     height: 40
   },
   tileBar: {
-    marginBottom: 7,
     paddingTop: 16,
     paddingBottom: 16,
     height: 'initial'
   },
   dialogContent: {
     padding: 0
+  },
+  gridList: {
+    width: '100%',
+    margin: 0
+  },
+  gridListTile: {
+    height: 'auto'
   }
 };
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
 
 class SpotDetail extends Component {
   constructor(props) {
@@ -130,10 +140,11 @@ class SpotDetail extends Component {
       <Drawer
         anchor='right'
         open={this.props.drawerOpen}
-        docked
         style={styles.drawer}
+        type='persistent'
+        elevation={0}
       >
-        {this.renderSpotSummary(this.props.currentSpot)}
+        {this.props.currentSpot && this.renderSpotSummary(this.props.currentSpot)}
       </Drawer>
     );
   }
@@ -143,7 +154,7 @@ class SpotDetail extends Component {
       <Dialog
         fullScreen
         open={!this.props.large && this.props.drawerOpen}
-        transition={<Slide direction='up' />}
+        transition={Transition}
       >
         <DialogContent style={styles.dialogContent}>
           {this.renderSpotSummary(this.props.currentSpot)}
@@ -166,22 +177,7 @@ class SpotDetail extends Component {
           </div>
         </Toolbar>
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-          <CardMedia>
-            <img src={this.props.currentSpot.image_url} style={styles.media} />
-            <GridListTileBar
-              title={
-                <Typography type='headline' component='h2' color='inherit' gutterBottom style={styles.spotName} >
-                  <PlaceIcon /> {spot.name}
-                </Typography>
-              }
-              subtitle={
-                <Typography component='p' color='inherit' style={styles.spotAddress}>
-                  {spot.formatted_address}
-                </Typography>
-              }
-              style={styles.tileBar}
-            />
-          </CardMedia>
+          {this.renderThumbnail(spot)}
           <BottomNavigation showLabels>
             <BottomNavigationButton
               label='ADD'
@@ -209,13 +205,43 @@ class SpotDetail extends Component {
               </IconButton>
             </div>
           </Toolbar>
-          <Collapse in={this.state.reviewExpanded} transitionDuration='auto' unmountOnExit>
+          <Collapse in={this.state.reviewExpanded}>
             <List disablePadding>
-              {this.props.spotReviews.length > 0 ? this.renderSpotReviews(this.props.spotReviews) : null}
+              {this.props.spotReviews.length > 0 && this.renderSpotReviews(this.props.spotReviews)}
             </List>
           </Collapse>
         </Card>
       </div>
+    );
+  }
+
+  renderThumbnail(spot) {
+    return (
+      <GridList
+        cols={1}
+        spacing={0}
+        style={styles.gridList}
+      >
+        <GridListTile
+          key={spot.place_id}
+          style={styles.gridListTile}
+        >
+          <img src={spot.image_url} style={styles.media} />
+          <GridListTileBar
+            title={
+              <Typography type='headline' component='h2' color='inherit' style={styles.spotName} >
+                <PlaceIcon /> {spot.name}
+              </Typography>
+            }
+            subtitle={
+              <Typography component='p' color='inherit' style={styles.spotAddress}>
+                {spot.formatted_address}
+              </Typography>
+            }
+            style={styles.tileBar}
+          />
+        </GridListTile>
+      </GridList>
     );
   }
 

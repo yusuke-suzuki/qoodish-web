@@ -95,12 +95,14 @@ class ReviewCard extends Component {
   renderReviewCard(review) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
+        {this.props.currentReview.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
             <Avatar>
               <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
             </Avatar>
           }
+          action={this.renderMoreVertButton()}
           title={review.author.name}
           subheader={this.fromNow(review)}
         />
@@ -119,8 +121,6 @@ class ReviewCard extends Component {
         <CardActions disableActionSpacing>
           {this.renderShareButton()}
           {this.renderShareMenu()}
-          {this.renderMoreVertButton()}
-          {this.props.currentReview.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
         </CardActions>
       </Card>
     );

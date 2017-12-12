@@ -54,6 +54,7 @@ class PlaceSelectDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.props.onRequestClose}
+        fullWidth
       >
       　<DialogTitle>
           <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>

@@ -46,6 +46,10 @@ const styles = {
   }
 };
 
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
+
 class ReviewDialog extends Component {
   constructor(props) {
     super(props);
@@ -92,16 +96,15 @@ class ReviewDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
-        transition={<Slide direction='up' />}
+        transition={Transition}
+        fullWidth
       >
         <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
-          {this.props.currentReview ? this.renderReviewCard(this.props.currentReview) : null}
+          {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
         </DialogContent>
         <DialogActions style={styles.dialogActions}>
-          {this.props.currentReview ? this.renderShareButton() : null}
-          {this.props.currentReview ? this.renderShareMenu() : null}
-          {this.props.currentReview ? this.renderMoreVertButton() : null}
-          {this.props.currentReview ? this.renderMoreVertMenu() : null}
+          {this.props.currentReview && this.renderShareButton()}
+          {this.props.currentReview && this.renderShareMenu()}
           <Button onClick={this.props.handleRequestDialogClose} style={styles.closeButton}>
             Close
           </Button>
@@ -249,12 +252,14 @@ class ReviewDialog extends Component {
   renderReviewCard(review) {
     return (
       <Card>
+        {this.renderMoreVertMenu()}
         <CardHeader
           avatar={
             <Avatar>
               <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
             </Avatar>
           }
+          action={this.renderMoreVertButton()}
           title={review.author.name}
           subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
         />

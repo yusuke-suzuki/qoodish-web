@@ -12,16 +12,15 @@ import MapDetailContainer from '../containers/MapDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import createPalette from 'material-ui/styles/palette';
 import { amber, lightBlue } from 'material-ui/colors';
 import firebase from 'firebase';
 import { CircularProgress } from 'material-ui/Progress';
 
 const theme = createMuiTheme({
-  palette: createPalette({
+  palette: {
     primary: amber,
-    accent: lightBlue
-  })
+    secondary: lightBlue
+  }
 });
 const styles = {
   progress: {

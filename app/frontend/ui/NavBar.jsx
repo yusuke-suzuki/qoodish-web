@@ -119,7 +119,6 @@ class NavBar extends Component {
           open={this.state.drawerOpen}
           onRequestClose={this.handleCloseDrawer}
           onClick={this.handleCloseDrawer}
-          docked={false}
         >
           {this.renderDrawerContents()}
         </Drawer>

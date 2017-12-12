@@ -40,6 +40,7 @@ class DeleteReviewDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.handleRequestDialogClose}
+        fullWidth
       >
       　<DialogTitle>
           Are you sure you want to DELETE this report?

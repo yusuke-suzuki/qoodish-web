@@ -39,6 +39,7 @@ class IssueDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
+        fullWidth
       >
       　<DialogTitle>
           Report inappropriate content

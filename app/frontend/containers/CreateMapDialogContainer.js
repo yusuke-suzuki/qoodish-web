@@ -8,7 +8,6 @@ import closeCreateMapDialog from '../actions/closeCreateMapDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -32,7 +31,6 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(createMap(newMap));
         dispatch(closeCreateMapDialog());
         dispatch(selectMap(newMap));
-        await sleep(1000);
         dispatch(push(`/maps/${newMap.id}`));
         dispatch(openToast('Successfuly created the map!'));
       } else if (response.status == 409) {

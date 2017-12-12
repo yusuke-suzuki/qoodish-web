@@ -7,7 +7,6 @@ import signOut from '../actions/signOut';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import { sleep } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -28,8 +27,6 @@ const mapDispatchToProps = (dispatch) => {
       await client.deleteAccount(currentUser.uid);
       dispatch(requestFinish());
       dispatch(closeDeleteAccountDialog());
-      // 少し待たないと dialog を close した際のエラー (material-ui 起因?) に巻き込まれて遷移できない
-      await sleep(1000);
       dispatch(signOut());
       dispatch(closeDeleteAccountDialog());
       dispatch(openToast('Delete account successfully'));

@@ -31,6 +31,7 @@ class DeleteMapDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onRequestClose={this.props.handleRequestDialogClose}
+        fullWidth
       >
       　<DialogTitle>
           Are you sure you want to DELETE this map?
