@@ -1,7 +1,6 @@
 import React from 'react';
 import Dialog, {
   DialogActions,
-  DialogContent,
   DialogTitle,
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
@@ -26,11 +25,11 @@ class LikesDialog extends React.Component {
       　<DialogTitle>
           Likes
         </DialogTitle>
-        <DialogContent>
+        <div>
           <List>
             {this.renderLikes(this.props.likes)}
           </List>
-        </DialogContent>
+        </div>
         <DialogActions>
           <Button onClick={this.props.handleRequestDialogClose}>
             CLOSE
