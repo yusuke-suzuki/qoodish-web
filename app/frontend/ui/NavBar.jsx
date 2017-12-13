@@ -247,11 +247,11 @@ class NavBar extends Component {
   renderNotifications(notifications) {
     return notifications.map((notification) => (
       <MenuItem onClick={() => this.props.handleNotificationClick(notification)} key={notification.id} style={styles.notificationMenuItem}>
-        <Avatar src={notification.notifier && notification.notifier.profile_image_url} />
+        <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
           primary={
             <div style={styles.notificationText}>
-              <b>{notification.notifier && notification.notifier.name}</b> {notification.key} your {this.renderResourceName(notification.notifiable.notifiable_type)}.
+              <b>{notification.notifier.name}</b> {notification.key} your {notification.notifiable.type}.
             </div>
           }
           secondary={
@@ -261,7 +261,7 @@ class NavBar extends Component {
           }
           style={styles.listItemContent}
         />
-        {notification.notifiable && notification.notifiable.image_url &&
+        {notification.notifiable.image_url &&
           <ListItemSecondaryAction>
             <Avatar style={styles.secondaryAvatar}>
               <img src={notification.notifiable.image_url} style={styles.notificationImage} />
@@ -270,17 +270,6 @@ class NavBar extends Component {
         }
       </MenuItem>
     ));
-  }
-
-  renderResourceName(type) {
-    switch(type) {
-      case 'Review':
-        return 'report';
-      case 'Map':
-        return 'map';
-      default:
-        'post';
-    }
   }
 
   fromNow(notification) {
