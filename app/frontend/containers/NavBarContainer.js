@@ -71,19 +71,7 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     handleNotificationClick: (notification) => {
-      if (!notification.notifiable) {
-        return;
-      }
-      switch (notification.notifiable.notifiable_type) {
-        case 'Map':
-          dispatch(push(`/maps/${notification.notifiable.id}`));
-          break;
-        case 'Review':
-          dispatch(push(`/maps/${notification.notifiable.map_id}/reports/${notification.notifiable.id}`));
-          break;
-        default:
-          return;
-      }
+      dispatch(push(notification.click_action));
     }
   }
 }
