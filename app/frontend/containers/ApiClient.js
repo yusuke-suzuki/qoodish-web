@@ -431,6 +431,35 @@ class ApiClient {
     const response = await fetch(url, options);
     return response;
   }
+
+  async fetchNotifications() {
+    let url = `${process.env.ENDPOINT}/api/notifications`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async readNotification(id) {
+    let url = `${process.env.ENDPOINT}/api/notifications/${id}`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      body: JSON.stringify({ read: true })
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default ApiClient;

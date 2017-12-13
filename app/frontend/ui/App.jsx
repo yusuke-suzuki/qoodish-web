@@ -82,7 +82,6 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
-          {this.props.authenticated ? <NavBarContainer /> : null}
           <div>
             {this.props.authenticated ? this.renderUserOnly() : this.renderGuestOnly()}
           </div>
@@ -105,6 +104,7 @@ class App extends Component {
     } else {
       return (
         <div>
+          <NavBarContainer />
           <Switch>
             <Route exact path='/' component={TimelineContainer} />
             <Route exact path='/discover' component={DiscoverContainer} />
