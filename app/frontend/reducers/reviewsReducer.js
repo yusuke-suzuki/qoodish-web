@@ -71,7 +71,7 @@ const reducer = (state = initialState, action) => {
     case LIKE_REVIEW:
     case UNLIKE_REVIEW:
     case EDIT_REVIEW:
-      if (state.currentReviews.length == 0) {
+      if (state.currentReviews.length === 0) {
         return Object.assign({}, state, {
           currentReview: action.payload.review
         });

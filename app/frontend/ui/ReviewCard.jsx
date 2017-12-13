@@ -20,13 +20,17 @@ const styles = {
     marginBottom: 0
   },
   mapName: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    width: 'fit-content'
   },
   profileImage: {
     width: 40
   },
   cardContent: {
     paddingTop: 0
+  },
+  likesCountContainer: {
+    paddingBottom: 8
   },
   cardMedia: {
     marginBottom: -5
@@ -136,7 +140,7 @@ class ReviewCard extends Component {
 
   renderLikes(review) {
     return (
-      <CardContent>
+      <CardContent style={styles.likesCountContainer}>
         <Typography onClick={this.props.handleLikesClick} style={styles.likesCount}>
           <b>{review.likes_count}</b> likes
         </Typography>

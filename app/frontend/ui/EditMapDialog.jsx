@@ -210,9 +210,9 @@ class EditMapDialog extends Component {
           {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
         </DialogTitle>
         <DialogContent>
-          {this.props.currentMap ? this.renderMapNameTextEdit() : this.renderMapNameTextCreate()}
+          {this.renderMapNameText()}
           <br/>
-          {this.props.currentMap ? this.renderDescriptionTextEdit() : this.renderDescriptionTextCreate()}
+          {this.renderDescriptionText()}
           <br/>
           <br/>
           <Typography type='subheading' gutterBottom color='secondary'>
@@ -267,7 +267,7 @@ class EditMapDialog extends Component {
   }
 
 
-  renderMapNameTextEdit() {
+  renderMapNameText() {
     return (
       <TextField
         label='Map name'
@@ -281,20 +281,7 @@ class EditMapDialog extends Component {
     );
   }
 
-  renderMapNameTextCreate() {
-    return (
-      <TextField
-        label='Map name'
-        onChange={this.handleMapNameChange}
-        error={this.state.errorMapName ? true : false}
-        helperText={this.state.errorMapName}
-        fullWidth
-        autoFocus
-      />
-    );
-  }
-
-  renderDescriptionTextEdit() {
+  renderDescriptionText() {
     return (
       <TextField
         label='Map description'
@@ -303,18 +290,6 @@ class EditMapDialog extends Component {
         helperText={this.state.errorDescription}
         fullWidth
         value={this.state.description}
-      />
-    );
-  }
-
-  renderDescriptionTextCreate() {
-    return (
-      <TextField
-        label='Map description'
-        onChange={this.handleMapDescriptionChange}
-        error={this.state.errorDescription ? true : false}
-        helperText={this.state.errorDescription}
-        fullWidth
       />
     );
   }

@@ -52,6 +52,12 @@ const styles = {
   likesCount: {
     cursor: 'pointer',
     width: 'fit-content'
+  },
+  likesCountLarge: {
+    paddingBottom: 8
+  },
+  likesCountSmall: {
+    paddingBottom: 16
   }
 };
 
@@ -111,7 +117,6 @@ class ReviewDialog extends Component {
         <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
         </DialogContent>
-        {this.props.currentReview && this.props.currentReview.likes_count > 0 && this.renderLikes(this.props.currentReview)}
         <DialogActions style={styles.dialogActions}>
           {this.props.currentReview && this.renderLikeButton(this.props.currentReview)}
           {this.props.currentReview && this.renderShareButton()}
@@ -126,7 +131,7 @@ class ReviewDialog extends Component {
 
   renderLikes(review) {
     return (
-      <CardContent>
+      <CardContent style={this.props.large ? styles.likesCountLarge : styles.likesCountSmall}>
         <Typography onClick={() => this.props.handleLikesClick(review)} style={styles.likesCount}>
           <b>{review.likes_count}</b> likes
         </Typography>
@@ -306,6 +311,7 @@ class ReviewDialog extends Component {
           </Typography>
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}
+        {review.likes_count > 0 && this.renderLikes(review)}
       </Card>
     );
   }

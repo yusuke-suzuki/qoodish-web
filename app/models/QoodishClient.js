@@ -21,6 +21,8 @@ import LeaveMapFailed from './errors/LeaveMapFailed';
 import IssueContentFailed from './errors/IssueContentFailed';
 import FetchPlacesFailed from './errors/FetchPlacesFailed';
 import RequestLikeFailed from './errors/RequestLikeFailed';
+import FetchNotificationsFailed from './errors/FetchNotificationsFailed';
+import ReadNotificationFailed from './errors/ReadNotificationFailed';
 
 class QoodishClient {
   async signIn(params) {
@@ -663,6 +665,48 @@ class QoodishClient {
       throw new AuthenticationFailed;
     } else {
       throw new FetchPlacesFailed;
+    }
+  }
+
+  async fetchNotifications(token, locale) {
+    const url = `${process.env.API_ENDPOINT}/notifications`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new FetchNotificationsFailed;
+    }
+  }
+
+  async readNotification(token, id, locale) {
+    const url = `${process.env.API_ENDPOINT}/notifications/${id}?read=true`;
+    let options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`,
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    const json = await response.json();
+    if (response.ok) {
+      return json;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      throw new ReadNotificationFailed;
     }
   }
 }

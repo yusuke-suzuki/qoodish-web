@@ -16,6 +16,7 @@ import Likes from './app/controllers/Likes';
 import Follows from './app/controllers/Follows';
 import InappropriateContents from './app/controllers/InappropriateContents';
 import Places from './app/controllers/Places';
+import Notifications from './app/controllers/Notifications';
 
 import { generateMetadata } from './app/models/Utils';
 
@@ -220,6 +221,16 @@ const routes = (app) => {
   router.del('/api/reviews/:reviewId/like', error(formatError), async (ctx, next) => {
     const likes = new Likes;
     ctx.body = await likes.destroy(ctx);
+  });
+
+  router.get('/api/notifications', error(formatError), async (ctx, next) => {
+    const notifications = new Notifications;
+    ctx.body = await notifications.index(ctx);
+  });
+
+  router.put('/api/notifications/:notificationId', error(formatError), async (ctx, next) => {
+    const notifications = new Notifications;
+    ctx.body = await notifications.update(ctx);
   });
 
   app.use(router.routes());

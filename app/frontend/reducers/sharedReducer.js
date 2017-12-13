@@ -12,7 +12,9 @@ import {
   SEARCH_PLACES,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
-  FETCH_REVIEW_LIKES
+  FETCH_REVIEW_LIKES,
+  FETCH_NOTIFICATIONS,
+  READ_NOTIFICATION
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -29,7 +31,9 @@ const initialState = {
   pickedPlaces: [],
   loadingPlaces: false,
   likes: [],
-  likesDialogOpen: false
+  likesDialogOpen: false,
+  notifications: [],
+  unreadNotifications: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -96,6 +100,31 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         likes: action.payload.likes
       });
+    case FETCH_NOTIFICATIONS:
+      let newNotifications = action.payload.notifications;
+      let unreadNotifications = newNotifications.filter((notification) => { return notification.read === false; })
+      return Object.assign({}, state, {
+        notifications: newNotifications,
+        unreadNotifications: unreadNotifications
+      });
+    case READ_NOTIFICATION:
+      if (state.notifications.length === 0) {
+        return state;
+      } else {
+        let index = state.notifications.findIndex((notification) => { return notification.id === action.payload.notification.id; });
+        let target = state.notifications[index];
+        if (!target) {
+          return state;
+        }
+        return Object.assign({}, state, {
+          notifications: [
+            ...state.notifications.slice(0, index),
+            action.payload.notification,
+            ...state.notifications.slice(index + 1)
+          ],
+          unreadNotifications: []
+        });
+      }
     default:
       return state;
   }
