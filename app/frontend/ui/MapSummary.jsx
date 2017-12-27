@@ -492,7 +492,7 @@ class MapSummary extends Component {
   }
 
   fromNow(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL');
   }
 }
 
