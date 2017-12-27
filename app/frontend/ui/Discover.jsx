@@ -196,6 +196,7 @@ export default class Discover extends Component {
           cols={this.props.large ? 4 : 1}
           style={styles.gridList}
           spacing={20}
+          cellHeight={200}
         >
           {this.renderRecentReviews(reviews)}
         </GridList>

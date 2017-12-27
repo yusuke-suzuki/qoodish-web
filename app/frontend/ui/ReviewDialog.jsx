@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent
-} from 'material-ui/Dialog';
-import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
+import Dialog from 'material-ui/Dialog';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
@@ -16,17 +13,19 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import Slide from 'material-ui/transitions/Slide';
 import FavoriteIcon from 'material-ui-icons/Favorite';
 import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
 
 const styles = {
-  dialogContentLarge: {
-    padding: 0,
-    minWidth: 600
-  },
-  dialogContentSmall: {
-    padding: 0
+  appbar: {
+    position: 'sticky'
   },
   profileImage: {
     width: 40
+  },
+  card: {
+    height: '100%'
   },
   cardContent: {
     paddingTop: 0
@@ -37,14 +36,11 @@ const styles = {
   media: {
     width: '100%'
   },
-  dialogActions: {
-    margin: '4px 4px',
-    justifyContent: 'flex-start'
+  closeButtonContainer: {
+    flex: '1 1 auto'
   },
   closeButton: {
-    position: 'absolute',
-    right: 8,
-    bottom: 9
+    float: 'right'
   },
   reviewAction: {
     minWidth: 'auto'
@@ -58,6 +54,9 @@ const styles = {
   },
   likesCountSmall: {
     paddingBottom: 16
+  },
+  backIcon: {
+    color: 'white'
   }
 };
 
@@ -113,20 +112,24 @@ class ReviewDialog extends Component {
         onRequestClose={this.props.handleRequestDialogClose}
         transition={Transition}
         fullWidth
+        fullScreen={this.props.large ? false : true}
       >
-        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
-          {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
-        </DialogContent>
-        <DialogActions style={styles.dialogActions}>
-          {this.props.currentReview && this.renderLikeButton(this.props.currentReview)}
-          {this.props.currentReview && this.renderShareButton()}
-          {this.props.currentReview && this.renderShareMenu()}
-          <Button onClick={this.props.handleRequestDialogClose} style={styles.closeButton}>
-            Close
-          </Button>
-        </DialogActions>
+        {this.props.large ? null : this.renderAppBar()}
+        {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
       </Dialog>
     );
+  }
+
+  renderAppBar() {
+    return (
+      <AppBar style={styles.appbar}>
+        <Toolbar disableGutters>
+          <IconButton color='contrast' onClick={this.props.handleRequestDialogClose}>
+            <ArrowBackIcon style={styles.backIcon} />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    )
   }
 
   renderLikes(review) {
@@ -198,7 +201,7 @@ class ReviewDialog extends Component {
           key='copy'
         >
           <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
-            Copy URL
+            Copy link
           </MenuItem>
         </CopyToClipboard>
       </Menu>
@@ -290,7 +293,7 @@ class ReviewDialog extends Component {
 
   renderReviewCard(review) {
     return (
-      <Card>
+      <Card style={styles.card}>
         {this.renderMoreVertMenu()}
         <CardHeader
           avatar={
@@ -300,7 +303,7 @@ class ReviewDialog extends Component {
           }
           action={this.renderMoreVertButton()}
           title={review.author.name}
-          subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
+          subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL')}
         />
         <CardContent style={styles.cardContent}>
           <Typography type='headline' component='h2' gutterBottom>
@@ -312,7 +315,23 @@ class ReviewDialog extends Component {
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}
         {review.likes_count > 0 && this.renderLikes(review)}
+        <CardActions disableActionSpacing>
+          {this.renderLikeButton(review)}
+          {this.renderShareButton()}
+          {this.renderShareMenu()}
+          {this.props.large ? this.renderCloseButton() : null}
+        </CardActions>
       </Card>
+    );
+  }
+
+  renderCloseButton() {
+    return (
+      <div style={styles.closeButtonContainer}>
+        <Button onClick={this.props.handleRequestDialogClose} style={styles.closeButton}>
+          Close
+        </Button>
+      </div>
     );
   }
 
