@@ -10,6 +10,9 @@ import likeReview from '../actions/likeReview';
 import unlikeReview from '../actions/unlikeReview';
 import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
+import fetchSpotReviews from '../actions/fetchSpotReviews';
+import openSpotDetail from '../actions/openSpotDetail';
+import selectSpot from '../actions/selectSpot';
 
 const mapStateToProps = (state) => {
   return {
@@ -21,6 +24,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleMapClick: () => {
       dispatch(push(`/maps/${ownProps.currentReview.map_id}`));
+    },
+
+    handleSpotNameClick: async (review) => {
+      dispatch(push(`/maps/${review.map_id}`));
+      dispatch(selectSpot(review.spot));
+      dispatch(openSpotDetail(review.spot));
+      const client = new ApiClient;
+      let response = await client.fetchSpotReviews(review.map_id, review.place_id);
+      if (response.ok) {
+        let reviews = await response.json();
+        dispatch(fetchSpotReviews(reviews));
+      }
     },
 
     handleTweetButtonClick: (review) => {
