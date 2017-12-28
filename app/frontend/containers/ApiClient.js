@@ -31,6 +31,21 @@ class ApiClient {
     return response;
   }
 
+  async deleteRegistrationToken(registrationToken) {
+    const userId = firebase.auth().currentUser.uid;
+    const url = `${process.env.ENDPOINT}/api/devices/${registrationToken}`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchUser(id) {
     const url = `${process.env.ENDPOINT}/api/users/${id}`;
     const token = await firebase.auth().currentUser.getIdToken();

@@ -100,6 +100,12 @@ const routes = (app) => {
     ctx.status = 204;
   });
 
+  router.del('/api/devices/:registrationToken', error(formatError), async (ctx, next) => {
+    const devices = new Devices;
+    ctx.body = await devices.destroy(ctx);
+    ctx.status = 204;
+  });
+
   router.get('/api/users/:userId', error(formatError), async (ctx, next) => {
     const users = new Users;
     ctx.body = await users.show(ctx);

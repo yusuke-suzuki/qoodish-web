@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import AuthenticationFailed from './errors/AuthenticationFailed';
 import FetchUserFailed from './errors/FetchUserFailed';
 import CreateDeviceFailed from './errors/CreateDeviceFailed';
+import DeleteDeviceFailed from './errors/DeleteDeviceFailed';
 import DeleteUserFailed from './errors/DeleteUserFailed';
 import FetchMapsFailed from './errors/FetchMapsFailed';
 import FetchMapFailed from './errors/FetchMapFailed';
@@ -80,6 +81,26 @@ class QoodishClient {
     } else {
       const json = await response.json();
       throw new CreateDeviceFailed(response.status, json.detail);
+    }
+  }
+
+  async deleteDevice(token, registrationToken) {
+    const url = `${process.env.API_ENDPOINT}/devices/${registrationToken}`;
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `bearer ${token}`
+      }
+    };
+    const response = await fetch(url, options);
+    if (response.ok) {
+      return;
+    } else if (response.status === 401) {
+      throw new AuthenticationFailed;
+    } else {
+      const json = await response.json();
+      throw new DeleteDeviceFailed(response.status, json.detail);
     }
   }
 
