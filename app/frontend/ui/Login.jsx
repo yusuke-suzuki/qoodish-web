@@ -5,17 +5,21 @@ import { FirebaseAuth } from 'react-firebaseui';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Grid from 'material-ui/Grid';
-import Card, { CardContent } from 'material-ui/Card';
+import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import PlaceIcon from 'material-ui-icons/Place';
 import ExploreIcon from 'material-ui-icons/Explore';
 import { amber } from 'material-ui/colors';
+import Divider from 'material-ui/Divider';
+import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
+import Button from 'material-ui/Button';
 
 const styles = {
   toolbar: {
     alignSelf: 'center'
   },
   logo: {
-    color: 'white'
+    color: 'white',
+    cursor: 'pointer'
   },
   loginContainerLarge: {
     textAlign: 'center',
@@ -36,7 +40,8 @@ const styles = {
   },
   descriptionIcon: {
     width: 150,
-    height: 150
+    height: 150,
+    color: amber[500]
   },
   descriptionCard: {
     height: '100%',
@@ -49,23 +54,22 @@ const styles = {
   bottomCardLicense: {
     backgroundColor: amber[500],
     paddingBottom: 16
-  }
-};
-
-const uiConfig = {
-  callbacks: {
-    signInSuccess: (currentUser, credential, redirectUrl) => {
-      this.props.signIn(currentUser, credential, redirectUrl);
-    }
   },
-  signInSuccessUrl: process.env.ENDPOINT,
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    firebase.auth.GithubAuthProvider.PROVIDER_ID
-  ],
-  tosUrl: process.env.ENDPOINT
+  containerLarge: {
+    width: '80%',
+    margin: '0 auto'
+  },
+  containerSmall: {
+    width: '100%',
+    margin: '0 auto'
+  },
+  cardMedia: {
+    width: '100%'
+  },
+  firebaseContainer: {
+    marginTop: 20,
+    marginBottom: 20
+  }
 };
 
 class Login extends React.Component {
@@ -87,12 +91,16 @@ class Login extends React.Component {
     };
   }
 
+  handleScrollTopClick() {
+    window.scrollTo(0, 0);
+  }
+
   render() {
     return (
       <div>
         <AppBar position='fixed'>
           <Toolbar style={styles.toolbar}>
-            <Typography type='title' color='inherit' style={styles.logo}>
+            <Typography type='title' color='inherit' style={styles.logo} onClick={this.handleScrollTopClick}>
               Qoodish
             </Typography>
           </Toolbar>
@@ -104,47 +112,66 @@ class Login extends React.Component {
           <Typography type={this.props.large ? 'display2' : 'display1'} gutterBottom>
             次はどこ行く？
           </Typography>
-          <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
+          <div style={styles.firebaseContainer}>
+            <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
+          </div>
+          <Divider />
           <Grid container style={styles.gridContainer} spacing={24}>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
               <Card style={styles.descriptionCard}>
                 <CardContent>
-                  <Typography color='secondary'>
+                  <Typography gutterBottom>
                     <PlaceIcon style={styles.descriptionIcon} />
                   </Typography>
                   <Typography type='display1' gutterBottom>
                     お気に入りの場所をシェアしよう！
                   </Typography>
-                  <Typography component='p'>
-                    仕事がうまくいったときに訪れるバー、休日を過ごすカフェ、旅行先で見つけた最高のビュースポット。あなただけの "ベストプレイス" を友だちにも教えてあげませんか？
+                  <Typography component='p' gutterBottom>
+                    仕事がうまくいったときに訪れるバー、休日を過ごすカフェ、旅行先で見つけた最高のビュースポット。
+                    あなただけの "ベストプレイス" を友だちにも教えてあげませんか？
                   </Typography>
                 </CardContent>
+                <CardMedia>
+                  <img src={process.env.LP_IMAGE_1} style={styles.cardMedia} />
+                </CardMedia>
               </Card>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
               <Card style={styles.descriptionCard}>
                 <CardContent>
-                  <Typography color='secondary'>
+                  <Typography gutterBottom>
                     <ExploreIcon style={styles.descriptionIcon} />
                   </Typography>
                   <Typography type='display1' gutterBottom>
                     あなたの "ベストプレイス" を見つけよう！
                   </Typography>
-                  <Typography component='p'>
-                    代わり映えしない日常にちょっとの刺激をもたらしてくれる場所はどこでしょう？ きっとあなたのよく知る友人たちが知っているはずです！
+                  <Typography component='p' gutterBottom>
+                    代わり映えしない日常にちょっとの刺激をもたらしてくれる場所はどこでしょう？
+                    きっとあなたのよく知る友人たちが知っているはずです！
                   </Typography>
                 </CardContent>
+                <CardMedia>
+                  <img src={process.env.LP_IMAGE_2} style={styles.cardMedia} />
+                </CardMedia>
               </Card>
             </Grid>
           </Grid>
+          <Button
+            fab
+            onClick={this.handleScrollTopClick}
+          >
+            <ArrowUpwardIcon />
+          </Button>
         </div>
         <Card>
           <CardContent style={styles.bottomCardContent}>
           </CardContent>
           <CardContent style={styles.bottomCardLicense}>
-            <Typography type='caption'>
-              © 2018 Qoodish, All rights reserved.
-            </Typography>
+            <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
+              <Typography type='caption'>
+                © 2018 Qoodish, All rights reserved.
+              </Typography>
+            </div>
           </CardContent>
         </Card>
       </div>

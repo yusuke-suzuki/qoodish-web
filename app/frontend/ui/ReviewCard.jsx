@@ -19,7 +19,7 @@ const styles = {
   cardSmall: {
     marginBottom: 0
   },
-  mapName: {
+  cardTitle: {
     cursor: 'pointer',
     width: 'fit-content'
   },
@@ -117,10 +117,10 @@ class ReviewCard extends Component {
           subheader={this.fromNow(review)}
         />
         <CardContent style={styles.cardContent}>
-          <Typography style={styles.mapName} type='subheading' color='secondary' gutterBottom onClick={this.props.handleMapClick}>
+          <Typography style={styles.cardTitle} type='subheading' color='secondary' gutterBottom onClick={this.props.handleMapClick}>
             {review.map_name}
           </Typography>
-          <Typography type='headline' component='h2' gutterBottom>
+          <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review)}>
             {review.spot.name}
           </Typography>
           <Typography component='p'>

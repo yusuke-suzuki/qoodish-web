@@ -24,9 +24,6 @@ const styles = {
   profileImage: {
     width: 40
   },
-  card: {
-    height: '100%'
-  },
   cardContent: {
     paddingTop: 0
   },
@@ -293,7 +290,7 @@ class ReviewDialog extends Component {
 
   renderReviewCard(review) {
     return (
-      <Card style={styles.card}>
+      <Card>
         {this.renderMoreVertMenu()}
         <CardHeader
           avatar={
