@@ -26,6 +26,7 @@ const plugins = [
     'FIREBASE_IMAGE_BUCKET',
     'FB_APP_ID',
     'PICKED_UP_MAP_ID',
+    'LP_CAROUSEL_1',
     'LP_IMAGE_1',
     'LP_IMAGE_2'
   ])

@@ -9,9 +9,9 @@ import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import PlaceIcon from 'material-ui-icons/Place';
 import ExploreIcon from 'material-ui-icons/Explore';
 import { amber } from 'material-ui/colors';
-import Divider from 'material-ui/Divider';
 import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
 import Button from 'material-ui/Button';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 
 const styles = {
   toolbar: {
@@ -25,14 +25,12 @@ const styles = {
     textAlign: 'center',
     width: '80%',
     margin: '0 auto',
-    padding: 20,
-    paddingTop: 104
+    padding: 20
   },
   loginContainerSmall: {
     textAlign: 'center',
     margin: '0 auto',
-    padding: 20,
-    paddingTop: 76
+    padding: 20
   },
   gridContainer: {
     width: '100%',
@@ -52,7 +50,7 @@ const styles = {
     backgroundColor: amber[500]
   },
   bottomCardLicense: {
-    backgroundColor: amber[500],
+    backgroundColor: amber[700],
     paddingBottom: 16
   },
   containerLarge: {
@@ -67,8 +65,28 @@ const styles = {
     width: '100%'
   },
   firebaseContainer: {
-    marginTop: 20,
-    marginBottom: 20
+    marginTop: 20
+  },
+  carouselContainerLarge: {
+    textAlign: 'center',
+    width: '100%',
+    paddingTop: 64,
+
+  },
+  carouselContainerSmall: {
+    textAlign: 'center',
+    width: '100%',
+    paddingTop: 56
+  },
+  carouselTileBar: {
+    height: '100%',
+    background: 'rgba(0, 0, 0, 0.1)'
+  },
+  carouselTileBarText: {
+    whiteSpace: 'initial'
+  },
+  scrollTopButton: {
+    margin: 20
   }
 };
 
@@ -105,17 +123,45 @@ class Login extends React.Component {
             </Typography>
           </Toolbar>
         </AppBar>
+        <div style={this.props.large ? styles.carouselContainerLarge : styles.carouselContainerSmall}>
+          <GridList
+            cols={1}
+            spacing={0}
+            cellHeight={500}
+          >
+            <GridListTile key='carousel'>
+              <img src={process.env.LP_CAROUSEL_1} />
+              <GridListTileBar
+                title={
+                  <Typography
+                    type='display3'
+                    color='inherit'
+                    style={styles.carouselTileBarText}
+                    gutterBottom
+                  >
+                    あなたの地図を広げよう。
+                  </Typography>
+                }
+                subtitle={
+                  <div>
+                    <Typography
+                      type='headline'
+                      color='inherit'
+                      style={styles.carouselTileBarText}
+                    >
+                      <span>次はどこ行く？</span>
+                    </Typography>
+                    <div style={styles.firebaseContainer}>
+                      <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
+                    </div>
+                  </div>
+                }
+                style={styles.carouselTileBar}
+              />
+            </GridListTile>
+          </GridList>
+        </div>
         <div style={this.props.large ? styles.loginContainerLarge : styles.loginContainerSmall}>
-          <Typography type={this.props.large ? 'display4' : 'display3'} gutterBottom>
-            あなたの地図をシェアしよう。
-          </Typography>
-          <Typography type={this.props.large ? 'display2' : 'display1'} gutterBottom>
-            次はどこ行く？
-          </Typography>
-          <div style={styles.firebaseContainer}>
-            <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
-          </div>
-          <Divider />
           <Grid container style={styles.gridContainer} spacing={24}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <Card style={styles.descriptionCard}>
@@ -159,6 +205,7 @@ class Login extends React.Component {
           <Button
             fab
             onClick={this.handleScrollTopClick}
+            style={styles.scrollTopButton}
           >
             <ArrowUpwardIcon />
           </Button>

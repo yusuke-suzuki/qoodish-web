@@ -27,9 +27,6 @@ const styles = {
     marginTop: 40,
     marginBottom: 20
   },
-  pickUpCard: {
-    width: '100%'
-  },
   gridList: {
     width: '100%'
   },
