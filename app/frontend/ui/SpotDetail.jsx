@@ -44,7 +44,8 @@ const styles = {
     position: 'absolute'
   },
   media: {
-    width: '100%'
+    width: '100%',
+    height: 'inherit'
   },
   spotName: {
     whiteSpace: 'initial'
