@@ -12,6 +12,7 @@ import { amber } from 'material-ui/colors';
 import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
 import Button from 'material-ui/Button';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import { Link } from 'react-router-dom';
 
 const styles = {
   toolbar: {
@@ -212,6 +213,14 @@ class Login extends React.Component {
         </div>
         <Card>
           <CardContent style={styles.bottomCardContent}>
+            <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
+              <div>
+                <Link to='/terms'>利用規約</Link>
+              </div>
+              <div>
+                <Link to='/privacy'>プライバシーポリシー</Link>
+              </div>
+            </div>
           </CardContent>
           <CardContent style={styles.bottomCardLicense}>
             <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>

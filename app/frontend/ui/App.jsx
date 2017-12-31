@@ -5,12 +5,16 @@ import BlockUiContainer from '../containers/BlockUiContainer';
 import IssueDialogContainer from '../containers/IssueDialogContainer';
 import LikesDialogContainer from '../containers/LikesDialogContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
+
 import LoginContainer from '../containers/LoginContainer';
 import DiscoverContainer from '../containers/DiscoverContainer';
 import TimelineContainer from '../containers/TimelineContainer';
 import MapsContainer from '../containers/MapsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
+import TermsContainer from '../containers/TermsContainer';
+import PrivacyContainer from '../containers/PrivacyContainer';
+
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import { amber, lightBlue } from 'material-ui/colors';
@@ -112,6 +116,8 @@ class App extends Component {
             <Route exact path='/maps/:mapId' component={MapDetailContainer} />
             <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
             <Route exact path='/settings' component={SettingsContainer} />
+            <Route exact path='/terms' component={TermsContainer} />
+            <Route exact path='/privacy' component={PrivacyContainer} />
             <Redirect from='*' to='/' />
           </Switch>
         </div>
@@ -124,6 +130,8 @@ class App extends Component {
       <div>
         <Switch>
           <Route path='/login' component={LoginContainer} />
+          <Route exact path='/terms' component={TermsContainer} />
+          <Route exact path='/privacy' component={PrivacyContainer} />
           <Redirect from='*' to='/login' />
         </Switch>
       </div>

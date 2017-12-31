@@ -66,7 +66,9 @@ const routes = (app) => {
     '/maps',
     '/maps/:mapId',
     '/maps/:mapId/reports/:reviewId',
-    '/settings'
+    '/settings',
+    '/terms',
+    '/privacy'
   ];
 
   router.get(pageRoutes, async (ctx, next) => {
