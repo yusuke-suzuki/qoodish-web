@@ -105,7 +105,7 @@ class ReviewCard extends Component {
   renderReviewCard(review) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-        {this.props.currentReview.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
+        {review.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
             <Avatar>

@@ -112,7 +112,7 @@ class ReviewDialog extends Component {
         fullScreen={this.props.large ? false : true}
       >
         {this.props.large ? null : this.renderAppBar()}
-        {this.props.currentReview && this.renderReviewCard(this.props.currentReview)}
+        {this.renderReviewCard(this.props.currentReview)}
       </Dialog>
     );
   }
@@ -291,31 +291,31 @@ class ReviewDialog extends Component {
   renderReviewCard(review) {
     return (
       <Card>
-        {this.renderMoreVertMenu()}
+        {review && this.renderMoreVertMenu()}
         <CardHeader
           avatar={
             <Avatar>
-              <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
+              <img src={review && review.author.profile_image_url} alt={review && review.author.name} style={styles.profileImage} />
             </Avatar>
           }
           action={this.renderMoreVertButton()}
-          title={review.author.name}
-          subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL')}
+          title={review && review.author.name}
+          subheader={review && moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL')}
         />
         <CardContent style={styles.cardContent}>
           <Typography type='headline' component='h2' gutterBottom>
-            {review.spot.name}
+            {review && review.spot.name}
           </Typography>
           <Typography component='p'>
-            {review.comment}
+            {review && review.comment}
           </Typography>
         </CardContent>
-        {review.image ? this.renderCardMedia(review) : null}
-        {review.likes_count > 0 && this.renderLikes(review)}
+        {review && review.image ? this.renderCardMedia(review) : null}
+        {review && review.likes_count > 0 && this.renderLikes(review)}
         <CardActions disableActionSpacing>
-          {this.renderLikeButton(review)}
+          {review && this.renderLikeButton(review)}
           {this.renderShareButton()}
-          {this.renderShareMenu()}
+          {review && this.renderShareMenu()}
           {this.props.large ? this.renderCloseButton() : null}
         </CardActions>
       </Card>
