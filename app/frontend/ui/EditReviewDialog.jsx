@@ -252,7 +252,8 @@ class EditReviewDialog extends Component {
         value={this.state.comment}
         multiline
         autoFocus
-        rows='4'
+        rowsMax='5'
+        rows='5'
       />
     );
   }
