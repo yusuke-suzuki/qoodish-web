@@ -2,7 +2,7 @@ import firebase from 'firebase';
 
 class ApiClient {
   async signIn(params) {
-    const url = `${process.env.ENDPOINT}/api/auth`;
+    const url = `${process.env.API_ENDPOINT}/users`;
     let options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -17,7 +17,7 @@ class ApiClient {
       registration_token: registrationToken
     };
     const userId = firebase.auth().currentUser.uid;
-    const url = `${process.env.ENDPOINT}/api/devices`;
+    const url = `${process.env.API_ENDPOINT}/devices`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -33,7 +33,7 @@ class ApiClient {
 
   async deleteRegistrationToken(registrationToken) {
     const userId = firebase.auth().currentUser.uid;
-    const url = `${process.env.ENDPOINT}/api/devices/${registrationToken}`;
+    const url = `${process.env.API_ENDPOINT}/devices/${registrationToken}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -47,7 +47,7 @@ class ApiClient {
   }
 
   async fetchUser(id) {
-    const url = `${process.env.ENDPOINT}/api/users/${id}`;
+    const url = `${process.env.API_ENDPOINT}/users/${id}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -61,7 +61,7 @@ class ApiClient {
   }
 
   async fetchFollowingMaps() {
-    const url = `${process.env.ENDPOINT}/api/maps`;
+    const url = `${process.env.API_ENDPOINT}/maps`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -76,7 +76,7 @@ class ApiClient {
 
   async fetchMyMaps() {
     const userId = firebase.auth().currentUser.uid;
-    const url = `${process.env.ENDPOINT}/api/users/${userId}/maps`;
+    const url = `${process.env.API_ENDPOINT}/users/${userId}/maps`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -90,7 +90,7 @@ class ApiClient {
   }
 
   async fetchPopularMaps() {
-    const url = `${process.env.ENDPOINT}/api/maps?popular=true`;
+    const url = `${process.env.API_ENDPOINT}/maps?popular=true`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -104,7 +104,7 @@ class ApiClient {
   }
 
   async createMap(params) {
-    const url = `${process.env.ENDPOINT}/api/maps`;
+    const url = `${process.env.API_ENDPOINT}/maps`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -119,7 +119,7 @@ class ApiClient {
   }
 
   async editMap(params) {
-    const url = `${process.env.ENDPOINT}/api/maps/${params.map_id}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${params.map_id}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'PUT',
@@ -134,7 +134,7 @@ class ApiClient {
   }
 
   async deleteMap(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -148,7 +148,7 @@ class ApiClient {
   }
 
   async fetchSpots(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/spots`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/spots`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -162,7 +162,7 @@ class ApiClient {
   }
 
   async fetchSpot(params) {
-    const url = `${process.env.ENDPOINT}/api/maps/${params.mapId}/spots/${params.placeId}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${params.mapId}/spots/${params.placeId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -176,7 +176,7 @@ class ApiClient {
   }
 
   async fetchMap(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -190,7 +190,7 @@ class ApiClient {
   }
 
   async createReview(mapId, params) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -205,7 +205,7 @@ class ApiClient {
   }
 
   async editReview(params) {
-    const url = `${process.env.ENDPOINT}/api/reviews/${params.review_id}`;
+    const url = `${process.env.API_ENDPOINT}/reviews/${params.review_id}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'PUT',
@@ -220,7 +220,7 @@ class ApiClient {
   }
 
   async deleteReview(reviewId) {
-    const url = `${process.env.ENDPOINT}/api/reviews/${reviewId}`;
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -234,7 +234,7 @@ class ApiClient {
   }
 
   async likeReview(id) {
-    const url = `${process.env.ENDPOINT}/api/reviews/${id}/like`;
+    const url = `${process.env.API_ENDPOINT}/reviews/${id}/like`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -248,7 +248,7 @@ class ApiClient {
   }
 
   async unlikeReview(id) {
-    const url = `${process.env.ENDPOINT}/api/reviews/${id}/like`;
+    const url = `${process.env.API_ENDPOINT}/reviews/${id}/like`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -262,7 +262,7 @@ class ApiClient {
   }
 
   async fetchReviewLikes(reviewId) {
-    let url = `${process.env.ENDPOINT}/api/reviews/${reviewId}/likes`;
+    let url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/likes`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -276,7 +276,7 @@ class ApiClient {
   }
 
   async fetchReviews(timestamp = null) {
-    let url = `${process.env.ENDPOINT}/api/reviews`;
+    let url = `${process.env.API_ENDPOINT}/reviews`;
     if (timestamp) {
       url += `?next_timestamp=${timestamp}`
     }
@@ -293,7 +293,7 @@ class ApiClient {
   }
 
   async fetchSpotReviews(mapId, placeId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews?place_id=${placeId}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews?place_id=${placeId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -307,7 +307,7 @@ class ApiClient {
   }
 
   async fetchMapReviews(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -321,7 +321,7 @@ class ApiClient {
   }
 
   async fetchReview(mapId, reviewId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/reviews/${reviewId}`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews/${reviewId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -335,7 +335,7 @@ class ApiClient {
   }
 
   async fetchRecentReviews() {
-    const url = `${process.env.ENDPOINT}/api/reviews?recent=true`;
+    const url = `${process.env.API_ENDPOINT}/reviews?recent=true`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -349,7 +349,7 @@ class ApiClient {
   }
 
   async fetchCollaborators(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/collaborators`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/collaborators`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -363,7 +363,7 @@ class ApiClient {
   }
 
   async followMap(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/follow`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/follow`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -377,7 +377,7 @@ class ApiClient {
   }
 
   async unfollowMap(mapId) {
-    const url = `${process.env.ENDPOINT}/api/maps/${mapId}/follow`;
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/follow`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -391,7 +391,7 @@ class ApiClient {
   }
 
   async deleteAccount(userId) {
-    const url = `${process.env.ENDPOINT}/api/users/${userId}`;
+    const url = `${process.env.API_ENDPOINT}/users/${userId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'DELETE',
@@ -405,7 +405,7 @@ class ApiClient {
   }
 
   async issueContent(params) {
-    const url = `${process.env.ENDPOINT}/api/inappropriate_contents`;
+    const url = `${process.env.API_ENDPOINT}/inappropriate_contents`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -420,7 +420,7 @@ class ApiClient {
   }
 
   async searchPlaces(input) {
-    const url = `${process.env.ENDPOINT}/api/places?input=${input}`;
+    const url = `${process.env.API_ENDPOINT}/places?input=${input}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -434,7 +434,7 @@ class ApiClient {
   }
 
   async searchNearPlaces(lat, lng) {
-    const url = `${process.env.ENDPOINT}/api/places?lat=${lat}&lng=${lng}`;
+    const url = `${process.env.API_ENDPOINT}/places?lat=${lat}&lng=${lng}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -448,7 +448,7 @@ class ApiClient {
   }
 
   async fetchNotifications() {
-    let url = `${process.env.ENDPOINT}/api/notifications`;
+    let url = `${process.env.API_ENDPOINT}/notifications`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -462,7 +462,7 @@ class ApiClient {
   }
 
   async readNotification(id) {
-    let url = `${process.env.ENDPOINT}/api/notifications/${id}`;
+    let url = `${process.env.API_ENDPOINT}/notifications/${id}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'PUT',

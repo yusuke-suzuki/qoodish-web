@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "blueimp-canvas-to-blob": "^3.14.0",
-    "es6-error": "^4.0.2",
     "firebase": "^4.8.0",
     "history": "^4.6.3",
     "koa": "^2.3.0",
