@@ -15,6 +15,7 @@ const plugins = [
   new CleanWebpackPlugin(['./public/javascripts/*'], {}),
   new AssetsPlugin(),
   new webpack.EnvironmentPlugin([
+    'ENDPOINT',
     'API_ENDPOINT',
     'npm_package_version',
     'SUBSTITUTE_URL',
