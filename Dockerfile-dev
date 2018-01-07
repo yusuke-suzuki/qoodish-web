@@ -1,4 +1,4 @@
-FROM node:8.9.1
+FROM node:8.9.4
 
 RUN mkdir /qoodish-web
 WORKDIR /qoodish-web
