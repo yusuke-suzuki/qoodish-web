@@ -278,7 +278,6 @@ class MapSummary extends Component {
         </div>
         <div style={styles.toolbarActions}>
           <IconButton
-            color='contrast'
             aria-label='More share'
             aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
             aria-haspopup='true'
@@ -290,7 +289,7 @@ class MapSummary extends Component {
             id='share-menu'
             anchorEl={this.state.anchorElShare}
             open={this.state.shareMenuOpen}
-            onRequestClose={this.handleRequestShareMenuClose}
+            onClose={this.handleRequestShareMenuClose}
           >
             <MenuItem
               key='facebook'
@@ -321,7 +320,6 @@ class MapSummary extends Component {
             </CopyToClipboard>
           </Menu>
           <IconButton
-            color='contrast'
             aria-label='More vert'
             aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
             aria-haspopup='true'
@@ -338,7 +336,6 @@ class MapSummary extends Component {
   renderCloseButton() {
     return (
       <IconButton
-        color='contrast'
         onClick={this.props.handleCloseButtonClick}
       >
         <ArrowBackIcon style={styles.mapMenuIcon} />
@@ -352,7 +349,7 @@ class MapSummary extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         {this.renderEditButton()}
         {this.renderDeleteButton()}
@@ -366,7 +363,7 @@ class MapSummary extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         <MenuItem
           key='issue'

@@ -4,7 +4,6 @@ import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
 import { push } from 'react-router-redux';
-import { GridList, GridListTile } from 'material-ui/GridList';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchMyMaps from '../actions/fetchMyMaps';

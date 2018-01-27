@@ -4,7 +4,7 @@ import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Typography from 'material-ui/Typography';
 import AppBar from 'material-ui/AppBar';
@@ -120,8 +120,8 @@ export default class Maps extends Component {
             value={this.state.value}
             onChange={this.handleChange}
             fullWidth
-            indicatorColor='accent'
-            textColor='accent'
+            indicatorColor='secondary'
+            textColor='secondary'
             centered
           >
             <Tab label='Following' />

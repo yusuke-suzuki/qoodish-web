@@ -6,7 +6,7 @@ import LockIcon from 'material-ui-icons/Lock';
 import ExploreIcon from 'material-ui-icons/Explore';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Typography from 'material-ui/Typography';
 import Card, { CardHeader, CardMedia, CardContent} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
@@ -105,21 +105,21 @@ export default class Discover extends Component {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
+          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
             <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
           </Typography>
           <br/>
           {this.props.mapPickedUp ? this.renderPickUp(this.props.mapPickedUp) : null}
         </div>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
+          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
             <RateReviewIcon style={styles.mapTypeIcon} /> Recent Reports
           </Typography>
           <br/>
           {this.props.loadingRecentReviews ? this.renderProgress() : this.renderRecentReviewContainer(this.props.recentReviews)}
         </div>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='secondary' style={styles.gridHeader}>
+          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
             <TrendingUpIcon style={styles.mapTypeIcon} /> Trending Maps
           </Typography>
           {this.props.loadingPopularMaps ? this.renderProgress() : this.renderMapContainer(this.props.popularMaps)}
@@ -221,7 +221,7 @@ export default class Discover extends Component {
             subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
           />
           <CardContent style={styles.cardContent}>
-            <Typography type='subheading' color='secondary' gutterBottom style={styles.reviewCardText}>
+            <Typography type='subheading' color='textSecondary' gutterBottom style={styles.reviewCardText}>
               {review.map_name}
             </Typography>
             <Typography type='headline' component='h2' gutterBottom style={styles.reviewCardText}>

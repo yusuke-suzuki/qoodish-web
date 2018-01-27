@@ -117,7 +117,7 @@ class ReviewCard extends Component {
           subheader={this.fromNow(review)}
         />
         <CardContent style={styles.cardContent}>
-          <Typography style={styles.cardTitle} type='subheading' color='secondary' gutterBottom onClick={this.props.handleMapClick}>
+          <Typography style={styles.cardTitle} type='subheading' color='textSecondary' gutterBottom onClick={this.props.handleMapClick}>
             {review.map_name}
           </Typography>
           <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review)}>
@@ -163,7 +163,6 @@ class ReviewCard extends Component {
   renderLikeButton(review) {
     return (
       <IconButton
-        color='contrast'
         onClick={review.liked ? this.props.handleUnlikeButtonClick : this.props.handleLikeButtonClick}
       >
         {review.liked ? <FavoriteIcon color='error' /> : <FavoriteBorderIcon />}
@@ -174,7 +173,6 @@ class ReviewCard extends Component {
   renderShareButton() {
     return (
       <IconButton
-        color='contrast'
         aria-label='More share'
         aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
         aria-haspopup='true'
@@ -191,7 +189,7 @@ class ReviewCard extends Component {
         id='share-menu'
         anchorEl={this.state.anchorElShare}
         open={this.state.shareMenuOpen}
-        onRequestClose={this.handleRequestShareMenuClose}
+        onClose={this.handleRequestShareMenuClose}
       >
         <MenuItem
           key='facebook'
@@ -227,7 +225,6 @@ class ReviewCard extends Component {
   renderMoreVertButton() {
     return (
       <IconButton
-        color='contrast'
         aria-label='More vert'
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
         aria-haspopup='true'
@@ -244,7 +241,7 @@ class ReviewCard extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         {this.props.currentReview.editable ? this.renderEditButton() : null}
         {this.props.currentReview.editable ? this.renderDeleteButton() : null}
@@ -267,7 +264,7 @@ class ReviewCard extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         <MenuItem
           key='issue'
@@ -288,7 +285,7 @@ class ReviewCard extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         {this.renderEditButton()}
         {this.renderDeleteButton()}

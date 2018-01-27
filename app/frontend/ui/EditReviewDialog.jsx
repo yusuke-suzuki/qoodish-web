@@ -200,9 +200,9 @@ class EditReviewDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.handleRequestClose}
-        ignoreBackdropClick
-        ignoreEscapeKeyUp
+        onClose={this.handleRequestClose}
+        disableBackdropClick
+        disableEscapeKeyDown
         fullWidth
       >
       　<DialogTitle>

@@ -17,16 +17,28 @@ import PrivacyContainer from '../containers/PrivacyContainer';
 
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import { amber, lightBlue } from 'material-ui/colors';
+import amber from 'material-ui/colors/amber';
+import lightBlue from 'material-ui/colors/lightBlue';
 import firebase from 'firebase';
 import { CircularProgress } from 'material-ui/Progress';
 
 const theme = createMuiTheme({
   palette: {
-    primary: amber,
-    secondary: lightBlue
+    primary: {
+      light: amber[300],
+      main: amber[500],
+      dark: amber[700],
+      contrastText: '#fff'
+    },
+    secondary: {
+      light: lightBlue[300],
+      main: lightBlue[500],
+      dark: lightBlue[700],
+      contrastText: '#fff'
+    }
   }
 });
+
 const styles = {
   progress: {
     textAlign: 'center',

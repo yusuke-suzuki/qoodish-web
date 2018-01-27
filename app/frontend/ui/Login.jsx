@@ -11,7 +11,7 @@ import ExploreIcon from 'material-ui-icons/Explore';
 import { amber } from 'material-ui/colors';
 import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
 import Button from 'material-ui/Button';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import { Link } from 'react-router-dom';
 
 const styles = {
