@@ -39,7 +39,7 @@ class DeleteReviewDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.handleRequestDialogClose}
+        onClose={this.handleRequestDialogClose}
         fullWidth
       >
       　<DialogTitle>

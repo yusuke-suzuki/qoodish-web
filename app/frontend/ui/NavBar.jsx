@@ -156,7 +156,7 @@ class NavBar extends Component {
       <div>
         <AppBar position='fixed'>
           <Toolbar disableGutters style={styles.toolbar}>
-            <IconButton color='contrast' onClick={this.handleToggleDrawer}>
+            <IconButton onClick={this.handleToggleDrawer}>
               <MenuIcon style={styles.menuButton} />
             </IconButton>
             {this.props.large ? this.renderLogo() : null}
@@ -178,7 +178,7 @@ class NavBar extends Component {
         </AppBar>
         <Drawer
           open={this.state.drawerOpen}
-          onRequestClose={this.handleCloseDrawer}
+          onClose={this.handleCloseDrawer}
           onClick={this.handleCloseDrawer}
         >
           {this.renderDrawerContents()}
@@ -208,7 +208,7 @@ class NavBar extends Component {
           this.props.unreadNotifications.length > 0 ?
             <Badge
               badgeContent={this.props.unreadNotifications.length}
-              color='accent'
+              color='secondary'
             >
               <NotificationsIcon />
             </Badge>
@@ -224,7 +224,7 @@ class NavBar extends Component {
         id='notification-menu'
         anchorEl={this.state.anchorEl}
         open={this.state.notificationOpen}
-        onRequestClose={this.handleRequestNotificationClose}
+        onClose={this.handleRequestNotificationClose}
         onEntered={() => this.props.readNotifications(this.props.notifications)}
         style={styles.notificationMenu}
       >
@@ -295,7 +295,7 @@ class NavBar extends Component {
         id='account-menu'
         anchorEl={this.state.anchorEl}
         open={this.state.accountMenuOpen}
-        onRequestClose={this.handleRequestAvatarMenuClose}
+        onClose={this.handleRequestAvatarMenuClose}
       >
         <MenuItem onClick={this.props.requestSettings}>Settings</MenuItem>
         <MenuItem onClick={this.props.signOut}>Logout</MenuItem>
@@ -344,7 +344,7 @@ class NavBar extends Component {
 
   renderTitle() {
     return (
-      <Typography type='headline' color='secondary' style={styles.title} onClick={this.props.requestHome}>
+      <Typography type='headline' color='textSecondary' style={styles.title} onClick={this.props.requestHome}>
         Qoodish
       </Typography>
     );
@@ -352,7 +352,7 @@ class NavBar extends Component {
 
   renderTitleSecondary() {
     return (
-      <Typography type='caption' color='secondary'>
+      <Typography type='caption' color='textSecondary'>
         {`v${process.env.npm_package_version}`}
       </Typography>
     );

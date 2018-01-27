@@ -9,7 +9,7 @@ export default class Toast extends Component {
           open={this.props.toastOpen}
           message={this.props.toastMessage}
           autoHideDuration={4000}
-          onRequestClose={this.props.handleRequestClose}
+          onClose={this.props.handleRequestClose}
         />
       </div>
     );

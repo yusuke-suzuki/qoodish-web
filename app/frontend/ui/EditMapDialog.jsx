@@ -201,9 +201,9 @@ class EditMapDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.props.handleRequestDialogClose}
-        ignoreBackdropClick
-        ignoreEscapeKeyUp
+        onClose={this.props.handleRequestDialogClose}
+        disableBackdropClick
+        disableEscapeKeyDown
         fullWidth
       >
       　<DialogTitle>
@@ -215,7 +215,7 @@ class EditMapDialog extends Component {
           {this.renderDescriptionText()}
           <br/>
           <br/>
-          <Typography type='subheading' gutterBottom color='secondary'>
+          <Typography type='subheading' gutterBottom color='textSecondary'>
             The center of this map (Optional)
           </Typography>
           <PlacesAutocomplete

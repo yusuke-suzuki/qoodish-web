@@ -13,10 +13,10 @@ import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import ChevronRightIcon from 'material-ui-icons/ChevronRight';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
-import BottomNavigation, { BottomNavigationButton } from 'material-ui/BottomNavigation';
+import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import Slide from 'material-ui/transitions/Slide';
@@ -170,7 +170,6 @@ class SpotDetail extends Component {
         <Toolbar style={styles.spotToolbar} disableGutters>
           <div>
             <IconButton
-              color='contrast'
               onClick={this.props.handleCloseSpotButtonClick}
             >
               {this.renderCloseButton()}
@@ -180,13 +179,13 @@ class SpotDetail extends Component {
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           {this.renderThumbnail(spot)}
           <BottomNavigation showLabels>
-            <BottomNavigationButton
+            <BottomNavigationAction
               label='ADD'
               icon={<AddLocationIcon />}
               onClick={() => this.props.handleAddReviewButtonClick(spot)}
               disabled={!this.ableToPost(this.props.currentMap)}
             />
-            <BottomNavigationButton
+            <BottomNavigationAction
               label='DIRECTIONS'
               icon={<DirectionsIcon />}
               onClick={() => this.props.handleRouteButtonClick(spot, this.props.currentPosition)}
@@ -194,7 +193,7 @@ class SpotDetail extends Component {
           </BottomNavigation>
           <Divider />
           <Toolbar style={styles.toolbar} disableGutters onClick={this.handleExpandReviewClick}>
-            <Typography style={styles.expandTitle} type='title' color='secondary'>
+            <Typography style={styles.expandTitle} type='title' color='textSecondary'>
               <RateReviewIcon style={styles.expandContentIcon}/> Reports
             </Typography>
             <div style={styles.toolbarActions}>
@@ -268,7 +267,7 @@ class SpotDetail extends Component {
             </Typography>
           }
           secondary={
-            <Typography component='p' style={styles.listItemText} color='secondary'>
+            <Typography component='p' style={styles.listItemText} color='textSecondary'>
               {review.comment}
             </Typography>
           }

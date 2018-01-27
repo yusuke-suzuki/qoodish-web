@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onRequestClose: () => {
+    onClose: () => {
       dispatch(closePlaceSelectDialog());
     },
 

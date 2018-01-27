@@ -46,7 +46,7 @@ class Terms extends React.Component {
       <div>
         <AppBar position='fixed'>
           <Toolbar disableGutters>
-            <IconButton style={styles.backButton} color='contrast' onClick={this.props.handleBackButtonClick}>
+            <IconButton style={styles.backButton} onClick={this.props.handleBackButtonClick}>
               <ArrowBackIcon style={styles.backIcon} />
             </IconButton>
             <div style={styles.toolbarCenter}>

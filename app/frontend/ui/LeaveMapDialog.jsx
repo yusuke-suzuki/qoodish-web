@@ -12,7 +12,7 @@ class LeaveMapDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.props.handleRequestDialogClose}
+        onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
       　<DialogTitle>

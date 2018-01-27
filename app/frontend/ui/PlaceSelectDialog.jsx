@@ -45,7 +45,7 @@ class PlaceSelectDialog extends Component {
       placeId: place.place_id,
       description: place.description
     };
-    this.props.onRequestClose();
+    this.props.onClose();
     this.props.onPlaceSelected(params);
   }
 
@@ -53,7 +53,7 @@ class PlaceSelectDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.props.onRequestClose}
+        onClose={this.props.onClose}
         fullWidth
       >
       　<DialogTitle>
@@ -71,7 +71,7 @@ class PlaceSelectDialog extends Component {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onRequestClose}>
+          <Button onClick={this.props.onClose}>
             Cancel
           </Button>
         </DialogActions>

@@ -106,7 +106,7 @@ class ReviewDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onRequestClose={this.props.handleRequestDialogClose}
+        onClose={this.props.handleRequestDialogClose}
         transition={Transition}
         fullWidth
         fullScreen={this.props.large ? false : true}
@@ -121,7 +121,7 @@ class ReviewDialog extends Component {
     return (
       <AppBar style={styles.appbar}>
         <Toolbar disableGutters>
-          <IconButton color='contrast' onClick={this.props.handleRequestDialogClose}>
+          <IconButton onClick={this.props.handleRequestDialogClose}>
             <ArrowBackIcon style={styles.backIcon} />
           </IconButton>
         </Toolbar>
@@ -142,7 +142,6 @@ class ReviewDialog extends Component {
   renderLikeButton(review) {
     return (
       <IconButton
-        color='contrast'
         onClick={() => review.liked ? this.props.handleUnlikeButtonClick(review) : this.props.handleLikeButtonClick(review)}
         style={styles.reviewAction}
       >
@@ -154,7 +153,6 @@ class ReviewDialog extends Component {
   renderShareButton() {
     return (
       <IconButton
-        color='contrast'
         aria-label='More share'
         aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
         aria-haspopup='true'
@@ -172,7 +170,7 @@ class ReviewDialog extends Component {
         id='share-menu'
         anchorEl={this.state.anchorElShare}
         open={this.state.shareMenuOpen}
-        onRequestClose={this.handleRequestShareMenuClose}
+        onClose={this.handleRequestShareMenuClose}
       >
         <MenuItem
           key='facebook'
@@ -208,7 +206,6 @@ class ReviewDialog extends Component {
   renderMoreVertButton() {
     return (
       <IconButton
-        color='contrast'
         aria-label='More vert'
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
         aria-haspopup='true'
@@ -231,7 +228,7 @@ class ReviewDialog extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         {this.renderEditButton()}
         {this.renderDeleteButton()}
@@ -245,7 +242,7 @@ class ReviewDialog extends Component {
         id='vert-menu'
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
-        onRequestClose={this.handleRequestVertMenuClose}
+        onClose={this.handleRequestVertMenuClose}
       >
         <MenuItem
           key='issue'
