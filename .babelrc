@@ -1,6 +1,6 @@
 {
-  "presets": ["react", "env"],
+  "presets": ["@babel/preset-react", "@babel/preset-env"],
   "plugins": [
-    "transform-async-to-generator"
+    "@babel/plugin-transform-async-to-generator"
   ]
 }
