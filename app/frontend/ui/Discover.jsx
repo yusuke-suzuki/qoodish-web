@@ -66,10 +66,8 @@ const styles = {
     marginLeft: 10,
     marginRight: 10
   },
-  reviewCardText: {
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden'
+  reviewCard: {
+    margin: 3
   },
   profileImage: {
     width: 40
@@ -210,7 +208,7 @@ export default class Discover extends Component {
         onClick={() => this.props.handleClickReview(review)}
         style={styles.gridTile}
       >
-        <Card>
+        <Card style={styles.reviewCard}>
           <CardHeader
             avatar={
               <Avatar>
@@ -221,13 +219,13 @@ export default class Discover extends Component {
             subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
           />
           <CardContent style={styles.cardContent}>
-            <Typography type='subheading' color='textSecondary' gutterBottom style={styles.reviewCardText}>
+            <Typography type='subheading' color='textSecondary' gutterBottom noWrap>
               {review.map_name}
             </Typography>
-            <Typography type='headline' component='h2' gutterBottom style={styles.reviewCardText}>
+            <Typography type='headline' component='h2' gutterBottom noWrap>
               {review.spot.name}
             </Typography>
-            <Typography component='p' style={styles.reviewCardText}>
+            <Typography component='p' noWrap>
               {review.comment}
             </Typography>
           </CardContent>

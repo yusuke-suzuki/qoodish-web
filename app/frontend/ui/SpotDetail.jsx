@@ -79,14 +79,6 @@ const styles = {
   expandContentIcon: {
     marginRight: 10
   },
-  listItemContent: {
-    overflow: 'hidden'
-  },
-  listItemText: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-  },
   reviewImage: {
     width: 40,
     height: 40
@@ -262,16 +254,15 @@ class SpotDetail extends Component {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type='subheading' style={styles.listItemText}>
+            <Typography type='subheading' noWrap>
               {review.author.name}
             </Typography>
           }
           secondary={
-            <Typography component='p' style={styles.listItemText} color='textSecondary'>
+            <Typography component='p' noWrap color='textSecondary'>
               {review.comment}
             </Typography>
           }
-          style={styles.listItemContent}
         />
       </ListItem>
     ));
