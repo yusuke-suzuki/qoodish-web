@@ -67,14 +67,6 @@ const styles = {
   mapMenuIcon: {
     color: 'white'
   },
-  listItemContent: {
-    overflow: 'hidden'
-  },
-  listItemText: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-  },
   activityText: {
     paddingRight: 32,
     fontSize: 14
@@ -433,8 +425,7 @@ class MapSummary extends Component {
       <ListItem button key={collaborator.id}>
         <Avatar src={collaborator.profile_image_url} />
         <ListItemText
-          primary={<div style={styles.listItemText}>{collaborator.name}</div>}
-          style={styles.listItemContent}
+          primary={collaborator.name}
         />
       </ListItem>
     ));
@@ -449,16 +440,15 @@ class MapSummary extends Component {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type='subheading' style={styles.listItemText}>
+            <Typography type='subheading' noWrap>
               {spot.name}
             </Typography>
           }
           secondary={
-            <Typography component='p' style={styles.listItemText} color='secondary'>
+            <Typography component='p' noWrap color='textSecondary'>
               {spot.formatted_address}
             </Typography>
           }
-          style={styles.listItemContent}
         />
       </ListItem>
     ));
@@ -475,7 +465,6 @@ class MapSummary extends Component {
             </div>
           }
           secondary={this.fromNow(review)}
-          style={styles.listItemContent}
         />
         {review.image &&
           <ListItemSecondaryAction>

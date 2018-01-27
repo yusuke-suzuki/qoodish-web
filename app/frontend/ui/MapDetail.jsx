@@ -62,14 +62,6 @@ const styles = {
   mapCardContent: {
     padding: 0
   },
-  listItemText: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-  },
-  listItemContent: {
-    overflow: 'hidden'
-  },
   mapAvatarImage: {
     width: 40,
     height: 40
@@ -210,17 +202,8 @@ export default class MapDetail extends Component {
               <img src={this.props.currentMap && this.props.currentMap.image_url} style={styles.mapAvatarImage} />
             </Avatar>
             <ListItemText
-              primary={
-                <div style={styles.listItemText}>
-                  {this.props.currentMap && this.props.currentMap.name}
-                </div>
-              }
-              secondary={
-                <div style={styles.listItemText}>
-                  {this.props.currentMap && this.props.currentMap.description}
-                </div>
-              }
-              style={styles.listItemContent}
+              primary={this.props.currentMap && this.props.currentMap.name}
+              secondary={this.props.currentMap && this.props.currentMap.description}
             />
             <ExpandLess />
           </ListItem>
