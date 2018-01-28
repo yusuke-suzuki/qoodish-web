@@ -45,18 +45,20 @@ module.exports = [
       extensions: ['.js']
     },
     module: {
-      loaders: [
+      rules: [
         {
-          test: /.js$/,
+          test: /\.js$/,
           exclude: /node_modules/,
-          loaders: ['babel-loader']
+          use: {
+            loader: 'babel-loader'
+          }
         }
       ]
     },
     plugins: serviceWorkerPlugins
   },
   {
-    entry: ['whatwg-fetch', '@babel/polyfill',  './app/frontend/index.js'],
+    entry: ['whatwg-fetch', '@babel/polyfill', './app/frontend/index.js'],
     output: {
       path: __dirname + '/public/javascripts',
       publicPath: '/javascripts/',
@@ -66,11 +68,13 @@ module.exports = [
       extensions: ['.js', '.jsx', '*']
     },
     module: {
-      loaders: [
+      rules: [
         {
-          test: /.jsx?$/,
+          test: /\.jsx?$/,
           exclude: /node_modules/,
-          loaders: ['babel-loader']
+          use: {
+            loader: 'babel-loader'
+          }
         },
         {
           test: /\.(jpe?g|png|gif|svg)$/i,
