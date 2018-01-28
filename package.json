@@ -10,7 +10,7 @@
     "yarn": "1.3.2"
   },
   "scripts": {
-    "start": "node -r babel-register index.js",
+    "start": "node -r @babel/register index.js",
     "build": "webpack --colors --progress --mode development",
     "watch:start": "nodemon index.js --exec babel-node",
     "watch:build": "webpack --hot --watch --colors --progress --mode development",
