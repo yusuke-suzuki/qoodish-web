@@ -35,7 +35,7 @@ const plugins = [
 
 module.exports = [
   {
-    entry: ['@babel/polyfill', './app/service_workers/firebase-messaging-sw.js'],
+    entry: ['./app/service_workers/firebase-messaging-sw.js'],
     output: {
       path: __dirname + '/public',
       publicPath: '/',
@@ -58,7 +58,7 @@ module.exports = [
     plugins: serviceWorkerPlugins
   },
   {
-    entry: ['whatwg-fetch', '@babel/polyfill', './app/frontend/index.js'],
+    entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
       path: __dirname + '/public/javascripts',
       publicPath: '/javascripts/',
