@@ -1,5 +1,10 @@
 {
-  "presets": ["@babel/preset-react", "@babel/preset-env"],
+  "presets": [
+    ["@babel/preset-env", {
+      "useBuiltIns": "usage"
+    }],
+    "@babel/preset-react"
+  ],
   "plugins": [
     "@babel/plugin-transform-async-to-generator"
   ]
