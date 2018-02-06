@@ -60,7 +60,7 @@ const styles = {
     bottom: 0,
     zIndex: 1
   }
-}
+};
 
 const mapOptions = {
   zoomControlOptions: {
@@ -224,7 +224,7 @@ export default class MapDetail extends Component {
     if (!map) {
       return false;
     } else {
-      return map.editable || (map.shared && !map.private) || (map.private && map.following && map.shared);
+      return map.postable;
     }
   }
 

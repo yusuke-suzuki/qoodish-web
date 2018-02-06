@@ -13,7 +13,8 @@ import {
   LOAD_MY_MAPS_START,
   LOAD_MY_MAPS_END,
   LOAD_FOLLOWING_MAPS_START,
-  LOAD_FOLLOWING_MAPS_END
+  LOAD_FOLLOWING_MAPS_END,
+  FETCH_POSTABLE_MAPS
 } from '../actionTypes';
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   loadingFollowingMaps: false,
   myMaps: [],
   followingMaps: [],
+  postableMaps: [],
   createMapDialogOpen: false,
   editMapDialogOpen: false,
   deleteMapDialogOpen: false
@@ -45,6 +47,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingFollowingMaps: false
       });
+    case FETCH_POSTABLE_MAPS:
+      return Object.assign({}, state, {
+        postableMaps: action.payload.maps
+      });
     case FETCH_MY_MAPS:
       return Object.assign({}, state, {
         myMaps: action.payload.maps
@@ -55,7 +61,8 @@ const reducer = (state = initialState, action) => {
       });
     case CREATE_MAP:
       return Object.assign({}, state, {
-        myMaps: [...state.myMaps, action.payload.newMap]
+        myMaps: [...state.myMaps, action.payload.newMap],
+        postableMaps: [...state.postableMaps, action.payload.newMap]
       });
     case OPEN_CREATE_MAP_DIALOG:
       return Object.assign({}, state, {
@@ -81,9 +88,11 @@ const reducer = (state = initialState, action) => {
         ]
       });
     case DELETE_MAP:
-      let rejected = state.myMaps.filter((map) => { return map.id != action.payload.id; });
+      let rejectedMyMaps = state.myMaps.filter((map) => { return map.id != action.payload.id; });
+      let rejectedPostableMaps = state.postableMaps.filter((map) => { return map.id != action.payload.id; });
       return Object.assign({}, state, {
-        myMaps: rejected
+        myMaps: rejectedMyMaps,
+        postableMaps: rejectedPostableMaps
       });
     case OPEN_EDIT_MAP_DIALOG:
       return Object.assign({}, state, {

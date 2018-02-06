@@ -4,6 +4,7 @@ import updateWindowSize from '../actions/updateWindowSize';
 import firebase from 'firebase';
 import ApiClient from '../containers/ApiClient';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
+import fetchPostableMaps from '../actions/fetchPostableMaps';
 
 const mapStateToProps = (state) => {
   return {
@@ -39,6 +40,13 @@ const mapDispatchToProps = (dispatch) => {
       messaging.onMessage((payload) => {
         console.log('Message received. ', payload);
       });
+    },
+
+    fetchPostableMaps: async () => {
+      const client = new ApiClient;
+      let response = await client.fetchPostableMaps();
+      let maps = await response.json();
+      dispatch(fetchPostableMaps(maps));
     }
   }
 }

@@ -91,6 +91,7 @@ class App extends Component {
         waitForInitialize: false
       });
       this.props.initMessaging();
+      this.props.fetchPostableMaps();
     }
   }
 
