@@ -19,7 +19,7 @@ import Paper from 'material-ui/Paper';
 
 const styles = {
   mapWrapperLarge: {
-    position: 'fixed',
+    position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
@@ -27,7 +27,7 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    position: 'fixed',
+    position: 'absolute',
     top: 0,
     bottom: 56,
     right: 0,

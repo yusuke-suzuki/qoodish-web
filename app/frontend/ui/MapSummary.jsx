@@ -29,10 +29,8 @@ const styles = {
     zIndex: 1
   },
   cardContainerSmall: {
-    position: 'absolute',
-    top: 56,
-    bottom: 0,
-    width: '100%'
+    paddingTop: 56,
+    paddingBottom: 56
   },
   cardLarge: {
     height: '100%',
@@ -40,9 +38,7 @@ const styles = {
   },
   cardSmall: {
     height: '100%',
-    width: '100%',
-    overflowY: 'scroll',
-    position: 'absolute'
+    width: '100%'
   },
   mapSummaryText: {
     wordWrap: 'break-word'
