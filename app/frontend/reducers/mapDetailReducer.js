@@ -12,6 +12,8 @@ import {
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
+  SWITCH_SUMMARY,
+  SWITCH_MAP,
   CLEAR_MAP_STATE
 } from '../actionTypes';
 
@@ -19,8 +21,9 @@ const initialState = {
   currentMap: null,
   placeSelectDialogOpen: false,
   joinMapDialogOpen: false,
-  leaveMapDialogOpen: false
-}
+  leaveMapDialogOpen: false,
+  tabValue: 0
+};
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
@@ -64,12 +67,21 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentMap: action.payload.currentMap
       });
+    case SWITCH_SUMMARY:
+      return Object.assign({}, state, {
+        tabValue: 0
+      });
+    case SWITCH_MAP:
+      return Object.assign({}, state, {
+        tabValue: 1
+      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
         placeSelectDialogOpen: false,
         joinMapDialogOpen: false,
-        leaveMapDialogOpen: false
+        leaveMapDialogOpen: false,
+        tabValue: 0
       });
     default:
       return state;

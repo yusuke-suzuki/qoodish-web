@@ -14,8 +14,6 @@ import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
 import fetchCollaborators from '../actions/fetchCollaborators';
 import openSpotDetail from '../actions/openSpotDetail';
-import openMapSummary from '../actions/openMapSummary';
-import closeMapSummary from '../actions/closeMapSummary';
 import fetchSpotReviews from '../actions/fetchSpotReviews';
 import clearMapState from '../actions/clearMapState';
 import gMapMounted from '../actions/gMapMounted';
@@ -26,6 +24,8 @@ import openReviewDialog from '../actions/openReviewDialog';
 import searchPlaces from '../actions/searchPlaces';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import selectSpot from '../actions/selectSpot';
+import switchSummary from '../actions/switchSummary';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = (state) => {
   return {
@@ -39,7 +39,8 @@ const mapStateToProps = (state) => {
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
     large: state.shared.large,
-    currentSpot: state.spotDetail.currentSpot
+    currentSpot: state.spotDetail.currentSpot,
+    tabValue: state.mapDetail.tabValue
   }
 }
 
@@ -47,14 +48,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Map'));
-    },
-
-    openMapSummary: () => {
-      dispatch(openMapSummary());
-    },
-
-    closeMapSummary: () => {
-      dispatch(closeMapSummary());
     },
 
     fetchMap: async () => {
@@ -155,6 +148,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let review = await response.json();
         dispatch(openReviewDialog(review));
       }
+    },
+
+    handleSummaryTabClick() {
+      dispatch(switchSummary());
+    },
+
+    handleMapTabClick() {
+      dispatch(switchMap());
     }
   }
 }
