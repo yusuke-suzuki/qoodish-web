@@ -12,10 +12,10 @@ import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
-import Card, { CardContent } from 'material-ui/Card';
-import ExpandLess from 'material-ui-icons/ExpandLess';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
+import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import PlaceIcon from 'material-ui-icons/Place';
+import InfoIcon from 'material-ui-icons/Info';
+import Paper from 'material-ui/Paper';
 
 const styles = {
   mapWrapperLarge: {
@@ -29,7 +29,7 @@ const styles = {
   mapWrapperSmall: {
     position: 'fixed',
     top: 0,
-    bottom: 68,
+    bottom: 56,
     right: 0,
     left: 0,
     marginTop: 56
@@ -48,23 +48,16 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 99.38,
+    bottom: 76,
     right: 20,
     backgroundColor: 'red',
     color: 'white'
   },
-  mapCard: {
+  bottomNav: {
     width: '100%',
     position: 'fixed',
     bottom: 0,
     zIndex: 1
-  },
-  mapCardContent: {
-    padding: 0
-  },
-  mapAvatarImage: {
-    width: 40,
-    height: 40
   }
 }
 
@@ -140,23 +133,8 @@ export default class MapDetail extends Component {
       this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
     }
-    this.controlMapSummary(this.props);
     if (this.props.match.params.reviewId) {
       this.props.fetchReview();
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.large != this.props.large) {
-      this.controlMapSummary(nextProps);
-    }
-  }
-
-  controlMapSummary(props) {
-    if (props.large) {
-      props.openMapSummary();
-    } else {
-      props.closeMapSummary();
     }
   }
 
@@ -167,21 +145,10 @@ export default class MapDetail extends Component {
   render() {
     return (
       <div>
-        {this.props.currentMap ? <MapSummaryContainer mapId={this.props.match.params.mapId} /> : null}
-        {!this.props.large ? this.renderMapCard() : null}
+        {this.props.large ? this.renderLarge() : this.renderSmall()}
+        {this.ableToPost(this.props.currentMap) ? this.renderCreateReviewButton() : null}
         <SpotDetailContainer />
         <ReviewDialogContainer mapId={this.props.match.params.mapId} />
-        <GoogleMapContainer
-          {...this.props}
-          containerElement={
-            <div style={this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
-          }
-          mapElement={
-            <div style={styles.mapContainer} />
-          }
-          onMapLoad={this.props.onMapMounted}
-        />
-        {this.ableToPost(this.props.currentMap) ? this.renderCreateReviewButton() : null}
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
         <DeleteReviewDialogContainer mapId={this.props.match.params.mapId} />
@@ -193,22 +160,62 @@ export default class MapDetail extends Component {
     );
   }
 
-  renderMapCard() {
+  renderLarge() {
     return (
-      <Card style={styles.mapCard}>
-        <CardContent style={styles.mapCardContent}>
-          <ListItem button onClick={this.props.openMapSummary}>
-            <Avatar style={styles.secondaryAvatar}>
-              <img src={this.props.currentMap && this.props.currentMap.image_url} style={styles.mapAvatarImage} />
-            </Avatar>
-            <ListItemText
-              primary={this.props.currentMap && this.props.currentMap.name}
-              secondary={this.props.currentMap && this.props.currentMap.description}
-            />
-            <ExpandLess />
-          </ListItem>
-        </CardContent>
-      </Card>
+      <div>
+        {this.renderMapSummary()}
+        {this.renderGoogleMap()}
+      </div>
+    );
+  }
+
+  renderSmall() {
+    return (
+      <div>
+        {this.props.tabValue === 0 && this.renderMapSummary()}
+        {this.props.tabValue === 1 && this.renderGoogleMap()}
+        {this.renderBottomNav()}
+      </div>
+    );
+  }
+
+  renderMapSummary() {
+    return (
+      <MapSummaryContainer mapId={this.props.match.params.mapId} />
+    );
+  }
+
+  renderGoogleMap() {
+    return (
+      <GoogleMapContainer
+        {...this.props}
+        containerElement={
+          <div style={this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
+        }
+        mapElement={
+          <div style={styles.mapContainer} />
+        }
+        onMapLoad={this.props.onMapMounted}
+      />
+    );
+  }
+
+  renderBottomNav() {
+    return (
+      <Paper style={styles.bottomNav}>
+        <BottomNavigation showLabels value={this.props.tabValue}>
+          <BottomNavigationAction
+            label='SUMMARY'
+            icon={<InfoIcon />}
+            onClick={this.props.handleSummaryTabClick}
+          />
+          <BottomNavigationAction
+            label='MAP'
+            icon={<PlaceIcon />}
+            onClick={this.props.handleMapTabClick}
+          />
+        </BottomNavigation>
+      </Paper>
     );
   }
 

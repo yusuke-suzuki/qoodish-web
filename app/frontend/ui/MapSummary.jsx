@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
-import Drawer from 'material-ui/Drawer';
-import Dialog, { DialogContent } from 'material-ui/Dialog';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
@@ -23,17 +21,18 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import moment from 'moment';
 
 const styles = {
-  drawer: {
-    position: 'fixed'
-  },
   cardContainerLarge: {
-    marginTop: 64,
+    position: 'absolute',
+    top: 64,
+    bottom: 0,
     width: 350,
-    height: 'calc(100% - 64px)',
-    overflow: 'hidden'
+    zIndex: 1
   },
   cardContainerSmall: {
-    overflow: 'hidden'
+    position: 'absolute',
+    top: 56,
+    bottom: 0,
+    width: '100%'
   },
   cardLarge: {
     height: '100%',
@@ -74,9 +73,6 @@ const styles = {
   spotImage: {
     width: 40,
     height: 40
-  },
-  dialogContent: {
-    padding: 0
   },
   cardContent: {
     paddingBottom: 0
@@ -153,55 +149,29 @@ class MapSummary extends Component {
   render() {
     return (
       <div>
-        {this.props.large ? this.renderDrawer() : this.renderDialog()}
+        {this.renderMapSummary(this.props.currentMap)}
       </div>
-    );
-  }
-
-  renderDrawer() {
-    return (
-      <Drawer
-        open={this.props.large && this.props.drawerOpen}
-        style={styles.drawer}
-        type='permanent'
-      >
-        {this.props.currentMap ? this.renderMapSummary(this.props.currentMap) : null}
-      </Drawer>
-    );
-  }
-
-  renderDialog() {
-    return (
-      <Dialog
-        fullScreen
-        open={!this.props.large && this.props.drawerOpen}
-        transition={Transition}
-      >
-        <DialogContent style={styles.dialogContent}>
-          {this.props.currentMap ? this.renderMapSummary(this.props.currentMap) : null}
-        </DialogContent>
-      </Dialog>
     );
   }
 
   renderMapSummary(map) {
     return (
       <div style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
-        {this.renderMapToolbar()}
+        {this.renderMapToolbar(this.props.currentMap)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           <CardMedia>
-            <img src={map.image_url} style={styles.media} />
+            <img src={map && map.image_url} style={styles.media} />
           </CardMedia>
           <CardContent style={styles.cardContent}>
             <Typography type='headline' component='h2' gutterBottom style={styles.mapSummaryText}>
-              {map.name}
+              {map && map.name}
             </Typography>
             <Typography component='p' style={styles.mapSummaryText}>
-              {map.description}
+              {map && map.description}
             </Typography>
           </CardContent>
           <CardActions style={styles.cardActions}>
-            {this.renderRoleButton(map)}
+            {map && this.renderRoleButton(map)}
           </CardActions>
           <Divider />
           <Tabs
@@ -262,12 +232,9 @@ class MapSummary extends Component {
     );
   }
 
-  renderMapToolbar() {
+  renderMapToolbar(map) {
     return (
       <Toolbar style={styles.mapToolbar} disableGutters>
-        <div>
-          {!this.props.large && this.renderCloseButton()}
-        </div>
         <div style={styles.toolbarActions}>
           <IconButton
             aria-label='More share'
@@ -287,7 +254,7 @@ class MapSummary extends Component {
               key='facebook'
               onClick={() => {
                 this.handleRequestShareMenuClose();
-                this.props.handleFacebookButtonClick(this.props.currentMap);;
+                this.props.handleFacebookButtonClick(map);
               }}
             >
               Share with Facebook
@@ -296,13 +263,13 @@ class MapSummary extends Component {
               key='twitter'
               onClick={() => {
                 this.handleRequestShareMenuClose();
-                this.props.handleTweetButtonClick(this.props.currentMap)
+                this.props.handleTweetButtonClick(map);
               }}
             >
               Share with Twitter
             </MenuItem>
             <CopyToClipboard
-              text={`${process.env.ENDPOINT}/maps/${this.props.currentMap.id}`}
+              text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
               onCopy={this.props.handleUrlCopied}
               key='copy'
             >
@@ -319,19 +286,9 @@ class MapSummary extends Component {
           >
             <MoreVertIcon style={styles.mapMenuIcon} />
           </IconButton>
-          {this.props.currentMap.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}
+          {map && map.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}
         </div>
       </Toolbar>
-    );
-  }
-
-  renderCloseButton() {
-    return (
-      <IconButton
-        onClick={this.props.handleCloseButtonClick}
-      >
-        <ArrowBackIcon style={styles.mapMenuIcon} />
-      </IconButton>
     );
   }
 

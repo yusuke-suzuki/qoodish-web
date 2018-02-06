@@ -1,8 +1,6 @@
 import {
   SELECT_MAP,
   EDIT_MAP,
-  OPEN_MAP_SUMMARY,
-  CLOSE_MAP_SUMMARY,
   FETCH_COLLABORATORS,
   FETCH_MAP_REVIEWS,
   CREATE_REVIEW,
@@ -17,7 +15,6 @@ import {
 
 const initialState = {
   currentMap: null,
-  mapSummaryOpen: false,
   collaborators: [],
   mapReviews: []
 };
@@ -31,14 +28,6 @@ const reducer = (state = initialState, action) => {
     case EDIT_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.map
-      });
-    case OPEN_MAP_SUMMARY:
-      return Object.assign({}, state, {
-        mapSummaryOpen: true
-      });
-    case CLOSE_MAP_SUMMARY:
-      return Object.assign({}, state, {
-        mapSummaryOpen: false
       });
     case FETCH_COLLABORATORS:
       return Object.assign({}, state, {
@@ -94,7 +83,6 @@ const reducer = (state = initialState, action) => {
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
-        mapSummaryOpen: false,
         collaborators: [],
         mapReviews: []
       });

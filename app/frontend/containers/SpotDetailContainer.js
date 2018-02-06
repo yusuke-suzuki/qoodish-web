@@ -7,6 +7,7 @@ import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import openReviewDialog from '../actions/openReviewDialog';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = (state) => {
   return {
@@ -34,6 +35,8 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     handleRouteButtonClick: (spot, currentPosition) => {
+      dispatch(closeSpotDetail());
+      dispatch(switchMap());
       if (currentPosition.lat && currentPosition.lng) {
         const DirectionsService = new google.maps.DirectionsService();
         let origin = new google.maps.LatLng(parseFloat(currentPosition.lat), parseFloat(currentPosition.lng));
