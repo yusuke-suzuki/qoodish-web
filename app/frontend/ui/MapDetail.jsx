@@ -29,10 +29,11 @@ const styles = {
   mapWrapperSmall: {
     position: 'absolute',
     top: 0,
-    bottom: 56,
+    bottom: 0,
     right: 0,
     left: 0,
-    marginTop: 56
+    paddingTop: 56,
+    paddingBottom: 56
   },
   mapContainer: {
     height: '100%'
