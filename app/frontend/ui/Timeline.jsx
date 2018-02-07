@@ -16,6 +16,8 @@ import MapIcon from 'material-ui-icons/Map';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Card, { CardHeader } from 'material-ui/Card';
+import AddLocationIcon from 'material-ui-icons/AddLocation';
+import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
 
 const styles = {
   rootLarge: {
@@ -60,6 +62,22 @@ const styles = {
   raisedButtonSmall: {
     width: '90%',
     marginBottom: 20
+  },
+  createButtonLarge: {
+    zIndex: 1100,
+    position: 'fixed',
+    bottom: 32,
+    right: 32,
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  createButtonSmall: {
+    zIndex: 1100,
+    position: 'fixed',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'red',
+    color: 'white'
   }
 };
 
@@ -105,10 +123,25 @@ export default class Feed extends Component {
         <div style={styles.container}>
           {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
         </div>
+        {this.renderCreateReviewButton()}
+        <PlaceSelectDialogContainer />
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
         <CreateMapDialogContainer />
       </div>
+    );
+  }
+
+  renderCreateReviewButton() {
+    return (
+      <Button
+        fab
+        aria-label='add'
+        style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
+        onClick={this.props.handleCreateReviewClick}
+      >
+        <AddLocationIcon />
+      </Button>
     );
   }
 
@@ -117,14 +150,14 @@ export default class Feed extends Component {
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
         <Typography type='subheading' color='inherit'>
-          When you create or follow maps, you will see posts here.
+          When you create reports, you will see here.
         </Typography>
         <br/>
         <Button raised onClick={this.props.handleCreateMapButtonClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
           Create New Map
         </Button>
         <Button raised onClick={this.props.handleDiscoverLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
-          Search Maps
+          Discover Maps
         </Button>
       </div>
     );

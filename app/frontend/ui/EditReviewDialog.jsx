@@ -12,6 +12,11 @@ import PlaceIcon from 'material-ui-icons/Place';
 import PhotoCameraIcon from 'material-ui-icons/PhotoCamera';
 import CancelIcon from 'material-ui-icons/Cancel';
 import Button from 'material-ui/Button';
+import Select from 'material-ui/Select';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
+import { ListItemText } from 'material-ui/List';
 
 const styles = {
   imagePreviewContainer: {
@@ -27,13 +32,14 @@ const styles = {
   imageInput: {
     display: 'none'
   }
-}
+};
 
 class EditReviewDialog extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: null,
+      mapId: undefined,
       comment: '',
       placeId: '',
       placeName: '',
@@ -43,6 +49,7 @@ class EditReviewDialog extends Component {
       disabled: true,
       imageDeleteRequest: false
     };
+    this.handleMapChange = this.handleMapChange.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
@@ -63,6 +70,7 @@ class EditReviewDialog extends Component {
       }
       this.setState({
         id: currentReview.id,
+        mapId: currentReview.mapId,
         comment: currentReview.comment,
         placeId: currentReview.place_id,
         placeName: currentReview.spot.name,
@@ -78,28 +86,51 @@ class EditReviewDialog extends Component {
         placeName: nextProps.selectedPlace.description
       });
     }
+    if (nextProps.mapId) {
+      this.setState({
+        mapId: nextProps.mapId
+      });
+    }
+  }
+
+  handleMapChange(e) {
+    let mapId = e.target.value;
+    this.setState({
+      mapId: mapId
+    }, () => {
+      this.validate();
+    });
   }
 
   handleCommentChange(e) {
     let comment = e.target.value;
     let errorText;
-    let disabled;
     if (comment) {
       if (comment.length > 140) {
         errorText = 'The maximum number of characters is 140';
-        disabled = true;
       } else {
         errorText = '';
-        disabled = false;
       }
     } else {
       errorText = 'Comment is required';
-      disabled = true;
     }
 
     this.setState({
       comment: comment,
-      errorComment: errorText,
+      errorComment: errorText
+    }, () => {
+      this.validate();
+    });
+  }
+
+  validate() {
+    let disabled;
+    if (!this.state.errorComment && this.state.mapId) {
+      disabled = false;
+    } else {
+      disabled = true;
+    }
+    this.setState({
       disabled: disabled
     });
   }
@@ -117,7 +148,7 @@ class EditReviewDialog extends Component {
       params.review_id = this.state.id;
       this.props.handleClickEditButton(this.props.currentReview, params, canvas, this.state.imageDeleteRequest);
     } else {
-      this.props.handleClickCreateButton(this.props.mapId, params, canvas);
+      this.props.handleClickCreateButton(this.state.mapId, params, canvas);
     }
   }
 
@@ -186,6 +217,7 @@ class EditReviewDialog extends Component {
   clearInputs() {
     this.setState({
       id: null,
+      mapId: null,
       comment: '',
       placeId: '',
       placeName: '',
@@ -214,6 +246,10 @@ class EditReviewDialog extends Component {
             label={this.state.placeName}
           />
           <br/>
+          <br/>
+          {this.renderMapSelect()}
+          <br/>
+          <br/>
           {this.renderCommentBox()}
           <br/>
           <br/>
@@ -239,6 +275,41 @@ class EditReviewDialog extends Component {
         </DialogActions>
       </Dialog>
     );
+  }
+
+  renderMapSelect() {
+    return (
+      <FormControl
+        fullWidth
+        error={this.state.mapId ? false : true}
+      >
+        <InputLabel htmlFor='map-input'>Map</InputLabel>
+        <Select
+          value={this.state.mapId ? this.state.mapId : ''}
+          onChange={this.handleMapChange}
+          input={<Input id='map-input' style={{padding: 20}}/>}
+          renderValue={(value) => this.renderSelectValue(value, this.props.postableMaps)}
+          style={{height: 'auto'}}
+        >
+          {this.renderPostableMaps()}
+        </Select>
+        <FormHelperText>{!this.state.mapId && 'Map is required'}</FormHelperText>
+      </FormControl>
+    );
+  }
+
+  renderSelectValue(mapId, maps) {
+    let map = maps.find((map) => { return map.id == mapId });
+    return map ? map.name : '';
+  }
+
+  renderPostableMaps() {
+    return this.props.postableMaps.map((map) => (
+      <MenuItem key={map.id} value={map.id}>
+        <Avatar src={map.image_url} />
+        <ListItemText primary={map.name} />
+      </MenuItem>
+    ));
   }
 
   renderCommentBox() {
