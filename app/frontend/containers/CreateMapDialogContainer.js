@@ -25,16 +25,16 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(requestStart());
       const client = new ApiClient;
       let response = await client.createMap(params);
+      let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        let newMap = await response.json();
-        dispatch(createMap(newMap));
+        dispatch(createMap(json));
         dispatch(closeCreateMapDialog());
-        dispatch(selectMap(newMap));
-        dispatch(push(`/maps/${newMap.id}`));
+        dispatch(selectMap(json));
+        dispatch(push(`/maps/${json.id}`));
         dispatch(openToast('Successfuly created the map!'));
       } else if (response.status == 409) {
-        dispatch(openToast(e.message));
+        dispatch(openToast(json.detail));
       } else {
         dispatch(openToast('Failed to create map.'));
       }

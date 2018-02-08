@@ -24,14 +24,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(requestStart());
       const client = new ApiClient;
       let response = await client.editMap(params);
+      let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        let map = await response.json();
-        dispatch(editMap(map));
+        dispatch(editMap(json));
         dispatch(closeEditMapDialog());
         dispatch(openToast('Successfuly updated the map!'));
       } else if (response.status == 409) {
-        dispatch(openToast(e.message));
+        dispatch(openToast(json.detail));
       } else {
         dispatch(openToast('Failed to update map.'));
       }
