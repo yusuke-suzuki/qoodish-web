@@ -95,6 +95,7 @@ class App extends Component {
       });
       this.props.initMessaging();
       this.props.fetchPostableMaps();
+      this.props.fetchCurrentPosition();
     }
   }
 
