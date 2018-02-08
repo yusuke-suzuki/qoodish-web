@@ -4,6 +4,10 @@ import updateWindowSize from '../actions/updateWindowSize';
 import firebase from 'firebase';
 import ApiClient from '../containers/ApiClient';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
+import fetchPostableMaps from '../actions/fetchPostableMaps';
+import { fetchCurrentPosition } from './Utils';
+import getCurrentPosition from '../actions/getCurrentPosition';
+import searchPlaces from '../actions/searchPlaces';
 
 const mapStateToProps = (state) => {
   return {
@@ -16,6 +20,17 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleWindowSizeChange: (width) => {
       dispatch(updateWindowSize(width));
+    },
+
+    fetchCurrentPosition: async () => {
+      let position = await fetchCurrentPosition();
+      dispatch(getCurrentPosition(position.coords.latitude, position.coords.longitude));
+      const client = new ApiClient;
+      let response = await client.searchNearPlaces(position.coords.latitude, position.coords.longitude);
+      let places = await response.json();
+      if (response.ok) {
+        dispatch(searchPlaces(places));
+      }
     },
 
     initMessaging: async () => {
@@ -39,6 +54,13 @@ const mapDispatchToProps = (dispatch) => {
       messaging.onMessage((payload) => {
         console.log('Message received. ', payload);
       });
+    },
+
+    fetchPostableMaps: async () => {
+      const client = new ApiClient;
+      let response = await client.fetchPostableMaps();
+      let maps = await response.json();
+      dispatch(fetchPostableMaps(maps));
     }
   }
 }

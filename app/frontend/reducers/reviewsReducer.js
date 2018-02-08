@@ -5,6 +5,7 @@ import {
   LOAD_MORE_REVIEWS_END,
   FETCH_REVIEWS,
   FETCH_MORE_REVIEWS,
+  CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
   OPEN_EDIT_REVIEW_DIALOG,
@@ -67,6 +68,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selectedPlace: action.payload.place,
         editReviewDialogOpen: true
+      });
+    case CREATE_REVIEW:
+      return Object.assign({}, state, {
+        currentReviews: [action.payload.review, ...state.currentReviews]
       });
     case LIKE_REVIEW:
     case UNLIKE_REVIEW:

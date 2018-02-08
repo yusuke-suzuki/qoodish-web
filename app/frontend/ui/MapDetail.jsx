@@ -29,10 +29,11 @@ const styles = {
   mapWrapperSmall: {
     position: 'absolute',
     top: 0,
-    bottom: 56,
+    bottom: 0,
     right: 0,
     left: 0,
-    marginTop: 56
+    paddingTop: 56,
+    paddingBottom: 56
   },
   mapContainer: {
     height: '100%'
@@ -59,7 +60,7 @@ const styles = {
     bottom: 0,
     zIndex: 1
   }
-}
+};
 
 const mapOptions = {
   zoomControlOptions: {
@@ -223,7 +224,7 @@ export default class MapDetail extends Component {
     if (!map) {
       return false;
     } else {
-      return map.editable || (map.shared && !map.private) || (map.private && map.following && map.shared);
+      return map.postable;
     }
   }
 

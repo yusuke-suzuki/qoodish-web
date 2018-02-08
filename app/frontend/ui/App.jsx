@@ -20,7 +20,8 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import amber from 'material-ui/colors/amber';
 import lightBlue from 'material-ui/colors/lightBlue';
 import firebase from 'firebase';
-import { CircularProgress } from 'material-ui/Progress';
+import { LinearProgress } from 'material-ui/Progress';
+import Typography from 'material-ui/Typography';
 
 const theme = createMuiTheme({
   palette: {
@@ -40,9 +41,11 @@ const theme = createMuiTheme({
 });
 
 const styles = {
-  progress: {
-    textAlign: 'center',
-    marginTop: '50vh'
+  progressContainer: {
+    top: '50%',
+    left: '50%',
+    position: 'absolute',
+    transform: 'translate(-50%, -50%)'
   }
 };
 
@@ -91,6 +94,8 @@ class App extends Component {
         waitForInitialize: false
       });
       this.props.initMessaging();
+      this.props.fetchPostableMaps();
+      this.props.fetchCurrentPosition();
     }
   }
 
@@ -113,8 +118,15 @@ class App extends Component {
   renderUserOnly() {
     if (this.state.waitForInitialize) {
       return (
-        <div style={styles.progress}>
-          <CircularProgress />
+        <div style={styles.progressContainer}>
+          <Typography
+            type={this.props.large ? 'display3' : 'display2'}
+            color='primary'
+            gutterBottom
+          >
+            Qoodish
+          </Typography>
+          <LinearProgress />
         </div>
       );
     } else {

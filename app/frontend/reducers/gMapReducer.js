@@ -51,6 +51,9 @@ const reducer = (state = initialState, action) => {
         }
       });
     case REQUEST_CURRENT_POSITION:
+      if (!state.currentPosition.lat) {
+        return state;
+      }
       return Object.assign({}, state, {
         center: {
           lat: state.currentPosition.lat,

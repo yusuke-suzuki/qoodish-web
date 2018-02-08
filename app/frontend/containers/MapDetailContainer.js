@@ -7,7 +7,6 @@ import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openToast from '../actions/openToast';
 import updatePageTitle from '../actions/updatePageTitle';
 import signOut from '../actions/signOut';
-import getCurrentPosition from '../actions/getCurrentPosition';
 import requestCurrentPosition from '../actions/requestCurrentPosition';
 import getMapBasePosition from '../actions/getMapBasePosition';
 import requestMapBase from '../actions/requestMapBase';
@@ -19,9 +18,7 @@ import clearMapState from '../actions/clearMapState';
 import gMapMounted from '../actions/gMapMounted';
 import mapZoomChanged from '../actions/mapZoomChanged';
 import mapCenterChanged from '../actions/mapCenterChanged';
-import { fetchCurrentPosition } from './Utils';
 import openReviewDialog from '../actions/openReviewDialog';
-import searchPlaces from '../actions/searchPlaces';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import selectSpot from '../actions/selectSpot';
 import switchSummary from '../actions/switchSummary';
@@ -67,19 +64,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     initCenter: async (map) => {
-      let position = await fetchCurrentPosition();
-      dispatch(getCurrentPosition(position.coords.latitude, position.coords.longitude));
       if (map.base.place_id) {
         dispatch(getMapBasePosition(map.base.lat, map.base.lng));
         dispatch(requestMapBase());
       } else {
         dispatch(requestCurrentPosition());
-      }
-      const client = new ApiClient;
-      let response = await client.searchNearPlaces(position.coords.latitude, position.coords.longitude);
-      let places = await response.json();
-      if (response.ok) {
-        dispatch(searchPlaces(places));
       }
     },
 
