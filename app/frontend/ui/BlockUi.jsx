@@ -3,7 +3,7 @@ import { CircularProgress } from 'material-ui/Progress';
 
 const styles = {
   blockUi: {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,

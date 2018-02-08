@@ -34,11 +34,13 @@ const styles = {
   },
   cardLarge: {
     height: '100%',
-    overflowY: 'scroll'
+    overflowY: 'scroll',
+    minHeight: 'calc(100vh - 64px)'
   },
   cardSmall: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+    minHeight: 'calc(100vh - 112px)'
   },
   mapSummaryText: {
     wordWrap: 'break-word'

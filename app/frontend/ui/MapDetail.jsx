@@ -27,13 +27,9 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
     paddingTop: 56,
-    paddingBottom: 56
+    paddingBottom: 56,
+    height: 'calc(100vh - 112px)'
   },
   mapContainer: {
     height: '100%'
