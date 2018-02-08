@@ -1,3 +1,16 @@
 {
-  "gcm_sender_id": "103953800507"
+  "short_name": "Qoodish",
+  "name": "Expand your map with Qoodish.",
+  "gcm_sender_id": "103953800507",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "https://s3-ap-northeast-1.amazonaws.com/qoodish/substitute.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#f1f1f1",
+  "display": "standalone",
+  "theme_color": "#ffc107"
 }
