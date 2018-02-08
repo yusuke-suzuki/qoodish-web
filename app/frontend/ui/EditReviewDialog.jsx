@@ -70,7 +70,7 @@ class EditReviewDialog extends Component {
       }
       this.setState({
         id: currentReview.id,
-        mapId: currentReview.mapId,
+        mapId: currentReview.map_id,
         comment: currentReview.comment,
         placeId: currentReview.place_id,
         placeName: currentReview.spot.name,
