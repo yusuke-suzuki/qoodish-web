@@ -70,7 +70,8 @@ const styles = {
     marginRight: 12
   },
   notificationMenuItem: {
-    height: 'auto'
+    height: 'auto',
+    maxHeight: '50vh'
   },
   notificationButton: {
     marginRight: 10
