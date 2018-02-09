@@ -69,9 +69,11 @@ const styles = {
     borderRadius: 0,
     marginRight: 12
   },
-  notificationMenuItem: {
-    height: 'auto',
+  notificationMenu: {
     maxHeight: '50vh'
+  },
+  notificationMenuItem: {
+    height: 'auto'
   },
   notificationButton: {
     marginRight: 10

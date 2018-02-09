@@ -20,6 +20,7 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 import PlaceIcon from 'material-ui-icons/Place';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
 import Slide from 'material-ui/transitions/Slide';
+import AppBar from 'material-ui/AppBar';
 
 const styles = {
   drawer: {
@@ -97,6 +98,12 @@ const styles = {
   },
   gridListTile: {
     height: 'auto'
+  },
+  backIcon: {
+    color: 'white'
+  },
+  appbar: {
+    position: 'sticky'
   }
 };
 
@@ -149,6 +156,7 @@ class SpotDetail extends Component {
         open={!this.props.large && this.props.drawerOpen}
         transition={Transition}
       >
+        {this.renderAppBar()}
         <DialogContent style={styles.dialogContent}>
           {this.renderSpotSummary(this.props.currentSpot)}
         </DialogContent>
@@ -156,18 +164,28 @@ class SpotDetail extends Component {
     );
   }
 
+  renderAppBar() {
+    return (
+      <AppBar style={styles.appbar}>
+        <Toolbar disableGutters>
+          <IconButton onClick={this.props.handleCloseSpotButtonClick}>
+            <ArrowBackIcon style={styles.backIcon} />
+          </IconButton>
+          <Typography
+            type='headline'
+            color='inherit'
+          >
+            Spot
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    )
+  }
+
   renderSpotSummary(spot) {
     return (
       <div style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
-        <Toolbar style={styles.spotToolbar} disableGutters>
-          <div>
-            <IconButton
-              onClick={this.props.handleCloseSpotButtonClick}
-            >
-              {this.renderCloseButton()}
-            </IconButton>
-          </div>
-        </Toolbar>
+        {this.props.large && this.renderToolbar()}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           {this.renderThumbnail(spot)}
           <BottomNavigation showLabels>
@@ -207,6 +225,20 @@ class SpotDetail extends Component {
     );
   }
 
+  renderToolbar() {
+    return (
+      <Toolbar style={styles.spotToolbar} disableGutters>
+        <div>
+          <IconButton
+            onClick={this.props.handleCloseSpotButtonClick}
+          >
+            <ChevronRightIcon style={styles.spotToobarIcon} />
+          </IconButton>
+        </div>
+      </Toolbar>
+    );
+  }
+
   renderThumbnail(spot) {
     return (
       <GridList
@@ -235,14 +267,6 @@ class SpotDetail extends Component {
         </GridListTile>
       </GridList>
     );
-  }
-
-  renderCloseButton() {
-    if (this.props.large) {
-      return <ChevronRightIcon style={styles.spotToobarIcon} />;
-    } else {
-      return <ArrowBackIcon style={styles.spotToobarIcon} />
-    }
   }
 
   renderSpotReviews(reviews) {
