@@ -36,6 +36,9 @@ const styles = {
   cardMedia: {
     marginBottom: -5
   },
+  wordBreak: {
+    wordBreak: 'break-all'
+  },
   media: {
     width: '100%'
   },
@@ -312,10 +315,10 @@ class ReviewDialog extends Component {
           subheader={review && moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL')}
         />
         <CardContent style={styles.cardContent}>
-          <Typography type='headline' component='h2' gutterBottom>
+          <Typography type='headline' component='h2' gutterBottom style={styles.wordBreak}>
             {review && review.spot.name}
           </Typography>
-          <Typography component='p'>
+          <Typography component='p' style={styles.wordBreak}>
             {review && review.comment}
           </Typography>
         </CardContent>
