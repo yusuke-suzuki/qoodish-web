@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withGoogleMap, GoogleMap, Marker, DirectionsRenderer, InfoWindow } from 'react-google-maps';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
-import SpotDetailContainer from '../containers/SpotDetailContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
 import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
@@ -16,6 +15,7 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 import PlaceIcon from 'material-ui-icons/Place';
 import InfoIcon from 'material-ui-icons/Info';
 import Paper from 'material-ui/Paper';
+import SpotCardContainer from '../containers/SpotCardContainer';
 
 const styles = {
   mapWrapperLarge: {
@@ -112,6 +112,7 @@ const GoogleMapContainer = withGoogleMap(props => (
       }}
     /> : null}
     {<DirectionsRenderer directions={props.directions} />}
+    <SpotCardContainer mapId={props.match.params.mapId} />
   </GoogleMap>
 ));
 
@@ -144,11 +145,10 @@ export default class MapDetail extends Component {
       <div>
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         {this.ableToPost(this.props.currentMap) ? this.renderCreateReviewButton() : null}
-        <SpotDetailContainer />
-        <ReviewDialogContainer mapId={this.props.match.params.mapId} />
+        <ReviewDialogContainer />
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
-        <DeleteReviewDialogContainer mapId={this.props.match.params.mapId} />
+        <DeleteReviewDialogContainer />
         <EditMapDialogContainer />
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
