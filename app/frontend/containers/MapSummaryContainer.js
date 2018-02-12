@@ -13,6 +13,7 @@ import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
 import switchMap from '../actions/switchMap';
+import selectReview from '../actions/selectReview';
 
 const mapStateToProps = (state) => {
   return {
@@ -34,11 +35,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openSpotCard());
     },
 
-    handleReviewClick: async (review) => {
-      dispatch(selectSpot(review.spot));
-      dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-      dispatch(openReviewDialog(review));
-      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+    handleReviewClick: async (review, large) => {
+      if (large) {
+        dispatch(selectSpot(review.spot));
+        dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+        dispatch(openReviewDialog(review));
+      } else {
+        dispatch(selectReview(review));
+        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+      }
     },
 
     handleJoinButtonClick: () => {

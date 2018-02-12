@@ -74,7 +74,7 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 76,
+    bottom: 20,
     right: 20,
     backgroundColor: 'red',
     color: 'white'

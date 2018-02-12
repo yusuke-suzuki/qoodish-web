@@ -3,10 +3,6 @@ import {
   LOAD_SPOT_END,
   FETCH_SPOT,
   FETCH_SPOT_REVIEWS,
-  EDIT_REVIEW,
-  DELETE_REVIEW,
-  LIKE_REVIEW,
-  UNLIKE_REVIEW,
   CLEAR_SPOT_STATE
 } from '../actionTypes';
 
@@ -33,37 +29,6 @@ const reducer = (state = initialState, action) => {
     case FETCH_SPOT_REVIEWS:
       return Object.assign({}, state, {
         spotReviews: action.payload.reviews
-      });
-    case LIKE_REVIEW:
-    case UNLIKE_REVIEW:
-    case EDIT_REVIEW:
-      if (state.spotReviews.length === 0) {
-        return state;
-      }
-
-      let index = state.spotReviews.findIndex((review) => { return review.id == action.payload.review.id; });
-      let currentReview = state.spotReviews[index];
-      if (!currentReview) {
-        return state;
-      }
-
-      Object.assign(currentReview, action.payload.review);
-
-      return Object.assign({}, state, {
-        spotReviews: [
-          ...state.spotReviews.slice(0, index),
-          currentReview,
-          ...state.spotReviews.slice(index + 1)
-        ]
-      });
-    case DELETE_REVIEW:
-      if (state.spotReviews.length === 0) {
-        return state;
-      }
-
-      let sporReviews = state.spotReviews.filter((review) => { return review.id != action.payload.id; });
-      return Object.assign({}, state, {
-        spotReviews: sporReviews
       });
     case CLEAR_SPOT_STATE:
       return Object.assign({}, state, {

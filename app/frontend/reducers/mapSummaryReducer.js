@@ -46,7 +46,7 @@ const reducer = (state = initialState, action) => {
         currentMap: action.payload.currentMap
       });
     case CREATE_REVIEW:
-      if (state.currentMap && state.currentMap.id != action.payload.review.mapId) {
+      if (state.currentMap && state.currentMap.id != action.payload.review.map_id) {
         return state;
       }
       return Object.assign({}, state, {
