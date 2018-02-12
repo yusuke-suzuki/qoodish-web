@@ -175,8 +175,8 @@ class ApiClient {
     return response;
   }
 
-  async fetchSpot(params) {
-    const url = `${process.env.API_ENDPOINT}/maps/${params.mapId}/spots/${params.placeId}`;
+  async fetchSpot(placeId) {
+    const url = `${process.env.API_ENDPOINT}/spots/${placeId}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
@@ -306,8 +306,8 @@ class ApiClient {
     return response;
   }
 
-  async fetchSpotReviews(mapId, placeId) {
-    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/reviews?place_id=${placeId}`;
+  async fetchSpotReviews(placeId) {
+    const url = `${process.env.API_ENDPOINT}/spots/${placeId}/reviews`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',

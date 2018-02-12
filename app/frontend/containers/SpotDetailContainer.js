@@ -2,31 +2,61 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import SpotDetail from '../ui/SpotDetail';
 import ApiClient from './ApiClient.js';
-import closeSpotDetail from '../actions/closeSpotDetail';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
-import requestRoute from '../actions/requestRoute';
 import openReviewDialog from '../actions/openReviewDialog';
-import switchMap from '../actions/switchMap';
+import fetchSpot from '../actions/fetchSpot';
+import fetchSpotReviews from '../actions/fetchSpotReviews';
+import loadSpotStart from '../actions/loadSpotStart';
+import loadSpotEnd from '../actions/loadSpotEnd';
+import clearSpotState from '../actions/clearSpotState';
+import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = (state) => {
   return {
-    currentMap: state.mapDetail.currentMap,
-    drawerOpen: state.spotDetail.spotDetailOpen,
     currentSpot: state.spotDetail.currentSpot,
     spotReviews: state.spotDetail.spotReviews,
-    currentPosition: state.gMap.currentPosition,
-    large: state.shared.large
+    spotLoading: state.spotDetail.spotLoading,
+    large: state.shared.large,
+    defaultCenter: state.gMap.defaultCenter,
+    defaultZoom: state.gMap.defaultZoom,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleCloseSpotButtonClick: () => {
-      dispatch(closeSpotDetail());
+    updatePageTitle: () => {
+      dispatch(updatePageTitle('Spot'));
     },
 
-    handleAddReviewButtonClick: (spot) => {
+    fetchSpot: async () => {
+      dispatch(loadSpotStart());
+      const client = new ApiClient;
+      let response = await client.fetchSpot(ownProps.match.params.placeId);
+      let json = await response.json();
+      dispatch(loadSpotEnd());
+      if (response.ok) {
+        dispatch(fetchSpot(json));
+      } else if (response.status == 401) {
+        dispatch(signOut());
+        dispatch(openToast('Authenticate failed'));
+      } else if (response.status == 404) {
+        dispatch(openToast('Spot not found.'));
+      } else {
+        dispatch(openToast('Failed to fetch Spot.'));
+      }
+    },
+
+    fetchSpotReviews: async () => {
+      const client = new ApiClient;
+      let response = await client.fetchSpotReviews(ownProps.match.params.placeId);
+      let json = await response.json();
+      if (response.ok) {
+        dispatch(fetchSpotReviews(json));
+      }
+    },
+
+    handleCreateReviewClick: (spot) => {
       let place = {
         description: spot.name,
         placeId: spot.place_id
@@ -34,33 +64,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(selectPlaceForReview(place));
     },
 
-    handleRouteButtonClick: (spot, currentPosition) => {
-      dispatch(closeSpotDetail());
-      dispatch(switchMap());
-      if (currentPosition.lat && currentPosition.lng) {
-        const DirectionsService = new google.maps.DirectionsService();
-        let origin = new google.maps.LatLng(parseFloat(currentPosition.lat), parseFloat(currentPosition.lng));
-        let destination = new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng));
-        DirectionsService.route({
-          origin: origin,
-          destination: destination,
-          travelMode: google.maps.TravelMode.WALKING,
-        }, (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            dispatch(requestRoute(result));
-          } else {
-            dispatch(openToast('Error fetching direction'));
-          }
-        });
-      } else {
-        dispatch(openToast('Current position is not available. Please activate'));
-        return;
-      }
+    handleReviewClick: (review) => {
     },
 
-    handleReviewClick: (review) => {
-      dispatch(openReviewDialog(review));
-      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+    clear: () => {
+      dispatch(clearSpotState());
     }
   }
 }

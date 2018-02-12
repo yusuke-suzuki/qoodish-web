@@ -11,6 +11,7 @@ import DiscoverContainer from '../containers/DiscoverContainer';
 import TimelineContainer from '../containers/TimelineContainer';
 import MapsContainer from '../containers/MapsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
+import SpotDetailContainer from '../containers/SpotDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
@@ -139,6 +140,7 @@ class App extends Component {
             <Route exact path='/maps' component={MapsContainer} />
             <Route exact path='/maps/:mapId' component={MapDetailContainer} />
             <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
+            <Route exact path='/spots/:placeId' component={SpotDetailContainer} />
             <Route exact path='/settings' component={SettingsContainer} />
             <Route exact path='/terms' component={TermsContainer} />
             <Route exact path='/privacy' component={PrivacyContainer} />

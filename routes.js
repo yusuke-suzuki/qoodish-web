@@ -29,6 +29,7 @@ const routes = (app) => {
     '/maps',
     '/maps/:mapId',
     '/maps/:mapId/reports/:reviewId',
+    '/spots/:placeId',
     '/settings',
     '/terms',
     '/privacy'

@@ -25,10 +25,10 @@ const styles = {
     width: 40
   },
   cardLarge: {
-    minHeight: 'calc(100% - 64px)'
+    minHeight: '100%'
   },
   cardSmall: {
-    minHeight: 'calc(100% - 56px)'
+    minHeight: '100%'
   },
   cardContent: {
     paddingTop: 0
@@ -130,6 +130,12 @@ class ReviewDialog extends Component {
           <IconButton onClick={this.props.handleRequestDialogClose}>
             <ArrowBackIcon style={styles.backIcon} />
           </IconButton>
+          <Typography
+            type='headline'
+            color='inherit'
+          >
+            Report
+          </Typography>
         </Toolbar>
       </AppBar>
     )

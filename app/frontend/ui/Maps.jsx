@@ -90,14 +90,18 @@ const styles = {
 };
 
 export default class Maps extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0
+    };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.refreshMyMaps();
     this.props.refreshFollowingMaps();
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      value: 0
-    };
   }
 
   handleChange(event, value) {
@@ -209,7 +213,7 @@ export default class Maps extends Component {
             </span>
           }
           actionIcon={
-            map.private ? <LockIcon color='rgba(255, 255, 255, 0.54)' style={styles.lockIcon} /> : null
+            map.private ? <LockIcon color='disabled' style={styles.lockIcon} /> : null
           }
         />
       </GridListTile>

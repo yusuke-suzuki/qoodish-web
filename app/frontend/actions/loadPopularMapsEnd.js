@@ -2,7 +2,7 @@ import { LOAD_POPULAR_MAPS_END } from '../actionTypes';
 
 const loadPopularMapsEnd = () => {
   return {
-    type: LOAD_POPULAR_MAPS_END,
+    type: LOAD_POPULAR_MAPS_END
   }
 }
 

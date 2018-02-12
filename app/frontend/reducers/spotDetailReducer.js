@@ -1,39 +1,34 @@
 import {
-  TOGGLE_RIGHT_DRAWER,
-  SELECT_SPOT,
-  OPEN_SPOT_DETAIL,
-  CLOSE_SPOT_DETAIL,
+  LOAD_SPOT_START,
+  LOAD_SPOT_END,
+  FETCH_SPOT,
   FETCH_SPOT_REVIEWS,
   EDIT_REVIEW,
   DELETE_REVIEW,
   LIKE_REVIEW,
   UNLIKE_REVIEW,
-  CLEAR_MAP_STATE
+  CLEAR_SPOT_STATE
 } from '../actionTypes';
 
 const initialState = {
-  spotDetailOpen: false,
-  currentSpot: {},
+  spotLoading: false,
+  currentSpot: undefined,
   spotReviews: []
 };
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case TOGGLE_RIGHT_DRAWER:
+    case LOAD_SPOT_START:
       return Object.assign({}, state, {
-        spotDetailOpen: !state.spotDetailOpen
+        spotLoading: true
       });
-    case SELECT_SPOT:
+    case LOAD_SPOT_END:
+      return Object.assign({}, state, {
+        spotLoading: false
+      });
+    case FETCH_SPOT:
       return Object.assign({}, state, {
         currentSpot: action.payload.spot
-      });
-    case OPEN_SPOT_DETAIL:
-      return Object.assign({}, state, {
-        spotDetailOpen: true
-      });
-    case CLOSE_SPOT_DETAIL:
-      return Object.assign({}, state, {
-        spotDetailOpen: false
       });
     case FETCH_SPOT_REVIEWS:
       return Object.assign({}, state, {
@@ -70,10 +65,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spotReviews: sporReviews
       });
-    case CLEAR_MAP_STATE:
+    case CLEAR_SPOT_STATE:
       return Object.assign({}, state, {
-        spotDetailOpen: false,
-        currentSpot: {},
+        spotLoading: false,
+        currentSpot: undefined,
         spotReviews: []
       });
     default:

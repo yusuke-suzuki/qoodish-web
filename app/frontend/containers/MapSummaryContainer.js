@@ -10,10 +10,9 @@ import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import openReviewDialog from '../actions/openReviewDialog';
-import fetchSpotReviews from '../actions/fetchSpotReviews';
-import openSpotDetail from '../actions/openSpotDetail';
-import closeSpotDetail from '../actions/closeSpotDetail';
+import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = (state) => {
   return {
@@ -29,15 +28,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleSpotClick: async (spot) => {
+      dispatch(switchMap());
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));
-      dispatch(openSpotDetail(spot));
-      const client = new ApiClient;
-      let response = await client.fetchSpotReviews(ownProps.mapId, spot.place_id);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchSpotReviews(reviews));
-      }
+      dispatch(openSpotCard());
     },
 
     handleReviewClick: async (review) => {
@@ -45,12 +39,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
       dispatch(openReviewDialog(review));
       dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
-      const client = new ApiClient;
-      let response = await client.fetchSpotReviews(ownProps.mapId, review.spot.place_id);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchSpotReviews(reviews));
-      }
     },
 
     handleJoinButtonClick: () => {

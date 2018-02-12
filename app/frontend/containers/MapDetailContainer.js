@@ -12,8 +12,7 @@ import getMapBasePosition from '../actions/getMapBasePosition';
 import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
 import fetchCollaborators from '../actions/fetchCollaborators';
-import openSpotDetail from '../actions/openSpotDetail';
-import fetchSpotReviews from '../actions/fetchSpotReviews';
+import openSpotCard from '../actions/openSpotCard';
 import clearMapState from '../actions/clearMapState';
 import gMapMounted from '../actions/gMapMounted';
 import mapZoomChanged from '../actions/mapZoomChanged';
@@ -36,7 +35,7 @@ const mapStateToProps = (state) => {
     currentPosition: state.gMap.currentPosition,
     directions: state.gMap.directions,
     large: state.shared.large,
-    currentSpot: state.spotDetail.currentSpot,
+    currentSpot: state.spotCard.currentSpot,
     tabValue: state.mapDetail.tabValue
   }
 }
@@ -104,14 +103,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     onSpotMarkerClick: async (spot) => {
-      const client = new ApiClient;
-      let response = await client.fetchSpotReviews(ownProps.match.params.mapId, spot.place_id);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchSpotReviews(reviews));
-        dispatch(selectSpot(spot));
-        dispatch(openSpotDetail(spot));
-      }
+      dispatch(selectSpot(spot));
+      dispatch(openSpotCard());
     },
 
     onMapMounted: (map) => {

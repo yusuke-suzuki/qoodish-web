@@ -2,7 +2,7 @@ import { LOAD_PLACES_START } from '../actionTypes';
 
 const loadPlacesStart = () => {
   return {
-    type: LOAD_PLACES_START,
+    type: LOAD_PLACES_START
   }
 }
 
