@@ -144,12 +144,17 @@ export default class Discover extends Component {
               <Typography
                 type={this.props.large ? 'display4' : 'display3'}
                 color='inherit'
+                noWrap
               >
                 {map.name}
               </Typography>
             }
             subtitle={
-              <Typography type='display1' color='inherit'>
+              <Typography
+                type='display1'
+                color='inherit'
+                noWrap
+              >
                 <span>
                   by: {map.owner_name}
                 </span>
