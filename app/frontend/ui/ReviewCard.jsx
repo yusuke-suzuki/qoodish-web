@@ -120,7 +120,7 @@ class ReviewCard extends Component {
           <Typography style={styles.cardTitle} type='subheading' color='textSecondary' gutterBottom onClick={this.props.handleMapClick}>
             {review.map_name}
           </Typography>
-          <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review)}>
+          <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review.spot)}>
             {review.spot.name}
           </Typography>
           <Typography component='p'>
