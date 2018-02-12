@@ -11,7 +11,6 @@ import unlikeReview from '../actions/unlikeReview';
 import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
 import selectSpot from '../actions/selectSpot';
-import switchMap from '../actions/switchMap';
 
 const mapStateToProps = (state) => {
   return {
@@ -25,10 +24,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(push(`/maps/${ownProps.currentReview.map_id}`));
     },
 
-    handleSpotNameClick: async (review) => {
-      dispatch(switchMap());
-      dispatch(push(`/maps/${review.map_id}`));
-      dispatch(selectSpot(review.spot));
+    handleSpotNameClick: async (spot) => {
+      dispatch(selectSpot(spot));
+      dispatch(push(`/spots/${spot.place_id}`));
     },
 
     handleTweetButtonClick: (review) => {
