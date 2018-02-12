@@ -11,6 +11,7 @@ import DiscoverContainer from '../containers/DiscoverContainer';
 import TimelineContainer from '../containers/TimelineContainer';
 import MapsContainer from '../containers/MapsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
+import ReviewDetailContainer from '../containers/ReviewDetailContainer';
 import SpotDetailContainer from '../containers/SpotDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import TermsContainer from '../containers/TermsContainer';
@@ -68,13 +69,13 @@ class App extends Component {
     }
   }
 
-  componentWillReceiveProps(props) {
+  /*componentWillReceiveProps(props) {
     this.retryCount = 0;
     this.props.handleWindowSizeChange(props.width);
     if (props.authenticated) {
       this.setTimerForInitialize();
     }
-  }
+  }*/
 
   setTimerForInitialize() {
     if (!this.state.waitForInitialize) {
@@ -139,7 +140,7 @@ class App extends Component {
             <Route exact path='/discover' component={DiscoverContainer} />
             <Route exact path='/maps' component={MapsContainer} />
             <Route exact path='/maps/:mapId' component={MapDetailContainer} />
-            <Route exact path='/maps/:mapId/reports/:reviewId' component={MapDetailContainer} />
+            <Route exact path='/maps/:mapId/reports/:reviewId' component={ReviewDetailContainer} />
             <Route exact path='/spots/:placeId' component={SpotDetailContainer} />
             <Route exact path='/settings' component={SettingsContainer} />
             <Route exact path='/terms' component={TermsContainer} />

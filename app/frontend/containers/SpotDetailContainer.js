@@ -4,13 +4,13 @@ import SpotDetail from '../ui/SpotDetail';
 import ApiClient from './ApiClient.js';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
-import openReviewDialog from '../actions/openReviewDialog';
 import fetchSpot from '../actions/fetchSpot';
 import fetchSpotReviews from '../actions/fetchSpotReviews';
 import loadSpotStart from '../actions/loadSpotStart';
 import loadSpotEnd from '../actions/loadSpotEnd';
 import clearSpotState from '../actions/clearSpotState';
 import updatePageTitle from '../actions/updatePageTitle';
+import selectReview from '../actions/selectReview';
 
 const mapStateToProps = (state) => {
   return {
@@ -65,6 +65,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleReviewClick: (review) => {
+      dispatch(selectReview(review));
+      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     },
 
     clear: () => {
