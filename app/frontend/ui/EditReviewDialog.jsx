@@ -287,6 +287,7 @@ class EditReviewDialog extends Component {
       <FormControl
         fullWidth
         error={this.state.mapId ? false : true}
+        disabled={this.props.currentReview ? true : false}
       >
         <InputLabel htmlFor='map-input'>Map</InputLabel>
         <Select
