@@ -24,7 +24,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeReviewDialog());
-      dispatch(push(`/maps/${ownProps.mapId}`));
     },
 
     handleTweetButtonClick: (review) => {
