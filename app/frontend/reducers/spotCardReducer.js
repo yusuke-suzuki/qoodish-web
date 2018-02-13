@@ -2,7 +2,8 @@ import {
   SELECT_SPOT,
   OPEN_SPOT_CARD,
   CLOSE_SPOT_CARD,
-  CLEAR_MAP_STATE
+  CLEAR_MAP_STATE,
+  CLEAR_SPOT_STATE
 } from '../actionTypes';
 
 const initialState = {
@@ -25,6 +26,7 @@ const reducer = (state = initialState, action) => {
         spotCardOpen: false
       });
     case CLEAR_MAP_STATE:
+    case CLEAR_SPOT_STATE:
       return Object.assign({}, state, {
         spotCardOpen: false,
         currentSpot: {}

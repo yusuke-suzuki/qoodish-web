@@ -47,7 +47,8 @@ const styles = {
   },
   secondaryAvatar: {
     borderRadius: 0,
-    marginRight: 12
+    marginRight: 12,
+    marginTop: 4
   },
   progress: {
     textAlign: 'center',
@@ -78,6 +79,9 @@ const styles = {
     right: 20,
     backgroundColor: 'red',
     color: 'white'
+  },
+  reviewComment: {
+    marginRight: 20
   }
 };
 
@@ -217,7 +221,7 @@ class SpotDetail extends Component {
             </Typography>
           }
           secondary={
-            <Typography component='p' noWrap color='textSecondary'>
+            <Typography component='p' noWrap color='textSecondary' style={styles.reviewComment}>
               {review.comment}
             </Typography>
           }

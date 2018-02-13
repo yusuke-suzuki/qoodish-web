@@ -12,7 +12,6 @@ import openIssueDialog from '../actions/openIssueDialog';
 import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
-import switchMap from '../actions/switchMap';
 import selectReview from '../actions/selectReview';
 
 const mapStateToProps = (state) => {
@@ -28,8 +27,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleSpotClick: async (spot) => {
-      dispatch(switchMap());
+    handleSpotClick: async (spot, large) => {
+      if (!large) {
+        dispatch(push(`/maps/${ownProps.mapId}#map`));
+      }
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));
       dispatch(openSpotCard());

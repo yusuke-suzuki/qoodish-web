@@ -131,8 +131,17 @@ export default class MapDetail extends Component {
       this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
     }
-    if (this.props.match.params.reviewId) {
-      this.props.fetchReview();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hash) {
+      if (nextProps.hash === '#map') {
+        nextProps.switchMap();
+      } else if (nextProps.hash === '#summary') {
+        nextProps.switchSummary();
+      }
+    } else {
+      nextProps.switchSummary();
     }
   }
 

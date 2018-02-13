@@ -54,7 +54,7 @@ class ReviewDetail extends Component {
 
   renderReviewCard() {
     if (this.props.currentReview) {
-      return <ReviewCardContainer currentReview={this.props.currentReview} />;
+      return <ReviewCardContainer currentReview={this.props.currentReview} detail={true} />;
     } else {
       return this.renderNoContent();
     }

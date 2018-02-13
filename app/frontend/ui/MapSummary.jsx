@@ -388,7 +388,7 @@ class MapSummary extends Component {
 
   renderSpots(spots) {
     return spots.map((spot) => (
-      <ListItem button key={spot.place_id} onClick={() => this.props.handleSpotClick(spot)}>
+      <ListItem button key={spot.place_id} onClick={() => this.props.handleSpotClick(spot, this.props.large)}>
         <Avatar>
           <img src={spot.image_url} style={styles.spotImage} />
         </Avatar>

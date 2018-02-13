@@ -36,7 +36,8 @@ const mapStateToProps = (state) => {
     directions: state.gMap.directions,
     large: state.shared.large,
     currentSpot: state.spotCard.currentSpot,
-    tabValue: state.mapDetail.tabValue
+    tabValue: state.mapDetail.tabValue,
+    hash: state.router.location.hash
   }
 }
 
@@ -123,21 +124,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(clearMapState());
     },
 
-    fetchReview: async () => {
-      const client = new ApiClient;
-      let response = await client.fetchReview(ownProps.match.params.mapId, ownProps.match.params.reviewId);
-      if (response.ok) {
-        let review = await response.json();
-        dispatch(openReviewDialog(review));
-      }
-    },
-
-    handleSummaryTabClick() {
+    switchSummary: () => {
       dispatch(switchSummary());
     },
 
-    handleMapTabClick() {
+    switchMap: () => {
       dispatch(switchMap());
+    },
+
+    handleSummaryTabClick: () => {
+      dispatch(push(`/maps/${ownProps.match.params.mapId}#summary`));
+    },
+
+    handleMapTabClick: () => {
+      dispatch(push(`/maps/${ownProps.match.params.mapId}#map`));
     }
   }
 }

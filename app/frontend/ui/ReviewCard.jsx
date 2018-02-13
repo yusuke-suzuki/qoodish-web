@@ -19,9 +19,16 @@ const styles = {
   cardSmall: {
     marginBottom: 0
   },
+  cardDetail: {
+    minHeight: 'calc(100vh - 56px)',
+  },
   cardTitle: {
     cursor: 'pointer',
-    width: 'fit-content'
+    width: 'fit-content',
+    wordBreak: 'break-all'
+  },
+  reviewComment: {
+    wordBreak: 'break-all'
   },
   profileImage: {
     width: 40
@@ -102,9 +109,21 @@ class ReviewCard extends Component {
     );
   }
 
+  getCardStyle() {
+    if (this.props.large) {
+      return styles.cardLarge;
+    } else {
+      if (this.props.detail) {
+        return styles.cardDetail;
+      } else {
+        return styles.cardSmall;
+      }
+    }
+  }
+
   renderReviewCard(review) {
     return (
-      <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
+      <Card style={this.getCardStyle()}>
         {review.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
@@ -123,7 +142,7 @@ class ReviewCard extends Component {
           <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review.spot)}>
             {review.spot.name}
           </Typography>
-          <Typography component='p'>
+          <Typography component='p' style={styles.reviewComment}>
             {review.comment}
           </Typography>
         </CardContent>

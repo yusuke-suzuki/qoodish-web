@@ -19,10 +19,12 @@ const styles = {
     bottom: 20,
     left: 20,
     right: 20,
-    zIndex: 1101
+    zIndex: 1101,
+    width: '50%',
+    margin: '0 auto'
   },
   rootSmall: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: 71,
     left: 15,
     right: 15,
@@ -66,13 +68,13 @@ class SpotCard extends Component {
           <CloseIcon />
         </IconButton>
         <Grid container spacing={0}>
-          <Grid item xs={4} sm={3} md={3} lg={2}>
+          <Grid item xs={4} sm={3} md={3} lg={3}>
             <CardMedia
               image={spot.image_url}
               style={styles.media}
             />
           </Grid>
-          <Grid item xs={8} sm={9} md={9} lg={10}>
+          <Grid item xs={8} sm={9} md={9} lg={9}>
             <CardContent style={styles.cardContent}>
               <Typography type='subheading' noWrap style={styles.spotName}>{spot.name}</Typography>
               <Typography color='textSecondary' noWrap>

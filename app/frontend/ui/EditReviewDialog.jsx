@@ -85,6 +85,11 @@ class EditReviewDialog extends Component {
         placeId: nextProps.selectedPlace.placeId,
         placeName: nextProps.selectedPlace.description
       });
+      if (!this.state.mapId && nextProps.postableMaps.length > 0) {
+        this.setState({
+          mapId: nextProps.postableMaps[0].id
+        });
+      }
     }
     if (nextProps.mapId) {
       this.setState({
@@ -125,7 +130,7 @@ class EditReviewDialog extends Component {
 
   validate() {
     let disabled;
-    if (!this.state.errorComment && this.state.mapId) {
+    if (this.state.comment && !this.state.errorComment && this.state.mapId) {
       disabled = false;
     } else {
       disabled = true;
@@ -282,6 +287,7 @@ class EditReviewDialog extends Component {
       <FormControl
         fullWidth
         error={this.state.mapId ? false : true}
+        disabled={this.props.currentReview ? true : false}
       >
         <InputLabel htmlFor='map-input'>Map</InputLabel>
         <Select
