@@ -13,11 +13,7 @@ import FavoriteIcon from 'material-ui-icons/Favorite';
 import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
 
 const styles = {
-  cardLarge: {
-    marginBottom: 20
-  },
-  cardSmall: {
-    marginBottom: 0
+  card: {
   },
   cardDetail: {
     minHeight: 'calc(100vh - 56px)',
@@ -109,21 +105,9 @@ class ReviewCard extends Component {
     );
   }
 
-  getCardStyle() {
-    if (this.props.large) {
-      return styles.cardLarge;
-    } else {
-      if (this.props.detail) {
-        return styles.cardDetail;
-      } else {
-        return styles.cardSmall;
-      }
-    }
-  }
-
   renderReviewCard(review) {
     return (
-      <Card style={this.getCardStyle()}>
+      <Card style={this.props.detail ? styles.cardDetail : styles.card}>
         {review.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
@@ -133,7 +117,7 @@ class ReviewCard extends Component {
           }
           action={this.renderMoreVertButton()}
           title={review.author.name}
-          subheader={this.fromNow(review)}
+          subheader={this.renderCreatedAt(review)}
         />
         <CardContent style={styles.cardContent}>
           <Typography style={styles.cardTitle} type='subheading' color='textSecondary' gutterBottom onClick={this.props.handleMapClick}>
@@ -167,8 +151,8 @@ class ReviewCard extends Component {
     );
   }
 
-  fromNow(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
+  renderCreatedAt(review) {
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL');
   }
 
   renderCardMedia(review) {

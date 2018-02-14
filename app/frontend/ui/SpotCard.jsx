@@ -82,12 +82,7 @@ class SpotCard extends Component {
               </Typography>
             </CardContent>
             <BottomNavigation showLabels={this.props.large ? true : false}>
-              <BottomNavigationAction
-                label='ADD'
-                icon={<AddLocationIcon />}
-                onClick={() => this.props.handleAddReviewButtonClick(spot)}
-                disabled={this.props.currentMap && !this.props.currentMap.postable}
-              />
+              {this.props.currentMap && !this.props.currentMap.postable && this.renderAddButton(spot)}
               <BottomNavigationAction
                 label='DIRECTIONS'
                 icon={<DirectionsIcon />}
@@ -102,6 +97,17 @@ class SpotCard extends Component {
           </Grid>
         </Grid>
       </Card>
+    );
+  }
+
+  renderAddButton(spot) {
+    return (
+      <BottomNavigationAction
+        label='ADD'
+        icon={<AddLocationIcon />}
+        onClick={() => this.props.handleAddReviewButtonClick(spot)}
+        disabled={this.props.currentMap && !this.props.currentMap.postable}
+      />
     );
   }
 }

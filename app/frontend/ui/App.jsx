@@ -69,13 +69,13 @@ class App extends Component {
     }
   }
 
-  /*componentWillReceiveProps(props) {
-    this.retryCount = 0;
+  componentWillReceiveProps(props) {
     this.props.handleWindowSizeChange(props.width);
-    if (props.authenticated) {
+    this.retryCount = 0;
+    if (props.authenticated && !props.registrationToken) {
       this.setTimerForInitialize();
     }
-  }*/
+  }
 
   setTimerForInitialize() {
     if (!this.state.waitForInitialize) {
