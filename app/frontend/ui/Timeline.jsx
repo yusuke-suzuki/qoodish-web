@@ -78,7 +78,13 @@ const styles = {
     right: 20,
     backgroundColor: 'red',
     color: 'white'
-  }
+  },
+  cardContainerSmall: {
+    marginBottom: 0
+  },
+  cardContainerLarge: {
+    marginBottom: 20
+  },
 };
 
 export default class Feed extends Component {
@@ -178,7 +184,9 @@ export default class Feed extends Component {
 
   renderReviewCards(reviews) {
     return reviews.map((review) => (
-      <ReviewCardContainer currentReview={review} key={review.id} />
+      <div key={review.id} style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
+        <ReviewCardContainer currentReview={review} />
+      </div>
     ));
   }
 }
