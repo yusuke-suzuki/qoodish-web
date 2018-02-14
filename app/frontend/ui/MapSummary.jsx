@@ -5,7 +5,7 @@ import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
+import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Collapse from 'material-ui/transitions/Collapse';
 import Menu, { MenuItem } from 'material-ui/Menu';
@@ -72,14 +72,8 @@ const styles = {
     width: 40,
     height: 40
   },
-  cardContent: {
-    paddingBottom: 0
-  },
-  cardActions: {
-    padding: '8px 16px 8px'
-  },
-  roleButton: {
-    margin: 0
+  roleButtonContainer: {
+    marginTop: 16
   },
   tab: {
     minWidth: 0,
@@ -160,17 +154,17 @@ class MapSummary extends Component {
           <CardMedia>
             <img src={map && map.image_url} style={styles.media} />
           </CardMedia>
-          <CardContent style={styles.cardContent}>
+          <CardContent>
             <Typography type='headline' component='h2' gutterBottom style={styles.mapSummaryText}>
               {map && map.name}
             </Typography>
             <Typography component='p' style={styles.mapSummaryText}>
               {map && map.description}
             </Typography>
+            <div style={styles.roleButtonContainer}>
+              {map && this.renderRoleButton(map)}
+            </div>
           </CardContent>
-          <CardActions style={styles.cardActions}>
-            {map && this.renderRoleButton(map)}
-          </CardActions>
           <Divider />
           <Tabs
             value={this.state.tabValue}
@@ -356,19 +350,19 @@ class MapSummary extends Component {
   renderRoleButton(map) {
     if (map.editable) {
       return (
-        <Button raised disabled style={styles.roleButton} >
+        <Button raised disabled>
           OWNER
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button raised onClick={this.props.handleLeaveButtonClick} style={styles.roleButton}>
+        <Button raised onClick={this.props.handleLeaveButtonClick}>
           UNFOLLOW
         </Button>
       ) ;
     } else {
       return (
-        <Button raised onClick={this.props.handleJoinButtonClick} color='primary' style={styles.roleButton}>
+        <Button raised onClick={this.props.handleJoinButtonClick} color='primary'>
           FOLLOW
         </Button>
       );

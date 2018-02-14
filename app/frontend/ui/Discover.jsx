@@ -142,16 +142,17 @@ export default class Discover extends Component {
           <GridListTileBar
             title={
               <Typography
-                type={this.props.large ? 'display4' : 'display3'}
+                type={this.props.large ? 'display3' : 'display2'}
                 color='inherit'
                 noWrap
+                gutterBottom
               >
                 {map.name}
               </Typography>
             }
             subtitle={
               <Typography
-                type='display1'
+                type={this.props.large ? 'display1' : 'headline'}
                 color='inherit'
                 noWrap
               >
