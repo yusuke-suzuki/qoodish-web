@@ -12,7 +12,8 @@ import searchPlaces from '../actions/searchPlaces';
 const mapStateToProps = (state) => {
   return {
     authenticated: state.app.authenticated,
-    large: state.shared.large
+    large: state.shared.large,
+    registrationToken: state.app.registrationToken
   }
 }
 
