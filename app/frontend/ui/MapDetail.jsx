@@ -11,7 +11,8 @@ import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import AppBar from 'material-ui/AppBar';
+import Tabs, { Tab } from 'material-ui/Tabs';
 import PlaceIcon from 'material-ui-icons/Place';
 import InfoIcon from 'material-ui-icons/Info';
 import Paper from 'material-ui/Paper';
@@ -27,7 +28,7 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    paddingTop: 56,
+    paddingTop: 104,
     paddingBottom: 56,
     height: 'calc(100vh - 112px)'
   },
@@ -50,11 +51,8 @@ const styles = {
     backgroundColor: 'red',
     color: 'white'
   },
-  bottomNav: {
-    width: '100%',
-    position: 'fixed',
-    bottom: 0,
-    zIndex: 1
+  tabBar: {
+    top: 56
   }
 };
 
@@ -180,7 +178,7 @@ export default class MapDetail extends Component {
       <div>
         {this.props.tabValue === 0 && this.renderMapSummary()}
         {this.props.tabValue === 1 && this.renderGoogleMap()}
-        {this.renderBottomNav()}
+        {this.renderTab()}
       </div>
     );
   }
@@ -206,22 +204,26 @@ export default class MapDetail extends Component {
     );
   }
 
-  renderBottomNav() {
+  renderTab() {
     return (
-      <Paper style={styles.bottomNav}>
-        <BottomNavigation showLabels value={this.props.tabValue}>
-          <BottomNavigationAction
+      <AppBar position='fixed' style={styles.tabBar}>
+        <Tabs
+          value={this.props.tabValue}
+          fullWidth
+          indicatorColor='secondary'
+          textColor='secondary'
+          centered
+        >
+          <Tab
             label='SUMMARY'
-            icon={<InfoIcon />}
             onClick={this.props.handleSummaryTabClick}
           />
-          <BottomNavigationAction
+          <Tab
             label='MAP'
-            icon={<PlaceIcon />}
             onClick={this.props.handleMapTabClick}
           />
-        </BottomNavigation>
-      </Paper>
+        </Tabs>
+      </AppBar>
     );
   }
 

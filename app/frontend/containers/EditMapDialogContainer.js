@@ -10,7 +10,8 @@ import requestFinish from '../actions/requestFinish';
 const mapStateToProps = (state) => {
   return {
     dialogOpen: state.maps.editMapDialogOpen,
-    currentMap: state.maps.targetMap
+    currentMap: state.maps.targetMap,
+    large: state.shared.large
   }
 }
 

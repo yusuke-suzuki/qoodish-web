@@ -82,7 +82,7 @@ class SpotCard extends Component {
               </Typography>
             </CardContent>
             <BottomNavigation showLabels={this.props.large ? true : false}>
-              {this.props.currentMap && !this.props.currentMap.postable && this.renderAddButton(spot)}
+              {this.props.currentMap && this.props.currentMap.postable && this.renderAddButton(spot)}
               <BottomNavigationAction
                 label='DIRECTIONS'
                 icon={<DirectionsIcon />}

@@ -29,7 +29,7 @@ const styles = {
     zIndex: 1
   },
   cardContainerSmall: {
-    paddingTop: 56,
+    paddingTop: 104,
     paddingBottom: 56
   },
   cardLarge: {
@@ -41,6 +41,9 @@ const styles = {
     height: '100%',
     width: '100%',
     minHeight: 'calc(100vh - 112px)'
+  },
+  cardContentSmall: {
+    textAlign: 'center'
   },
   mapSummaryText: {
     wordWrap: 'break-word'
@@ -154,7 +157,7 @@ class MapSummary extends Component {
           <CardMedia>
             <img src={map && map.image_url} style={styles.media} />
           </CardMedia>
-          <CardContent>
+          <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             <Typography type='headline' component='h2' gutterBottom style={styles.mapSummaryText}>
               {map && map.name}
             </Typography>

@@ -25,7 +25,7 @@ const styles = {
     width: '40%'
   },
   rootSmall: {
-    margin: '56px auto 0',
+    margin: '56px auto 56px',
     width: '100%'
   },
   container: {
@@ -74,13 +74,13 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 20,
+    bottom: 76,
     right: 20,
     backgroundColor: 'red',
     color: 'white'
   },
   cardContainerSmall: {
-    marginBottom: 0
+    marginBottom: 20
   },
   cardContainerLarge: {
     marginBottom: 20

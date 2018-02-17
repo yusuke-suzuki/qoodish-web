@@ -10,6 +10,11 @@ import Switch from 'material-ui/Switch';
 import Typography from 'material-ui/Typography';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import Button from 'material-ui/Button';
+import Slide from 'material-ui/transitions/Slide';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import CloseIcon from 'material-ui-icons/Close';
+import IconButton from 'material-ui/IconButton';
 
 const autoCompleteStyles = {
   root: {
@@ -19,6 +24,24 @@ const autoCompleteStyles = {
     zIndex: 2
   }
 };
+
+const styles = {
+  flex: {
+    flex: 1,
+  },
+  dialogContentLarge: {
+  },
+  dialogContentSmall: {
+    paddingTop: 56
+  },
+  toolbar: {
+    paddingLeft: 8
+  }
+};
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
 
 class EditMapDialog extends Component {
   constructor(props) {
@@ -205,11 +228,11 @@ class EditMapDialog extends Component {
         disableBackdropClick
         disableEscapeKeyDown
         fullWidth
+        fullScreen={!this.props.large}
+        transition={Transition}
       >
-      　<DialogTitle>
-          {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
-        </DialogTitle>
-        <DialogContent>
+      　{this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
+        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           {this.renderMapNameText()}
           <br/>
           {this.renderDescriptionText()}
@@ -254,18 +277,51 @@ class EditMapDialog extends Component {
             label='Allow collaborators to add spots.'
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>
-            Cancel
-          </Button>
-          <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
-            Save
-          </Button>
-        </DialogActions>
+        {this.props.large && this.renderDialogActions()}
       </Dialog>
     );
   }
 
+  renderDialogTitle() {
+    return (
+      <DialogTitle>
+        <Typography type='title' color='inherit'>
+          {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
+        </Typography>
+      </DialogTitle>
+    );
+  }
+
+  renderAppBar() {
+    return (
+      <AppBar color='inherit'>
+        <Toolbar style={styles.toolbar}>
+          <IconButton color='inherit' onClick={this.props.handleRequestDialogClose} aria-label='Close'>
+            <CloseIcon />
+          </IconButton>
+          <Typography type='title' color='inherit' style={styles.flex}>
+            {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
+          </Typography>
+          <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+            Save
+          </Button>
+        </Toolbar>
+      </AppBar>
+    );
+  }
+
+  renderDialogActions() {
+    return (
+      <DialogActions>
+        <Button onClick={this.props.handleRequestDialogClose}>
+          Cancel
+        </Button>
+        <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+          Save
+        </Button>
+      </DialogActions>
+    );
+  }
 
   renderMapNameText() {
     return (

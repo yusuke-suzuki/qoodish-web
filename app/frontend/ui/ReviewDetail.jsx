@@ -12,7 +12,7 @@ const styles = {
     width: '40%'
   },
   containerSmall: {
-    margin: '56px auto 0'
+    margin: '56px auto 56px'
   },
   progress: {
     textAlign: 'center',
@@ -54,7 +54,7 @@ class ReviewDetail extends Component {
 
   renderReviewCard() {
     if (this.props.currentReview) {
-      return <ReviewCardContainer currentReview={this.props.currentReview} detail={true} />;
+      return <ReviewCardContainer currentReview={this.props.currentReview} detail={!this.props.large} />;
     } else {
       return this.renderNoContent();
     }

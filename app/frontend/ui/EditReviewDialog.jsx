@@ -17,8 +17,27 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import { ListItemText } from 'material-ui/List';
+import Slide from 'material-ui/transitions/Slide';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import CloseIcon from 'material-ui-icons/Close';
+import Typography from 'material-ui/Typography';
 
 const styles = {
+  appbar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1,
+  },
+  dialogContentLarge: {
+  },
+  dialogContentSmall: {
+    paddingTop: 24
+  },
+  toolbar: {
+    paddingLeft: 8
+  },
   imagePreviewContainer: {
     position: 'relative'
   },
@@ -33,6 +52,10 @@ const styles = {
     display: 'none'
   }
 };
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
 
 class EditReviewDialog extends Component {
   constructor(props) {
@@ -241,11 +264,11 @@ class EditReviewDialog extends Component {
         disableBackdropClick
         disableEscapeKeyDown
         fullWidth
+        fullScreen={!this.props.large}
+        transition={Transition}
       >
-      　<DialogTitle>
-          {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
-        </DialogTitle>
-        <DialogContent>
+        {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
+        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           <Chip
             avatar={<Avatar><PlaceIcon /></Avatar>}
             label={this.state.placeName}
@@ -254,14 +277,11 @@ class EditReviewDialog extends Component {
           <br/>
           {this.renderMapSelect()}
           <br/>
-          <br/>
           {this.renderCommentBox()}
           <br/>
           <br/>
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
-          <IconButton onClick={this.handleAddImageClick}>
-            <PhotoCameraIcon />
-          </IconButton>
+          {this.props.large && this.renderAddImageButton()}
           <input
             type='file'
             accept='image/*'
@@ -270,15 +290,65 @@ class EditReviewDialog extends Component {
             style={styles.imageInput}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleRequestClose}>
-            Cancel
-          </Button>
+        {this.props.large ? this.renderActionsLarge() : this.renderActionsSmall()}
+      </Dialog>
+    );
+  }
+
+  renderDialogTitle() {
+    return (
+      <DialogTitle>
+        <Typography type='title' color='inherit'>
+          {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
+        </Typography>
+      </DialogTitle>
+    );
+  }
+
+  renderAppBar() {
+    return (
+      <AppBar style={styles.appbar} color='inherit'>
+        <Toolbar style={styles.toolbar}>
+          <IconButton color='inherit' onClick={this.handleRequestClose} aria-label='Close'>
+            <CloseIcon />
+          </IconButton>
+          <Typography type='title' color='inherit' style={styles.flex}>
+            {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
+          </Typography>
           <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
             Save
           </Button>
-        </DialogActions>
-      </Dialog>
+        </Toolbar>
+      </AppBar>
+    );
+  }
+
+  renderActionsLarge() {
+    return (
+      <DialogActions>
+        <Button onClick={this.handleRequestClose}>
+          Cancel
+        </Button>
+        <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+          Save
+        </Button>
+      </DialogActions>
+    );
+  }
+
+  renderActionsSmall() {
+    return (
+      <DialogActions>
+        {this.renderAddImageButton()}
+      </DialogActions>
+    );
+  }
+
+  renderAddImageButton() {
+    return (
+      <IconButton onClick={this.handleAddImageClick}>
+        <PhotoCameraIcon />
+      </IconButton>
     );
   }
 
