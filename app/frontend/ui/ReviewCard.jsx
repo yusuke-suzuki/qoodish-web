@@ -120,7 +120,7 @@ class ReviewCard extends Component {
           subheader={this.renderCreatedAt(review)}
         />
         <CardContent style={styles.cardContent}>
-          <Typography style={styles.cardTitle} type='subheading' color='textSecondary' gutterBottom onClick={this.props.handleMapClick}>
+          <Typography style={styles.cardTitle} type='subheading' color='primary' gutterBottom onClick={this.props.handleMapClick}>
             {review.map_name}
           </Typography>
           <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review.spot)}>
