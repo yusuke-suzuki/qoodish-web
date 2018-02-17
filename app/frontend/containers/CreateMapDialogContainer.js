@@ -11,7 +11,8 @@ import requestFinish from '../actions/requestFinish';
 
 const mapStateToProps = (state) => {
   return {
-    dialogOpen: state.maps.createMapDialogOpen
+    dialogOpen: state.maps.createMapDialogOpen,
+    large: state.shared.large
   }
 }
 
