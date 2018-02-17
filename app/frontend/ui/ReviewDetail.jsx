@@ -12,7 +12,7 @@ const styles = {
     width: '40%'
   },
   containerSmall: {
-    margin: '56px auto 0'
+    margin: '56px auto 56px'
   },
   progress: {
     textAlign: 'center',

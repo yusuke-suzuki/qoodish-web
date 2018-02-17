@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import NavBarContainer from '../containers/NavBarContainer';
+import BottomNavContainer from '../containers/BottomNavContainer';
 import ToastContainer from '../containers/ToastContainer';
 import BlockUiContainer from '../containers/BlockUiContainer';
 import IssueDialogContainer from '../containers/IssueDialogContainer';
@@ -147,6 +148,7 @@ class App extends Component {
             <Route exact path='/privacy' component={PrivacyContainer} />
             <Redirect from='*' to='/' />
           </Switch>
+          {!this.props.large && <BottomNavContainer />}
         </div>
       );
     }

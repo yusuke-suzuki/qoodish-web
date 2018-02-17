@@ -16,7 +16,7 @@ const styles = {
     width: '80%'
   },
   rootSmall: {
-    margin: '114px auto 0'
+    margin: '114px auto 64px'
   },
   tabBarLarge: {
     top: 64
@@ -51,7 +51,7 @@ const styles = {
   createButtonSmall: {
     position: 'fixed',
     zIndex: 2,
-    bottom: 20,
+    bottom: 76,
     right: 20,
     backgroundColor: 'red',
     color: 'white'

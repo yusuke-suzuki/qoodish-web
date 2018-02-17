@@ -37,7 +37,7 @@ const styles = {
   toolbar: {
     paddingLeft: 8
   }
-}
+};
 
 function Transition(props) {
   return <Slide direction='up' {...props} />;

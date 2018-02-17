@@ -32,7 +32,7 @@ const styles = {
     minHeight: 'calc(100vh - 364px)'
   },
   cardSmall: {
-    minHeight: 'calc(100vh - 256px)'
+    minHeight: 'calc(100vh - 200px)'
   },
   cardContentLarge: {
     width: '50%',
@@ -82,7 +82,7 @@ const styles = {
   createButtonSmall: {
     zIndex: 1100,
     position: 'fixed',
-    bottom: 20,
+    bottom: 76,
     right: 20,
     backgroundColor: 'red',
     color: 'white'

@@ -29,7 +29,7 @@ const styles = {
     zIndex: 1
   },
   cardContainerSmall: {
-    paddingTop: 56,
+    paddingTop: 104,
     paddingBottom: 56
   },
   cardLarge: {
