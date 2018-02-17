@@ -33,9 +33,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         if (review.image && !review.image.url.includes('amazonaws')) {
           deleteFromStorage(review.image.file_name);
         }
+        dispatch(closeReviewDialog());
         dispatch(closeDeleteReviewDialog());
         if (ownProps.mapId) {
-          dispatch(closeReviewDialog());
           let spotResponse = await client.fetchSpots(review.map_id)
           if (spotResponse.ok) {
             let spots = await spotResponse.json();

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import { CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import PlaceIcon from 'material-ui-icons/Place';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
@@ -10,6 +10,8 @@ import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import { CircularProgress } from 'material-ui/Progress';
 import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
+import ReviewDialogContainer from '../containers/ReviewDialogContainer';
+import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 
 const styles = {
   mapWrapperLarge: {
@@ -23,23 +25,28 @@ const styles = {
   mapContainer: {
     height: '100%'
   },
-  containerLarge: {
-    margin: '0 auto 200px',
-    width: '80%'
+  container: {
+    margin: '0 auto',
   },
-  containerSmall: {
-    margin: '0 auto 0'
+  cardLarge: {
+    minHeight: 'calc(100vh - 364px)'
   },
-  cardContent: {
-    textAlign: 'center',
-    margin: '0 auto'
+  cardSmall: {
+    minHeight: 'calc(100vh - 256px)'
+  },
+  cardContentLarge: {
+    width: '50%',
+    margin: '0 auto',
+    textAlign: 'center'
+  },
+  cardContentSmall: {
+    textAlign: 'center'
   },
   listLarge: {
     width: '50%',
     margin: '0 auto'
   },
   listSmall: {
-    margin: '0 auto'
   },
   avatarImage: {
     width: 40,
@@ -126,6 +133,8 @@ class SpotDetail extends Component {
         {this.props.currentSpot && this.renderCreateReviewButton(this.props.currentSpot)}
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer />
+        <DeleteReviewDialogContainer />
+        <ReviewDialogContainer />
       </div>
     );
   }
@@ -149,20 +158,15 @@ class SpotDetail extends Component {
 
   renderContainer() {
     return (
-      <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
+      <div style={styles.container}>
         {this.props.spotLoading ? this.renderProgress() : this.renderSpotDetail()}
-        <List
-          style={this.props.large ? styles.listLarge : styles.listSmall}
-        >
-          {this.renderSpotReviews(this.props.spotReviews)}
-        </List>
       </div>
     );
   }
 
   renderSpotDetail() {
     if (this.props.currentSpot) {
-      return this.renderCardContent(this.props.currentSpot);
+      return this.renderSpotCard(this.props.currentSpot);
     } else {
       return this.renderNoContent();
     }
@@ -187,19 +191,24 @@ class SpotDetail extends Component {
     );
   }
 
-  renderCardContent(spot) {
+  renderSpotCard(spot) {
     return (
-      <CardContent
-        style={styles.cardContent}
-      >
-        <PlaceIcon />
-        <Typography type='headline'>
-          {spot.name}
-        </Typography>
-        <Typography type='subheading' color='textSecondary'>
-          {spot.formatted_address}
-        </Typography>
-      </CardContent>
+      <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
+        <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
+          <PlaceIcon />
+          <Typography type='headline'>
+            {spot.name}
+          </Typography>
+          <Typography type='subheading' color='textSecondary'>
+            {spot.formatted_address}
+          </Typography>
+        </CardContent>
+        <List
+          style={this.props.large ? styles.listLarge : styles.listSmall}
+        >
+          {this.renderSpotReviews(this.props.spotReviews)}
+        </List>
+      </Card>
     );
   }
 
@@ -208,7 +217,7 @@ class SpotDetail extends Component {
       <ListItem
         button
         key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
+        onClick={() => this.props.handleReviewClick(review, this.props.large)}
       >
         <Avatar>
           <img src={review.author.profile_image_url} style={styles.avatarImage} />
