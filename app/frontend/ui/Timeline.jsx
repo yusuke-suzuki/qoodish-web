@@ -80,7 +80,7 @@ const styles = {
     color: 'white'
   },
   cardContainerSmall: {
-    marginBottom: 0
+    marginBottom: 20
   },
   cardContainerLarge: {
     marginBottom: 20
