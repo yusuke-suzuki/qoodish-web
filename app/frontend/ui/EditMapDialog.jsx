@@ -285,9 +285,7 @@ class EditMapDialog extends Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        <Typography type='title' color='inherit'>
-          {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
-        </Typography>
+        {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
       </DialogTitle>
     );
   }

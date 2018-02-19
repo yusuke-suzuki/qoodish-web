@@ -1,6 +1,6 @@
 import React from 'react';
 import Dialog, {
-  DialogActions,
+  DialogContent,
   DialogTitle,
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
@@ -31,16 +31,11 @@ class LikesDialog extends React.Component {
       　<DialogTitle>
           Likes
         </DialogTitle>
-        <div>
+        <DialogContent>
           <List disablePadding>
             {this.renderLikes(this.props.likes)}
           </List>
-        </div>
-        <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>
-            CLOSE
-          </Button>
-        </DialogActions>
+        </DialogContent>
       </Dialog>
     );
   }

@@ -11,7 +11,8 @@ const mapStateToProps = (state) => {
   return {
     dialogOpen: state.mapDetail.placeSelectDialogOpen,
     places: state.shared.pickedPlaces,
-    loadingPlaces: state.shared.loadingPlaces
+    loadingPlaces: state.shared.loadingPlaces,
+    large: state.shared.large
   }
 }
 

@@ -22,6 +22,7 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import CloseIcon from 'material-ui-icons/Close';
 import Typography from 'material-ui/Typography';
+import MapIcon from 'material-ui-icons/Map';
 
 const styles = {
   appbar: {
@@ -108,16 +109,15 @@ class EditReviewDialog extends Component {
         placeId: nextProps.selectedPlace.placeId,
         placeName: nextProps.selectedPlace.description
       });
-      if (!this.state.mapId && nextProps.postableMaps.length > 0) {
+      if (nextProps.mapId) {
+        this.setState({
+          mapId: nextProps.mapId
+        });
+      } else if (nextProps.postableMaps.length > 0) {
         this.setState({
           mapId: nextProps.postableMaps[0].id
         });
       }
-    }
-    if (nextProps.mapId) {
-      this.setState({
-        mapId: nextProps.mapId
-      });
     }
   }
 
@@ -298,9 +298,7 @@ class EditReviewDialog extends Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        <Typography type='title' color='inherit'>
-          {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
-        </Typography>
+        {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
       </DialogTitle>
     );
   }
@@ -382,7 +380,9 @@ class EditReviewDialog extends Component {
   renderPostableMaps() {
     return this.props.postableMaps.map((map) => (
       <MenuItem key={map.id} value={map.id}>
-        <Avatar src={map.image_url} />
+        <Avatar>
+          <MapIcon />
+        </Avatar>
         <ListItemText primary={map.name} />
       </MenuItem>
     ));

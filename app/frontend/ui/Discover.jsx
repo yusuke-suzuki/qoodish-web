@@ -18,7 +18,7 @@ const styles = {
     width: '80%'
   },
   rootSmall: {
-    margin: '76px auto 0'
+    margin: '76px auto 64px'
   },
   container: {
     display: 'flex',
