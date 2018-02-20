@@ -23,6 +23,7 @@ import Toolbar from 'material-ui/Toolbar';
 import CloseIcon from 'material-ui-icons/Close';
 import Typography from 'material-ui/Typography';
 import MapIcon from 'material-ui-icons/Map';
+import { sleep } from '../containers/Utils';
 
 const styles = {
   appbar: {
@@ -100,7 +101,8 @@ class EditReviewDialog extends Component {
         placeName: currentReview.spot.name,
         imagePreviewUrl: imagePreviewUrl,
         disabled: false
-      }, () => {
+      }, async () => {
+        await sleep(1000);
         this.drawImagePreview(imagePreviewUrl);
       });
     } else {
