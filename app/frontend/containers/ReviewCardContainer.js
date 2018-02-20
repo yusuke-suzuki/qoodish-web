@@ -11,6 +11,7 @@ import unlikeReview from '../actions/unlikeReview';
 import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
 import selectSpot from '../actions/selectSpot';
+import closeReviewDialog from '../actions/closeReviewDialog';
 
 const mapStateToProps = (state) => {
   return {
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleSpotNameClick: async (spot) => {
+      dispatch(closeReviewDialog());
       dispatch(selectSpot(spot));
       dispatch(push(`/spots/${spot.place_id}`));
     },

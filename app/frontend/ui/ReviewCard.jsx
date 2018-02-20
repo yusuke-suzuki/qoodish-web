@@ -11,6 +11,7 @@ import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import FavoriteIcon from 'material-ui-icons/Favorite';
 import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
+import Badge from 'material-ui/Badge';
 
 const styles = {
   card: {
@@ -32,9 +33,6 @@ const styles = {
   cardContent: {
     paddingTop: 0
   },
-  likesCountContainer: {
-    paddingBottom: 8
-  },
   cardMedia: {
     marginBottom: -5
   },
@@ -52,7 +50,10 @@ const styles = {
   },
   likesCount: {
     cursor: 'pointer',
-    width: 'fit-content'
+    marginLeft: 5
+  },
+  shareButton: {
+    marginLeft: 'auto'
   }
 };
 
@@ -131,9 +132,9 @@ class ReviewCard extends Component {
           </Typography>
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}
-        {review.likes_count > 0 && this.renderLikes(review)}
         <CardActions disableActionSpacing>
           {this.renderLikeButton(review)}
+          {review.likes_count > 0 && this.renderLikes(review)}
           {this.renderShareButton()}
           {this.renderShareMenu()}
         </CardActions>
@@ -143,11 +144,14 @@ class ReviewCard extends Component {
 
   renderLikes(review) {
     return (
-      <CardContent style={styles.likesCountContainer}>
-        <Typography onClick={this.props.handleLikesClick} style={styles.likesCount}>
-          <b>{review.likes_count}</b> likes
-        </Typography>
-      </CardContent>
+      <Badge
+        badgeContent={review.likes_count}
+        color='default'
+        onClick={this.props.handleLikesClick}
+        style={styles.likesCount}
+      >
+        <div></div>
+      </Badge>
     );
   }
 
@@ -180,6 +184,7 @@ class ReviewCard extends Component {
         aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
         aria-haspopup='true'
         onClick={this.handleShareButtonClick}
+        style={styles.shareButton}
       >
         <ShareIcon />
       </IconButton>

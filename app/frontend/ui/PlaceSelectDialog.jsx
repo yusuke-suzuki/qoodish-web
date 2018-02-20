@@ -10,13 +10,31 @@ import PlaceIcon from 'material-ui-icons/Place';
 import TextField from 'material-ui/TextField';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import Slide from 'material-ui/transitions/Slide';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import CloseIcon from 'material-ui-icons/Close';
+import Typography from 'material-ui/Typography';
+import IconButton from 'material-ui/IconButton';
 
 const styles = {
+  appbar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1,
+  },
   titleText: {
     marginLeft: 30
   },
-  dialogContent: {
+  dialogContentLarge: {
     paddingBottom: 0
+  },
+  dialogContentSmall: {
+    paddingTop: 24
+  },
+  toolbar: {
+    paddingLeft: 8
   },
   placeIcon: {
     marginTop: -2,
@@ -24,6 +42,10 @@ const styles = {
     position: 'absolute'
   }
 };
+
+function Transition(props) {
+  return <Slide direction='up' {...props} />;
+}
 
 class PlaceSelectDialog extends Component {
   constructor(props) {
@@ -55,27 +77,58 @@ class PlaceSelectDialog extends Component {
         open={this.props.dialogOpen}
         onClose={this.props.onClose}
         fullWidth
+        fullScreen={!this.props.large}
+        transition={Transition}
       >
-      　<DialogTitle>
-          <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>
-        </DialogTitle>
-        <DialogContent style={styles.dialogContent}>
+        {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
+        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
           <TextField
             label='Search places...'
             onChange={this.handleInputChange}
             fullWidth
             autoFocus
+            placeholder='例: 「弘前  りんご公園」'
+            helperText='「所在地  プレイス名」のように入力すると見つけやすくなります。'
           />
           <List>
             {this.renderPlaces()}
           </List>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.onClose}>
-            Cancel
-          </Button>
-        </DialogActions>
+        {this.props.large && this.renderAction()}
       </Dialog>
+    );
+  }
+
+  renderDialogTitle() {
+    return (
+      <DialogTitle>
+        <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>
+      </DialogTitle>
+    );
+  }
+
+  renderAppBar() {
+    return (
+      <AppBar style={styles.appbar} color='inherit'>
+        <Toolbar style={styles.toolbar}>
+          <IconButton color='inherit' onClick={this.props.onClose} aria-label='Close'>
+            <CloseIcon />
+          </IconButton>
+          <Typography type='title' color='inherit' style={styles.flex}>
+            Select Place
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    );
+  }
+
+  renderAction() {
+    return (
+      <DialogActions>
+        <Button onClick={this.props.onClose}>
+          Cancel
+        </Button>
+      </DialogActions>
     );
   }
 

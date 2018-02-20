@@ -30,7 +30,7 @@ const styles = {
   mapWrapperSmall: {
     paddingTop: 104,
     paddingBottom: 56,
-    height: 'calc(100vh - 112px)'
+    height: 'calc(100vh - 160px)'
   },
   mapContainer: {
     height: '100%'
