@@ -24,8 +24,8 @@ const styles = {
   flex: {
     flex: 1,
   },
-  titleText: {
-    marginLeft: 30
+  placeIcon: {
+    marginRight: 10
   },
   dialogContentLarge: {
     paddingBottom: 0
@@ -36,10 +36,8 @@ const styles = {
   toolbar: {
     paddingLeft: 8
   },
-  placeIcon: {
-    marginTop: -2,
-    marginRight: 10,
-    position: 'absolute'
+  dialogTitle: {
+    display: 'flex'
   }
 };
 
@@ -102,7 +100,7 @@ class PlaceSelectDialog extends Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        <PlaceIcon style={styles.placeIcon} /><div style={styles.titleText}>Select Place</div>
+        <div style={styles.dialogTitle}><PlaceIcon style={styles.placeIcon} />Select Place</div>
       </DialogTitle>
     );
   }
