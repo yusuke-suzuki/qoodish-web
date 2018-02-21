@@ -14,19 +14,24 @@ import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import MapIcon from 'material-ui-icons/Map';
 import RateReviewIcon from 'material-ui-icons/RateReview';
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Card, { CardHeader } from 'material-ui/Card';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
 
 const styles = {
   rootLarge: {
-    margin: '94px auto 200px',
+    margin: '64px auto 200px',
     width: '40%'
   },
   rootSmall: {
     margin: '56px auto 56px',
     width: '100%'
+  },
+  formCardLarge: {
+    marginTop: 84
+  },
+  formCardSmall: {
+    marginTop: 72
   },
   container: {
     display: 'inline-block',
@@ -36,7 +41,8 @@ const styles = {
   },
   buttonContainer: {
     textAlign: 'center',
-    marginTop: 20
+    marginTop: 16,
+    marginBottom: 16
   },
   progress: {
     textAlign: 'center',
@@ -46,7 +52,7 @@ const styles = {
   noContentsContainer: {
     textAlign: 'center',
     color: '#9e9e9e',
-    marginTop: 20
+    padding: 20
   },
   noContentsIcon: {
     width: 150,
@@ -54,14 +60,6 @@ const styles = {
   },
   profileImage: {
     width: 40
-  },
-  raisedButtonLarge: {
-    width: '100%',
-    marginBottom: 20
-  },
-  raisedButtonSmall: {
-    width: '90%',
-    marginBottom: 20
   },
   createButtonLarge: {
     zIndex: 1100,
@@ -80,10 +78,10 @@ const styles = {
     color: 'white'
   },
   cardContainerSmall: {
-    marginBottom: 20
+    marginTop: 16
   },
   cardContainerLarge: {
-    marginBottom: 20
+    marginTop: 20
   },
 };
 
@@ -126,6 +124,7 @@ export default class Feed extends Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
+        {this.renderCreateReviewForm()}
         <div style={styles.container}>
           {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
         </div>
@@ -133,8 +132,27 @@ export default class Feed extends Component {
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
-        <CreateMapDialogContainer />
       </div>
+    );
+  }
+
+  renderCreateReviewForm() {
+    return (
+      <Card
+        style={this.props.large ? styles.formCardLarge : styles.formCardSmall}
+        onClick={this.props.handleCreateReviewClick}
+      >
+        <CardHeader
+          avatar={
+            <Avatar src={this.props.currentUser ? this.props.currentUser.image_url : ''} />
+          }
+          title={
+            <Typography type='body2' color='textSecondary'>
+              最近訪れたスポットを共有してみましょう
+            </Typography>
+          }
+        />
+      </Card>
     );
   }
 
@@ -158,13 +176,6 @@ export default class Feed extends Component {
         <Typography type='subheading' color='inherit'>
           When you create reports, you will see here.
         </Typography>
-        <br/>
-        <Button raised onClick={this.props.handleCreateMapButtonClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
-          Create New Map
-        </Button>
-        <Button raised onClick={this.props.handleDiscoverLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
-          Discover Maps
-        </Button>
       </div>
     );
   }

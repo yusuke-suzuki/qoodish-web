@@ -3,7 +3,6 @@ import Timeline from '../ui/Timeline';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
-import { push } from 'react-router-redux';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchReviews from '../actions/fetchReviews';
 import fetchMoreReviews from '../actions/fetchMoreReviews';
@@ -23,7 +22,8 @@ const mapStateToProps = (state) => {
     loadingMoreReviews: state.reviews.loadingMoreReviews,
     noMoreReviews: state.reviews.noMoreReviews,
     nextTimestamp: state.reviews.nextTimestamp,
-    large: state.shared.large
+    large: state.shared.large,
+    currentUser: state.app.currentUser
   }
 }
 
@@ -63,10 +63,6 @@ const mapDispatchToProps = (dispatch) => {
       } else {
         dispatch(openToast('Failed to fetch reports.'));
       }
-    },
-
-    handleDiscoverLinkClick: () => {
-      dispatch(push('/discover'));
     },
 
     handleCreateMapButtonClick: () => {
