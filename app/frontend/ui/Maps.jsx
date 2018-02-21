@@ -64,7 +64,7 @@ const styles = {
   noContentsContainer: {
     textAlign: 'center',
     color: '#9e9e9e',
-    marginTop: 20
+    padding: 20
   },
   noContentsIcon: {
     width: 150,
@@ -78,14 +78,6 @@ const styles = {
   mapTypeIcon: {
     marginLeft: 10,
     marginRight: 10
-  },
-  raisedButtonLarge: {
-    width: '100%',
-    marginBottom: 20
-  },
-  raisedButtonSmall: {
-    width: '90%',
-    marginBottom: 20
   }
 };
 
@@ -171,11 +163,12 @@ export default class Maps extends Component {
           When you create or follow maps, you will see maps here.
         </Typography>
         <br/>
-        <Button raised onClick={this.props.handleCreateMapButtonClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
+        <Button
+          raised
+          color='primary'
+          onClick={this.props.handleCreateMapButtonClick}
+        >
           Create New Map
-        </Button>
-        <Button raised onClick={this.props.handleDiscoverLinkClick} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
-          Search Maps
         </Button>
       </div>
     );

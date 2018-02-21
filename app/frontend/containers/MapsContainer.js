@@ -58,10 +58,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(selectMap(map));
       dispatch(push(`/maps/${map.id}`));
       dispatch(openToast(`Log in to ${map.name}!`));
-    },
-
-    handleDiscoverLinkClick: () => {
-      dispatch(push('/discover'));
     }
   }
 }
