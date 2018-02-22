@@ -57,12 +57,13 @@ typings/
 # dotenv environment variables file
 .env
 
-webpack-assets.json
-
-public/javascripts
+public/index.html
+public/bundle.js
 public/firebase-messaging-sw.js
 public/*.hot-update.*
 
 .vscode
 
 docker-compose.yml
+
+firebase-debug.log
