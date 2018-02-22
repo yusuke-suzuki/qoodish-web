@@ -9,7 +9,10 @@
     <link rel='apple-touch-icon' type='image/png' href='<%= htmlWebpackPlugin.options.iconUrl %>'>
 
     <script type='text/javascript'>
-      window.currentLocale = 'ja';
+      window.currentLocale = (window.navigator.languages && window.navigator.languages[0]) ||
+      window.navigator.language ||
+      window.navigator.userLanguage ||
+      window.navigator.browserLanguage;
     </script>
   </head>
   <body style='background-color: #f1f1f1; margin: 0;'>

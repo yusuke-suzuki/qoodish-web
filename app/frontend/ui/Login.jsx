@@ -13,6 +13,7 @@ import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
 import Button from 'material-ui/Button';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import { Link } from 'react-router-dom';
+import I18n from '../containers/I18n';
 
 const styles = {
   toolbar: {
@@ -140,7 +141,7 @@ class Login extends React.Component {
                     style={styles.carouselTileBarText}
                     gutterBottom
                   >
-                    あなたの地図を広げよう。
+                    {I18n.t('expand your map')}
                   </Typography>
                 }
                 subtitle={
@@ -150,7 +151,7 @@ class Login extends React.Component {
                       color='inherit'
                       style={styles.carouselTileBarText}
                     >
-                      <span>次はどこ行く？</span>
+                      <span>{I18n.t('where are you going next')}</span>
                     </Typography>
                     <div style={styles.firebaseContainer}>
                       <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
