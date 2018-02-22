@@ -1,17 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>Qoodish</title>
-    <%- include('./_metaTags', { metadata: metadata }) %>
-    <script type='text/javascript'>
-      window.currentLocale = '<%= currentLocale %>';
-    </script>
     <link rel='manifest' href='/manifest.json'>
-    <script type='text/javascript' src='<%= googleMapUrl %>'></script>
-    <script type='text/javascript' src='<%= bundle %>'></script>
-    <link rel='shortcut icon' type='image/x-icon' href='<%= process.env.SUBSTITUTE_URL %>'>
-    <link rel='icon' type='image/x-icon' href='<%= process.env.SUBSTITUTE_URL %>'>
-    <link rel='apple-touch-icon' type='image/png' href='<%= process.env.SUBSTITUTE_URL %>'>
+    <script type='text/javascript' src='<%= htmlWebpackPlugin.options.googleMapUrl %>'></script>
+    <link rel='shortcut icon' type='image/x-icon' href='<%= htmlWebpackPlugin.options.iconUrl %>'>
+    <link rel='icon' type='image/x-icon' href='<%= htmlWebpackPlugin.options.iconUrl %>'>
+    <link rel='apple-touch-icon' type='image/png' href='<%= htmlWebpackPlugin.options.iconUrl %>'>
+
+    <script type='text/javascript'>
+      window.currentLocale = 'ja';
+    </script>
   </head>
   <body style='background-color: #f1f1f1; margin: 0;'>
     <div id='render-target'></div>

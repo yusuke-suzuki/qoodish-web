@@ -1,6 +1,6 @@
 const webpack =  require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const AssetsPlugin = require('assets-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 require('dotenv').config();
 
@@ -12,8 +12,13 @@ const serviceWorkerPlugins = [
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(['./public/javascripts/*'], {}),
-  new AssetsPlugin(),
+  new CleanWebpackPlugin(['./public/bundle.js', './public/index.html'], {}),
+  new HtmlWebpackPlugin({
+    template: 'app/views/index.html',
+    hash: true,
+    googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
+    iconUrl: process.env.SUBSTITUTE_URL
+  }),
   new webpack.EnvironmentPlugin([
     'ENDPOINT',
     'API_ENDPOINT',
@@ -60,9 +65,8 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
-      path: __dirname + '/public/javascripts',
-      publicPath: '/javascripts/',
-      filename: 'bundle-[hash].js'
+      path: __dirname + '/public',
+      filename: 'bundle.js'
     },
     resolve: {
       extensions: ['.js', '.jsx', '*']
