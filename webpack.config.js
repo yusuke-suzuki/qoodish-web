@@ -67,10 +67,11 @@ module.exports = [
     entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
       path: __dirname + '/public',
+      publicPath: '/',
       filename: 'bundle.js'
     },
     resolve: {
-      extensions: ['.js', '.jsx', '*']
+      extensions: ['.js', '.jsx']
     },
     module: {
       rules: [
