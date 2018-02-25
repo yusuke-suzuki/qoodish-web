@@ -17,6 +17,7 @@ import RateReviewIcon from 'material-ui-icons/RateReview';
 import Card, { CardHeader } from 'material-ui/Card';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -115,7 +116,7 @@ export default class Feed extends Component {
     return (
       <div style={styles.buttonContainer}>
         <Button raised onClick={this.handleClickLoadMoreButton} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
-          Load More
+          {I18n.t('load more')}
         </Button>
       </div>
     );
@@ -148,7 +149,7 @@ export default class Feed extends Component {
           }
           title={
             <Typography type='body2' color='textSecondary'>
-              最近訪れたスポットを共有してみましょう
+              {I18n.t('share recent spot')}
             </Typography>
           }
         />
@@ -174,7 +175,7 @@ export default class Feed extends Component {
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
         <Typography type='subheading' color='inherit'>
-          When you create reports, you will see here.
+          {I18n.t('reports will see here')}
         </Typography>
       </div>
     );
