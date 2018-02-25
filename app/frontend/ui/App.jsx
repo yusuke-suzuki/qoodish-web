@@ -103,7 +103,12 @@ class App extends Component {
     }
   }
 
+  scrollTop() {
+    window.scrollTo(0, 0);
+  }
+
   render() {
+    this.scrollTop();
     return (
       <MuiThemeProvider theme={theme}>
         <div>
