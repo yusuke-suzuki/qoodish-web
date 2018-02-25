@@ -116,7 +116,10 @@ class ReviewCard extends Component {
               <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
             </Avatar>
           }
-          action={this.renderMoreVertButton()}
+          action={[
+            this.renderShareButton(),
+            this.renderMoreVertButton()
+          ]}
           title={review.author.name}
           subheader={this.renderCreatedAt(review)}
         />
@@ -135,7 +138,6 @@ class ReviewCard extends Component {
         <CardActions disableActionSpacing>
           {this.renderLikeButton(review)}
           {review.likes_count > 0 && this.renderLikes(review)}
-          {this.renderShareButton()}
           {this.renderShareMenu()}
         </CardActions>
       </Card>
@@ -185,6 +187,7 @@ class ReviewCard extends Component {
         aria-haspopup='true'
         onClick={this.handleShareButtonClick}
         style={styles.shareButton}
+        key='share'
       >
         <ShareIcon />
       </IconButton>
@@ -237,6 +240,7 @@ class ReviewCard extends Component {
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
         aria-haspopup='true'
         onClick={this.handleVertButtonClick}
+        key='more-vert'
       >
         <MoreVertIcon />
       </IconButton>
