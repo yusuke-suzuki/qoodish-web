@@ -6,6 +6,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import createReview from '../actions/createReview';
+import { uploadToStorage, deleteFromStorage, downloadImage } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -24,12 +25,16 @@ const mapDispatchToProps = (dispatch) => {
 
     handleMapSelected: async (review, map) => {
       dispatch(requestStart());
-      let params = {
+      const params = {
         comment: review.comment,
         place_id: review.place_id
       };
-      if (review.image) {
-        params.image_url = review.image.url;
+      let fileName;
+      if (review.image && !review.image.url.includes('amazonaws')) {
+        const blob = await downloadImage(review.image.url);
+        const uploadResponse = await uploadToStorage(blob);
+        params.image_url = uploadResponse.imageUrl;
+        fileName = uploadResponse.fileName;
       }
       const client = new ApiClient;
       let response = await client.createReview(map.id, params);
@@ -41,6 +46,9 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(openToast('Successfuly copy report!'));
       } else {
         dispatch(openToast(json.detail));
+        if (fileName) {
+          deleteFromStorage(fileName);
+        }
       }
     }
   }
