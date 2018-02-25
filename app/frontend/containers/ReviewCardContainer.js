@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import ReviewCard from '../ui/ReviewCard';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
+import openCopyReviewDialog from '../actions/openCopyReviewDialog';
 import openDeleteReviewDialog from '../actions/openDeleteReviewDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
@@ -48,6 +49,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleEditReviewButtonClick: (review) => {
       dispatch(openEditReviewDialog(review));
+    },
+
+    handleCopyReviewButtonClick: (review) => {
+      dispatch(openCopyReviewDialog(review));
     },
 
     handleDeleteReviewButtonClick: (review) => {

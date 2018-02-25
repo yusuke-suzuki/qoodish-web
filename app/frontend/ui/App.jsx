@@ -5,6 +5,7 @@ import ToastContainer from '../containers/ToastContainer';
 import BlockUiContainer from '../containers/BlockUiContainer';
 import IssueDialogContainer from '../containers/IssueDialogContainer';
 import LikesDialogContainer from '../containers/LikesDialogContainer';
+import CopyReviewDialogContainer from '../containers/CopyReviewDialogContainer';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import LoginContainer from '../containers/LoginContainer';
@@ -113,6 +114,7 @@ class App extends Component {
           <BlockUiContainer />
           <IssueDialogContainer />
           <LikesDialogContainer />
+          <CopyReviewDialogContainer />
         </div>
       </MuiThemeProvider>
     );

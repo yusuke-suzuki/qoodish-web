@@ -116,7 +116,10 @@ class ReviewCard extends Component {
               <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
             </Avatar>
           }
-          action={this.renderMoreVertButton()}
+          action={[
+            this.renderShareButton(),
+            this.renderMoreVertButton()
+          ]}
           title={review.author.name}
           subheader={this.renderCreatedAt(review)}
         />
@@ -135,7 +138,6 @@ class ReviewCard extends Component {
         <CardActions disableActionSpacing>
           {this.renderLikeButton(review)}
           {review.likes_count > 0 && this.renderLikes(review)}
-          {this.renderShareButton()}
           {this.renderShareMenu()}
         </CardActions>
       </Card>
@@ -185,6 +187,7 @@ class ReviewCard extends Component {
         aria-haspopup='true'
         onClick={this.handleShareButtonClick}
         style={styles.shareButton}
+        key='share'
       >
         <ShareIcon />
       </IconButton>
@@ -222,7 +225,7 @@ class ReviewCard extends Component {
           onCopy={this.props.handleUrlCopied}
           key='copy'
         >
-          <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
+          <MenuItem key='copy-link' onClick={this.handleRequestShareMenuClose}>
             Copy link
           </MenuItem>
         </CopyToClipboard>
@@ -237,6 +240,7 @@ class ReviewCard extends Component {
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
         aria-haspopup='true'
         onClick={this.handleVertButtonClick}
+        key='more-vert'
       >
         <MoreVertIcon />
       </IconButton>
@@ -296,6 +300,7 @@ class ReviewCard extends Component {
         onClose={this.handleRequestVertMenuClose}
       >
         {this.renderEditButton()}
+        {this.renderCopyButton()}
         {this.renderDeleteButton()}
       </Menu>
     );
@@ -311,6 +316,20 @@ class ReviewCard extends Component {
         }}
       >
         Edit
+      </MenuItem>
+    );
+  }
+
+  renderCopyButton() {
+    return (
+      <MenuItem
+        key='copy-review'
+        onClick={() => {
+          this.handleRequestVertMenuClose();
+          this.props.handleCopyReviewButtonClick(this.props.currentReview);
+        }}
+      >
+        Copy
       </MenuItem>
     );
   }
