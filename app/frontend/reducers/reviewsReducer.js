@@ -10,6 +10,8 @@ import {
   DELETE_REVIEW,
   OPEN_EDIT_REVIEW_DIALOG,
   CLOSE_EDIT_REVIEW_DIALOG,
+  OPEN_COPY_REVIEW_DIALOG,
+  CLOSE_COPY_REVIEW_DIALOG,
   OPEN_DELETE_REVIEW_DIALOG,
   CLOSE_DELETE_REVIEW_DIALOG,
   OPEN_REVIEW_DIALOG,
@@ -30,6 +32,7 @@ const initialState = {
   noMoreReviews: false,
   nextTimestamp: '',
   editReviewDialogOpen: false,
+  copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
   selectedPlace: null
 };
@@ -113,6 +116,16 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         targetReview: null,
         editReviewDialogOpen: false
+      });
+      case OPEN_COPY_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        targetReview: action.payload.review,
+        copyReviewDialogOpen: true
+      });
+    case CLOSE_COPY_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        targetReview: null,
+        copyReviewDialogOpen: false
       });
     case OPEN_DELETE_REVIEW_DIALOG:
       return Object.assign({}, state, {

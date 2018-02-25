@@ -225,7 +225,7 @@ class ReviewCard extends Component {
           onCopy={this.props.handleUrlCopied}
           key='copy'
         >
-          <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
+          <MenuItem key='copy-link' onClick={this.handleRequestShareMenuClose}>
             Copy link
           </MenuItem>
         </CopyToClipboard>
@@ -300,6 +300,7 @@ class ReviewCard extends Component {
         onClose={this.handleRequestVertMenuClose}
       >
         {this.renderEditButton()}
+        {this.renderCopyButton()}
         {this.renderDeleteButton()}
       </Menu>
     );
@@ -315,6 +316,20 @@ class ReviewCard extends Component {
         }}
       >
         Edit
+      </MenuItem>
+    );
+  }
+
+  renderCopyButton() {
+    return (
+      <MenuItem
+        key='copy-review'
+        onClick={() => {
+          this.handleRequestVertMenuClose();
+          this.props.handleCopyReviewButtonClick(this.props.currentReview);
+        }}
+      >
+        Copy
       </MenuItem>
     );
   }
