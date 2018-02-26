@@ -8,16 +8,16 @@ import requestFinish from '../actions/requestFinish';
 import createReview from '../actions/createReview';
 import { uploadToStorage, deleteFromStorage, downloadImage } from './Utils';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.reviews.copyReviewDialogOpen,
     postableMaps: state.maps.postableMaps,
     currentReview: state.reviews.targetReview,
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleRequestClose: () => {
       dispatch(closeCopyReviewDialog());
@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch) => {
         params.image_url = uploadResponse.imageUrl;
         fileName = uploadResponse.fileName;
       }
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.createReview(map.id, params);
       let json = await response.json();
       dispatch(requestFinish());
@@ -51,10 +51,7 @@ const mapDispatchToProps = (dispatch) => {
         }
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CopyReviewDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(CopyReviewDialog);

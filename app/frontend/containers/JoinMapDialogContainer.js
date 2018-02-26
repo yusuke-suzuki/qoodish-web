@@ -8,11 +8,11 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchCollaborators from '../actions/fetchCollaborators';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.mapDetail.joinMapDialogOpen
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleJoinButtonClick: async () => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let followResponse = await client.followMap(ownProps.mapId);
       dispatch(requestFinish());
       if (followResponse.ok) {
@@ -34,17 +34,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let map = await followResponse.json();
         dispatch(joinMap(map));
         dispatch(openToast('Followed map successfully!'));
-        let colloboratorsResponse = await client.fetchCollaborators(ownProps.mapId)
+        let colloboratorsResponse = await client.fetchCollaborators(
+          ownProps.mapId
+        );
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
         dispatch(openToast('Failed to follow map'));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(JoinMapDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(JoinMapDialog);

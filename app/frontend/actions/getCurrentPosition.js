@@ -7,7 +7,7 @@ const getCurrentPosition = (lat, lng) => {
       lat: lat,
       lng: lng
     }
-  }
-}
+  };
+};
 
 export default getCurrentPosition;

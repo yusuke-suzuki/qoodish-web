@@ -3,13 +3,13 @@ import Settings from '../ui/Settings';
 import openDeleteAccountDialog from '../actions/openDeleteAccountDialog';
 import updatePageTitle from '../actions/updatePageTitle';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Settings'));
@@ -18,10 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     handleDeleteAccountButtonClick: () => {
       dispatch(openDeleteAccountDialog());
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

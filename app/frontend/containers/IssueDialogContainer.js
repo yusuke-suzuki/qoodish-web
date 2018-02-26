@@ -6,15 +6,15 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.shared.issueDialogOpen,
     issueTargetId: state.shared.issueTargetId,
     issueTargetType: state.shared.issueTargetType
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleCancelButtonClick: () => {
       dispatch(closeIssueDialog());
@@ -24,9 +24,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(closeIssueDialog());
     },
 
-    handleSendButtonClick: async (params) => {
+    handleSendButtonClick: async params => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       const response = await client.issueContent(params);
       dispatch(requestFinish());
       if (response.ok) {
@@ -36,10 +36,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(openToast('Failed to issue content.'));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(IssueDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(IssueDialog);

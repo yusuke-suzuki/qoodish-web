@@ -1,5 +1,7 @@
 import React from 'react';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import BottomNavigation, {
+  BottomNavigationAction
+} from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import HomeIcon from 'material-ui-icons/Home';
 import ExploreIcon from 'material-ui-icons/Explore';
@@ -32,7 +34,7 @@ export default class BottomNav extends React.Component {
 
   switchBottomNav(props) {
     let tabValue = undefined;
-    switch(props.pathname) {
+    switch (props.pathname) {
       case '/':
         tabValue = 0;
         break;
@@ -51,17 +53,17 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
-            label='HOME'
+            label="HOME"
             icon={<HomeIcon />}
             onClick={this.props.handleHomeClick}
           />
           <BottomNavigationAction
-            label='DISCOVER'
+            label="DISCOVER"
             icon={<ExploreIcon />}
             onClick={this.props.handleDiscoverClick}
           />
           <BottomNavigationAction
-            label='MAPS'
+            label="MAPS"
             icon={<MapIcon />}
             onClick={this.props.handleMapsClick}
           />

@@ -5,10 +5,10 @@ import {
 
 const initialState = {
   deleteAccountDialogOpen: false
-}
+};
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case OPEN_DELETE_ACCOUNT_DIALOG:
       return Object.assign({}, state, {
         deleteAccountDialogOpen: true
@@ -20,6 +20,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

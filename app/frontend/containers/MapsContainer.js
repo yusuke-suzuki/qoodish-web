@@ -12,21 +12,21 @@ import loadMyMapsStart from '../actions/loadMyMapsStart';
 import loadMyMapsEnd from '../actions/loadMyMapsEnd';
 import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
 import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
-import selectMap from  '../actions/selectMap';
+import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import updatePageTitle from '../actions/updatePageTitle';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     myMaps: state.maps.myMaps,
     followingMaps: state.maps.followingMaps,
     loadingMyMaps: state.maps.loadingMyMaps,
     loadingFollowingMaps: state.maps.loadingFollowingMaps,
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Maps'));
@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch) => {
 
     refreshMyMaps: async () => {
       dispatch(loadMyMapsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchMyMaps();
       let maps = await response.json();
       dispatch(fetchMyMaps(maps));
@@ -47,22 +47,19 @@ const mapDispatchToProps = (dispatch) => {
 
     refreshFollowingMaps: async () => {
       dispatch(loadFollowingMapsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchFollowingMaps();
       let maps = await response.json();
       dispatch(fetchFollowingMaps(maps));
       dispatch(loadFollowingMapsEnd());
     },
 
-    handleClickMap: (map) => {
+    handleClickMap: map => {
       dispatch(selectMap(map));
       dispatch(push(`/maps/${map.id}`));
       dispatch(openToast(`Log in to ${map.name}!`));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Maps);
+export default connect(mapStateToProps, mapDispatchToProps)(Maps);

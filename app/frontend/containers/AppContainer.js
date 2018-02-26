@@ -9,25 +9,30 @@ import { fetchCurrentPosition } from './Utils';
 import getCurrentPosition from '../actions/getCurrentPosition';
 import searchPlaces from '../actions/searchPlaces';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     authenticated: state.app.authenticated,
     large: state.shared.large,
     registrationToken: state.app.registrationToken
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    handleWindowSizeChange: (width) => {
+    handleWindowSizeChange: width => {
       dispatch(updateWindowSize(width));
     },
 
     fetchCurrentPosition: async () => {
       let position = await fetchCurrentPosition();
-      dispatch(getCurrentPosition(position.coords.latitude, position.coords.longitude));
-      const client = new ApiClient;
-      let response = await client.searchNearPlaces(position.coords.latitude, position.coords.longitude);
+      dispatch(
+        getCurrentPosition(position.coords.latitude, position.coords.longitude)
+      );
+      const client = new ApiClient();
+      let response = await client.searchNearPlaces(
+        position.coords.latitude,
+        position.coords.longitude
+      );
       let places = await response.json();
       if (response.ok) {
         dispatch(searchPlaces(places));
@@ -36,7 +41,7 @@ const mapDispatchToProps = (dispatch) => {
 
     initMessaging: async () => {
       const messaging = firebase.messaging();
-      const client = new ApiClient;
+      const client = new ApiClient();
       let registrationToken;
       try {
         await messaging.requestPermission();
@@ -52,21 +57,18 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(fetchRegistrationToken(registrationToken));
       }
 
-      messaging.onMessage((payload) => {
+      messaging.onMessage(payload => {
         console.log('Message received. ', payload);
       });
     },
 
     fetchPostableMaps: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchPostableMaps();
       let maps = await response.json();
       dispatch(fetchPostableMaps(maps));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

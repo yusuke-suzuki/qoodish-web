@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import LikesDialog from '../ui/LikesDialog';
 import closeLikesDialog from '../actions/closeLikesDialog';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.shared.likesDialogOpen,
     likes: state.shared.likes
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -15,13 +15,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeLikesDialog());
     },
 
-    handleLikeClick: (like) => {
+    handleLikeClick: like => {}
+  };
+};
 
-    }
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LikesDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(LikesDialog);

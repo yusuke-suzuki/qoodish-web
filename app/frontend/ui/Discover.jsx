@@ -8,7 +8,7 @@ import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Typography from 'material-ui/Typography';
-import Card, { CardHeader, CardMedia, CardContent} from 'material-ui/Card';
+import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
 
@@ -103,24 +103,45 @@ export default class Discover extends Component {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
+          <Typography
+            type="subheading"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
             <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
           </Typography>
-          <br/>
-          {this.props.mapPickedUp ? this.renderPickUp(this.props.mapPickedUp) : null}
+          <br />
+          {this.props.mapPickedUp
+            ? this.renderPickUp(this.props.mapPickedUp)
+            : null}
         </div>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
+          <Typography
+            type="subheading"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
             <RateReviewIcon style={styles.mapTypeIcon} /> Recent Reports
           </Typography>
-          <br/>
-          {this.props.loadingRecentReviews ? this.renderProgress() : this.renderRecentReviewContainer(this.props.recentReviews)}
+          <br />
+          {this.props.loadingRecentReviews
+            ? this.renderProgress()
+            : this.renderRecentReviewContainer(this.props.recentReviews)}
         </div>
         <div style={styles.container}>
-          <Typography type='subheading' gutterBottom color='textSecondary' style={styles.gridHeader}>
+          <Typography
+            type="subheading"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
             <TrendingUpIcon style={styles.mapTypeIcon} /> Trending Maps
           </Typography>
-          {this.props.loadingPopularMaps ? this.renderProgress() : this.renderMapContainer(this.props.popularMaps)}
+          {this.props.loadingPopularMaps
+            ? this.renderProgress()
+            : this.renderMapContainer(this.props.popularMaps)}
         </div>
       </div>
     );
@@ -128,11 +149,7 @@ export default class Discover extends Component {
 
   renderPickUp(map) {
     return (
-      <GridList
-        cols={1}
-        style={styles.gridList}
-        spacing={20}
-      >
+      <GridList cols={1} style={styles.gridList} spacing={20}>
         <GridListTile
           key={map.id}
           onClick={() => this.props.handleClickMap(map)}
@@ -143,7 +160,7 @@ export default class Discover extends Component {
             title={
               <Typography
                 type={this.props.large ? 'display3' : 'display2'}
-                color='inherit'
+                color="inherit"
                 noWrap
                 gutterBottom
               >
@@ -153,12 +170,10 @@ export default class Discover extends Component {
             subtitle={
               <Typography
                 type={this.props.large ? 'display1' : 'headline'}
-                color='inherit'
+                color="inherit"
                 noWrap
               >
-                <span>
-                  by: {map.owner_name}
-                </span>
+                <span>by: {map.owner_name}</span>
               </Typography>
             }
             style={styles.pickUpTileBar}
@@ -172,7 +187,7 @@ export default class Discover extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <MapIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           No maps.
         </Typography>
       </div>
@@ -183,7 +198,7 @@ export default class Discover extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           No reports.
         </Typography>
       </div>
@@ -208,7 +223,7 @@ export default class Discover extends Component {
   }
 
   renderRecentReviews(reviews) {
-    return reviews.map((review) => (
+    return reviews.map(review => (
       <GridListTile
         key={review.id}
         onClick={() => this.props.handleClickReview(review)}
@@ -218,20 +233,31 @@ export default class Discover extends Component {
           <CardHeader
             avatar={
               <Avatar>
-                <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
+                <img
+                  src={review.author.profile_image_url}
+                  alt={review.author.name}
+                  style={styles.profileImage}
+                />
               </Avatar>
             }
             title={review.author.name}
-            subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow()}
+            subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+              .locale(window.currentLocale)
+              .fromNow()}
           />
           <CardContent style={styles.cardContent}>
-            <Typography type='subheading' color='textSecondary' gutterBottom noWrap>
+            <Typography
+              type="subheading"
+              color="textSecondary"
+              gutterBottom
+              noWrap
+            >
               {review.map_name}
             </Typography>
-            <Typography type='headline' component='h2' gutterBottom noWrap>
+            <Typography type="headline" component="h2" gutterBottom noWrap>
               {review.spot.name}
             </Typography>
-            <Typography component='p' noWrap>
+            <Typography component="p" noWrap>
               {review.comment}
             </Typography>
           </CardContent>
@@ -257,7 +283,7 @@ export default class Discover extends Component {
   }
 
   renderMaps(maps) {
-    return maps.map((map) => (
+    return maps.map(map => (
       <GridListTile
         key={map.id}
         onClick={() => this.props.handleClickMap(map)}
@@ -266,13 +292,14 @@ export default class Discover extends Component {
         <img src={map.image_url} />
         <GridListTileBar
           title={map.name}
-          subtitle={
-            <span>
-              by: {map.owner_name}
-            </span>
-          }
+          subtitle={<span>by: {map.owner_name}</span>}
           actionIcon={
-            map.private ? <LockIcon color='rgba(255, 255, 255, 0.54)' style={styles.lockIcon} /> : null
+            map.private ? (
+              <LockIcon
+                color="rgba(255, 255, 255, 0.54)"
+                style={styles.lockIcon}
+              />
+            ) : null
           }
         />
       </GridListTile>

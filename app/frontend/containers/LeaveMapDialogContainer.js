@@ -8,11 +8,11 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchCollaborators from '../actions/fetchCollaborators';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.mapDetail.leaveMapDialogOpen
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleLeaveButtonClick: async () => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.unfollowMap(ownProps.mapId);
       dispatch(requestFinish());
       if (response.ok) {
@@ -34,17 +34,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let map = await response.json();
         dispatch(leaveMap(map));
         dispatch(openToast('Unfollowed map successfully'));
-        let colloboratorsResponse = await client.fetchCollaborators(ownProps.mapId)
+        let colloboratorsResponse = await client.fetchCollaborators(
+          ownProps.mapId
+        );
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
         dispatch(openToast('Failed to unfollow map'));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LeaveMapDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(LeaveMapDialog);

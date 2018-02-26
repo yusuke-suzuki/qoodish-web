@@ -17,3 +17,7 @@ or
 
 ## Test
 `yarn test:chrome`
+
+## Run prettier
+`yarn prettier`
+

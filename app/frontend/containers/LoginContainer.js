@@ -7,18 +7,18 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import updatePageTitle from '../actions/updatePageTitle';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     signIn: async (currentUser, credential, redirectUrl) => {
       dispatch(requestStart());
       let accessToken = await currentUser.getIdToken();
-      let provider = currentUser.providerData.find((data) => {
+      let provider = currentUser.providerData.find(data => {
         return data.providerId == credential.providerId;
       });
       let params = {
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
           provider_token: credential.accessToken
         }
       };
-      const apiClient = new ApiClient;
+      const apiClient = new ApiClient();
       let response = await apiClient.signIn(params);
       dispatch(requestFinish());
       let json = await response.json();
@@ -44,10 +44,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(openToast(json.detail));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -7,28 +7,28 @@ import searchPlaces from '../actions/searchPlaces';
 import loadPlacesStart from '../actions/loadPlacesStart';
 import loadPlacesEnd from '../actions/loadPlacesEnd';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.mapDetail.placeSelectDialogOpen,
     places: state.shared.pickedPlaces,
     loadingPlaces: state.shared.loadingPlaces,
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     onClose: () => {
       dispatch(closePlaceSelectDialog());
     },
 
-    onPlaceSelected: (place) => {
+    onPlaceSelected: place => {
       dispatch(selectPlaceForReview(place));
     },
 
-    handleInputChange: async (input) => {
+    handleInputChange: async input => {
       dispatch(loadPlacesStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.searchPlaces(input);
       let places = await response.json();
       dispatch(loadPlacesEnd());
@@ -36,10 +36,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(searchPlaces(places));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PlaceSelectDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(PlaceSelectDialog);

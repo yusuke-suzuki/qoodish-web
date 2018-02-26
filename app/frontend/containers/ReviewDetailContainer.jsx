@@ -8,13 +8,13 @@ import loadReviewEnd from '../actions/loadReviewEnd';
 import clearReviewState from '../actions/clearReviewState';
 import updatePageTitle from '../actions/updatePageTitle';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentReview: state.reviewDetail.currentReview,
     reviewLoading: state.reviewDetail.reviewLoading,
     large: state.shared.large
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -24,8 +24,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     fetchReview: async () => {
       dispatch(loadReviewStart());
-      const client = new ApiClient;
-      let response = await client.fetchReview(ownProps.match.params.mapId, ownProps.match.params.reviewId);
+      const client = new ApiClient();
+      let response = await client.fetchReview(
+        ownProps.match.params.mapId,
+        ownProps.match.params.reviewId
+      );
       let json = await response.json();
       dispatch(loadReviewEnd());
       if (response.ok) {
@@ -43,10 +46,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clear: () => {
       dispatch(clearReviewState());
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReviewDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(ReviewDetail);

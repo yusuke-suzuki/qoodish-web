@@ -8,11 +8,11 @@ import {
 
 const initialState = {
   spotCardOpen: false,
-  currentSpot: {},
+  currentSpot: {}
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case SELECT_SPOT:
       return Object.assign({}, state, {
         currentSpot: action.payload.spot
@@ -34,6 +34,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

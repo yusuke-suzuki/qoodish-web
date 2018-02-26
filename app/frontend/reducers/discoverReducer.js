@@ -17,7 +17,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOAD_POPULAR_MAPS_START:
       return Object.assign({}, state, {
         loadingPopularMaps: true
@@ -49,6 +49,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

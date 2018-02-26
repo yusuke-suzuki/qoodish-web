@@ -37,7 +37,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case OPEN_TOAST:
       return Object.assign({}, state, {
         toastOpen: true,
@@ -102,7 +102,9 @@ const reducer = (state = initialState, action) => {
       });
     case FETCH_NOTIFICATIONS:
       let newNotifications = action.payload.notifications;
-      let unreadNotifications = newNotifications.filter((notification) => { return notification.read === false; })
+      let unreadNotifications = newNotifications.filter(notification => {
+        return notification.read === false;
+      });
       return Object.assign({}, state, {
         notifications: newNotifications,
         unreadNotifications: unreadNotifications
@@ -111,7 +113,9 @@ const reducer = (state = initialState, action) => {
       if (state.notifications.length === 0) {
         return state;
       } else {
-        let index = state.notifications.findIndex((notification) => { return notification.id === action.payload.notification.id; });
+        let index = state.notifications.findIndex(notification => {
+          return notification.id === action.payload.notification.id;
+        });
         let target = state.notifications[index];
         if (!target) {
           return state;
@@ -128,6 +132,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

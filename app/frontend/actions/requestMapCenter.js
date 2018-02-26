@@ -9,7 +9,7 @@ const requestMapCenter = (lat, lng) => {
         lng: lng
       }
     }
-  }
-}
+  };
+};
 
 export default requestMapCenter;

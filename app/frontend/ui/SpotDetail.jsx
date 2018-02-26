@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import List, {
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction
+} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
@@ -26,7 +30,7 @@ const styles = {
     height: '100%'
   },
   container: {
-    margin: '0 auto',
+    margin: '0 auto'
   },
   cardLarge: {
     minHeight: 'calc(100vh - 364px)'
@@ -46,8 +50,7 @@ const styles = {
     width: '50%',
     margin: '0 auto'
   },
-  listSmall: {
-  },
+  listSmall: {},
   avatarImage: {
     width: 40,
     height: 40
@@ -103,10 +106,22 @@ const GoogleMapContainer = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={props.defaultZoom}
     options={mapOptions}
-    center={props.currentSpot && new google.maps.LatLng(parseFloat(props.currentSpot.lat), parseFloat(props.currentSpot.lng))}
+    center={
+      props.currentSpot &&
+      new google.maps.LatLng(
+        parseFloat(props.currentSpot.lat),
+        parseFloat(props.currentSpot.lng)
+      )
+    }
   >
     <Marker
-      position={props.currentSpot && new google.maps.LatLng(parseFloat(props.currentSpot.lat), parseFloat(props.currentSpot.lng))}
+      position={
+        props.currentSpot &&
+        new google.maps.LatLng(
+          parseFloat(props.currentSpot.lat),
+          parseFloat(props.currentSpot.lng)
+        )
+      }
       defaultAnimation={2}
     />
   </GoogleMap>
@@ -130,7 +145,8 @@ class SpotDetail extends Component {
       <div>
         {this.renderMap()}
         {this.renderContainer()}
-        {this.props.currentSpot && this.renderCreateReviewButton(this.props.currentSpot)}
+        {this.props.currentSpot &&
+          this.renderCreateReviewButton(this.props.currentSpot)}
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer />
         <DeleteReviewDialogContainer />
@@ -144,14 +160,14 @@ class SpotDetail extends Component {
       <GoogleMapContainer
         {...this.props}
         containerElement={
-          <div style={this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
+          <div
+            style={
+              this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
+            }
+          />
         }
-        mapElement={
-          <div style={styles.mapContainer} />
-        }
-        loadingElement={
-          <div style={{ height: '100%' }} />
-        }
+        mapElement={<div style={styles.mapContainer} />}
+        loadingElement={<div style={{ height: '100%' }} />}
       />
     );
   }
@@ -159,7 +175,9 @@ class SpotDetail extends Component {
   renderContainer() {
     return (
       <div style={styles.container}>
-        {this.props.spotLoading ? this.renderProgress() : this.renderSpotDetail()}
+        {this.props.spotLoading
+          ? this.renderProgress()
+          : this.renderSpotDetail()}
       </div>
     );
   }
@@ -184,7 +202,7 @@ class SpotDetail extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <PlaceIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           Place not found.
         </Typography>
       </div>
@@ -194,18 +212,18 @@ class SpotDetail extends Component {
   renderSpotCard(spot) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-        <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
+        <CardContent
+          style={
+            this.props.large ? styles.cardContentLarge : styles.cardContentSmall
+          }
+        >
           <PlaceIcon />
-          <Typography type='headline'>
-            {spot.name}
-          </Typography>
-          <Typography type='subheading' color='textSecondary'>
+          <Typography type="headline">{spot.name}</Typography>
+          <Typography type="subheading" color="textSecondary">
             {spot.formatted_address}
           </Typography>
         </CardContent>
-        <List
-          style={this.props.large ? styles.listLarge : styles.listSmall}
-        >
+        <List style={this.props.large ? styles.listLarge : styles.listSmall}>
           {this.renderSpotReviews(this.props.spotReviews)}
         </List>
       </Card>
@@ -213,35 +231,43 @@ class SpotDetail extends Component {
   }
 
   renderSpotReviews(reviews) {
-    return reviews.map((review) => (
+    return reviews.map(review => (
       <ListItem
         button
         key={review.id}
         onClick={() => this.props.handleReviewClick(review, this.props.large)}
       >
         <Avatar>
-          <img src={review.author.profile_image_url} style={styles.avatarImage} />
+          <img
+            src={review.author.profile_image_url}
+            style={styles.avatarImage}
+          />
         </Avatar>
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type='subheading' noWrap>
+            <Typography type="subheading" noWrap>
               {review.author.name}
             </Typography>
           }
           secondary={
-            <Typography component='p' noWrap color='textSecondary' style={styles.reviewComment}>
+            <Typography
+              component="p"
+              noWrap
+              color="textSecondary"
+              style={styles.reviewComment}
+            >
               {review.comment}
             </Typography>
           }
         />
-        {review.image &&
+        {review.image && (
           <ListItemSecondaryAction>
             <Avatar style={styles.secondaryAvatar}>
               <img src={review.image.url} style={styles.avatarImage} />
             </Avatar>
           </ListItemSecondaryAction>
-        }
+        )}
       </ListItem>
     ));
   }
@@ -250,8 +276,10 @@ class SpotDetail extends Component {
     return (
       <Button
         fab
-        aria-label='add'
-        style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
+        aria-label="add"
+        style={
+          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
+        }
         onClick={() => this.props.handleCreateReviewClick(spot)}
       >
         <AddLocationIcon />

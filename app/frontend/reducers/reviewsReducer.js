@@ -38,7 +38,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOAD_REVIEWS_START:
       return Object.assign({}, state, {
         loadingReviews: true
@@ -59,13 +59,24 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentReviews: action.payload.reviews,
         noMoreReviews: !(action.payload.reviews.length > 0),
-        nextTimestamp: (action.payload.reviews.length > 0) ? action.payload.reviews[action.payload.reviews.length - 1].created_at : ''
+        nextTimestamp:
+          action.payload.reviews.length > 0
+            ? action.payload.reviews[action.payload.reviews.length - 1]
+                .created_at
+            : ''
       });
     case FETCH_MORE_REVIEWS:
       return Object.assign({}, state, {
-        currentReviews: (action.payload.reviews.length > 0) ? [...state.currentReviews, ...action.payload.reviews] : state.currentReviews,
+        currentReviews:
+          action.payload.reviews.length > 0
+            ? [...state.currentReviews, ...action.payload.reviews]
+            : state.currentReviews,
         noMoreReviews: !(action.payload.reviews.length > 0),
-        nextTimestamp: (action.payload.reviews.length > 0) ? action.payload.reviews[action.payload.reviews.length - 1].created_at : ''
+        nextTimestamp:
+          action.payload.reviews.length > 0
+            ? action.payload.reviews[action.payload.reviews.length - 1]
+                .created_at
+            : ''
       });
     case SELECT_PLACE_FOR_REVIEW:
       return Object.assign({}, state, {
@@ -84,7 +95,9 @@ const reducer = (state = initialState, action) => {
           currentReview: action.payload.review
         });
       } else {
-        let index = state.currentReviews.findIndex((review) => { return review.id == action.payload.review.id; });
+        let index = state.currentReviews.findIndex(review => {
+          return review.id == action.payload.review.id;
+        });
         let currentReview = state.currentReviews[index];
         if (!currentReview) {
           return state;
@@ -103,7 +116,9 @@ const reducer = (state = initialState, action) => {
         return state;
       }
 
-      let rejected = state.currentReviews.filter((review) => { return review.id != action.payload.id; });
+      let rejected = state.currentReviews.filter(review => {
+        return review.id != action.payload.id;
+      });
       return Object.assign({}, state, {
         currentReviews: rejected
       });
@@ -117,7 +132,7 @@ const reducer = (state = initialState, action) => {
         targetReview: null,
         editReviewDialogOpen: false
       });
-      case OPEN_COPY_REVIEW_DIALOG:
+    case OPEN_COPY_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: action.payload.review,
         copyReviewDialogOpen: true
@@ -159,6 +174,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

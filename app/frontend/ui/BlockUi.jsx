@@ -23,11 +23,7 @@ const styles = {
 
 export default class BlockUi extends Component {
   render() {
-    return (
-      <div>
-        {this.props.blocking ? this.renderBlockUi() : null}
-      </div>
-    );
+    return <div>{this.props.blocking ? this.renderBlockUi() : null}</div>;
   }
 
   renderBlockUi() {

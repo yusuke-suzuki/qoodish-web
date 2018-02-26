@@ -111,25 +111,32 @@ export default class Maps extends Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        <AppBar position='fixed' style={this.props.large ? styles.tabBarLarge : styles.tabBarSmall}>
+        <AppBar
+          position="fixed"
+          style={this.props.large ? styles.tabBarLarge : styles.tabBarSmall}
+        >
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
             fullWidth
-            indicatorColor='secondary'
-            textColor='secondary'
+            indicatorColor="secondary"
+            textColor="secondary"
             centered
           >
-            <Tab label='Following' />
-            <Tab label='My Maps' />
+            <Tab label="Following" />
+            <Tab label="My Maps" />
           </Tabs>
         </AppBar>
         {this.state.value === 0 && this.renderFollowingMaps()}
         {this.state.value === 1 && this.renderMyMaps()}
         <Button
           fab
-          aria-label='add'
-          style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
+          aria-label="add"
+          style={
+            this.props.large
+              ? styles.createButtonLarge
+              : styles.createButtonSmall
+          }
           onClick={this.props.handleCreateMapButtonClick}
         >
           <AddIcon />
@@ -142,7 +149,9 @@ export default class Maps extends Component {
   renderFollowingMaps() {
     return (
       <div style={styles.container}>
-        {this.props.loadingFollowingMaps ? this.renderProgress() : this.renderMapContainer(this.props.followingMaps)}
+        {this.props.loadingFollowingMaps
+          ? this.renderProgress()
+          : this.renderMapContainer(this.props.followingMaps)}
       </div>
     );
   }
@@ -150,7 +159,9 @@ export default class Maps extends Component {
   renderMyMaps() {
     return (
       <div style={styles.container}>
-        {this.props.loadingMyMaps ? this.renderProgress() : this.renderMapContainer(this.props.myMaps)}
+        {this.props.loadingMyMaps
+          ? this.renderProgress()
+          : this.renderMapContainer(this.props.myMaps)}
       </div>
     );
   }
@@ -159,13 +170,13 @@ export default class Maps extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <MapIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           When you create or follow maps, you will see maps here.
         </Typography>
-        <br/>
+        <br />
         <Button
           raised
-          color='primary'
+          color="primary"
           onClick={this.props.handleCreateMapButtonClick}
         >
           Create New Map
@@ -191,7 +202,7 @@ export default class Maps extends Component {
   }
 
   renderMaps(maps) {
-    return maps.map((map) => (
+    return maps.map(map => (
       <GridListTile
         key={map.id}
         onClick={() => this.props.handleClickMap(map)}
@@ -200,13 +211,11 @@ export default class Maps extends Component {
         <img src={map.image_url} />
         <GridListTileBar
           title={map.name}
-          subtitle={
-            <span>
-              by: {map.owner_name}
-            </span>
-          }
+          subtitle={<span>by: {map.owner_name}</span>}
           actionIcon={
-            map.private ? <LockIcon color='disabled' style={styles.lockIcon} /> : null
+            map.private ? (
+              <LockIcon color="disabled" style={styles.lockIcon} />
+            ) : null
           }
         />
       </GridListTile>

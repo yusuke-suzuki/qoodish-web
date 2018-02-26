@@ -3,7 +3,11 @@ import IconButton from 'material-ui/IconButton';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Slide from 'material-ui/transitions/Slide';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import List, {
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction
+} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
@@ -89,7 +93,7 @@ const styles = {
 };
 
 function Transition(props) {
-  return <Slide direction='up' {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class MapSummary extends Component {
@@ -104,8 +108,12 @@ class MapSummary extends Component {
     };
     this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
     this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
-    this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(this);
-    this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(this);
+    this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(
+      this
+    );
+    this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(
+      this
+    );
     this.handleTabChange = this.handleTabChange.bind(this);
   }
 
@@ -142,26 +150,33 @@ class MapSummary extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.renderMapSummary(this.props.currentMap)}
-      </div>
-    );
+    return <div>{this.renderMapSummary(this.props.currentMap)}</div>;
   }
 
   renderMapSummary(map) {
     return (
-      <div style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
+      <div
+        style={
+          this.props.large
+            ? styles.cardContainerLarge
+            : styles.cardContainerSmall
+        }
+      >
         {this.renderMapToolbar(this.props.currentMap)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           <CardMedia>
             <img src={map && map.image_url} style={styles.media} />
           </CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
-            <Typography type='headline' component='h2' gutterBottom style={styles.mapSummaryText}>
+            <Typography
+              type="headline"
+              component="h2"
+              gutterBottom
+              style={styles.mapSummaryText}
+            >
               {map && map.name}
             </Typography>
-            <Typography component='p' style={styles.mapSummaryText}>
+            <Typography component="p" style={styles.mapSummaryText}>
               {map && map.description}
             </Typography>
             <div style={styles.roleButtonContainer}>
@@ -174,24 +189,12 @@ class MapSummary extends Component {
             onChange={this.handleTabChange}
             fullWidth
             centered
-            indicatorColor='primary'
-            textColor='primary'
+            indicatorColor="primary"
+            textColor="primary"
           >
-            <Tab
-              icon={<TimelineIcon />}
-              label='TIMELINE'
-              style={styles.tab}
-            />
-            <Tab
-              icon={<PlaceIcon />}
-              label='SPOTS'
-              style={styles.tab}
-            />
-            <Tab
-              icon={<GroupIcon />}
-              label='FOLLOWERS'
-              style={styles.tab}
-            />
+            <Tab icon={<TimelineIcon />} label="TIMELINE" style={styles.tab} />
+            <Tab icon={<PlaceIcon />} label="SPOTS" style={styles.tab} />
+            <Tab icon={<GroupIcon />} label="FOLLOWERS" style={styles.tab} />
           </Tabs>
           <div>
             {this.state.tabValue === 0 && this.renderTimelineTab()}
@@ -206,7 +209,9 @@ class MapSummary extends Component {
   renderSpotTab() {
     return (
       <List disablePadding>
-        {this.props.spots.length > 0 ? this.renderSpots(this.props.spots) : null}
+        {this.props.spots.length > 0
+          ? this.renderSpots(this.props.spots)
+          : null}
       </List>
     );
   }
@@ -214,7 +219,9 @@ class MapSummary extends Component {
   renderMemberTab() {
     return (
       <List disablePadding>
-        {this.props.collaborators.length > 0 ? this.renderCollaborators(this.props.collaborators) : null}
+        {this.props.collaborators.length > 0
+          ? this.renderCollaborators(this.props.collaborators)
+          : null}
       </List>
     );
   }
@@ -222,7 +229,9 @@ class MapSummary extends Component {
   renderTimelineTab() {
     return (
       <List disablePadding>
-        {this.props.mapReviews.length > 0 ? this.renderActivities(this.props.mapReviews) : null}
+        {this.props.mapReviews.length > 0
+          ? this.renderActivities(this.props.mapReviews)
+          : null}
       </List>
     );
   }
@@ -232,21 +241,21 @@ class MapSummary extends Component {
       <Toolbar style={styles.mapToolbar} disableGutters>
         <div style={styles.toolbarActions}>
           <IconButton
-            aria-label='More share'
+            aria-label="More share"
             aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
-            aria-haspopup='true'
+            aria-haspopup="true"
             onClick={this.handleShareButtonClick}
           >
             <ShareIcon style={styles.mapMenuIcon} />
           </IconButton>
           <Menu
-            id='share-menu'
+            id="share-menu"
             anchorEl={this.state.anchorElShare}
             open={this.state.shareMenuOpen}
             onClose={this.handleRequestShareMenuClose}
           >
             <MenuItem
-              key='facebook'
+              key="facebook"
               onClick={() => {
                 this.handleRequestShareMenuClose();
                 this.props.handleFacebookButtonClick(map);
@@ -255,7 +264,7 @@ class MapSummary extends Component {
               Share with Facebook
             </MenuItem>
             <MenuItem
-              key='twitter'
+              key="twitter"
               onClick={() => {
                 this.handleRequestShareMenuClose();
                 this.props.handleTweetButtonClick(map);
@@ -266,31 +275,33 @@ class MapSummary extends Component {
             <CopyToClipboard
               text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
               onCopy={this.props.handleUrlCopied}
-              key='copy'
+              key="copy"
             >
-              <MenuItem key='copy' onClick={this.handleRequestShareMenuClose}>
+              <MenuItem key="copy" onClick={this.handleRequestShareMenuClose}>
                 Copy URL
               </MenuItem>
             </CopyToClipboard>
           </Menu>
           <IconButton
-            aria-label='More vert'
+            aria-label="More vert"
             aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
-            aria-haspopup='true'
+            aria-haspopup="true"
             onClick={this.handleVertButtonClick}
           >
             <MoreVertIcon style={styles.mapMenuIcon} />
           </IconButton>
-          {map && map.editable ? this.renderMenuForOwner() : this.renderMenuForMember()}
+          {map && map.editable
+            ? this.renderMenuForOwner()
+            : this.renderMenuForMember()}
         </div>
       </Toolbar>
     );
   }
 
   renderMenuForOwner() {
-    return(
+    return (
       <Menu
-        id='vert-menu'
+        id="vert-menu"
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
@@ -304,13 +315,13 @@ class MapSummary extends Component {
   renderMenuForMember() {
     return (
       <Menu
-        id='vert-menu'
+        id="vert-menu"
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
       >
         <MenuItem
-          key='issue'
+          key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
             this.props.handleIssueButtonClick(this.props.currentMap);
@@ -325,7 +336,7 @@ class MapSummary extends Component {
   renderEditButton() {
     return (
       <MenuItem
-        key='edit'
+        key="edit"
         onClick={() => {
           this.handleRequestVertMenuClose();
           this.props.handleEditMapButtonClick(this.props.currentMap);
@@ -339,7 +350,7 @@ class MapSummary extends Component {
   renderDeleteButton() {
     return (
       <MenuItem
-        key='delete'
+        key="delete"
         onClick={() => {
           this.handleRequestVertMenuClose();
           this.props.handleDeleteMapButtonClick(this.props.currentMap);
@@ -362,10 +373,14 @@ class MapSummary extends Component {
         <Button raised onClick={this.props.handleLeaveButtonClick}>
           UNFOLLOW
         </Button>
-      ) ;
+      );
     } else {
       return (
-        <Button raised onClick={this.props.handleJoinButtonClick} color='primary'>
+        <Button
+          raised
+          onClick={this.props.handleJoinButtonClick}
+          color="primary"
+        >
           FOLLOW
         </Button>
       );
@@ -373,31 +388,33 @@ class MapSummary extends Component {
   }
 
   renderCollaborators(collaborators) {
-    return collaborators.map((collaborator) => (
+    return collaborators.map(collaborator => (
       <ListItem button key={collaborator.id}>
         <Avatar src={collaborator.profile_image_url} />
-        <ListItemText
-          primary={collaborator.name}
-        />
+        <ListItemText primary={collaborator.name} />
       </ListItem>
     ));
   }
 
   renderSpots(spots) {
-    return spots.map((spot) => (
-      <ListItem button key={spot.place_id} onClick={() => this.props.handleSpotClick(spot, this.props.large)}>
+    return spots.map(spot => (
+      <ListItem
+        button
+        key={spot.place_id}
+        onClick={() => this.props.handleSpotClick(spot, this.props.large)}
+      >
         <Avatar>
           <img src={spot.image_url} style={styles.spotImage} />
         </Avatar>
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type='subheading' noWrap>
+            <Typography type="subheading" noWrap>
               {spot.name}
             </Typography>
           }
           secondary={
-            <Typography component='p' noWrap color='textSecondary'>
+            <Typography component="p" noWrap color="textSecondary">
               {spot.formatted_address}
             </Typography>
           }
@@ -407,30 +424,37 @@ class MapSummary extends Component {
   }
 
   renderActivities(mapReviews) {
-    return mapReviews.map((review) => (
-      <ListItem button key={review.id} onClick={() => this.props.handleReviewClick(review, this.props.large)}>
+    return mapReviews.map(review => (
+      <ListItem
+        button
+        key={review.id}
+        onClick={() => this.props.handleReviewClick(review, this.props.large)}
+      >
         <Avatar src={review.author.profile_image_url} />
         <ListItemText
           primary={
             <div style={styles.activityText}>
-              <b>{review.author.name}</b> created a report about <b>{review.spot.name}</b>
+              <b>{review.author.name}</b> created a report about{' '}
+              <b>{review.spot.name}</b>
             </div>
           }
           secondary={this.fromNow(review)}
         />
-        {review.image &&
+        {review.image && (
           <ListItemSecondaryAction>
             <Avatar style={styles.secondaryAvatar}>
               <img src={review.image.url} style={styles.spotImage} />
             </Avatar>
           </ListItemSecondaryAction>
-        }
+        )}
       </ListItem>
     ));
   }
 
   fromNow(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL');
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+      .locale(window.currentLocale)
+      .format('LL');
   }
 }
 

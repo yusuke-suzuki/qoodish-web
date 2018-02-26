@@ -27,10 +27,10 @@ const initialState = {
   createMapDialogOpen: false,
   editMapDialogOpen: false,
   deleteMapDialogOpen: false
-}
+};
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOAD_MY_MAPS_START:
       return Object.assign({}, state, {
         loadingMyMaps: true
@@ -73,7 +73,9 @@ const reducer = (state = initialState, action) => {
         createMapDialogOpen: false
       });
     case EDIT_MAP:
-      let index = state.myMaps.findIndex((map) => { return map.id == action.payload.map.id; });
+      let index = state.myMaps.findIndex(map => {
+        return map.id == action.payload.map.id;
+      });
       if (index == -1) {
         return state;
       }
@@ -88,8 +90,12 @@ const reducer = (state = initialState, action) => {
         ]
       });
     case DELETE_MAP:
-      let rejectedMyMaps = state.myMaps.filter((map) => { return map.id != action.payload.id; });
-      let rejectedPostableMaps = state.postableMaps.filter((map) => { return map.id != action.payload.id; });
+      let rejectedMyMaps = state.myMaps.filter(map => {
+        return map.id != action.payload.id;
+      });
+      let rejectedPostableMaps = state.postableMaps.filter(map => {
+        return map.id != action.payload.id;
+      });
       return Object.assign({}, state, {
         myMaps: rejectedMyMaps,
         postableMaps: rejectedPostableMaps
@@ -117,6 +123,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

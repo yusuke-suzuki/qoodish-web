@@ -8,7 +8,9 @@ import RateReviewIcon from 'material-ui-icons/RateReview';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import InfoIcon from 'material-ui-icons/Info';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import BottomNavigation, {
+  BottomNavigationAction
+} from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
 import Grid from 'material-ui/Grid';
@@ -69,27 +71,33 @@ class SpotCard extends Component {
         </IconButton>
         <Grid container spacing={0}>
           <Grid item xs={4} sm={3} md={3} lg={3}>
-            <CardMedia
-              image={spot.image_url}
-              style={styles.media}
-            />
+            <CardMedia image={spot.image_url} style={styles.media} />
           </Grid>
           <Grid item xs={8} sm={9} md={9} lg={9}>
             <CardContent style={styles.cardContent}>
-              <Typography type='subheading' noWrap style={styles.spotName}>{spot.name}</Typography>
-              <Typography color='textSecondary' noWrap>
+              <Typography type="subheading" noWrap style={styles.spotName}>
+                {spot.name}
+              </Typography>
+              <Typography color="textSecondary" noWrap>
                 {spot.formatted_address}
               </Typography>
             </CardContent>
             <BottomNavigation showLabels={this.props.large ? true : false}>
-              {this.props.currentMap && this.props.currentMap.postable && this.renderAddButton(spot)}
+              {this.props.currentMap &&
+                this.props.currentMap.postable &&
+                this.renderAddButton(spot)}
               <BottomNavigationAction
-                label='DIRECTIONS'
+                label="DIRECTIONS"
                 icon={<DirectionsIcon />}
-                onClick={() => this.props.handleRouteButtonClick(spot, this.props.currentPosition)}
+                onClick={() =>
+                  this.props.handleRouteButtonClick(
+                    spot,
+                    this.props.currentPosition
+                  )
+                }
               />
               <BottomNavigationAction
-                label='DETAIL'
+                label="DETAIL"
                 icon={<InfoIcon />}
                 onClick={() => this.props.handleShowDetailButtonClick(spot)}
               />
@@ -103,7 +111,7 @@ class SpotCard extends Component {
   renderAddButton(spot) {
     return (
       <BottomNavigationAction
-        label='ADD'
+        label="ADD"
         icon={<AddLocationIcon />}
         onClick={() => this.props.handleAddReviewButtonClick(spot)}
         disabled={this.props.currentMap && !this.props.currentMap.postable}

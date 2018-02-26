@@ -15,19 +15,19 @@ class JoinMapDialog extends Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-      　<DialogTitle>
-          Are you sure you want to follow this map?
-        </DialogTitle>
+        　<DialogTitle>Are you sure you want to follow this map?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             You can receive events by following the map.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>
-            Cancel
-          </Button>
-          <Button raised onClick={this.props.handleJoinButtonClick} color='primary'>
+          <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
+          <Button
+            raised
+            onClick={this.props.handleJoinButtonClick}
+            color="primary"
+          >
             FOLLOW
           </Button>
         </DialogActions>

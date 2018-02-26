@@ -10,17 +10,17 @@ import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
 import { uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.reviews.editReviewDialogOpen,
     selectedPlace: state.reviews.selectedPlace,
     currentReview: state.reviews.targetReview,
     postableMaps: state.maps.postableMaps,
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleClickCreateButton: async (mapId, params, canvas) => {
       dispatch(requestStart());
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
         params.image_url = response.imageUrl;
         fileName = response.fileName;
       }
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.createReview(mapId, params);
       let json = await response.json();
       dispatch(requestFinish());
@@ -51,7 +51,12 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    handleClickEditButton: async (oldReview, params, canvas, isImageDeleteRequest = false) => {
+    handleClickEditButton: async (
+      oldReview,
+      params,
+      canvas,
+      isImageDeleteRequest = false
+    ) => {
       dispatch(requestStart());
       let fileName;
       if (canvas) {
@@ -62,12 +67,16 @@ const mapDispatchToProps = (dispatch) => {
       } else if (isImageDeleteRequest) {
         params.image_url = '';
       }
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.editReview(params);
       let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        if (oldReview.image && canvas && !oldReview.image.url.includes('amazonaws')) {
+        if (
+          oldReview.image &&
+          canvas &&
+          !oldReview.image.url.includes('amazonaws')
+        ) {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
@@ -87,10 +96,7 @@ const mapDispatchToProps = (dispatch) => {
     handleRequestClose: () => {
       dispatch(closeEditReviewDialog());
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditReviewDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(EditReviewDialog);

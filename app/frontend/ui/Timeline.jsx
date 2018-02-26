@@ -83,7 +83,7 @@ const styles = {
   },
   cardContainerLarge: {
     marginTop: 20
-  },
+  }
 };
 
 export default class Feed extends Component {
@@ -115,7 +115,15 @@ export default class Feed extends Component {
     }
     return (
       <div style={styles.buttonContainer}>
-        <Button raised onClick={this.handleClickLoadMoreButton} style={this.props.large ? styles.raisedButtonLarge : styles.raisedButtonSmall}>
+        <Button
+          raised
+          onClick={this.handleClickLoadMoreButton}
+          style={
+            this.props.large
+              ? styles.raisedButtonLarge
+              : styles.raisedButtonSmall
+          }
+        >
           {I18n.t('load more')}
         </Button>
       </div>
@@ -127,7 +135,9 @@ export default class Feed extends Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderCreateReviewForm()}
         <div style={styles.container}>
-          {this.props.loadingReviews ? this.renderProgress() : this.renderReviewContainer(this.props.currentReviews)}
+          {this.props.loadingReviews
+            ? this.renderProgress()
+            : this.renderReviewContainer(this.props.currentReviews)}
         </div>
         {this.renderCreateReviewButton()}
         <PlaceSelectDialogContainer />
@@ -145,10 +155,14 @@ export default class Feed extends Component {
       >
         <CardHeader
           avatar={
-            <Avatar src={this.props.currentUser ? this.props.currentUser.image_url : ''} />
+            <Avatar
+              src={
+                this.props.currentUser ? this.props.currentUser.image_url : ''
+              }
+            />
           }
           title={
-            <Typography type='body2' color='textSecondary'>
+            <Typography type="body2" color="textSecondary">
               {I18n.t('share recent spot')}
             </Typography>
           }
@@ -161,8 +175,10 @@ export default class Feed extends Component {
     return (
       <Button
         fab
-        aria-label='add'
-        style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
+        aria-label="add"
+        style={
+          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
+        }
         onClick={this.props.handleCreateReviewClick}
       >
         <AddLocationIcon />
@@ -174,7 +190,7 @@ export default class Feed extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           {I18n.t('reports will see here')}
         </Typography>
       </div>
@@ -186,7 +202,9 @@ export default class Feed extends Component {
       return (
         <div>
           {this.renderReviewCards(reviews)}
-          {this.props.loadingMoreReviews ? this.renderProgress() : this.renderLoadMoreButton()}
+          {this.props.loadingMoreReviews
+            ? this.renderProgress()
+            : this.renderLoadMoreButton()}
         </div>
       );
     } else {
@@ -195,8 +213,15 @@ export default class Feed extends Component {
   }
 
   renderReviewCards(reviews) {
-    return reviews.map((review) => (
-      <div key={review.id} style={this.props.large ? styles.cardContainerLarge : styles.cardContainerSmall}>
+    return reviews.map(review => (
+      <div
+        key={review.id}
+        style={
+          this.props.large
+            ? styles.cardContainerLarge
+            : styles.cardContainerSmall
+        }
+      >
         <ReviewCardContainer currentReview={review} />
       </div>
     ));
