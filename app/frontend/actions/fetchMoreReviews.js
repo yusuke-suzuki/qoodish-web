@@ -1,12 +1,12 @@
 import { FETCH_MORE_REVIEWS } from '../actionTypes';
 
-const fetchMoreReviews = (reviews) => {
+const fetchMoreReviews = reviews => {
   return {
     type: FETCH_MORE_REVIEWS,
     payload: {
       reviews: reviews
     }
-  }
-}
+  };
+};
 
 export default fetchMoreReviews;

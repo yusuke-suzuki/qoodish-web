@@ -7,7 +7,7 @@ const getMapBasePosition = (lat, lng) => {
       lat: lat,
       lng: lng
     }
-  }
-}
+  };
+};
 
 export default getMapBasePosition;

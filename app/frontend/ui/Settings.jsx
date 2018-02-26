@@ -33,10 +33,10 @@ export default class Footer extends Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <Card>
           <CardContent>
-            <Typography type='headline' component='h2' gutterBottom>
+            <Typography type="headline" component="h2" gutterBottom>
               Delete Account
             </Typography>
-            <Typography component='p'>
+            <Typography component="p">
               This cannot be undone. Really.
             </Typography>
           </CardContent>

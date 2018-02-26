@@ -14,7 +14,7 @@ import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
 import selectReview from '../actions/selectReview';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentUser: state.app.currentUser,
     currentMap: state.mapSummary.currentMap,
@@ -22,8 +22,8 @@ const mapStateToProps = (state) => {
     spots: state.gMap.spots,
     mapReviews: state.mapSummary.mapReviews,
     large: state.shared.large
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -55,36 +55,37 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openLeaveMapDialog());
     },
 
-    handleTweetButtonClick: (map) => {
+    handleTweetButtonClick: map => {
       let url = `${process.env.ENDPOINT}/maps/${map.id}`;
       let text = `「${map.name}」に参加しています。`;
       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
     },
 
-    handleFacebookButtonClick: (map) => {
+    handleFacebookButtonClick: map => {
       let url = `${process.env.ENDPOINT}/maps/${map.id}`;
-      window.open(`https://www.facebook.com/dialog/share?app_id=${process.env.FB_APP_ID}&href=${url}`);
+      window.open(
+        `https://www.facebook.com/dialog/share?app_id=${
+          process.env.FB_APP_ID
+        }&href=${url}`
+      );
     },
 
     handleUrlCopied: () => {
       dispatch(openToast('Copied!'));
     },
 
-    handleEditMapButtonClick: (map) => {
+    handleEditMapButtonClick: map => {
       dispatch(openEditMapDialog(map));
     },
 
-    handleDeleteMapButtonClick: (map) => {
+    handleDeleteMapButtonClick: map => {
       dispatch(openDeleteMapDialog(map));
     },
 
-    handleIssueButtonClick: (map) => {
-      dispatch(openIssueDialog(map.id, 'map'))
+    handleIssueButtonClick: map => {
+      dispatch(openIssueDialog(map.id, 'map'));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MapSummary);
+export default connect(mapStateToProps, mapDispatchToProps)(MapSummary);

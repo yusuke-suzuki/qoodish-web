@@ -8,7 +8,11 @@ import { Provider } from 'react-redux';
 
 import createHistory from 'history/createBrowserHistory';
 import { Route } from 'react-router-dom';
-import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
+import {
+  ConnectedRouter,
+  routerReducer,
+  routerMiddleware
+} from 'react-router-redux';
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
@@ -65,10 +69,9 @@ const reducer = combineReducers({
   settings: settingsReducer
 });
 
-const store = compose(
-  persistState('app'),
-  applyMiddleware(...middlewares)
-)(createStore)(reducer);
+const store = compose(persistState('app'), applyMiddleware(...middlewares))(
+  createStore
+)(reducer);
 
 window.addEventListener('DOMContentLoaded', () => {
   render(

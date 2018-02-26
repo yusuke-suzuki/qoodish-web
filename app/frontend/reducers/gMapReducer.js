@@ -16,26 +16,25 @@ const initialState = {
   gMap: null,
   defaultCenter: {
     lat: 35.710063,
-    lng: 139.810700
+    lng: 139.8107
   },
   defaultZoom: 17,
-  currentPosition: {
-  },
+  currentPosition: {},
   mapBasePosition: {
     lat: 35.710063,
-    lng: 139.810700
+    lng: 139.8107
   },
   center: {
     lat: 35.710063,
-    lng: 139.810700
+    lng: 139.8107
   },
   zoom: 17,
   spots: [],
   directions: []
-}
+};
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case GET_CURRENT_POSITION:
       return Object.assign({}, state, {
         currentPosition: {
@@ -107,6 +106,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

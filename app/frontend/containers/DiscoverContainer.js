@@ -12,13 +12,13 @@ import loadRecentReviewsStart from '../actions/loadRecentReviewsStart';
 import loadRecentReviewsEnd from '../actions/loadRecentReviewsEnd';
 import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
-import selectMap from  '../actions/selectMap';
+import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
 import updatePageTitle from '../actions/updatePageTitle';
 import selectReview from '../actions/selectReview';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     mapPickedUp: state.discover.mapPickedUp,
     popularMaps: state.discover.popularMaps,
@@ -26,10 +26,10 @@ const mapStateToProps = (state) => {
     large: state.shared.large,
     recentReviews: state.discover.recentReviews,
     loadingRecentReviews: state.discover.loadingRecentReviews
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Discover'));
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     pickUpMap: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchMap(process.env.PICKED_UP_MAP_ID);
       let map = await response.json();
       if (response.ok) {
@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch) => {
 
     fetchRecentReviews: async () => {
       dispatch(loadRecentReviewsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchRecentReviews();
       let reviews = await response.json();
       dispatch(loadRecentReviewsEnd());
@@ -66,27 +66,24 @@ const mapDispatchToProps = (dispatch) => {
 
     refreshPopularMaps: async () => {
       dispatch(loadPopularMapsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchPopularMaps();
       let maps = await response.json();
       dispatch(fetchPopularMaps(maps));
       dispatch(loadPopularMapsEnd());
     },
 
-    handleClickMap: (map) => {
+    handleClickMap: map => {
       dispatch(selectMap(map));
       dispatch(push(`/maps/${map.id}`));
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 
-    handleClickReview: (review) => {
+    handleClickReview: review => {
       dispatch(selectReview(review));
       dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Discover);
+export default connect(mapStateToProps, mapDispatchToProps)(Discover);

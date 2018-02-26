@@ -2,7 +2,7 @@ import React from 'react';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import MapIcon from 'material-ui-icons/Map';
@@ -17,27 +17,23 @@ class CopyReviewDialog extends React.Component {
         onClose={this.props.handleRequestClose}
         fullWidth
       >
-        <DialogTitle>
-          Select map to copy this report to
-        </DialogTitle>
-        <DialogContent>
-          {this.renderPostableMaps()}
-        </DialogContent>
+        <DialogTitle>Select map to copy this report to</DialogTitle>
+        <DialogContent>{this.renderPostableMaps()}</DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleRequestClose}>
-            Cancel
-          </Button>
+          <Button onClick={this.props.handleRequestClose}>Cancel</Button>
         </DialogActions>
       </Dialog>
     );
   }
 
   renderPostableMaps() {
-    return this.props.postableMaps.map((map) => (
+    return this.props.postableMaps.map(map => (
       <ListItem
         button
         key={map.id}
-        onClick={() => this.props.handleMapSelected(this.props.currentReview, map)}
+        onClick={() =>
+          this.props.handleMapSelected(this.props.currentReview, map)
+        }
       >
         <Avatar>
           <MapIcon />

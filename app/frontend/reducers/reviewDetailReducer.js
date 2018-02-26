@@ -15,7 +15,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOAD_REVIEW_START:
       return Object.assign({}, state, {
         reviewLoading: true
@@ -52,6 +52,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { withGoogleMap, GoogleMap, Marker, DirectionsRenderer, InfoWindow } from 'react-google-maps';
+import {
+  withGoogleMap,
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+  InfoWindow
+} from 'react-google-maps';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
@@ -75,7 +81,12 @@ const GoogleMapContainer = withGoogleMap(props => (
     options={mapOptions}
     defaultCenter={props.defaultCenter}
     defaultZoom={props.defaultZoom}
-    center={new google.maps.LatLng(parseFloat(props.center.lat), parseFloat(props.center.lng))}
+    center={
+      new google.maps.LatLng(
+        parseFloat(props.center.lat),
+        parseFloat(props.center.lng)
+      )
+    }
     zoom={props.zoom}
     onZoomChanged={() => props.onZoomChanged(props.gMap.getZoom())}
     onCenterChanged={() => props.onCenterChanged(props.gMap.getCenter())}
@@ -83,32 +94,36 @@ const GoogleMapContainer = withGoogleMap(props => (
   >
     {props.spots.map((spot, index) => (
       <Marker
-        position={new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))}
+        position={
+          new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
+        }
         key={index}
         defaultAnimation={2}
         onClick={() => props.onSpotMarkerClick(spot)}
       >
-        {props.currentSpot && props.currentSpot.place_id === spot.place_id &&
-          <InfoWindow>
-            <b>{spot.name}</b>
-          </InfoWindow>
-        }
+        {props.currentSpot &&
+          props.currentSpot.place_id === spot.place_id && (
+            <InfoWindow>
+              <b>{spot.name}</b>
+            </InfoWindow>
+          )}
       </Marker>
     ))}
-    {props.currentPosition.lat && props.currentPosition.lng ?
-    <Marker
-      options={{
-        position: props.currentPosition,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: '#0088ff',
-          fillOpacity: 0.8,
-          strokeColor: '#0088ff',
-          strokeOpacity: 0.2
-        }
-      }}
-    /> : null}
+    {props.currentPosition.lat && props.currentPosition.lng ? (
+      <Marker
+        options={{
+          position: props.currentPosition,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#0088ff',
+            fillOpacity: 0.8,
+            strokeColor: '#0088ff',
+            strokeOpacity: 0.2
+          }
+        }}
+      />
+    ) : null}
     {<DirectionsRenderer directions={props.directions} />}
     <SpotCardContainer mapId={props.match.params.mapId} />
   </GoogleMap>
@@ -151,7 +166,9 @@ export default class MapDetail extends Component {
     return (
       <div>
         {this.props.large ? this.renderLarge() : this.renderSmall()}
-        {this.ableToPost(this.props.currentMap) ? this.renderCreateReviewButton() : null}
+        {this.ableToPost(this.props.currentMap)
+          ? this.renderCreateReviewButton()
+          : null}
         <ReviewDialogContainer />
         <PlaceSelectDialogContainer />
         <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
@@ -184,9 +201,7 @@ export default class MapDetail extends Component {
   }
 
   renderMapSummary() {
-    return (
-      <MapSummaryContainer mapId={this.props.match.params.mapId} />
-    );
+    return <MapSummaryContainer mapId={this.props.match.params.mapId} />;
   }
 
   renderGoogleMap() {
@@ -194,11 +209,13 @@ export default class MapDetail extends Component {
       <GoogleMapContainer
         {...this.props}
         containerElement={
-          <div style={this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall} />
+          <div
+            style={
+              this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
+            }
+          />
         }
-        mapElement={
-          <div style={styles.mapContainer} />
-        }
+        mapElement={<div style={styles.mapContainer} />}
         onMapLoad={this.props.onMapMounted}
       />
     );
@@ -206,22 +223,16 @@ export default class MapDetail extends Component {
 
   renderTab() {
     return (
-      <AppBar position='fixed' style={styles.tabBar}>
+      <AppBar position="fixed" style={styles.tabBar}>
         <Tabs
           value={this.props.tabValue}
           fullWidth
-          indicatorColor='secondary'
-          textColor='secondary'
+          indicatorColor="secondary"
+          textColor="secondary"
           centered
         >
-          <Tab
-            label='SUMMARY'
-            onClick={this.props.handleSummaryTabClick}
-          />
-          <Tab
-            label='MAP'
-            onClick={this.props.handleMapTabClick}
-          />
+          <Tab label="SUMMARY" onClick={this.props.handleSummaryTabClick} />
+          <Tab label="MAP" onClick={this.props.handleMapTabClick} />
         </Tabs>
       </AppBar>
     );
@@ -239,8 +250,10 @@ export default class MapDetail extends Component {
     return (
       <Button
         fab
-        aria-label='add'
-        style={this.props.large ? styles.createButtonLarge : styles.createButtonSmall}
+        aria-label="add"
+        style={
+          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
+        }
         onClick={this.props.handleCreateReviewClick}
       >
         <AddLocationIcon />

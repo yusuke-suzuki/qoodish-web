@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import { FormControlLabel } from 'material-ui/Form';
@@ -27,10 +27,9 @@ const autoCompleteStyles = {
 
 const styles = {
   flex: {
-    flex: 1,
+    flex: 1
   },
-  dialogContentLarge: {
-  },
+  dialogContentLarge: {},
   dialogContentSmall: {
     paddingTop: 56
   },
@@ -40,7 +39,7 @@ const styles = {
 };
 
 function Transition(props) {
-  return <Slide direction='up' {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class EditMapDialog extends Component {
@@ -61,7 +60,9 @@ class EditMapDialog extends Component {
       placeInput: ''
     };
     this.handleMapNameChange = this.handleMapNameChange.bind(this);
-    this.handleMapDescriptionChange = this.handleMapDescriptionChange.bind(this);
+    this.handleMapDescriptionChange = this.handleMapDescriptionChange.bind(
+      this
+    );
     this.handleMapBaseChange = this.handleMapBaseChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
@@ -121,12 +122,15 @@ class EditMapDialog extends Component {
       errorText = 'Map name is required';
     }
 
-    this.setState({
-      name: name,
-      errorMapName: errorText
-    }, () => {
-      this.validate();
-    });
+    this.setState(
+      {
+        name: name,
+        errorMapName: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
   }
 
   handleMapDescriptionChange(e) {
@@ -142,12 +146,15 @@ class EditMapDialog extends Component {
       errorText = 'Description is required';
     }
 
-    this.setState({
-      description: description,
-      errorDescription: errorText
-    }, () => {
-      this.validate();
-    });
+    this.setState(
+      {
+        description: description,
+        errorDescription: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
   }
 
   handleInputChange(input) {
@@ -204,7 +211,12 @@ class EditMapDialog extends Component {
 
   validate() {
     let disabled;
-    if (this.state.name && this.state.description && !this.state.errorMapName && !this.state.errorDescription) {
+    if (
+      this.state.name &&
+      this.state.description &&
+      !this.state.errorMapName &&
+      !this.state.errorDescription
+    ) {
       disabled = false;
     } else {
       disabled = true;
@@ -231,14 +243,20 @@ class EditMapDialog extends Component {
         fullScreen={!this.props.large}
         transition={Transition}
       >
-      　{this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
-        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
+        　{this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
+        <DialogContent
+          style={
+            this.props.large
+              ? styles.dialogContentLarge
+              : styles.dialogContentSmall
+          }
+        >
           {this.renderMapNameText()}
-          <br/>
+          <br />
           {this.renderDescriptionText()}
-          <br/>
-          <br/>
-          <Typography type='subheading' gutterBottom color='textSecondary'>
+          <br />
+          <br />
+          <Typography type="subheading" gutterBottom color="textSecondary">
             The center of this map (Optional)
           </Typography>
           <PlacesAutocomplete
@@ -246,7 +264,7 @@ class EditMapDialog extends Component {
             onSelect={this.handleMapBaseChange}
             styles={autoCompleteStyles}
           />
-          <br/>
+          <br />
           <FormControlLabel
             control={
               <Switch
@@ -254,9 +272,9 @@ class EditMapDialog extends Component {
                 onChange={this.handlePrivateFlugChange}
               />
             }
-            label='Set this map to private.'
+            label="Set this map to private."
           />
-          <br/>
+          <br />
           <FormControlLabel
             control={
               <Switch
@@ -264,9 +282,9 @@ class EditMapDialog extends Component {
                 onChange={this.handleInvitableFlugChange}
               />
             }
-            label='Allow collaborators to invite other users.'
+            label="Allow collaborators to invite other users."
           />
-          <br/>
+          <br />
           <FormControlLabel
             control={
               <Switch
@@ -274,7 +292,7 @@ class EditMapDialog extends Component {
                 onChange={this.handleSharedFlugChange}
               />
             }
-            label='Allow collaborators to add spots.'
+            label="Allow collaborators to add spots."
           />
         </DialogContent>
         {this.props.large && this.renderDialogActions()}
@@ -292,15 +310,24 @@ class EditMapDialog extends Component {
 
   renderAppBar() {
     return (
-      <AppBar color='inherit'>
+      <AppBar color="inherit">
         <Toolbar style={styles.toolbar}>
-          <IconButton color='inherit' onClick={this.props.handleRequestDialogClose} aria-label='Close'>
+          <IconButton
+            color="inherit"
+            onClick={this.props.handleRequestDialogClose}
+            aria-label="Close"
+          >
             <CloseIcon />
           </IconButton>
-          <Typography type='title' color='inherit' style={styles.flex}>
+          <Typography type="title" color="inherit" style={styles.flex}>
             {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
           </Typography>
-          <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+          <Button
+            raised
+            onClick={this.handleSaveButtonClick}
+            color="primary"
+            disabled={this.state.disabled}
+          >
             Save
           </Button>
         </Toolbar>
@@ -311,10 +338,13 @@ class EditMapDialog extends Component {
   renderDialogActions() {
     return (
       <DialogActions>
-        <Button onClick={this.props.handleRequestDialogClose}>
-          Cancel
-        </Button>
-        <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+        <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+        <Button
+          raised
+          onClick={this.handleSaveButtonClick}
+          color="primary"
+          disabled={this.state.disabled}
+        >
           Save
         </Button>
       </DialogActions>
@@ -324,7 +354,7 @@ class EditMapDialog extends Component {
   renderMapNameText() {
     return (
       <TextField
-        label='Map name'
+        label="Map name"
         onChange={this.handleMapNameChange}
         error={this.state.errorMapName ? true : false}
         helperText={this.state.errorMapName}
@@ -338,7 +368,7 @@ class EditMapDialog extends Component {
   renderDescriptionText() {
     return (
       <TextField
-        label='Map description'
+        label="Map description"
         onChange={this.handleMapDescriptionChange}
         error={this.state.errorDescription ? true : false}
         helperText={this.state.errorDescription}

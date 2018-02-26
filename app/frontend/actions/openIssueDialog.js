@@ -7,7 +7,7 @@ const openIssueDialog = (contentId, contentType) => {
       contentId: contentId,
       contentType: contentType
     }
-  }
-}
+  };
+};
 
 export default openIssueDialog;

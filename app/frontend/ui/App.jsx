@@ -108,7 +108,9 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <div>
           <div>
-            {this.props.authenticated ? this.renderUserOnly() : this.renderGuestOnly()}
+            {this.props.authenticated
+              ? this.renderUserOnly()
+              : this.renderGuestOnly()}
           </div>
           <ToastContainer />
           <BlockUiContainer />
@@ -126,7 +128,7 @@ class App extends Component {
         <div style={styles.progressContainer}>
           <Typography
             type={this.props.large ? 'display3' : 'display2'}
-            color='primary'
+            color="primary"
             gutterBottom
           >
             Qoodish
@@ -139,16 +141,24 @@ class App extends Component {
         <div>
           <NavBarContainer />
           <Switch>
-            <Route exact path='/' component={TimelineContainer} />
-            <Route exact path='/discover' component={DiscoverContainer} />
-            <Route exact path='/maps' component={MapsContainer} />
-            <Route exact path='/maps/:mapId' component={MapDetailContainer} />
-            <Route exact path='/maps/:mapId/reports/:reviewId' component={ReviewDetailContainer} />
-            <Route exact path='/spots/:placeId' component={SpotDetailContainer} />
-            <Route exact path='/settings' component={SettingsContainer} />
-            <Route exact path='/terms' component={TermsContainer} />
-            <Route exact path='/privacy' component={PrivacyContainer} />
-            <Redirect from='*' to='/' />
+            <Route exact path="/" component={TimelineContainer} />
+            <Route exact path="/discover" component={DiscoverContainer} />
+            <Route exact path="/maps" component={MapsContainer} />
+            <Route exact path="/maps/:mapId" component={MapDetailContainer} />
+            <Route
+              exact
+              path="/maps/:mapId/reports/:reviewId"
+              component={ReviewDetailContainer}
+            />
+            <Route
+              exact
+              path="/spots/:placeId"
+              component={SpotDetailContainer}
+            />
+            <Route exact path="/settings" component={SettingsContainer} />
+            <Route exact path="/terms" component={TermsContainer} />
+            <Route exact path="/privacy" component={PrivacyContainer} />
+            <Redirect from="*" to="/" />
           </Switch>
           {!this.props.large && <BottomNavContainer />}
         </div>
@@ -160,10 +170,10 @@ class App extends Component {
     return (
       <div>
         <Switch>
-          <Route path='/login' component={LoginContainer} />
-          <Route exact path='/terms' component={TermsContainer} />
-          <Route exact path='/privacy' component={PrivacyContainer} />
-          <Redirect from='*' to='/login' />
+          <Route path="/login" component={LoginContainer} />
+          <Route exact path="/terms" component={TermsContainer} />
+          <Route exact path="/privacy" component={PrivacyContainer} />
+          <Redirect from="*" to="/login" />
         </Switch>
       </div>
     );

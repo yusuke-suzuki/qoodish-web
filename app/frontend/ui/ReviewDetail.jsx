@@ -29,7 +29,6 @@ const styles = {
   }
 };
 
-
 class ReviewDetail extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
@@ -44,8 +43,12 @@ class ReviewDetail extends Component {
 
   render() {
     return (
-      <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
-        {this.props.reviewLoading ? this.renderProgress() : this.renderReviewCard()}
+      <div
+        style={this.props.large ? styles.containerLarge : styles.containerSmall}
+      >
+        {this.props.reviewLoading
+          ? this.renderProgress()
+          : this.renderReviewCard()}
         <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
         <DeleteReviewDialogContainer />
       </div>
@@ -54,7 +57,12 @@ class ReviewDetail extends Component {
 
   renderReviewCard() {
     if (this.props.currentReview) {
-      return <ReviewCardContainer currentReview={this.props.currentReview} detail={!this.props.large} />;
+      return (
+        <ReviewCardContainer
+          currentReview={this.props.currentReview}
+          detail={!this.props.large}
+        />
+      );
     } else {
       return this.renderNoContent();
     }
@@ -72,7 +80,7 @@ class ReviewDetail extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           Report not found.
         </Typography>
       </div>

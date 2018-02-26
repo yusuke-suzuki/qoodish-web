@@ -6,7 +6,12 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemSecondaryAction
+} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import HomeIcon from 'material-ui-icons/Home';
 import ExploreIcon from 'material-ui-icons/Explore';
@@ -52,7 +57,7 @@ const styles = {
     display: 'flex'
   },
   listItemContent: {
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   notificationText: {
     paddingRight: 32,
@@ -96,9 +101,15 @@ class NavBar extends Component {
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
     this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
     this.handleAvatarClick = this.handleAvatarClick.bind(this);
-    this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(this);
-    this.handleNotificationButtonClick = this.handleNotificationButtonClick.bind(this);
-    this.handleRequestNotificationClose = this.handleRequestNotificationClose.bind(this);
+    this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(
+      this
+    );
+    this.handleNotificationButtonClick = this.handleNotificationButtonClick.bind(
+      this
+    );
+    this.handleRequestNotificationClose = this.handleRequestNotificationClose.bind(
+      this
+    );
 
     this.state = {
       drawerOpen: false,
@@ -157,16 +168,18 @@ class NavBar extends Component {
   render() {
     return (
       <div>
-        <AppBar position='fixed'>
+        <AppBar position="fixed">
           <Toolbar disableGutters style={styles.toolbar}>
             <IconButton onClick={this.handleToggleDrawer}>
               <MenuIcon style={styles.menuButton} />
             </IconButton>
             {this.props.large ? this.renderLogo() : null}
             <Typography
-              type='headline'
-              color='inherit'
-              style={this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall}
+              type="headline"
+              color="inherit"
+              style={
+                this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
+              }
               onClick={this.handleTitleClick}
             >
               {this.props.pageTitle}
@@ -192,7 +205,12 @@ class NavBar extends Component {
 
   renderLogo() {
     return (
-      <Typography type='headline' color='inherit' style={styles.logo} onClick={this.props.requestHome}>
+      <Typography
+        type="headline"
+        color="inherit"
+        style={styles.logo}
+        onClick={this.props.requestHome}
+      >
         Qoodish
       </Typography>
     );
@@ -201,22 +219,22 @@ class NavBar extends Component {
   renderNotificationCenter() {
     return (
       <IconButton
-        aria-label='Notification'
+        aria-label="Notification"
         aria-owns={this.state.notificationOpen ? 'notification-menu' : null}
-        aria-haspopup='true'
+        aria-haspopup="true"
         onClick={this.handleNotificationButtonClick}
         style={styles.notificationButton}
       >
-        {
-          this.props.unreadNotifications.length > 0 ?
-            <Badge
-              badgeContent={this.props.unreadNotifications.length}
-              color='secondary'
-            >
-              <NotificationsIcon />
-            </Badge>
-          : <NotificationsIcon />
-        }
+        {this.props.unreadNotifications.length > 0 ? (
+          <Badge
+            badgeContent={this.props.unreadNotifications.length}
+            color="secondary"
+          >
+            <NotificationsIcon />
+          </Badge>
+        ) : (
+          <NotificationsIcon />
+        )}
       </IconButton>
     );
   }
@@ -224,14 +242,16 @@ class NavBar extends Component {
   renderNotificationMenu() {
     return (
       <Menu
-        id='notification-menu'
+        id="notification-menu"
         anchorEl={this.state.anchorEl}
         open={this.state.notificationOpen}
         onClose={this.handleRequestNotificationClose}
         onEntered={() => this.props.readNotifications(this.props.notifications)}
         style={styles.notificationMenu}
       >
-        {this.props.notifications.length > 0 ? this.renderNotifications(this.props.notifications) : this.renderNoNotifications()}
+        {this.props.notifications.length > 0
+          ? this.renderNotifications(this.props.notifications)
+          : this.renderNoNotifications()}
       </Menu>
     );
   }
@@ -240,7 +260,7 @@ class NavBar extends Component {
     return (
       <MenuItem style={styles.noContentsContainer}>
         <NotificationsIcon style={styles.noContentsIcon} />
-        <Typography type='subheading' color='inherit'>
+        <Typography type="subheading" color="inherit">
           No notifications.
         </Typography>
       </MenuItem>
@@ -248,46 +268,56 @@ class NavBar extends Component {
   }
 
   renderNotifications(notifications) {
-    return notifications.map((notification) => (
-      <MenuItem onClick={() => this.props.handleNotificationClick(notification)} key={notification.id} style={styles.notificationMenuItem}>
+    return notifications.map(notification => (
+      <MenuItem
+        onClick={() => this.props.handleNotificationClick(notification)}
+        key={notification.id}
+        style={styles.notificationMenuItem}
+      >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
           primary={
             <div style={styles.notificationText}>
-              <b>{notification.notifier.name}</b> {notification.key} your {notification.notifiable.type}.
+              <b>{notification.notifier.name}</b> {notification.key} your{' '}
+              {notification.notifiable.type}.
             </div>
           }
           secondary={
-            <div style={styles.fromNow}>
-              {this.fromNow(notification)}
-            </div>
+            <div style={styles.fromNow}>{this.fromNow(notification)}</div>
           }
           style={styles.listItemContent}
         />
-        {notification.notifiable.image_url &&
+        {notification.notifiable.image_url && (
           <ListItemSecondaryAction>
             <Avatar style={styles.secondaryAvatar}>
-              <img src={notification.notifiable.image_url} style={styles.notificationImage} />
+              <img
+                src={notification.notifiable.image_url}
+                style={styles.notificationImage}
+              />
             </Avatar>
           </ListItemSecondaryAction>
-        }
+        )}
       </MenuItem>
     ));
   }
 
   fromNow(notification) {
-    return moment(notification.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).fromNow();
+    return moment(notification.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+      .locale(window.currentLocale)
+      .fromNow();
   }
 
   renderAvatar() {
     return (
       <IconButton
-        aria-label='Account'
+        aria-label="Account"
         aria-owns={this.state.accountMenuOpen ? 'account-menu' : null}
-        aria-haspopup='true'
+        aria-haspopup="true"
         onClick={this.handleAvatarClick}
       >
-        <Avatar src={this.props.currentUser ? this.props.currentUser.image_url : ''} />
+        <Avatar
+          src={this.props.currentUser ? this.props.currentUser.image_url : ''}
+        />
       </IconButton>
     );
   }
@@ -295,7 +325,7 @@ class NavBar extends Component {
   renderAvatarMenu() {
     return (
       <Menu
-        id='account-menu'
+        id="account-menu"
         anchorEl={this.state.anchorEl}
         open={this.state.accountMenuOpen}
         onClose={this.handleRequestAvatarMenuClose}
@@ -312,32 +342,36 @@ class NavBar extends Component {
         <List disablePadding>
           <div>
             <ListItem divider={true}>
-              <ListItemText disableTypography primary={this.renderTitle()} secondary={this.renderTitleSecondary()} />
+              <ListItemText
+                disableTypography
+                primary={this.renderTitle()}
+                secondary={this.renderTitleSecondary()}
+              />
             </ListItem>
             <ListItem button onClick={this.props.requestHome}>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary='Home' />
+              <ListItemText primary="Home" />
             </ListItem>
             <ListItem button onClick={this.props.requestDiscover}>
               <ListItemIcon>
                 <ExploreIcon />
               </ListItemIcon>
-              <ListItemText primary='Discover' />
+              <ListItemText primary="Discover" />
             </ListItem>
             <ListItem button onClick={this.props.requestMaps}>
               <ListItemIcon>
                 <MapIcon />
               </ListItemIcon>
-              <ListItemText primary='Maps' />
+              <ListItemText primary="Maps" />
             </ListItem>
             <Divider />
             <ListItem button onClick={this.props.requestSettings}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
-              <ListItemText primary='Settings' />
+              <ListItemText primary="Settings" />
             </ListItem>
           </div>
         </List>
@@ -347,7 +381,12 @@ class NavBar extends Component {
 
   renderTitle() {
     return (
-      <Typography type='headline' color='textSecondary' style={styles.title} onClick={this.props.requestHome}>
+      <Typography
+        type="headline"
+        color="textSecondary"
+        style={styles.title}
+        onClick={this.props.requestHome}
+      >
         Qoodish
       </Typography>
     );
@@ -355,7 +394,7 @@ class NavBar extends Component {
 
   renderTitleSecondary() {
     return (
-      <Typography type='caption' color='textSecondary'>
+      <Typography type="caption" color="textSecondary">
         {`v${process.env.npm_package_version}`}
       </Typography>
     );

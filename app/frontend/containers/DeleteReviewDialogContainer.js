@@ -11,12 +11,12 @@ import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
 import { deleteFromStorage } from './Utils';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentReview: state.reviews.targetReview,
     dialogOpen: state.reviews.deleteReviewDialogOpen
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -24,9 +24,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeDeleteReviewDialog());
     },
 
-    handleDeleteButtonClick: async (review) => {
+    handleDeleteButtonClick: async review => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       const response = await client.deleteReview(review.id);
       dispatch(requestFinish());
       if (response.ok) {
@@ -36,12 +36,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(closeReviewDialog());
         dispatch(closeDeleteReviewDialog());
         if (ownProps.mapId) {
-          let spotResponse = await client.fetchSpots(review.map_id)
+          let spotResponse = await client.fetchSpots(review.map_id);
           if (spotResponse.ok) {
             let spots = await spotResponse.json();
             dispatch(fetchSpots(spots));
           }
-          dispatch(push(`/maps/${review.map_id}`))
+          dispatch(push(`/maps/${review.map_id}`));
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast('Delete report successfully'));
@@ -50,10 +50,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(json.detail));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteReviewDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteReviewDialog);

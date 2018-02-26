@@ -25,7 +25,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case SELECT_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.map
@@ -85,6 +85,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

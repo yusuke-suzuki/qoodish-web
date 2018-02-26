@@ -13,16 +13,16 @@ import updatePageTitle from '../actions/updatePageTitle';
 import selectReview from '../actions/selectReview';
 import openReviewDialog from '../actions/openReviewDialog';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentSpot: state.spotDetail.currentSpot,
     spotReviews: state.spotDetail.spotReviews,
     spotLoading: state.spotDetail.spotLoading,
     large: state.shared.large,
     defaultCenter: state.gMap.defaultCenter,
-    defaultZoom: state.gMap.defaultZoom,
-  }
-}
+    defaultZoom: state.gMap.defaultZoom
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     fetchSpot: async () => {
       dispatch(loadSpotStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchSpot(ownProps.match.params.placeId);
       let json = await response.json();
       dispatch(loadSpotEnd());
@@ -49,15 +49,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     fetchSpotReviews: async () => {
-      const client = new ApiClient;
-      let response = await client.fetchSpotReviews(ownProps.match.params.placeId);
+      const client = new ApiClient();
+      let response = await client.fetchSpotReviews(
+        ownProps.match.params.placeId
+      );
       let json = await response.json();
       if (response.ok) {
         dispatch(fetchSpotReviews(json));
       }
     },
 
-    handleCreateReviewClick: (spot) => {
+    handleCreateReviewClick: spot => {
       let place = {
         description: spot.name,
         placeId: spot.place_id
@@ -77,10 +79,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clear: () => {
       dispatch(clearSpotState());
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SpotDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(SpotDetail);

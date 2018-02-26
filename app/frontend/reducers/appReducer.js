@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case SIGN_IN:
       return Object.assign({}, state, {
         authenticated: true,
@@ -35,6 +35,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

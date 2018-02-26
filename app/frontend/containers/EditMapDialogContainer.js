@@ -7,23 +7,23 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.maps.editMapDialogOpen,
     currentMap: state.maps.targetMap,
     large: state.shared.large
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeEditMapDialog());
     },
 
-    handleSaveButtonClick: async (params) => {
+    handleSaveButtonClick: async params => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.editMap(params);
       let json = await response.json();
       dispatch(requestFinish());
@@ -37,10 +37,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(openToast('Failed to update map.'));
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditMapDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(EditMapDialog);

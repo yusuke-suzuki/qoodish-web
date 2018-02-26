@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Dialog, {
   DialogActions,
   DialogContent,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
@@ -30,10 +30,9 @@ const styles = {
     position: 'relative'
   },
   flex: {
-    flex: 1,
+    flex: 1
   },
-  dialogContentLarge: {
-  },
+  dialogContentLarge: {},
   dialogContentSmall: {
     paddingTop: 24
   },
@@ -48,7 +47,7 @@ const styles = {
   },
   clearImageIcon: {
     position: 'absolute',
-    right: 0,
+    right: 0
   },
   imageInput: {
     display: 'none'
@@ -56,7 +55,7 @@ const styles = {
 };
 
 function Transition(props) {
-  return <Slide direction='up' {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class EditReviewDialog extends Component {
@@ -93,18 +92,21 @@ class EditReviewDialog extends Component {
       if (currentReview.image) {
         imagePreviewUrl = currentReview.image.url;
       }
-      this.setState({
-        id: currentReview.id,
-        mapId: currentReview.map_id,
-        comment: currentReview.comment,
-        placeId: currentReview.place_id,
-        placeName: currentReview.spot.name,
-        imagePreviewUrl: imagePreviewUrl,
-        disabled: false
-      }, async () => {
-        await sleep(1000);
-        this.drawImagePreview(imagePreviewUrl);
-      });
+      this.setState(
+        {
+          id: currentReview.id,
+          mapId: currentReview.map_id,
+          comment: currentReview.comment,
+          placeId: currentReview.place_id,
+          placeName: currentReview.spot.name,
+          imagePreviewUrl: imagePreviewUrl,
+          disabled: false
+        },
+        async () => {
+          await sleep(1000);
+          this.drawImagePreview(imagePreviewUrl);
+        }
+      );
     } else {
       this.clearInputs();
       this.setState({
@@ -125,11 +127,14 @@ class EditReviewDialog extends Component {
 
   handleMapChange(e) {
     let mapId = e.target.value;
-    this.setState({
-      mapId: mapId
-    }, () => {
-      this.validate();
-    });
+    this.setState(
+      {
+        mapId: mapId
+      },
+      () => {
+        this.validate();
+      }
+    );
   }
 
   handleCommentChange(e) {
@@ -145,12 +150,15 @@ class EditReviewDialog extends Component {
       errorText = 'Comment is required';
     }
 
-    this.setState({
-      comment: comment,
-      errorComment: errorText
-    }, () => {
-      this.validate();
-    });
+    this.setState(
+      {
+        comment: comment,
+        errorComment: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
   }
 
   validate() {
@@ -176,14 +184,23 @@ class EditReviewDialog extends Component {
     }
     if (this.props.currentReview) {
       params.review_id = this.state.id;
-      this.props.handleClickEditButton(this.props.currentReview, params, canvas, this.state.imageDeleteRequest);
+      this.props.handleClickEditButton(
+        this.props.currentReview,
+        params,
+        canvas,
+        this.state.imageDeleteRequest
+      );
     } else {
       this.props.handleClickCreateButton(this.state.mapId, params, canvas);
     }
   }
 
   imageNotChanged() {
-    return this.props.currentReview && this.props.currentReview.image && this.state.imagePreviewUrl == this.props.currentReview.image.url;
+    return (
+      this.props.currentReview &&
+      this.props.currentReview.image &&
+      this.state.imagePreviewUrl == this.props.currentReview.image.url
+    );
   }
 
   handleAddImageClick(e) {
@@ -209,7 +226,7 @@ class EditReviewDialog extends Component {
       });
 
       this.drawImagePreview(dataUrl);
-    }
+    };
 
     reader.readAsDataURL(file);
   }
@@ -270,29 +287,41 @@ class EditReviewDialog extends Component {
         transition={Transition}
       >
         {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
-        <DialogContent style={this.props.large ? styles.dialogContentLarge : styles.dialogContentSmall}>
+        <DialogContent
+          style={
+            this.props.large
+              ? styles.dialogContentLarge
+              : styles.dialogContentSmall
+          }
+        >
           <Chip
-            avatar={<Avatar><PlaceIcon /></Avatar>}
+            avatar={
+              <Avatar>
+                <PlaceIcon />
+              </Avatar>
+            }
             label={this.state.placeName}
           />
-          <br/>
-          <br/>
+          <br />
+          <br />
           {this.renderMapSelect()}
-          <br/>
+          <br />
           {this.renderCommentBox()}
-          <br/>
-          <br/>
+          <br />
+          <br />
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
           <input
-            type='file'
-            accept='image/*'
-            id='review-image-input'
+            type="file"
+            accept="image/*"
+            id="review-image-input"
             onChange={this.handleImageChange}
             style={styles.imageInput}
           />
         </DialogContent>
-        {this.props.large ? this.renderActionsLarge() : this.renderActionsSmall()}
+        {this.props.large
+          ? this.renderActionsLarge()
+          : this.renderActionsSmall()}
       </Dialog>
     );
   }
@@ -307,15 +336,24 @@ class EditReviewDialog extends Component {
 
   renderAppBar() {
     return (
-      <AppBar style={styles.appbar} color='inherit'>
+      <AppBar style={styles.appbar} color="inherit">
         <Toolbar style={styles.toolbar}>
-          <IconButton color='inherit' onClick={this.handleRequestClose} aria-label='Close'>
+          <IconButton
+            color="inherit"
+            onClick={this.handleRequestClose}
+            aria-label="Close"
+          >
             <CloseIcon />
           </IconButton>
-          <Typography type='title' color='inherit' style={styles.flex}>
+          <Typography type="title" color="inherit" style={styles.flex}>
             {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
           </Typography>
-          <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+          <Button
+            raised
+            onClick={this.handleSaveButtonClick}
+            color="primary"
+            disabled={this.state.disabled}
+          >
             Save
           </Button>
         </Toolbar>
@@ -326,10 +364,13 @@ class EditReviewDialog extends Component {
   renderActionsLarge() {
     return (
       <DialogActions>
-        <Button onClick={this.handleRequestClose}>
-          Cancel
-        </Button>
-        <Button raised onClick={this.handleSaveButtonClick} color='primary' disabled={this.state.disabled}>
+        <Button onClick={this.handleRequestClose}>Cancel</Button>
+        <Button
+          raised
+          onClick={this.handleSaveButtonClick}
+          color="primary"
+          disabled={this.state.disabled}
+        >
           Save
         </Button>
       </DialogActions>
@@ -337,11 +378,7 @@ class EditReviewDialog extends Component {
   }
 
   renderActionsSmall() {
-    return (
-      <DialogActions>
-        {this.renderAddImageButton()}
-      </DialogActions>
-    );
+    return <DialogActions>{this.renderAddImageButton()}</DialogActions>;
   }
 
   renderAddImageButton() {
@@ -359,28 +396,34 @@ class EditReviewDialog extends Component {
         error={this.state.mapId ? false : true}
         disabled={this.props.currentReview ? true : false}
       >
-        <InputLabel htmlFor='map-input'>Map</InputLabel>
+        <InputLabel htmlFor="map-input">Map</InputLabel>
         <Select
           value={this.state.mapId ? this.state.mapId : ''}
           onChange={this.handleMapChange}
-          input={<Input id='map-input' style={{padding: 20}}/>}
-          renderValue={(value) => this.renderSelectValue(value, this.props.postableMaps)}
-          style={{height: 'auto'}}
+          input={<Input id="map-input" style={{ padding: 20 }} />}
+          renderValue={value =>
+            this.renderSelectValue(value, this.props.postableMaps)
+          }
+          style={{ height: 'auto' }}
         >
           {this.renderPostableMaps()}
         </Select>
-        <FormHelperText>{!this.state.mapId && 'Map is required'}</FormHelperText>
+        <FormHelperText>
+          {!this.state.mapId && 'Map is required'}
+        </FormHelperText>
       </FormControl>
     );
   }
 
   renderSelectValue(mapId, maps) {
-    let map = maps.find((map) => { return map.id == mapId });
+    let map = maps.find(map => {
+      return map.id == mapId;
+    });
     return map ? map.name : '';
   }
 
   renderPostableMaps() {
-    return this.props.postableMaps.map((map) => (
+    return this.props.postableMaps.map(map => (
       <MenuItem key={map.id} value={map.id}>
         <Avatar>
           <MapIcon />
@@ -393,7 +436,7 @@ class EditReviewDialog extends Component {
   renderCommentBox() {
     return (
       <TextField
-        label='Comment'
+        label="Comment"
         onChange={this.handleCommentChange}
         error={this.state.errorComment ? true : false}
         helperText={this.state.errorComment}
@@ -401,8 +444,8 @@ class EditReviewDialog extends Component {
         value={this.state.comment}
         multiline
         autoFocus
-        rowsMax='5'
-        rows='5'
+        rowsMax="5"
+        rows="5"
       />
     );
   }
@@ -416,7 +459,7 @@ class EditReviewDialog extends Component {
         >
           <CancelIcon />
         </IconButton>
-        <canvas id='canvas' style={styles.imagePreview}></canvas>
+        <canvas id="canvas" style={styles.imagePreview} />
       </div>
     );
   }

@@ -4,11 +4,10 @@ import Button from 'material-ui/Button';
 import Slide from 'material-ui/transitions/Slide';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 
-const styles = {
-};
+const styles = {};
 
 function Transition(props) {
-  return <Slide direction='up' {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class ReviewDialog extends Component {
@@ -21,15 +20,16 @@ class ReviewDialog extends Component {
         fullWidth
         fullScreen={this.props.large ? false : true}
       >
-        <div>{this.props.currentReview && this.renderReviewCard(this.props.currentReview)}</div>
+        <div>
+          {this.props.currentReview &&
+            this.renderReviewCard(this.props.currentReview)}
+        </div>
       </Dialog>
     );
   }
 
   renderReviewCard(review) {
-    return (
-      <ReviewCardContainer currentReview={review} />
-    );
+    return <ReviewCardContainer currentReview={review} />;
   }
 }
 

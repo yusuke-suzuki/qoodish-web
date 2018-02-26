@@ -3,7 +3,7 @@ import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog';
 import Checkbox from 'material-ui/Checkbox';
 import Button from 'material-ui/Button';
@@ -14,7 +14,7 @@ const styles = {
     color: 'white',
     backgroundColor: 'red'
   }
-}
+};
 
 class DeleteAccountDialog extends Component {
   constructor(props) {
@@ -49,15 +49,16 @@ class DeleteAccountDialog extends Component {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-      　<DialogTitle>
+        　<DialogTitle>
           Are you sure you want to DELETE your account?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            When you delete the account, it also deletes ALL of the content that you have created. This cannot be undone.
+            When you delete the account, it also deletes ALL of the content that
+            you have created. This cannot be undone.
           </DialogContentText>
-          <br/>
-          <br/>
+          <br />
+          <br />
           <FormControlLabel
             control={
               <Checkbox
@@ -65,16 +66,16 @@ class DeleteAccountDialog extends Component {
                 onChange={this.handleCheckChange}
               />
             }
-            label='I understand this cannot be undone.'
+            label="I understand this cannot be undone."
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>
-            Cancel
-          </Button>
+          <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
             raised
-            onClick={() => this.props.handleDeleteButtonClick(this.props.currentUser)}
+            onClick={() =>
+              this.props.handleDeleteButtonClick(this.props.currentUser)
+            }
             disabled={this.state.disabled}
             style={this.state.disabled ? {} : styles.deleteButton}
           >

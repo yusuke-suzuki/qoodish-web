@@ -8,22 +8,22 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.settings.deleteAccountDialogOpen,
     currentUser: state.app.currentUser
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeDeleteAccountDialog());
     },
 
-    handleDeleteButtonClick: async (currentUser) => {
+    handleDeleteButtonClick: async currentUser => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       await client.deleteAccount(currentUser.uid);
       dispatch(requestFinish());
       dispatch(closeDeleteAccountDialog());
@@ -31,10 +31,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(closeDeleteAccountDialog());
       dispatch(openToast('Delete account successfully'));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteAccountDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  DeleteAccountDialog
+);

@@ -40,31 +40,46 @@ class IssueDialog extends Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-      　<DialogTitle>
-          Report inappropriate content
-        </DialogTitle>
+        　<DialogTitle>Report inappropriate content</DialogTitle>
         <DialogContent>
           <FormControl required>
-            <FormLabel focused>Help us understand the problem. What is going on with this content?</FormLabel>
-            <br/>
+            <FormLabel focused>
+              Help us understand the problem. What is going on with this
+              content?
+            </FormLabel>
+            <br />
             <RadioGroup
-              aria-label='issueReason'
-              name='issueReason'
+              aria-label="issueReason"
+              name="issueReason"
               value={this.state.value}
               onChange={this.handleReasonChange}
             >
-              <FormControlLabel value='0' control={<Radio checked={this.state.value == '0'} />} label="I'm not interested in this content" />
-              <FormControlLabel value='1' control={<Radio checked={this.state.value == '1'} />} label="It's spam" />
-              <FormControlLabel value='2' control={<Radio checked={this.state.value == '2'} />} label='It displays a sensitive image' />
-              <FormControlLabel value='3' control={<Radio checked={this.state.value == '3'} />} label="It's abusive or harmful" />
+              <FormControlLabel
+                value="0"
+                control={<Radio checked={this.state.value == '0'} />}
+                label="I'm not interested in this content"
+              />
+              <FormControlLabel
+                value="1"
+                control={<Radio checked={this.state.value == '1'} />}
+                label="It's spam"
+              />
+              <FormControlLabel
+                value="2"
+                control={<Radio checked={this.state.value == '2'} />}
+                label="It displays a sensitive image"
+              />
+              <FormControlLabel
+                value="3"
+                control={<Radio checked={this.state.value == '3'} />}
+                label="It's abusive or harmful"
+              />
             </RadioGroup>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>
-            Cancel
-          </Button>
-          <Button raised onClick={this.handleSendButtonClick} color='primary'>
+          <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
+          <Button raised onClick={this.handleSendButtonClick} color="primary">
             Send
           </Button>
         </DialogActions>

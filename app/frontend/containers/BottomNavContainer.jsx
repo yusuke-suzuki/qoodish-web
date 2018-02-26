@@ -2,13 +2,13 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import BottomNav from '../ui/BottomNav';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     pathname: state.router.location.pathname
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleHomeClick: () => {
       dispatch(push('/'));
@@ -21,10 +21,7 @@ const mapDispatchToProps = (dispatch) => {
     handleMapsClick: () => {
       dispatch(push('/maps'));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BottomNav);
+export default connect(mapStateToProps, mapDispatchToProps)(BottomNav);

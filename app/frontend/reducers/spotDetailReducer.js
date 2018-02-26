@@ -18,7 +18,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case LOAD_SPOT_START:
       return Object.assign({}, state, {
         spotLoading: true
@@ -45,7 +45,9 @@ const reducer = (state = initialState, action) => {
       if (state.spotReviews.length === 0) {
         return state;
       } else {
-        let index = state.spotReviews.findIndex((review) => { return review.id == action.payload.review.id; });
+        let index = state.spotReviews.findIndex(review => {
+          return review.id == action.payload.review.id;
+        });
         let currentReview = state.spotReviews[index];
         if (!currentReview) {
           return state;
@@ -64,7 +66,9 @@ const reducer = (state = initialState, action) => {
         return state;
       }
 
-      let rejected = state.spotReviews.filter((review) => { return review.id != action.payload.id; });
+      let rejected = state.spotReviews.filter(review => {
+        return review.id != action.payload.id;
+      });
       return Object.assign({}, state, {
         spotReviews: rejected
       });
@@ -77,6 +81,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

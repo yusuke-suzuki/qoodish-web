@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import MapDetail from '../ui/MapDetail';
 import ApiClient from './ApiClient';
-import selectMap from  '../actions/selectMap';
+import selectMap from '../actions/selectMap';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openToast from '../actions/openToast';
 import updatePageTitle from '../actions/updatePageTitle';
@@ -23,7 +23,7 @@ import selectSpot from '../actions/selectSpot';
 import switchSummary from '../actions/switchSummary';
 import switchMap from '../actions/switchMap';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     gMap: state.gMap.gMap,
     currentMap: state.mapDetail.currentMap,
@@ -38,8 +38,8 @@ const mapStateToProps = (state) => {
     currentSpot: state.spotCard.currentSpot,
     tabValue: state.mapDetail.tabValue,
     hash: state.router.location.hash
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     fetchMap: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchMap(ownProps.match.params.mapId);
       if (response.ok) {
         let map = await response.json();
@@ -63,7 +63,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    initCenter: async (map) => {
+    initCenter: async map => {
       if (map.base.place_id) {
         dispatch(getMapBasePosition(map.base.lat, map.base.lng));
         dispatch(requestMapBase());
@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     fetchSpots: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchSpots(ownProps.match.params.mapId);
       if (response.ok) {
         let spots = await response.json();
@@ -82,8 +82,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     fetchCollaborators: async () => {
-      const client = new ApiClient;
-      let response = await client.fetchCollaborators(ownProps.match.params.mapId);
+      const client = new ApiClient();
+      let response = await client.fetchCollaborators(
+        ownProps.match.params.mapId
+      );
       if (response.ok) {
         let collaborators = await response.json();
         dispatch(fetchCollaborators(collaborators));
@@ -91,7 +93,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     fetchMapReviews: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchMapReviews(ownProps.match.params.mapId);
       if (response.ok) {
         let reviews = await response.json();
@@ -103,20 +105,20 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openPlaceSelectDialog());
     },
 
-    onSpotMarkerClick: async (spot) => {
+    onSpotMarkerClick: async spot => {
       dispatch(selectSpot(spot));
       dispatch(openSpotCard());
     },
 
-    onMapMounted: (map) => {
+    onMapMounted: map => {
       dispatch(gMapMounted(map));
     },
 
-    onZoomChanged: (zoom) => {
+    onZoomChanged: zoom => {
       dispatch(mapZoomChanged(zoom));
     },
 
-    onCenterChanged: (center) => {
+    onCenterChanged: center => {
       dispatch(mapCenterChanged({ lat: center.lat(), lng: center.lng() }));
     },
 
@@ -139,10 +141,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleMapTabClick: () => {
       dispatch(push(`/maps/${ownProps.match.params.mapId}#map`));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MapDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(MapDetail);

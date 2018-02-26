@@ -11,7 +11,7 @@ import fetchNotifications from '../actions/fetchNotifications';
 import readNotification from '../actions/readNotification';
 import { sleep } from './Utils';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     authenticated: state.app.authenticated,
     currentUser: state.app.currentUser,
@@ -19,13 +19,13 @@ const mapStateToProps = (state) => {
     pageTitle: state.shared.pageTitle,
     notifications: state.shared.notifications,
     unreadNotifications: state.shared.unreadNotifications
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleMount: async () => {
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchNotifications();
       if (response.ok) {
         let notifications = await response.json();
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch) => {
 
     signOut: async () => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       const messaging = firebase.messaging();
       const registrationToken = await messaging.getToken();
       await client.deleteRegistrationToken(registrationToken);
@@ -60,11 +60,13 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(push('/settings'));
     },
 
-    readNotifications: async (notifications) => {
+    readNotifications: async notifications => {
       await sleep(5000);
-      const client = new ApiClient;
-      let unreadNotifications = notifications.filter((notification) => { return notification.read === false; });
-      unreadNotifications.forEach(async (notification) => {
+      const client = new ApiClient();
+      let unreadNotifications = notifications.filter(notification => {
+        return notification.read === false;
+      });
+      unreadNotifications.forEach(async notification => {
         let response = await client.readNotification(notification.id);
         if (response.ok) {
           let notification = await response.json();
@@ -74,13 +76,10 @@ const mapDispatchToProps = (dispatch) => {
       });
     },
 
-    handleNotificationClick: (notification) => {
+    handleNotificationClick: notification => {
       dispatch(push(notification.click_action));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NavBar);
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

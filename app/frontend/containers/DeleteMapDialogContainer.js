@@ -8,12 +8,12 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentMap: state.maps.targetMap,
     dialogOpen: state.maps.deleteMapDialogOpen
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleDeleteButtonClick: async () => {
       dispatch(requestStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       await client.deleteMap(ownProps.mapId);
       dispatch(requestFinish());
       dispatch(deleteMap(ownProps.mapId));
@@ -31,10 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(push('/maps'));
       dispatch(openToast('Delete map successfully'));
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteMapDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteMapDialog);

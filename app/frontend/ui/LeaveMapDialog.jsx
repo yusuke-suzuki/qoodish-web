@@ -3,7 +3,7 @@ import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 
@@ -15,19 +15,20 @@ class LeaveMapDialog extends Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-      　<DialogTitle>
-          Are you sure you want to unfollow this map?
-        </DialogTitle>
+        　<DialogTitle>Are you sure you want to unfollow this map?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            The reports you've written will not be deleted by unfollowing the map.
+            The reports you've written will not be deleted by unfollowing the
+            map.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>
-            Cancel
-          </Button>
-          <Button raised onClick={this.props.handleLeaveButtonClick} color='primary'>
+          <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
+          <Button
+            raised
+            onClick={this.props.handleLeaveButtonClick}
+            color="primary"
+          >
             UNFOLLOW
           </Button>
         </DialogActions>

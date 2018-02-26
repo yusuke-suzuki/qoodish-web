@@ -72,8 +72,7 @@ const styles = {
   carouselContainerLarge: {
     textAlign: 'center',
     width: '100%',
-    paddingTop: 64,
-
+    paddingTop: 64
   },
   carouselContainerSmall: {
     textAlign: 'center',
@@ -118,26 +117,33 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position='fixed'>
+        <AppBar position="fixed">
           <Toolbar style={styles.toolbar}>
-            <Typography type='title' color='inherit' style={styles.logo} onClick={this.handleScrollTopClick}>
+            <Typography
+              type="title"
+              color="inherit"
+              style={styles.logo}
+              onClick={this.handleScrollTopClick}
+            >
               Qoodish
             </Typography>
           </Toolbar>
         </AppBar>
-        <div style={this.props.large ? styles.carouselContainerLarge : styles.carouselContainerSmall}>
-          <GridList
-            cols={1}
-            spacing={0}
-            cellHeight={500}
-          >
-            <GridListTile key='carousel'>
+        <div
+          style={
+            this.props.large
+              ? styles.carouselContainerLarge
+              : styles.carouselContainerSmall
+          }
+        >
+          <GridList cols={1} spacing={0} cellHeight={500}>
+            <GridListTile key="carousel">
               <img src={process.env.LP_CAROUSEL_1} />
               <GridListTileBar
                 title={
                   <Typography
-                    type='display3'
-                    color='inherit'
+                    type="display3"
+                    color="inherit"
                     style={styles.carouselTileBarText}
                     gutterBottom
                   >
@@ -147,14 +153,17 @@ class Login extends React.Component {
                 subtitle={
                   <div>
                     <Typography
-                      type='headline'
-                      color='inherit'
+                      type="headline"
+                      color="inherit"
                       style={styles.carouselTileBarText}
                     >
                       <span>{I18n.t('where are you going next')}</span>
                     </Typography>
                     <div style={styles.firebaseContainer}>
-                      <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()} />
+                      <FirebaseAuth
+                        uiConfig={this.uiConfig}
+                        firebaseAuth={firebase.auth()}
+                      />
                     </div>
                   </div>
                 }
@@ -163,7 +172,13 @@ class Login extends React.Component {
             </GridListTile>
           </GridList>
         </div>
-        <div style={this.props.large ? styles.loginContainerLarge : styles.loginContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.loginContainerLarge
+              : styles.loginContainerSmall
+          }
+        >
           <Grid container style={styles.gridContainer} spacing={24}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <Card style={styles.descriptionCard}>
@@ -171,12 +186,13 @@ class Login extends React.Component {
                   <Typography gutterBottom>
                     <PlaceIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography type='display1' gutterBottom>
+                  <Typography type="display1" gutterBottom>
                     お気に入りの場所をシェアしよう！
                   </Typography>
-                  <Typography component='p' gutterBottom>
+                  <Typography component="p" gutterBottom>
                     仕事がうまくいったときに訪れるバー、休日を過ごすカフェ、旅行先で見つけた最高のビュースポット。
-                    あなただけの "ベストプレイス" を友だちにも教えてあげませんか？
+                    あなただけの "ベストプレイス"
+                    を友だちにも教えてあげませんか？
                   </Typography>
                 </CardContent>
                 <CardMedia>
@@ -190,10 +206,10 @@ class Login extends React.Component {
                   <Typography gutterBottom>
                     <ExploreIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography type='display1' gutterBottom>
+                  <Typography type="display1" gutterBottom>
                     あなたの "ベストプレイス" を見つけよう！
                   </Typography>
-                  <Typography component='p' gutterBottom>
+                  <Typography component="p" gutterBottom>
                     代わり映えしない日常にちょっとの刺激をもたらしてくれる場所はどこでしょう？
                     きっとあなたのよく知る友人たちが知っているはずです！
                   </Typography>
@@ -214,18 +230,26 @@ class Login extends React.Component {
         </div>
         <Card>
           <CardContent style={styles.bottomCardContent}>
-            <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
+            <div
+              style={
+                this.props.large ? styles.containerLarge : styles.containerSmall
+              }
+            >
               <div>
-                <Link to='/terms'>利用規約</Link>
+                <Link to="/terms">利用規約</Link>
               </div>
               <div>
-                <Link to='/privacy'>プライバシーポリシー</Link>
+                <Link to="/privacy">プライバシーポリシー</Link>
               </div>
             </div>
           </CardContent>
           <CardContent style={styles.bottomCardLicense}>
-            <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
-              <Typography type='caption'>
+            <div
+              style={
+                this.props.large ? styles.containerLarge : styles.containerSmall
+              }
+            >
+              <Typography type="caption">
                 © 2018 Qoodish, All rights reserved.
               </Typography>
             </div>

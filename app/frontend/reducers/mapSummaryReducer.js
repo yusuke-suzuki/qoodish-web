@@ -10,7 +10,7 @@ import {
   JOIN_MAP,
   LEAVE_MAP,
   LIKE_REVIEW,
-  UNLIKE_REVIEW,
+  UNLIKE_REVIEW
 } from '../actionTypes';
 
 const initialState = {
@@ -20,7 +20,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case SELECT_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.map
@@ -46,7 +46,10 @@ const reducer = (state = initialState, action) => {
         currentMap: action.payload.currentMap
       });
     case CREATE_REVIEW:
-      if (state.currentMap && state.currentMap.id != action.payload.review.map_id) {
+      if (
+        state.currentMap &&
+        state.currentMap.id != action.payload.review.map_id
+      ) {
         return state;
       }
       return Object.assign({}, state, {
@@ -59,7 +62,9 @@ const reducer = (state = initialState, action) => {
         return state;
       }
 
-      let index = state.mapReviews.findIndex((review) => { return review.id == action.payload.review.id; });
+      let index = state.mapReviews.findIndex(review => {
+        return review.id == action.payload.review.id;
+      });
       let currentReview = state.mapReviews[index];
       if (!currentReview) {
         return state;
@@ -79,7 +84,9 @@ const reducer = (state = initialState, action) => {
         return state;
       }
 
-      let mapReviews = state.mapReviews.filter((review) => { return review.id != action.payload.id; });
+      let mapReviews = state.mapReviews.filter(review => {
+        return review.id != action.payload.id;
+      });
       return Object.assign({}, state, {
         mapReviews: mapReviews
       });
@@ -92,6 +99,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

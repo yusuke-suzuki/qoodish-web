@@ -1,8 +1,5 @@
 import React from 'react';
-import Dialog, {
-  DialogContent,
-  DialogTitle,
-} from 'material-ui/Dialog';
+import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -16,7 +13,7 @@ const styles = {
 };
 
 function Transition(props) {
-  return <Slide direction='up' {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class LikesDialog extends React.Component {
@@ -28,20 +25,16 @@ class LikesDialog extends React.Component {
         fullWidth
         transition={Transition}
       >
-      　<DialogTitle>
-          Likes
-        </DialogTitle>
+        　<DialogTitle>Likes</DialogTitle>
         <DialogContent>
-          <List disablePadding>
-            {this.renderLikes(this.props.likes)}
-          </List>
+          <List disablePadding>{this.renderLikes(this.props.likes)}</List>
         </DialogContent>
       </Dialog>
     );
   }
 
   renderLikes(likes) {
-    return likes.map((like) => (
+    return likes.map(like => (
       <ListItem
         button
         key={like.id}
@@ -49,7 +42,10 @@ class LikesDialog extends React.Component {
       >
         <ListItemAvatar>
           <Avatar>
-            <img src={like.voter.profile_image_url} style={styles.profileImage} />
+            <img
+              src={like.voter.profile_image_url}
+              style={styles.profileImage}
+            />
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={like.voter.name} />

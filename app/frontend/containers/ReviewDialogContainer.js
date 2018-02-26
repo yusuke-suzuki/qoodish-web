@@ -12,13 +12,13 @@ import unlikeReview from '../actions/unlikeReview';
 import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     dialogOpen: state.reviews.reviewDialogOpen,
     currentReview: state.reviews.currentReview,
     large: state.shared.large
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -26,35 +26,43 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeReviewDialog());
     },
 
-    handleTweetButtonClick: (review) => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${review.id}`;
+    handleTweetButtonClick: review => {
+      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+        review.id
+      }`;
       let text = `「${review.map_name}」にレポートを投稿しました。`;
       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
     },
 
-    handleFacebookButtonClick: (review) => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${review.id}`;
-      window.open(`https://www.facebook.com/dialog/share?app_id=${process.env.FB_APP_ID}&href=${url}`);
+    handleFacebookButtonClick: review => {
+      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+        review.id
+      }`;
+      window.open(
+        `https://www.facebook.com/dialog/share?app_id=${
+          process.env.FB_APP_ID
+        }&href=${url}`
+      );
     },
 
     handleUrlCopied: () => {
       dispatch(openToast('Copied!'));
     },
 
-    handleEditReviewButtonClick: (review) => {
+    handleEditReviewButtonClick: review => {
       dispatch(openEditReviewDialog(review));
     },
 
-    handleDeleteReviewButtonClick: (review) => {
+    handleDeleteReviewButtonClick: review => {
       dispatch(openDeleteReviewDialog(review));
     },
 
-    handleIssueButtonClick: (review) => {
+    handleIssueButtonClick: review => {
       dispatch(openIssueDialog(review.id, 'review'));
     },
 
-    handleLikeButtonClick: async (targetReview) => {
-      const client = new ApiClient;
+    handleLikeButtonClick: async targetReview => {
+      const client = new ApiClient();
       let response = await client.likeReview(targetReview.id);
       if (response.ok) {
         let review = await response.json();
@@ -65,8 +73,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    handleUnlikeButtonClick: async (targetReview) => {
-      const client = new ApiClient;
+    handleUnlikeButtonClick: async targetReview => {
+      const client = new ApiClient();
       let response = await client.unlikeReview(targetReview.id);
       if (response.ok) {
         let review = await response.json();
@@ -77,8 +85,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    handleLikesClick: async (review) => {
-      const client = new ApiClient;
+    handleLikesClick: async review => {
+      const client = new ApiClient();
       let response = await client.fetchReviewLikes(review.id);
       if (response.ok) {
         let likes = await response.json();
@@ -86,10 +94,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openLikesDialog());
       }
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReviewDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(ReviewDialog);

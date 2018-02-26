@@ -23,7 +23,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -39,7 +39,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -53,7 +53,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -67,7 +67,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -82,7 +82,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -96,7 +96,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -110,7 +110,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -124,7 +124,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -139,7 +139,7 @@ class ApiClient {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -154,7 +154,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -168,7 +168,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -182,7 +182,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -196,7 +196,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -210,7 +210,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -225,7 +225,7 @@ class ApiClient {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -240,7 +240,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -254,7 +254,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -268,7 +268,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -282,7 +282,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -292,14 +292,14 @@ class ApiClient {
   async fetchReviews(timestamp = null) {
     let url = `${process.env.API_ENDPOINT}/reviews`;
     if (timestamp) {
-      url += `?next_timestamp=${timestamp}`
+      url += `?next_timestamp=${timestamp}`;
     }
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -313,7 +313,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -327,7 +327,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -341,7 +341,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -355,7 +355,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -369,7 +369,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -383,7 +383,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -397,7 +397,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -411,7 +411,7 @@ class ApiClient {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -425,7 +425,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify(params)
     };
@@ -440,7 +440,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -454,7 +454,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -468,7 +468,7 @@ class ApiClient {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       }
     };
     const response = await fetch(url, options);
@@ -482,7 +482,7 @@ class ApiClient {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        Authorization: token
       },
       body: JSON.stringify({ read: true })
     };

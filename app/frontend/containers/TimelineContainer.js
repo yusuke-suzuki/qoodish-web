@@ -15,7 +15,7 @@ import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     currentReviews: state.reviews.currentReviews,
     loadingReviews: state.reviews.loadingReviews,
@@ -24,10 +24,10 @@ const mapStateToProps = (state) => {
     nextTimestamp: state.reviews.nextTimestamp,
     large: state.shared.large,
     currentUser: state.app.currentUser
-  }
-}
+  };
+};
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Home'));
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch) => {
 
     refreshReviews: async () => {
       dispatch(loadReviewsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchReviews();
       let reviews = await response.json();
       dispatch(loadReviewsEnd());
@@ -49,9 +49,9 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
 
-    loadMoreReviews: async (timestamp) => {
+    loadMoreReviews: async timestamp => {
       dispatch(loadMoreReviewsStart());
-      const client = new ApiClient;
+      const client = new ApiClient();
       let response = await client.fetchReviews(timestamp);
       let reviews = await response.json();
       dispatch(loadMoreReviewsEnd());
@@ -72,10 +72,7 @@ const mapDispatchToProps = (dispatch) => {
     handleCreateReviewClick: () => {
       dispatch(openPlaceSelectDialog());
     }
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timeline);
+export default connect(mapStateToProps, mapDispatchToProps)(Timeline);

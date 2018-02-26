@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Card, {
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions
+} from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
@@ -14,10 +19,9 @@ import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
 import Badge from 'material-ui/Badge';
 
 const styles = {
-  card: {
-  },
+  card: {},
   cardDetail: {
-    minHeight: 'calc(100vh - 56px)',
+    minHeight: 'calc(100vh - 56px)'
   },
   cardTitle: {
     cursor: 'pointer',
@@ -68,8 +72,12 @@ class ReviewCard extends Component {
     };
     this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
     this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
-    this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(this);
-    this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(this);
+    this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(
+      this
+    );
+    this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(
+      this
+    );
   }
 
   handleShareButtonClick(event) {
@@ -99,38 +107,49 @@ class ReviewCard extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.renderReviewCard(this.props.currentReview)}
-      </div>
-    );
+    return <div>{this.renderReviewCard(this.props.currentReview)}</div>;
   }
 
   renderReviewCard(review) {
     return (
       <Card style={this.props.detail ? styles.cardDetail : styles.card}>
-        {review.editable ? this.renderMoreVertMenuForEdit() : this.renderMoreVertMenu()}
+        {review.editable
+          ? this.renderMoreVertMenuForEdit()
+          : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
             <Avatar>
-              <img src={review.author.profile_image_url} alt={review.author.name} style={styles.profileImage} />
+              <img
+                src={review.author.profile_image_url}
+                alt={review.author.name}
+                style={styles.profileImage}
+              />
             </Avatar>
           }
-          action={[
-            this.renderShareButton(),
-            this.renderMoreVertButton()
-          ]}
+          action={[this.renderShareButton(), this.renderMoreVertButton()]}
           title={review.author.name}
           subheader={this.renderCreatedAt(review)}
         />
         <CardContent style={styles.cardContent}>
-          <Typography style={styles.cardTitle} type='subheading' color='primary' gutterBottom onClick={this.props.handleMapClick}>
+          <Typography
+            style={styles.cardTitle}
+            type="subheading"
+            color="primary"
+            gutterBottom
+            onClick={this.props.handleMapClick}
+          >
             {review.map_name}
           </Typography>
-          <Typography style={styles.cardTitle} type='headline' component='h2' gutterBottom onClick={() => this.props.handleSpotNameClick(review.spot)}>
+          <Typography
+            style={styles.cardTitle}
+            type="headline"
+            component="h2"
+            gutterBottom
+            onClick={() => this.props.handleSpotNameClick(review.spot)}
+          >
             {review.spot.name}
           </Typography>
-          <Typography component='p' style={styles.reviewComment}>
+          <Typography component="p" style={styles.reviewComment}>
             {review.comment}
           </Typography>
         </CardContent>
@@ -148,17 +167,19 @@ class ReviewCard extends Component {
     return (
       <Badge
         badgeContent={review.likes_count}
-        color='default'
+        color="default"
         onClick={this.props.handleLikesClick}
         style={styles.likesCount}
       >
-        <div></div>
+        <div />
       </Badge>
     );
   }
 
   renderCreatedAt(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ').locale(window.currentLocale).format('LL');
+    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+      .locale(window.currentLocale)
+      .format('LL');
   }
 
   renderCardMedia(review) {
@@ -172,9 +193,13 @@ class ReviewCard extends Component {
   renderLikeButton(review) {
     return (
       <IconButton
-        onClick={review.liked ? this.props.handleUnlikeButtonClick : this.props.handleLikeButtonClick}
+        onClick={
+          review.liked
+            ? this.props.handleUnlikeButtonClick
+            : this.props.handleLikeButtonClick
+        }
       >
-        {review.liked ? <FavoriteIcon color='error' /> : <FavoriteBorderIcon />}
+        {review.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
       </IconButton>
     );
   }
@@ -182,12 +207,12 @@ class ReviewCard extends Component {
   renderShareButton() {
     return (
       <IconButton
-        aria-label='More share'
+        aria-label="More share"
         aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
-        aria-haspopup='true'
+        aria-haspopup="true"
         onClick={this.handleShareButtonClick}
         style={styles.shareButton}
-        key='share'
+        key="share"
       >
         <ShareIcon />
       </IconButton>
@@ -197,35 +222,37 @@ class ReviewCard extends Component {
   renderShareMenu() {
     return (
       <Menu
-        id='share-menu'
+        id="share-menu"
         anchorEl={this.state.anchorElShare}
         open={this.state.shareMenuOpen}
         onClose={this.handleRequestShareMenuClose}
       >
         <MenuItem
-          key='facebook'
+          key="facebook"
           onClick={() => {
             this.handleRequestShareMenuClose();
-            this.props.handleFacebookButtonClick(this.props.currentReview);;
+            this.props.handleFacebookButtonClick(this.props.currentReview);
           }}
         >
           Share with Facebook
         </MenuItem>
         <MenuItem
-          key='twitter'
+          key="twitter"
           onClick={() => {
             this.handleRequestShareMenuClose();
-            this.props.handleTweetButtonClick(this.props.currentReview)
+            this.props.handleTweetButtonClick(this.props.currentReview);
           }}
         >
           Share with Twitter
         </MenuItem>
         <CopyToClipboard
-          text={`${process.env.ENDPOINT}/maps/${this.props.currentReview.map_id}/reports/${this.props.currentReview.id}`}
+          text={`${process.env.ENDPOINT}/maps/${
+            this.props.currentReview.map_id
+          }/reports/${this.props.currentReview.id}`}
           onCopy={this.props.handleUrlCopied}
-          key='copy'
+          key="copy"
         >
-          <MenuItem key='copy-link' onClick={this.handleRequestShareMenuClose}>
+          <MenuItem key="copy-link" onClick={this.handleRequestShareMenuClose}>
             Copy link
           </MenuItem>
         </CopyToClipboard>
@@ -236,11 +263,11 @@ class ReviewCard extends Component {
   renderMoreVertButton() {
     return (
       <IconButton
-        aria-label='More vert'
+        aria-label="More vert"
         aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
-        aria-haspopup='true'
+        aria-haspopup="true"
         onClick={this.handleVertButtonClick}
-        key='more-vert'
+        key="more-vert"
       >
         <MoreVertIcon />
       </IconButton>
@@ -250,7 +277,7 @@ class ReviewCard extends Component {
   renderMoreVertMenu() {
     return (
       <Menu
-        id='vert-menu'
+        id="vert-menu"
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
@@ -258,7 +285,7 @@ class ReviewCard extends Component {
         {this.props.currentReview.editable ? this.renderEditButton() : null}
         {this.props.currentReview.editable ? this.renderDeleteButton() : null}
         <MenuItem
-          key='issue'
+          key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
             this.props.handleIssueButtonClick(this.props.currentReview);
@@ -273,13 +300,13 @@ class ReviewCard extends Component {
   renderMoreVertMenu() {
     return (
       <Menu
-        id='vert-menu'
+        id="vert-menu"
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
       >
         <MenuItem
-          key='issue'
+          key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
             this.props.handleIssueButtonClick(this.props.currentReview);
@@ -294,7 +321,7 @@ class ReviewCard extends Component {
   renderMoreVertMenuForEdit() {
     return (
       <Menu
-        id='vert-menu'
+        id="vert-menu"
         anchorEl={this.state.anchorElVert}
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
@@ -309,7 +336,7 @@ class ReviewCard extends Component {
   renderEditButton() {
     return (
       <MenuItem
-        key='edit'
+        key="edit"
         onClick={() => {
           this.handleRequestVertMenuClose();
           this.props.handleEditReviewButtonClick(this.props.currentReview);
@@ -323,7 +350,7 @@ class ReviewCard extends Component {
   renderCopyButton() {
     return (
       <MenuItem
-        key='copy-review'
+        key="copy-review"
         onClick={() => {
           this.handleRequestVertMenuClose();
           this.props.handleCopyReviewButtonClick(this.props.currentReview);
@@ -337,7 +364,7 @@ class ReviewCard extends Component {
   renderDeleteButton() {
     return (
       <MenuItem
-        key='delete'
+        key="delete"
         onClick={() => {
           this.handleRequestVertMenuClose();
           this.props.handleDeleteReviewButtonClick(this.props.currentReview);
