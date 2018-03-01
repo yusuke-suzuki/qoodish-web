@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, goBack } from 'react-router-redux';
 import NavBar from '../ui/NavBar';
 import signOut from '../actions/signOut';
 import requestStart from '../actions/requestStart';
@@ -10,6 +10,8 @@ import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';
 import readNotification from '../actions/readNotification';
 import { sleep } from './Utils';
+import showBackButton from '../actions/showBackButton';
+import hideBackButton from '../actions/hideBackButton';
 
 const mapStateToProps = state => {
   return {
@@ -18,7 +20,9 @@ const mapStateToProps = state => {
     large: state.shared.large,
     pageTitle: state.shared.pageTitle,
     notifications: state.shared.notifications,
-    unreadNotifications: state.shared.unreadNotifications
+    unreadNotifications: state.shared.unreadNotifications,
+    backButton: state.shared.showBackButton,
+    pathname: state.router.location.pathname
   };
 };
 
@@ -78,6 +82,18 @@ const mapDispatchToProps = dispatch => {
 
     handleNotificationClick: notification => {
       dispatch(push(notification.click_action));
+    },
+
+    handleBackButtonClick: () => {
+      dispatch(goBack());
+    },
+
+    showBackButton: () => {
+      dispatch(showBackButton());
+    },
+
+    hideBackButton: () => {
+      dispatch(hideBackButton());
     }
   };
 };
