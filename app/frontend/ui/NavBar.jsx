@@ -22,6 +22,7 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import NotificationsIcon from 'material-ui-icons/Notifications';
 import moment from 'moment';
 import Badge from 'material-ui/Badge';
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 
 const styles = {
   title: {
@@ -31,7 +32,7 @@ const styles = {
     paddingLeft: 10,
     paddingRight: 10
   },
-  menuButton: {
+  navBarIcon: {
     color: 'white'
   },
   logo: {
@@ -123,6 +124,14 @@ class NavBar extends Component {
     this.props.handleMount();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.pathname.includes('/reports/') || nextProps.pathname.includes('/maps/') || nextProps.pathname.includes('/spots/')) {
+      this.props.showBackButton();
+    } else {
+      this.props.hideBackButton();
+    }
+  }
+
   handleTitleClick() {
     window.location.reload();
   }
@@ -170,9 +179,7 @@ class NavBar extends Component {
       <div>
         <AppBar position="fixed">
           <Toolbar disableGutters style={styles.toolbar}>
-            <IconButton onClick={this.handleToggleDrawer}>
-              <MenuIcon style={styles.menuButton} />
-            </IconButton>
+            {!this.props.large && this.props.backButton ? this.renderBackButton() : this.renderMenuButton()}
             {this.props.large ? this.renderLogo() : null}
             <Typography
               type="headline"
@@ -200,6 +207,24 @@ class NavBar extends Component {
           {this.renderDrawerContents()}
         </Drawer>
       </div>
+    );
+  }
+
+  renderMenuButton() {
+    return (
+      <IconButton onClick={this.handleToggleDrawer}>
+        <MenuIcon style={styles.navBarIcon} />
+      </IconButton>
+    );
+  }
+
+  renderBackButton() {
+    return (
+      <IconButton
+        onClick={this.props.handleBackButtonClick}
+      >
+        <ArrowBackIcon style={styles.navBarIcon} />
+      </IconButton>
     );
   }
 

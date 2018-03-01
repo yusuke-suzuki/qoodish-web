@@ -14,7 +14,9 @@ import {
   CLOSE_LIKES_DIALOG,
   FETCH_REVIEW_LIKES,
   FETCH_NOTIFICATIONS,
-  READ_NOTIFICATION
+  READ_NOTIFICATION,
+  SHOW_BACK_BUTTON,
+  HIDE_BACK_BUTTON
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -33,7 +35,8 @@ const initialState = {
   likes: [],
   likesDialogOpen: false,
   notifications: [],
-  unreadNotifications: []
+  unreadNotifications: [],
+  showBackButton: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -129,6 +132,14 @@ const reducer = (state = initialState, action) => {
           unreadNotifications: []
         });
       }
+    case SHOW_BACK_BUTTON:
+      return Object.assign({}, state, {
+        showBackButton: true
+      });
+    case HIDE_BACK_BUTTON:
+      return Object.assign({}, state, {
+        showBackButton: false
+      });
     default:
       return state;
   }
