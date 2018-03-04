@@ -22,7 +22,11 @@ const mapStateToProps = state => {
     notifications: state.shared.notifications,
     unreadNotifications: state.shared.unreadNotifications,
     backButton: state.shared.showBackButton,
-    pathname: state.router.location.pathname
+    pathname: state.router.location.pathname,
+    mapsTabActive: state.shared.mapsTabActive,
+    mapDetailTabActive: state.shared.mapDetailTabActive,
+    mapsTabValue: state.maps.tabValue,
+    mapDetailTabValue: state.mapDetail.tabValue
   };
 };
 
@@ -94,6 +98,22 @@ const mapDispatchToProps = dispatch => {
 
     hideBackButton: () => {
       dispatch(hideBackButton());
+    },
+
+    handleSummaryTabClick: (pathname) => {
+      dispatch(push(`${pathname}#summary`));
+    },
+
+    handleMapTabClick: (pathname) => {
+      dispatch(push(`${pathname}#map`));
+    },
+
+    handleFollowingMapsTabClick: (pathname) => {
+      dispatch(push(`${pathname}#following`));
+    },
+
+    handleMyMapsTabClick: (pathname) => {
+      dispatch(push(`${pathname}#mymaps`));
     }
   };
 };

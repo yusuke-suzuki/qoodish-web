@@ -20,6 +20,8 @@ import mapCenterChanged from '../actions/mapCenterChanged';
 import openReviewDialog from '../actions/openReviewDialog';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import selectSpot from '../actions/selectSpot';
+import showMapDetailTab from '../actions/showMapDetailTab';
+import hideMapDetailTab from '../actions/hideMapDetailTab';
 import switchSummary from '../actions/switchSummary';
 import switchMap from '../actions/switchMap';
 
@@ -36,8 +38,8 @@ const mapStateToProps = state => {
     directions: state.gMap.directions,
     large: state.shared.large,
     currentSpot: state.spotCard.currentSpot,
-    tabValue: state.mapDetail.tabValue,
-    hash: state.router.location.hash
+    hash: state.router.location.hash,
+    tabValue: state.mapDetail.tabValue
   };
 };
 
@@ -45,6 +47,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Map'));
+    },
+
+    showTabs: () => {
+      dispatch(showMapDetailTab());
     },
 
     fetchMap: async () => {
@@ -124,6 +130,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleUnmount: () => {
       dispatch(clearMapState());
+      dispatch(hideMapDetailTab());
     },
 
     switchSummary: () => {
@@ -132,14 +139,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     switchMap: () => {
       dispatch(switchMap());
-    },
-
-    handleSummaryTabClick: () => {
-      dispatch(push(`/maps/${ownProps.match.params.mapId}#summary`));
-    },
-
-    handleMapTabClick: () => {
-      dispatch(push(`/maps/${ownProps.match.params.mapId}#map`));
     }
   };
 };

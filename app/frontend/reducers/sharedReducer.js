@@ -16,7 +16,11 @@ import {
   FETCH_NOTIFICATIONS,
   READ_NOTIFICATION,
   SHOW_BACK_BUTTON,
-  HIDE_BACK_BUTTON
+  HIDE_BACK_BUTTON,
+  SHOW_MAPS_TAB,
+  HIDE_MAPS_TAB,
+  SHOW_MAP_DETAIL_TAB,
+  HIDE_MAP_DETAIL_TAB
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -36,7 +40,9 @@ const initialState = {
   likesDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
-  showBackButton: false
+  showBackButton: false,
+  mapsTabActive: false,
+  mapDetailTabActive: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -139,6 +145,22 @@ const reducer = (state = initialState, action) => {
     case HIDE_BACK_BUTTON:
       return Object.assign({}, state, {
         showBackButton: false
+      });
+    case SHOW_MAPS_TAB:
+      return Object.assign({}, state, {
+        mapsTabActive: true
+      });
+    case HIDE_MAPS_TAB:
+      return Object.assign({}, state, {
+        mapsTabActive: false
+      });
+    case SHOW_MAP_DETAIL_TAB:
+      return Object.assign({}, state, {
+        mapDetailTabActive: true
+      });
+    case HIDE_MAP_DETAIL_TAB:
+      return Object.assign({}, state, {
+        mapDetailTabActive: false
       });
     default:
       return state;

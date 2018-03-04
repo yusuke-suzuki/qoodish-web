@@ -7,8 +7,6 @@ import LockIcon from 'material-ui-icons/Lock';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Typography from 'material-ui/Typography';
-import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
 
 const styles = {
   rootLarge: {
@@ -16,13 +14,7 @@ const styles = {
     width: '80%'
   },
   rootSmall: {
-    margin: '114px auto 64px'
-  },
-  tabBarLarge: {
-    top: 64
-  },
-  tabBarSmall: {
-    top: 56
+    margin: '120px auto 64px'
   },
   container: {
     display: 'flex',
@@ -82,22 +74,27 @@ const styles = {
 };
 
 export default class Maps extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 0
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
   componentWillMount() {
+    this.props.showTabs();
     this.props.updatePageTitle();
     this.props.refreshMyMaps();
     this.props.refreshFollowingMaps();
   }
 
-  handleChange(event, value) {
-    this.setState({ value });
+  componentWillUnmount() {
+    this.props.hideTabs();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hash) {
+      if (nextProps.hash === '#mymaps') {
+        nextProps.switchMyMaps();
+      } else if (nextProps.hash === '#following') {
+        nextProps.switchFollowingMaps();
+      }
+    } else {
+      nextProps.switchFollowingMaps();
+    }
   }
 
   renderProgress() {
@@ -111,24 +108,8 @@ export default class Maps extends Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        <AppBar
-          position="fixed"
-          style={this.props.large ? styles.tabBarLarge : styles.tabBarSmall}
-        >
-          <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
-            fullWidth
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered
-          >
-            <Tab label="Following" />
-            <Tab label="My Maps" />
-          </Tabs>
-        </AppBar>
-        {this.state.value === 0 && this.renderFollowingMaps()}
-        {this.state.value === 1 && this.renderMyMaps()}
+       {this.props.tabValue === 0 && this.renderFollowingMaps()}
+       {this.props.tabValue === 1 && this.renderMyMaps()}
         <Button
           fab
           aria-label="add"

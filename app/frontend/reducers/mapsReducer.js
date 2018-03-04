@@ -14,7 +14,9 @@ import {
   LOAD_MY_MAPS_END,
   LOAD_FOLLOWING_MAPS_START,
   LOAD_FOLLOWING_MAPS_END,
-  FETCH_POSTABLE_MAPS
+  FETCH_POSTABLE_MAPS,
+  SWITCH_MY_MAPS,
+  SWITCH_FOLLOWING_MAPS
 } from '../actionTypes';
 
 const initialState = {
@@ -26,7 +28,8 @@ const initialState = {
   postableMaps: [],
   createMapDialogOpen: false,
   editMapDialogOpen: false,
-  deleteMapDialogOpen: false
+  deleteMapDialogOpen: false,
+  tabValue: 0
 };
 
 const reducer = (state = initialState, action) => {
@@ -119,6 +122,14 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         targetMap: null,
         deleteMapDialogOpen: false
+      });
+    case SWITCH_FOLLOWING_MAPS:
+      return Object.assign({}, state, {
+        tabValue: 0
+      });
+    case SWITCH_MY_MAPS:
+      return Object.assign({}, state, {
+        tabValue: 1
       });
     default:
       return state;
