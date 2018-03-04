@@ -15,6 +15,10 @@ import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
 import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import updatePageTitle from '../actions/updatePageTitle';
+import showMapsTab from '../actions/showMapsTab';
+import hideMapsTab from '../actions/hideMapsTab';
+import switchMyMaps from '../actions/switchMyMaps';
+import switchFollowingMaps from '../actions/switchFollowingMaps';
 
 const mapStateToProps = state => {
   return {
@@ -22,7 +26,9 @@ const mapStateToProps = state => {
     followingMaps: state.maps.followingMaps,
     loadingMyMaps: state.maps.loadingMyMaps,
     loadingFollowingMaps: state.maps.loadingFollowingMaps,
-    large: state.shared.large
+    large: state.shared.large,
+    hash: state.router.location.hash,
+    tabValue: state.maps.tabValue
   };
 };
 
@@ -30,6 +36,14 @@ const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Maps'));
+    },
+
+    showTabs: () => {
+      dispatch(showMapsTab());
+    },
+
+    hideTabs: () => {
+      dispatch(hideMapsTab());
     },
 
     handleCreateMapButtonClick: () => {
@@ -58,6 +72,14 @@ const mapDispatchToProps = dispatch => {
       dispatch(selectMap(map));
       dispatch(push(`/maps/${map.id}`));
       dispatch(openToast(`Log in to ${map.name}!`));
+    },
+
+    switchMyMaps: () => {
+      dispatch(switchMyMaps());
+    },
+
+    switchFollowingMaps: () => {
+      dispatch(switchFollowingMaps());
     }
   };
 };

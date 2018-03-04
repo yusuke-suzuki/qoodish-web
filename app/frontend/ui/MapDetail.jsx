@@ -17,8 +17,6 @@ import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
-import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
 import PlaceIcon from 'material-ui-icons/Place';
 import InfoIcon from 'material-ui-icons/Info';
 import Paper from 'material-ui/Paper';
@@ -34,7 +32,7 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    paddingTop: 104,
+    paddingTop: 112,
     paddingBottom: 56,
     height: 'calc(100vh - 160px)'
   },
@@ -56,9 +54,6 @@ const styles = {
     right: 20,
     backgroundColor: 'red',
     color: 'white'
-  },
-  tabBar: {
-    top: 56
   }
 };
 
@@ -132,6 +127,9 @@ const GoogleMapContainer = withGoogleMap(props => (
 export default class MapDetail extends Component {
   async componentWillMount() {
     this.props.updatePageTitle();
+    if (!this.props.large) {
+      this.props.showTabs();
+    }
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
       this.props.fetchSpots();
@@ -195,7 +193,6 @@ export default class MapDetail extends Component {
       <div>
         {this.props.tabValue === 0 && this.renderMapSummary()}
         {this.props.tabValue === 1 && this.renderGoogleMap()}
-        {this.renderTab()}
       </div>
     );
   }
@@ -218,23 +215,6 @@ export default class MapDetail extends Component {
         mapElement={<div style={styles.mapContainer} />}
         onMapLoad={this.props.onMapMounted}
       />
-    );
-  }
-
-  renderTab() {
-    return (
-      <AppBar position="fixed" style={styles.tabBar}>
-        <Tabs
-          value={this.props.tabValue}
-          fullWidth
-          indicatorColor="secondary"
-          textColor="secondary"
-          centered
-        >
-          <Tab label="SUMMARY" onClick={this.props.handleSummaryTabClick} />
-          <Tab label="MAP" onClick={this.props.handleMapTabClick} />
-        </Tabs>
-      </AppBar>
     );
   }
 

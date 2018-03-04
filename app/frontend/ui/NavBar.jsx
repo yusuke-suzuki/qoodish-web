@@ -23,6 +23,7 @@ import NotificationsIcon from 'material-ui-icons/Notifications';
 import moment from 'moment';
 import Badge from 'material-ui/Badge';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 const styles = {
   title: {
@@ -93,6 +94,15 @@ const styles = {
   noContentsIcon: {
     width: 80,
     height: 80
+  },
+  tabs: {
+    width: '100%'
+  },
+  tabLarge: {
+    height: 64
+  },
+  tabSmall: {
+    height: 56
   }
 };
 
@@ -198,6 +208,8 @@ class NavBar extends Component {
               {this.renderAvatarMenu()}
             </div>
           </Toolbar>
+          {this.props.mapsTabActive && this.renderMapsTab()}
+          {this.props.mapDetailTabActive && this.renderMapDetailTab()}
         </AppBar>
         <Drawer
           open={this.state.drawerOpen}
@@ -207,6 +219,42 @@ class NavBar extends Component {
           {this.renderDrawerContents()}
         </Drawer>
       </div>
+    );
+  }
+
+  renderMapsTab() {
+    return (
+      <Toolbar disableGutters>
+        <Tabs
+          value={this.props.mapsTabValue}
+          fullWidth
+          indicatorColor="secondary"
+          textColor="secondary"
+          centered
+          style={styles.tabs}
+        >
+          <Tab label="Following" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleFollowingMapsTabClick(this.props.pathname)} />
+          <Tab label="My Maps" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleMyMapsTabClick(this.props.pathname)} />
+        </Tabs>
+      </Toolbar>
+    );
+  }
+
+  renderMapDetailTab() {
+    return (
+      <Toolbar disableGutters>
+        <Tabs
+          value={this.props.mapDetailTabValue}
+          fullWidth
+          indicatorColor="secondary"
+          textColor="secondary"
+          centered
+          style={styles.tabs}
+        >
+          <Tab label="SUMMARY" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleSummaryTabClick(this.props.pathname)} />
+          <Tab label="MAP" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleMapTabClick(this.props.pathname)} />
+        </Tabs>
+      </Toolbar>
     );
   }
 
