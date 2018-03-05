@@ -320,7 +320,7 @@ class NavBar extends Component {
         open={this.state.notificationOpen}
         onClose={this.handleRequestNotificationClose}
         onEntered={() => this.props.readNotifications(this.props.notifications)}
-        style={styles.notificationMenu}
+        PaperProps={{ style: styles.notificationMenu } }
       >
         {this.props.notifications.length > 0
           ? this.renderNotifications(this.props.notifications)
