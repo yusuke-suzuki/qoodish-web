@@ -23,8 +23,24 @@ import TimelineIcon from 'material-ui-icons/Timeline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import moment from 'moment';
+import Chip from 'material-ui/Chip';
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 
 const styles = {
+  skeltonThumbnail: {
+    height: '100%'
+  },
+  skeltonThumbnailDisable: {
+    height: 0
+  },
+  skeltonMapName: {
+    width: '100%',
+    height: '1.5rem'
+  },
+  skeltonMapDescription: {
+    width: '70%',
+    height: '0.875rem'
+  },
   cardContainerLarge: {
     position: 'absolute',
     top: 64,
@@ -165,7 +181,7 @@ class MapSummary extends Component {
         {this.renderMapToolbar(this.props.currentMap)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           <CardMedia>
-            <img src={map && map.image_url} style={styles.media} />
+            {this.renderThumbnail(map)}
           </CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             <Typography
@@ -174,13 +190,13 @@ class MapSummary extends Component {
               gutterBottom
               style={styles.mapSummaryText}
             >
-              {map && map.name}
+              {map && map.name ? map.name : <Chip style={styles.skeltonMapName} />}
             </Typography>
             <Typography component="p" style={styles.mapSummaryText}>
-              {map && map.description}
+              {map && map.description ? map.description : <Chip style={styles.skeltonMapDescription} />}
             </Typography>
             <div style={styles.roleButtonContainer}>
-              {map && this.renderRoleButton(map)}
+              {map ? this.renderRoleButton(map) : <Button raised color="secondary" disabled></Button>}
             </div>
           </CardContent>
           <Divider />
@@ -203,6 +219,19 @@ class MapSummary extends Component {
           </div>
         </Card>
       </div>
+    );
+  }
+
+  renderThumbnail(map) {
+    return (
+      <GridList cols={1} spacing={0} cellHeight={350}>
+        <GridListTile key={map && map.id}>
+          <img src={map && map.image_url ? map.image_url : ''} />
+          <GridListTileBar
+            style={map && map.image_url ? styles.skeltonThumbnailDisable : styles.skeltonThumbnail}
+          />
+        </GridListTile>
+      </GridList>
     );
   }
 
@@ -290,12 +319,14 @@ class MapSummary extends Component {
           >
             <MoreVertIcon style={styles.mapMenuIcon} />
           </IconButton>
-          {map && map.editable
-            ? this.renderMenuForOwner()
-            : this.renderMenuForMember()}
+          {map && this.renderMenu(map)}
         </div>
       </Toolbar>
     );
+  }
+
+  renderMenu(map) {
+    return map.editable ? this.renderMenuForOwner() : this.renderMenuForMember();
   }
 
   renderMenuForOwner() {
