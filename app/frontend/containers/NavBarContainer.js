@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push, goBack } from 'react-router-redux';
+import { push, go } from 'react-router-redux';
 import NavBar from '../ui/NavBar';
 import signOut from '../actions/signOut';
 import requestStart from '../actions/requestStart';
@@ -89,7 +89,7 @@ const mapDispatchToProps = dispatch => {
     },
 
     handleBackButtonClick: () => {
-      dispatch(goBack());
+      dispatch(go(-1));
     },
 
     showBackButton: () => {
