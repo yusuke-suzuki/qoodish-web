@@ -27,6 +27,8 @@ import firebase from 'firebase';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 
+import Helmet from 'react-helmet';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -112,6 +114,7 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
+          {this.renderHelmet()}
           <div>
             {this.props.authenticated
               ? this.renderUserOnly()
@@ -124,6 +127,45 @@ class App extends Component {
           <CopyReviewDialogContainer />
         </div>
       </MuiThemeProvider>
+    );
+  }
+
+  renderHelmet() {
+    return (
+      <Helmet
+        title="Qoodish (β)"
+        meta={[
+          { name: 'theme-color', content: '#ffc107'},
+          { name: 'title', content: 'Qoodish (β)' },
+          {
+            name: 'description',
+            content:
+              'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          },
+          { name: 'twitter:card', content: 'summary' },
+          { name: 'twitter:title', content: 'Qoodish (β)' },
+          {
+            name: 'twitter:description',
+            content:
+              'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          },
+          { name: 'twitter:image', content: process.env.SUBSTITUTE_URL },
+          { property: 'og:site_name', content: 'Qoodish' },
+          { property: 'og:locale', content: 'ja_JP' },
+          { property: 'og:title', content: 'Qoodish (β)' },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: process.env.ENDPOINT
+          },
+          { property: 'og:image', content: process.env.SUBSTITUTE_URL },
+          {
+            property: 'og:description',
+            content:
+              'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          }
+        ]}
+      />
     );
   }
 
