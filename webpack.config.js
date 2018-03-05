@@ -16,6 +16,7 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: 'app/views/index.html',
     hash: true,
+    endpoint: process.env.ENDPOINT,
     googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
     iconUrl: process.env.SUBSTITUTE_URL,
     fbAppId: process.env.FB_APP_ID

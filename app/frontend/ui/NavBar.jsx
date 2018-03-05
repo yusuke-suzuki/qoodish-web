@@ -200,6 +200,7 @@ class NavBar extends Component {
             <Typography
               type="headline"
               color="inherit"
+              noWrap
               style={
                 this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
               }
