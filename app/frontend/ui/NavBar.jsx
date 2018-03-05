@@ -135,7 +135,11 @@ class NavBar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pathname.includes('/reports/') || nextProps.pathname.includes('/maps/') || nextProps.pathname.includes('/spots/')) {
+    if (
+      nextProps.pathname.includes('/reports/') ||
+      nextProps.pathname.includes('/maps/') ||
+      nextProps.pathname.includes('/spots/')
+    ) {
       this.props.showBackButton();
     } else {
       this.props.hideBackButton();
@@ -189,7 +193,9 @@ class NavBar extends Component {
       <div>
         <AppBar position="fixed">
           <Toolbar disableGutters style={styles.toolbar}>
-            {!this.props.large && this.props.backButton ? this.renderBackButton() : this.renderMenuButton()}
+            {!this.props.large && this.props.backButton
+              ? this.renderBackButton()
+              : this.renderMenuButton()}
             {this.props.large ? this.renderLogo() : null}
             <Typography
               type="headline"
@@ -233,8 +239,18 @@ class NavBar extends Component {
           centered
           style={styles.tabs}
         >
-          <Tab label="Following" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleFollowingMapsTabClick(this.props.pathname)} />
-          <Tab label="My Maps" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleMyMapsTabClick(this.props.pathname)} />
+          <Tab
+            label="Following"
+            style={this.props.large ? styles.tabLarge : styles.tabSmall}
+            onClick={() =>
+              this.props.handleFollowingMapsTabClick(this.props.pathname)
+            }
+          />
+          <Tab
+            label="My Maps"
+            style={this.props.large ? styles.tabLarge : styles.tabSmall}
+            onClick={() => this.props.handleMyMapsTabClick(this.props.pathname)}
+          />
         </Tabs>
       </Toolbar>
     );
@@ -251,8 +267,18 @@ class NavBar extends Component {
           centered
           style={styles.tabs}
         >
-          <Tab label="SUMMARY" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleSummaryTabClick(this.props.pathname)} />
-          <Tab label="MAP" style={this.props.large ? styles.tabLarge : styles.tabSmall} onClick={() => this.props.handleMapTabClick(this.props.pathname)} />
+          <Tab
+            label="SUMMARY"
+            style={this.props.large ? styles.tabLarge : styles.tabSmall}
+            onClick={() =>
+              this.props.handleSummaryTabClick(this.props.pathname)
+            }
+          />
+          <Tab
+            label="MAP"
+            style={this.props.large ? styles.tabLarge : styles.tabSmall}
+            onClick={() => this.props.handleMapTabClick(this.props.pathname)}
+          />
         </Tabs>
       </Toolbar>
     );
@@ -268,9 +294,7 @@ class NavBar extends Component {
 
   renderBackButton() {
     return (
-      <IconButton
-        onClick={this.props.handleBackButtonClick}
-      >
+      <IconButton onClick={this.props.handleBackButtonClick}>
         <ArrowBackIcon style={styles.navBarIcon} />
       </IconButton>
     );
@@ -320,7 +344,7 @@ class NavBar extends Component {
         open={this.state.notificationOpen}
         onClose={this.handleRequestNotificationClose}
         onEntered={() => this.props.readNotifications(this.props.notifications)}
-        style={styles.notificationMenu}
+        PaperProps={{ style: styles.notificationMenu }}
       >
         {this.props.notifications.length > 0
           ? this.renderNotifications(this.props.notifications)
