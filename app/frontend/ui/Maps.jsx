@@ -108,8 +108,8 @@ export default class Maps extends Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-       {this.props.tabValue === 0 && this.renderFollowingMaps()}
-       {this.props.tabValue === 1 && this.renderMyMaps()}
+        {this.props.tabValue === 0 && this.renderFollowingMaps()}
+        {this.props.tabValue === 1 && this.renderMyMaps()}
         <Button
           fab
           aria-label="add"

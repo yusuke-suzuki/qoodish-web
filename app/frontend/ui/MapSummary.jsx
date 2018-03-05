@@ -180,9 +180,7 @@ class MapSummary extends Component {
       >
         {this.renderMapToolbar(this.props.currentMap)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-          <CardMedia>
-            {this.renderThumbnail(map)}
-          </CardMedia>
+          <CardMedia>{this.renderThumbnail(map)}</CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             <Typography
               type="headline"
@@ -190,13 +188,25 @@ class MapSummary extends Component {
               gutterBottom
               style={styles.mapSummaryText}
             >
-              {map && map.name ? map.name : <Chip style={styles.skeltonMapName} />}
+              {map && map.name ? (
+                map.name
+              ) : (
+                <Chip style={styles.skeltonMapName} />
+              )}
             </Typography>
             <Typography component="p" style={styles.mapSummaryText}>
-              {map && map.description ? map.description : <Chip style={styles.skeltonMapDescription} />}
+              {map && map.description ? (
+                map.description
+              ) : (
+                <Chip style={styles.skeltonMapDescription} />
+              )}
             </Typography>
             <div style={styles.roleButtonContainer}>
-              {map ? this.renderRoleButton(map) : <Button raised color="secondary" disabled></Button>}
+              {map ? (
+                this.renderRoleButton(map)
+              ) : (
+                <Button raised color="secondary" disabled />
+              )}
             </div>
           </CardContent>
           <Divider />
@@ -228,7 +238,11 @@ class MapSummary extends Component {
         <GridListTile key={map && map.id}>
           <img src={map && map.image_url ? map.image_url : ''} />
           <GridListTileBar
-            style={map && map.image_url ? styles.skeltonThumbnailDisable : styles.skeltonThumbnail}
+            style={
+              map && map.image_url
+                ? styles.skeltonThumbnailDisable
+                : styles.skeltonThumbnail
+            }
           />
         </GridListTile>
       </GridList>
@@ -326,7 +340,9 @@ class MapSummary extends Component {
   }
 
   renderMenu(map) {
-    return map.editable ? this.renderMenuForOwner() : this.renderMenuForMember();
+    return map.editable
+      ? this.renderMenuForOwner()
+      : this.renderMenuForMember();
   }
 
   renderMenuForOwner() {

@@ -100,19 +100,19 @@ const mapDispatchToProps = dispatch => {
       dispatch(hideBackButton());
     },
 
-    handleSummaryTabClick: (pathname) => {
+    handleSummaryTabClick: pathname => {
       dispatch(push(`${pathname}#summary`));
     },
 
-    handleMapTabClick: (pathname) => {
+    handleMapTabClick: pathname => {
       dispatch(push(`${pathname}#map`));
     },
 
-    handleFollowingMapsTabClick: (pathname) => {
+    handleFollowingMapsTabClick: pathname => {
       dispatch(push(`${pathname}#following`));
     },
 
-    handleMyMapsTabClick: (pathname) => {
+    handleMyMapsTabClick: pathname => {
       dispatch(push(`${pathname}#mymaps`));
     }
   };
