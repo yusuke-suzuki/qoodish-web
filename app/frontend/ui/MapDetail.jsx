@@ -130,6 +130,7 @@ export default class MapDetail extends Component {
     if (!this.props.large) {
       this.props.showTabs();
     }
+
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
       this.props.fetchSpots();
@@ -141,6 +142,10 @@ export default class MapDetail extends Component {
       this.props.fetchCollaborators();
       this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
+    }
+
+    if (!this.props.large) {
+      this.props.updatePageTitle(this.props.currentMap.name);
     }
   }
 

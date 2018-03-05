@@ -45,8 +45,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle('Map'));
+    updatePageTitle: (mapName = undefined) => {
+      dispatch(updatePageTitle(mapName ? mapName : 'Map'));
     },
 
     showTabs: () => {
