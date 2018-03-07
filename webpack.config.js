@@ -5,20 +5,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
 
 const serviceWorkerPlugins = [
-  new CleanWebpackPlugin(['./public/firebase-messaging-sw.js'], {}),
+  new CleanWebpackPlugin(['./functions/hosting/firebase-messaging-sw.js'], {}),
   new webpack.EnvironmentPlugin([
     'FIREBASE_MESSAGING_SENDER_ID'
   ])
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(['./public/bundle.js', './public/index.html'], {}),
+  new CleanWebpackPlugin(['./functions/hosting/bundle.js', './functions/hosting/index.html'], {}),
   new HtmlWebpackPlugin({
     template: 'app/views/index.html',
     hash: true,
     endpoint: process.env.ENDPOINT,
     googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
-    iconUrl: process.env.SUBSTITUTE_URL,
+    icon36: process.env.ICON_36,
+    icon512: process.env.ICON_512,
     fbAppId: process.env.FB_APP_ID
   }),
   new webpack.EnvironmentPlugin([
@@ -44,7 +45,7 @@ module.exports = [
   {
     entry: ['./app/service_workers/firebase-messaging-sw.js'],
     output: {
-      path: __dirname + '/public',
+      path: __dirname + '/functions/hosting',
       publicPath: '/',
       filename: 'firebase-messaging-sw.js'
     },
@@ -67,7 +68,7 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
-      path: __dirname + '/public',
+      path: __dirname + '/functions/hosting',
       publicPath: '/',
       filename: 'bundle.js'
     },

@@ -9,8 +9,13 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "core-js": "^2.5.3",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
     "firebase-admin": "~5.8.1",
-    "firebase-functions": "^0.8.1"
+    "firebase-functions": "^0.8.1",
+    "node-fetch": "^2.0.0",
+    "regenerator-runtime": "^0.11.1"
   },
   "private": true
 }

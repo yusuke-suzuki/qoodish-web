@@ -57,10 +57,10 @@ typings/
 # dotenv environment variables file
 .env
 
-public/index.html
-public/bundle.js
-public/firebase-messaging-sw.js
-public/*.hot-update.*
+functions/hosting/index.html
+functions/hosting/bundle.js
+functions/hosting/firebase-messaging-sw.js
+functions/hosting/*.hot-update.*
 
 .vscode
 
@@ -69,3 +69,4 @@ docker-compose.yml
 firebase-debug.log
 
 functions/node_modules/
+functions/*.js

@@ -14,7 +14,8 @@
     "watch:build": "webpack --watch --colors --progress",
     "test:chrome": "testcafe chrome tests/",
     "build:prod": "webpack --colors --progress -p",
-    "prettier": "prettier ./app/frontend/**/* --write --single-quote"
+    "prettier": "prettier ./app/frontend/**/* --write --single-quote",
+    "build:functions": "babel --plugins transform-inline-environment-variables app/functions/ --out-dir functions/"
   },
   "dependencies": {
     "blueimp-canvas-to-blob": "^3.14.0",
@@ -45,6 +46,7 @@
     "@babel/preset-env": "^7.0.0-beta.3",
     "@babel/preset-react": "^7.0.0-beta.3",
     "babel-loader": "^8.0.0-beta.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.3.0",
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.9",
     "dotenv": "^4.0.0",
