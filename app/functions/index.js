@@ -25,7 +25,7 @@ app.get(pageRoutes, async (req, res) => {
     const metadata = await generateMetadata(req);
     res.status(200).send(ejs.render(fs.readFileSync('./metadata.html').toString(), { metadata: metadata, fbAppId: functions.config().app.fb_app_id } ));
   } else {
-    res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
     res.status(200).send(fs.readFileSync('./hosting/index.html').toString());
   }
 });
