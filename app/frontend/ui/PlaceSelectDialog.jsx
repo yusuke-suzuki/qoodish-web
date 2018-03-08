@@ -113,7 +113,7 @@ class PlaceSelectDialog extends Component {
 
   renderAppBar() {
     return (
-      <AppBar style={styles.appbar} color="inherit">
+      <AppBar style={styles.appbar} color="primary">
         <Toolbar style={styles.toolbar}>
           <IconButton
             color="inherit"

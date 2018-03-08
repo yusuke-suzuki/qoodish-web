@@ -16,6 +16,7 @@ import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
+import Helmet from 'react-helmet';
 
 const styles = {
   mapWrapperLarge: {
@@ -143,6 +144,7 @@ class SpotDetail extends Component {
   render() {
     return (
       <div>
+        {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderMap()}
         {this.renderContainer()}
         {this.props.currentSpot &&
@@ -152,6 +154,33 @@ class SpotDetail extends Component {
         <DeleteReviewDialogContainer />
         <ReviewDialogContainer />
       </div>
+    );
+  }
+
+  renderHelmet(spot) {
+    return (
+      <Helmet
+        title={`${spot.name} | Qoodish`}
+        meta={[
+          { name: 'title', content: `${spot.name} | Qoodish` },
+          { name: 'description', content: spot.formatted_address },
+          { name: 'twitter:card', content: 'summary' },
+          { name: 'twitter:title', content: `${spot.name} | Qoodish` },
+          { name: 'twitter:description', content: spot.formatted_address },
+          { name: 'twitter:image', content: spot.image_url },
+          { property: 'og:title', content: `${spot.name} | Qoodish` },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: `${process.env.ENDPOINT}/spots/${spot.place_id}`
+          },
+          { property: 'og:image', content: spot.image_url },
+          {
+            property: 'og:description',
+            content: spot.formatted_address
+          }
+        ]}
+      />
     );
   }
 

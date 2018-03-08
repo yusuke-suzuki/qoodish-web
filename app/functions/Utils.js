@@ -34,10 +34,11 @@ export const isBot = (req) => {
 };
 
 export const generateMetadata = async (req) => {
-  let title = 'Qoodish (β)';
+  let title = 'Qoodish';
   let description = 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
   let pageUrl = process.env.ENDPOINT;
   let imageUrl = process.env.SUBSTITUTE_URL;
+  let twitterCard = 'summary';
 
   const client = new QoodishClient;
   let response;
@@ -46,16 +47,17 @@ export const generateMetadata = async (req) => {
     response = await client.fetchReviewMetadata(req.params.reviewId, req.headers['accept-language']);
     if (response.ok) {
       json = await response.json();
-      title = `${json.title} | Qoodish (β)`
+      title = `${json.title} | Qoodish`
       description = json.description;
       imageUrl = json.image_url;
       pageUrl = req.originalUrl;
+      twitterCard = 'summary_large_image';
     }
   } else if (req.params.mapId) {
     response = await client.fetchMapMetadata(req.params.mapId, req.headers['accept-language']);
     if (response.ok) {
       json = await response.json();
-      title = `${json.title} | Qoodish (β)`
+      title = `${json.title} | Qoodish`
       description = json.description;
       imageUrl = json.image_url;
       pageUrl = req.originalUrl;
@@ -73,7 +75,8 @@ export const generateMetadata = async (req) => {
     twitter: {
       title: title,
       image: imageUrl,
-      description: description
+      description: description,
+      card: twitterCard
     }
   };
   return metadata;

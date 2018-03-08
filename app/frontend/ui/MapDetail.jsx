@@ -189,15 +189,15 @@ export default class MapDetail extends Component {
   renderHelmet(map) {
     return (
       <Helmet
-        title={`${map.name} | Qoodish (β)`}
+        title={`${map.name} | Qoodish`}
         meta={[
-          { name: 'title', content: `${map.name} | Qoodish (β)` },
+          { name: 'title', content: `${map.name} | Qoodish` },
           { name: 'description', content: map.description },
-          { name: 'twitter:card', content: 'summary' },
-          { name: 'twitter:title', content: `${map.name} | Qoodish (β)` },
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:title', content: `${map.name} | Qoodish` },
           { name: 'twitter:description', content: map.description },
           { name: 'twitter:image', content: map.image_url },
-          { property: 'og:title', content: `${map.name} | Qoodish (β)` },
+          { property: 'og:title', content: `${map.name} | Qoodish` },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',

@@ -336,7 +336,7 @@ class EditReviewDialog extends Component {
 
   renderAppBar() {
     return (
-      <AppBar style={styles.appbar} color="inherit">
+      <AppBar style={styles.appbar} color="primary">
         <Toolbar style={styles.toolbar}>
           <IconButton
             color="inherit"
@@ -351,7 +351,7 @@ class EditReviewDialog extends Component {
           <Button
             raised
             onClick={this.handleSaveButtonClick}
-            color="primary"
+            color="secondary"
             disabled={this.state.disabled}
           >
             Save

@@ -112,9 +112,7 @@ export default class Discover extends Component {
             <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
           </Typography>
           <br />
-          {this.props.mapPickedUp
-            ? this.renderPickUp(this.props.mapPickedUp)
-            : null}
+          {this.renderPickUp(this.props.mapPickedUp)}
         </div>
         <div style={styles.container}>
           <Typography
@@ -151,11 +149,11 @@ export default class Discover extends Component {
     return (
       <GridList cols={1} style={styles.gridList} spacing={20}>
         <GridListTile
-          key={map.id}
+          key={map && map.id}
           onClick={() => this.props.handleClickMap(map)}
           style={styles.pickUpTile}
         >
-          <img src={map.image_url} />
+          <img src={map && map.image_url} />
           <GridListTileBar
             title={
               <Typography
@@ -164,7 +162,7 @@ export default class Discover extends Component {
                 noWrap
                 gutterBottom
               >
-                {map.name}
+                {map && map.name}
               </Typography>
             }
             subtitle={
@@ -173,7 +171,7 @@ export default class Discover extends Component {
                 color="inherit"
                 noWrap
               >
-                <span>by: {map.owner_name}</span>
+                <span>{map && `by: ${map.owner_name}`}</span>
               </Typography>
             }
             style={styles.pickUpTileBar}

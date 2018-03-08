@@ -133,26 +133,24 @@ class App extends Component {
   renderHelmet() {
     return (
       <Helmet
-        title="Qoodish (β)"
+        title="Qoodish"
         meta={[
-          { name: 'theme-color', content: '#ffc107'},
-          { name: 'title', content: 'Qoodish (β)' },
+          { name: 'title', content: 'Qoodish' },
           {
             name: 'description',
             content:
               'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
           },
           { name: 'twitter:card', content: 'summary' },
-          { name: 'twitter:title', content: 'Qoodish (β)' },
+          { name: 'twitter:title', content: 'Qoodish' },
           {
             name: 'twitter:description',
             content:
               'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
           },
           { name: 'twitter:image', content: process.env.SUBSTITUTE_URL },
-          { property: 'og:site_name', content: 'Qoodish' },
-          { property: 'og:locale', content: 'ja_JP' },
-          { property: 'og:title', content: 'Qoodish (β)' },
+          { property: 'og:site_name', content: 'Qoodish - マップベースド SNS' },
+          { property: 'og:title', content: 'Qoodish' },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
