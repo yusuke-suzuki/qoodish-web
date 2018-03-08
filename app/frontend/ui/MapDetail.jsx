@@ -21,6 +21,7 @@ import PlaceIcon from 'material-ui-icons/Place';
 import InfoIcon from 'material-ui-icons/Info';
 import Paper from 'material-ui/Paper';
 import SpotCardContainer from '../containers/SpotCardContainer';
+import Helmet from 'react-helmet';
 
 const styles = {
   mapWrapperLarge: {
@@ -130,6 +131,7 @@ export default class MapDetail extends Component {
     if (!this.props.large) {
       this.props.showTabs();
     }
+
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
       this.props.fetchSpots();
@@ -141,6 +143,10 @@ export default class MapDetail extends Component {
       this.props.fetchCollaborators();
       this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
+    }
+
+    if (!this.props.large) {
+      this.props.updatePageTitle(this.props.currentMap.name);
     }
   }
 
@@ -163,6 +169,7 @@ export default class MapDetail extends Component {
   render() {
     return (
       <div>
+        {this.props.currentMap && this.renderHelmet(this.props.currentMap)}
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         {this.ableToPost(this.props.currentMap)
           ? this.renderCreateReviewButton()
@@ -176,6 +183,33 @@ export default class MapDetail extends Component {
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
+    );
+  }
+
+  renderHelmet(map) {
+    return (
+      <Helmet
+        title={`${map.name} | Qoodish (β)`}
+        meta={[
+          { name: 'title', content: `${map.name} | Qoodish (β)` },
+          { name: 'description', content: map.description },
+          { name: 'twitter:card', content: 'summary' },
+          { name: 'twitter:title', content: `${map.name} | Qoodish (β)` },
+          { name: 'twitter:description', content: map.description },
+          { name: 'twitter:image', content: map.image_url },
+          { property: 'og:title', content: `${map.name} | Qoodish (β)` },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: `${process.env.ENDPOINT}/maps/${map.id}`
+          },
+          { property: 'og:image', content: map.image_url },
+          {
+            property: 'og:description',
+            content: map.description
+          }
+        ]}
+      />
     );
   }
 
