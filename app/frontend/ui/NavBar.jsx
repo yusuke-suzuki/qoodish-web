@@ -29,7 +29,7 @@ const styles = {
   title: {
     cursor: 'pointer'
   },
-  toolbar: {
+  toolbarLarge: {
     paddingLeft: 10,
     paddingRight: 10
   },
@@ -103,6 +103,13 @@ const styles = {
   },
   tabSmall: {
     height: 56
+  },
+  profileAvatar: {
+    width: 35,
+    height: 35,
+  },
+  menuButton: {
+    marginLeft: 10
   }
 };
 
@@ -192,7 +199,7 @@ class NavBar extends Component {
     return (
       <div>
         <AppBar position="fixed">
-          <Toolbar disableGutters style={styles.toolbar}>
+          <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : {}}>
             {!this.props.large && this.props.backButton
               ? this.renderBackButton()
               : this.renderMenuButton()}
@@ -235,8 +242,8 @@ class NavBar extends Component {
         <Tabs
           value={this.props.mapsTabValue}
           fullWidth
-          indicatorColor="secondary"
-          textColor="secondary"
+          indicatorColor="#fff"
+          textColor="inherit"
           centered
           style={styles.tabs}
         >
@@ -263,8 +270,8 @@ class NavBar extends Component {
         <Tabs
           value={this.props.mapDetailTabValue}
           fullWidth
-          indicatorColor="secondary"
-          textColor="secondary"
+          indicatorColor="#fff"
+          textColor="inherit"
           centered
           style={styles.tabs}
         >
@@ -287,7 +294,7 @@ class NavBar extends Component {
 
   renderMenuButton() {
     return (
-      <IconButton onClick={this.handleToggleDrawer}>
+      <IconButton onClick={this.handleToggleDrawer} style={styles.menuButton}>
         <MenuIcon style={styles.navBarIcon} />
       </IconButton>
     );
@@ -321,7 +328,8 @@ class NavBar extends Component {
         aria-owns={this.state.notificationOpen ? 'notification-menu' : null}
         aria-haspopup="true"
         onClick={this.handleNotificationButtonClick}
-        style={styles.notificationButton}
+        style={this.props.large ? styles.notificationButton : {}}
+        color="inherit"
       >
         {this.props.unreadNotifications.length > 0 ? (
           <Badge
@@ -415,6 +423,7 @@ class NavBar extends Component {
       >
         <Avatar
           src={this.props.currentUser ? this.props.currentUser.image_url : ''}
+          style={styles.profileAvatar}
         />
       </IconButton>
     );
