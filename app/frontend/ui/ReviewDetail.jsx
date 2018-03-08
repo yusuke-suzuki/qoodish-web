@@ -66,7 +66,7 @@ class ReviewDetail extends Component {
           { name: 'description', content: review.comment },
           { name: 'twitter:card', content: 'summary_large_image' },
           { name: 'twitter:title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
-          { name: 'twitter:description', content: map.description },
+          { name: 'twitter:description', content: review.comment },
           { name: 'twitter:image', content: review.image ? review.image.url : process.env.SUBSTITUTE_URL },
           { property: 'og:title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
           { property: 'og:type', content: 'website' },

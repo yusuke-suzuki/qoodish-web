@@ -310,7 +310,7 @@ class EditMapDialog extends Component {
 
   renderAppBar() {
     return (
-      <AppBar color="inherit">
+      <AppBar color="primary">
         <Toolbar style={styles.toolbar}>
           <IconButton
             color="inherit"
@@ -325,7 +325,7 @@ class EditMapDialog extends Component {
           <Button
             raised
             onClick={this.handleSaveButtonClick}
-            color="primary"
+            color="secondary"
             disabled={this.state.disabled}
           >
             Save

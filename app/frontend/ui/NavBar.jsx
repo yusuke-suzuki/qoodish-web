@@ -109,7 +109,7 @@ const styles = {
     height: 35,
   },
   menuButton: {
-    marginLeft: 10
+    marginLeft: 8
   }
 };
 
@@ -294,7 +294,7 @@ class NavBar extends Component {
 
   renderMenuButton() {
     return (
-      <IconButton onClick={this.handleToggleDrawer} style={styles.menuButton}>
+      <IconButton onClick={this.handleToggleDrawer} style={this.props.large ? {} : styles.menuButton}>
         <MenuIcon style={styles.navBarIcon} />
       </IconButton>
     );
@@ -437,8 +437,22 @@ class NavBar extends Component {
         open={this.state.accountMenuOpen}
         onClose={this.handleRequestAvatarMenuClose}
       >
-        <MenuItem onClick={this.props.requestSettings}>Settings</MenuItem>
-        <MenuItem onClick={this.props.signOut}>Logout</MenuItem>
+        <MenuItem
+          onClick={() => {
+            this.handleRequestAvatarMenuClose();
+            this.props.requestSettings();
+          }}
+        >
+          Settings
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            this.handleRequestAvatarMenuClose();
+            this.props.signOut();
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     );
   }
