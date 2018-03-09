@@ -8,7 +8,7 @@ import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Typography from 'material-ui/Typography';
-import Card, { CardHeader, CardMedia, CardContent } from 'material-ui/Card';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
 
@@ -74,9 +74,6 @@ const styles = {
   },
   cardContent: {
     paddingTop: 0
-  },
-  cardMedia: {
-    marginBottom: -5
   },
   reviewImage: {
     width: '100%'
