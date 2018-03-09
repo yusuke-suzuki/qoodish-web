@@ -13,7 +13,7 @@ or
 `yarn watch:build`
 
 ## Start app
-`firebase serve`
+`firebase serve --only funcstions,hosting`
 
 ## Test
 `yarn test:chrome`
