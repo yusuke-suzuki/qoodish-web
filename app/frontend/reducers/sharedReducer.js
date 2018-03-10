@@ -162,6 +162,11 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mapDetailTabActive: false
       });
+    case '@@router/LOCATION_CHANGE':
+      gtag('config', 'GA_TRACKING_ID', {
+        'page_path': action.payload.pathname
+      });
+      return state;
     default:
       return state;
   }
