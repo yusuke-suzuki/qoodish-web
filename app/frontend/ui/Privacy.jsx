@@ -41,6 +41,13 @@ const styles = {
 };
 
 class Privacy extends React.Component {
+  componentWillMount() {
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/privacy',
+      'page_title': 'Privacy | Qoodish'
+    });
+  }
+
   render() {
     return (
       <div>

@@ -148,6 +148,11 @@ export default class MapDetail extends Component {
     if (!this.props.large) {
       this.props.updatePageTitle(this.props.currentMap.name);
     }
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': `/maps/${this.props.currentMap.id}`,
+      'page_title': `${this.props.currentMap.name} | Qoodish`
+    });
   }
 
   componentWillReceiveProps(nextProps) {

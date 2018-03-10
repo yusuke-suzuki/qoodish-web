@@ -129,12 +129,17 @@ const GoogleMapContainer = withGoogleMap(props => (
 ));
 
 class SpotDetail extends Component {
-  componentWillMount() {
+  async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentSpot) {
-      this.props.fetchSpot();
+      await this.props.fetchSpot();
     }
     this.props.fetchSpotReviews();
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': `/spots/${this.props.currentSpot.place_id}`,
+      'page_title': `${this.props.currentSpot.name} | Qoodish`
+    });
   }
 
   componentWillUnmount() {

@@ -41,6 +41,13 @@ const styles = {
 };
 
 class Terms extends React.Component {
+  componentWillMount() {
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/terms',
+      'page_title': 'Terms | Qoodish'
+    });
+  }
+
   render() {
     return (
       <div>
