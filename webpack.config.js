@@ -38,7 +38,8 @@ const plugins = [
     'PICKED_UP_MAP_ID',
     'LP_CAROUSEL_1',
     'LP_IMAGE_1',
-    'LP_IMAGE_2'
+    'LP_IMAGE_2',
+    'GA_TRACKING_ID'
   ])
 ];
 
