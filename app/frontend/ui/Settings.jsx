@@ -26,6 +26,10 @@ const styles = {
 export default class Footer extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/settings',
+      'page_title': 'Settings | Qoodish'
+    });
   }
 
   render() {

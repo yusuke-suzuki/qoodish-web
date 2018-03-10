@@ -108,6 +108,11 @@ class Login extends React.Component {
       ],
       tosUrl: process.env.ENDPOINT
     };
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/login',
+      'page_title': 'Login | Qoodish'
+    });
   }
 
   handleScrollTopClick() {

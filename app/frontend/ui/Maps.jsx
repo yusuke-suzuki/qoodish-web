@@ -79,6 +79,11 @@ export default class Maps extends Component {
     this.props.updatePageTitle();
     this.props.refreshMyMaps();
     this.props.refreshFollowingMaps();
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/maps',
+      'page_title': 'Maps | Qoodish'
+    });
   }
 
   componentWillUnmount() {

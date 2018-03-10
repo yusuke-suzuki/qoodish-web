@@ -95,6 +95,11 @@ export default class Feed extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.refreshReviews();
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/',
+      'page_title': 'Home | Qoodish'
+    });
   }
 
   handleClickLoadMoreButton() {

@@ -86,6 +86,11 @@ export default class Discover extends Component {
     this.props.pickUpMap();
     this.props.fetchRecentReviews();
     this.props.refreshPopularMaps();
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      'page_path': '/discover',
+      'page_title': 'Discover | Qoodish'
+    });
   }
 
   renderProgress() {
