@@ -40,6 +40,9 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(signIn(json));
         dispatch(openToast('Signed in successfully!'));
+        gtag('event', 'login', {
+          'method': provider.providerId
+        });
       } else {
         dispatch(openToast(json.detail));
       }

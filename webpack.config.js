@@ -20,7 +20,8 @@ const plugins = [
     googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
     icon36: process.env.ICON_36,
     icon512: process.env.ICON_512,
-    fbAppId: process.env.FB_APP_ID
+    fbAppId: process.env.FB_APP_ID,
+    gaTrackingId: process.env.GA_TRACKING_ID
   }),
   new webpack.EnvironmentPlugin([
     'ENDPOINT',

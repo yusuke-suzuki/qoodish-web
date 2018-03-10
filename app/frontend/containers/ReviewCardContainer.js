@@ -78,6 +78,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let review = await response.json();
         dispatch(likeReview(review));
         dispatch(openToast('Liked!'));
+
+        gtag('event', 'create', {
+          'content_type': 'like',
+          'event_category': 'engagement'
+        });
       } else {
         dispatch(openToast('Request failed.'));
       }
