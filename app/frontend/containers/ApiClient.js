@@ -376,8 +376,11 @@ class ApiClient {
     return response;
   }
 
-  async followMap(mapId) {
-    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/follow`;
+  async followMap(mapId, inviteId = undefined) {
+    let url = `${process.env.API_ENDPOINT}/maps/${mapId}/follow`;
+    if (inviteId) {
+      url += `?invite_id=${inviteId}`
+    }
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
       method: 'POST',
@@ -485,6 +488,52 @@ class ApiClient {
         Authorization: token
       },
       body: JSON.stringify({ read: true })
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchUsers(input = undefined) {
+    let url = `${process.env.API_ENDPOINT}/users`;
+    if (input) {
+      url += `?input=${input}`
+    }
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async sendInvite(mapId, userId) {
+    let url = `${process.env.API_ENDPOINT}/maps/${mapId}/invites`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify({ user_id: userId })
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchInvites() {
+    const url = `${process.env.API_ENDPOINT}/invites`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
     };
     const response = await fetch(url, options);
     return response;

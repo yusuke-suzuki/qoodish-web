@@ -68,6 +68,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(push('/settings'));
     },
 
+    requestInvites: () => {
+      dispatch(push('/invites'));
+    },
+
     readNotifications: async notifications => {
       await sleep(5000);
       const client = new ApiClient();

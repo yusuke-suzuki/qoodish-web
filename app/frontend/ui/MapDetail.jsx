@@ -15,6 +15,7 @@ import EditMapDialogContainer from '../containers/EditMapDialogContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
+import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
 import PlaceIcon from 'material-ui-icons/Place';
@@ -187,6 +188,7 @@ export default class MapDetail extends Component {
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
+        <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
       </div>
     );
   }
