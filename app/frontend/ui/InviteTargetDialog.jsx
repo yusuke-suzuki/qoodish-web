@@ -165,6 +165,7 @@ class InviteTargetDialog extends Component {
         <ListItemSecondaryAction>
           <Checkbox
             checked={this.state.selectedUserId === user.id}
+            onClick={() => this.handleUserClick(user)}
           />
         </ListItemSecondaryAction>
       </ListItem>

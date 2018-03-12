@@ -284,7 +284,7 @@ class MapSummary extends Component {
     return (
       <Toolbar style={styles.mapToolbar} disableGutters>
         <div style={styles.toolbarActions}>
-          {map && map.private && this.renderInviteButton()}
+          {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
           <IconButton
             aria-label="More share"
             aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}

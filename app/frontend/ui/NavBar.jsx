@@ -386,12 +386,7 @@ class NavBar extends Component {
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
-          primary={
-            <div style={styles.notificationText}>
-              <b>{notification.notifier.name}</b> {notification.key} your{' '}
-              {notification.notifiable.type}.
-            </div>
-          }
+          primary={this.renderNotificationText(notification)}
           secondary={
             <div style={styles.fromNow}>{this.fromNow(notification)}</div>
           }
@@ -409,6 +404,22 @@ class NavBar extends Component {
         )}
       </MenuItem>
     ));
+  }
+
+  renderNotificationText(notification) {
+    if (notification.key == 'invited') {
+      return (
+        <div style={styles.notificationText}>
+          <b>{notification.notifier.name}</b> {notification.key} you to{' '}
+          {notification.notifiable.type}.
+        </div>
+      );
+    } else {
+      <div style={styles.notificationText}>
+        <b>{notification.notifier.name}</b> {notification.key} your{' '}
+        {notification.notifiable.type}.
+      </div>
+    }
   }
 
   fromNow(notification) {
