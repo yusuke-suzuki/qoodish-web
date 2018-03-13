@@ -15,6 +15,7 @@ const pageRoutes = [
   '/maps/:mapId/reports/:reviewId',
   '/spots/:placeId',
   '/settings',
+  '/invites',
   '/terms',
   '/privacy'
 ];

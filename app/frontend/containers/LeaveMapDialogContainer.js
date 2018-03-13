@@ -34,6 +34,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let map = await response.json();
         dispatch(leaveMap(map));
         dispatch(openToast('Unfollowed map successfully'));
+
+        gtag('event', 'unfollow', {
+          'event_category': 'engagement',
+          'event_label': 'map'
+        });
+
         let colloboratorsResponse = await client.fetchCollaborators(
           ownProps.mapId
         );

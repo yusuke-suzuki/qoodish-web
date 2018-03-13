@@ -17,6 +17,7 @@ import HomeIcon from 'material-ui-icons/Home';
 import ExploreIcon from 'material-ui-icons/Explore';
 import MapIcon from 'material-ui-icons/Map';
 import SettingsIcon from 'material-ui-icons/Settings';
+import MailIcon from 'material-ui-icons/Mail';
 import Avatar from 'material-ui/Avatar';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import NotificationsIcon from 'material-ui-icons/Notifications';
@@ -376,18 +377,16 @@ class NavBar extends Component {
   renderNotifications(notifications) {
     return notifications.map(notification => (
       <MenuItem
-        onClick={() => this.props.handleNotificationClick(notification)}
+        onClick={() => {
+          this.handleRequestNotificationClose();
+          this.props.handleNotificationClick(notification);
+        }}
         key={notification.id}
         style={styles.notificationMenuItem}
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
-          primary={
-            <div style={styles.notificationText}>
-              <b>{notification.notifier.name}</b> {notification.key} your{' '}
-              {notification.notifiable.type}.
-            </div>
-          }
+          primary={this.renderNotificationText(notification)}
           secondary={
             <div style={styles.fromNow}>{this.fromNow(notification)}</div>
           }
@@ -405,6 +404,22 @@ class NavBar extends Component {
         )}
       </MenuItem>
     ));
+  }
+
+  renderNotificationText(notification) {
+    if (notification.key == 'invited') {
+      return (
+        <div style={styles.notificationText}>
+          <b>{notification.notifier.name}</b> {notification.key} you to{' '}
+          {notification.notifiable.type}.
+        </div>
+      );
+    } else {
+      <div style={styles.notificationText}>
+        <b>{notification.notifier.name}</b> {notification.key} your{' '}
+        {notification.notifiable.type}.
+      </div>
+    }
   }
 
   fromNow(notification) {
@@ -493,6 +508,12 @@ class NavBar extends Component {
                 <SettingsIcon />
               </ListItemIcon>
               <ListItemText primary="Settings" />
+            </ListItem>
+            <ListItem button onClick={this.props.requestInvites}>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary="Invites" />
             </ListItem>
           </div>
         </List>

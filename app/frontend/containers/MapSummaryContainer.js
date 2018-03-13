@@ -13,6 +13,7 @@ import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
 import selectReview from '../actions/selectReview';
+import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 
 const mapStateToProps = state => {
   return {
@@ -84,6 +85,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleIssueButtonClick: map => {
       dispatch(openIssueDialog(map.id, 'map'));
+    },
+
+    handleInviteButtonClick: () => {
+      dispatch(openInviteTargetDialog());
     }
   };
 };

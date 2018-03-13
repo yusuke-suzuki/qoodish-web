@@ -23,7 +23,7 @@ const styles = {
   }
 };
 
-export default class Footer extends Component {
+export default class Invites extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     gtag('config', process.env.GA_TRACKING_ID, {

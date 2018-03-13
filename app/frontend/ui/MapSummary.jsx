@@ -19,6 +19,7 @@ import ShareIcon from 'material-ui-icons/Share';
 import Divider from 'material-ui/Divider';
 import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
+import PersonAddIcon from 'material-ui-icons/PersonAdd';
 import TimelineIcon from 'material-ui-icons/Timeline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Tabs, { Tab } from 'material-ui/Tabs';
@@ -283,6 +284,7 @@ class MapSummary extends Component {
     return (
       <Toolbar style={styles.mapToolbar} disableGutters>
         <div style={styles.toolbarActions}>
+          {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
           <IconButton
             aria-label="More share"
             aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
@@ -336,6 +338,16 @@ class MapSummary extends Component {
           {map && this.renderMenu(map)}
         </div>
       </Toolbar>
+    );
+  }
+
+  renderInviteButton() {
+    return (
+      <IconButton
+        onClick={this.props.handleInviteButtonClick}
+      >
+        <PersonAddIcon style={styles.mapMenuIcon} />
+      </IconButton>
     );
   }
 

@@ -26,6 +26,7 @@ import mapSummaryReducer from './reducers/mapSummaryReducer';
 import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
+import invitesReducer from './reducers/invitesReducer';
 
 import persistState from 'redux-localstorage';
 
@@ -66,7 +67,8 @@ const reducer = combineReducers({
   mapSummary: mapSummaryReducer,
   reviews: reviewsReducer,
   gMap: gMapReducer,
-  settings: settingsReducer
+  settings: settingsReducer,
+  invites: invitesReducer
 });
 
 const store = compose(persistState('app'), applyMiddleware(...middlewares))(

@@ -41,8 +41,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(openToast('Successfuly created the report!'));
 
         gtag('event', 'create', {
-          'content_type': 'review',
-          'event_category': 'engagement'
+          'event_category': 'engagement',
+          'event_label': 'review'
         });
 
         let spotsResponse = await client.fetchSpots(json.map_id);

@@ -8,6 +8,7 @@ import fetchPostableMaps from '../actions/fetchPostableMaps';
 import { fetchCurrentPosition } from './Utils';
 import getCurrentPosition from '../actions/getCurrentPosition';
 import searchPlaces from '../actions/searchPlaces';
+import signOut from '../actions/signOut';
 
 const mapStateToProps = state => {
   return {
@@ -65,8 +66,13 @@ const mapDispatchToProps = dispatch => {
     fetchPostableMaps: async () => {
       const client = new ApiClient();
       let response = await client.fetchPostableMaps();
-      let maps = await response.json();
-      dispatch(fetchPostableMaps(maps));
+      if (response.ok) {
+        let maps = await response.json();
+        dispatch(fetchPostableMaps(maps));
+      } else if (response.status == 401) {
+        dispatch(signOut());
+        dispatch(openToast('Authenticate failed'));
+      }
     }
   };
 };
