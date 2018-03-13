@@ -415,10 +415,12 @@ class NavBar extends Component {
         </div>
       );
     } else {
-      <div style={styles.notificationText}>
-        <b>{notification.notifier.name}</b> {notification.key} your{' '}
-        {notification.notifiable.type}.
-      </div>
+      return (
+        <div style={styles.notificationText}>
+          <b>{notification.notifier.name}</b> {notification.key} your{' '}
+          {notification.notifiable.type}.
+        </div>
+      );
     }
   }
 
