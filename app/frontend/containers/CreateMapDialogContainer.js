@@ -36,8 +36,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(openToast('Successfuly created the map!'));
 
         gtag('event', 'create', {
-          'content_type': 'map',
-          'event_category': 'engagement'
+          'event_category': 'engagement',
+          'event_label': 'map'
         });
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));

@@ -34,6 +34,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let map = await followResponse.json();
         dispatch(joinMap(map));
         dispatch(openToast('Followed map successfully!'));
+
+        gtag('event', 'follow', {
+          'event_category': 'engagement',
+          'event_label': 'map'
+        });
+
         let colloboratorsResponse = await client.fetchCollaborators(
           ownProps.mapId
         );
