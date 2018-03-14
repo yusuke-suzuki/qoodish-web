@@ -109,10 +109,6 @@ class EditReviewDialog extends Component {
       );
     } else {
       this.clearInputs();
-      this.setState({
-        placeId: nextProps.selectedPlace.placeId,
-        placeName: nextProps.selectedPlace.description
-      });
       if (nextProps.mapId) {
         this.setState({
           mapId: nextProps.mapId
@@ -122,6 +118,13 @@ class EditReviewDialog extends Component {
           mapId: nextProps.postableMaps[0].id
         });
       }
+    }
+
+    if (nextProps.selectedPlace) {
+      this.setState({
+        placeId: nextProps.selectedPlace.placeId,
+        placeName: nextProps.selectedPlace.description
+      });
     }
   }
 
@@ -301,6 +304,7 @@ class EditReviewDialog extends Component {
               </Avatar>
             }
             label={this.state.placeName}
+            onClick={this.props.handleSpotClick}
           />
           <br />
           <br />

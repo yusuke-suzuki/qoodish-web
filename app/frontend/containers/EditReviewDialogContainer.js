@@ -8,6 +8,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
+import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import { uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
 const mapStateToProps = state => {
@@ -100,6 +101,10 @@ const mapDispatchToProps = dispatch => {
 
     handleRequestClose: () => {
       dispatch(closeEditReviewDialog());
+    },
+
+    handleSpotClick: () => {
+      dispatch(openPlaceSelectDialog());
     }
   };
 };
