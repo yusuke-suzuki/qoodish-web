@@ -37,7 +37,7 @@ class ReviewDetail extends Component {
       await this.props.fetchReview();
     }
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': `/maps/${this.props.currentReview.mapId}/reports/${this.props.currentReview.id}`,
+      'page_path': `/maps/${this.props.currentReview.map_id}/reports/${this.props.currentReview.id}`,
       'page_title': `${this.props.currentReview.spot.name} - ${this.props.currentReview.map_name} | Qoodish`
     });
   }
