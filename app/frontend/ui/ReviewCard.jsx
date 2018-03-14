@@ -17,6 +17,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import FavoriteIcon from 'material-ui-icons/Favorite';
 import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
 import Badge from 'material-ui/Badge';
+import twitter from 'twitter-text';
 
 const styles = {
   card: {},
@@ -111,6 +112,13 @@ class ReviewCard extends Component {
   }
 
   renderReviewCard(review) {
+    const commentHtml = {
+      __html: twitter.autoLink(
+        twitter.htmlEscape(review.comment),
+        { targetBlank: true }
+      )
+    };
+
     return (
       <Card style={this.props.detail ? styles.cardDetail : styles.card}>
         {review.editable
@@ -149,8 +157,7 @@ class ReviewCard extends Component {
           >
             {review.spot.name}
           </Typography>
-          <Typography component="p" style={styles.reviewComment}>
-            {review.comment}
+          <Typography component="p" dangerouslySetInnerHTML={commentHtml} style={styles.reviewComment}>
           </Typography>
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}

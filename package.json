@@ -37,6 +37,7 @@
     "redux": "^3.7.2",
     "redux-localstorage": "^0.4.1",
     "redux-logger": "^3.0.6",
+    "twitter-text": "^2.0.4",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
