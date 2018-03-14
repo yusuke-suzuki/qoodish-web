@@ -144,8 +144,8 @@ class EditReviewDialog extends Component {
     let comment = e.target.value;
     let errorText;
     if (comment) {
-      if (comment.length > 140) {
-        errorText = 'The maximum number of characters is 140';
+      if (comment.length > 200) {
+        errorText = 'The maximum number of characters is 200';
       } else {
         errorText = '';
       }

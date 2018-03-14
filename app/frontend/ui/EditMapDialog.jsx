@@ -137,8 +137,8 @@ class EditMapDialog extends Component {
     let description = e.target.value;
     let errorText;
     if (description) {
-      if (description.length > 140) {
-        errorText = 'The maximum number of characters is 140';
+      if (description.length > 200) {
+        errorText = 'The maximum number of characters is 200';
       } else {
         errorText = null;
       }
