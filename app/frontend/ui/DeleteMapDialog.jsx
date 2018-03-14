@@ -17,6 +17,7 @@ class DeleteMapDialog extends Component {
       disabled: true
     };
     this.handleCheckChange = this.handleCheckChange.bind(this);
+    this.handleRequestDialogClose = this.handleRequestDialogClose.bind(this);
   }
 
   handleCheckChange() {
@@ -26,11 +27,20 @@ class DeleteMapDialog extends Component {
     });
   }
 
+  handleRequestDialogClose() {
+    this.setState({
+      check: false,
+      disabled: true
+    }, () => {
+      this.props.handleRequestDialogClose();
+    });
+  }
+
   render() {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onClose={this.props.handleRequestDialogClose}
+        onClose={this.handleRequestDialogClose}
         fullWidth
       >
         　<DialogTitle>Are you sure you want to DELETE this map?</DialogTitle>
@@ -52,10 +62,13 @@ class DeleteMapDialog extends Component {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+          <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
             raised
-            onClick={this.props.handleDeleteButtonClick}
+            onClick={() => {
+              this.props.handleDeleteButtonClick();
+              this.handleRequestDialogClose();
+            }}
             color="primary"
             disabled={this.state.disabled}
           >

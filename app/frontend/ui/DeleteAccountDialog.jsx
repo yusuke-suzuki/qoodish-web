@@ -31,8 +31,9 @@ class DeleteAccountDialog extends Component {
     this.setState({
       check: false,
       disabled: true
+    }, () => {
+      this.props.handleRequestDialogClose();
     });
-    this.props.handleRequestDialogClose();
   }
 
   handleCheckChange() {
@@ -73,9 +74,10 @@ class DeleteAccountDialog extends Component {
           <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
             raised
-            onClick={() =>
-              this.props.handleDeleteButtonClick(this.props.currentUser)
-            }
+            onClick={() => {
+              this.props.handleDeleteButtonClick(this.props.currentUser);
+              this.handleRequestDialogClose();
+            }}
             disabled={this.state.disabled}
             style={this.state.disabled ? {} : styles.deleteButton}
           >

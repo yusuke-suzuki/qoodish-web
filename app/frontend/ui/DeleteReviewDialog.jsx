@@ -24,8 +24,9 @@ class DeleteReviewDialog extends Component {
     this.setState({
       check: false,
       disabled: true
+    }, () => {
+      this.props.handleRequestDialogClose();
     });
-    this.props.handleRequestDialogClose();
   }
 
   handleCheckChange() {
@@ -63,9 +64,10 @@ class DeleteReviewDialog extends Component {
           <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
             raised
-            onClick={() =>
-              this.props.handleDeleteButtonClick(this.props.currentReview)
-            }
+            onClick={() => {
+              this.props.handleDeleteButtonClick(this.props.currentReview);
+              this.handleRequestDialogClose();
+            }}
             color="primary"
             disabled={this.state.disabled}
           >
