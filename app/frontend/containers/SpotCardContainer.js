@@ -34,7 +34,9 @@ const mapDispatchToProps = dispatch => {
 
     handleShowDetailButtonClick: spot => {
       dispatch(fetchSpot(spot));
-      dispatch(push(`/spots/${spot.place_id}`));
+      dispatch(push(`/spots/${spot.place_id}`, {
+        previous: true
+      }));
     },
 
     handleRouteButtonClick: (spot, currentPosition) => {

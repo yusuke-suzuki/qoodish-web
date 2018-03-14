@@ -41,7 +41,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             let spots = await spotResponse.json();
             dispatch(fetchSpots(spots));
           }
-          dispatch(push(`/maps/${review.map_id}`));
+          dispatch(push(`/maps/${review.map_id}`, {
+            previous: true
+          }));
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast('Delete report successfully'));

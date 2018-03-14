@@ -42,7 +42,8 @@ const initialState = {
   unreadNotifications: [],
   showBackButton: false,
   mapsTabActive: false,
-  mapDetailTabActive: false
+  mapDetailTabActive: false,
+  previous: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -161,6 +162,10 @@ const reducer = (state = initialState, action) => {
     case HIDE_MAP_DETAIL_TAB:
       return Object.assign({}, state, {
         mapDetailTabActive: false
+      });
+    case '@@router/LOCATION_CHANGE':
+      return Object.assign({}, state, {
+        previous: action.payload.state ? action.payload.state.previous : false
       });
     default:
       return state;

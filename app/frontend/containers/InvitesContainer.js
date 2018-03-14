@@ -44,7 +44,9 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(openToast('Followed map successfully!'));
-        dispatch(push(`/maps/${invite.invitable.id}`));
+        dispatch(push(`/maps/${invite.invitable.id}`, {
+          previous: true
+        }));
         gtag('event', 'follow', {
           'event_category': 'engagement',
           'event_label': 'map'

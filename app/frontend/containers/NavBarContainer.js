@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push, go } from 'react-router-redux';
+import { push, goBack } from 'react-router-redux';
 import NavBar from '../ui/NavBar';
 import signOut from '../actions/signOut';
 import requestStart from '../actions/requestStart';
@@ -26,7 +26,8 @@ const mapStateToProps = state => {
     mapsTabActive: state.shared.mapsTabActive,
     mapDetailTabActive: state.shared.mapDetailTabActive,
     mapsTabValue: state.maps.tabValue,
-    mapDetailTabValue: state.mapDetail.tabValue
+    mapDetailTabValue: state.mapDetail.tabValue,
+    previous: state.shared.previous
   };
 };
 
@@ -89,11 +90,17 @@ const mapDispatchToProps = dispatch => {
     },
 
     handleNotificationClick: notification => {
-      dispatch(push(notification.click_action));
+      dispatch(push(notification.click_action, {
+        previous: true
+      }));
     },
 
-    handleBackButtonClick: () => {
-      dispatch(go(-1));
+    handleBackButtonClick: (previous) => {
+      if (previous) {
+        dispatch(goBack());
+      } else {
+        dispatch(push('/'));
+      }
     },
 
     showBackButton: () => {
@@ -105,19 +112,27 @@ const mapDispatchToProps = dispatch => {
     },
 
     handleSummaryTabClick: pathname => {
-      dispatch(push(`${pathname}#summary`));
+      dispatch(push(`${pathname}#summary`, {
+        previous: true
+      }));
     },
 
     handleMapTabClick: pathname => {
-      dispatch(push(`${pathname}#map`));
+      dispatch(push(`${pathname}#map`, {
+        previous: true
+      }));
     },
 
     handleFollowingMapsTabClick: pathname => {
-      dispatch(push(`${pathname}#following`));
+      dispatch(push(`${pathname}#following`, {
+        previous: true
+      }));
     },
 
     handleMyMapsTabClick: pathname => {
-      dispatch(push(`${pathname}#mymaps`));
+      dispatch(push(`${pathname}#mymaps`, {
+        previous: true
+      }));
     }
   };
 };

@@ -303,7 +303,7 @@ class NavBar extends Component {
 
   renderBackButton() {
     return (
-      <IconButton onClick={this.props.handleBackButtonClick}>
+      <IconButton onClick={() => this.props.handleBackButtonClick(this.props.previous)}>
         <ArrowBackIcon style={styles.navBarIcon} />
       </IconButton>
     );

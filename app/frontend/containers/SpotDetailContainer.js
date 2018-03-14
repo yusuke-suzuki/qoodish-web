@@ -72,7 +72,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openReviewDialog(review));
       } else {
         dispatch(selectReview(review));
-        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
+          previous: true
+        }));
       }
     },
 
