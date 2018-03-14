@@ -30,7 +30,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleSpotClick: async (spot, large) => {
       if (!large) {
-        dispatch(push(`/maps/${ownProps.mapId}#map`));
+        dispatch(push(`/maps/${ownProps.mapId}#map`, {
+          previous: true
+        }));
       }
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));
@@ -44,7 +46,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openReviewDialog(review));
       } else {
         dispatch(selectReview(review));
-        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
+          previous: true
+        }));
       }
     },
 

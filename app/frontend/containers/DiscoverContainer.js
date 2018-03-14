@@ -78,13 +78,17 @@ const mapDispatchToProps = dispatch => {
         return;
       }
       dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`));
+      dispatch(push(`/maps/${map.id}`, {
+        previous: true
+      }));
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 
     handleClickReview: review => {
       dispatch(selectReview(review));
-      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`));
+      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
+        previous: true
+      }));
     }
   };
 };

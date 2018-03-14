@@ -23,13 +23,17 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleMapClick: () => {
-      dispatch(push(`/maps/${ownProps.currentReview.map_id}`));
+      dispatch(push(`/maps/${ownProps.currentReview.map_id}`, {
+        previous: true
+      }));
     },
 
     handleSpotNameClick: async spot => {
       dispatch(closeReviewDialog());
       dispatch(selectSpot(spot));
-      dispatch(push(`/spots/${spot.place_id}`));
+      dispatch(push(`/spots/${spot.place_id}`, {
+        previous: true
+      }));
     },
 
     handleTweetButtonClick: review => {

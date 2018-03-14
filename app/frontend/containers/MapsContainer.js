@@ -70,7 +70,9 @@ const mapDispatchToProps = dispatch => {
 
     handleClickMap: map => {
       dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`));
+      dispatch(push(`/maps/${map.id}`, {
+        previous: true
+      }));
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 
