@@ -61,6 +61,7 @@ export const generateMetadata = async (req) => {
       description = json.description;
       imageUrl = json.image_url;
       pageUrl = req.originalUrl;
+      twitterCard = 'summary_large_image';
     }
   }
 
