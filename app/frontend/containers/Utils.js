@@ -14,7 +14,8 @@ export const uploadToStorage = image => {
     const storageRef = storage.ref();
     let fileName = `${uuidv1()}.jpg`;
     const metadata = {
-      contentType: 'image/jpeg'
+      contentType: 'image/jpeg',
+      cacheControl: 'public,max-age=86400',
     };
     const uploadTask = storageRef
       .child('images/' + fileName)

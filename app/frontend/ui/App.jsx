@@ -137,6 +137,7 @@ class App extends Component {
         title="Qoodish"
         meta={[
           { name: 'title', content: 'Qoodish' },
+          { name: 'theme-color', content: '#ffc107' },
           {
             name: 'description',
             content:
