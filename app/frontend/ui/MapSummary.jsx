@@ -183,30 +183,30 @@ class MapSummary extends Component {
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
           <CardMedia>{this.renderThumbnail(map)}</CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
-            <Typography
-              type="headline"
-              component="h2"
-              gutterBottom
-              style={styles.mapSummaryText}
-            >
-              {map && map.name ? (
-                map.name
-              ) : (
-                <Chip style={styles.skeltonMapName} />
-              )}
-            </Typography>
-            <Typography component="p" style={styles.mapSummaryText}>
-              {map && map.description ? (
-                map.description
-              ) : (
-                <Chip style={styles.skeltonMapDescription} />
-              )}
-            </Typography>
+            {map && map.name ? (
+              <Typography
+                type="headline"
+                component="h2"
+                gutterBottom
+                style={styles.mapSummaryText}
+              >
+                {map.name}
+              </Typography>
+            ) : (
+              <Chip style={styles.skeltonMapName} />
+            )}
+            {map && map.description ? (
+              <Typography component="p" style={styles.mapSummaryText}>
+                {map.description}
+              </Typography>
+            ) : (
+              <Chip style={styles.skeltonMapDescription} />
+            )}
             <div style={styles.roleButtonContainer}>
               {map ? (
                 this.renderRoleButton(map)
               ) : (
-                <Button raised color="secondary" disabled />
+                <Button raised color="secondary" disabled>{''}</Button>
               )}
             </div>
           </CardContent>
