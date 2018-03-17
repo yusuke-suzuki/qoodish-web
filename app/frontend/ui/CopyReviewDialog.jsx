@@ -10,10 +10,6 @@ import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
 class CopyReviewDialog extends React.Component {
-  componentWillUnmount() {
-    this.props.handleRequestClose();
-  }
-
   render() {
     return (
       <Dialog

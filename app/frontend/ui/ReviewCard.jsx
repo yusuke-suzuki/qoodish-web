@@ -39,7 +39,6 @@ const styles = {
     paddingTop: 0
   },
   cardMedia: {
-    backgroundImage: 'initial',
     marginBottom: -5
   },
   reviewImage: {
@@ -193,7 +192,6 @@ class ReviewCard extends Component {
   renderCardMedia(review) {
     return (
       <CardMedia
-        image={review.image.url}
         style={styles.cardMedia}
       >
         <img src={review.image.url} style={styles.reviewImage} alt={review.spot.name} />

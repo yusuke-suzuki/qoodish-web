@@ -72,10 +72,6 @@ class EditMapDialog extends Component {
     this.validate = this.validate.bind(this);
   }
 
-  componentWillUnmount() {
-    this.props.handleRequestDialogClose();
-  }
-
   componentWillReceiveProps(nextProps) {
     let currentMap = nextProps.currentMap;
     if (nextProps.currentMap) {

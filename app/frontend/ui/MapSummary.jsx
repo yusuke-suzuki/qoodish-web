@@ -63,17 +63,11 @@ const styles = {
     width: '100%',
     minHeight: 'calc(100vh - 112px)'
   },
-  cardMedia: {
-    backgroundImage: 'initial'
-  },
   cardContentSmall: {
     textAlign: 'center'
   },
   mapSummaryText: {
     wordWrap: 'break-word'
-  },
-  media: {
-    width: '100%'
   },
   mapToolbar: {
     backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
@@ -184,10 +178,7 @@ class MapSummary extends Component {
       >
         {this.renderMapToolbar(map)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-          <CardMedia
-            image={map && map.image_url}
-            style={styles.cardMedia}
-          >
+          <CardMedia>
             {this.renderThumbnail(map)}
           </CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
@@ -470,7 +461,7 @@ class MapSummary extends Component {
         key={spot.place_id}
         onClick={() => this.props.handleSpotClick(spot, this.props.large)}
       >
-        <Avatar src={spot.image_url} style={styles.spotImage} />
+        <Avatar src={spot.image_url} />
         <ListItemText
           disableTypography={true}
           primary={

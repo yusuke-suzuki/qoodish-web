@@ -10,13 +10,10 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ShareIcon from 'material-ui-icons/Share';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
-import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
-import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import MapIcon from 'material-ui-icons/Map';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import Card, { CardHeader } from 'material-ui/Card';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
-import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -145,9 +142,6 @@ export default class Feed extends Component {
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
         {this.renderCreateReviewButton()}
-        <PlaceSelectDialogContainer />
-        <EditReviewDialogContainer />
-        <DeleteReviewDialogContainer />
       </div>
     );
   }

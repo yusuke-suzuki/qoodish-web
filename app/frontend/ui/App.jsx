@@ -20,6 +20,13 @@ import InvitesContainer from '../containers/InvitesContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
+import ReviewDialogContainer from '../containers/ReviewDialogContainer';
+import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
+import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
+import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
+import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
+import EditMapDialogContainer from '../containers/EditMapDialogContainer';
+
 import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import amber from 'material-ui/colors/amber';
@@ -126,6 +133,12 @@ class App extends Component {
           <IssueDialogContainer />
           <LikesDialogContainer />
           <CopyReviewDialogContainer />
+          <PlaceSelectDialogContainer />
+          <EditReviewDialogContainer />
+          <DeleteReviewDialogContainer />
+          <ReviewDialogContainer />
+          <CreateMapDialogContainer />
+          <EditMapDialogContainer />
         </div>
       </MuiThemeProvider>
     );

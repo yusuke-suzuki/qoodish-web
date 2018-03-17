@@ -5,7 +5,6 @@ import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import Typography from 'material-ui/Typography';
 
 const styles = {
@@ -127,7 +126,6 @@ export default class Maps extends Component {
         >
           <AddIcon />
         </Button>
-        <CreateMapDialogContainer />
       </div>
     );
   }

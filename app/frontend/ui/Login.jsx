@@ -63,9 +63,6 @@ const styles = {
     width: '100%',
     margin: '0 auto'
   },
-  cardMedia: {
-    backgroundImage: 'initial'
-  },
   image: {
     width: '100%'
   },
@@ -203,10 +200,7 @@ class Login extends React.Component {
                     を友だちにも教えてあげませんか？
                   </Typography>
                 </CardContent>
-                <CardMedia
-                  image={process.env.LP_IMAGE_1}
-                  style={styles.cardMedia}
-                >
+                <CardMedia>
                   <img src={process.env.LP_IMAGE_1} style={styles.image} />
                 </CardMedia>
               </Card>
@@ -225,10 +219,7 @@ class Login extends React.Component {
                     きっとあなたのよく知る友人たちが知っているはずです！
                   </Typography>
                 </CardContent>
-                <CardMedia
-                  image={process.env.LP_IMAGE_2}
-                  style={styles.cardMedia}
-                >
+                <CardMedia>
                   <img src={process.env.LP_IMAGE_2} style={styles.image} />
                 </CardMedia>
               </Card>
