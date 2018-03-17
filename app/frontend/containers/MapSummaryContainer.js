@@ -62,8 +62,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleTweetButtonClick: map => {
       let url = `${process.env.ENDPOINT}/maps/${map.id}`;
-      let text = `「${map.name}」に参加しています。`;
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
+      window.open(`https://twitter.com/intent/tweet?text=${map.name}&url=${url}`);
     },
 
     handleFacebookButtonClick: map => {
