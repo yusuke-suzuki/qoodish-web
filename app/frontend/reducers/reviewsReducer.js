@@ -130,7 +130,8 @@ const reducer = (state = initialState, action) => {
     case CLOSE_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: null,
-        editReviewDialogOpen: false
+        editReviewDialogOpen: false,
+        selectedPlace: null
       });
     case OPEN_COPY_REVIEW_DIALOG:
       return Object.assign({}, state, {
