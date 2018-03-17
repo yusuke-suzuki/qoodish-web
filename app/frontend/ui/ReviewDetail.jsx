@@ -65,6 +65,9 @@ class ReviewDetail extends Component {
     return (
       <Helmet
         title={`${review.spot.name} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${review.map_id}/${review.id}` }
+        ]}
         meta={[
           { name: 'title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
           { name: 'description', content: review.comment },

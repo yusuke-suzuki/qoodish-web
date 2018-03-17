@@ -197,6 +197,9 @@ export default class MapDetail extends Component {
     return (
       <Helmet
         title={`${map.name} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${map.id}` }
+        ]}
         meta={[
           { name: 'title', content: `${map.name} | Qoodish` },
           { name: 'description', content: map.description },
