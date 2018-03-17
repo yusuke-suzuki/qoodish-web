@@ -396,12 +396,7 @@ class NavBar extends Component {
         />
         {notification.notifiable.image_url && (
           <ListItemSecondaryAction>
-            <Avatar style={styles.secondaryAvatar}>
-              <img
-                src={notification.notifiable.image_url}
-                style={styles.notificationImage}
-              />
-            </Avatar>
+            <Avatar src={notification.notifiable.image_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </MenuItem>

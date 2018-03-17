@@ -470,9 +470,7 @@ class MapSummary extends Component {
         key={spot.place_id}
         onClick={() => this.props.handleSpotClick(spot, this.props.large)}
       >
-        <Avatar>
-          <img src={spot.image_url} style={styles.spotImage} />
-        </Avatar>
+        <Avatar src={spot.image_url} style={styles.spotImage} />
         <ListItemText
           disableTypography={true}
           primary={
@@ -509,9 +507,7 @@ class MapSummary extends Component {
         />
         {review.image && (
           <ListItemSecondaryAction>
-            <Avatar style={styles.secondaryAvatar}>
-              <img src={review.image.url} style={styles.spotImage} />
-            </Avatar>
+            <Avatar src={review.image.url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </ListItem>
