@@ -9,13 +9,9 @@ import Avatar from 'material-ui/Avatar';
 import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import PlaceIcon from 'material-ui-icons/Place';
-import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
-import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import { CircularProgress } from 'material-ui/Progress';
 import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
-import ReviewDialogContainer from '../containers/ReviewDialogContainer';
-import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import Helmet from 'react-helmet';
 
 const styles = {
@@ -154,10 +150,6 @@ class SpotDetail extends Component {
         {this.renderContainer()}
         {this.props.currentSpot &&
           this.renderCreateReviewButton(this.props.currentSpot)}
-        <PlaceSelectDialogContainer />
-        <EditReviewDialogContainer />
-        <DeleteReviewDialogContainer />
-        <ReviewDialogContainer />
       </div>
     );
   }

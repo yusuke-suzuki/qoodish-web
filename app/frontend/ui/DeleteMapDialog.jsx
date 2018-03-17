@@ -20,10 +20,6 @@ class DeleteMapDialog extends Component {
     this.handleRequestDialogClose = this.handleRequestDialogClose.bind(this);
   }
 
-  componentWillUnmount() {
-    this.handleRequestDialogClose();
-  }
-
   handleCheckChange() {
     this.setState({
       check: !this.state.check,

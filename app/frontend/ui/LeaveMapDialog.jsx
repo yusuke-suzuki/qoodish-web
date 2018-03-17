@@ -8,10 +8,6 @@ import Dialog, {
 import Button from 'material-ui/Button';
 
 class LeaveMapDialog extends Component {
-  componentWillUnmount() {
-    this.props.handleRequestDialogClose();
-  }
-
   render() {
     return (
       <Dialog

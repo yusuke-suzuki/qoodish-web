@@ -11,10 +11,6 @@ function Transition(props) {
 }
 
 class ReviewDialog extends Component {
-  componentWillUnmount() {
-    this.props.handleRequestDialogClose();
-  }
-
   render() {
     return (
       <Dialog
