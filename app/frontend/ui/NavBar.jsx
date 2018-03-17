@@ -392,6 +392,7 @@ class NavBar extends Component {
             <div style={styles.fromNow}>{this.fromNow(notification)}</div>
           }
           style={styles.listItemContent}
+          disableTypography
         />
         {notification.notifiable.image_url && (
           <ListItemSecondaryAction>
