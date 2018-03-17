@@ -69,10 +69,6 @@ const styles = {
   fromNow: {
     fontSize: 14
   },
-  notificationImage: {
-    width: 40,
-    height: 40
-  },
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12
