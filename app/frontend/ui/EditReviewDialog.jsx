@@ -82,6 +82,10 @@ class EditReviewDialog extends Component {
     this.clearInputs = this.clearInputs.bind(this);
   }
 
+  componentWillUnmount() {
+    this.handleRequestClose();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (!nextProps.dialogOpen) {
       return;

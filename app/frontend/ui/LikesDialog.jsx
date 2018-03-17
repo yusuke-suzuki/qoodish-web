@@ -17,6 +17,10 @@ function Transition(props) {
 }
 
 class LikesDialog extends React.Component {
+  componentWillUnmount() {
+    this.props.handleRequestDialogClose();
+  }
+
   render() {
     return (
       <Dialog

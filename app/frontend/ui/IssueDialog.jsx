@@ -18,6 +18,10 @@ class IssueDialog extends Component {
     this.handleSendButtonClick = this.handleSendButtonClick.bind(this);
   }
 
+  componentWillUnmount() {
+    this.handleReasonChange();
+  }
+
   handleReasonChange(e, value) {
     this.setState({
       value: value

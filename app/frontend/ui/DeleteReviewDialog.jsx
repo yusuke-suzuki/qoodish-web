@@ -20,6 +20,10 @@ class DeleteReviewDialog extends Component {
     this.handleRequestDialogClose = this.handleRequestDialogClose.bind(this);
   }
 
+  componentWillUnmount() {
+    this.handleRequestDialogClose();
+  }
+
   handleRequestDialogClose() {
     this.setState({
       check: false,
