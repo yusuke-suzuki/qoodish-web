@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
         review.id
       }`;
-      let text = `「${review.map_name}」にレポートを投稿しました。`;
+      let text = review.editable ? `「${review.map_name}」にレポートを投稿しました。` : '';
       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
     },
 
