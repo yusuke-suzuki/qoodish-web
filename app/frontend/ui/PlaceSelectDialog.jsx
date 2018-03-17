@@ -52,6 +52,10 @@ class PlaceSelectDialog extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
+  componentWillUnmount() {
+    this.props.onClose();
+  }
+
   handleInputChange(e) {
     let input = e.target.value;
     if (this.props.loadingPlaces || !input) {

@@ -52,6 +52,10 @@ class InviteTargetDialog extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this.props.onClose();
+  }
+
   handleInputChange(e) {
     let input = e.target.value;
     if (this.props.loadingUsers || !input) {
