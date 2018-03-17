@@ -112,6 +112,13 @@ const reducer = (state = initialState, action) => {
         leaveMapDialogOpen: false,
         tabValue: 0
       });
+    case '@@router/LOCATION_CHANGE':
+      return Object.assign({}, state, {
+        placeSelectDialogOpen: false,
+        inviteTargetDialogOpen: false,
+        joinMapDialogOpen: false,
+        leaveMapDialogOpen: false
+      });
     default:
       return state;
   }

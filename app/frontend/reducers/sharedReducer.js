@@ -165,7 +165,9 @@ const reducer = (state = initialState, action) => {
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
-        previous: action.payload.state ? action.payload.state.previous : false
+        previous: action.payload.state ? action.payload.state.previous : false,
+        issueDialogOpen: false,
+        likesDialogOpen: false
       });
     default:
       return state;

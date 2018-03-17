@@ -170,7 +170,17 @@ const reducer = (state = initialState, action) => {
         nextTimestamp: '',
         targetReview: null,
         currentReview: null,
-        reviewDialogOpen: false
+        reviewDialogOpen: false,
+        editReviewDialogOpen: false,
+        copyReviewDialogOpen: false,
+        deleteReviewDialogOpen: false
+      });
+    case '@@router/LOCATION_CHANGE':
+      return Object.assign({}, state, {
+        reviewDialogOpen: false,
+        editReviewDialogOpen: false,
+        copyReviewDialogOpen: false,
+        deleteReviewDialogOpen: false
       });
     default:
       return state;

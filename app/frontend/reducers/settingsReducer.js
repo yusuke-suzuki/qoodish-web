@@ -17,6 +17,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         deleteAccountDialogOpen: false
       });
+    case '@@router/LOCATION_CHANGE':
+      return Object.assign({}, state, {
+        deleteAccountDialogOpen: false
+      });
     default:
       return state;
   }
