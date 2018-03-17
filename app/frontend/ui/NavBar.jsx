@@ -81,7 +81,8 @@ const styles = {
     maxHeight: '50vh'
   },
   notificationMenuItem: {
-    height: 'auto'
+    height: 'auto',
+    whiteSpace: 'initial'
   },
   notificationButton: {
     marginRight: 10
