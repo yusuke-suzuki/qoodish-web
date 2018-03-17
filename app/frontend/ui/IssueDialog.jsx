@@ -44,7 +44,7 @@ class IssueDialog extends Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-        　<DialogTitle>Report inappropriate content</DialogTitle>
+        <DialogTitle>Report inappropriate content</DialogTitle>
         <DialogContent>
           <FormControl required>
             <FormLabel focused>

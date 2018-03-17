@@ -121,7 +121,7 @@ const GoogleMapContainer = withGoogleMap(props => (
         }}
       />
     ) : null}
-    {<DirectionsRenderer directions={props.directions} />}
+    {props.directions.length > 0 && <DirectionsRenderer directions={props.directions} />}
     <SpotCardContainer mapId={props.match.params.mapId} />
   </GoogleMap>
 ));
@@ -197,6 +197,9 @@ export default class MapDetail extends Component {
     return (
       <Helmet
         title={`${map.name} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${map.id}` }
+        ]}
         meta={[
           { name: 'title', content: `${map.name} | Qoodish` },
           { name: 'description', content: map.description },

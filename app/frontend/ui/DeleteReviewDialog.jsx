@@ -47,7 +47,7 @@ class DeleteReviewDialog extends Component {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-        　<DialogTitle>
+        <DialogTitle>
           Are you sure you want to DELETE this report?
         </DialogTitle>
         <DialogContent>

@@ -63,6 +63,9 @@ const styles = {
     width: '100%',
     minHeight: 'calc(100vh - 112px)'
   },
+  cardMedia: {
+    backgroundImage: 'initial'
+  },
   cardContentSmall: {
     textAlign: 'center'
   },
@@ -179,34 +182,39 @@ class MapSummary extends Component {
             : styles.cardContainerSmall
         }
       >
-        {this.renderMapToolbar(this.props.currentMap)}
+        {this.renderMapToolbar(map)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-          <CardMedia>{this.renderThumbnail(map)}</CardMedia>
+          <CardMedia
+            image={map && map.image_url}
+            style={styles.cardMedia}
+          >
+            {this.renderThumbnail(map)}
+          </CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
-            <Typography
-              type="headline"
-              component="h2"
-              gutterBottom
-              style={styles.mapSummaryText}
-            >
-              {map && map.name ? (
-                map.name
-              ) : (
-                <Chip style={styles.skeltonMapName} />
-              )}
-            </Typography>
-            <Typography component="p" style={styles.mapSummaryText}>
-              {map && map.description ? (
-                map.description
-              ) : (
-                <Chip style={styles.skeltonMapDescription} />
-              )}
-            </Typography>
+            {map && map.name ? (
+              <Typography
+                type="headline"
+                component="h2"
+                gutterBottom
+                style={styles.mapSummaryText}
+              >
+                {map.name}
+              </Typography>
+            ) : (
+              <Chip style={styles.skeltonMapName} />
+            )}
+            {map && map.description ? (
+              <Typography component="p" style={styles.mapSummaryText}>
+                {map.description}
+              </Typography>
+            ) : (
+              <Chip style={styles.skeltonMapDescription} />
+            )}
             <div style={styles.roleButtonContainer}>
               {map ? (
                 this.renderRoleButton(map)
               ) : (
-                <Button raised color="secondary" disabled />
+                <Button raised color="secondary" disabled>{''}</Button>
               )}
             </div>
           </CardContent>
@@ -462,9 +470,7 @@ class MapSummary extends Component {
         key={spot.place_id}
         onClick={() => this.props.handleSpotClick(spot, this.props.large)}
       >
-        <Avatar>
-          <img src={spot.image_url} style={styles.spotImage} />
-        </Avatar>
+        <Avatar src={spot.image_url} style={styles.spotImage} />
         <ListItemText
           disableTypography={true}
           primary={
@@ -501,9 +507,7 @@ class MapSummary extends Component {
         />
         {review.image && (
           <ListItemSecondaryAction>
-            <Avatar style={styles.secondaryAvatar}>
-              <img src={review.image.url} style={styles.spotImage} />
-            </Avatar>
+            <Avatar src={review.image.url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </ListItem>

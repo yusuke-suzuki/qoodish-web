@@ -19,7 +19,7 @@ class LeaveMapDialog extends Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-        　<DialogTitle>Are you sure you want to unfollow this map?</DialogTitle>
+        <DialogTitle>Are you sure you want to unfollow this map?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             The reports you've written will not be deleted by unfollowing the

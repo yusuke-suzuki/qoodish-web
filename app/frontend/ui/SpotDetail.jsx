@@ -166,6 +166,9 @@ class SpotDetail extends Component {
     return (
       <Helmet
         title={`${spot.name} | Qoodish`}
+        link={[
+          { rel: 'canonical', href: `${process.env.ENDPOINT}/spots/${spot.place_id}` }
+        ]}
         meta={[
           { name: 'title', content: `${spot.name} | Qoodish` },
           { name: 'description', content: spot.formatted_address },

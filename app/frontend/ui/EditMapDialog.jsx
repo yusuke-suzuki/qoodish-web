@@ -247,7 +247,7 @@ class EditMapDialog extends Component {
         fullScreen={!this.props.large}
         transition={Transition}
       >
-        　{this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
+        {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
         <DialogContent
           style={
             this.props.large

@@ -135,6 +135,9 @@ class App extends Component {
     return (
       <Helmet
         title="Qoodish"
+        link={[
+          { rel: "canonical", href: process.env.ENDPOINT }
+        ]}
         meta={[
           { name: 'title', content: 'Qoodish' },
           { name: 'theme-color', content: '#ffc107' },
