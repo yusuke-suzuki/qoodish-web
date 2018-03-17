@@ -121,7 +121,7 @@ const GoogleMapContainer = withGoogleMap(props => (
         }}
       />
     ) : null}
-    {props.directions.length > 0 && <DirectionsRenderer directions={props.directions} />}
+    {<DirectionsRenderer directions={props.directions} />}
     <SpotCardContainer mapId={props.match.params.mapId} />
   </GoogleMap>
 ));
