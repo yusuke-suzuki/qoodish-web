@@ -47,7 +47,7 @@ class DeleteMapDialog extends Component {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-        　<DialogTitle>Are you sure you want to DELETE this map?</DialogTitle>
+        <DialogTitle>Are you sure you want to DELETE this map?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             When you delete a map, it also deletes all of the content that has

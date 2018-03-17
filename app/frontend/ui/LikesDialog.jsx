@@ -29,7 +29,7 @@ class LikesDialog extends React.Component {
         fullWidth
         transition={Transition}
       >
-        　<DialogTitle>Likes</DialogTitle>
+        <DialogTitle>Likes</DialogTitle>
         <DialogContent>
           <List disablePadding>{this.renderLikes(this.props.likes)}</List>
         </DialogContent>
