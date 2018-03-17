@@ -63,6 +63,9 @@ const styles = {
     width: '100%',
     minHeight: 'calc(100vh - 112px)'
   },
+  cardMedia: {
+    backgroundImage: 'initial'
+  },
   cardContentSmall: {
     textAlign: 'center'
   },
@@ -179,9 +182,14 @@ class MapSummary extends Component {
             : styles.cardContainerSmall
         }
       >
-        {this.renderMapToolbar(this.props.currentMap)}
+        {this.renderMapToolbar(map)}
         <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-          <CardMedia>{this.renderThumbnail(map)}</CardMedia>
+          <CardMedia
+            image={map && map.image_url}
+            style={styles.cardMedia}
+          >
+            {this.renderThumbnail(map)}
+          </CardMedia>
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             {map && map.name ? (
               <Typography
