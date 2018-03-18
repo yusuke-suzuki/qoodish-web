@@ -109,9 +109,9 @@ class EditReviewDialog extends Component {
       );
     } else {
       this.clearInputs();
-      if (nextProps.mapId) {
+      if (nextProps.currentMap) {
         this.setState({
-          mapId: nextProps.mapId
+          mapId: nextProps.currentMap.id
         });
       } else if (nextProps.postableMaps.length > 0) {
         this.setState({

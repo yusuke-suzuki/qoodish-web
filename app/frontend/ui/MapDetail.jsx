@@ -7,7 +7,6 @@ import {
   InfoWindow
 } from 'react-google-maps';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
-import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
@@ -176,7 +175,6 @@ export default class MapDetail extends Component {
         {this.ableToPost(this.props.currentMap)
           ? this.renderCreateReviewButton()
           : null}
-        <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />

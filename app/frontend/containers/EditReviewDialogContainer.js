@@ -16,6 +16,7 @@ const mapStateToProps = state => {
     dialogOpen: state.reviews.editReviewDialogOpen,
     selectedPlace: state.reviews.selectedPlace,
     currentReview: state.reviews.targetReview,
+    currentMap: state.mapDetail.currentMap,
     postableMaps: state.maps.postableMaps,
     large: state.shared.large
   };
