@@ -316,7 +316,7 @@ class EditReviewDialog extends Component {
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
           <input
-            variant="file"
+            type="file"
             accept="image/*"
             id="review-image-input"
             onChange={this.handleImageChange}
