@@ -116,7 +116,7 @@ class ReviewDetail extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           Report not found.
         </Typography>
       </div>

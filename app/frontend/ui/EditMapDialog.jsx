@@ -256,7 +256,7 @@ class EditMapDialog extends Component {
           {this.renderDescriptionText()}
           <br />
           <br />
-          <Typography type="subheading" gutterBottom color="textSecondary">
+          <Typography variant="subheading" gutterBottom color="textSecondary">
             The center of this map (Optional)
           </Typography>
           <PlacesAutocomplete
@@ -319,11 +319,11 @@ class EditMapDialog extends Component {
           >
             <CloseIcon />
           </IconButton>
-          <Typography type="title" color="inherit" style={styles.flex}>
+          <Typography variant="title" color="inherit" style={styles.flex}>
             {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
           </Typography>
           <Button
-            raised
+            variant="raised"
             onClick={this.handleSaveButtonClick}
             color="secondary"
             disabled={this.state.disabled}
@@ -340,7 +340,7 @@ class EditMapDialog extends Component {
       <DialogActions>
         <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
         <Button
-          raised
+          variant="raised"
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}

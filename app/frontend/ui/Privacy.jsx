@@ -61,7 +61,7 @@ class Privacy extends React.Component {
             </IconButton>
             <div style={styles.toolbarCenter}>
               <Typography
-                type="title"
+                variant="title"
                 color="inherit"
                 style={styles.logo}
                 onClick={this.props.handleLogoClick}
@@ -76,10 +76,10 @@ class Privacy extends React.Component {
             this.props.large ? styles.containerLarge : styles.containerSmall
           }
         >
-          <Typography type="display2" gutterBottom>
+          <Typography variant="display2" gutterBottom>
             プライバシーポリシー
           </Typography>
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             はじめに
           </Typography>
           <Typography component="p" gutterBottom>
@@ -90,7 +90,7 @@ class Privacy extends React.Component {
             ユーザーの個人情報を以下の定義に従い、適切に管理するよう取り組みを行って参ります。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             個人情報の定義について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -101,7 +101,7 @@ class Privacy extends React.Component {
             ユーザーが初回を含む毎回のログイン時にその都度サービス提供に必要なもののみに限定して収集いたします。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             個人情報の利用目的について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -118,7 +118,7 @@ class Privacy extends React.Component {
             ・GPS によるログイン中の位置情報
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             個人情報の共有または利用制限について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -140,7 +140,7 @@ class Privacy extends React.Component {
             ・事業譲渡等に伴い、継承者が他に発生した場合、該当する関係者に対して開示する場合
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             個人情報の安全管理について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -148,7 +148,7 @@ class Privacy extends React.Component {
             個人情報の取り扱いを外部に委託する際には、機密保持契約を締結の上で委託することとしています。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             Qoodish のサービス提供以外での個人情報の取り扱いについて
           </Typography>
           <Typography component="p" gutterBottom>
@@ -158,7 +158,7 @@ class Privacy extends React.Component {
             当該サイト・サービスのプライバシーポリシーをご確認ください。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             Qoodish の開示・訂正・削除
           </Typography>
           <Typography component="p" gutterBottom>
@@ -168,7 +168,7 @@ class Privacy extends React.Component {
             また、アクセスログ等の個人情報以外の情報については、基本的に開示しない方向とさせていただいております。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             プライバシーポリシーの更新について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -178,7 +178,7 @@ class Privacy extends React.Component {
             その都度本ページをご確認いただきまして、ご同意の上でのサービス利用をお願いいたします。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             プライバシーポリシーに関するお問い合わせ先について
           </Typography>
           <Typography component="p" gutterBottom>

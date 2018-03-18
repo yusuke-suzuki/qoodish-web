@@ -184,7 +184,7 @@ class MapSummary extends Component {
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             {map && map.name ? (
               <Typography
-                type="headline"
+                variant="headline"
                 component="h2"
                 gutterBottom
                 style={styles.mapSummaryText}
@@ -205,7 +205,7 @@ class MapSummary extends Component {
               {map ? (
                 this.renderRoleButton(map)
               ) : (
-                <Button raised color="secondary" disabled>{''}</Button>
+                <Button variant="raised" color="secondary" disabled>{''}</Button>
               )}
             </div>
           </CardContent>
@@ -422,20 +422,20 @@ class MapSummary extends Component {
   renderRoleButton(map) {
     if (map.editable) {
       return (
-        <Button raised disabled>
+        <Button variant="raised" disabled>
           OWNER
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button raised onClick={this.props.handleLeaveButtonClick}>
+        <Button variant="raised" onClick={this.props.handleLeaveButtonClick}>
           UNFOLLOW
         </Button>
       );
     } else {
       return (
         <Button
-          raised
+          variant="raised"
           onClick={this.props.handleJoinButtonClick}
           color="primary"
         >
@@ -465,7 +465,7 @@ class MapSummary extends Component {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type="subheading" noWrap>
+            <Typography variant="subheading" noWrap>
               {spot.name}
             </Typography>
           }

@@ -190,7 +190,7 @@ class App extends Component {
       return (
         <div style={styles.progressContainer}>
           <Typography
-            type={this.props.large ? 'display3' : 'display2'}
+            variant={this.props.large ? 'display3' : 'display2'}
             color="primary"
             gutterBottom
           >

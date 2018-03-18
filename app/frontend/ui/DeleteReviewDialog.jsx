@@ -63,7 +63,7 @@ class DeleteReviewDialog extends Component {
         <DialogActions>
           <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
-            raised
+            variant="raised"
             onClick={() => {
               this.props.handleDeleteButtonClick(this.props.currentReview);
               this.handleRequestDialogClose();

@@ -203,7 +203,7 @@ class NavBar extends Component {
               : this.renderMenuButton()}
             {this.props.large ? this.renderLogo() : null}
             <Typography
-              type="headline"
+              variant="headline"
               color="inherit"
               noWrap
               style={
@@ -309,7 +309,7 @@ class NavBar extends Component {
   renderLogo() {
     return (
       <Typography
-        type="headline"
+        variant="headline"
         color="inherit"
         style={styles.logo}
         onClick={this.props.requestHome}
@@ -364,7 +364,7 @@ class NavBar extends Component {
     return (
       <MenuItem style={styles.noContentsContainer}>
         <NotificationsIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           No notifications.
         </Typography>
       </MenuItem>
@@ -519,7 +519,7 @@ class NavBar extends Component {
   renderTitle() {
     return (
       <Typography
-        type="headline"
+        variant="headline"
         color="textSecondary"
         style={styles.title}
         onClick={this.props.requestHome}
@@ -531,7 +531,7 @@ class NavBar extends Component {
 
   renderTitleSecondary() {
     return (
-      <Typography type="caption" color="textSecondary">
+      <Typography variant="caption" color="textSecondary">
         {`v${process.env.npm_package_version}`}
       </Typography>
     );

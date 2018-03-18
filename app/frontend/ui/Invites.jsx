@@ -92,7 +92,7 @@ export default class Invites extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <MailIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           When you received invites, you will see here.
         </Typography>
       </div>
@@ -128,7 +128,7 @@ export default class Invites extends Component {
         </CardContent>
         <CardActions>
           <Button
-            raised
+            variant="raised"
             color="primary"
             onClick={() => this.props.handleFollowButtonClick(invite)}
             disabled={invite.expired}

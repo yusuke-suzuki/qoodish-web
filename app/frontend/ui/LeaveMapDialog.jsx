@@ -25,7 +25,7 @@ class LeaveMapDialog extends Component {
         <DialogActions>
           <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
           <Button
-            raised
+            variant="raised"
             onClick={this.props.handleLeaveButtonClick}
             color="primary"
           >

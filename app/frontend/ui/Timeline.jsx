@@ -118,7 +118,7 @@ export default class Feed extends Component {
     return (
       <div style={styles.buttonContainer}>
         <Button
-          raised
+          variant="raised"
           onClick={this.handleClickLoadMoreButton}
           style={
             this.props.large
@@ -161,7 +161,7 @@ export default class Feed extends Component {
             />
           }
           title={
-            <Typography type="body2" color="textSecondary">
+            <Typography variant="body2" color="textSecondary">
               {I18n.t('share recent spot')}
             </Typography>
           }
@@ -173,7 +173,7 @@ export default class Feed extends Component {
   renderCreateReviewButton() {
     return (
       <Button
-        fab
+        variant="fab"
         aria-label="add"
         style={
           this.props.large ? styles.createButtonLarge : styles.createButtonSmall
@@ -189,7 +189,7 @@ export default class Feed extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           {I18n.t('reports will see here')}
         </Typography>
       </div>

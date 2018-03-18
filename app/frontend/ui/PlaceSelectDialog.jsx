@@ -122,7 +122,7 @@ class PlaceSelectDialog extends Component {
           >
             <CloseIcon />
           </IconButton>
-          <Typography type="title" color="inherit" style={styles.flex}>
+          <Typography variant="title" color="inherit" style={styles.flex}>
             Select Place
           </Typography>
         </Toolbar>

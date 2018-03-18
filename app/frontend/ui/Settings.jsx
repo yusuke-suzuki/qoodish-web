@@ -37,7 +37,7 @@ export default class Invites extends Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <Card>
           <CardContent>
-            <Typography type="headline" component="h2" gutterBottom>
+            <Typography variant="headline" component="h2" gutterBottom>
               Delete Account
             </Typography>
             <Typography component="p">
@@ -46,7 +46,7 @@ export default class Invites extends Component {
           </CardContent>
           <CardActions>
             <Button
-              raised
+              variant="raised"
               onClick={this.props.handleDeleteAccountButtonClick}
               style={styles.deleteButton}
             >

@@ -106,7 +106,7 @@ export default class Discover extends Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <div style={styles.container}>
           <Typography
-            type="subheading"
+            variant="subheading"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -118,7 +118,7 @@ export default class Discover extends Component {
         </div>
         <div style={styles.container}>
           <Typography
-            type="subheading"
+            variant="subheading"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -132,7 +132,7 @@ export default class Discover extends Component {
         </div>
         <div style={styles.container}>
           <Typography
-            type="subheading"
+            variant="subheading"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -159,7 +159,7 @@ export default class Discover extends Component {
           <GridListTileBar
             title={
               <Typography
-                type={this.props.large ? 'display3' : 'display2'}
+                variant={this.props.large ? 'display3' : 'display2'}
                 color="inherit"
                 noWrap
                 gutterBottom
@@ -169,7 +169,7 @@ export default class Discover extends Component {
             }
             subtitle={
               <Typography
-                type={this.props.large ? 'display1' : 'headline'}
+                variant={this.props.large ? 'display1' : 'headline'}
                 color="inherit"
                 noWrap
               >
@@ -187,7 +187,7 @@ export default class Discover extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <MapIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           No maps.
         </Typography>
       </div>
@@ -198,7 +198,7 @@ export default class Discover extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           No reports.
         </Typography>
       </div>
@@ -247,14 +247,14 @@ export default class Discover extends Component {
           />
           <CardContent style={styles.cardContent}>
             <Typography
-              type="subheading"
+              variant="subheading"
               color="textSecondary"
               gutterBottom
               noWrap
             >
               {review.map_name}
             </Typography>
-            <Typography type="headline" component="h2" gutterBottom noWrap>
+            <Typography variant="headline" component="h2" gutterBottom noWrap>
               {review.spot.name}
             </Typography>
             <Typography component="p" noWrap>
