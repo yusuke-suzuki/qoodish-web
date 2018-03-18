@@ -20,10 +20,8 @@ class ReviewDialog extends Component {
         fullWidth
         fullScreen={this.props.large ? false : true}
       >
-        <div>
-          {this.props.currentReview &&
-            this.renderReviewCard(this.props.currentReview)}
-        </div>
+        {this.props.currentReview &&
+          this.renderReviewCard(this.props.currentReview)}
       </Dialog>
     );
   }
