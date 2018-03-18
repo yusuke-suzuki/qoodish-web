@@ -316,7 +316,7 @@ class EditReviewDialog extends Component {
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
           <input
-            type="file"
+            variant="file"
             accept="image/*"
             id="review-image-input"
             onChange={this.handleImageChange}
@@ -349,11 +349,11 @@ class EditReviewDialog extends Component {
           >
             <CloseIcon />
           </IconButton>
-          <Typography type="title" color="inherit" style={styles.flex}>
+          <Typography variant="title" color="inherit" style={styles.flex}>
             {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
           </Typography>
           <Button
-            raised
+            variant="raised"
             onClick={this.handleSaveButtonClick}
             color="secondary"
             disabled={this.state.disabled}
@@ -370,7 +370,7 @@ class EditReviewDialog extends Component {
       <DialogActions>
         <Button onClick={this.handleRequestClose}>Cancel</Button>
         <Button
-          raised
+          variant="raised"
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}

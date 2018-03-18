@@ -141,7 +141,7 @@ class ReviewCard extends Component {
         <CardContent style={styles.cardContent}>
           <Typography
             style={styles.cardTitle}
-            type="subheading"
+            variant="subheading"
             color="primary"
             gutterBottom
             onClick={this.props.handleMapClick}
@@ -150,7 +150,7 @@ class ReviewCard extends Component {
           </Typography>
           <Typography
             style={styles.cardTitle}
-            type="headline"
+            variant="headline"
             component="h2"
             gutterBottom
             onClick={() => this.props.handleSpotNameClick(review.spot)}

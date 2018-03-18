@@ -73,7 +73,7 @@ class DeleteAccountDialog extends Component {
         <DialogActions>
           <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
           <Button
-            raised
+            variant="raised"
             onClick={() => {
               this.props.handleDeleteButtonClick(this.props.currentUser);
               this.handleRequestDialogClose();

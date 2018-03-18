@@ -61,7 +61,7 @@ class Terms extends React.Component {
             </IconButton>
             <div style={styles.toolbarCenter}>
               <Typography
-                type="title"
+                variant="title"
                 color="inherit"
                 style={styles.logo}
                 onClick={this.props.handleLogoClick}
@@ -76,7 +76,7 @@ class Terms extends React.Component {
             this.props.large ? styles.containerLarge : styles.containerSmall
           }
         >
-          <Typography type="display2" gutterBottom>
+          <Typography variant="display2" gutterBottom>
             利用規約
           </Typography>
           <Typography component="p" gutterBottom>
@@ -90,7 +90,7 @@ class Terms extends React.Component {
             内の通知機能により通知をさせていただきますので、最新の利用規約を適宜ご参照ください。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             1. Qoodish の目的
           </Typography>
           <Typography component="p" gutterBottom>
@@ -100,7 +100,7 @@ class Terms extends React.Component {
             のユーザー間で共有し、旅行や外食の際の参考情報として活用していただくことを主な目的としています。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             2. 会員登録の手続き
           </Typography>
           <Typography component="p" gutterBottom>
@@ -113,7 +113,7 @@ class Terms extends React.Component {
             差異の内容につきましては、当委員会が任意に決定し、随時変更できるものとします。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             3. アカウントについて
           </Typography>
           <Typography component="p" gutterBottom>
@@ -127,10 +127,10 @@ class Terms extends React.Component {
             当該サービスを利用したことによって生じた損害・運営者とお客さまの間に生じたトラブル等につきましては、当委員会は一切の責任を負わないものとします。
           </Typography>
           <br />
-          <Typography type="display1" gutterBottom>
+          <Typography variant="display1" gutterBottom>
             4. Qoodish の利用について
           </Typography>
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ① Qoodish の転用・転売の禁止
           </Typography>
           <Typography component="p" gutterBottom>
@@ -147,7 +147,7 @@ class Terms extends React.Component {
             に掲載されているレポートを利用して利益を得た場合は、当委員会はその利益相当額について請求できる権利を有するものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ② Qoodish の変更・停止
           </Typography>
           <Typography component="p" gutterBottom>
@@ -159,7 +159,7 @@ class Terms extends React.Component {
             を変更・停止したことにより、お客さままたは第三者が損害を受けた場合につきましても、当委員会は一切の補償を行わないものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ③ Qoodish の利用に必要となる設備
           </Typography>
           <Typography component="p" gutterBottom>
@@ -172,7 +172,7 @@ class Terms extends React.Component {
             推奨ブラウザ: Google Chrome
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ④ レポートの投稿及び著作権について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -215,7 +215,7 @@ class Terms extends React.Component {
             ユーザーが受けた損害について、一切の補償を行わないものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑤ レポート投稿における外部サービス連携
           </Typography>
           <Typography component="p" gutterBottom>
@@ -230,7 +230,7 @@ class Terms extends React.Component {
             ユーザーは、自己の責任において当該サービスを利用するものとし、当委員会は、当該サービスを利用したことによって生じた損害、当該サービス運営者と利用者などとの間に生じたトラブルその他の当該サービスに関連する一切の事項について何ら責任を負わないものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑥ 免責事項
           </Typography>
           <Typography component="p" gutterBottom>
@@ -281,7 +281,7 @@ class Terms extends React.Component {
             にて定める利用規約およびプライバシーポリシーが適用となります。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑦ Qoodish が保持する著作権・財産権やその他の権利について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -301,7 +301,7 @@ class Terms extends React.Component {
             また、お客さまがこれらの行為によって利益を得た場合に、当委員会はその利益相当額を請求できるものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑧ 禁止行為について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -349,7 +349,7 @@ class Terms extends React.Component {
             加えて、利用停止措置によって生じたお客さま側への損害につきましては、当委員会は一切の責任を負わないものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑨ 退会の手続きについて
           </Typography>
           <Typography component="p" gutterBottom>
@@ -373,7 +373,7 @@ class Terms extends React.Component {
             また、お客さまがこれらの行為によって利益を得た場合に、当委員会はその利益相当額を請求できるものとします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑩ 本規約の変更について
           </Typography>
           <Typography component="p" gutterBottom>
@@ -385,14 +385,14 @@ class Terms extends React.Component {
             ユーザーからの同意を得る場合には、その都度お客さま起因の動作を含むこととします。(規約改定に伴う当該ページの表示にともなって同意する旨の表示されたボタンを押下する動作を義務付ける等)
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑪ 準拠法および裁判管轄
           </Typography>
           <Typography component="p" gutterBottom>
             本規約は、日本法に基づいて解釈されるものとし、本規約に関して訴訟の必要が生じた場合には、東京地方裁判所を第一審の専属的合意管轄裁判所とします。
           </Typography>
           <br />
-          <Typography type="subheading" gutterBottom>
+          <Typography variant="subheading" gutterBottom>
             ⑫ お問い合わせ
           </Typography>
           <Typography component="p" gutterBottom>

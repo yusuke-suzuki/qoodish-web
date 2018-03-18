@@ -115,7 +115,7 @@ export default class Maps extends Component {
         {this.props.tabValue === 0 && this.renderFollowingMaps()}
         {this.props.tabValue === 1 && this.renderMyMaps()}
         <Button
-          fab
+          variant="fab"
           aria-label="add"
           style={
             this.props.large
@@ -154,12 +154,12 @@ export default class Maps extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <MapIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           When you create or follow maps, you will see maps here.
         </Typography>
         <br />
         <Button
-          raised
+          variant="raised"
           color="primary"
           onClick={this.props.handleCreateMapButtonClick}
         >

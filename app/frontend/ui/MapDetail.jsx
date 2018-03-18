@@ -263,7 +263,7 @@ export default class MapDetail extends Component {
   renderCreateReviewButton() {
     return (
       <Button
-        fab
+        variant="fab"
         aria-label="add"
         style={
           this.props.large ? styles.createButtonLarge : styles.createButtonSmall

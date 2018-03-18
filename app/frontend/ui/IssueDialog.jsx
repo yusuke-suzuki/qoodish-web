@@ -79,7 +79,7 @@ class IssueDialog extends Component {
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
-          <Button raised onClick={this.handleSendButtonClick} color="primary">
+          <Button variant="raised" onClick={this.handleSendButtonClick} color="primary">
             Send
           </Button>
         </DialogActions>

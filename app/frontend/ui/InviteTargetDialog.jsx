@@ -115,11 +115,11 @@ class InviteTargetDialog extends Component {
           >
             <CloseIcon />
           </IconButton>
-          <Typography type="title" color="inherit" style={styles.flex}>
+          <Typography variant="title" color="inherit" style={styles.flex}>
             Select Invite Target
           </Typography>
           <Button
-            raised
+            variant="raised"
             onClick={() => {
               this.props.handleSendButtonClick(this.state.selectedUserId);
             }}
@@ -138,7 +138,7 @@ class InviteTargetDialog extends Component {
       <DialogActions>
         <Button onClick={this.props.onClose}>Cancel</Button>
         <Button
-          raised
+          variant="raised"
           onClick={() => {
             this.props.handleSendButtonClick(this.state.selectedUserId);
           }}

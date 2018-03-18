@@ -231,7 +231,7 @@ class SpotDetail extends Component {
     return (
       <div style={styles.noContentsContainer}>
         <PlaceIcon style={styles.noContentsIcon} />
-        <Typography type="subheading" color="inherit">
+        <Typography variant="subheading" color="inherit">
           Place not found.
         </Typography>
       </div>
@@ -247,8 +247,8 @@ class SpotDetail extends Component {
           }
         >
           <PlaceIcon />
-          <Typography type="headline">{spot.name}</Typography>
-          <Typography type="subheading" color="textSecondary">
+          <Typography variant="headline">{spot.name}</Typography>
+          <Typography variant="subheading" color="textSecondary">
             {spot.formatted_address}
           </Typography>
         </CardContent>
@@ -275,7 +275,7 @@ class SpotDetail extends Component {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography type="subheading" noWrap>
+            <Typography variant="subheading" noWrap>
               {review.author.name}
             </Typography>
           }
@@ -304,7 +304,7 @@ class SpotDetail extends Component {
   renderCreateReviewButton(spot) {
     return (
       <Button
-        fab
+        variant="fab"
         aria-label="add"
         style={
           this.props.large ? styles.createButtonLarge : styles.createButtonSmall

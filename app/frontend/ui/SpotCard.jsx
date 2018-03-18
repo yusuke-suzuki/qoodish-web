@@ -75,7 +75,7 @@ class SpotCard extends Component {
           </Grid>
           <Grid item xs={8} sm={9} md={9} lg={9}>
             <CardContent style={styles.cardContent}>
-              <Typography type="subheading" noWrap style={styles.spotName}>
+              <Typography variant="subheading" noWrap style={styles.spotName}>
                 {spot.name}
               </Typography>
               <Typography color="textSecondary" noWrap>

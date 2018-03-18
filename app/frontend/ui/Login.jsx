@@ -125,7 +125,7 @@ class Login extends React.Component {
         <AppBar position="fixed">
           <Toolbar style={styles.toolbar}>
             <Typography
-              type="title"
+              variant="title"
               color="inherit"
               style={styles.logo}
               onClick={this.handleScrollTopClick}
@@ -147,7 +147,7 @@ class Login extends React.Component {
               <GridListTileBar
                 title={
                   <Typography
-                    type="display3"
+                    variant="display3"
                     color="inherit"
                     style={styles.carouselTileBarText}
                     gutterBottom
@@ -158,7 +158,7 @@ class Login extends React.Component {
                 subtitle={
                   <div>
                     <Typography
-                      type="headline"
+                      variant="headline"
                       color="inherit"
                       style={styles.carouselTileBarText}
                     >
@@ -191,7 +191,7 @@ class Login extends React.Component {
                   <Typography gutterBottom>
                     <PlaceIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography type="display1" gutterBottom>
+                  <Typography variant="display1" gutterBottom>
                     お気に入りの場所をシェアしよう！
                   </Typography>
                   <Typography component="p" gutterBottom>
@@ -211,7 +211,7 @@ class Login extends React.Component {
                   <Typography gutterBottom>
                     <ExploreIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography type="display1" gutterBottom>
+                  <Typography variant="display1" gutterBottom>
                     あなたの "ベストプレイス" を見つけよう！
                   </Typography>
                   <Typography component="p" gutterBottom>
@@ -226,7 +226,7 @@ class Login extends React.Component {
             </Grid>
           </Grid>
           <Button
-            fab
+            variant="fab"
             onClick={this.handleScrollTopClick}
             style={styles.scrollTopButton}
           >
@@ -254,7 +254,7 @@ class Login extends React.Component {
                 this.props.large ? styles.containerLarge : styles.containerSmall
               }
             >
-              <Typography type="caption">
+              <Typography variant="caption">
                 © 2018 Qoodish, All rights reserved.
               </Typography>
             </div>
