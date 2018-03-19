@@ -9,6 +9,8 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "@google-cloud/storage": "^1.6.0",
+    "child-process-promise": "^2.2.1",
     "core-js": "^2.5.3",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
