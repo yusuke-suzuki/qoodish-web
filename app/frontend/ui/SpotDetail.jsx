@@ -10,7 +10,7 @@ import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import PlaceIcon from 'material-ui-icons/Place';
 import { CircularProgress } from 'material-ui/Progress';
-import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Helmet from 'react-helmet';
 
@@ -88,17 +88,15 @@ const styles = {
   }
 };
 
-const mapOptions = {
-  zoomControl: false,
-  streetViewControl: false,
-  scaleControl: false,
-  mapTypeControl: false
-};
-
-const GoogleMapContainer = withGoogleMap(props => (
+const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   <GoogleMap
     defaultZoom={props.defaultZoom}
-    options={mapOptions}
+    options={{
+      zoomControl: false,
+      streetViewControl: false,
+      scaleControl: false,
+      mapTypeControl: false
+    }}
     center={
       props.currentSpot &&
       new google.maps.LatLng(
@@ -118,7 +116,7 @@ const GoogleMapContainer = withGoogleMap(props => (
       defaultAnimation={2}
     />
   </GoogleMap>
-));
+)));
 
 class SpotDetail extends Component {
   async componentWillMount() {
@@ -184,6 +182,7 @@ class SpotDetail extends Component {
     return (
       <GoogleMapContainer
         {...this.props}
+        googleMapURL={process.env.GOOGLE_MAP_URL}
         containerElement={
           <div
             style={

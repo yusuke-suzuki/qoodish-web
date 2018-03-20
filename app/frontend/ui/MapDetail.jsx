@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  withScriptjs,
   withGoogleMap,
   GoogleMap,
   Marker,
@@ -54,23 +55,21 @@ const styles = {
   }
 };
 
-const mapOptions = {
-  zoomControlOptions: {
-    position: google.maps.ControlPosition.RIGHT_TOP,
-    style: google.maps.ZoomControlStyle.SMALL
-  },
-  streetViewControl: true,
-  streetViewControlOptions: {
-    position: google.maps.ControlPosition.RIGHT_TOP
-  },
-  scaleControl: true,
-  mapTypeControl: false
-};
-
-const GoogleMapContainer = withGoogleMap(props => (
+const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   <GoogleMap
     ref={props.onMapLoad}
-    options={mapOptions}
+    options={{
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_TOP,
+        style: google.maps.ZoomControlStyle.SMALL
+      },
+      streetViewControl: true,
+      streetViewControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_TOP
+      },
+      scaleControl: true,
+      mapTypeControl: false
+    }}
     defaultCenter={props.defaultCenter}
     defaultZoom={props.defaultZoom}
     center={
@@ -119,7 +118,7 @@ const GoogleMapContainer = withGoogleMap(props => (
     {<DirectionsRenderer directions={props.directions} />}
     <SpotCardContainer mapId={props.match.params.mapId} />
   </GoogleMap>
-));
+)));
 
 export default class MapDetail extends Component {
   async componentWillMount() {
@@ -239,6 +238,7 @@ export default class MapDetail extends Component {
     return (
       <GoogleMapContainer
         {...this.props}
+        googleMapURL={process.env.GOOGLE_MAP_URL}
         containerElement={
           <div
             style={
@@ -247,6 +247,7 @@ export default class MapDetail extends Component {
           />
         }
         mapElement={<div style={styles.mapContainer} />}
+        loadingElement={<div style={{ height: '100%' }} />}
         onMapLoad={this.props.onMapMounted}
       />
     );
