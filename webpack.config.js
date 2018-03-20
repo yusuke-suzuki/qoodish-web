@@ -17,7 +17,6 @@ const plugins = [
     template: 'app/views/index.html',
     hash: true,
     endpoint: process.env.ENDPOINT,
-    googleMapUrl: `https://maps.google.com/maps/api/js?libraries=places&v=3&key=${process.env.GOOGLE_API_KEY_CLIENT}`,
     icon36: process.env.ICON_36,
     icon512: process.env.ICON_512,
     fbAppId: process.env.FB_APP_ID,
@@ -39,7 +38,8 @@ const plugins = [
     'LP_CAROUSEL_1',
     'LP_IMAGE_1',
     'LP_IMAGE_2',
-    'GA_TRACKING_ID'
+    'GA_TRACKING_ID',
+    'GOOGLE_MAP_URL'
   ])
 ];
 
