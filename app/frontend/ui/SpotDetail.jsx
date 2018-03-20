@@ -48,10 +48,6 @@ const styles = {
     margin: '0 auto'
   },
   listSmall: {},
-  avatarImage: {
-    width: 40,
-    height: 40
-  },
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12,
@@ -292,9 +288,7 @@ class SpotDetail extends Component {
         />
         {review.image && (
           <ListItemSecondaryAction>
-            <Avatar style={styles.secondaryAvatar}>
-              <img src={review.image.url} style={styles.avatarImage} />
-            </Avatar>
+            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </ListItem>
