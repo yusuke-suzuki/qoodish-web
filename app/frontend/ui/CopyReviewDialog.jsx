@@ -35,9 +35,7 @@ class CopyReviewDialog extends React.Component {
           this.props.handleMapSelected(this.props.currentReview, map)
         }
       >
-        <Avatar>
-          <MapIcon />
-        </Avatar>
+        <Avatar src={map.thumbnail_url} />
         <ListItemText primary={map.name} />
       </ListItem>
     ));

@@ -429,9 +429,7 @@ class EditReviewDialog extends Component {
   renderPostableMaps() {
     return this.props.postableMaps.map(map => (
       <MenuItem key={map.id} value={map.id}>
-        <Avatar>
-          <MapIcon />
-        </Avatar>
+        <Avatar src={map.thumbnail_url} />
         <ListItemText primary={map.name} />
       </MenuItem>
     ));

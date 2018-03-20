@@ -498,7 +498,7 @@ class MapSummary extends Component {
         />
         {review.image && (
           <ListItemSecondaryAction>
-            <Avatar src={review.image.url} style={styles.secondaryAvatar} />
+            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </ListItem>

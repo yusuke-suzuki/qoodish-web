@@ -390,9 +390,9 @@ class NavBar extends Component {
           style={styles.listItemContent}
           disableTypography
         />
-        {notification.notifiable.image_url && (
+        {notification.notifiable.thumbnail_url && (
           <ListItemSecondaryAction>
-            <Avatar src={notification.notifiable.image_url} style={styles.secondaryAvatar} />
+            <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
       </MenuItem>

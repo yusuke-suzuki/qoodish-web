@@ -9,7 +9,7 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
-import { uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
+import { sleep, uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
 const mapStateToProps = state => {
   return {
@@ -39,7 +39,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(closeEditReviewDialog());
-        dispatch(createReview(json));
         dispatch(openToast('Successfuly created the report!'));
 
         gtag('event', 'create', {
@@ -47,6 +46,11 @@ const mapDispatchToProps = dispatch => {
           'event_label': 'review'
         });
 
+        if (canvas) {
+          // wait until thumbnail created on cloud function
+          await sleep(5000);
+        }
+        dispatch(createReview(json));
         let spotsResponse = await client.fetchSpots(json.map_id);
         let spots = await spotsResponse.json();
         dispatch(fetchSpots(spots));
@@ -87,8 +91,13 @@ const mapDispatchToProps = dispatch => {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
-        dispatch(editReview(json));
         dispatch(openToast('Successfuly updated the report!'));
+
+        if (canvas) {
+          // wait until thumbnail created on cloud function
+          await sleep(5000);
+        }
+        dispatch(editReview(json));
         let spotsResponse = await client.fetchSpots(json.map_id);
         let spots = await spotsResponse.json();
         dispatch(fetchSpots(spots));
