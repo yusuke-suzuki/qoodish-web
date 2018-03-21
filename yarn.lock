@@ -3194,7 +3194,7 @@ find-versions@^1.0.0:
     meow "^3.5.0"
     semver-regex "^1.0.0"
 
-firebase@^4.3.1, firebase@^4.8.0:
+firebase@^4.8.0:
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-4.9.0.tgz#b0e0345438fcd38bea9d0d7e5ac896fe09f4c80a"
   dependencies:
@@ -3208,12 +3208,12 @@ firebase@^4.3.1, firebase@^4.8.0:
     dom-storage "^2.0.2"
     xmlhttprequest "^1.8.0"
 
-firebaseui@^2.3:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-2.5.1.tgz#98a89bddd1cbf11c01069e7e4278ecc3cca1e2fe"
+firebaseui@^2.4.0:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-2.6.3.tgz#d867eee7814ff7da50297b01f4ec23acb767d167"
   dependencies:
     dialog-polyfill "^0.4.7"
-    firebase "^4.3.1"
+    firebase "^4.8.0"
 
 first-chunk-stream@^1.0.0:
   version "1.0.0"
@@ -6036,11 +6036,11 @@ react-event-listener@^0.5.0, react-event-listener@^0.5.1:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
-react-firebaseui@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/react-firebaseui/-/react-firebaseui-1.0.10.tgz#68876d1b33fc2ec05a2000ed975bf94a24a57d84"
+react-firebaseui@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/react-firebaseui/-/react-firebaseui-1.1.9.tgz#02d9fcc0d0c3f6deeac117cda420099ddba371d9"
   dependencies:
-    firebaseui "^2.3"
+    firebaseui "^2.4.0"
     react "^15"
 
 react-google-maps@^9.4.5:
