@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import Typography from 'material-ui/Typography';
-import { FirebaseAuth } from 'react-firebaseui';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Grid from 'material-ui/Grid';
@@ -166,7 +166,7 @@ class Login extends React.Component {
                       <span>{I18n.t('where are you going next')}</span>
                     </Typography>
                     <div style={styles.firebaseContainer}>
-                      <FirebaseAuth
+                      <StyledFirebaseAuth
                         uiConfig={this.uiConfig}
                         firebaseAuth={firebase.auth()}
                       />
