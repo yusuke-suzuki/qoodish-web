@@ -2,7 +2,7 @@
   "short_name": "Qoodish",
   "name": "Qoodish",
   "gcm_sender_id": "103953800507",
-  "start_url": "/",
+  "start_url": "/?utm_source=homescreen",
   "icons": [
     {
       "src": "https://s3-ap-northeast-1.amazonaws.com/qoodish/icons/36x36.png",
