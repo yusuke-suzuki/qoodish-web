@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => {
         place_id: review.place_id
       };
       let fileName;
-      if (review.image && !review.image.url.includes('amazonaws')) {
+      if (review.image) {
         const blob = await downloadImage(review.image.url);
         const uploadResponse = await uploadToStorage(blob);
         params.image_url = uploadResponse.imageUrl;
