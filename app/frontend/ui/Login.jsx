@@ -99,6 +99,7 @@ class Login extends React.Component {
           this.props.signIn(currentUser, credential, redirectUrl);
         }
       },
+      signInFlow: 'popup',
       signInSuccessUrl: process.env.ENDPOINT,
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
