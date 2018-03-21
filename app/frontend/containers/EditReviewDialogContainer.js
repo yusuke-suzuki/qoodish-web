@@ -83,11 +83,7 @@ const mapDispatchToProps = dispatch => {
       let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        if (
-          oldReview.image &&
-          canvas &&
-          !oldReview.image.url.includes('amazonaws')
-        ) {
+        if (oldReview.image && canvas) {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
