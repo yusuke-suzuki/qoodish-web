@@ -8,13 +8,15 @@ import TextField from 'material-ui/TextField';
 import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
 import Typography from 'material-ui/Typography';
-import PlacesAutocomplete from 'react-places-autocomplete';
 import Button from 'material-ui/Button';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
+import Chip from 'material-ui/Chip';
+import PlaceIcon from 'material-ui-icons/Place';
+import Avatar from 'material-ui/Avatar';
 
 const autoCompleteStyles = {
   root: {
@@ -56,15 +58,12 @@ class EditMapDialog extends Component {
       shared: false,
       errorMapName: null,
       errorDescription: null,
-      disabled: true,
-      placeInput: ''
+      disabled: true
     };
     this.handleMapNameChange = this.handleMapNameChange.bind(this);
     this.handleMapDescriptionChange = this.handleMapDescriptionChange.bind(
       this
     );
-    this.handleMapBaseChange = this.handleMapBaseChange.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.handlePrivateFlugChange = this.handlePrivateFlugChange.bind(this);
     this.handleInvitableFlugChange = this.handleInvitableFlugChange.bind(this);
@@ -87,6 +86,12 @@ class EditMapDialog extends Component {
         disabled: false
       });
     }
+    if (nextProps.selectedBase) {
+      this.setState({
+        baseId: nextProps.selectedBase.placeId,
+        baseName: nextProps.selectedBase.description,
+      });
+    }
     if (!nextProps.dialogOpen) {
       this.clearState();
     }
@@ -104,8 +109,7 @@ class EditMapDialog extends Component {
       shared: false,
       errorMapName: null,
       errorDescription: null,
-      disabled: true,
-      placeInput: ''
+      disabled: true
     });
   }
 
@@ -155,26 +159,6 @@ class EditMapDialog extends Component {
         this.validate();
       }
     );
-  }
-
-  handleInputChange(input) {
-    if (!input) {
-      this.setState({
-        baseId: '',
-        baseName: ''
-      });
-    }
-    this.setState({
-      placeInput: input
-    });
-  }
-
-  handleMapBaseChange(name, placeId) {
-    this.setState({
-      baseId: placeId,
-      baseName: name,
-      placeInput: name
-    });
   }
 
   handlePrivateFlugChange(e, checked) {
@@ -227,12 +211,6 @@ class EditMapDialog extends Component {
   }
 
   render() {
-    const inputProps = {
-      value: this.state.placeInput,
-      onChange: this.handleInputChange,
-      placeholder: 'Search places...'
-    };
-
     return (
       <Dialog
         open={this.props.dialogOpen}
@@ -259,10 +237,14 @@ class EditMapDialog extends Component {
           <Typography variant="subheading" gutterBottom color="textSecondary">
             The center of this map (Optional)
           </Typography>
-          <PlacesAutocomplete
-            inputProps={inputProps}
-            onSelect={this.handleMapBaseChange}
-            styles={autoCompleteStyles}
+          <Chip
+            avatar={
+              <Avatar>
+                <PlaceIcon />
+              </Avatar>
+            }
+            label={this.state.baseName ? this.state.baseName : 'Undefined'}
+            onClick={this.props.handleMapBaseClick}
           />
           <br />
           <FormControlLabel

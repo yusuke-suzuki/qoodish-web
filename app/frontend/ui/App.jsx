@@ -23,6 +23,7 @@ import PrivacyContainer from '../containers/PrivacyContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
+import BaseSelectDialogContainer from '../containers/BaseSelectDialogContainer';
 import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import EditMapDialogContainer from '../containers/EditMapDialogContainer';
@@ -134,6 +135,7 @@ class App extends Component {
           <LikesDialogContainer />
           <CopyReviewDialogContainer />
           <PlaceSelectDialogContainer />
+          <BaseSelectDialogContainer />
           <EditReviewDialogContainer />
           <DeleteReviewDialogContainer />
           <ReviewDialogContainer />

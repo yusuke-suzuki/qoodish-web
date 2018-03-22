@@ -8,11 +8,13 @@ import closeCreateMapDialog from '../actions/closeCreateMapDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
+import openBaseSelectDialog from '../actions/openBaseSelectDialog';
 
 const mapStateToProps = state => {
   return {
     dialogOpen: state.maps.createMapDialogOpen,
-    large: state.shared.large
+    large: state.shared.large,
+    selectedBase: state.maps.selectedBase
   };
 };
 
@@ -20,6 +22,10 @@ const mapDispatchToProps = dispatch => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeCreateMapDialog());
+    },
+
+    handleMapBaseClick: () => {
+      dispatch(openBaseSelectDialog());
     },
 
     handleSaveButtonClick: async params => {
