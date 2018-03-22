@@ -4666,10 +4666,6 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
 
-lodash.debounce@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-
 lodash.escape@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-3.2.0.tgz#995ee0dc18c1b48cc92effae71a10aab5b487698"
@@ -6081,13 +6077,6 @@ react-jss@^8.1.0:
 react-lifecycles-compat@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-1.0.2.tgz#551d8b1d156346e5fcf30ffac9b32ce3f78b8850"
-
-react-places-autocomplete@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/react-places-autocomplete/-/react-places-autocomplete-6.0.2.tgz#041870b70a19086120286d5d223652d4a95e6405"
-  dependencies:
-    lodash.debounce "^4.0.8"
-    prop-types "^15.5.8"
 
 react-popper@^0.8.0:
   version "0.8.2"

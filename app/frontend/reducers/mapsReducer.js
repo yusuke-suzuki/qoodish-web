@@ -16,7 +16,10 @@ import {
   LOAD_FOLLOWING_MAPS_END,
   FETCH_POSTABLE_MAPS,
   SWITCH_MY_MAPS,
-  SWITCH_FOLLOWING_MAPS
+  SWITCH_FOLLOWING_MAPS,
+  OPEN_BASE_SELECT_DIALOG,
+  CLOSE_BASE_SELECT_DIALOG,
+  SELECT_MAP_BASE
 } from '../actionTypes';
 
 const initialState = {
@@ -29,7 +32,9 @@ const initialState = {
   createMapDialogOpen: false,
   editMapDialogOpen: false,
   deleteMapDialogOpen: false,
-  tabValue: 0
+  tabValue: 0,
+  baseSelectDialogOpen: false,
+  selectedBase: undefined
 };
 
 const reducer = (state = initialState, action) => {
@@ -131,11 +136,24 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         tabValue: 1
       });
+    case OPEN_BASE_SELECT_DIALOG:
+      return Object.assign({}, state, {
+        baseSelectDialogOpen: true
+      });
+    case CLOSE_BASE_SELECT_DIALOG:
+      return Object.assign({}, state, {
+        baseSelectDialogOpen: false
+      });
+    case SELECT_MAP_BASE:
+      return Object.assign({}, state, {
+        selectedBase: action.payload.place
+      });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         createMapDialogOpen: false,
         editMapDialogOpen: false,
-        deleteMapDialogOpen: false
+        deleteMapDialogOpen: false,
+        baseSelectDialogOpen: false
       });
     default:
       return state;
