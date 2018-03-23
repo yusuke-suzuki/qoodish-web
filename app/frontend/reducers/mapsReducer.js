@@ -78,7 +78,8 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_CREATE_MAP_DIALOG:
       return Object.assign({}, state, {
-        createMapDialogOpen: false
+        createMapDialogOpen: false,
+        selectedBase: undefined
       });
     case EDIT_MAP:
       let index = state.myMaps.findIndex(map => {
@@ -116,7 +117,8 @@ const reducer = (state = initialState, action) => {
     case CLOSE_EDIT_MAP_DIALOG:
       return Object.assign({}, state, {
         targetMap: null,
-        editMapDialogOpen: false
+        editMapDialogOpen: false,
+        selectedBase: undefined
       });
     case OPEN_DELETE_MAP_DIALOG:
       return Object.assign({}, state, {
