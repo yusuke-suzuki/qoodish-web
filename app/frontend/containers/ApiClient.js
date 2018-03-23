@@ -161,6 +161,20 @@ class ApiClient {
     return response;
   }
 
+  async fetchTrendingSpots() {
+    const url = `${process.env.API_ENDPOINT}/spots?popular=true`;
+    const token = await firebase.auth().currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchSpots(mapId) {
     const url = `${process.env.API_ENDPOINT}/maps/${mapId}/spots`;
     const token = await firebase.auth().currentUser.getIdToken();

@@ -8,10 +8,13 @@ import { push } from 'react-router-redux';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchRecentReviews from '../actions/fetchRecentReviews';
 import fetchPopularMaps from '../actions/fetchPopularMaps';
+import fetchTrendingSpots from '../actions/fetchTrendingSpots';
 import loadRecentReviewsStart from '../actions/loadRecentReviewsStart';
 import loadRecentReviewsEnd from '../actions/loadRecentReviewsEnd';
 import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
+import loadTrendingSpotsStart from '../actions/loadTrendingSpotsStart';
+import loadTrendingSpotsEnd from '../actions/loadTrendingSpotsEnd';
 import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
@@ -25,7 +28,9 @@ const mapStateToProps = state => {
     loadingPopularMaps: state.discover.loadingPopularMaps,
     large: state.shared.large,
     recentReviews: state.discover.recentReviews,
-    loadingRecentReviews: state.discover.loadingRecentReviews
+    loadingRecentReviews: state.discover.loadingRecentReviews,
+    loadingTrendingSpots: state.discover.loadingTrendingSpots,
+    trendingSpots: state.discover.trendingSpots
   };
 };
 
@@ -46,6 +51,23 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(pickUpMap(map));
       }
+    },
+
+    fetchTrendingSpots: async () => {
+      dispatch(loadTrendingSpotsStart());
+      const client = new ApiClient();
+      let response = await client.fetchTrendingSpots();
+      let spots = await response.json();
+      dispatch(loadTrendingSpotsEnd());
+      if (response.ok) {
+        dispatch(fetchTrendingSpots(spots));
+      }
+    },
+
+    handleSpotClick: (spot) => {
+      dispatch(push(`/spots/${spot.place_id}`, {
+        previous: true
+      }));
     },
 
     fetchRecentReviews: async () => {
