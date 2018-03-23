@@ -5,15 +5,20 @@ import {
   FETCH_RECENT_REVIEWS,
   LOAD_RECENT_REVIEWS_START,
   LOAD_RECENT_REVIEWS_END,
-  PICK_UP_MAP
+  PICK_UP_MAP,
+  FETCH_TRENDING_SPOTS,
+  LOAD_TRENDING_SPOTS_START,
+  LOAD_TRENDING_SPOTS_END,
 } from '../actionTypes';
 
 const initialState = {
   mapPickedUp: null,
   recentReviews: [],
   popularMaps: [],
+  trendingSpots: [],
   loadingPopularMaps: false,
-  loadingRecentReviews: false
+  loadingRecentReviews: false,
+  loadingTrendingSpots: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -41,6 +46,18 @@ const reducer = (state = initialState, action) => {
     case FETCH_RECENT_REVIEWS:
       return Object.assign({}, state, {
         recentReviews: action.payload.reviews
+      });
+    case LOAD_TRENDING_SPOTS_START:
+      return Object.assign({}, state, {
+        loadingTrendingSpots: true
+      });
+    case LOAD_TRENDING_SPOTS_END:
+      return Object.assign({}, state, {
+        loadingTrendingSpots: false
+      });
+    case FETCH_TRENDING_SPOTS:
+      return Object.assign({}, state, {
+        trendingSpots: action.payload.spots
       });
     case PICK_UP_MAP:
       return Object.assign({}, state, {

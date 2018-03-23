@@ -4,6 +4,7 @@ import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import LockIcon from 'material-ui-icons/Lock';
 import ExploreIcon from 'material-ui-icons/Explore';
+import PlaceIcon from 'material-ui-icons/Place';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import TrendingUpIcon from 'material-ui-icons/TrendingUp';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
@@ -11,6 +12,10 @@ import Typography from 'material-ui/Typography';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
+import List, {
+  ListItem,
+  ListItemText
+} from 'material-ui/List';
 
 const styles = {
   rootLarge: {
@@ -77,6 +82,9 @@ const styles = {
   },
   reviewImage: {
     width: '100%'
+  },
+  trendingSpotsList: {
+    width: '100%'
   }
 };
 
@@ -84,6 +92,7 @@ export default class Discover extends Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.pickUpMap();
+    this.props.fetchTrendingSpots();
     this.props.fetchRecentReviews();
     this.props.refreshPopularMaps();
 
@@ -115,6 +124,20 @@ export default class Discover extends Component {
           </Typography>
           <br />
           {this.renderPickUp(this.props.mapPickedUp)}
+        </div>
+        <div style={styles.container}>
+          <Typography
+            variant="subheading"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
+            <PlaceIcon style={styles.mapTypeIcon} /> Trending Spots
+          </Typography>
+          <br />
+          {this.props.loadingTrendingSpots
+            ? this.renderProgress()
+            : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
         </div>
         <div style={styles.container}>
           <Typography
@@ -203,6 +226,41 @@ export default class Discover extends Component {
         </Typography>
       </div>
     );
+  }
+
+  renderTrendingSpotsContainer(spots) {
+    return (
+      <List disablePadding style={styles.trendingSpotsList}>
+        {this.props.trendingSpots.length > 0
+          ? this.renderSpots(this.props.trendingSpots)
+          : null}
+      </List>
+    );
+  }
+
+  renderSpots(spots) {
+    return spots.map((spot, i) => (
+      <ListItem
+        button
+        key={spot.place_id}
+        onClick={() => this.props.handleSpotClick(spot)}
+      >
+        <Avatar src={spot.image_url} />
+        <ListItemText
+          disableTypography={true}
+          primary={
+            <Typography variant="subheading" noWrap>
+              {i + 1}. {spot.name}
+            </Typography>
+          }
+          secondary={
+            <Typography component="p" noWrap color="textSecondary">
+              {spot.formatted_address}
+            </Typography>
+          }
+        />
+      </ListItem>
+    ));
   }
 
   renderRecentReviewContainer(reviews) {
