@@ -193,12 +193,10 @@ class Login extends React.Component {
                     <PlaceIcon style={styles.descriptionIcon} />
                   </Typography>
                   <Typography variant="display1" gutterBottom>
-                    お気に入りの場所をシェアしよう！
+                    {I18n.t('share favorite spot')}
                   </Typography>
                   <Typography component="p" gutterBottom>
-                    仕事がうまくいったときに訪れるバー、休日を過ごすカフェ、旅行先で見つけた最高のビュースポット。
-                    あなただけの "ベストプレイス"
-                    を友だちにも教えてあげませんか？
+                    {I18n.t('tell friends spot')}
                   </Typography>
                 </CardContent>
                 <CardMedia>
@@ -213,11 +211,10 @@ class Login extends React.Component {
                     <ExploreIcon style={styles.descriptionIcon} />
                   </Typography>
                   <Typography variant="display1" gutterBottom>
-                    あなたの "ベストプレイス" を見つけよう！
+                    {I18n.t('find your best place')}
                   </Typography>
                   <Typography component="p" gutterBottom>
-                    代わり映えしない日常にちょっとの刺激をもたらしてくれる場所はどこでしょう？
-                    きっとあなたのよく知る友人たちが知っているはずです！
+                    {I18n.t('surely your friends know')}
                   </Typography>
                 </CardContent>
                 <CardMedia>
@@ -242,10 +239,10 @@ class Login extends React.Component {
               }
             >
               <div>
-                <Link to="/terms">利用規約</Link>
+                <Link to="/terms">{I18n.t('terms of service')}</Link>
               </div>
               <div>
-                <Link to="/privacy">プライバシーポリシー</Link>
+                <Link to="/privacy">{I18n.t('privacy policy')}</Link>
               </div>
             </div>
           </CardContent>
