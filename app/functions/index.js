@@ -71,7 +71,8 @@ exports.generateThumbnail = functions.storage.bucket(process.env.FIREBASE_IMAGE_
   const bucket = gcs.bucket(fileBucket);
   const tempFilePath = path.join(os.tmpdir(), fileName);
   const metadata = {
-    contentType: contentType
+    contentType: contentType,
+    cacheControl: 'public,max-age=86400'
   };
 
   return bucket.file(filePath).download({
