@@ -14,7 +14,8 @@ import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
 import List, {
   ListItem,
-  ListItemText
+  ListItemText,
+  ListItemSecondaryAction
 } from 'material-ui/List';
 
 const styles = {
@@ -77,14 +78,31 @@ const styles = {
   profileImage: {
     width: 40
   },
-  cardContent: {
-    paddingTop: 0
+  cardContentLarge: {
+    paddingTop: 0,
+    paddingRight: 120
+  },
+  cardContentSmall: {
+    paddingTop: 0,
+    paddingRight: 112
   },
   reviewImage: {
     width: '100%'
   },
   trendingSpotsList: {
     width: '100%'
+  },
+  secondaryAvatarLarge: {
+    borderRadius: 0,
+    marginRight: 24,
+    width: 80,
+    height: 80
+  },
+  secondaryAvatarSmall: {
+    borderRadius: 0,
+    marginRight: 16,
+    width: 80,
+    height: 80
   }
 };
 
@@ -267,10 +285,10 @@ export default class Discover extends Component {
     if (reviews.length > 0) {
       return (
         <GridList
-          cols={this.props.large ? 4 : 1}
+          cols={this.props.large ? 2 : 1}
           style={styles.gridList}
           spacing={20}
-          cellHeight={200}
+          cellHeight={190}
         >
           {this.renderRecentReviews(reviews)}
         </GridList>
@@ -303,16 +321,16 @@ export default class Discover extends Component {
               .locale(window.currentLocale)
               .fromNow()}
           />
-          <CardContent style={styles.cardContent}>
+          <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
             <Typography
               variant="subheading"
-              color="textSecondary"
+              color="primary"
               gutterBottom
               noWrap
             >
               {review.map_name}
             </Typography>
-            <Typography variant="headline" component="h2" gutterBottom noWrap>
+            <Typography variant="title" gutterBottom noWrap>
               {review.spot.name}
             </Typography>
             <Typography component="p" noWrap>
@@ -320,6 +338,14 @@ export default class Discover extends Component {
             </Typography>
           </CardContent>
         </Card>
+        {review.image && (
+          <ListItemSecondaryAction>
+            <Avatar
+              src={review.image.thumbnail_url}
+              style={this.props.large ? styles.secondaryAvatarLarge : styles.secondaryAvatarSmall}
+            />
+          </ListItemSecondaryAction>
+        )}
       </GridListTile>
     ));
   }
