@@ -4,6 +4,8 @@ import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import LockIcon from 'material-ui-icons/Lock';
+import GroupIcon from 'material-ui-icons/Group';
+import PersonIcon from 'material-ui-icons/Person';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Typography from 'material-ui/Typography';
 
@@ -27,9 +29,6 @@ const styles = {
   },
   gridTile: {
     cursor: 'pointer'
-  },
-  lockIcon: {
-    marginRight: 10
   },
   createButtonLarge: {
     position: 'fixed',
@@ -67,8 +66,11 @@ const styles = {
     marginBottom: 15
   },
   mapTypeIcon: {
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 16,
+    marginRight: 16
+  },
+  mapTypeContainer: {
+    display: 'grid'
   }
 };
 
@@ -196,13 +198,22 @@ export default class Maps extends Component {
         <GridListTileBar
           title={map.name}
           subtitle={<span>by: {map.owner_name}</span>}
-          actionIcon={
-            map.private ? (
-              <LockIcon color="disabled" style={styles.lockIcon} />
-            ) : null
-          }
+          actionIcon={<div style={styles.mapTypeContainer}>{this.renderMapTypeIcon(map)}</div>}
         />
       </GridListTile>
     ));
+  }
+
+  renderMapTypeIcon(map) {
+    let actions = [];
+    if (map.private) {
+      actions.push(<LockIcon color="primary" style={styles.mapTypeIcon} />);
+    }
+    if (map.shared) {
+      actions.push(<GroupIcon color="primary" style={styles.mapTypeIcon} />);
+    } else {
+      actions.push(<PersonIcon color="primary" style={styles.mapTypeIcon} />);
+    }
+    return actions;
   }
 }

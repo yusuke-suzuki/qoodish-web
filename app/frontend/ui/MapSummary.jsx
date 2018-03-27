@@ -17,7 +17,6 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Toolbar from 'material-ui/Toolbar';
 import ShareIcon from 'material-ui-icons/Share';
 import Divider from 'material-ui/Divider';
-import GroupIcon from 'material-ui-icons/Group';
 import PlaceIcon from 'material-ui-icons/Place';
 import PersonAddIcon from 'material-ui-icons/PersonAdd';
 import TimelineIcon from 'material-ui-icons/Timeline';
@@ -26,6 +25,9 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import moment from 'moment';
 import Chip from 'material-ui/Chip';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import LockIcon from 'material-ui-icons/Lock';
+import GroupIcon from 'material-ui-icons/Group';
+import PersonIcon from 'material-ui-icons/Person';
 
 const styles = {
   skeltonThumbnail: {
@@ -103,6 +105,12 @@ const styles = {
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12
+  },
+  mapTypeIcon: {
+    marginLeft: 8
+  },
+  mapTypeContainer: {
+    verticalAlign: 'middle'
   }
 };
 
@@ -189,7 +197,7 @@ class MapSummary extends Component {
                 gutterBottom
                 style={styles.mapSummaryText}
               >
-                {map.name}
+                {map.name} <span style={styles.mapTypeContainer}>{this.renderMapTypeIcon(map)}</span>
               </Typography>
             ) : (
               <Chip style={styles.skeltonMapName} />
@@ -509,6 +517,19 @@ class MapSummary extends Component {
     return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
       .locale(window.currentLocale)
       .format('LL');
+  }
+
+  renderMapTypeIcon(map) {
+    let actions = [];
+    if (map.private) {
+      actions.push(<LockIcon color="primary" style={styles.mapTypeIcon} />);
+    }
+    if (map.shared) {
+      actions.push(<GroupIcon color="primary" style={styles.mapTypeIcon} />);
+    } else {
+      actions.push(<PersonIcon color="primary" style={styles.mapTypeIcon} />);
+    }
+    return actions;
   }
 }
 
