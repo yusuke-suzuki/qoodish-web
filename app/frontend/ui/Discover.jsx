@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
 import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
-import LockIcon from 'material-ui-icons/Lock';
+import GroupIcon from 'material-ui-icons/Group';
+import PersonIcon from 'material-ui-icons/Person';
 import ExploreIcon from 'material-ui-icons/Explore';
 import PlaceIcon from 'material-ui-icons/Place';
 import RateReviewIcon from 'material-ui-icons/RateReview';
@@ -46,9 +47,6 @@ const styles = {
   pickUpTileBar: {
     height: '100%'
   },
-  lockIcon: {
-    marginRight: 10
-  },
   progress: {
     textAlign: 'center',
     padding: 10,
@@ -69,8 +67,8 @@ const styles = {
     marginBottom: 15
   },
   mapTypeIcon: {
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 16,
+    marginRight: 16
   },
   reviewCard: {
     margin: 3
@@ -377,16 +375,17 @@ export default class Discover extends Component {
         <GridListTileBar
           title={map.name}
           subtitle={<span>by: {map.owner_name}</span>}
-          actionIcon={
-            map.private ? (
-              <LockIcon
-                color="rgba(255, 255, 255, 0.54)"
-                style={styles.lockIcon}
-              />
-            ) : null
-          }
+          actionIcon={this.renderMapTypeIcon(map)}
         />
       </GridListTile>
     ));
+  }
+
+  renderMapTypeIcon(map) {
+    if (map.shared) {
+      return <GroupIcon color="primary" style={styles.mapTypeIcon} />;
+    } else {
+      return <PersonIcon color="primary" style={styles.mapTypeIcon} />;
+    }
   }
 }
