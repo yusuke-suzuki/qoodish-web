@@ -28,6 +28,8 @@ import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import LockIcon from 'material-ui-icons/Lock';
 import GroupIcon from 'material-ui-icons/Group';
 import PersonIcon from 'material-ui-icons/Person';
+import Tooltip from 'material-ui/Tooltip';
+
 
 const styles = {
   skeltonThumbnail: {
@@ -522,12 +524,24 @@ class MapSummary extends Component {
   renderMapTypeIcon(map) {
     let actions = [];
     if (map.private) {
-      actions.push(<LockIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(
+        <Tooltip title="Only owner and followers are available." key="private">
+          <LockIcon color="inherit" style={styles.mapTypeIcon} />
+        </Tooltip>
+      );
     }
     if (map.shared) {
-      actions.push(<GroupIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(
+        <Tooltip title="Owner and followers can post reports." key="shared">
+          <GroupIcon color="inherit" style={styles.mapTypeIcon} />
+        </Tooltip>
+      );
     } else {
-      actions.push(<PersonIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(
+        <Tooltip title="Only owners can post reports." key="personal">
+          <PersonIcon color="inherit" style={styles.mapTypeIcon} />
+        </Tooltip>
+      );
     }
     return actions;
   }

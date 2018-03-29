@@ -66,9 +66,15 @@ const styles = {
     display: 'inline-flex',
     marginBottom: 15
   },
+  headerIcon: {
+    marginLeft: 10,
+    marginRight: 10
+  },
   mapTypeIcon: {
     marginLeft: 16,
-    marginRight: 16
+    marginRight: 16,
+    color: '#fff',
+    fontSize: '1.2rem'
   },
   reviewCard: {
     margin: 3
@@ -136,7 +142,7 @@ export default class Discover extends Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <ExploreIcon style={styles.mapTypeIcon} /> Pick Up
+            <ExploreIcon style={styles.headerIcon} /> Pick Up
           </Typography>
           <br />
           {this.renderPickUp(this.props.mapPickedUp)}
@@ -148,7 +154,7 @@ export default class Discover extends Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <PlaceIcon style={styles.mapTypeIcon} /> Trending Spots
+            <PlaceIcon style={styles.headerIcon} /> Trending Spots
           </Typography>
           <br />
           {this.props.loadingTrendingSpots
@@ -162,7 +168,7 @@ export default class Discover extends Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <RateReviewIcon style={styles.mapTypeIcon} /> Recent Reports
+            <RateReviewIcon style={styles.headerIcon} /> Recent Reports
           </Typography>
           <br />
           {this.props.loadingRecentReviews
@@ -176,7 +182,7 @@ export default class Discover extends Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <TrendingUpIcon style={styles.mapTypeIcon} /> Trending Maps
+            <TrendingUpIcon style={styles.headerIcon} /> Trending Maps
           </Typography>
           {this.props.loadingPopularMaps
             ? this.renderProgress()
@@ -383,9 +389,9 @@ export default class Discover extends Component {
 
   renderMapTypeIcon(map) {
     if (map.shared) {
-      return <GroupIcon color="primary" style={styles.mapTypeIcon} />;
+      return <GroupIcon style={styles.mapTypeIcon} />;
     } else {
-      return <PersonIcon color="primary" style={styles.mapTypeIcon} />;
+      return <PersonIcon style={styles.mapTypeIcon} />;
     }
   }
 }
