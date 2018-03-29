@@ -67,7 +67,9 @@ const styles = {
   },
   mapTypeIcon: {
     marginLeft: 16,
-    marginRight: 16
+    marginRight: 16,
+    color: '#fff',
+    fontSize: '1.2rem'
   },
   mapTypeContainer: {
     display: 'grid'
@@ -207,12 +209,12 @@ export default class Maps extends Component {
   renderMapTypeIcon(map) {
     let actions = [];
     if (map.private) {
-      actions.push(<LockIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(<LockIcon style={styles.mapTypeIcon} />);
     }
     if (map.shared) {
-      actions.push(<GroupIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(<GroupIcon style={styles.mapTypeIcon} />);
     } else {
-      actions.push(<PersonIcon color="primary" style={styles.mapTypeIcon} />);
+      actions.push(<PersonIcon style={styles.mapTypeIcon} />);
     }
     return actions;
   }
