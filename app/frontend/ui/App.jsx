@@ -21,6 +21,7 @@ import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
+import ReviewsDialogContainer from '../containers/ReviewsDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
 import BaseSelectDialogContainer from '../containers/BaseSelectDialogContainer';
@@ -139,6 +140,7 @@ class App extends Component {
           <EditReviewDialogContainer />
           <DeleteReviewDialogContainer />
           <ReviewDialogContainer />
+          <ReviewsDialogContainer />
           <CreateMapDialogContainer />
           <EditMapDialogContainer />
         </div>

@@ -332,7 +332,7 @@ class MapSummary extends Component {
               key="copy"
             >
               <MenuItem key="copy" onClick={this.handleRequestShareMenuClose}>
-                Copy URL
+                Copy link
               </MenuItem>
             </CopyToClipboard>
           </Menu>
@@ -538,7 +538,7 @@ class MapSummary extends Component {
       );
     } else {
       actions.push(
-        <Tooltip title="Only owners can post reports." key="personal">
+        <Tooltip title="Only owner can post reports." key="personal">
           <PersonIcon color="inherit" style={styles.mapTypeIcon} />
         </Tooltip>
       );

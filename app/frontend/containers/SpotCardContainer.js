@@ -7,6 +7,7 @@ import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
+import openReviewsDialog from '../actions/openReviewsDialog';
 
 const mapStateToProps = state => {
   return {
@@ -14,7 +15,8 @@ const mapStateToProps = state => {
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
     currentPosition: state.gMap.currentPosition,
-    large: state.shared.large
+    large: state.shared.large,
+    mapReviews: state.mapSummary.mapReviews
   };
 };
 
@@ -30,6 +32,10 @@ const mapDispatchToProps = dispatch => {
         placeId: spot.place_id
       };
       dispatch(selectPlaceForReview(place));
+    },
+
+    handleShowReviewsButtonClick: reviews => {
+      dispatch(openReviewsDialog(reviews));
     },
 
     handleShowDetailButtonClick: spot => {
