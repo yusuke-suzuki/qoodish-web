@@ -22,7 +22,7 @@ const styles = {
     left: 20,
     right: 20,
     zIndex: 1101,
-    width: '50%',
+    maxWidth: 700,
     margin: '0 auto'
   },
   rootSmall: {
@@ -45,6 +45,10 @@ const styles = {
   },
   spotName: {
     marginRight: 20
+  },
+  bottomNavAction: {
+    minWidth: 'auto',
+    padding: '16px 0 0 0'
   }
 };
 
@@ -95,11 +99,24 @@ class SpotCard extends Component {
                     this.props.currentPosition
                   )
                 }
+                style={this.props.large ? {} : styles.bottomNavAction}
+              />
+              <BottomNavigationAction
+                label="REPORTS"
+                icon={<RateReviewIcon />}
+                onClick={() => {
+                  let reviews = this.props.mapReviews.filter((review) => {
+                    return review.place_id === spot.place_id;
+                  });
+                  this.props.handleShowReviewsButtonClick(reviews);
+                }}
+                style={this.props.large ? {} : styles.bottomNavAction}
               />
               <BottomNavigationAction
                 label="DETAIL"
                 icon={<InfoIcon />}
                 onClick={() => this.props.handleShowDetailButtonClick(spot)}
+                style={this.props.large ? {} : styles.bottomNavAction}
               />
             </BottomNavigation>
           </Grid>
@@ -115,6 +132,7 @@ class SpotCard extends Component {
         icon={<AddLocationIcon />}
         onClick={() => this.props.handleAddReviewButtonClick(spot)}
         disabled={this.props.currentMap && !this.props.currentMap.postable}
+        style={this.props.large ? {} : styles.bottomNavAction}
       />
     );
   }
