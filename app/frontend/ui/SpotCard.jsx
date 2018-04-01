@@ -30,7 +30,8 @@ const styles = {
   },
   closeButton: {
     position: 'absolute',
-    right: 0
+    right: 0,
+    top: 0
   },
   card: {
     height: 108
@@ -69,15 +70,15 @@ class SpotCard extends Component {
   renderSpotCard(spot) {
     return (
       <Card style={styles.card}>
-        <IconButton
-          onClick={this.props.handleCloseSpotButtonClick}
-          style={styles.closeButton}
-        >
-          <CloseIcon />
-        </IconButton>
         <div style={styles.cardContainer}>
           <CardMedia image={spot.image_url} style={styles.cardMedia} />
           <CardContent style={styles.cardContent}>
+            <IconButton
+              onClick={this.props.handleCloseSpotButtonClick}
+              style={styles.closeButton}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography
               variant="subheading"
               noWrap

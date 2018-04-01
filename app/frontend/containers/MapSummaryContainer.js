@@ -12,7 +12,6 @@ import openIssueDialog from '../actions/openIssueDialog';
 import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
-import selectReview from '../actions/selectReview';
 import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 
 const mapStateToProps = state => {
@@ -40,16 +39,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleReviewClick: async (review, large) => {
-      if (large) {
-        dispatch(selectSpot(review.spot));
-        dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-        dispatch(openReviewDialog(review));
-      } else {
-        dispatch(selectReview(review));
-        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
-          previous: true
-        }));
-      }
+      dispatch(selectSpot(review.spot));
+      dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+      dispatch(openReviewDialog(review));
     },
 
     handleJoinButtonClick: () => {
