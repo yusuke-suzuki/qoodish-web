@@ -7,10 +7,6 @@ import Typography from 'material-ui/Typography';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
-import InfoIcon from 'material-ui-icons/Info';
-import BottomNavigation, {
-  BottomNavigationAction
-} from 'material-ui/BottomNavigation';
 import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
 import Grid from 'material-ui/Grid';
@@ -36,19 +32,25 @@ const styles = {
     position: 'absolute',
     right: 0
   },
+  card: {
+    height: 108
+  },
+  cardContainer: {
+    display: 'inline-flex'
+  },
+  cardMedia: {
+    width: 108,
+    height: 108
+  },
   cardContent: {
+    position: 'absolute',
+    left: 108,
+    right: 0,
     paddingBottom: 0
   },
-  media: {
-    width: '100%',
-    height: '100%'
-  },
   spotName: {
-    marginRight: 20
-  },
-  bottomNavAction: {
-    minWidth: 'auto',
-    padding: '16px 0 0 0'
+    marginRight: 24,
+    cursor: 'pointer'
   }
 };
 
@@ -66,74 +68,64 @@ class SpotCard extends Component {
 
   renderSpotCard(spot) {
     return (
-      <Card>
+      <Card style={styles.card}>
         <IconButton
           onClick={this.props.handleCloseSpotButtonClick}
           style={styles.closeButton}
         >
           <CloseIcon />
         </IconButton>
-        <Grid container spacing={0}>
-          <Grid item xs={4} sm={3} md={3} lg={3}>
-            <CardMedia image={spot.image_url} style={styles.media} />
-          </Grid>
-          <Grid item xs={8} sm={9} md={9} lg={9}>
-            <CardContent style={styles.cardContent}>
-              <Typography variant="subheading" noWrap style={styles.spotName}>
-                {spot.name}
-              </Typography>
-              <Typography color="textSecondary" noWrap>
-                {spot.formatted_address}
-              </Typography>
-            </CardContent>
-            <BottomNavigation showLabels={this.props.large ? true : false}>
-              {this.props.currentMap &&
-                this.props.currentMap.postable &&
-                this.renderAddButton(spot)}
-              <BottomNavigationAction
-                label="DIRECTIONS"
-                icon={<DirectionsIcon />}
-                onClick={() =>
-                  this.props.handleRouteButtonClick(
-                    spot,
-                    this.props.currentPosition
-                  )
-                }
-                style={this.props.large ? {} : styles.bottomNavAction}
-              />
-              <BottomNavigationAction
-                label="REPORTS"
-                icon={<RateReviewIcon />}
-                onClick={() => {
-                  let reviews = this.props.mapReviews.filter((review) => {
-                    return review.place_id === spot.place_id;
-                  });
-                  this.props.handleShowReviewsButtonClick(reviews);
-                }}
-                style={this.props.large ? {} : styles.bottomNavAction}
-              />
-              <BottomNavigationAction
-                label="DETAIL"
-                icon={<InfoIcon />}
-                onClick={() => this.props.handleShowDetailButtonClick(spot)}
-                style={this.props.large ? {} : styles.bottomNavAction}
-              />
-            </BottomNavigation>
-          </Grid>
-        </Grid>
+        <div style={styles.cardContainer}>
+          <CardMedia image={spot.image_url} style={styles.cardMedia} />
+          <CardContent style={styles.cardContent}>
+            <Typography
+              variant="subheading"
+              noWrap
+              style={styles.spotName}
+              onClick={() => this.props.handleShowDetailButtonClick(spot)}
+            >
+              {spot.name}
+            </Typography>
+            <Typography color="textSecondary" noWrap>
+              {spot.formatted_address}
+            </Typography>
+            {this.props.currentMap &&
+              this.props.currentMap.postable &&
+              this.renderAddButton(spot)}
+            <IconButton
+              onClick={() => {
+                let reviews = this.props.mapReviews.filter((review) => {
+                  return review.place_id === spot.place_id;
+                });
+                this.props.handleShowReviewsButtonClick(reviews);
+              }}
+            >
+              <RateReviewIcon />
+            </IconButton>
+            <IconButton
+              onClick={() =>
+                this.props.handleRouteButtonClick(
+                  spot,
+                  this.props.currentPosition
+                )
+              }
+            >
+              <DirectionsIcon />
+            </IconButton>
+          </CardContent>
+        </div>
       </Card>
     );
   }
 
   renderAddButton(spot) {
     return (
-      <BottomNavigationAction
-        label="ADD"
-        icon={<AddLocationIcon />}
+      <IconButton
         onClick={() => this.props.handleAddReviewButtonClick(spot)}
         disabled={this.props.currentMap && !this.props.currentMap.postable}
-        style={this.props.large ? {} : styles.bottomNavAction}
-      />
+      >
+        <AddLocationIcon />
+      </IconButton>
     );
   }
 }

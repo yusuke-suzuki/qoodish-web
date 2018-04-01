@@ -1,16 +1,9 @@
 import React from 'react';
-import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog';
+import Dialog, { DialogContent, DialogTitle, DialogActions } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Slide from 'material-ui/transitions/Slide';
-
-const styles = {
-  profileImage: {
-    width: 40,
-    height: 40
-  }
-};
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -29,6 +22,9 @@ class LikesDialog extends React.Component {
         <DialogContent>
           <List disablePadding>{this.renderLikes(this.props.likes)}</List>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -41,12 +37,7 @@ class LikesDialog extends React.Component {
         onClick={() => this.props.handleLikeClick(like)}
       >
         <ListItemAvatar>
-          <Avatar>
-            <img
-              src={like.voter.profile_image_url}
-              style={styles.profileImage}
-            />
-          </Avatar>
+          <Avatar src={like.voter.profile_image_url} />
         </ListItemAvatar>
         <ListItemText primary={like.voter.name} />
       </ListItem>
