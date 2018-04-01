@@ -1,5 +1,5 @@
 import React from 'react';
-import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog';
+import Dialog, { DialogContent, DialogTitle, DialogActions } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
@@ -23,6 +23,9 @@ class ReviewsDialog extends React.Component {
         <DialogContent>
           <List disablePadding>{this.renderReviews(this.props.reviews)}</List>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+        </DialogActions>
       </Dialog>
     );
   }
