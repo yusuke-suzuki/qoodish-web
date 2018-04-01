@@ -494,7 +494,7 @@ class MapSummary extends Component {
       <ListItem
         button
         key={review.id}
-        onClick={() => this.props.handleReviewClick(review, this.props.large)}
+        onClick={() => this.props.handleReviewClick(review)}
       >
         <Avatar src={review.author.profile_image_url} />
         <ListItemText

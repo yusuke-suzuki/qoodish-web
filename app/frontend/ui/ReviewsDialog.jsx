@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog, { DialogContent, DialogTitle, DialogActions } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Slide from 'material-ui/transitions/Slide';
 import Typography from 'material-ui/Typography';
@@ -9,6 +9,16 @@ import Typography from 'material-ui/Typography';
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
+
+const styles = {
+  listItemText: {
+    paddingRight: 32
+  },
+  secondaryAvatar: {
+    borderRadius: 0,
+    marginRight: 12
+  }
+};
 
 class ReviewsDialog extends React.Component {
   render() {
@@ -35,7 +45,7 @@ class ReviewsDialog extends React.Component {
       <ListItem
         button
         key={review.id}
-        onClick={() => this.props.handleReviewClick(review, this.props.large)}
+        onClick={() => this.props.handleReviewClick(review)}
       >
         <ListItemAvatar>
           <Avatar src={review.author.profile_image_url} />
@@ -52,7 +62,13 @@ class ReviewsDialog extends React.Component {
               {review.comment}
             </Typography>
           }
+          style={styles.listItemText}
         />
+        {review.image && (
+          <ListItemSecondaryAction>
+            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
+          </ListItemSecondaryAction>
+        )}
       </ListItem>
     ));
   }
