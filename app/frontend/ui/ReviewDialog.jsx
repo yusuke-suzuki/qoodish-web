@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import Dialog from 'material-ui/Dialog';
+import Dialog, {
+  DialogContent,
+} from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
@@ -18,6 +20,9 @@ const styles = {
   },
   flex: {
     flex: 1
+  },
+  dialogContent: {
+    padding: 0
   }
 };
 
@@ -36,10 +41,12 @@ class ReviewDialog extends Component {
         fullScreen={this.props.large ? false : true}
       >
         {!this.props.large && this.renderAppBar()}
-        <div>
-          {this.props.currentReview &&
-            this.renderReviewCard(this.props.currentReview)}
-        </div>
+        <DialogContent style={styles.dialogContent}>
+          <div>
+            {this.props.currentReview &&
+              this.renderReviewCard(this.props.currentReview)}
+          </div>
+        </DialogContent>
       </Dialog>
     );
   }
