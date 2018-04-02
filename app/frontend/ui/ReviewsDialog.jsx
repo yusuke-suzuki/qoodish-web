@@ -1,10 +1,15 @@
 import React from 'react';
-import Dialog, { DialogContent, DialogTitle, DialogActions } from 'material-ui/Dialog';
+import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemAvatar, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Slide from 'material-ui/transitions/Slide';
 import Typography from 'material-ui/Typography';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from 'material-ui-icons/Close';
+import Toolbar from 'material-ui/Toolbar';
+import AddIcon from 'material-ui-icons/Add';
+import Divider from 'material-ui/Divider';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -17,6 +22,15 @@ const styles = {
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12
+  },
+  toolbar: {
+    paddingLeft: 8
+  },
+  flex: {
+    flex: 1
+  },
+  dialogContent: {
+    padding: 16
   }
 };
 
@@ -29,13 +43,31 @@ class ReviewsDialog extends React.Component {
         fullWidth
         transition={Transition}
       >
-        <DialogTitle>Reports</DialogTitle>
-        <DialogContent>
+        <Toolbar style={styles.toolbar}>
+          <IconButton
+            color="inherit"
+            onClick={this.props.handleRequestDialogClose}
+            aria-label="Close"
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="title" color="inherit" style={styles.flex} noWrap>
+            {this.props.currentSpot.name}
+          </Typography>
+          <Button
+            onClick={() => this.props.handleAddReviewButtonClick(this.props.currentSpot)}
+            color="primary"
+            disabled={this.props.currentMap && !this.props.currentMap.postable}
+            variant="raised"
+          >
+            <AddIcon />
+            Add
+          </Button>
+        </Toolbar>
+        <Divider />
+        <DialogContent style={styles.dialogContent}>
           <List disablePadding>{this.renderReviews(this.props.reviews)}</List>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
-        </DialogActions>
       </Dialog>
     );
   }

@@ -5,7 +5,6 @@ import Avatar from 'material-ui/Avatar';
 import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import RateReviewIcon from 'material-ui-icons/RateReview';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
@@ -94,9 +93,6 @@ class SpotCard extends Component {
             <Typography color="textSecondary" noWrap>
               {spot.formatted_address}
             </Typography>
-            {this.props.currentMap &&
-              this.props.currentMap.postable &&
-              this.renderAddButton(spot)}
             <IconButton
               onClick={() => {
                 let reviews = this.props.mapReviews.filter((review) => {
@@ -120,17 +116,6 @@ class SpotCard extends Component {
           </CardContent>
         </div>
       </Card>
-    );
-  }
-
-  renderAddButton(spot) {
-    return (
-      <IconButton
-        onClick={() => this.props.handleAddReviewButtonClick(spot)}
-        disabled={this.props.currentMap && !this.props.currentMap.postable}
-      >
-        <AddLocationIcon />
-      </IconButton>
     );
   }
 }
