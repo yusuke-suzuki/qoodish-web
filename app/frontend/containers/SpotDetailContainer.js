@@ -10,7 +10,6 @@ import loadSpotStart from '../actions/loadSpotStart';
 import loadSpotEnd from '../actions/loadSpotEnd';
 import clearSpotState from '../actions/clearSpotState';
 import updatePageTitle from '../actions/updatePageTitle';
-import selectReview from '../actions/selectReview';
 import openReviewDialog from '../actions/openReviewDialog';
 
 const mapStateToProps = state => {
@@ -67,15 +66,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(selectPlaceForReview(place));
     },
 
-    handleReviewClick: (review, large) => {
-      if (large) {
-        dispatch(openReviewDialog(review));
-      } else {
-        dispatch(selectReview(review));
-        dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
-          previous: true
-        }));
-      }
+    handleReviewClick: (review) => {
+      dispatch(openReviewDialog(review));
     },
 
     clear: () => {
