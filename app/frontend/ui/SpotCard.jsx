@@ -10,6 +10,7 @@ import DirectionsIcon from 'material-ui-icons/Directions';
 import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
 import Grid from 'material-ui/Grid';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   rootLarge: {
@@ -58,12 +59,15 @@ const styles = {
 class SpotCard extends Component {
   render() {
     return (
-      <div
-        hidden={!this.props.open}
+      <Slide
         style={this.props.large ? styles.rootLarge : styles.rootSmall}
+        direction="up"
+        in={this.props.open}
+        mountOnEnter
+        unmountOnExit
       >
         {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
-      </div>
+      </Slide>
     );
   }
 
