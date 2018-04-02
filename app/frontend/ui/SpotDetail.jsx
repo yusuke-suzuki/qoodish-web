@@ -259,7 +259,7 @@ class SpotDetail extends Component {
       <ListItem
         button
         key={review.id}
-        onClick={() => this.props.handleReviewClick(review, this.props.large)}
+        onClick={() => this.props.handleReviewClick(review)}
       >
         <Avatar>
           <img

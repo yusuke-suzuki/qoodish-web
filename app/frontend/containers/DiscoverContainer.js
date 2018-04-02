@@ -19,7 +19,7 @@ import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
 import updatePageTitle from '../actions/updatePageTitle';
-import selectReview from '../actions/selectReview';
+import openReviewDialog from '../actions/openReviewDialog';
 
 const mapStateToProps = state => {
   return {
@@ -107,10 +107,7 @@ const mapDispatchToProps = dispatch => {
     },
 
     handleClickReview: review => {
-      dispatch(selectReview(review));
-      dispatch(push(`/maps/${review.map_id}/reports/${review.id}`, {
-        previous: true
-      }));
+      dispatch(openReviewDialog(review));
     }
   };
 };

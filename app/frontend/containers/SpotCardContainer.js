@@ -3,7 +3,6 @@ import { push } from 'react-router-redux';
 import SpotCard from '../ui/SpotCard';
 import ApiClient from './ApiClient.js';
 import closeSpotCard from '../actions/closeSpotCard';
-import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
@@ -11,7 +10,6 @@ import openReviewsDialog from '../actions/openReviewsDialog';
 
 const mapStateToProps = state => {
   return {
-    currentMap: state.mapDetail.currentMap,
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
     currentPosition: state.gMap.currentPosition,
@@ -24,14 +22,6 @@ const mapDispatchToProps = dispatch => {
   return {
     handleCloseSpotButtonClick: () => {
       dispatch(closeSpotCard());
-    },
-
-    handleAddReviewButtonClick: spot => {
-      let place = {
-        description: spot.name,
-        placeId: spot.place_id
-      };
-      dispatch(selectPlaceForReview(place));
     },
 
     handleShowReviewsButtonClick: reviews => {

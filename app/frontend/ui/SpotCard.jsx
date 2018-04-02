@@ -5,11 +5,11 @@ import Avatar from 'material-ui/Avatar';
 import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import RateReviewIcon from 'material-ui-icons/RateReview';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
 import DirectionsIcon from 'material-ui-icons/Directions';
 import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
 import Grid from 'material-ui/Grid';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   rootLarge: {
@@ -58,12 +58,15 @@ const styles = {
 class SpotCard extends Component {
   render() {
     return (
-      <div
-        hidden={!this.props.open}
+      <Slide
         style={this.props.large ? styles.rootLarge : styles.rootSmall}
+        direction="up"
+        in={this.props.open}
+        mountOnEnter
+        unmountOnExit
       >
         {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
-      </div>
+      </Slide>
     );
   }
 
@@ -90,9 +93,6 @@ class SpotCard extends Component {
             <Typography color="textSecondary" noWrap>
               {spot.formatted_address}
             </Typography>
-            {this.props.currentMap &&
-              this.props.currentMap.postable &&
-              this.renderAddButton(spot)}
             <IconButton
               onClick={() => {
                 let reviews = this.props.mapReviews.filter((review) => {
@@ -116,17 +116,6 @@ class SpotCard extends Component {
           </CardContent>
         </div>
       </Card>
-    );
-  }
-
-  renderAddButton(spot) {
-    return (
-      <IconButton
-        onClick={() => this.props.handleAddReviewButtonClick(spot)}
-        disabled={this.props.currentMap && !this.props.currentMap.postable}
-      >
-        <AddLocationIcon />
-      </IconButton>
     );
   }
 }
