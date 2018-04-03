@@ -14,6 +14,7 @@ import Button from 'material-ui/Button';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
+import FacebookProvider, { Page } from 'react-facebook';
 
 const styles = {
   toolbar: {
@@ -238,12 +239,16 @@ class Login extends React.Component {
                 this.props.large ? styles.containerLarge : styles.containerSmall
               }
             >
-              <div>
-                <Link to="/terms">{I18n.t('terms of service')}</Link>
-              </div>
-              <div>
-                <Link to="/privacy">{I18n.t('privacy policy')}</Link>
-              </div>
+              <Grid container style={styles.gridContainer} spacing={24}>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  {this.renderFbPage()}
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <div><Link to="/terms">{I18n.t('terms of service')}</Link></div>
+                  <div><Link to="/privacy">{I18n.t('privacy policy')}</Link></div>
+                  <div><a href="https://github.com/yusuke-suzuki/qoodish-web" target="_blank">GitHub</a></div>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
           <CardContent style={styles.bottomCardLicense}>
@@ -259,6 +264,14 @@ class Login extends React.Component {
           </CardContent>
         </Card>
       </div>
+    );
+  }
+
+  renderFbPage() {
+    return (
+      <FacebookProvider appId={process.env.FB_APP_ID}>
+        <Page href="https://www.facebook.com/qoodish" />
+      </FacebookProvider>
     );
   }
 }
