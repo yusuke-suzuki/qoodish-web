@@ -3304,7 +3304,7 @@ faye-websocket@0.11.1:
   dependencies:
     websocket-driver ">=0.5.1"
 
-fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.9:
+fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.4, fbjs@^0.8.9:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -4905,6 +4905,10 @@ jss@^9.3.2, jss@^9.3.3:
     symbol-observable "^1.1.0"
     warning "^3.0.0"
 
+keycode@^2.1.7:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
+
 keycode@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.1.9.tgz#964a23c54e4889405b4861a5c9f0480d45141dfa"
@@ -5310,9 +5314,9 @@ material-ui-icons@^1.0.0-alpha.19:
   dependencies:
     recompose "^0.26.0"
 
-material-ui@^1.0.0-beta.38:
-  version "1.0.0-beta.38"
-  resolved "https://registry.yarnpkg.com/material-ui/-/material-ui-1.0.0-beta.38.tgz#213e53c232c3ccf4b5ca3bfe1e1971a3d076d180"
+material-ui@^1.0.0-beta.40:
+  version "1.0.0-beta.40"
+  resolved "https://registry.yarnpkg.com/material-ui/-/material-ui-1.0.0-beta.40.tgz#eaf0a0b264739c2c4d2cfe82fe100338814962bb"
   dependencies:
     "@types/jss" "^9.3.0"
     "@types/react-transition-group" "^2.0.6"
@@ -6767,6 +6771,35 @@ react-side-effect@^1.1.0:
   dependencies:
     exenv "^1.2.1"
     shallowequal "^1.0.1"
+
+react-swipeable-views-core@^0.12.11:
+  version "0.12.11"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views-core/-/react-swipeable-views-core-0.12.11.tgz#3cf2b4daffbb36f9d69bd19bf5b2d5370b6b2c1b"
+  dependencies:
+    babel-runtime "^6.23.0"
+    warning "^3.0.0"
+
+react-swipeable-views-utils@^0.12.13:
+  version "0.12.13"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views-utils/-/react-swipeable-views-utils-0.12.13.tgz#fe102524180bf568f746e844c8d74b9cd3e7e0b8"
+  dependencies:
+    babel-runtime "^6.23.0"
+    fbjs "^0.8.4"
+    keycode "^2.1.7"
+    prop-types "^15.6.0"
+    react-event-listener "^0.5.1"
+    react-swipeable-views-core "^0.12.11"
+
+react-swipeable-views@^0.12.13:
+  version "0.12.13"
+  resolved "https://registry.yarnpkg.com/react-swipeable-views/-/react-swipeable-views-0.12.13.tgz#247442dbe14922efe5ad6fe0297599c817600bf9"
+  dependencies:
+    babel-runtime "^6.23.0"
+    dom-helpers "^3.2.1"
+    prop-types "^15.5.4"
+    react-swipeable-views-core "^0.12.11"
+    react-swipeable-views-utils "^0.12.13"
+    warning "^3.0.0"
 
 react-transition-group@^2.2.1:
   version "2.2.1"

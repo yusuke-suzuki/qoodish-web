@@ -82,6 +82,18 @@ const mapDispatchToProps = dispatch => {
 
     switchFollowingMaps: () => {
       dispatch(switchFollowingMaps());
+    },
+
+    handleMyMapsActive: () => {
+      dispatch(push('/maps#mymaps', {
+        previous: true
+      }));
+    },
+
+    handleFollowingMapsActive: () => {
+      dispatch(push('/maps#following', {
+        previous: true
+      }));
     }
   };
 };

@@ -4,7 +4,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
-import Drawer from 'material-ui/Drawer';
+import SwipeableDrawer from 'material-ui/SwipeableDrawer';
 import Button from 'material-ui/Button';
 import List, {
   ListItem,
@@ -115,6 +115,7 @@ class NavBar extends Component {
   constructor(props) {
     super(props);
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
+    this.handleOpenDrawer = this.handleOpenDrawer.bind(this);
     this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
     this.handleAvatarClick = this.handleAvatarClick.bind(this);
     this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(
@@ -187,6 +188,12 @@ class NavBar extends Component {
     });
   }
 
+  handleOpenDrawer() {
+    this.setState({
+      drawerOpen: true
+    });
+  }
+
   handleCloseDrawer() {
     this.setState({
       drawerOpen: false
@@ -223,13 +230,14 @@ class NavBar extends Component {
           {this.props.mapsTabActive && this.renderMapsTab()}
           {this.props.mapDetailTabActive && this.renderMapDetailTab()}
         </AppBar>
-        <Drawer
+        <SwipeableDrawer
           open={this.state.drawerOpen}
+          onOpen={this.handleOpenDrawer}
           onClose={this.handleCloseDrawer}
           onClick={this.handleCloseDrawer}
         >
           {this.renderDrawerContents()}
-        </Drawer>
+        </SwipeableDrawer>
       </div>
     );
   }
