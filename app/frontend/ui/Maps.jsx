@@ -8,6 +8,7 @@ import GroupIcon from 'material-ui-icons/Group';
 import PersonIcon from 'material-ui-icons/Person';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Typography from 'material-ui/Typography';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
   rootLarge: {
@@ -21,7 +22,6 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginTop: 40,
     marginBottom: 20
   },
   gridList: {
@@ -77,6 +77,11 @@ const styles = {
 };
 
 export default class Maps extends Component {
+  constructor(props) {
+    super(props);
+    this.handleTabChange = this.handleTabChange.bind(this);
+  }
+
   componentWillMount() {
     this.props.showTabs();
     this.props.updatePageTitle();
@@ -113,11 +118,22 @@ export default class Maps extends Component {
     );
   }
 
+  handleTabChange() {
+    let currentTabValue = this.props.tabValue;
+    if (currentTabValue === 0) {
+      this.props.handleMyMapsActive();
+    } else {
+      this.props.handleFollowingMapsActive();
+    }
+  }
+
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        {this.props.tabValue === 0 && this.renderFollowingMaps()}
-        {this.props.tabValue === 1 && this.renderMyMaps()}
+        <SwipeableViews index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
+          {this.renderFollowingMaps()}
+          {this.renderMyMaps()}
+        </SwipeableViews>
         <Button
           variant="fab"
           aria-label="add"
@@ -136,7 +152,7 @@ export default class Maps extends Component {
 
   renderFollowingMaps() {
     return (
-      <div style={styles.container}>
+      <div style={styles.container} key='following'>
         {this.props.loadingFollowingMaps
           ? this.renderProgress()
           : this.renderMapContainer(this.props.followingMaps)}
@@ -146,7 +162,7 @@ export default class Maps extends Component {
 
   renderMyMaps() {
     return (
-      <div style={styles.container}>
+      <div style={styles.container} key='mymaps'>
         {this.props.loadingMyMaps
           ? this.renderProgress()
           : this.renderMapContainer(this.props.myMaps)}

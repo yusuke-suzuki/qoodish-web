@@ -19,8 +19,13 @@ import InfoIcon from 'material-ui-icons/Info';
 import Paper from 'material-ui/Paper';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
+  swipeable: {
+    position: 'absolute',
+    width: '100%'
+  },
   mapWrapperLarge: {
     position: 'absolute',
     top: 0,
@@ -121,6 +126,11 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
 )));
 
 export default class MapDetail extends Component {
+  constructor(props) {
+    super(props);
+    this.handleTabChange = this.handleTabChange.bind(this);
+  }
+
   async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.large) {
@@ -223,11 +233,24 @@ export default class MapDetail extends Component {
 
   renderSmall() {
     return (
-      <div>
-        {this.props.tabValue === 0 && this.renderMapSummary()}
-        {this.props.tabValue === 1 && this.renderGoogleMap()}
-      </div>
+      <SwipeableViews index={this.props.tabValue} onChangeIndex={this.handleTabChange} style={styles.swipeable}>
+        <div key='summary'>
+          {this.renderMapSummary()}
+        </div>
+        <div key='map'>
+          {this.renderGoogleMap()}
+        </div>
+      </SwipeableViews>
     );
+  }
+
+  handleTabChange() {
+    let currentTabValue = this.props.tabValue;
+    if (currentTabValue === 0) {
+      this.props.handleMapActive();
+    } else {
+      this.props.handleSummaryActive();
+    }
   }
 
   renderMapSummary() {
@@ -263,16 +286,18 @@ export default class MapDetail extends Component {
 
   renderCreateReviewButton() {
     return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={this.props.handleCreateReviewClick}
-      >
-        <AddLocationIcon />
-      </Button>
+      <div hidden={!this.props.large && this.props.spotCardOpen}>
+        <Button
+          variant="fab"
+          aria-label="add"
+          style={
+            this.props.large ? styles.createButtonLarge : styles.createButtonSmall
+          }
+          onClick={this.props.handleCreateReviewClick}
+        >
+          <AddLocationIcon />
+        </Button>
+      </div>
     );
   }
 }

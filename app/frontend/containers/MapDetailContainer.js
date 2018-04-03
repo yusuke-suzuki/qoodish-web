@@ -38,6 +38,7 @@ const mapStateToProps = state => {
     directions: state.gMap.directions,
     large: state.shared.large,
     currentSpot: state.spotCard.currentSpot,
+    spotCardOpen: state.spotCard.spotCardOpen,
     hash: state.router.location.hash,
     tabValue: state.mapDetail.tabValue
   };
@@ -139,6 +140,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     switchMap: () => {
       dispatch(switchMap());
+    },
+
+    handleMapActive: () => {
+      dispatch(push(`/maps/${ownProps.match.params.mapId}#map`, {
+        previous: true
+      }));
+    },
+
+    handleSummaryActive: () => {
+      dispatch(push(`/maps/${ownProps.match.params.mapId}#summary`, {
+        previous: true
+      }));
     }
   };
 };

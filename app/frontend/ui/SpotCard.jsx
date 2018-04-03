@@ -22,10 +22,10 @@ const styles = {
     margin: '0 auto'
   },
   rootSmall: {
-    position: 'fixed',
-    bottom: 71,
-    left: 15,
-    right: 15,
+    position: 'relative',
+    bottom: 123,
+    marginLeft: 15,
+    marginRight: 15,
     zIndex: 1101
   },
   closeButton: {
