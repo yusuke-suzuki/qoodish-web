@@ -160,18 +160,6 @@ export default class MapDetail extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.hash) {
-      if (nextProps.hash === '#map') {
-        nextProps.switchMap();
-      } else if (nextProps.hash === '#summary') {
-        nextProps.switchSummary();
-      }
-    } else {
-      nextProps.switchSummary();
-    }
-  }
-
   componentWillUnmount() {
     this.props.handleUnmount();
   }

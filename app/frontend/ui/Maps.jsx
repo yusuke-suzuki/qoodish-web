@@ -98,18 +98,6 @@ export default class Maps extends Component {
     this.props.hideTabs();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.hash) {
-      if (nextProps.hash === '#mymaps') {
-        nextProps.switchMyMaps();
-      } else if (nextProps.hash === '#following') {
-        nextProps.switchFollowingMaps();
-      }
-    } else {
-      nextProps.switchFollowingMaps();
-    }
-  }
-
   renderProgress() {
     return (
       <div style={styles.progress}>

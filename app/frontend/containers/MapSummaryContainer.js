@@ -13,6 +13,7 @@ import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
 import openInviteTargetDialog from '../actions/openInviteTargetDialog';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = state => {
   return {
@@ -29,9 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleSpotClick: async (spot, large) => {
       if (!large) {
-        dispatch(push(`/maps/${ownProps.mapId}#map`, {
-          previous: true
-        }));
+        dispatch(switchMap());
       }
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));

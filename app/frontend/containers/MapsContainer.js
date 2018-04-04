@@ -27,7 +27,6 @@ const mapStateToProps = state => {
     loadingMyMaps: state.maps.loadingMyMaps,
     loadingFollowingMaps: state.maps.loadingFollowingMaps,
     large: state.shared.large,
-    hash: state.router.location.hash,
     tabValue: state.maps.tabValue
   };
 };
@@ -76,24 +75,12 @@ const mapDispatchToProps = dispatch => {
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 
-    switchMyMaps: () => {
+    handleMyMapsActive: () => {
       dispatch(switchMyMaps());
     },
 
-    switchFollowingMaps: () => {
-      dispatch(switchFollowingMaps());
-    },
-
-    handleMyMapsActive: () => {
-      dispatch(push('/maps#mymaps', {
-        previous: true
-      }));
-    },
-
     handleFollowingMapsActive: () => {
-      dispatch(push('/maps#following', {
-        previous: true
-      }));
+      dispatch(switchFollowingMaps());
     }
   };
 };
