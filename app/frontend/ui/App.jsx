@@ -12,6 +12,7 @@ import LoginContainer from '../containers/LoginContainer';
 import DiscoverContainer from '../containers/DiscoverContainer';
 import TimelineContainer from '../containers/TimelineContainer';
 import MapsContainer from '../containers/MapsContainer';
+import NotificationsContainer from '../containers/NotificationsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
 import ReviewDetailContainer from '../containers/ReviewDetailContainer';
 import SpotDetailContainer from '../containers/SpotDetailContainer';
@@ -212,6 +213,7 @@ class App extends Component {
             <Route exact path="/discover" component={DiscoverContainer} />
             <Route exact path="/maps" component={MapsContainer} />
             <Route exact path="/maps/:mapId" component={MapDetailContainer} />
+            <Route exact path="/notifications" component={NotificationsContainer} />
             <Route
               exact
               path="/maps/:mapId/reports/:reviewId"

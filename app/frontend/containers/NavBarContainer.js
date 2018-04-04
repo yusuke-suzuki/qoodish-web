@@ -69,6 +69,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(push('/maps'));
     },
 
+    requestNotifications: () => {
+      dispatch(push('/notifications'));
+    },
+
     requestSettings: () => {
       dispatch(push('/settings'));
     },

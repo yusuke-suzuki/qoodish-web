@@ -221,7 +221,7 @@ class NavBar extends Component {
               {this.props.pageTitle}
             </Typography>
             <div style={styles.rightContents}>
-              {this.renderNotificationCenter()}
+              {this.props.large && this.renderNotificationCenter()}
               {this.renderNotificationMenu()}
               {this.renderAvatar()}
               {this.renderAvatarMenu()}
@@ -500,6 +500,12 @@ class NavBar extends Component {
                 <MapIcon />
               </ListItemIcon>
               <ListItemText primary="Maps" />
+            </ListItem>
+            <ListItem button onClick={this.props.requestNotifications}>
+              <ListItemIcon>
+                <NotificationsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Notifications" />
             </ListItem>
             <Divider />
             <ListItem button onClick={this.props.requestSettings}>
