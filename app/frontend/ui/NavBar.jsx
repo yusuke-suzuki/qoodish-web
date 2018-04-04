@@ -256,14 +256,12 @@ class NavBar extends Component {
           <Tab
             label="Following"
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={() =>
-              this.props.handleFollowingMapsTabClick(this.props.pathname)
-            }
+            onClick={this.props.handleFollowingMapsTabClick}
           />
           <Tab
             label="My Maps"
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={() => this.props.handleMyMapsTabClick(this.props.pathname)}
+            onClick={this.props.handleMyMapsTabClick}
           />
         </Tabs>
       </Toolbar>
@@ -284,14 +282,12 @@ class NavBar extends Component {
           <Tab
             label="SUMMARY"
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={() =>
-              this.props.handleSummaryTabClick(this.props.pathname)
-            }
+            onClick={this.props.handleSummaryTabClick}
           />
           <Tab
             label="MAP"
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={() => this.props.handleMapTabClick(this.props.pathname)}
+            onClick={this.props.handleMapTabClick}
           />
         </Tabs>
       </Toolbar>

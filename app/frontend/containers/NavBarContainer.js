@@ -12,6 +12,10 @@ import readNotification from '../actions/readNotification';
 import { sleep } from './Utils';
 import showBackButton from '../actions/showBackButton';
 import hideBackButton from '../actions/hideBackButton';
+import switchSummary from '../actions/switchSummary';
+import switchMap from '../actions/switchMap';
+import switchMyMaps from '../actions/switchMyMaps';
+import switchFollowingMaps from '../actions/switchFollowingMaps';
 
 const mapStateToProps = state => {
   return {
@@ -111,28 +115,20 @@ const mapDispatchToProps = dispatch => {
       dispatch(hideBackButton());
     },
 
-    handleSummaryTabClick: pathname => {
-      dispatch(push(`${pathname}#summary`, {
-        previous: true
-      }));
+    handleSummaryTabClick: () => {
+      dispatch(switchSummary());
     },
 
-    handleMapTabClick: pathname => {
-      dispatch(push(`${pathname}#map`, {
-        previous: true
-      }));
+    handleMapTabClick: () => {
+      dispatch(switchMap());
     },
 
-    handleFollowingMapsTabClick: pathname => {
-      dispatch(push(`${pathname}#following`, {
-        previous: true
-      }));
+    handleFollowingMapsTabClick: () => {
+      dispatch(switchFollowingMaps());
     },
 
-    handleMyMapsTabClick: pathname => {
-      dispatch(push(`${pathname}#mymaps`, {
-        previous: true
-      }));
+    handleMyMapsTabClick: () => {
+      dispatch(switchMyMaps());
     }
   };
 };
