@@ -15,6 +15,8 @@ import {
   FETCH_REVIEW_LIKES,
   FETCH_NOTIFICATIONS,
   READ_NOTIFICATION,
+  LOAD_NOTIFICATIONS_START,
+  LOAD_NOTIFICATIONS_END,
   SHOW_BACK_BUTTON,
   HIDE_BACK_BUTTON,
   SHOW_MAPS_TAB,
@@ -40,6 +42,7 @@ const initialState = {
   likesDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
+  loadingNotifications: false,
   showBackButton: false,
   mapsTabActive: false,
   mapDetailTabActive: false,
@@ -139,6 +142,14 @@ const reducer = (state = initialState, action) => {
           unreadNotifications: []
         });
       }
+    case LOAD_NOTIFICATIONS_START:
+      return Object.assign({}, state, {
+        loadingNotifications: true
+      });
+    case LOAD_NOTIFICATIONS_END:
+      return Object.assign({}, state, {
+        loadingNotifications: false
+      });
     case SHOW_BACK_BUTTON:
       return Object.assign({}, state, {
         showBackButton: true

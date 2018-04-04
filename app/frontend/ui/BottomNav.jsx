@@ -6,6 +6,8 @@ import Paper from 'material-ui/Paper';
 import HomeIcon from 'material-ui-icons/Home';
 import ExploreIcon from 'material-ui-icons/Explore';
 import MapIcon from 'material-ui-icons/Map';
+import NotificationsIcon from 'material-ui-icons/Notifications';
+import Badge from 'material-ui/Badge';
 
 const styles = {
   bottomNav: {
@@ -44,6 +46,9 @@ export default class BottomNav extends React.Component {
       case '/maps':
         tabValue = 2;
         break;
+      case '/notifications':
+        tabValue = 3;
+        break;
     }
     this.setState({ tabValue: tabValue });
   }
@@ -67,8 +72,28 @@ export default class BottomNav extends React.Component {
             icon={<MapIcon />}
             onClick={this.props.handleMapsClick}
           />
+          <BottomNavigationAction
+            label="NOTICE"
+            icon={this.renderNotificationIcon()}
+            onClick={this.props.handleNotificationsClick}
+          />
         </BottomNavigation>
       </Paper>
     );
+  }
+
+  renderNotificationIcon() {
+    if (this.props.unreadNotifications.length > 0) {
+      return (
+        <Badge
+          badgeContent={this.props.unreadNotifications.length}
+          color="secondary"
+        >
+          <NotificationsIcon />
+        </Badge>
+      );
+    } else {
+      return <NotificationsIcon />;
+    }
   }
 }
