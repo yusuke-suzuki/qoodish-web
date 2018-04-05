@@ -228,7 +228,6 @@ class NavBar extends Component {
             </div>
           </Toolbar>
           {this.props.mapsTabActive && this.renderMapsTab()}
-          {this.props.mapDetailTabActive && this.renderMapDetailTab()}
         </AppBar>
         <SwipeableDrawer
           open={this.state.drawerOpen}
@@ -262,32 +261,6 @@ class NavBar extends Component {
             label="My Maps"
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
             onClick={this.props.handleMyMapsTabClick}
-          />
-        </Tabs>
-      </Toolbar>
-    );
-  }
-
-  renderMapDetailTab() {
-    return (
-      <Toolbar disableGutters>
-        <Tabs
-          value={this.props.mapDetailTabValue}
-          fullWidth
-          indicatorColor="#fff"
-          textColor="inherit"
-          centered
-          style={styles.tabs}
-        >
-          <Tab
-            label="SUMMARY"
-            style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={this.props.handleSummaryTabClick}
-          />
-          <Tab
-            label="MAP"
-            style={this.props.large ? styles.tabLarge : styles.tabSmall}
-            onClick={this.props.handleMapTabClick}
           />
         </Tabs>
       </Toolbar>

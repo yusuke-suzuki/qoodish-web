@@ -20,9 +20,7 @@ import {
   SHOW_BACK_BUTTON,
   HIDE_BACK_BUTTON,
   SHOW_MAPS_TAB,
-  HIDE_MAPS_TAB,
-  SHOW_MAP_DETAIL_TAB,
-  HIDE_MAP_DETAIL_TAB
+  HIDE_MAPS_TAB
 } from '../actionTypes';
 import { isWidthUp } from 'material-ui/utils/withWidth';
 
@@ -45,7 +43,6 @@ const initialState = {
   loadingNotifications: false,
   showBackButton: false,
   mapsTabActive: false,
-  mapDetailTabActive: false,
   previous: false
 };
 
@@ -165,14 +162,6 @@ const reducer = (state = initialState, action) => {
     case HIDE_MAPS_TAB:
       return Object.assign({}, state, {
         mapsTabActive: false
-      });
-    case SHOW_MAP_DETAIL_TAB:
-      return Object.assign({}, state, {
-        mapDetailTabActive: true
-      });
-    case HIDE_MAP_DETAIL_TAB:
-      return Object.assign({}, state, {
-        mapDetailTabActive: false
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {

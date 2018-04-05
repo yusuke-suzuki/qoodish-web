@@ -20,10 +20,7 @@ import mapCenterChanged from '../actions/mapCenterChanged';
 import openReviewDialog from '../actions/openReviewDialog';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import selectSpot from '../actions/selectSpot';
-import showMapDetailTab from '../actions/showMapDetailTab';
-import hideMapDetailTab from '../actions/hideMapDetailTab';
 import switchSummary from '../actions/switchSummary';
-import switchMap from '../actions/switchMap';
 
 const mapStateToProps = state => {
   return {
@@ -39,7 +36,7 @@ const mapStateToProps = state => {
     large: state.shared.large,
     currentSpot: state.spotCard.currentSpot,
     spotCardOpen: state.spotCard.spotCardOpen,
-    tabValue: state.mapDetail.tabValue
+    mapDialogOpen: state.mapDetail.mapDialogOpen
   };
 };
 
@@ -47,10 +44,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: (mapName = undefined) => {
       dispatch(updatePageTitle(mapName ? mapName : 'Map'));
-    },
-
-    showTabs: () => {
-      dispatch(showMapDetailTab());
     },
 
     fetchMap: async () => {
@@ -128,17 +121,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(mapCenterChanged({ lat: center.lat(), lng: center.lng() }));
     },
 
+    handleMapDialogClose: () => {
+      dispatch(switchSummary());
+    },
+
     handleUnmount: () => {
       dispatch(clearMapState());
-      dispatch(hideMapDetailTab());
-    },
-
-    handleMapActive: () => {
-      dispatch(switchMap());
-    },
-
-    handleSummaryActive: () => {
-      dispatch(switchSummary());
     }
   };
 };

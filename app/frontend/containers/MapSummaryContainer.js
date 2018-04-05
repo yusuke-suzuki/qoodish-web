@@ -83,6 +83,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleInviteButtonClick: () => {
       dispatch(openInviteTargetDialog());
+    },
+
+    handleMapButtonClick: () => {
+      dispatch(switchMap());
     }
   };
 };
