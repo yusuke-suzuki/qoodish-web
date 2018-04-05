@@ -28,12 +28,12 @@ const initialState = {
   placeSelectDialogOpen: false,
   joinMapDialogOpen: false,
   leaveMapDialogOpen: false,
-  tabValue: 0,
   inviteTargetDialogOpen: false,
   pickedUsers: [],
   loadingUsers: false,
   spotReviews: [],
-  reviewsDialogOpen: false
+  reviewsDialogOpen: false,
+  mapDialogOpen: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -100,11 +100,11 @@ const reducer = (state = initialState, action) => {
       });
     case SWITCH_SUMMARY:
       return Object.assign({}, state, {
-        tabValue: 0
+        mapDialogOpen: false
       });
     case SWITCH_MAP:
       return Object.assign({}, state, {
-        tabValue: 1
+        mapDialogOpen: true
       });
     case OPEN_REVIEWS_DIALOG:
       return Object.assign({}, state, {
@@ -124,7 +124,7 @@ const reducer = (state = initialState, action) => {
         pickedUsers: [],
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false,
-        tabValue: 0
+        mapDialogOpen: false
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
@@ -132,7 +132,8 @@ const reducer = (state = initialState, action) => {
         inviteTargetDialogOpen: false,
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false,
-        reviewsDialogOpen: false
+        reviewsDialogOpen: false,
+        mapDialogOpen: false
       });
     default:
       return state;

@@ -12,8 +12,6 @@ import readNotification from '../actions/readNotification';
 import { sleep } from './Utils';
 import showBackButton from '../actions/showBackButton';
 import hideBackButton from '../actions/hideBackButton';
-import switchSummary from '../actions/switchSummary';
-import switchMap from '../actions/switchMap';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 
@@ -28,9 +26,7 @@ const mapStateToProps = state => {
     backButton: state.shared.showBackButton,
     pathname: state.router.location.pathname,
     mapsTabActive: state.shared.mapsTabActive,
-    mapDetailTabActive: state.shared.mapDetailTabActive,
     mapsTabValue: state.maps.tabValue,
-    mapDetailTabValue: state.mapDetail.tabValue,
     previous: state.shared.previous
   };
 };
@@ -117,14 +113,6 @@ const mapDispatchToProps = dispatch => {
 
     hideBackButton: () => {
       dispatch(hideBackButton());
-    },
-
-    handleSummaryTabClick: () => {
-      dispatch(switchSummary());
-    },
-
-    handleMapTabClick: () => {
-      dispatch(switchMap());
     },
 
     handleFollowingMapsTabClick: () => {

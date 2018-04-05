@@ -14,8 +14,6 @@ export const SHOW_BACK_BUTTON = 'SHOW_BACK_BUTTON';
 export const HIDE_BACK_BUTTON = 'HIDE_BACK_BUTTON';
 export const SHOW_MAPS_TAB = 'SHOW_MAPS_TAB';
 export const HIDE_MAPS_TAB = 'HIDE_MAPS_TAB';
-export const SHOW_MAP_DETAIL_TAB = 'SHOW_MAP_DETAIL_TAB';
-export const HIDE_MAP_DETAIL_TAB = 'HIDE_MAP_DETAIL_TAB';
 
 export const PICK_UP_MAP = 'PICK_UP_MAP';
 export const FETCH_MY_MAPS = 'FETCH_MY_MAPS';

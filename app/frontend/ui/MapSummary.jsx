@@ -16,6 +16,7 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Toolbar from 'material-ui/Toolbar';
 import ShareIcon from 'material-ui-icons/Share';
+import MapIcon from 'material-ui-icons/Map';
 import Divider from 'material-ui/Divider';
 import PlaceIcon from 'material-ui-icons/Place';
 import PersonAddIcon from 'material-ui-icons/PersonAdd';
@@ -29,7 +30,6 @@ import LockIcon from 'material-ui-icons/Lock';
 import GroupIcon from 'material-ui-icons/Group';
 import PersonIcon from 'material-ui-icons/Person';
 import Tooltip from 'material-ui/Tooltip';
-
 
 const styles = {
   skeltonThumbnail: {
@@ -54,7 +54,7 @@ const styles = {
     zIndex: 1
   },
   cardContainerSmall: {
-    paddingTop: 112,
+    paddingTop: 56,
     paddingBottom: 56
   },
   cardLarge: {
@@ -73,9 +73,16 @@ const styles = {
   mapSummaryText: {
     wordWrap: 'break-word'
   },
-  mapToolbar: {
+  mapToolbarLarge: {
     backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
     position: 'absolute',
+    zIndex: 1,
+    right: 0,
+    left: 0
+  },
+  mapToolbarSmall: {
+    backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
+    position: 'fixed',
     zIndex: 1,
     right: 0,
     left: 0
@@ -244,7 +251,7 @@ class MapSummary extends Component {
 
   renderThumbnail(map) {
     return (
-      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 350 : 200}>
+      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 350 : 250}>
         <GridListTile key={map && map.id}>
           <img src={map && map.image_url ? map.image_url : ''} />
           <GridListTileBar
@@ -291,8 +298,9 @@ class MapSummary extends Component {
 
   renderMapToolbar(map) {
     return (
-      <Toolbar style={styles.mapToolbar} disableGutters>
+      <Toolbar style={this.props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
         <div style={styles.toolbarActions}>
+          {!this.props.large && this.renderMapButton()}
           {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
           <IconButton
             aria-label="More share"
@@ -347,6 +355,16 @@ class MapSummary extends Component {
           {map && this.renderMenu(map)}
         </div>
       </Toolbar>
+    );
+  }
+
+  renderMapButton() {
+    return (
+      <IconButton
+        onClick={this.props.handleMapButtonClick}
+      >
+        <MapIcon style={styles.mapMenuIcon} />
+      </IconButton>
     );
   }
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   withScriptjs,
   withGoogleMap,
@@ -16,16 +16,17 @@ import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Button from 'material-ui/Button';
 import PlaceIcon from 'material-ui-icons/Place';
 import InfoIcon from 'material-ui-icons/Info';
-import Paper from 'material-ui/Paper';
+import Slide from 'material-ui/transitions/Slide';
+import AppBar from 'material-ui/AppBar';
+import Toolbar from 'material-ui/Toolbar';
+import ChevronRightIcon from 'material-ui-icons/ChevronRight';
+import Typography from 'material-ui/Typography';
+import Dialog from 'material-ui/Dialog';
+import IconButton from 'material-ui/IconButton';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
-import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
-  swipeable: {
-    position: 'absolute',
-    width: '100%'
-  },
   mapWrapperLarge: {
     position: 'absolute',
     top: 0,
@@ -35,9 +36,7 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    paddingTop: 112,
-    paddingBottom: 56,
-    height: 'calc(100vh - 168px)'
+    height: 'calc(100vh - 56px)'
   },
   mapContainer: {
     height: '100%'
@@ -57,8 +56,29 @@ const styles = {
     right: 20,
     backgroundColor: 'red',
     color: 'white'
+  },
+  createButtonForMapDialog: {
+    zIndex: 1100,
+    position: 'fixed',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  appbar: {
+    position: 'relative'
+  },
+  flex: {
+    flex: 1
+  },
+  toolbar: {
+    paddingLeft: 8
   }
 };
+
+function Transition(props) {
+  return <Slide direction="left" {...props} />;
+}
 
 const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   <GoogleMap
@@ -73,7 +93,8 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
         position: google.maps.ControlPosition.RIGHT_TOP
       },
       scaleControl: true,
-      mapTypeControl: false
+      mapTypeControl: false,
+      gestureHandling: 'greedy'
     }}
     defaultCenter={props.defaultCenter}
     defaultZoom={props.defaultZoom}
@@ -125,17 +146,9 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   </GoogleMap>
 )));
 
-export default class MapDetail extends Component {
-  constructor(props) {
-    super(props);
-    this.handleTabChange = this.handleTabChange.bind(this);
-  }
-
+export default class MapDetail extends React.Component {
   async componentWillMount() {
     this.props.updatePageTitle();
-    if (!this.props.large) {
-      this.props.showTabs();
-    }
 
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
@@ -221,24 +234,40 @@ export default class MapDetail extends Component {
 
   renderSmall() {
     return (
-      <SwipeableViews index={this.props.tabValue} onChangeIndex={this.handleTabChange} style={styles.swipeable}>
-        <div key='summary'>
-          {this.renderMapSummary()}
-        </div>
-        <div key='map'>
-          {this.renderGoogleMap()}
-        </div>
-      </SwipeableViews>
+      <div>
+        {this.renderMapSummary()}
+        {this.renderMapDialog()}
+      </div>
     );
   }
 
-  handleTabChange() {
-    let currentTabValue = this.props.tabValue;
-    if (currentTabValue === 0) {
-      this.props.handleMapActive();
-    } else {
-      this.props.handleSummaryActive();
-    }
+  renderMapDialog() {
+    return (
+      <Dialog
+        open={this.props.mapDialogOpen}
+        onClose={this.props.handleMapDialogClose}
+        fullWidth
+        fullScreen={true}
+        transition={Transition}
+      >
+        <AppBar style={styles.appbar} color="primary">
+          <Toolbar style={styles.toolbar}>
+            <IconButton
+              color="inherit"
+              onClick={this.props.handleMapDialogClose}
+              aria-label="Close"
+            >
+              <ChevronRightIcon />
+            </IconButton>
+            <Typography variant="title" color="inherit" style={styles.flex} noWrap>
+              {this.props.currentMap && this.props.currentMap.name}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        {this.renderGoogleMap()}
+        {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
+      </Dialog>
+    );
   }
 
   renderMapSummary() {
@@ -272,20 +301,33 @@ export default class MapDetail extends Component {
     }
   }
 
-  renderCreateReviewButton() {
+  renderCreateReviewButtonForMapDialog() {
     return (
-      <div hidden={!this.props.large && this.props.spotCardOpen}>
+      <div hidden={this.props.spotCardOpen}>
         <Button
           variant="fab"
           aria-label="add"
-          style={
-            this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-          }
+          style={styles.createButtonForMapDialog}
           onClick={this.props.handleCreateReviewClick}
         >
           <AddLocationIcon />
         </Button>
       </div>
+    );
+  }
+
+  renderCreateReviewButton() {
+    return (
+      <Button
+        variant="fab"
+        aria-label="add"
+        style={
+          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
+        }
+        onClick={this.props.handleCreateReviewClick}
+      >
+        <AddLocationIcon />
+      </Button>
     );
   }
 }
