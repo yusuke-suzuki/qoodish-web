@@ -84,6 +84,7 @@ class Notifications extends Component {
           this.props.handleNotificationClick(notification);
         }}
         key={notification.id}
+        button
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
@@ -91,7 +92,6 @@ class Notifications extends Component {
           secondary={
             <div>{this.fromNow(notification)}</div>
           }
-          disableTypography
         />
         {notification.notifiable.thumbnail_url && (
           <ListItemSecondaryAction>
