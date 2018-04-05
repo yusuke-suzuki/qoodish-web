@@ -9,6 +9,8 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
+import requestMapCenter from '../actions/requestMapCenter';
+import selectSpot from '../actions/selectSpot';
 import { sleep, uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 
 const mapStateToProps = state => {
@@ -54,6 +56,9 @@ const mapDispatchToProps = dispatch => {
         let spotsResponse = await client.fetchSpots(json.map_id);
         let spots = await spotsResponse.json();
         dispatch(fetchSpots(spots));
+
+        dispatch(requestMapCenter(json.spot.lat, json.spot.lng));
+        dispatch(selectSpot(json.spot));
       } else {
         dispatch(openToast(json.detail));
         if (fileName) {
