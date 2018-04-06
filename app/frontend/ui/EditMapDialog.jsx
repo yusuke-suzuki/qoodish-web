@@ -18,15 +18,6 @@ import Chip from 'material-ui/Chip';
 import PlaceIcon from 'material-ui-icons/Place';
 import Avatar from 'material-ui/Avatar';
 
-const autoCompleteStyles = {
-  root: {
-    paddingRight: 22
-  },
-  autocompleteContainer: {
-    zIndex: 2
-  }
-};
-
 const styles = {
   flex: {
     flex: 1
@@ -36,7 +27,8 @@ const styles = {
     paddingTop: 56
   },
   toolbar: {
-    paddingLeft: 8
+    paddingLeft: 8,
+    height: 56
   }
 };
 

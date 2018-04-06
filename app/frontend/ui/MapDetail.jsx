@@ -19,12 +19,12 @@ import InfoIcon from 'material-ui-icons/Info';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import ChevronRightIcon from 'material-ui-icons/ChevronRight';
+import CloseIcon from 'material-ui-icons/Close';
 import Typography from 'material-ui/Typography';
-import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
+import Drawer from 'material-ui/Drawer';
 
 const styles = {
   mapWrapperLarge: {
@@ -73,6 +73,10 @@ const styles = {
   },
   toolbar: {
     paddingLeft: 8
+  },
+  mapDrawerContent: {
+    width: '100%',
+    overflow: 'hidden'
   }
 };
 
@@ -243,12 +247,11 @@ export default class MapDetail extends React.Component {
 
   renderMapDialog() {
     return (
-      <Dialog
+      <Drawer
+        anchor="bottom"
         open={this.props.mapDialogOpen}
         onClose={this.props.handleMapDialogClose}
-        fullWidth
-        fullScreen={true}
-        transition={Transition}
+        PaperProps={{style: styles.mapDrawerContent}}
       >
         <AppBar style={styles.appbar} color="primary">
           <Toolbar style={styles.toolbar}>
@@ -257,7 +260,7 @@ export default class MapDetail extends React.Component {
               onClick={this.props.handleMapDialogClose}
               aria-label="Close"
             >
-              <ChevronRightIcon />
+              <CloseIcon />
             </IconButton>
             <Typography variant="title" color="inherit" style={styles.flex} noWrap>
               {this.props.currentMap && this.props.currentMap.name}
@@ -266,7 +269,7 @@ export default class MapDetail extends React.Component {
         </AppBar>
         {this.renderGoogleMap()}
         {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
-      </Dialog>
+      </Drawer>
     );
   }
 
