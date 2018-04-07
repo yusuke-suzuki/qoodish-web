@@ -37,9 +37,6 @@ const styles = {
   toolbarSmall: {
     height: 56
   },
-  navBarIcon: {
-    color: 'white'
-  },
   logo: {
     cursor: 'pointer',
     paddingLeft: 8
@@ -270,10 +267,11 @@ class NavBar extends Component {
   renderMenuButton() {
     return (
       <IconButton
+        color="inherit"
         onClick={this.handleToggleDrawer}
         style={this.props.large ? {} : styles.leftButton}
       >
-        <MenuIcon style={styles.navBarIcon} />
+        <MenuIcon />
       </IconButton>
     );
   }
@@ -281,10 +279,11 @@ class NavBar extends Component {
   renderBackButton() {
     return (
       <IconButton
+        color="inherit"
         onClick={() => this.props.handleBackButtonClick(this.props.previous)}
         style={this.props.large ? {} : styles.leftButton}
       >
-        <ArrowBackIcon style={styles.navBarIcon} />
+        <ArrowBackIcon />
       </IconButton>
     );
   }
