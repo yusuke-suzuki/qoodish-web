@@ -31,7 +31,8 @@ const styles = {
     paddingTop: 24
   },
   toolbar: {
-    paddingLeft: 8
+    paddingLeft: 8,
+    height: 56
   },
   dialogTitle: {
     display: 'flex'

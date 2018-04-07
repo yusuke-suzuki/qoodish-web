@@ -73,16 +73,9 @@ const styles = {
   mapSummaryText: {
     wordWrap: 'break-word'
   },
-  mapToolbarLarge: {
+  mapToolbar: {
     backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
     position: 'absolute',
-    zIndex: 1,
-    right: 0,
-    left: 0
-  },
-  mapToolbarSmall: {
-    backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
-    position: 'fixed',
     zIndex: 1,
     right: 0,
     left: 0
@@ -298,7 +291,7 @@ class MapSummary extends Component {
 
   renderMapToolbar(map) {
     return (
-      <Toolbar style={this.props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
+      <Toolbar style={styles.mapToolbar} disableGutters>
         <div style={styles.toolbarActions}>
           {!this.props.large && this.renderMapButton()}
           {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}

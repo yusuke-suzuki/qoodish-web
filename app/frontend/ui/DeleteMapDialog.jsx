@@ -50,7 +50,6 @@ class DeleteMapDialog extends Component {
             been registered in the map. This cannot be undone.
           </DialogContentText>
           <br />
-          <br />
           <FormControlLabel
             control={
               <Checkbox
