@@ -59,7 +59,6 @@ class DeleteAccountDialog extends Component {
             you have created. This cannot be undone.
           </DialogContentText>
           <br />
-          <br />
           <FormControlLabel
             control={
               <Checkbox

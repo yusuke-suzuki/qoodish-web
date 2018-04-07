@@ -49,7 +49,6 @@ class DeleteReviewDialog extends Component {
         <DialogContent>
           <DialogContentText>This cannot be undone.</DialogContentText>
           <br />
-          <br />
           <FormControlLabel
             control={
               <Checkbox

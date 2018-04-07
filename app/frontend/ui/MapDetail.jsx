@@ -65,6 +65,9 @@ const styles = {
     backgroundColor: 'red',
     color: 'white'
   },
+  drawer: {
+    position: 'absolute'
+  },
   appbar: {
     position: 'relative'
   },
@@ -252,6 +255,7 @@ export default class MapDetail extends React.Component {
         open={this.props.mapDialogOpen}
         onClose={this.props.handleMapDialogClose}
         PaperProps={{style: styles.mapDrawerContent}}
+        style={styles.drawer}
       >
         <AppBar style={styles.appbar} color="primary">
           <Toolbar style={styles.toolbar}>

@@ -24,7 +24,7 @@ const styles = {
   },
   dialogContentLarge: {},
   dialogContentSmall: {
-    paddingTop: 56
+    paddingTop: 80
   },
   toolbar: {
     paddingLeft: 8,
@@ -238,6 +238,7 @@ class EditMapDialog extends Component {
             label={this.state.baseName ? this.state.baseName : 'Undefined'}
             onClick={this.props.handleMapBaseClick}
           />
+          <br />
           <br />
           <FormControlLabel
             control={

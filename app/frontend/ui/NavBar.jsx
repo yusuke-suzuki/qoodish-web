@@ -34,25 +34,25 @@ const styles = {
     paddingLeft: 10,
     paddingRight: 10
   },
+  toolbarSmall: {
+    height: 56
+  },
   navBarIcon: {
     color: 'white'
   },
   logo: {
     cursor: 'pointer',
-    color: 'white',
     paddingLeft: 8
   },
   pageTitleLarge: {
     cursor: 'pointer',
-    color: 'white',
     borderLeft: '1px solid rgba(255,255,255,0.2)',
     paddingLeft: 24,
     marginLeft: 24
   },
   pageTitleSmall: {
     cursor: 'pointer',
-    color: 'white',
-    marginLeft: 10
+    marginLeft: 8
   },
   rightContents: {
     marginLeft: 'auto',
@@ -106,7 +106,7 @@ const styles = {
     width: 35,
     height: 35,
   },
-  menuButton: {
+  leftButton: {
     marginLeft: 8
   }
 };
@@ -204,7 +204,7 @@ class NavBar extends Component {
     return (
       <div>
         <AppBar position="fixed">
-          <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : {}}>
+          <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
             {!this.props.large && this.props.backButton
               ? this.renderBackButton()
               : this.renderMenuButton()}
@@ -269,7 +269,10 @@ class NavBar extends Component {
 
   renderMenuButton() {
     return (
-      <IconButton onClick={this.handleToggleDrawer} style={this.props.large ? {} : styles.menuButton}>
+      <IconButton
+        onClick={this.handleToggleDrawer}
+        style={this.props.large ? {} : styles.leftButton}
+      >
         <MenuIcon style={styles.navBarIcon} />
       </IconButton>
     );
@@ -277,7 +280,10 @@ class NavBar extends Component {
 
   renderBackButton() {
     return (
-      <IconButton onClick={() => this.props.handleBackButtonClick(this.props.previous)}>
+      <IconButton
+        onClick={() => this.props.handleBackButtonClick(this.props.previous)}
+        style={this.props.large ? {} : styles.leftButton}
+      >
         <ArrowBackIcon style={styles.navBarIcon} />
       </IconButton>
     );
