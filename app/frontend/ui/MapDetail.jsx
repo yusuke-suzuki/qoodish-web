@@ -36,7 +36,7 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    height: 'calc(100vh - 56px)'
+    height: '100%'
   },
   mapContainer: {
     height: '100%'
@@ -65,9 +65,6 @@ const styles = {
     backgroundColor: 'red',
     color: 'white'
   },
-  drawer: {
-    position: 'absolute'
-  },
   appbar: {
     position: 'relative'
   },
@@ -75,9 +72,14 @@ const styles = {
     flex: 1
   },
   toolbar: {
-    paddingLeft: 8
+    paddingLeft: 8,
+    height: 56
   },
-  mapDrawerContent: {
+  drawerPaper: {
+    height: '100%'
+  },
+  drawerContainer: {
+    height: '100%',
     width: '100%',
     overflow: 'hidden'
   }
@@ -254,8 +256,7 @@ export default class MapDetail extends React.Component {
         anchor="bottom"
         open={this.props.mapDialogOpen}
         onClose={this.props.handleMapDialogClose}
-        PaperProps={{style: styles.mapDrawerContent}}
-        style={styles.drawer}
+        PaperProps={{style: styles.drawerPaper}}
       >
         <AppBar style={styles.appbar} color="primary">
           <Toolbar style={styles.toolbar}>
@@ -271,8 +272,10 @@ export default class MapDetail extends React.Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        {this.renderGoogleMap()}
-        {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
+        <div style={styles.drawerContainer}>
+          {this.renderGoogleMap()}
+          {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
+        </div>
       </Drawer>
     );
   }
