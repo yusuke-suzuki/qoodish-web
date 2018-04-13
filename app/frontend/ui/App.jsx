@@ -18,6 +18,7 @@ import ReviewDetailContainer from '../containers/ReviewDetailContainer';
 import SpotDetailContainer from '../containers/SpotDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import InvitesContainer from '../containers/InvitesContainer';
+import ProfileContainer from '../containers/ProfileContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
@@ -224,6 +225,7 @@ class App extends Component {
               path="/spots/:placeId"
               component={SpotDetailContainer}
             />
+            <Route exact path="/profile" component={ProfileContainer} />
             <Route exact path="/settings" component={SettingsContainer} />
             <Route exact path="/invites" component={InvitesContainer} />
             <Route exact path="/terms" component={TermsContainer} />

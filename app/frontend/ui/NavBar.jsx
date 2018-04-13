@@ -5,7 +5,6 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import SwipeableDrawer from 'material-ui/SwipeableDrawer';
-import Button from 'material-ui/Button';
 import List, {
   ListItem,
   ListItemIcon,
@@ -16,6 +15,7 @@ import Divider from 'material-ui/Divider';
 import HomeIcon from 'material-ui-icons/Home';
 import ExploreIcon from 'material-ui-icons/Explore';
 import MapIcon from 'material-ui-icons/Map';
+import AccountCircleIcon from 'material-ui-icons/AccountCircle';
 import SettingsIcon from 'material-ui-icons/Settings';
 import MailIcon from 'material-ui-icons/Mail';
 import Avatar from 'material-ui/Avatar';
@@ -29,6 +29,15 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 const styles = {
   title: {
     cursor: 'pointer'
+  },
+  tabs: {
+    width: '100%'
+  },
+  tabLarge: {
+    height: 64
+  },
+  tabSmall: {
+    height: 56
   },
   toolbarLarge: {
     paddingLeft: 10,
@@ -89,15 +98,6 @@ const styles = {
   noContentsIcon: {
     width: 80,
     height: 80
-  },
-  tabs: {
-    width: '100%'
-  },
-  tabLarge: {
-    height: 64
-  },
-  tabSmall: {
-    height: 56
   },
   profileAvatar: {
     width: 35,
@@ -432,6 +432,14 @@ class NavBar extends Component {
         <MenuItem
           onClick={() => {
             this.handleRequestAvatarMenuClose();
+            this.props.requestProfile();
+          }}
+        >
+          Profile
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            this.handleRequestAvatarMenuClose();
             this.props.requestSettings();
           }}
         >
@@ -478,6 +486,12 @@ class NavBar extends Component {
                 <MapIcon />
               </ListItemIcon>
               <ListItemText primary="Maps" />
+            </ListItem>
+            <ListItem button onClick={this.props.requestProfile}>
+              <ListItemIcon>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Profile" />
             </ListItem>
             <ListItem button onClick={this.props.requestNotifications}>
               <ListItemIcon>
