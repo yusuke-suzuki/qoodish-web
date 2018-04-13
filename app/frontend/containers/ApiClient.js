@@ -320,6 +320,24 @@ class ApiClient {
     return response;
   }
 
+  async fetchMyReviews(timestamp = null) {
+    const currentUser = firebase.auth().currentUser;
+    let url = `${process.env.API_ENDPOINT}/users/${currentUser.uid}/reviews`;
+    if (timestamp) {
+      url += `?next_timestamp=${timestamp}`;
+    }
+    const token = await currentUser.getIdToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchSpotReviews(placeId) {
     const url = `${process.env.API_ENDPOINT}/spots/${placeId}/reviews`;
     const token = await firebase.auth().currentUser.getIdToken();

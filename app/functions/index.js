@@ -18,6 +18,7 @@ const pageRoutes = [
   '/maps',
   '/maps/:mapId',
   '/maps/:mapId/reports/:reviewId',
+  '/profile',
   '/spots/:placeId',
   '/notifications',
   '/settings',

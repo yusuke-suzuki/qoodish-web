@@ -25,6 +25,10 @@ const mapDispatchToProps = dispatch => {
 
     handleNotificationsClick: () => {
       dispatch(push('/notifications'));
+    },
+
+    handleProfileClick: () => {
+      dispatch(push('/profile'));
     }
   };
 };

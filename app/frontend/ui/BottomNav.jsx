@@ -8,6 +8,7 @@ import ExploreIcon from 'material-ui-icons/Explore';
 import MapIcon from 'material-ui-icons/Map';
 import NotificationsIcon from 'material-ui-icons/Notifications';
 import Badge from 'material-ui/Badge';
+import AccountCircleIcon from 'material-ui-icons/AccountCircle';
 
 const styles = {
   bottomNav: {
@@ -46,8 +47,11 @@ export default class BottomNav extends React.Component {
       case '/maps':
         tabValue = 2;
         break;
-      case '/notifications':
+      case '/profile':
         tabValue = 3;
+        break;
+      case '/notifications':
+        tabValue = 4;
         break;
     }
     this.setState({ tabValue: tabValue });
@@ -58,22 +62,27 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
-            label="HOME"
+            label="Home"
             icon={<HomeIcon />}
             onClick={this.props.handleHomeClick}
           />
           <BottomNavigationAction
-            label="DISCOVER"
+            label="Discover"
             icon={<ExploreIcon />}
             onClick={this.props.handleDiscoverClick}
           />
           <BottomNavigationAction
-            label="MAPS"
+            label="Maps"
             icon={<MapIcon />}
             onClick={this.props.handleMapsClick}
           />
           <BottomNavigationAction
-            label="NOTICE"
+            label="Profile"
+            icon={<AccountCircleIcon />}
+            onClick={this.props.handleProfileClick}
+          />
+          <BottomNavigationAction
+            label="Notice"
             icon={this.renderNotificationIcon()}
             onClick={this.props.handleNotificationsClick}
           />

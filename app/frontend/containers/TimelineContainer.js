@@ -3,7 +3,6 @@ import Timeline from '../ui/Timeline';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
-import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchReviews from '../actions/fetchReviews';
 import fetchMoreReviews from '../actions/fetchMoreReviews';
 import loadReviewsStart from '../actions/loadReviewsStart';
