@@ -35,7 +35,7 @@ const styles = {
     height: '100%'
   },
   reviewsContainerLarge: {
-    margin: '0 auto',
+    margin: '0 auto 20px',
     width: '40%'
   },
   reviewsContainerSmall: {
