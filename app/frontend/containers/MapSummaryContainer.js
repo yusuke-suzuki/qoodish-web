@@ -43,6 +43,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openReviewDialog(review));
     },
 
+    handleUserClick: userId => {
+      dispatch(push(`/users/${userId}`));
+    },
+
     handleJoinButtonClick: () => {
       dispatch(openJoinMapDialog());
     },

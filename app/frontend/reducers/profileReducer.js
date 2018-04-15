@@ -1,19 +1,25 @@
 import {
-  LOAD_MY_REVIEWS_START,
-  LOAD_MY_REVIEWS_END,
-  LOAD_MORE_MY_REVIEWS_START,
-  LOAD_MORE_MY_REVIEWS_END,
-  FETCH_MY_REVIEWS,
-  FETCH_MORE_MY_REVIEWS,
-  CREATE_REVIEW,
+  LOAD_USER_MAPS_START,
+  LOAD_USER_MAPS_END,
+  FETCH_USER_MAPS,
+  LOAD_USER_REVIEWS_START,
+  LOAD_USER_REVIEWS_END,
+  LOAD_MORE_USER_REVIEWS_START,
+  LOAD_MORE_USER_REVIEWS_END,
+  FETCH_USER_REVIEWS,
+  FETCH_MORE_USER_REVIEWS,
   EDIT_REVIEW,
   DELETE_REVIEW,
   LIKE_REVIEW,
   UNLIKE_REVIEW,
+  FETCH_USER_PROFILE,
   CLEAR_PROFILE_STATE
 } from '../actionTypes';
 
 const initialState = {
+  currentUser: undefined,
+  currentMaps: [],
+  loadingMaps: false,
   currentReviews: [],
   loadingReviews: false,
   loadingMoreReviews: false,
@@ -23,23 +29,39 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOAD_MY_REVIEWS_START:
+    case FETCH_USER_PROFILE:
+      return Object.assign({}, state, {
+        currentUser: action.payload.user
+      });
+    case LOAD_USER_MAPS_START:
+      return Object.assign({}, state, {
+        loadingMaps: true
+      });
+    case LOAD_USER_MAPS_END:
+      return Object.assign({}, state, {
+        loadingMaps: false
+      });
+    case FETCH_USER_MAPS:
+      return Object.assign({}, state, {
+        currentMaps: action.payload.maps
+      });
+    case LOAD_USER_REVIEWS_START:
       return Object.assign({}, state, {
         loadingReviews: true
       });
-    case LOAD_MY_REVIEWS_END:
+    case LOAD_USER_REVIEWS_END:
       return Object.assign({}, state, {
         loadingReviews: false
       });
-    case LOAD_MORE_MY_REVIEWS_START:
+    case LOAD_MORE_USER_REVIEWS_START:
       return Object.assign({}, state, {
         loadingMoreReviews: true
       });
-    case LOAD_MORE_MY_REVIEWS_END:
+    case LOAD_MORE_USER_REVIEWS_END:
       return Object.assign({}, state, {
         loadingMoreReviews: false
       });
-    case FETCH_MY_REVIEWS:
+    case FETCH_USER_REVIEWS:
       return Object.assign({}, state, {
         currentReviews: action.payload.reviews,
         noMoreReviews: !(action.payload.reviews.length > 0),
@@ -49,7 +71,7 @@ const reducer = (state = initialState, action) => {
                 .created_at
             : ''
       });
-    case FETCH_MORE_MY_REVIEWS:
+    case FETCH_MORE_USER_REVIEWS:
       return Object.assign({}, state, {
         currentReviews:
           action.payload.reviews.length > 0
@@ -61,10 +83,6 @@ const reducer = (state = initialState, action) => {
             ? action.payload.reviews[action.payload.reviews.length - 1]
                 .created_at
             : ''
-      });
-    case CREATE_REVIEW:
-      return Object.assign({}, state, {
-        currentReviews: [action.payload.review, ...state.currentReviews]
       });
     case LIKE_REVIEW:
     case UNLIKE_REVIEW:

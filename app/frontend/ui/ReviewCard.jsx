@@ -32,8 +32,8 @@ const styles = {
   reviewComment: {
     wordBreak: 'break-all'
   },
-  profileImage: {
-    width: 40
+  profileAvatar: {
+    cursor: 'pointer'
   },
   cardContent: {
     paddingTop: 0
@@ -126,13 +126,11 @@ class ReviewCard extends Component {
           : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
-            <Avatar>
-              <img
-                src={review.author.profile_image_url}
-                alt={review.author.name}
-                style={styles.profileImage}
-              />
-            </Avatar>
+            <Avatar
+              src={review.author.profile_image_url}
+              style={styles.profileAvatar}
+              onClick={() => this.props.handleUserClick(review.author.id)}
+            />
           }
           action={[this.renderShareButton(), this.renderMoreVertButton()]}
           title={review.author.name}

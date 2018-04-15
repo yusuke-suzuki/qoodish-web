@@ -2,17 +2,16 @@ import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
 import { push } from 'react-router-redux';
 import updatePageTitle from '../actions/updatePageTitle';
-import fetchMyProfile from '../actions/fetchMyProfile';
-import fetchMyMaps from '../actions/fetchMyMaps';
-import fetchFollowingMaps from '../actions/fetchFollowingMaps';
-import loadMyMapsStart from '../actions/loadMyMapsStart';
-import loadMyMapsEnd from '../actions/loadMyMapsEnd';
-import fetchMyReviews from '../actions/fetchMyReviews';
-import fetchMoreMyReviews from '../actions/fetchMoreMyReviews';
-import loadMyReviewsStart from '../actions/loadMyReviewsStart';
-import loadMyReviewsEnd from '../actions/loadMyReviewsEnd';
-import loadMoreMyReviewsStart from '../actions/loadMoreMyReviewsStart';
-import loadMoreMyReviewsEnd from '../actions/loadMoreMyReviewsEnd';
+import fetchUserProfile from '../actions/fetchUserProfile';
+import fetchUserMaps from '../actions/fetchUserMaps';
+import loadUserMapsStart from '../actions/loadUserMapsStart';
+import loadUserMapsEnd from '../actions/loadUserMapsEnd';
+import fetchUserReviews from '../actions/fetchUserReviews';
+import fetchMoreUserReviews from '../actions/fetchMoreUserReviews';
+import loadUserReviewsStart from '../actions/loadUserReviewsStart';
+import loadUserReviewsEnd from '../actions/loadUserReviewsEnd';
+import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
+import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
 import selectMap from '../actions/selectMap';
 import openToast from '../actions/openToast';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
@@ -22,11 +21,12 @@ import ApiClient from './ApiClient.js';
 const mapStateToProps = state => {
   return {
     large: state.shared.large,
-    currentUser: state.app.currentUser,
+    loginUser: state.app.currentUser,
+    currentUser: state.profile.currentUser,
     defaultZoom: state.gMap.defaultZoom,
     center: state.gMap.center,
-    myMaps: state.maps.myMaps,
-    loadingMyMaps: state.maps.loadingMyMaps,
+    currentMaps: state.profile.currentMaps,
+    loadingMaps: state.profile.loadingMaps,
     currentReviews: state.profile.currentReviews,
     loadingReviews: state.profile.loadingReviews,
     loadingMoreReviews: state.profile.loadingMoreReviews,
@@ -35,44 +35,49 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Profile'));
     },
 
-    fetchProfile: async uid => {
+    fetchUserProfile: async (loginUser) => {
       const client = new ApiClient();
-      let response = await client.fetchUser(uid);
+      if (loginUser.id === ownProps.match.params.userId) {
+        dispatch(fetchUserProfile(loginUser));
+        return;
+      }
+      const userId = ownProps.match.params.userId
+      let response = await client.fetchUser(ownProps.match.params.userId);
       let user = await response.json();
-      dispatch(fetchMyProfile(user));
+      dispatch(fetchUserProfile(user));
     },
 
     fetchReviews: async () => {
-      dispatch(loadMyReviewsStart());
+      dispatch(loadUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchMyReviews();
+      let response = await client.fetchUserReviews(ownProps.match.params.userId);
       let reviews = await response.json();
-      dispatch(loadMyReviewsEnd());
-      dispatch(fetchMyReviews(reviews));
+      dispatch(loadUserReviewsEnd());
+      dispatch(fetchUserReviews(reviews));
     },
 
     loadMoreReviews: async timestamp => {
-      dispatch(loadMoreMyReviewsStart());
+      dispatch(loadMoreUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchMyReviews(timestamp);
+      let response = await client.fetchUserReviews(ownProps.match.params.userId, timestamp);
       let reviews = await response.json();
-      dispatch(loadMoreMyReviewsEnd());
-      dispatch(fetchMoreMyReviews(reviews));
+      dispatch(loadMoreUserReviewsEnd());
+      dispatch(fetchMoreUserReviews(reviews));
     },
 
-    fetchMyMaps: async () => {
-      dispatch(loadMyMapsStart());
+    fetchUserMaps: async () => {
+      dispatch(loadUserMapsStart());
       const client = new ApiClient();
-      let response = await client.fetchMyMaps();
+      let response = await client.fetchUserMaps(ownProps.match.params.userId);
       let maps = await response.json();
-      dispatch(fetchMyMaps(maps));
-      dispatch(loadMyMapsEnd());
+      dispatch(fetchUserMaps(maps));
+      dispatch(loadUserMapsEnd());
     },
 
     handleClickMap: map => {

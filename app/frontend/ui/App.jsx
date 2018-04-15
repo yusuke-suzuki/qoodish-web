@@ -215,6 +215,8 @@ class App extends Component {
             <Route exact path="/maps" component={MapsContainer} />
             <Route exact path="/maps/:mapId" component={MapDetailContainer} />
             <Route exact path="/notifications" component={NotificationsContainer} />
+            <Route exact path="/profile" component={ProfileContainer} />
+            <Route exact path="/users/:userId" component={ProfileContainer} />
             <Route
               exact
               path="/maps/:mapId/reports/:reviewId"
@@ -225,7 +227,6 @@ class App extends Component {
               path="/spots/:placeId"
               component={SpotDetailContainer}
             />
-            <Route exact path="/profile" component={ProfileContainer} />
             <Route exact path="/settings" component={SettingsContainer} />
             <Route exact path="/invites" component={InvitesContainer} />
             <Route exact path="/terms" component={TermsContainer} />
