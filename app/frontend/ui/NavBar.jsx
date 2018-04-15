@@ -141,7 +141,8 @@ class NavBar extends Component {
     if (
       nextProps.pathname.includes('/reports/') ||
       nextProps.pathname.includes('/maps/') ||
-      nextProps.pathname.includes('/spots/')
+      nextProps.pathname.includes('/spots/') ||
+      nextProps.pathname.includes('/users/')
     ) {
       this.props.showBackButton();
     } else {

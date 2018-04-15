@@ -117,6 +117,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchReviewLikes(likes));
         dispatch(openLikesDialog());
       }
+    },
+
+    handleUserClick: (userId) => {
+      dispatch(push(`/users/${userId}`));
     }
   };
 };

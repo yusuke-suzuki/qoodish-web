@@ -1,8 +1,7 @@
 import {
   SIGN_IN,
   SIGN_OUT,
-  FETCH_REGISTRATION_TOKEN,
-  FETCH_MY_PROFILE
+  FETCH_REGISTRATION_TOKEN
 } from '../actionTypes';
 
 const initialState = {
@@ -27,10 +26,6 @@ const reducer = (state = initialState, action) => {
     case FETCH_REGISTRATION_TOKEN:
       return Object.assign({}, state, {
         registrationToken: action.payload.token
-      });
-    case FETCH_MY_PROFILE:
-      return Object.assign({}, state, {
-        currentUser: action.payload.user
       });
     default:
       return state;

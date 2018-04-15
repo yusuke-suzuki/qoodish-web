@@ -52,7 +52,7 @@ const mapDispatchToProps = dispatch => {
     refreshMyMaps: async () => {
       dispatch(loadMyMapsStart());
       const client = new ApiClient();
-      let response = await client.fetchMyMaps();
+      let response = await client.fetchUserMaps();
       let maps = await response.json();
       dispatch(fetchMyMaps(maps));
       dispatch(loadMyMapsEnd());

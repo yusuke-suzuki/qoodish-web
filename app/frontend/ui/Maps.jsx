@@ -213,12 +213,12 @@ export default class Maps extends Component {
   renderMapTypeIcon(map) {
     let actions = [];
     if (map.private) {
-      actions.push(<LockIcon style={styles.mapTypeIcon} />);
+      actions.push(<LockIcon style={styles.mapTypeIcon} key="private" />);
     }
     if (map.shared) {
-      actions.push(<GroupIcon style={styles.mapTypeIcon} />);
+      actions.push(<GroupIcon style={styles.mapTypeIcon} key="shared" />);
     } else {
-      actions.push(<PersonIcon style={styles.mapTypeIcon} />);
+      actions.push(<PersonIcon style={styles.mapTypeIcon} key="personal" />);
     }
     return actions;
   }

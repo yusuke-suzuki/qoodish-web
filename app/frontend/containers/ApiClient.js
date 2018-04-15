@@ -47,6 +47,9 @@ class ApiClient {
   }
 
   async fetchUser(id) {
+    if (!id) {
+      id = firebase.auth().currentUser.uid;
+    }
     const url = `${process.env.API_ENDPOINT}/users/${id}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
@@ -74,8 +77,11 @@ class ApiClient {
     return response;
   }
 
-  async fetchMyMaps() {
-    const userId = firebase.auth().currentUser.uid;
+  async fetchUserMaps(userId = undefined) {
+    const currentUser = firebase.auth().currentUser;
+    if (!userId) {
+      userId = currentUser.uid
+    }
     const url = `${process.env.API_ENDPOINT}/users/${userId}/maps`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
@@ -320,9 +326,12 @@ class ApiClient {
     return response;
   }
 
-  async fetchMyReviews(timestamp = null) {
+  async fetchUserReviews(userId = undefined, timestamp = undefined) {
     const currentUser = firebase.auth().currentUser;
-    let url = `${process.env.API_ENDPOINT}/users/${currentUser.uid}/reviews`;
+    if (!userId) {
+      userId = currentUser.uid;
+    }
+    let url = `${process.env.API_ENDPOINT}/users/${userId}/reviews`;
     if (timestamp) {
       url += `?next_timestamp=${timestamp}`;
     }

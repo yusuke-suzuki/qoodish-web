@@ -468,7 +468,11 @@ class MapSummary extends Component {
 
   renderCollaborators(collaborators) {
     return collaborators.map(collaborator => (
-      <ListItem button key={collaborator.id}>
+      <ListItem
+        button
+        key={collaborator.id}
+        onClick={() => this.props.handleUserClick(collaborator.id)}
+      >
         <Avatar src={collaborator.profile_image_url} />
         <ListItemText primary={collaborator.name} />
       </ListItem>

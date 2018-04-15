@@ -151,9 +151,9 @@ class Profile extends React.Component {
 
   componentWillMount() {
     this.props.updatePageTitle();
-    this.props.fetchProfile(this.props.currentUser.uid);
+    this.props.fetchUserProfile(this.props.loginUser);
     this.props.fetchReviews();
-    this.props.fetchMyMaps();
+    this.props.fetchUserMaps();
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/profile',
@@ -180,10 +180,10 @@ class Profile extends React.Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentUser && this.renderHelmet(this.props.currentUser)}
         {this.renderMap()}
-        {this.renderProfileCard(this.props.currentUser)}
+        {this.props.currentUser && this.renderProfileCard(this.props.currentUser)}
         <div>
           {this.state.tabValue === 0 && this.renderReviews()}
-          {this.state.tabValue === 1 && this.renderMyMaps()}
+          {this.state.tabValue === 1 && this.renderUserMaps()}
         </div>
       </div>
     );
@@ -355,15 +355,15 @@ class Profile extends React.Component {
     );
   }
 
-  renderMyMaps() {
+  renderUserMaps() {
     return (
       <div
         style={this.props.large ? styles.mapsContainerLarge : styles.mapsContainerSmall}
-        key='mymaps'
+        key='usermaps'
       >
-        {this.props.loadingMyMaps
+        {this.props.loadingMaps
           ? this.renderProgress()
-          : this.renderMapContainer(this.props.myMaps)}
+          : this.renderMapContainer(this.props.currentMaps)}
       </div>
     );
   }
@@ -423,12 +423,12 @@ class Profile extends React.Component {
   renderMapTypeIcon(map) {
     let actions = [];
     if (map.private) {
-      actions.push(<LockIcon style={styles.mapTypeIcon} />);
+      actions.push(<LockIcon style={styles.mapTypeIcon} key="private" />);
     }
     if (map.shared) {
-      actions.push(<GroupIcon style={styles.mapTypeIcon} />);
+      actions.push(<GroupIcon style={styles.mapTypeIcon} key="shared" />);
     } else {
-      actions.push(<PersonIcon style={styles.mapTypeIcon} />);
+      actions.push(<PersonIcon style={styles.mapTypeIcon} key="personal" />);
     }
     return actions;
   }
