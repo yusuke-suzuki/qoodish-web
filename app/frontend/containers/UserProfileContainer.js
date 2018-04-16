@@ -21,7 +21,7 @@ import ApiClient from './ApiClient.js';
 const mapStateToProps = state => {
   return {
     large: state.shared.large,
-    currentUser: state.app.currentUser,
+    currentUser: state.profile.currentUser,
     defaultZoom: state.gMap.defaultZoom,
     center: state.gMap.center,
     currentMaps: state.profile.currentMaps,
@@ -34,15 +34,15 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle('Profile'));
     },
 
-    fetchUserProfile: async () => {
+    fetchUserProfile: async (loginUser) => {
       const client = new ApiClient();
-      let response = await client.fetchUser();
+      let response = await client.fetchUser(ownProps.match.params.userId);
       let user = await response.json();
       dispatch(fetchUserProfile(user));
     },
@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchReviews: async () => {
       dispatch(loadUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchUserReviews();
+      let response = await client.fetchUserReviews(ownProps.match.params.userId);
       let reviews = await response.json();
       dispatch(loadUserReviewsEnd());
       dispatch(fetchUserReviews(reviews));
@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch) => {
     loadMoreReviews: async timestamp => {
       dispatch(loadMoreUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchUserReviews(undefined, timestamp);
+      let response = await client.fetchUserReviews(ownProps.match.params.userId, timestamp);
       let reviews = await response.json();
       dispatch(loadMoreUserReviewsEnd());
       dispatch(fetchMoreUserReviews(reviews));
@@ -68,7 +68,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchUserMaps: async () => {
       dispatch(loadUserMapsStart());
       const client = new ApiClient();
-      let response = await client.fetchUserMaps();
+      let response = await client.fetchUserMaps(ownProps.match.params.userId);
       let maps = await response.json();
       dispatch(fetchUserMaps(maps));
       dispatch(loadUserMapsEnd());
