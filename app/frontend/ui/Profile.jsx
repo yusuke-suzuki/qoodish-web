@@ -151,7 +151,7 @@ class Profile extends React.Component {
 
   componentWillMount() {
     this.props.updatePageTitle();
-    this.props.fetchUserProfile(this.props.loginUser);
+    this.props.fetchUserProfile();
     this.props.fetchReviews();
     this.props.fetchUserMaps();
 

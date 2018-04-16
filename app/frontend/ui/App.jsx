@@ -12,13 +12,14 @@ import LoginContainer from '../containers/LoginContainer';
 import DiscoverContainer from '../containers/DiscoverContainer';
 import TimelineContainer from '../containers/TimelineContainer';
 import MapsContainer from '../containers/MapsContainer';
+import ProfileContainer from '../containers/ProfileContainer';
+import UserProfileContainer from '../containers/UserProfileContainer';
 import NotificationsContainer from '../containers/NotificationsContainer';
 import MapDetailContainer from '../containers/MapDetailContainer';
 import ReviewDetailContainer from '../containers/ReviewDetailContainer';
 import SpotDetailContainer from '../containers/SpotDetailContainer';
 import SettingsContainer from '../containers/SettingsContainer';
 import InvitesContainer from '../containers/InvitesContainer';
-import ProfileContainer from '../containers/ProfileContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
@@ -216,7 +217,7 @@ class App extends Component {
             <Route exact path="/maps/:mapId" component={MapDetailContainer} />
             <Route exact path="/notifications" component={NotificationsContainer} />
             <Route exact path="/profile" component={ProfileContainer} />
-            <Route exact path="/users/:userId" component={ProfileContainer} />
+            <Route exact path="/users/:userId" component={UserProfileContainer} />
             <Route
               exact
               path="/maps/:mapId/reports/:reviewId"
