@@ -16,6 +16,9 @@ const styles = {
     position: 'fixed',
     bottom: 0,
     zIndex: 1
+  },
+  bottomAction: {
+    minWidth: 'auto'
   }
 };
 
@@ -65,26 +68,31 @@ export default class BottomNav extends React.Component {
             label="Home"
             icon={<HomeIcon />}
             onClick={this.props.handleHomeClick}
+            style={styles.bottomAction}
           />
           <BottomNavigationAction
             label="Discover"
             icon={<ExploreIcon />}
             onClick={this.props.handleDiscoverClick}
+            style={styles.bottomAction}
           />
           <BottomNavigationAction
             label="Maps"
             icon={<MapIcon />}
             onClick={this.props.handleMapsClick}
+            style={styles.bottomAction}
           />
           <BottomNavigationAction
             label="Profile"
             icon={<AccountCircleIcon />}
             onClick={this.props.handleProfileClick}
+            style={styles.bottomAction}
           />
           <BottomNavigationAction
             label="Notice"
             icon={this.renderNotificationIcon()}
             onClick={this.props.handleNotificationsClick}
+            style={styles.bottomAction}
           />
         </BottomNavigation>
       </Paper>
