@@ -10,14 +10,12 @@ import moment from 'moment';
 
 const styles = {
   rootLarge: {
-    margin: '0 auto',
-    marginTop: 84,
+    margin: '94px auto',
     maxWidth: 600,
     minWidth: 320
   },
   rootSmall: {
-    margin: '0 auto',
-    marginTop: 72,
+    margin: '72px auto'
   },
   cardLarge: {
     marginTop: 20

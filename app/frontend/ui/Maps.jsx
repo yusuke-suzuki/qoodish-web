@@ -12,8 +12,8 @@ import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
   rootLarge: {
-    margin: '144px auto 200px',
-    width: '80%'
+    margin: '154px auto 200px',
+    maxWidth: 900
   },
   rootSmall: {
     margin: '120px auto 64px'

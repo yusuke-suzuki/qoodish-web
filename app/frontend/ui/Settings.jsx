@@ -6,16 +6,13 @@ import Typography from 'material-ui/Typography';
 
 const styles = {
   rootLarge: {
-    padding: 40,
-    margin: '0 auto',
-    marginTop: 64,
+    margin: '94px auto',
     maxWidth: 600,
     minWidth: 320
   },
   rootSmall: {
     padding: 20,
-    margin: '0 auto',
-    marginTop: 56
+    margin: '56px auto'
   },
   deleteButton: {
     color: 'white',

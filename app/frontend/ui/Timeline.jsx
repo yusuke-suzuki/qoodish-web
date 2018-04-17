@@ -12,8 +12,8 @@ import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
-    margin: '64px auto 200px',
-    width: '40%'
+    margin: '94px auto 200px',
+    maxWidth: 600
   },
   rootSmall: {
     margin: '56px auto 56px',
