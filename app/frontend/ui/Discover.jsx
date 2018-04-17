@@ -21,8 +21,8 @@ import List, {
 
 const styles = {
   rootLarge: {
-    margin: '104px auto 200px',
-    width: '80%'
+    margin: '94px auto 200px',
+    maxWidth: 900
   },
   rootSmall: {
     margin: '76px auto 64px'

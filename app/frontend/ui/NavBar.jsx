@@ -4,6 +4,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import Drawer from 'material-ui/Drawer';
 import SwipeableDrawer from 'material-ui/SwipeableDrawer';
 import List, {
   ListItem,
@@ -29,6 +30,24 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 const styles = {
   title: {
     cursor: 'pointer'
+  },
+  titleLarge: {
+    height: 64
+  },
+  titleSmall: {
+    height: 56
+  },
+  drawerPaper: {
+    marginTop: 84,
+    zIndex: 1000,
+    backgroundColor: 'initial',
+    borderRight: 'initial'
+  },
+  drawerPaperWithTabs: {
+    marginTop: 144,
+    zIndex: 1000,
+    backgroundColor: 'initial',
+    borderRight: 'initial'
   },
   tabs: {
     width: '100%'
@@ -227,15 +246,62 @@ class NavBar extends Component {
           </Toolbar>
           {this.props.mapsTabActive && this.renderMapsTab()}
         </AppBar>
-        <SwipeableDrawer
-          open={this.state.drawerOpen}
-          onOpen={this.handleOpenDrawer}
-          onClose={this.handleCloseDrawer}
-          onClick={this.handleCloseDrawer}
-        >
-          {this.renderDrawerContents()}
-        </SwipeableDrawer>
+        {this.props.large ? this.renderLargeDrawer() : this.renderSwipeableDrawer()}
       </div>
+    );
+  }
+
+  renderLargeDrawer() {
+    if (this.isMapDetail()) {
+      return this.renderTemporaryDrawer();
+    } else {
+      return this.renderPermanentDrawer();
+    }
+  }
+
+  isMapDetail() {
+    return this.props.pathname.includes('/maps/');
+  }
+
+  renderTemporaryDrawer() {
+    return (
+      <Drawer
+        open={this.state.drawerOpen}
+        onOpen={this.handleOpenDrawer}
+        onClose={this.handleCloseDrawer}
+        onClick={this.handleCloseDrawer}
+      >
+        {this.renderDrawerContents()}
+      </Drawer>
+    );
+  }
+
+  renderPermanentDrawer() {
+    return (
+      <Drawer
+        variant="permanent"
+        anchor="left"
+        PaperProps={{ style: this.props.mapsTabActive ? styles.drawerPaperWithTabs : styles.drawerPaper }}
+        open={this.state.drawerOpen}
+        onOpen={this.handleOpenDrawer}
+        onClose={this.handleCloseDrawer}
+        onClick={this.handleCloseDrawer}
+      >
+        {this.renderDrawerContents()}
+      </Drawer>
+    );
+  }
+
+  renderSwipeableDrawer() {
+    return (
+      <SwipeableDrawer
+        open={this.state.drawerOpen}
+        onOpen={this.handleOpenDrawer}
+        onClose={this.handleCloseDrawer}
+        onClick={this.handleCloseDrawer}
+      >
+        {this.renderDrawerContents()}
+      </SwipeableDrawer>
     );
   }
 
@@ -463,13 +529,7 @@ class NavBar extends Component {
       <div>
         <List disablePadding>
           <div>
-            <ListItem divider={true}>
-              <ListItemText
-                disableTypography
-                primary={this.renderTitle()}
-                secondary={this.renderTitleSecondary()}
-              />
-            </ListItem>
+            {!this.props.large || this.isMapDetail() ? this.renderTitle() : null}
             <ListItem button onClick={this.props.requestHome}>
               <ListItemIcon>
                 <HomeIcon />
@@ -521,22 +581,21 @@ class NavBar extends Component {
 
   renderTitle() {
     return (
-      <Typography
-        variant="headline"
-        color="textSecondary"
-        style={styles.title}
-        onClick={this.props.requestHome}
-      >
-        Qoodish
-      </Typography>
-    );
-  }
-
-  renderTitleSecondary() {
-    return (
-      <Typography variant="caption" color="textSecondary">
-        {`v${process.env.npm_package_version}`}
-      </Typography>
+      <ListItem divider={true} style={this.props.large ? styles.titleLarge : styles.titleSmall}>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography
+              variant="headline"
+              color="textSecondary"
+              style={styles.title}
+              onClick={this.props.requestHome}
+            >
+              Qoodish
+            </Typography>
+          }
+        />
+      </ListItem>
     );
   }
 }

@@ -18,25 +18,24 @@ import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
-    marginBottom: 0
+    margin: '94px auto 20px',
+    maxWidth: 900
   },
   rootSmall: {
+    marginTop: 56,
     marginBottom: 56
   },
   mapWrapperLarge: {
-    paddingTop: 64,
     height: 300
   },
   mapWrapperSmall: {
-    paddingTop: 56,
     height: 200
   },
   mapContainer: {
     height: '100%'
   },
   reviewsContainerLarge: {
-    margin: '0 auto 20px',
-    width: '40%'
+    margin: '0 auto 20px'
   },
   reviewsContainerSmall: {
     margin: '0 auto'
@@ -179,7 +178,6 @@ class Profile extends React.Component {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentUser && this.renderHelmet(this.props.currentUser)}
-        {this.renderMap()}
         {this.props.currentUser && this.renderProfileCard(this.props.currentUser)}
         <div>
           {this.state.tabValue === 0 && this.renderReviews()}
@@ -219,7 +217,7 @@ class Profile extends React.Component {
     );
   }
 
-  renderMap() {
+  renderGoogleMap() {
     return (
       <GoogleMapContainer
         {...this.props}
@@ -240,6 +238,7 @@ class Profile extends React.Component {
   renderProfileCard(currentUser) {
     return (
       <Card>
+        {this.renderGoogleMap()}
         <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
           <Avatar
             src={currentUser && currentUser.image_url}
