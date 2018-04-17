@@ -120,7 +120,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleUserClick: (userId) => {
-      dispatch(push(`/users/${userId}`));
+      dispatch(push(`/users/${userId}`, {
+        previous: true
+      }));
     }
   };
 };

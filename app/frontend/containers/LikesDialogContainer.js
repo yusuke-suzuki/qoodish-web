@@ -17,7 +17,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleLikeClick: like => {
-      dispatch(push(`/users/${like.voter.id}`));
+      dispatch(push(`/users/${like.voter.id}`, {
+        previous: true
+      }));
     }
   };
 };
