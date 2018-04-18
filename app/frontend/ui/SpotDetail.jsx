@@ -13,6 +13,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Helmet from 'react-helmet';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   mapWrapperLarge: {
@@ -57,15 +58,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    marginTop: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   createButtonLarge: {
     zIndex: 1100,
@@ -211,7 +203,12 @@ class SpotDetail extends Component {
     if (this.props.currentSpot) {
       return this.renderSpotCard(this.props.currentSpot);
     } else {
-      return this.renderNoContent();
+      return (
+        <NoContentsContainer
+          contentType="spot"
+          message="Place not found."
+        />
+      );
     }
   }
 
@@ -219,17 +216,6 @@ class SpotDetail extends Component {
     return (
       <div style={styles.progress}>
         <CircularProgress />
-      </div>
-    );
-  }
-
-  renderNoContent() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <PlaceIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          Place not found.
-        </Typography>
       </div>
     );
   }

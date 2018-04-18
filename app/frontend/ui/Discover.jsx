@@ -17,6 +17,7 @@ import List, {
   ListItemSecondaryAction
 } from 'material-ui/List';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -54,15 +55,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    marginTop: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   gridHeader: {
     width: '100%',
@@ -225,28 +217,6 @@ export default class Discover extends React.Component {
     );
   }
 
-  renderNoMaps() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MapIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          No maps.
-        </Typography>
-      </div>
-    );
-  }
-
-  renderNoReviews() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          No reports.
-        </Typography>
-      </div>
-    );
-  }
-
   renderTrendingSpotsContainer(spots) {
     return (
       <List disablePadding style={styles.trendingSpotsList}>
@@ -295,7 +265,12 @@ export default class Discover extends React.Component {
         </GridList>
       );
     } else {
-      return this.renderNoReviews();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          message="No reports."
+        />
+      );
     }
   }
 
@@ -357,7 +332,12 @@ export default class Discover extends React.Component {
         <MapCollectionContainer maps={maps} />
       );
     } else {
-      return this.renderNoMaps();
+      return (
+        <NoContentsContainer
+          contentType="map"
+          message="No maps."
+        />
+      );
     }
   }
 }

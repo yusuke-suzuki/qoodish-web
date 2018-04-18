@@ -1,11 +1,10 @@
 import React from 'react';
 import { CircularProgress } from 'material-ui/Progress';
-import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
-import Typography from 'material-ui/Typography';
 import SwipeableViews from 'react-swipeable-views';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -38,15 +37,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   gridHeader: {
     width: '100%',
@@ -137,32 +127,19 @@ export default class Maps extends React.Component {
     );
   }
 
-  renderNoMaps() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MapIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          When you create or follow maps, you will see maps here.
-        </Typography>
-        <br />
-        <Button
-          variant="raised"
-          color="primary"
-          onClick={this.props.handleCreateMapButtonClick}
-        >
-          Create New Map
-        </Button>
-      </div>
-    );
-  }
-
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
         <MapCollectionContainer maps={maps} />
       );
     } else {
-      return this.renderNoMaps();
+      return (
+        <NoContentsContainer
+          contentType="map"
+          action="create-map"
+          message="When you create or follow maps, you will see maps here."
+        />
+      );
     }
   }
 }

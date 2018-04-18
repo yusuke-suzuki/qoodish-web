@@ -4,11 +4,10 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
-import MapIcon from 'material-ui-icons/Map';
-import RateReviewIcon from 'material-ui-icons/RateReview';
 import Card, { CardHeader } from 'material-ui/Card';
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import I18n from '../containers/I18n';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -40,15 +39,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   profileImage: {
     width: 40
@@ -179,17 +169,6 @@ export default class Feed extends Component {
     );
   }
 
-  renderNoReviews() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          {I18n.t('reports will see here')}
-        </Typography>
-      </div>
-    );
-  }
-
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
@@ -201,7 +180,13 @@ export default class Feed extends Component {
         </div>
       );
     } else {
-      return this.renderNoReviews();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          action="create-review"
+          message={I18n.t('reports will see here')}
+        />
+      );
     }
   }
 

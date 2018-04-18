@@ -6,12 +6,11 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-map
 import Helmet from 'react-helmet';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { CircularProgress } from 'material-ui/Progress';
-import MapIcon from 'material-ui-icons/Map';
-import RateReviewIcon from 'material-ui-icons/RateReview';
 import Button from 'material-ui/Button';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import I18n from '../containers/I18n';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -77,15 +76,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   gridHeader: {
     width: '100%',
@@ -266,17 +256,6 @@ class Profile extends React.Component {
     );
   }
 
-  renderNoReviews() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          {I18n.t('reports will see here')}
-        </Typography>
-      </div>
-    );
-  }
-
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
@@ -288,7 +267,12 @@ class Profile extends React.Component {
         </div>
       );
     } else {
-      return this.renderNoReviews();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          message={I18n.t('reports will see here')}
+        />
+      );
     }
   }
 
@@ -349,32 +333,18 @@ class Profile extends React.Component {
     );
   }
 
-  renderNoMaps() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MapIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          When you create or follow maps, you will see maps here.
-        </Typography>
-        <br />
-        <Button
-          variant="raised"
-          color="primary"
-          onClick={this.props.handleCreateMapButtonClick}
-        >
-          Create New Map
-        </Button>
-      </div>
-    );
-  }
-
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
         <MapCollectionContainer maps={maps} />
       );
     } else {
-      return this.renderNoMaps();
+      return (
+        <NoContentsContainer
+          contentType="map"
+          message="No maps have been created."
+        />
+      );
     }
   }
 }

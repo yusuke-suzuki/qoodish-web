@@ -7,9 +7,9 @@ import List, {
   ListItemSecondaryAction
 } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import NotificationsIcon from 'material-ui-icons/Notifications';
 import Paper from 'material-ui/Paper';
 import moment from 'moment';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   containerLarge: {
@@ -22,15 +22,6 @@ const styles = {
   progress: {
     textAlign: 'center',
     paddingTop: 40
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    paddingTop: 40
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   },
   notificationText: {
     paddingRight: 32
@@ -73,7 +64,12 @@ class Notifications extends Component {
         </Paper>
       );
     } else {
-      return this.renderNoContent();
+      return (
+        <NoContentsContainer
+          contentType="notification"
+          message="When you received notifications, you will see here."
+        />
+      );
     }
   }
 
@@ -130,17 +126,6 @@ class Notifications extends Component {
     return (
       <div style={styles.progress}>
         <CircularProgress />
-      </div>
-    );
-  }
-
-  renderNoContent() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <NotificationsIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          No notifications.
-        </Typography>
       </div>
     );
   }
