@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { CircularProgress } from 'material-ui/Progress';
 import MapIcon from 'material-ui-icons/Map';
 import Button from 'material-ui/Button';
-import GroupIcon from 'material-ui-icons/Group';
-import PersonIcon from 'material-ui-icons/Person';
 import ExploreIcon from 'material-ui-icons/Explore';
 import PlaceIcon from 'material-ui-icons/Place';
 import RateReviewIcon from 'material-ui-icons/RateReview';
@@ -18,6 +16,7 @@ import List, {
   ListItemText,
   ListItemSecondaryAction
 } from 'material-ui/List';
+import MapCollectionContainer from '../containers/MapCollectionContainer';
 
 const styles = {
   rootLarge: {
@@ -31,6 +30,10 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+    marginTop: 40,
+    marginBottom: 20
+  },
+  mapsContainer: {
     marginTop: 40,
     marginBottom: 20
   },
@@ -70,12 +73,6 @@ const styles = {
     marginLeft: 10,
     marginRight: 10
   },
-  mapTypeIcon: {
-    marginLeft: 16,
-    marginRight: 16,
-    color: '#fff',
-    fontSize: '1.2rem'
-  },
   reviewCard: {
     margin: 3
   },
@@ -110,7 +107,7 @@ const styles = {
   }
 };
 
-export default class Discover extends Component {
+export default class Discover extends React.Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.pickUpMap();
@@ -175,7 +172,7 @@ export default class Discover extends Component {
             ? this.renderProgress()
             : this.renderRecentReviewContainer(this.props.recentReviews)}
         </div>
-        <div style={styles.container}>
+        <div style={styles.mapsContainer}>
           <Typography
             variant="subheading"
             gutterBottom
@@ -357,41 +354,10 @@ export default class Discover extends Component {
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
-        <GridList
-          cols={this.props.large ? 4 : 2}
-          style={styles.gridList}
-          spacing={this.props.large ? 20 : 10}
-        >
-          {this.renderMaps(maps)}
-        </GridList>
+        <MapCollectionContainer maps={maps} />
       );
     } else {
       return this.renderNoMaps();
-    }
-  }
-
-  renderMaps(maps) {
-    return maps.map(map => (
-      <GridListTile
-        key={map.id}
-        onClick={() => this.props.handleClickMap(map)}
-        style={styles.gridTile}
-      >
-        <img src={map.image_url} />
-        <GridListTileBar
-          title={map.name}
-          subtitle={<span>by: {map.owner_name}</span>}
-          actionIcon={this.renderMapTypeIcon(map)}
-        />
-      </GridListTile>
-    ));
-  }
-
-  renderMapTypeIcon(map) {
-    if (map.shared) {
-      return <GroupIcon style={styles.mapTypeIcon} />;
-    } else {
-      return <PersonIcon style={styles.mapTypeIcon} />;
     }
   }
 }
