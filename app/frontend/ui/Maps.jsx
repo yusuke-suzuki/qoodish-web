@@ -14,9 +14,6 @@ const styles = {
   rootSmall: {
     margin: '120px auto 64px'
   },
-  container: {
-    marginBottom: 20
-  },
   createButtonLarge: {
     position: 'fixed',
     zIndex: 2,
@@ -109,7 +106,7 @@ export default class Maps extends React.Component {
 
   renderFollowingMaps() {
     return (
-      <div style={styles.container} key='following'>
+      <div key='following'>
         {this.props.loadingFollowingMaps
           ? this.renderProgress()
           : this.renderMapContainer(this.props.followingMaps)}
@@ -119,7 +116,7 @@ export default class Maps extends React.Component {
 
   renderMyMaps() {
     return (
-      <div style={styles.container} key='mymaps'>
+      <div key='mymaps'>
         {this.props.loadingMyMaps
           ? this.renderProgress()
           : this.renderMapContainer(this.props.myMaps)}
