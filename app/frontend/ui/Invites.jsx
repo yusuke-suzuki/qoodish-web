@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import DeleteAccountDialogContainer from '../containers/DeleteAccountDialogContainer';
+import React from 'react';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import Avatar from 'material-ui/Avatar';
 import Typography from 'material-ui/Typography';
 import { CircularProgress } from 'material-ui/Progress';
-import MailIcon from 'material-ui-icons/Mail';
 import moment from 'moment';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -36,19 +35,10 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   }
 };
 
-export default class Invites extends Component {
+export default class Invites extends React.Component {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.fetchInvites();
@@ -82,19 +72,13 @@ export default class Invites extends Component {
     if (invites.length > 0) {
       return this.renderInviteCards(invites)
     } else {
-      return this.renderNoInvites();
+      return (
+        <NoContentsContainer
+          contentType="invite"
+          message="When you received invites, you will see here."
+        />
+      );
     }
-  }
-
-  renderNoInvites() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MailIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          When you received invites, you will see here.
-        </Typography>
-      </div>
-    );
   }
 
   renderInviteCards(invites) {

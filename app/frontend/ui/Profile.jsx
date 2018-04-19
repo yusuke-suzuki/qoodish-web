@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Avatar from 'material-ui/Avatar';
 import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
@@ -6,15 +6,11 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-map
 import Helmet from 'react-helmet';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import { CircularProgress } from 'material-ui/Progress';
-import MapIcon from 'material-ui-icons/Map';
-import LockIcon from 'material-ui-icons/Lock';
-import GroupIcon from 'material-ui-icons/Group';
-import PersonIcon from 'material-ui-icons/Person';
-import RateReviewIcon from 'material-ui-icons/RateReview';
 import Button from 'material-ui/Button';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import I18n from '../containers/I18n';
+import MapCollectionContainer from '../containers/MapCollectionContainer';
+import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
@@ -34,17 +30,18 @@ const styles = {
   mapContainer: {
     height: '100%'
   },
+  userMapsContainerLarge: {
+    marginTop: 20,
+    marginBottom: 20
+  },
+  userMapsContainerSmall: {
+    marginTop: 8,
+    marginBottom: 64
+  },
   reviewsContainerLarge: {
     margin: '0 auto 20px'
   },
   reviewsContainerSmall: {
-    margin: '0 auto'
-  },
-  mapsContainerLarge: {
-    margin: '0 auto',
-    width: '80%'
-  },
-  mapsContainerSmall: {
     margin: '0 auto'
   },
   profileContainer: {
@@ -80,35 +77,10 @@ const styles = {
     padding: 10,
     marginTop: 20
   },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
-  },
   gridHeader: {
     width: '100%',
     display: 'inline-flex',
     marginBottom: 15
-  },
-  mapTypeIcon: {
-    marginLeft: 16,
-    marginRight: 16,
-    color: '#fff',
-    fontSize: '1.2rem'
-  },
-  mapTypeContainer: {
-    display: 'grid'
-  },
-  gridList: {
-    width: '100%',
-    margin: 0
-  },
-  gridTile: {
-    cursor: 'pointer'
   },
   reviewCardContainerSmall: {
     marginTop: 16
@@ -284,17 +256,6 @@ class Profile extends React.Component {
     );
   }
 
-  renderNoReviews() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          {I18n.t('reports will see here')}
-        </Typography>
-      </div>
-    );
-  }
-
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
@@ -306,7 +267,12 @@ class Profile extends React.Component {
         </div>
       );
     } else {
-      return this.renderNoReviews();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          message={I18n.t('reports will see here')}
+        />
+      );
     }
   }
 
@@ -357,8 +323,8 @@ class Profile extends React.Component {
   renderUserMaps() {
     return (
       <div
-        style={this.props.large ? styles.mapsContainerLarge : styles.mapsContainerSmall}
         key='usermaps'
+        style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
       >
         {this.props.loadingMaps
           ? this.renderProgress()
@@ -367,69 +333,19 @@ class Profile extends React.Component {
     );
   }
 
-  renderNoMaps() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <MapIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          When you create or follow maps, you will see maps here.
-        </Typography>
-        <br />
-        <Button
-          variant="raised"
-          color="primary"
-          onClick={this.props.handleCreateMapButtonClick}
-        >
-          Create New Map
-        </Button>
-      </div>
-    );
-  }
-
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
-        <GridList
-          cols={this.props.large ? 4 : 2}
-          style={styles.gridList}
-          spacing={this.props.large ? 20 : 10}
-        >
-          {this.renderMaps(maps)}
-        </GridList>
+        <MapCollectionContainer maps={maps} />
       );
     } else {
-      return this.renderNoMaps();
-    }
-  }
-
-  renderMaps(maps) {
-    return maps.map(map => (
-      <GridListTile
-        key={map.id}
-        onClick={() => this.props.handleClickMap(map)}
-        style={styles.gridTile}
-      >
-        <img src={map.image_url} />
-        <GridListTileBar
-          title={map.name}
-          subtitle={<span>by: {map.owner_name}</span>}
-          actionIcon={<div style={styles.mapTypeContainer}>{this.renderMapTypeIcon(map)}</div>}
+      return (
+        <NoContentsContainer
+          contentType="map"
+          message="No maps have been created."
         />
-      </GridListTile>
-    ));
-  }
-
-  renderMapTypeIcon(map) {
-    let actions = [];
-    if (map.private) {
-      actions.push(<LockIcon style={styles.mapTypeIcon} key="private" />);
+      );
     }
-    if (map.shared) {
-      actions.push(<GroupIcon style={styles.mapTypeIcon} key="shared" />);
-    } else {
-      actions.push(<PersonIcon style={styles.mapTypeIcon} key="personal" />);
-    }
-    return actions;
   }
 }
 

@@ -1,9 +1,7 @@
 import { connect } from 'react-redux';
 import Maps from '../ui/Maps';
 import ApiClient from '../containers/ApiClient';
-import openToast from '../actions/openToast';
 import signOut from '../actions/signOut';
-import { push } from 'react-router-redux';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchMyMaps from '../actions/fetchMyMaps';
@@ -12,7 +10,6 @@ import loadMyMapsStart from '../actions/loadMyMapsStart';
 import loadMyMapsEnd from '../actions/loadMyMapsEnd';
 import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
 import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
-import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import updatePageTitle from '../actions/updatePageTitle';
 import showMapsTab from '../actions/showMapsTab';
@@ -65,14 +62,6 @@ const mapDispatchToProps = dispatch => {
       let maps = await response.json();
       dispatch(fetchFollowingMaps(maps));
       dispatch(loadFollowingMapsEnd());
-    },
-
-    handleClickMap: map => {
-      dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`, {
-        previous: true
-      }));
-      dispatch(openToast(`Log in to ${map.name}!`));
     },
 
     handleMyMapsActive: () => {

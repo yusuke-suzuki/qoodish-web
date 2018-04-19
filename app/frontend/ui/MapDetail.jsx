@@ -12,10 +12,7 @@ import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
-import Button from 'material-ui/Button';
-import PlaceIcon from 'material-ui-icons/Place';
-import InfoIcon from 'material-ui-icons/Info';
+import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -40,30 +37,6 @@ const styles = {
   },
   mapContainer: {
     height: '100%'
-  },
-  createButtonLarge: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonForMapDialog: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   appbar: {
     position: 'relative'
@@ -192,7 +165,7 @@ export default class MapDetail extends React.Component {
         {this.props.currentMap && this.renderHelmet(this.props.currentMap)}
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         {this.ableToPost(this.props.currentMap)
-          ? this.renderCreateReviewButton()
+          ? <CreateReviewButtonContainer />
           : null}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
@@ -314,30 +287,8 @@ export default class MapDetail extends React.Component {
   renderCreateReviewButtonForMapDialog() {
     return (
       <div hidden={this.props.spotCardOpen}>
-        <Button
-          variant="fab"
-          aria-label="add"
-          style={styles.createButtonForMapDialog}
-          onClick={this.props.handleCreateReviewClick}
-        >
-          <AddLocationIcon />
-        </Button>
+        <CreateReviewButtonContainer withoutBottomSeat={true} />
       </div>
-    );
-  }
-
-  renderCreateReviewButton() {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={this.props.handleCreateReviewClick}
-      >
-        <AddLocationIcon />
-      </Button>
     );
   }
 }

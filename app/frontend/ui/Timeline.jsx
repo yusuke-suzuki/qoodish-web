@@ -4,11 +4,10 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
-import MapIcon from 'material-ui-icons/Map';
-import RateReviewIcon from 'material-ui-icons/RateReview';
 import Card, { CardHeader } from 'material-ui/Card';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
 import I18n from '../containers/I18n';
+import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 
 const styles = {
   rootLarge: {
@@ -41,33 +40,8 @@ const styles = {
     padding: 10,
     marginTop: 20
   },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
-  },
   profileImage: {
     width: 40
-  },
-  createButtonLarge: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   cardContainerSmall: {
     marginTop: 16
@@ -135,7 +109,7 @@ export default class Feed extends Component {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        {this.renderCreateReviewButton()}
+        <CreateReviewButtonContainer />
       </div>
     );
   }
@@ -164,32 +138,6 @@ export default class Feed extends Component {
     );
   }
 
-  renderCreateReviewButton() {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={this.props.handleCreateReviewClick}
-      >
-        <AddLocationIcon />
-      </Button>
-    );
-  }
-
-  renderNoReviews() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          {I18n.t('reports will see here')}
-        </Typography>
-      </div>
-    );
-  }
-
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
@@ -201,7 +149,13 @@ export default class Feed extends Component {
         </div>
       );
     } else {
-      return this.renderNoReviews();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          action="create-review"
+          message={I18n.t('reports will see here')}
+        />
+      );
     }
   }
 

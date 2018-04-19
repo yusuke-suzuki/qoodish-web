@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
-import { push } from 'react-router-redux';
 import updatePageTitle from '../actions/updatePageTitle';
 import fetchUserProfile from '../actions/fetchUserProfile';
 import fetchUserMaps from '../actions/fetchUserMaps';
@@ -12,8 +11,6 @@ import loadUserReviewsStart from '../actions/loadUserReviewsStart';
 import loadUserReviewsEnd from '../actions/loadUserReviewsEnd';
 import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
 import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
-import selectMap from '../actions/selectMap';
-import openToast from '../actions/openToast';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import clearProfileState from '../actions/clearProfileState';
 import ApiClient from './ApiClient.js';
@@ -72,14 +69,6 @@ const mapDispatchToProps = (dispatch) => {
       let maps = await response.json();
       dispatch(fetchUserMaps(maps));
       dispatch(loadUserMapsEnd());
-    },
-
-    handleClickMap: map => {
-      dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`, {
-        previous: true
-      }));
-      dispatch(openToast(`Log in to ${map.name}!`));
     },
 
     handleCreateMapButtonClick: () => {

@@ -10,8 +10,6 @@ import loadReviewsEnd from '../actions/loadReviewsEnd';
 import loadMoreReviewsStart from '../actions/loadMoreReviewsStart';
 import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
 import updatePageTitle from '../actions/updatePageTitle';
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
-import openCreateMapDialog from '../actions/openCreateMapDialog';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 
 const mapStateToProps = state => {
@@ -62,10 +60,6 @@ const mapDispatchToProps = dispatch => {
       } else {
         dispatch(openToast('Failed to fetch reports.'));
       }
-    },
-
-    handleCreateMapButtonClick: () => {
-      dispatch(openCreateMapDialog());
     },
 
     handleCreateReviewClick: () => {

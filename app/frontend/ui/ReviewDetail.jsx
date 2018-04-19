@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import Typography from 'material-ui/Typography';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import { CircularProgress } from 'material-ui/Progress';
-import RateReviewIcon from 'material-ui-icons/RateReview';
-import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
-import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
+import NoContentsContainer from '../containers/NoContentsContainer';
 import Helmet from 'react-helmet';
 
 const styles = {
@@ -18,15 +15,6 @@ const styles = {
   progress: {
     textAlign: 'center',
     paddingTop: 20
-  },
-  noContentsContainer: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    paddingTop: 20
-  },
-  noContentsIcon: {
-    width: 150,
-    height: 150
   }
 };
 
@@ -55,8 +43,6 @@ class ReviewDetail extends Component {
         {this.props.reviewLoading
           ? this.renderProgress()
           : this.renderReviewCard()}
-        <EditReviewDialogContainer mapId={this.props.match.params.mapId} />
-        <DeleteReviewDialogContainer />
       </div>
     );
   }
@@ -100,7 +86,12 @@ class ReviewDetail extends Component {
         />
       );
     } else {
-      return this.renderNoContent();
+      return (
+        <NoContentsContainer
+          contentType="review"
+          message="Report not found."
+        />
+      );
     }
   }
 
@@ -108,17 +99,6 @@ class ReviewDetail extends Component {
     return (
       <div style={styles.progress}>
         <CircularProgress />
-      </div>
-    );
-  }
-
-  renderNoContent() {
-    return (
-      <div style={styles.noContentsContainer}>
-        <RateReviewIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
-          Report not found.
-        </Typography>
       </div>
     );
   }
