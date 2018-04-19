@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Button from 'material-ui/Button';
 import List, {
   ListItem,
@@ -16,36 +16,32 @@ import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
+  rootLarge: {
+    margin: '94px auto 20px',
+    maxWidth: 900
+  },
+  rootSmall: {
+    marginTop: 56,
+    marginBottom: 56
+  },
   mapWrapperLarge: {
-    paddingTop: 64,
     height: 300
   },
   mapWrapperSmall: {
-    paddingTop: 56,
     height: 200
   },
   mapContainer: {
     height: '100%'
   },
-  container: {
-    margin: '0 auto'
-  },
-  cardLarge: {
-    minHeight: 'calc(100vh - 364px)'
-  },
+  cardLarge: {},
   cardSmall: {
-    minHeight: 'calc(100vh - 200px)'
+    minHeight: 'calc(100vh - 112px)'
   },
-  cardContentLarge: {
-    width: '50%',
-    margin: '0 auto',
-    textAlign: 'center'
-  },
-  cardContentSmall: {
+  cardContent: {
     textAlign: 'center'
   },
   listLarge: {
-    width: '50%',
+    maxWidth: 600,
     margin: '0 auto'
   },
   listSmall: {},
@@ -111,7 +107,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   </GoogleMap>
 )));
 
-class SpotDetail extends Component {
+class SpotDetail extends React.Component {
   async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentSpot) {
@@ -131,9 +127,8 @@ class SpotDetail extends Component {
 
   render() {
     return (
-      <div>
+      <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
-        {this.renderMap()}
         {this.renderContainer()}
         {this.props.currentSpot &&
           this.renderCreateReviewButton(this.props.currentSpot)}
@@ -191,7 +186,7 @@ class SpotDetail extends Component {
 
   renderContainer() {
     return (
-      <div style={styles.container}>
+      <div>
         {this.props.spotLoading
           ? this.renderProgress()
           : this.renderSpotDetail()}
@@ -223,11 +218,8 @@ class SpotDetail extends Component {
   renderSpotCard(spot) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-        <CardContent
-          style={
-            this.props.large ? styles.cardContentLarge : styles.cardContentSmall
-          }
-        >
+        {this.renderMap()}
+        <CardContent style={styles.cardContent}>
           <PlaceIcon />
           <Typography variant="headline">{spot.name}</Typography>
           <Typography variant="subheading" color="textSecondary">
