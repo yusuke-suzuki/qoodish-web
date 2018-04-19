@@ -16,7 +16,7 @@ const styles = {
   icon: {
     width: 150,
     height: 150
-  },
+  }
 };
 
 export default class NoContents extends React.Component {

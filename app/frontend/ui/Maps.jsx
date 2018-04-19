@@ -5,6 +5,7 @@ import AddIcon from 'material-ui-icons/Add';
 import SwipeableViews from 'react-swipeable-views';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateMapButtonContainer from '../containers/CreateMapButtonContainer';
 
 const styles = {
   rootLarge: {
@@ -13,22 +14,6 @@ const styles = {
   },
   rootSmall: {
     margin: '120px auto 64px'
-  },
-  createButtonLarge: {
-    position: 'fixed',
-    zIndex: 2,
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    position: 'fixed',
-    zIndex: 2,
-    bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   progress: {
     textAlign: 'center',
@@ -88,18 +73,7 @@ export default class Maps extends React.Component {
           {this.renderFollowingMaps()}
           {this.renderMyMaps()}
         </SwipeableViews>
-        <Button
-          variant="fab"
-          aria-label="add"
-          style={
-            this.props.large
-              ? styles.createButtonLarge
-              : styles.createButtonSmall
-          }
-          onClick={this.props.handleCreateMapButtonClick}
-        >
-          <AddIcon />
-        </Button>
+        <CreateMapButtonContainer />
       </div>
     );
   }

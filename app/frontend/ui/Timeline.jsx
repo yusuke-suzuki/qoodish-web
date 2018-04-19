@@ -5,9 +5,9 @@ import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import Card, { CardHeader } from 'material-ui/Card';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
 import I18n from '../containers/I18n';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 
 const styles = {
   rootLarge: {
@@ -42,22 +42,6 @@ const styles = {
   },
   profileImage: {
     width: 40
-  },
-  createButtonLarge: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   cardContainerSmall: {
     marginTop: 16
@@ -125,7 +109,7 @@ export default class Feed extends Component {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        {this.renderCreateReviewButton()}
+        <CreateReviewButtonContainer />
       </div>
     );
   }
@@ -151,21 +135,6 @@ export default class Feed extends Component {
           }
         />
       </Card>
-    );
-  }
-
-  renderCreateReviewButton() {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={this.props.handleCreateReviewClick}
-      >
-        <AddLocationIcon />
-      </Button>
     );
   }
 
