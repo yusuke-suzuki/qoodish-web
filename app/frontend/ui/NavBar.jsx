@@ -260,7 +260,7 @@ class NavBar extends Component {
   }
 
   isMapDetail() {
-    return this.props.pathname.includes('/maps/');
+    return this.props.pathname.includes('/maps/') && !this.props.pathname.includes('/reports');
   }
 
   renderTemporaryDrawer() {
