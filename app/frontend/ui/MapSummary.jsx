@@ -16,7 +16,6 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Toolbar from 'material-ui/Toolbar';
 import ShareIcon from 'material-ui-icons/Share';
-import MapIcon from 'material-ui-icons/Map';
 import Divider from 'material-ui/Divider';
 import PlaceIcon from 'material-ui-icons/Place';
 import PersonAddIcon from 'material-ui-icons/PersonAdd';
@@ -30,6 +29,8 @@ import LockIcon from 'material-ui-icons/Lock';
 import GroupIcon from 'material-ui-icons/Group';
 import PersonIcon from 'material-ui-icons/Person';
 import Tooltip from 'material-ui/Tooltip';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import ButtonBase from 'material-ui/ButtonBase';
 
 const styles = {
   skeltonThumbnail: {
@@ -113,8 +114,51 @@ const styles = {
   },
   mapTypeContainer: {
     verticalAlign: 'middle'
+  },
+  mapButton: {
+    position: 'absolute',
+    zIndex: 1,
+    height: 80,
+    width: 80,
+    bottom: 12,
+    right: 12
+  },
+  mapCover: {
+    position: 'absolute',
+    zIndex: 1,
+    height: 80,
+    width: 80
+  },
+  mapWrapper: {
+    height: 80,
+    width: 80
+  },
+  mapContainer: {
+    height: '100%'
   }
 };
+
+const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
+  <GoogleMap
+    defaultZoom={12}
+    options={{
+      zoomControl: false,
+      streetViewControl: false,
+      scaleControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      gestureHandling: 'none'
+    }}
+    center={
+      new google.maps.LatLng(
+        parseFloat(props.center.lat),
+        parseFloat(props.center.lng)
+      )
+    }
+    onClick={props.handleMapButtonClick}
+  >
+  </GoogleMap>
+)));
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -242,6 +286,38 @@ class MapSummary extends Component {
     );
   }
 
+  renderMapButton() {
+    return (
+      <div style={styles.mapButton}>
+        {this.renderMapCover()}
+        {this.renderGoogleMap()}
+      </div>
+    );
+  }
+
+  renderMapCover() {
+    return (
+      <ButtonBase
+        style={styles.mapCover}
+        onClick={this.props.handleMapButtonClick}
+      />
+    );
+  }
+
+  renderGoogleMap() {
+    return (
+      <GoogleMapContainer
+        {...this.props}
+        googleMapURL={process.env.GOOGLE_MAP_URL}
+        containerElement={
+          <div style={styles.mapWrapper} />
+        }
+        mapElement={<div style={styles.mapContainer} />}
+        loadingElement={<div style={{ height: '100%' }} />}
+      />
+    );
+  }
+
   renderThumbnail(map) {
     return (
       <GridList cols={1} spacing={0} cellHeight={this.props.large ? 350 : 250}>
@@ -254,6 +330,7 @@ class MapSummary extends Component {
                 : styles.skeltonThumbnail
             }
           />
+          {!this.props.large && this.renderMapButton()}
         </GridListTile>
       </GridList>
     );
@@ -293,7 +370,6 @@ class MapSummary extends Component {
     return (
       <Toolbar style={styles.mapToolbar} disableGutters>
         <div style={styles.toolbarActions}>
-          {!this.props.large && this.renderMapButton()}
           {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
           <IconButton
             aria-label="More share"
@@ -348,16 +424,6 @@ class MapSummary extends Component {
           {map && this.renderMenu(map)}
         </div>
       </Toolbar>
-    );
-  }
-
-  renderMapButton() {
-    return (
-      <IconButton
-        onClick={this.props.handleMapButtonClick}
-      >
-        <MapIcon style={styles.mapMenuIcon} />
-      </IconButton>
     );
   }
 
