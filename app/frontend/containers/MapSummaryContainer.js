@@ -22,7 +22,9 @@ const mapStateToProps = state => {
     collaborators: state.mapSummary.collaborators,
     spots: state.gMap.spots,
     mapReviews: state.mapSummary.mapReviews,
-    large: state.shared.large
+    large: state.shared.large,
+    defaultZoom: state.gMap.defaultZoom,
+    center: state.gMap.center
   };
 };
 

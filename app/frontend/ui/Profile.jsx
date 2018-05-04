@@ -98,6 +98,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
       streetViewControl: false,
       scaleControl: false,
       mapTypeControl: false,
+      fullscreenControl: false,
       gestureHandling: 'none'
     }}
     center={
