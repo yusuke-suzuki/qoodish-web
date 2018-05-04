@@ -8,7 +8,7 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from 'material-ui-icons/Close';
 import Toolbar from 'material-ui/Toolbar';
-import AddIcon from 'material-ui-icons/Add';
+import EditIcon from 'material-ui-icons/Edit';
 import Divider from 'material-ui/Divider';
 
 function Transition(props) {
@@ -60,8 +60,8 @@ class ReviewsDialog extends React.Component {
             disabled={this.props.currentMap && !this.props.currentMap.postable}
             variant="raised"
           >
-            <AddIcon />
-            Add
+            <EditIcon />
+            New Report
           </Button>
         </Toolbar>
         <Divider />
