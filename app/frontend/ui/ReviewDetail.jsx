@@ -6,8 +6,8 @@ import Helmet from 'react-helmet';
 
 const styles = {
   containerLarge: {
-    margin: '94px auto 200px',
-    width: '40%'
+    marginTop: 94,
+    marginBottom: 200
   },
   containerSmall: {
     margin: '56px auto 56px'

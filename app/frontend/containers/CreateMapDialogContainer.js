@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => {
         dispatch(push(`/maps/${json.id}`, {
           previous: true
         }));
-        dispatch(openToast('Successfuly created the map!'));
+        dispatch(openToast('Successfully created the map!'));
 
         gtag('event', 'create', {
           'event_category': 'engagement',

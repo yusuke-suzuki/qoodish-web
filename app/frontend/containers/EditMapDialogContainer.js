@@ -36,7 +36,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(editMap(json));
         dispatch(closeEditMapDialog());
-        dispatch(openToast('Successfuly updated the map!'));
+        dispatch(openToast('Successfully updated the map!'));
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
       } else {

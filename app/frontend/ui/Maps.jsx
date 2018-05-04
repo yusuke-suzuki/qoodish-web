@@ -9,8 +9,8 @@ import CreateMapButtonContainer from '../containers/CreateMapButtonContainer';
 
 const styles = {
   rootLarge: {
-    margin: '154px auto 200px',
-    maxWidth: 900
+    marginTop: 154,
+    marginBottom: 200
   },
   rootSmall: {
     margin: '120px auto 64px'

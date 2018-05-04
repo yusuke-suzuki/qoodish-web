@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(closeEditReviewDialog());
-        dispatch(openToast('Successfuly created the report!'));
+        dispatch(openToast('Successfully created the report!'));
 
         gtag('event', 'create', {
           'event_category': 'engagement',
@@ -92,7 +92,7 @@ const mapDispatchToProps = dispatch => {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
-        dispatch(openToast('Successfuly updated the report!'));
+        dispatch(openToast('Successfully updated the report!'));
 
         if (canvas) {
           // wait until thumbnail created on cloud function
