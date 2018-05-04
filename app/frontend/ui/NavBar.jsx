@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -124,10 +125,14 @@ const styles = {
   },
   leftButton: {
     marginLeft: 8
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit'
   }
 };
 
-class NavBar extends Component {
+class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
@@ -170,7 +175,7 @@ class NavBar extends Component {
   }
 
   handleTitleClick() {
-    window.location.reload();
+    window.scrollTo(0, 0);
   }
 
   handleAvatarClick(event) {
@@ -267,7 +272,6 @@ class NavBar extends Component {
     return (
       <Drawer
         open={this.state.drawerOpen}
-        onOpen={this.handleOpenDrawer}
         onClose={this.handleCloseDrawer}
         onClick={this.handleCloseDrawer}
       >
@@ -283,7 +287,6 @@ class NavBar extends Component {
         anchor="left"
         PaperProps={{ style: this.props.mapsTabActive ? styles.drawerPaperWithTabs : styles.drawerPaper }}
         open={this.state.drawerOpen}
-        onOpen={this.handleOpenDrawer}
         onClose={this.handleCloseDrawer}
         onClick={this.handleCloseDrawer}
       >
@@ -361,9 +364,10 @@ class NavBar extends Component {
         variant="headline"
         color="inherit"
         style={styles.logo}
-        onClick={this.props.requestHome}
       >
-        Qoodish
+        <Link to="/" style={styles.link}>
+          Qoodish
+        </Link>
       </Typography>
     );
   }
@@ -496,21 +500,15 @@ class NavBar extends Component {
         open={this.state.accountMenuOpen}
         onClose={this.handleRequestAvatarMenuClose}
       >
-        <MenuItem
-          onClick={() => {
-            this.handleRequestAvatarMenuClose();
-            this.props.requestProfile();
-          }}
-        >
-          Profile
+        <MenuItem onClick={this.handleRequestAvatarMenuClose} selected={false}>
+          <Link to="/profile" style={styles.link}>
+            Profile
+          </Link>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            this.handleRequestAvatarMenuClose();
-            this.props.requestSettings();
-          }}
-        >
-          Settings
+        <MenuItem onClick={this.handleRequestAvatarMenuClose}>
+          <Link to="/settings" style={styles.link}>
+            Settings
+          </Link>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -530,49 +528,63 @@ class NavBar extends Component {
         <List disablePadding>
           <div>
             {!this.props.large || this.isMapDetail() ? this.renderTitle() : null}
-            <ListItem button onClick={this.props.requestHome}>
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-            <ListItem button onClick={this.props.requestDiscover}>
-              <ListItemIcon>
-                <ExploreIcon />
-              </ListItemIcon>
-              <ListItemText primary="Discover" />
-            </ListItem>
-            <ListItem button onClick={this.props.requestMaps}>
-              <ListItemIcon>
-                <MapIcon />
-              </ListItemIcon>
-              <ListItemText primary="Maps" />
-            </ListItem>
-            <ListItem button onClick={this.props.requestProfile}>
-              <ListItemIcon>
-                <AccountCircleIcon />
-              </ListItemIcon>
-              <ListItemText primary="Profile" />
-            </ListItem>
-            <ListItem button onClick={this.props.requestNotifications}>
-              <ListItemIcon>
-                <NotificationsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Notifications" />
-            </ListItem>
+            <Link to="/" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+            </Link>
+            <Link to="/discover" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <ExploreIcon />
+                </ListItemIcon>
+                <ListItemText primary="Discover" />
+              </ListItem>
+            </Link>
+            <Link to="/maps" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <MapIcon />
+                </ListItemIcon>
+                <ListItemText primary="Maps" />
+              </ListItem>
+            </Link>
+            <Link to="/profile" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountCircleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Profile" />
+              </ListItem>
+            </Link>
+            <Link to="/notifications" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <NotificationsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Notifications" />
+              </ListItem>
+            </Link>
             <Divider />
-            <ListItem button onClick={this.props.requestSettings}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-            </ListItem>
-            <ListItem button onClick={this.props.requestInvites}>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Invites" />
-            </ListItem>
+            <Link to="/settings" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </Link>
+            <Link to="/invites" style={styles.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Invites" />
+              </ListItem>
+            </Link>
           </div>
         </List>
       </div>

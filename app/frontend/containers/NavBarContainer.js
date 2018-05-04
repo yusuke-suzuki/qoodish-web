@@ -53,34 +53,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(signOut());
     },
 
-    requestHome: () => {
-      dispatch(push('/'));
-    },
-
-    requestDiscover: () => {
-      dispatch(push('/discover'));
-    },
-
-    requestMaps: () => {
-      dispatch(push('/maps'));
-    },
-
-    requestNotifications: () => {
-      dispatch(push('/notifications'));
-    },
-
-    requestProfile: () => {
-      dispatch(push('/profile'));
-    },
-
-    requestSettings: () => {
-      dispatch(push('/settings'));
-    },
-
-    requestInvites: () => {
-      dispatch(push('/invites'));
-    },
-
     readNotifications: async notifications => {
       await sleep(5000);
       const client = new ApiClient();
