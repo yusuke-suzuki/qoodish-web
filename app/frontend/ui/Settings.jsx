@@ -6,9 +6,7 @@ import Typography from 'material-ui/Typography';
 
 const styles = {
   rootLarge: {
-    margin: '94px auto',
-    maxWidth: 600,
-    minWidth: 320
+    marginTop: 94
   },
   rootSmall: {
     padding: 20,

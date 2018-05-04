@@ -14,7 +14,8 @@ const mapStateToProps = state => {
   return {
     authenticated: state.app.authenticated,
     large: state.shared.large,
-    registrationToken: state.app.registrationToken
+    registrationToken: state.app.registrationToken,
+    pathname: state.router.location.pathname
   };
 };
 

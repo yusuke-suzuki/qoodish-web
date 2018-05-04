@@ -39,6 +39,7 @@ import lightBlue from 'material-ui/colors/lightBlue';
 import firebase from 'firebase';
 import { LinearProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
 
 import Helmet from 'react-helmet';
 
@@ -209,35 +210,51 @@ class App extends Component {
     } else {
       return (
         <div>
-          <NavBarContainer />
-          <Switch>
-            <Route exact path="/" component={TimelineContainer} />
-            <Route exact path="/discover" component={DiscoverContainer} />
-            <Route exact path="/maps" component={MapsContainer} />
-            <Route exact path="/maps/:mapId" component={MapDetailContainer} />
-            <Route exact path="/notifications" component={NotificationsContainer} />
-            <Route exact path="/profile" component={ProfileContainer} />
-            <Route exact path="/users/:userId" component={UserProfileContainer} />
-            <Route
-              exact
-              path="/maps/:mapId/reports/:reviewId"
-              component={ReviewDetailContainer}
-            />
-            <Route
-              exact
-              path="/spots/:placeId"
-              component={SpotDetailContainer}
-            />
-            <Route exact path="/settings" component={SettingsContainer} />
-            <Route exact path="/invites" component={InvitesContainer} />
-            <Route exact path="/terms" component={TermsContainer} />
-            <Route exact path="/privacy" component={PrivacyContainer} />
-            <Redirect from="*" to="/" />
-          </Switch>
+          <Grid container>
+            <Grid item xs={this.props.large ? 3 : 12}>
+              <NavBarContainer />
+            </Grid>
+            <Grid item xs={this.props.large && !this.isMapDetail() ? 6 : 12}>
+              {this.renderUserRoutes()}
+            </Grid>
+          </Grid>
           {!this.props.large && <BottomNavContainer />}
         </div>
       );
     }
+  }
+
+  isMapDetail() {
+    return this.props.pathname.includes('/maps/') && !this.props.pathname.includes('/reports');
+  }
+
+  renderUserRoutes() {
+    return (
+      <Switch>
+        <Route exact path="/" component={TimelineContainer} />
+        <Route exact path="/discover" component={DiscoverContainer} />
+        <Route exact path="/maps" component={MapsContainer} />
+        <Route exact path="/maps/:mapId" component={MapDetailContainer} />
+        <Route exact path="/notifications" component={NotificationsContainer} />
+        <Route exact path="/profile" component={ProfileContainer} />
+        <Route exact path="/users/:userId" component={UserProfileContainer} />
+        <Route
+          exact
+          path="/maps/:mapId/reports/:reviewId"
+          component={ReviewDetailContainer}
+        />
+        <Route
+          exact
+          path="/spots/:placeId"
+          component={SpotDetailContainer}
+        />
+        <Route exact path="/settings" component={SettingsContainer} />
+        <Route exact path="/invites" component={InvitesContainer} />
+        <Route exact path="/terms" component={TermsContainer} />
+        <Route exact path="/privacy" component={PrivacyContainer} />
+        <Redirect from="*" to="/" />
+      </Switch>
+    );
   }
 
   renderGuestOnly() {

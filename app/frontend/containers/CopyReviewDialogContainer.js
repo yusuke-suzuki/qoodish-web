@@ -43,7 +43,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(closeCopyReviewDialog());
         dispatch(createReview(json));
-        dispatch(openToast('Successfuly copy report!'));
+        dispatch(openToast('Successfully copied report!'));
         gtag('event', 'create', {
           'event_category': 'engagement',
           'event_label': 'review'
