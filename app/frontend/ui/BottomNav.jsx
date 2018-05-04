@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import BottomNavigation, {
   BottomNavigationAction
 } from 'material-ui/BottomNavigation';
@@ -19,6 +20,10 @@ const styles = {
   },
   bottomAction: {
     minWidth: 'auto'
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit'
   }
 };
 
@@ -65,33 +70,32 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
-            label="Home"
-            icon={<HomeIcon />}
-            onClick={this.props.handleHomeClick}
+            label={<Link to="/" style={styles.link}>Home</Link>}
+            icon={<Link to="/" style={styles.link}><HomeIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label="Discover"
-            icon={<ExploreIcon />}
-            onClick={this.props.handleDiscoverClick}
+            label={<Link to="/discover" style={styles.link}>Discover</Link>}
+            icon={<Link to="/discover" style={styles.link}><ExploreIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label="Maps"
-            icon={<MapIcon />}
-            onClick={this.props.handleMapsClick}
+            label={<Link to="/maps" style={styles.link}>Maps</Link>}
+            icon={<Link to="/maps" style={styles.link}><MapIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label="Profile"
-            icon={<AccountCircleIcon />}
-            onClick={this.props.handleProfileClick}
+            label={<Link to="/profile" style={styles.link}>Profile</Link>}
+            icon={<Link to="/profile" style={styles.link}><AccountCircleIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label="Notice"
-            icon={this.renderNotificationIcon()}
-            onClick={this.props.handleNotificationsClick}
+            label={<Link to="/notifications" style={styles.link}>Notice</Link>}
+            icon={
+              <Link to="/notifications" style={styles.link}>
+                {this.renderNotificationIcon()}
+              </Link>
+            }
             style={styles.bottomAction}
           />
         </BottomNavigation>

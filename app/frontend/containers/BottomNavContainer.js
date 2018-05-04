@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import BottomNav from '../ui/BottomNav';
 
 const mapStateToProps = state => {
@@ -11,25 +10,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleHomeClick: () => {
-      dispatch(push('/'));
-    },
-
-    handleDiscoverClick: () => {
-      dispatch(push('/discover'));
-    },
-
-    handleMapsClick: () => {
-      dispatch(push('/maps'));
-    },
-
-    handleNotificationsClick: () => {
-      dispatch(push('/notifications'));
-    },
-
-    handleProfileClick: () => {
-      dispatch(push('/profile'));
-    }
   };
 };
 
