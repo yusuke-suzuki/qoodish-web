@@ -116,22 +116,18 @@ const styles = {
     verticalAlign: 'middle'
   },
   mapButton: {
-    position: 'absolute',
-    zIndex: 1,
-    height: 80,
-    width: 80,
-    bottom: 12,
-    right: 12
+    marginTop: 16
   },
   mapCover: {
     position: 'absolute',
     zIndex: 1,
-    height: 80,
-    width: 80
+    height: 100,
+    width: '100%',
+    left: 16,
+    right: 16
   },
   mapWrapper: {
-    height: 80,
-    width: 80
+    height: 100
   },
   mapContainer: {
     height: '100%'
@@ -262,6 +258,7 @@ class MapSummary extends Component {
                 <Button variant="raised" color="secondary" disabled>{''}</Button>
               )}
             </div>
+            {!this.props.large && this.renderMapButton()}
           </CardContent>
           <Divider />
           <Tabs
@@ -330,7 +327,6 @@ class MapSummary extends Component {
                 : styles.skeltonThumbnail
             }
           />
-          {!this.props.large && this.renderMapButton()}
         </GridListTile>
       </GridList>
     );
