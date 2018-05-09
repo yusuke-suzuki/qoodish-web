@@ -122,7 +122,7 @@ const styles = {
     position: 'absolute',
     zIndex: 1,
     height: 100,
-    width: '100%',
+    width: 'calc(100% - 32px)',
     left: 16,
     right: 16
   },
