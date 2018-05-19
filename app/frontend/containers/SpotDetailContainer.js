@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import SpotDetail from '../ui/SpotDetail';
 import ApiClient from './ApiClient.js';
-import selectPlaceForReview from '../actions/selectPlaceForReview';
 import openToast from '../actions/openToast';
 import fetchSpot from '../actions/fetchSpot';
 import fetchSpotReviews from '../actions/fetchSpotReviews';
@@ -56,14 +55,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         dispatch(fetchSpotReviews(json));
       }
-    },
-
-    handleCreateReviewClick: spot => {
-      let place = {
-        description: spot.name,
-        placeId: spot.place_id
-      };
-      dispatch(selectPlaceForReview(place));
     },
 
     handleReviewClick: (review) => {

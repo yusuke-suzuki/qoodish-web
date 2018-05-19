@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'material-ui/Button';
 import List, {
   ListItem,
   ListItemText,
@@ -14,6 +13,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-map
 import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 
 const styles = {
   rootLarge: {
@@ -54,22 +54,6 @@ const styles = {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
-  },
-  createButtonLarge: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 32,
-    right: 32,
-    backgroundColor: 'red',
-    color: 'white'
-  },
-  createButtonSmall: {
-    zIndex: 1100,
-    position: 'fixed',
-    bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
   reviewComment: {
     marginRight: 20
@@ -131,7 +115,7 @@ class SpotDetail extends React.Component {
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
         {this.props.currentSpot &&
-          this.renderCreateReviewButton(this.props.currentSpot)}
+          <CreateReviewButtonContainer spot={this.props.currentSpot} />}
       </div>
     );
   }
@@ -271,21 +255,6 @@ class SpotDetail extends React.Component {
         )}
       </ListItem>
     ));
-  }
-
-  renderCreateReviewButton(spot) {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={() => this.props.handleCreateReviewClick(spot)}
-      >
-        <AddLocationIcon />
-      </Button>
-    );
   }
 }
 
