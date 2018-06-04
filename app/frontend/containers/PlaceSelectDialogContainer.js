@@ -6,6 +6,8 @@ import selectPlaceForReview from '../actions/selectPlaceForReview';
 import searchPlaces from '../actions/searchPlaces';
 import loadPlacesStart from '../actions/loadPlacesStart';
 import loadPlacesEnd from '../actions/loadPlacesEnd';
+import { fetchCurrentPosition } from './Utils';
+import getCurrentPosition from '../actions/getCurrentPosition';
 
 const mapStateToProps = state => {
   return {
@@ -18,6 +20,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onEnter: async () => {
+      const position = await fetchCurrentPosition();
+      dispatch(
+        getCurrentPosition(position.coords.latitude, position.coords.longitude)
+      );
+      const client = new ApiClient();
+      let response = await client.searchNearPlaces(
+        position.coords.latitude,
+        position.coords.longitude
+      );
+      let places = await response.json();
+      if (response.ok) {
+        dispatch(searchPlaces(places));
+      }
+    },
+
     onClose: () => {
       dispatch(closePlaceSelectDialog());
     },

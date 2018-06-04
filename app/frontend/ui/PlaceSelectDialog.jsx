@@ -74,6 +74,7 @@ class PlaceSelectDialog extends Component {
     return (
       <Dialog
         open={this.props.dialogOpen}
+        onEnter={this.props.onEnter}
         onClose={this.props.onClose}
         fullWidth
         fullScreen={!this.props.large}

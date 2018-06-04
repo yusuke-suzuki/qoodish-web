@@ -143,20 +143,6 @@ export default class Discover extends React.Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <PlaceIcon style={styles.headerIcon} /> Trending Spots
-          </Typography>
-          <br />
-          {this.props.loadingTrendingSpots
-            ? this.renderProgress()
-            : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
-        </div>
-        <div style={styles.container}>
-          <Typography
-            variant="subheading"
-            gutterBottom
-            color="textSecondary"
-            style={styles.gridHeader}
-          >
             <RateReviewIcon style={styles.headerIcon} /> Recent Reports
           </Typography>
           <br />
@@ -176,6 +162,20 @@ export default class Discover extends React.Component {
           {this.props.loadingPopularMaps
             ? this.renderProgress()
             : this.renderMapContainer(this.props.popularMaps)}
+        </div>
+        <div style={styles.container}>
+          <Typography
+            variant="subheading"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
+            <PlaceIcon style={styles.headerIcon} /> Trending Spots
+          </Typography>
+          <br />
+          {this.props.loadingTrendingSpots
+            ? this.renderProgress()
+            : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
         </div>
       </div>
     );
