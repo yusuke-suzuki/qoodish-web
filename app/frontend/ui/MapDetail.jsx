@@ -13,6 +13,7 @@ import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
+import LocationButtonContainer from '../containers/LocationButtonContainer';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -167,6 +168,7 @@ export default class MapDetail extends React.Component {
         {this.ableToPost(this.props.currentMap)
           ? <CreateReviewButtonContainer />
           : null}
+        {this.props.large && <LocationButtonContainer />}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
@@ -248,6 +250,7 @@ export default class MapDetail extends React.Component {
         <div style={styles.drawerContainer}>
           {this.renderGoogleMap()}
           {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
+          {this.renderLocationButtonForMapDialog()}
         </div>
       </Drawer>
     );
@@ -288,6 +291,14 @@ export default class MapDetail extends React.Component {
     return (
       <div hidden={this.props.spotCardOpen}>
         <CreateReviewButtonContainer withoutBottomSeat={true} />
+      </div>
+    );
+  }
+
+  renderLocationButtonForMapDialog() {
+    return (
+      <div hidden={this.props.spotCardOpen}>
+        <LocationButtonContainer />
       </div>
     );
   }
