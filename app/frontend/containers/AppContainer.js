@@ -5,9 +5,6 @@ import firebase from 'firebase';
 import ApiClient from '../containers/ApiClient';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
-import { fetchCurrentPosition } from './Utils';
-import getCurrentPosition from '../actions/getCurrentPosition';
-import searchPlaces from '../actions/searchPlaces';
 import signOut from '../actions/signOut';
 
 const mapStateToProps = state => {
@@ -23,22 +20,6 @@ const mapDispatchToProps = dispatch => {
   return {
     handleWindowSizeChange: width => {
       dispatch(updateWindowSize(width));
-    },
-
-    fetchCurrentPosition: async () => {
-      let position = await fetchCurrentPosition();
-      dispatch(
-        getCurrentPosition(position.coords.latitude, position.coords.longitude)
-      );
-      const client = new ApiClient();
-      let response = await client.searchNearPlaces(
-        position.coords.latitude,
-        position.coords.longitude
-      );
-      let places = await response.json();
-      if (response.ok) {
-        dispatch(searchPlaces(places));
-      }
     },
 
     initMessaging: async () => {
