@@ -5,8 +5,7 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import MapIcon from 'material-ui-icons/Map';
-import List, { ListItem, ListItemText } from 'material-ui/List';
+import { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 
 class CopyReviewDialog extends React.Component {

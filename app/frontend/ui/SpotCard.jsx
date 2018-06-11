@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
-import Button from 'material-ui/Button';
-import Avatar from 'material-ui/Avatar';
 import Card, { CardContent, CardMedia } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import DirectionsIcon from 'material-ui-icons/Directions';
-import PlaceIcon from 'material-ui-icons/Place';
 import CloseIcon from 'material-ui-icons/Close';
-import Grid from 'material-ui/Grid';
 import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
@@ -22,11 +18,10 @@ const styles = {
     margin: '0 auto'
   },
   rootSmall: {
-    position: 'relative',
-    bottom: 123,
-    marginLeft: 15,
-    marginRight: 15,
-    zIndex: 1101
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 1200,
+    width: '100%'
   },
   closeButton: {
     position: 'absolute',
@@ -34,18 +29,18 @@ const styles = {
     top: 0
   },
   card: {
-    height: 108
+    height: 136
   },
   cardContainer: {
     display: 'inline-flex'
   },
   cardMedia: {
-    width: 108,
-    height: 108
+    width: 136,
+    height: 136
   },
   cardContent: {
     position: 'absolute',
-    left: 108,
+    left: 136,
     right: 0,
     paddingBottom: 0
   },

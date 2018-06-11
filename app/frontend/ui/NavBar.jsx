@@ -27,6 +27,7 @@ import moment from 'moment';
 import Badge from 'material-ui/Badge';
 import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import MapToolbarContainer from '../containers/MapToolbarContainer';
 
 const styles = {
   title: {
@@ -226,33 +227,49 @@ class NavBar extends React.Component {
     return (
       <div>
         <AppBar position="fixed">
-          <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
-            {!this.props.large && this.props.backButton
-              ? this.renderBackButton()
-              : this.renderMenuButton()}
-            {this.props.large ? this.renderLogo() : null}
-            <Typography
-              variant="headline"
-              color="inherit"
-              noWrap
-              style={
-                this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
-              }
-              onClick={this.handleTitleClick}
-            >
-              {this.props.pageTitle}
-            </Typography>
-            <div style={styles.rightContents}>
-              {this.props.large && this.renderNotificationCenter()}
-              {this.renderNotificationMenu()}
-              {this.renderAvatar()}
-              {this.renderAvatarMenu()}
-            </div>
-          </Toolbar>
+          {this.isMapDetail() && !this.props.large ? this.renderMapToolbar() : this.renderToolbar()}
           {this.props.mapsTabActive && this.renderMapsTab()}
         </AppBar>
         {this.props.large ? this.renderLargeDrawer() : this.renderSwipeableDrawer()}
       </div>
+    );
+  }
+
+  renderToolbar() {
+    return (
+      <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
+        {!this.props.large && this.props.backButton
+          ? this.renderBackButton()
+          : this.renderMenuButton()}
+        {this.props.large ? this.renderLogo() : null}
+        <Typography
+          variant="headline"
+          color="inherit"
+          noWrap
+          style={
+            this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
+          }
+          onClick={this.handleTitleClick}
+        >
+          {this.props.pageTitle}
+        </Typography>
+        <div style={styles.rightContents}>
+          {this.props.large && this.renderNotificationCenter()}
+          {this.renderNotificationMenu()}
+          {this.renderAvatar()}
+          {this.renderAvatarMenu()}
+        </div>
+      </Toolbar>
+    );
+  }
+
+  renderMapToolbar() {
+    return (
+      <MapToolbarContainer
+        showMapName
+        showBackButton
+        handleBackButtonClick={this.props.handleBackButtonClick}
+      />
     );
   }
 

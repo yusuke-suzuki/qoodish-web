@@ -7,25 +7,24 @@ import {
   OverlayView,
   DirectionsRenderer
 } from 'react-google-maps';
+import { compose } from 'recompose';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
+import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 import LocationButtonContainer from '../containers/LocationButtonContainer';
-import Slide from 'material-ui/transitions/Slide';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import CloseIcon from 'material-ui-icons/Close';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
-import Drawer from 'material-ui/Drawer';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
+import Dialog, {
+  DialogContent
+} from 'material-ui/Dialog';
+import Slide from 'material-ui/transitions/Slide';
 
 const styles = {
   mapWrapperLarge: {
@@ -37,39 +36,33 @@ const styles = {
     marginTop: 64
   },
   mapWrapperSmall: {
-    height: '100%'
+    position: 'absolute',
+    top: 0,
+    bottom: 136,
+    right: 0,
+    left: 0,
+    marginTop: 56
   },
   mapContainer: {
-    height: '100%'
-  },
-  appbar: {
-    position: 'relative'
-  },
-  flex: {
-    flex: 1
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
-  },
-  drawerPaper: {
-    height: '100%'
-  },
-  drawerContainer: {
     height: '100%',
-    width: '100%',
-    overflow: 'hidden'
+    width: '100%'
   },
   overlayButton: {
     backgroundColor: 'white'
+  },
+  dialogContent: {
+    padding: 0
   }
 };
 
 function Transition(props) {
-  return <Slide direction="left" {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
-const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
+const MapWithAnOverlayView = compose(
+  withScriptjs,
+  withGoogleMap
+)(props =>
   <GoogleMap
     ref={props.onMapLoad}
     options={{
@@ -106,6 +99,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
           new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
         }
       >
+        {props.large ?
         <Tooltip title={spot.name}>
           <Button
             variant="fab"
@@ -115,6 +109,15 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
             <Avatar src={spot.image_url} />
           </Button>
         </Tooltip>
+        :
+        <Button
+          variant="fab"
+          style={styles.overlayButton}
+          onClick={() => props.onSpotMarkerClick(spot)}
+        >
+          <Avatar src={spot.image_url} />
+        </Button>
+        }
       </OverlayView>
     ))}
     {props.currentPosition.lat && props.currentPosition.lng ? (
@@ -133,9 +136,14 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
       />
     ) : null}
     {<DirectionsRenderer directions={props.directions} />}
-    <SpotCardContainer mapId={props.match.params.mapId} />
+    {props.large && <SpotCardContainer mapId={props.match.params.mapId} />}
+    <CreateReviewButtonContainer
+      buttonForMap={props.large ? false : true}
+      disabled={!(props.currentMap && props.currentMap.postable)}
+    />
+    <LocationButtonContainer />
   </GoogleMap>
-)));
+);
 
 export default class MapDetail extends React.Component {
   async componentWillMount() {
@@ -154,10 +162,6 @@ export default class MapDetail extends React.Component {
       this.props.initCenter(this.props.currentMap);
     }
 
-    if (!this.props.large) {
-      this.props.updatePageTitle(this.props.currentMap.name);
-    }
-
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': `/maps/${this.props.currentMap.id}`,
       'page_title': `${this.props.currentMap.name} | Qoodish`
@@ -173,10 +177,6 @@ export default class MapDetail extends React.Component {
       <div>
         {this.props.currentMap && this.renderHelmet(this.props.currentMap)}
         {this.props.large ? this.renderLarge() : this.renderSmall()}
-        {this.ableToPost(this.props.currentMap)
-          ? <CreateReviewButtonContainer />
-          : null}
-        {this.props.large && <LocationButtonContainer />}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
@@ -218,7 +218,7 @@ export default class MapDetail extends React.Component {
   renderLarge() {
     return (
       <div>
-        {this.renderMapSummary()}
+        <MapSummaryContainer mapId={this.props.match.params.mapId} />
         {this.renderGoogleMap()}
       </div>
     );
@@ -227,50 +227,17 @@ export default class MapDetail extends React.Component {
   renderSmall() {
     return (
       <div>
-        {this.renderMapSummary()}
-        {this.renderMapDialog()}
+        {this.renderGoogleMap()}
+        <MapBottomSeatContainer currentMap={this.props.currentMap} />
+        {this.renderMapSummaryDialog()}
+        {this.renderSpotBottomSeat()}
       </div>
     );
   }
 
-  renderMapDialog() {
-    return (
-      <Drawer
-        anchor="bottom"
-        open={this.props.mapDialogOpen}
-        onClose={this.props.handleMapDialogClose}
-        PaperProps={{style: styles.drawerPaper}}
-      >
-        <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton
-              color="inherit"
-              onClick={this.props.handleMapDialogClose}
-              aria-label="Close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="title" color="inherit" style={styles.flex} noWrap>
-              {this.props.currentMap && this.props.currentMap.name}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <div style={styles.drawerContainer}>
-          {this.renderGoogleMap()}
-          {this.ableToPost(this.props.currentMap) && this.renderCreateReviewButtonForMapDialog()}
-          {this.renderLocationButtonForMapDialog()}
-        </div>
-      </Drawer>
-    );
-  }
-
-  renderMapSummary() {
-    return <MapSummaryContainer mapId={this.props.match.params.mapId} />;
-  }
-
   renderGoogleMap() {
     return (
-      <GoogleMapContainer
+      <MapWithAnOverlayView
         {...this.props}
         googleMapURL={process.env.GOOGLE_MAP_URL}
         containerElement={
@@ -287,27 +254,24 @@ export default class MapDetail extends React.Component {
     );
   }
 
-  ableToPost(map) {
-    if (!map) {
-      return false;
-    } else {
-      return map.postable;
-    }
-  }
-
-  renderCreateReviewButtonForMapDialog() {
+  renderMapSummaryDialog() {
     return (
-      <div hidden={this.props.spotCardOpen}>
-        <CreateReviewButtonContainer withoutBottomSeat={true} />
-      </div>
+      <Dialog
+        open={this.props.mapSummaryOpen}
+        fullWidth
+        fullScreen={true}
+        transition={Transition}
+      >
+        <DialogContent style={styles.dialogContent}>
+           <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
+        </DialogContent>
+      </Dialog>
     );
   }
 
-  renderLocationButtonForMapDialog() {
+  renderSpotBottomSeat() {
     return (
-      <div hidden={this.props.spotCardOpen}>
-        <LocationButtonContainer />
-      </div>
+      <SpotCardContainer mapId={this.props.match.params.mapId} />
     );
   }
 }

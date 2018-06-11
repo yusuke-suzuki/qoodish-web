@@ -19,13 +19,19 @@ const styles = {
     backgroundColor: 'red',
     color: 'white'
   },
-  buttonWithoutBottomSeat: {
+  buttonForMap: {
     zIndex: 1100,
-    position: 'fixed',
+    position: 'absolute',
     bottom: 20,
     right: 20,
     backgroundColor: 'red',
     color: 'white'
+  },
+  disabledButton: {
+    zIndex: 1100,
+    position: 'absolute',
+    bottom: 20,
+    right: 20
   }
 };
 
@@ -35,19 +41,24 @@ export default class CreateReviewButton extends React.Component {
       <Button
         variant="fab"
         aria-label="add"
-        style={this.buttonStyle()}
+        style={this.buttonStyle(this.props)}
         onClick={this.props.handleButtonClick}
+        disabled={this.props.disabled}
       >
         <EditIcon />
       </Button>
     );
   }
 
-  buttonStyle() {
-    if (this.props.withoutBottomSeat) {
-      return styles.buttonWithoutBottomSeat;
+  buttonStyle(props) {
+    if (props.buttonForMap) {
+      if (props.disabled) {
+        return styles.disabledButton;
+      } else {
+        return styles.buttonForMap;
+      }
     } else {
-      return this.props.large ? styles.buttonLarge : styles.buttonSmall;
+      return props.large ? styles.buttonLarge : styles.buttonSmall;
     }
   }
 }

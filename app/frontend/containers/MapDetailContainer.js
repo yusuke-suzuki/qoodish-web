@@ -17,10 +17,8 @@ import clearMapState from '../actions/clearMapState';
 import gMapMounted from '../actions/gMapMounted';
 import mapZoomChanged from '../actions/mapZoomChanged';
 import mapCenterChanged from '../actions/mapCenterChanged';
-import openReviewDialog from '../actions/openReviewDialog';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import selectSpot from '../actions/selectSpot';
-import switchSummary from '../actions/switchSummary';
 
 const mapStateToProps = state => {
   return {
@@ -36,7 +34,8 @@ const mapStateToProps = state => {
     large: state.shared.large,
     currentSpot: state.spotCard.currentSpot,
     spotCardOpen: state.spotCard.spotCardOpen,
-    mapDialogOpen: state.mapDetail.mapDialogOpen
+    mapReviews: state.mapSummary.mapReviews,
+    mapSummaryOpen: state.mapDetail.mapSummaryOpen
   };
 };
 
@@ -119,10 +118,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     onCenterChanged: center => {
       dispatch(mapCenterChanged({ lat: center.lat(), lng: center.lng() }));
-    },
-
-    handleMapDialogClose: () => {
-      dispatch(switchSummary());
     },
 
     handleUnmount: () => {

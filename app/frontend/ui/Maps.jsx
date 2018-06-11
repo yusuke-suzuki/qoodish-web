@@ -69,7 +69,7 @@ export default class Maps extends React.Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        <SwipeableViews index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
+        <SwipeableViews animateHeight index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
           {this.renderFollowingMaps()}
           {this.renderMyMaps()}
         </SwipeableViews>
