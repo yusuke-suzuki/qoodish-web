@@ -4,8 +4,8 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
-  DirectionsRenderer,
-  InfoWindow
+  OverlayView,
+  DirectionsRenderer
 } from 'react-google-maps';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
@@ -23,6 +23,9 @@ import IconButton from 'material-ui/IconButton';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
 import Drawer from 'material-ui/Drawer';
+import Avatar from 'material-ui/Avatar';
+import Button from 'material-ui/Button';
+import Tooltip from 'material-ui/Tooltip';
 
 const styles = {
   mapWrapperLarge: {
@@ -56,6 +59,9 @@ const styles = {
     height: '100%',
     width: '100%',
     overflow: 'hidden'
+  },
+  overlayButton: {
+    backgroundColor: 'white'
   }
 };
 
@@ -93,21 +99,23 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
     onMapLoad={props.onMapMounted}
   >
     {props.spots.map((spot, index) => (
-      <Marker
+      <OverlayView
+        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        key={index}
         position={
           new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
         }
-        key={index}
-        defaultAnimation={2}
-        onClick={() => props.onSpotMarkerClick(spot)}
       >
-        {props.currentSpot &&
-          props.currentSpot.place_id === spot.place_id && (
-            <InfoWindow>
-              <b>{spot.name}</b>
-            </InfoWindow>
-          )}
-      </Marker>
+        <Tooltip title={spot.name}>
+          <Button
+            variant="fab"
+            style={styles.overlayButton}
+            onClick={() => props.onSpotMarkerClick(spot)}
+          >
+            <Avatar src={spot.image_url} />
+          </Button>
+        </Tooltip>
+      </OverlayView>
     ))}
     {props.currentPosition.lat && props.currentPosition.lng ? (
       <Marker
