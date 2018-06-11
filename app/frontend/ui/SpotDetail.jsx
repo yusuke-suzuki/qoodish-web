@@ -68,7 +68,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
       streetViewControl: false,
       scaleControl: false,
       mapTypeControl: false,
-      gestureHandling: 'none'
+      gestureHandling: 'greedy'
     }}
     center={
       props.currentSpot &&
@@ -224,12 +224,7 @@ class SpotDetail extends React.Component {
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
       >
-        <Avatar>
-          <img
-            src={review.author.profile_image_url}
-            style={styles.avatarImage}
-          />
-        </Avatar>
+        <Avatar src={review.author.profile_image_url} />
         <ListItemText
           disableTypography={true}
           primary={
