@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import SpotDetail from '../ui/SpotDetail';
 import ApiClient from './ApiClient.js';
 import openToast from '../actions/openToast';

@@ -136,7 +136,6 @@ const MapWithAnOverlayView = compose(
       />
     ) : null}
     {<DirectionsRenderer directions={props.directions} />}
-    {props.large && <SpotCardContainer mapId={props.match.params.mapId} />}
     <CreateReviewButtonContainer
       buttonForMap={props.large ? false : true}
       disabled={!(props.currentMap && props.currentMap.postable)}
@@ -181,6 +180,7 @@ export default class MapDetail extends React.Component {
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
+        <SpotCardContainer mapId={this.props.match.params.mapId} />
       </div>
     );
   }
@@ -230,7 +230,6 @@ export default class MapDetail extends React.Component {
         {this.renderGoogleMap()}
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
         {this.renderMapSummaryDialog()}
-        {this.renderSpotBottomSeat()}
       </div>
     );
   }
@@ -263,15 +262,9 @@ export default class MapDetail extends React.Component {
         transition={Transition}
       >
         <DialogContent style={styles.dialogContent}>
-           <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
+          <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
         </DialogContent>
       </Dialog>
-    );
-  }
-
-  renderSpotBottomSeat() {
-    return (
-      <SpotCardContainer mapId={this.props.match.params.mapId} />
     );
   }
 }

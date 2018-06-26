@@ -1,116 +1,232 @@
 import React, { Component } from 'react';
 import IconButton from 'material-ui/IconButton';
-import Card, { CardContent, CardMedia } from 'material-ui/Card';
+import Card, { CardMedia, CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import RateReviewIcon from 'material-ui-icons/RateReview';
 import DirectionsIcon from 'material-ui-icons/Directions';
+import InfoIcon from 'material-ui-icons/Info';
+import ArrowBackIcon from 'material-ui-icons/ArrowBack';
 import CloseIcon from 'material-ui-icons/Close';
-import Slide from 'material-ui/transitions/Slide';
+import Drawer from 'material-ui/Drawer';
+import List, {
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction
+} from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import BottomNavigation, {
+  BottomNavigationAction
+} from 'material-ui/BottomNavigation';
+import Divider from 'material-ui/Divider';
+import Toolbar from 'material-ui/Toolbar';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
-  rootLarge: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    zIndex: 1101,
-    maxWidth: 700,
-    margin: '0 auto'
+  drawerPaperLarge: {
+    zIndex: 1,
+    height: 'calc(100vh - 64px)',
+    width: 350,
+    marginTop: 64
   },
-  rootSmall: {
-    position: 'absolute',
-    bottom: 0,
-    zIndex: 1200,
-    width: '100%'
+  drawerPaperSmall: {
+    zIndex: 1202
+  },
+  cardLarge: {
+    height: '100%',
+    minHeight: 'calc(100vh - 64px)',
+    overflowY: 'scroll'
+  },
+  cardSmall: {
+    minHeight: '100vh'
+  },
+  spotImageLarge: {
+    width: '100%',
+    objectFit: 'cover',
+    height: 350
+  },
+  spotImageSmall: {
+    width: '100%',
+    objectFit: 'cover',
+    height: 250
+  },
+  reviewComment: {
+    marginRight: 20
+  },
+  listItem: {
+    padding: 0
   },
   closeButton: {
     position: 'absolute',
     right: 0,
     top: 0
   },
-  card: {
-    height: 136
+  leftButton: {
+    marginLeft: 8,
+    color: 'white'
   },
-  cardContainer: {
-    display: 'inline-flex'
-  },
-  cardMedia: {
-    width: 136,
-    height: 136
-  },
-  cardContent: {
+  toolbar: {
+    backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
     position: 'absolute',
-    left: 136,
+    zIndex: 1,
     right: 0,
-    paddingBottom: 0
+    left: 0
   },
-  spotName: {
-    marginRight: 24,
-    cursor: 'pointer'
-  }
+  secondaryAvatar: {
+    borderRadius: 0,
+    marginRight: 12,
+    marginTop: 4
+  },
 };
 
 class SpotCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      reviews: []
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let reviews = nextProps.mapReviews.filter(review => {
+      return review.place_id === nextProps.currentSpot.place_id;
+    });
+    this.setState({
+      reviews: reviews
+    });
+  }
+
   render() {
     return (
-      <Slide
-        style={this.props.large ? styles.rootLarge : styles.rootSmall}
-        direction="up"
-        in={this.props.open}
-        mountOnEnter
-        unmountOnExit
+      <Drawer
+        variant={this.props.large ? "persistent" : "temporary"}
+        anchor={this.props.large ? "left" : "bottom"}
+        open={this.props.open}
+        PaperProps={{ style: this.props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall }}
       >
+        {this.renderToolbar()}
         {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
-      </Slide>
+      </Drawer>
     );
   }
 
   renderSpotCard(spot) {
     return (
-      <Card style={styles.card}>
-        <div style={styles.cardContainer}>
-          <CardMedia image={spot.image_url} style={styles.cardMedia} />
-          <CardContent style={styles.cardContent}>
-            <IconButton
-              onClick={this.props.handleCloseSpotButtonClick}
-              style={styles.closeButton}
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography
-              variant="subheading"
-              noWrap
-              style={styles.spotName}
-              onClick={() => this.props.handleShowDetailButtonClick(spot)}
-            >
-              {spot.name}
-            </Typography>
-            <Typography color="textSecondary" noWrap>
-              {spot.formatted_address}
-            </Typography>
-            <IconButton
-              onClick={() => {
-                let reviews = this.props.mapReviews.filter((review) => {
-                  return review.place_id === spot.place_id;
-                });
-                this.props.handleShowReviewsButtonClick(reviews);
-              }}
-            >
-              <RateReviewIcon />
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                this.props.handleRouteButtonClick(
-                  spot,
-                  this.props.currentPosition
-                )
-              }
-            >
-              <DirectionsIcon />
-            </IconButton>
-          </CardContent>
-        </div>
+      <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
+        <CardMedia>
+          <SwipeableViews>
+            {this.renderReviewImages(this.state.reviews)}
+          </SwipeableViews>
+        </CardMedia>
+        <CardContent>
+          <Typography
+            variant="headline"
+            gutterBottom
+          >
+            {spot.name}
+          </Typography>
+          <Typography
+            variant="subheading"
+            color="textSecondary"
+            gutterBottom
+          >
+            {spot.formatted_address}
+          </Typography>
+        </CardContent>
+        <Divider />
+        <BottomNavigation showLabels>
+          <BottomNavigationAction
+            label="Routes"
+            icon={<DirectionsIcon />}
+            onClick={() =>
+              this.props.handleRouteButtonClick(
+                spot,
+                this.props.currentPosition
+              )
+            }
+          />
+          <BottomNavigationAction
+            label="Report"
+            icon={<RateReviewIcon />}
+            onClick={() => this.props.handleCreateReviewClick(spot)}
+          />
+          <BottomNavigationAction
+            label="Detail"
+            icon={<InfoIcon />}
+            onClick={() => this.props.handleShowDetailButtonClick(spot)}
+          />
+        </BottomNavigation>
+        <Divider />
+        <List disablePadding>
+          {this.renderSpotReviews(this.state.reviews)}
+        </List>
       </Card>
+    );
+  }
+
+  renderReviewImages(reviews) {
+    return reviews.map(review => (
+      <img
+        key={review.id}
+        src={review.image ? review.image.url : process.env.SUBSTITUTE_URL}
+        style={this.props.large ? styles.spotImageLarge : styles.spotImageSmall}
+      />
+    ));
+  }
+
+  renderSpotReviews(reviews) {
+    return reviews.map(review => (
+      <ListItem
+        button
+        key={review.id}
+        onClick={() => this.props.handleReviewClick(review)}
+      >
+        <Avatar src={review.author.profile_image_url} />
+        <ListItemText
+          disableTypography={true}
+          primary={
+            <Typography variant="subheading" noWrap>
+              {review.author.name}
+            </Typography>
+          }
+          secondary={
+            <Typography
+              component="p"
+              noWrap
+              color="textSecondary"
+              style={styles.reviewComment}
+            >
+              {review.comment}
+            </Typography>
+          }
+        />
+        {review.image && (
+          <ListItemSecondaryAction
+            onClick={() => this.props.handleReviewClick(review)}
+          >
+            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
+          </ListItemSecondaryAction>
+        )}
+      </ListItem>
+    ));
+  }
+
+  renderToolbar() {
+    return (
+      <Toolbar style={styles.toolbar} disableGutters>
+        {this.renderBackButton()}
+      </Toolbar>
+    );
+  }
+
+  renderBackButton() {
+    return (
+      <IconButton
+        color="inherit"
+        onClick={this.props.handleCloseSpotButtonClick}
+        style={styles.leftButton}
+      >
+        {this.props.large ? <ArrowBackIcon /> : <CloseIcon />}
+      </IconButton>
     );
   }
 }

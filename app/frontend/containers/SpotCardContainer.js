@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import SpotCard from '../ui/SpotCard';
-import ApiClient from './ApiClient.js';
 import closeSpotCard from '../actions/closeSpotCard';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
 import openReviewsDialog from '../actions/openReviewsDialog';
+import openReviewDialog from '../actions/openReviewDialog';
+import selectPlaceForReview from '../actions/selectPlaceForReview';
 
 const mapStateToProps = state => {
   return {
@@ -66,8 +67,20 @@ const mapDispatchToProps = dispatch => {
         );
         return;
       }
+    },
+
+    handleCreateReviewClick: spot => {
+      let place = {
+        description: spot.name,
+        placeId: spot.place_id
+      };
+      dispatch(selectPlaceForReview(place));
+    },
+
+    handleReviewClick: review => {
+      dispatch(openReviewDialog(review));
     }
-  };
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotCard);

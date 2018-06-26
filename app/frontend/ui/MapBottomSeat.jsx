@@ -90,7 +90,7 @@ class MapBottomSeat extends React.Component {
         disableGutters
         style={styles.listItem}
       >
-        <Avatar src={map && map.image_url} />
+        <Avatar src={map && map.thumbnail_url} />
         <ListItemText
           disableTypography
           primary={
