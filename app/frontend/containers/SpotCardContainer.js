@@ -5,7 +5,6 @@ import closeSpotCard from '../actions/closeSpotCard';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
-import openReviewsDialog from '../actions/openReviewsDialog';
 import openReviewDialog from '../actions/openReviewDialog';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
 
@@ -23,10 +22,6 @@ const mapDispatchToProps = dispatch => {
   return {
     handleCloseSpotButtonClick: () => {
       dispatch(closeSpotCard());
-    },
-
-    handleShowReviewsButtonClick: reviews => {
-      dispatch(openReviewsDialog(reviews));
     },
 
     handleShowDetailButtonClick: spot => {

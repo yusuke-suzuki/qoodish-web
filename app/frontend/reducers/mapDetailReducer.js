@@ -16,8 +16,6 @@ import {
   FETCH_USERS,
   LOAD_USERS_START,
   LOAD_USERS_END,
-  OPEN_REVIEWS_DIALOG,
-  CLOSE_REVIEWS_DIALOG,
   CLEAR_MAP_STATE
 } from '../actionTypes';
 
@@ -30,7 +28,6 @@ const initialState = {
   pickedUsers: [],
   loadingUsers: false,
   spotReviews: [],
-  reviewsDialogOpen: false,
   mapSummaryOpen: false,
 };
 
@@ -104,16 +101,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mapSummaryOpen: false
       });
-    case OPEN_REVIEWS_DIALOG:
-      return Object.assign({}, state, {
-        reviewsDialogOpen: true,
-        spotReviews: action.payload.reviews
-      });
-    case CLOSE_REVIEWS_DIALOG:
-      return Object.assign({}, state, {
-        reviewsDialogOpen: false,
-        spotReviews: []
-      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
@@ -130,7 +117,6 @@ const reducer = (state = initialState, action) => {
         inviteTargetDialogOpen: false,
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false,
-        reviewsDialogOpen: false,
         mapSummaryOpen: false
       });
     default:
