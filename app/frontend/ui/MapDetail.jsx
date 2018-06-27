@@ -21,10 +21,7 @@ import Helmet from 'react-helmet';
 import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
-import Dialog, {
-  DialogContent
-} from 'material-ui/Dialog';
-import Slide from 'material-ui/transitions/Slide';
+import Drawer from 'material-ui/Drawer';
 
 const styles = {
   mapWrapperLarge: {
@@ -35,29 +32,43 @@ const styles = {
     left: 350,
     marginTop: 64
   },
-  mapWrapperSmall: {
-    position: 'absolute',
-    top: 0,
+  containerLarge: {
+  },
+  containerSmall: {
+    position: 'fixed',
+    top: 56,
+    left: 0,
     bottom: 136,
     right: 0,
-    left: 0,
-    marginTop: 56
+    display: 'block',
+    width: '100%'
   },
-  mapContainer: {
+  mapWrapperSmall: {
+    height: '100%'
+  },
+  mapContainerLarge: {
     height: '100%',
     width: '100%'
+  },
+  mapContainerSmall: {
+    height: '100%',
+    width: '100%',
+    position: 'relative',
+    overflow: 'hidden'
   },
   overlayButton: {
     backgroundColor: 'white'
   },
-  dialogContent: {
-    padding: 0
-  }
+  buttonContainer: {
+    position: 'relative',
+    right: 0,
+    bottom: 0
+  },
+  drawerPaper: {
+    height: '100%',
+    overflow: 'hidden'
+  },
 };
-
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
 
 const MapWithAnOverlayView = compose(
   withScriptjs,
@@ -136,11 +147,13 @@ const MapWithAnOverlayView = compose(
       />
     ) : null}
     {<DirectionsRenderer directions={props.directions} />}
-    <CreateReviewButtonContainer
-      buttonForMap={props.large ? false : true}
-      disabled={!(props.currentMap && props.currentMap.postable)}
-    />
-    <LocationButtonContainer />
+    <div style={styles.buttonContainer}>
+      <CreateReviewButtonContainer
+        buttonForMap={props.large ? false : true}
+        disabled={!(props.currentMap && props.currentMap.postable)}
+      />
+      <LocationButtonContainer />
+    </div>
   </GoogleMap>
 );
 
@@ -227,9 +240,11 @@ export default class MapDetail extends React.Component {
   renderSmall() {
     return (
       <div>
-        {this.renderGoogleMap()}
+        <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
+          {this.renderGoogleMap()}
+        </div>
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
-        {this.renderMapSummaryDialog()}
+        {this.renderMapSummaryDrawer()}
       </div>
     );
   }
@@ -246,25 +261,23 @@ export default class MapDetail extends React.Component {
             }
           />
         }
-        mapElement={<div style={styles.mapContainer} />}
+        mapElement={<div style={this.props.large ? styles.mapContainerLarge : styles.mapContainerSmall} />}
         loadingElement={<div style={{ height: '100%' }} />}
         onMapLoad={this.props.onMapMounted}
       />
     );
   }
 
-  renderMapSummaryDialog() {
+  renderMapSummaryDrawer() {
     return (
-      <Dialog
+      <Drawer
+        variant="temporary"
+        anchor="bottom"
         open={this.props.mapSummaryOpen}
-        fullWidth
-        fullScreen={true}
-        transition={Transition}
+        PaperProps={{ style: styles.drawerPaper }}
       >
-        <DialogContent style={styles.dialogContent}>
-          <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
-        </DialogContent>
-      </Dialog>
+        <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
+      </Drawer>
     );
   }
 }

@@ -29,7 +29,9 @@ const styles = {
     marginTop: 64
   },
   drawerPaperSmall: {
-    zIndex: 1202
+    zIndex: 1202,
+    height: '100%',
+    overflow: 'hidden'
   },
   cardLarge: {
     height: '100%',
@@ -37,7 +39,8 @@ const styles = {
     overflowY: 'scroll'
   },
   cardSmall: {
-    minHeight: '100vh'
+    overflowY: 'scroll',
+    minHeight: '100%'
   },
   spotImageLarge: {
     width: '100%',

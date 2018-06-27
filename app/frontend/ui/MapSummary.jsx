@@ -54,8 +54,10 @@ const styles = {
   },
   cardSmall: {
     height: '100%',
+    position: 'absolute',
     width: '100%',
-    minHeight: '100vh'
+    overflowY: 'scroll',
+    minHeight: '100%'
   },
   cardContentSmall: {
     textAlign: 'center'

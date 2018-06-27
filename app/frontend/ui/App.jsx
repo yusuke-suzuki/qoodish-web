@@ -31,7 +31,7 @@ import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import EditMapDialogContainer from '../containers/EditMapDialogContainer';
 
-import withWidth, { isWidthUp } from 'material-ui/utils/withWidth';
+import withWidth from 'material-ui/utils/withWidth';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import amber from 'material-ui/colors/amber';
 import lightBlue from 'material-ui/colors/lightBlue';

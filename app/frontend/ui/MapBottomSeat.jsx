@@ -20,8 +20,7 @@ const styles = {
   },
   expandButtonContainer: {
     width: '100%',
-    position: 'absolute',
-    zIndex: 1201,
+    position: 'inherit',
     bottom: 116,
     textAlign: 'center'
   },
@@ -42,17 +41,6 @@ class MapBottomSeat extends React.Component {
   render() {
     return (
       <div>
-        <div style={styles.expandButtonContainer}>
-          <Button
-            variant="fab"
-            style={styles.expandButton}
-            onClick={this.props.handleShowTimelineClick}
-            mini={true}
-            color="primary"
-          >
-            <ExpandLessIcon />
-          </Button>
-        </div>
         {this.renderDrawer()}
       </div>
     );
@@ -65,8 +53,25 @@ class MapBottomSeat extends React.Component {
         anchor="bottom"
         open={true}
       >
+        {this.renderExpandButton()}
         {this.renderSummaryCard()}
       </Drawer>
+    );
+  }
+
+  renderExpandButton() {
+    return (
+      <div style={styles.expandButtonContainer}>
+        <Button
+          variant="fab"
+          style={styles.expandButton}
+          onClick={this.props.handleShowTimelineClick}
+          mini={true}
+          color="primary"
+        >
+          <ExpandLessIcon />
+        </Button>
+      </div>
     );
   }
 
