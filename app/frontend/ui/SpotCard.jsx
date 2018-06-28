@@ -140,12 +140,7 @@ class SpotCard extends Component {
           <BottomNavigationAction
             label="Routes"
             icon={<DirectionsIcon />}
-            onClick={() =>
-              this.props.handleRouteButtonClick(
-                spot,
-                this.props.currentPosition
-              )
-            }
+            onClick={() => this.props.handleRouteButtonClick(spot)}
           />
           <BottomNavigationAction
             label="Report"

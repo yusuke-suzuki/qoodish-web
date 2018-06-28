@@ -7,12 +7,13 @@ import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
 import openReviewDialog from '../actions/openReviewDialog';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
+import { fetchCurrentPosition } from './Utils';
+import getCurrentPosition from '../actions/getCurrentPosition';
 
 const mapStateToProps = state => {
   return {
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
-    currentPosition: state.gMap.currentPosition,
     large: state.shared.large,
     mapReviews: state.mapSummary.mapReviews
   };
@@ -31,12 +32,16 @@ const mapDispatchToProps = dispatch => {
       }));
     },
 
-    handleRouteButtonClick: (spot, currentPosition) => {
-      if (currentPosition.lat && currentPosition.lng) {
+    handleRouteButtonClick: async (spot) => {
+      const currentPosition = await fetchCurrentPosition();
+      dispatch(
+        getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)
+      );
+      if (currentPosition) {
         const DirectionsService = new google.maps.DirectionsService();
         let origin = new google.maps.LatLng(
-          parseFloat(currentPosition.lat),
-          parseFloat(currentPosition.lng)
+          parseFloat(currentPosition.coords.latitude),
+          parseFloat(currentPosition.coords.longitude)
         );
         let destination = new google.maps.LatLng(
           parseFloat(spot.lat),
