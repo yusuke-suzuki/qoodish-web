@@ -20,6 +20,7 @@ import PersonIcon from 'material-ui-icons/Person';
 import Tooltip from 'material-ui/Tooltip';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
   skeltonThumbnail: {
@@ -96,9 +97,16 @@ class MapSummary extends Component {
       tabValue: 0
     };
     this.handleTabChange = this.handleTabChange.bind(this);
+    this.handleSwipeChange = this.handleSwipeChange.bind(this);
   }
 
   handleTabChange(e, value) {
+    this.setState({
+      tabValue: value
+    });
+  }
+
+  handleSwipeChange(value) {
     this.setState({
       tabValue: value
     });
@@ -158,11 +166,15 @@ class MapSummary extends Component {
             <Tab icon={<PlaceIcon />} label="SPOTS" style={styles.tab} />
             <Tab icon={<GroupIcon />} label="FOLLOWERS" style={styles.tab} />
           </Tabs>
-          <div>
-            {this.state.tabValue === 0 && this.renderTimelineTab()}
-            {this.state.tabValue === 1 && this.renderSpotTab()}
-            {this.state.tabValue === 2 && this.renderMemberTab()}
-          </div>
+          <SwipeableViews
+            animateHeight
+            index={this.state.tabValue}
+            onChangeIndex={this.handleSwipeChange}
+          >
+            {this.renderTimelineTab()}
+            {this.renderSpotTab()}
+            {this.renderMemberTab()}
+          </SwipeableViews>
         </Card>
       </div>
     );
