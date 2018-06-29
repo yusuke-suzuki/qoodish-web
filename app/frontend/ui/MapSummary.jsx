@@ -283,7 +283,7 @@ class MapSummary extends Component {
           secondary={this.fromNow(review)}
         />
         {review.image && (
-          <ListItemSecondaryAction>
+          <ListItemSecondaryAction onClick={() => this.props.handleReviewClick(review)}>
             <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}
