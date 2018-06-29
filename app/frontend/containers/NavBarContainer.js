@@ -4,7 +4,6 @@ import NavBar from '../ui/NavBar';
 import signOut from '../actions/signOut';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import openToast from '../actions/openToast';
 import firebase from 'firebase';
 import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';

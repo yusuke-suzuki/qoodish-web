@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Dialog, {
   DialogContent,
 } from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
 import Slide from 'material-ui/transitions/Slide';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';

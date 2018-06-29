@@ -12,8 +12,8 @@ const styles = {
   },
   buttonSmall: {
     zIndex: 1100,
-    position: 'fixed',
-    bottom: 96,
+    position: 'absolute',
+    bottom: 90,
     right: 20,
     backgroundColor: 'white'
   }

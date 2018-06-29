@@ -8,7 +8,6 @@ import Card, {
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import moment from 'moment';
-import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
@@ -47,11 +46,6 @@ const styles = {
   dialogActions: {
     margin: '4px 4px',
     justifyContent: 'flex-start'
-  },
-  closeButton: {
-    position: 'absolute',
-    right: 8,
-    bottom: 9
   },
   likesCount: {
     cursor: 'pointer',

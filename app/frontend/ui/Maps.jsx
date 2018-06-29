@@ -1,7 +1,5 @@
 import React from 'react';
 import { CircularProgress } from 'material-ui/Progress';
-import Button from 'material-ui/Button';
-import AddIcon from 'material-ui-icons/Add';
 import SwipeableViews from 'react-swipeable-views';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
@@ -69,7 +67,7 @@ export default class Maps extends React.Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        <SwipeableViews index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
+        <SwipeableViews animateHeight index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
           {this.renderFollowingMaps()}
           {this.renderMyMaps()}
         </SwipeableViews>

@@ -9,8 +9,6 @@ import {
   CLOSE_LEAVE_MAP_DIALOG,
   JOIN_MAP,
   LEAVE_MAP,
-  EDIT_REVIEW,
-  DELETE_REVIEW,
   SWITCH_SUMMARY,
   SWITCH_MAP,
   OPEN_INVITE_TARGET_DIALOG,
@@ -18,8 +16,6 @@ import {
   FETCH_USERS,
   LOAD_USERS_START,
   LOAD_USERS_END,
-  OPEN_REVIEWS_DIALOG,
-  CLOSE_REVIEWS_DIALOG,
   CLEAR_MAP_STATE
 } from '../actionTypes';
 
@@ -32,8 +28,7 @@ const initialState = {
   pickedUsers: [],
   loadingUsers: false,
   spotReviews: [],
-  reviewsDialogOpen: false,
-  mapDialogOpen: false,
+  mapSummaryOpen: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -100,21 +95,11 @@ const reducer = (state = initialState, action) => {
       });
     case SWITCH_SUMMARY:
       return Object.assign({}, state, {
-        mapDialogOpen: false
+        mapSummaryOpen: true
       });
     case SWITCH_MAP:
       return Object.assign({}, state, {
-        mapDialogOpen: true
-      });
-    case OPEN_REVIEWS_DIALOG:
-      return Object.assign({}, state, {
-        reviewsDialogOpen: true,
-        spotReviews: action.payload.reviews
-      });
-    case CLOSE_REVIEWS_DIALOG:
-      return Object.assign({}, state, {
-        reviewsDialogOpen: false,
-        spotReviews: []
+        mapSummaryOpen: false
       });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
@@ -124,7 +109,7 @@ const reducer = (state = initialState, action) => {
         pickedUsers: [],
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false,
-        mapDialogOpen: false
+        mapSummaryOpen: false
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
@@ -132,8 +117,7 @@ const reducer = (state = initialState, action) => {
         inviteTargetDialogOpen: false,
         joinMapDialogOpen: false,
         leaveMapDialogOpen: false,
-        reviewsDialogOpen: false,
-        mapDialogOpen: false
+        mapSummaryOpen: false
       });
     default:
       return state;

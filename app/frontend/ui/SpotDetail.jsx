@@ -10,7 +10,6 @@ import Typography from 'material-ui/Typography';
 import PlaceIcon from 'material-ui-icons/Place';
 import { CircularProgress } from 'material-ui/Progress';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
-import AddLocationIcon from 'material-ui-icons/AddLocation';
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
@@ -68,7 +67,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
       streetViewControl: false,
       scaleControl: false,
       mapTypeControl: false,
-      gestureHandling: 'none'
+      gestureHandling: 'greedy'
     }}
     center={
       props.currentSpot &&
@@ -224,12 +223,7 @@ class SpotDetail extends React.Component {
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
       >
-        <Avatar>
-          <img
-            src={review.author.profile_image_url}
-            style={styles.avatarImage}
-          />
-        </Avatar>
+        <Avatar src={review.author.profile_image_url} />
         <ListItemText
           disableTypography={true}
           primary={

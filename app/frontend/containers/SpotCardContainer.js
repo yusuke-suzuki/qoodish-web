@@ -1,18 +1,21 @@
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import SpotCard from '../ui/SpotCard';
-import ApiClient from './ApiClient.js';
 import closeSpotCard from '../actions/closeSpotCard';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import fetchSpot from '../actions/fetchSpot';
-import openReviewsDialog from '../actions/openReviewsDialog';
+import openReviewDialog from '../actions/openReviewDialog';
+import selectPlaceForReview from '../actions/selectPlaceForReview';
+import { fetchCurrentPosition } from './Utils';
+import getCurrentPosition from '../actions/getCurrentPosition';
+import requestMapCenter from '../actions/requestMapCenter';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = state => {
   return {
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
-    currentPosition: state.gMap.currentPosition,
     large: state.shared.large,
     mapReviews: state.mapSummary.mapReviews
   };
@@ -24,10 +27,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeSpotCard());
     },
 
-    handleShowReviewsButtonClick: reviews => {
-      dispatch(openReviewsDialog(reviews));
-    },
-
     handleShowDetailButtonClick: spot => {
       dispatch(fetchSpot(spot));
       dispatch(push(`/spots/${spot.place_id}`, {
@@ -35,12 +34,24 @@ const mapDispatchToProps = dispatch => {
       }));
     },
 
-    handleRouteButtonClick: (spot, currentPosition) => {
-      if (currentPosition.lat && currentPosition.lng) {
+    handleLocationButtonClick: (spot) => {
+      dispatch(requestMapCenter(spot.lat, spot.lng));
+      dispatch(switchMap());
+      dispatch(closeSpotCard());
+    },
+
+    handleRouteButtonClick: async (spot) => {
+      dispatch(switchMap());
+      dispatch(closeSpotCard());
+      const currentPosition = await fetchCurrentPosition();
+      dispatch(
+        getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)
+      );
+      if (currentPosition) {
         const DirectionsService = new google.maps.DirectionsService();
         let origin = new google.maps.LatLng(
-          parseFloat(currentPosition.lat),
-          parseFloat(currentPosition.lng)
+          parseFloat(currentPosition.coords.latitude),
+          parseFloat(currentPosition.coords.longitude)
         );
         let destination = new google.maps.LatLng(
           parseFloat(spot.lat),
@@ -66,8 +77,20 @@ const mapDispatchToProps = dispatch => {
         );
         return;
       }
+    },
+
+    handleCreateReviewClick: spot => {
+      let place = {
+        description: spot.name,
+        placeId: spot.place_id
+      };
+      dispatch(selectPlaceForReview(place));
+    },
+
+    handleReviewClick: review => {
+      dispatch(openReviewDialog(review));
     }
-  };
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpotCard);
