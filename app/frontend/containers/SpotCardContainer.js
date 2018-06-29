@@ -9,6 +9,8 @@ import openReviewDialog from '../actions/openReviewDialog';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
 import { fetchCurrentPosition } from './Utils';
 import getCurrentPosition from '../actions/getCurrentPosition';
+import requestMapCenter from '../actions/requestMapCenter';
+import switchMap from '../actions/switchMap';
 
 const mapStateToProps = state => {
   return {
@@ -32,7 +34,15 @@ const mapDispatchToProps = dispatch => {
       }));
     },
 
+    handleLocationButtonClick: (spot) => {
+      dispatch(requestMapCenter(spot.lat, spot.lng));
+      dispatch(switchMap());
+      dispatch(closeSpotCard());
+    },
+
     handleRouteButtonClick: async (spot) => {
+      dispatch(switchMap());
+      dispatch(closeSpotCard());
       const currentPosition = await fetchCurrentPosition();
       dispatch(
         getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)

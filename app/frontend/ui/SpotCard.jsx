@@ -20,6 +20,7 @@ import BottomNavigation, {
 import Divider from 'material-ui/Divider';
 import Toolbar from 'material-ui/Toolbar';
 import SwipeableViews from 'react-swipeable-views';
+import PlaceIcon from 'material-ui-icons/Place';
 
 const styles = {
   drawerPaperLarge: {
@@ -137,6 +138,11 @@ class SpotCard extends Component {
         </CardContent>
         <Divider />
         <BottomNavigation showLabels>
+          <BottomNavigationAction
+            label="Location"
+            icon={<PlaceIcon />}
+            onClick={() => this.props.handleLocationButtonClick(spot)}
+          />
           <BottomNavigationAction
             label="Routes"
             icon={<DirectionsIcon />}
