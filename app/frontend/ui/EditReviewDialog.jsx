@@ -287,7 +287,7 @@ class EditReviewDialog extends Component {
         disableEscapeKeyDown
         fullWidth
         fullScreen={!this.props.large}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
         <DialogContent

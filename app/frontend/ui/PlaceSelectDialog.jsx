@@ -78,7 +78,7 @@ class PlaceSelectDialog extends Component {
         onClose={this.props.onClose}
         fullWidth
         fullScreen={!this.props.large}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
         <DialogContent

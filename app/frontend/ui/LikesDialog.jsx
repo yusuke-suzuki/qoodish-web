@@ -30,7 +30,7 @@ class LikesDialog extends React.Component {
         open={this.props.dialogOpen}
         onClose={this.props.handleRequestDialogClose}
         fullWidth
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <Toolbar style={styles.toolbar}>
           <IconButton

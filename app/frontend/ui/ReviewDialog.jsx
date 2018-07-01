@@ -35,7 +35,7 @@ class ReviewDialog extends Component {
       <Dialog
         open={this.props.dialogOpen}
         onClose={this.props.handleRequestDialogClose}
-        transition={Transition}
+        TransitionComponent={Transition}
         fullWidth
         fullScreen={this.props.large ? false : true}
       >

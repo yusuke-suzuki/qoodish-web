@@ -331,8 +331,6 @@ class NavBar extends React.Component {
         <Tabs
           value={this.props.mapsTabValue}
           fullWidth
-          indicatorColor="#fff"
-          textColor="inherit"
           centered
           style={styles.tabs}
         >
