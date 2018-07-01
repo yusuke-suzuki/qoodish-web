@@ -109,7 +109,7 @@ export default class Feed extends Component {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        <CreateReviewButtonContainer />
+        <CreateReviewButtonContainer buttonWithBottomSeat={!this.props.large} />
       </div>
     );
   }

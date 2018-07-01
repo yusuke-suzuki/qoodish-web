@@ -114,7 +114,7 @@ class SpotDetail extends React.Component {
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
         {this.props.currentSpot &&
-          <CreateReviewButtonContainer spot={this.props.currentSpot} />}
+          <CreateReviewButtonContainer spot={this.props.currentSpot} buttonWithBottomSeat={!this.props.large} />}
       </div>
     );
   }
