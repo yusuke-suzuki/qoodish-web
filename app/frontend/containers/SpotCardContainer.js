@@ -21,7 +21,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleCloseSpotButtonClick: () => {
       dispatch(closeSpotCard());
@@ -37,12 +37,16 @@ const mapDispatchToProps = dispatch => {
     handleLocationButtonClick: (spot) => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(switchMap());
-      dispatch(closeSpotCard());
+      if (!ownProps.large) {
+        dispatch(closeSpotCard());
+      }
     },
 
     handleRouteButtonClick: async (spot) => {
       dispatch(switchMap());
-      dispatch(closeSpotCard());
+      if (!ownProps.large) {
+        dispatch(closeSpotCard());
+      }
       const currentPosition = await fetchCurrentPosition();
       dispatch(
         getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)

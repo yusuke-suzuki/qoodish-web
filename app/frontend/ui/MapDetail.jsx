@@ -193,7 +193,7 @@ export default class MapDetail extends React.Component {
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
-        <SpotCardContainer mapId={this.props.match.params.mapId} />
+        <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
       </div>
     );
   }
