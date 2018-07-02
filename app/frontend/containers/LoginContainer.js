@@ -15,8 +15,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    signIn: async (currentUser, credential, redirectUrl) => {
+    signIn: async (authResult, redirectUrl) => {
       dispatch(requestStart());
+      const currentUser = authResult.user;
+      const credential = authResult.credential;
       let accessToken = await currentUser.getIdToken();
       let provider = currentUser.providerData.find(data => {
         return data.providerId == credential.providerId;

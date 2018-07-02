@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import App from '../ui/App';
 import updateWindowSize from '../actions/updateWindowSize';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 import ApiClient from '../containers/ApiClient';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
