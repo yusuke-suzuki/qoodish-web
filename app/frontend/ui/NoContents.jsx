@@ -1,11 +1,11 @@
 import React from 'react';
-import MapIcon from 'material-ui-icons/Map';
-import RateReviewIcon from 'material-ui-icons/RateReview';
-import NotificationsIcon from 'material-ui-icons/Notifications';
-import PlaceIcon from 'material-ui-icons/Place';
-import MailIcon from 'material-ui-icons/Mail';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
+import MapIcon from '@material-ui/icons/Map';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import PlaceIcon from '@material-ui/icons/Place';
+import MailIcon from '@material-ui/icons/Mail';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 const styles = {
   container: {

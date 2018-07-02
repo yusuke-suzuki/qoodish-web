@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { CircularProgress } from 'material-ui/Progress';
+import React from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = {
   blockUi: {
@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-export default class BlockUi extends Component {
+export default class BlockUi extends React.Component {
   render() {
     return <div>{this.props.blocking ? this.renderBlockUi() : null}</div>;
   }

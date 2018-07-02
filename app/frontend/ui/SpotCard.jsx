@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import IconButton from 'material-ui/IconButton';
-import Card, { CardMedia, CardContent } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import RateReviewIcon from 'material-ui-icons/RateReview';
-import DirectionsIcon from 'material-ui-icons/Directions';
-import InfoIcon from 'material-ui-icons/Info';
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
-import CloseIcon from 'material-ui-icons/Close';
-import Drawer from 'material-ui/Drawer';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import BottomNavigation, {
-  BottomNavigationAction
-} from 'material-ui/BottomNavigation';
-import Divider from 'material-ui/Divider';
-import Toolbar from 'material-ui/Toolbar';
+import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import DirectionsIcon from '@material-ui/icons/Directions';
+import InfoIcon from '@material-ui/icons/Info';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloseIcon from '@material-ui/icons/Close';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Divider from '@material-ui/core/Divider';
+import Toolbar from '@material-ui/core/Toolbar';
+import PlaceIcon from '@material-ui/icons/Place';
 import SwipeableViews from 'react-swipeable-views';
-import PlaceIcon from 'material-ui-icons/Place';
 
 const styles = {
   drawerPaperLarge: {
@@ -82,7 +82,7 @@ const styles = {
   },
 };
 
-class SpotCard extends Component {
+class SpotCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

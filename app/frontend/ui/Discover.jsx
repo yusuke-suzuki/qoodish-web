@@ -1,21 +1,23 @@
 import React from 'react';
-import { CircularProgress } from 'material-ui/Progress';
-import MapIcon from 'material-ui-icons/Map';
-import Button from 'material-ui/Button';
-import ExploreIcon from 'material-ui-icons/Explore';
-import PlaceIcon from 'material-ui-icons/Place';
-import RateReviewIcon from 'material-ui-icons/RateReview';
-import TrendingUpIcon from 'material-ui-icons/TrendingUp';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
-import Typography from 'material-ui/Typography';
-import Card, { CardHeader, CardContent } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ExploreIcon from '@material-ui/icons/Explore';
+import PlaceIcon from '@material-ui/icons/Place';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 

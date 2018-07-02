@@ -1,5 +1,5 @@
 import React from 'react';
-import { CircularProgress } from 'material-ui/Progress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import SwipeableViews from 'react-swipeable-views';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';

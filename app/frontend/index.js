@@ -34,7 +34,6 @@ import persistState from 'redux-localstorage';
 import { createLogger } from 'redux-logger';
 
 import firebase from 'firebase';
-import firebaseui from 'firebaseui';
 
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,

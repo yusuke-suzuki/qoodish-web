@@ -1,23 +1,28 @@
-import React, { Component } from 'react';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Card, { CardContent, CardMedia } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
-import PlaceIcon from 'material-ui-icons/Place';
-import TimelineIcon from 'material-ui-icons/Timeline';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import React from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import PlaceIcon from '@material-ui/icons/Place';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Chip from '@material-ui/core/Chip';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+import LockIcon from '@material-ui/icons/Lock';
+import GroupIcon from '@material-ui/icons/Group';
+import PersonIcon from '@material-ui/icons/Person';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import moment from 'moment';
-import Chip from 'material-ui/Chip';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
-import LockIcon from 'material-ui-icons/Lock';
-import GroupIcon from 'material-ui-icons/Group';
-import PersonIcon from 'material-ui-icons/Person';
-import Tooltip from 'material-ui/Tooltip';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 import SwipeableViews from 'react-swipeable-views';
@@ -90,7 +95,7 @@ const styles = {
   }
 };
 
-class MapSummary extends Component {
+class MapSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

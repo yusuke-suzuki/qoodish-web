@@ -1,15 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import BottomNavigation, {
-  BottomNavigationAction
-} from 'material-ui/BottomNavigation';
-import Paper from 'material-ui/Paper';
-import HomeIcon from 'material-ui-icons/Home';
-import ExploreIcon from 'material-ui-icons/Explore';
-import MapIcon from 'material-ui-icons/Map';
-import NotificationsIcon from 'material-ui-icons/Notifications';
-import Badge from 'material-ui/Badge';
-import AccountCircleIcon from 'material-ui-icons/AccountCircle';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Paper from '@material-ui/core/Paper';
+import HomeIcon from '@material-ui/icons/Home';
+import ExploreIcon from '@material-ui/icons/Explore';
+import MapIcon from '@material-ui/icons/Map';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const styles = {
   bottomNav: {

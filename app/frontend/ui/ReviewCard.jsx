@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import Card, {
-  CardHeader,
-  CardMedia,
-  CardContent,
-  CardActions
-} from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import Avatar from 'material-ui/Avatar';
+import React from 'react';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
-import IconButton from 'material-ui/IconButton';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import ShareIcon from 'material-ui-icons/Share';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import FavoriteIcon from 'material-ui-icons/Favorite';
-import FavoriteBorderIcon from 'material-ui-icons/FavoriteBorder';
-import Badge from 'material-ui/Badge';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ShareIcon from '@material-ui/icons/Share';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import Badge from '@material-ui/core/Badge';
 import twitter from 'twitter-text';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 const styles = {
   card: {},
@@ -56,7 +56,7 @@ const styles = {
   }
 };
 
-class ReviewCard extends Component {
+class ReviewCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

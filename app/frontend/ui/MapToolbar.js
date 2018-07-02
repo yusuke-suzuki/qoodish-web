@@ -1,14 +1,15 @@
 import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import Toolbar from 'material-ui/Toolbar';
-import ShareIcon from 'material-ui-icons/Share';
-import PersonAddIcon from 'material-ui-icons/PersonAdd';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Toolbar from '@material-ui/core/Toolbar';
+import ShareIcon from '@material-ui/icons/Share';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
-import Typography from 'material-ui/Typography';
-import CloseIcon from 'material-ui-icons/Close';
 
 const styles = {
   leftButton: {

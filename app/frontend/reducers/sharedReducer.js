@@ -22,7 +22,7 @@ import {
   SHOW_MAPS_TAB,
   HIDE_MAPS_TAB
 } from '../actionTypes';
-import { isWidthUp } from 'material-ui/utils/withWidth';
+import { isWidthUp } from '@material-ui/core/withWidth';
 
 const initialState = {
   toastOpen: false,

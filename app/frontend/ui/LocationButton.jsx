@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import MyLocationIcon from 'material-ui-icons/MyLocation';
+import Button from '@material-ui/core/Button';
+import MyLocationIcon from '@material-ui/icons/MyLocation';
 
 const styles = {
   buttonLarge: {
