@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { CircularProgress } from 'material-ui/Progress';
-import Paper from 'material-ui/Paper';
+import React from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import NotificationListContainer from '../containers/NotificationListContainer';
 
@@ -18,7 +18,7 @@ const styles = {
   }
 };
 
-class Notifications extends Component {
+class Notifications extends React.Component {
   componentWillMount() {
     this.props.handleMount();
     gtag('config', process.env.GA_TRACKING_ID, {

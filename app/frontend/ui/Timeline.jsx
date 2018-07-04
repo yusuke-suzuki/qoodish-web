@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import { CircularProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import Avatar from 'material-ui/Avatar';
-import Button from 'material-ui/Button';
-import ReviewCardContainer from '../containers/ReviewCardContainer';
-import Card, { CardHeader } from 'material-ui/Card';
+import React from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import I18n from '../containers/I18n';
+import ReviewCardContainer from '../containers/ReviewCardContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 
@@ -51,7 +52,7 @@ const styles = {
   }
 };
 
-export default class Feed extends Component {
+export default class Feed extends React.Component {
   constructor(props) {
     super(props);
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
@@ -109,7 +110,7 @@ export default class Feed extends Component {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        <CreateReviewButtonContainer />
+        <CreateReviewButtonContainer buttonWithBottomSeat={!this.props.large} />
       </div>
     );
   }

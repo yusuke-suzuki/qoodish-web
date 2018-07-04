@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/storage';
 import uuidv1 from 'uuid/v1';
 import 'blueimp-canvas-to-blob';
 
@@ -12,13 +13,13 @@ export const uploadToStorage = image => {
   return new Promise((resolve, reject) => {
     const storage = firebase.app().storage(process.env.FIREBASE_IMAGE_BUCKET);
     const storageRef = storage.ref();
-    let fileName = `${uuidv1()}.jpg`;
     const metadata = {
       contentType: 'image/jpeg',
       cacheControl: 'public,max-age=86400',
     };
+    const fileName = `images/${uuidv1()}.jpg`;
     const uploadTask = storageRef
-      .child('images/' + fileName)
+      .child(fileName)
       .put(image, metadata);
 
     uploadTask.on(
@@ -45,9 +46,10 @@ export const uploadToStorage = image => {
         }
         reject();
       },
-      () => {
+      async () => {
+        const imageUrl = await storage.ref(fileName).getDownloadURL()
         resolve({
-          imageUrl: uploadTask.snapshot.downloadURL,
+          imageUrl: imageUrl,
           fileName: uploadTask.snapshot.ref.name
         });
       }

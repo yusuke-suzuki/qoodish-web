@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from 'material-ui/Dialog';
-import Checkbox from 'material-ui/Checkbox';
-import Button from 'material-ui/Button';
-import { FormControlLabel } from 'material-ui/Form';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const styles = {
   deleteButton: {

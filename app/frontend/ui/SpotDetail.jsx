@@ -1,14 +1,14 @@
 import React from 'react';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Card, { CardContent } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import PlaceIcon from 'material-ui-icons/Place';
-import { CircularProgress } from 'material-ui/Progress';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import PlaceIcon from '@material-ui/icons/Place';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
@@ -114,7 +114,7 @@ class SpotDetail extends React.Component {
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
         {this.props.currentSpot &&
-          <CreateReviewButtonContainer spot={this.props.currentSpot} />}
+          <CreateReviewButtonContainer spot={this.props.currentSpot} buttonWithBottomSeat={!this.props.large} />}
       </div>
     );
   }

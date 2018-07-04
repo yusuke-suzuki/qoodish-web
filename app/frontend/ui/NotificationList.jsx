@@ -1,12 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import List, {
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Typography from 'material-ui/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
 
 const styles = {
   notificationText: {

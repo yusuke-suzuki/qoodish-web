@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import MyLocationIcon from 'material-ui-icons/MyLocation';
+import Button from '@material-ui/core/Button';
+import MyLocationIcon from '@material-ui/icons/MyLocation';
 
 const styles = {
   buttonLarge: {
     zIndex: 1100,
-    position: 'fixed',
+    position: 'absolute',
     bottom: 108,
     right: 32,
     backgroundColor: 'white'

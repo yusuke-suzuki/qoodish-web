@@ -1,14 +1,17 @@
 import React from 'react';
-import Dialog, { DialogContent, DialogTitle } from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
-import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Slide from 'material-ui/transitions/Slide';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'material-ui-icons/Close';
-import Toolbar from 'material-ui/Toolbar';
-import Divider from 'material-ui/Divider';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Slide from '@material-ui/core/Slide';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Toolbar from '@material-ui/core/Toolbar';
+import Divider from '@material-ui/core/Divider';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -30,7 +33,7 @@ class LikesDialog extends React.Component {
         open={this.props.dialogOpen}
         onClose={this.props.handleRequestDialogClose}
         fullWidth
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         <Toolbar style={styles.toolbar}>
           <IconButton

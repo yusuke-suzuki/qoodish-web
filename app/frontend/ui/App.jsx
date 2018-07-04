@@ -31,15 +31,16 @@ import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import EditMapDialogContainer from '../containers/EditMapDialogContainer';
 
-import withWidth from 'material-ui/utils/withWidth';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import amber from 'material-ui/colors/amber';
-import lightBlue from 'material-ui/colors/lightBlue';
-import firebase from 'firebase';
-import { LinearProgress } from 'material-ui/Progress';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
+import withWidth from '@material-ui/core/withWidth';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import amber from '@material-ui/core/colors/amber';
+import lightBlue from '@material-ui/core/colors/lightBlue';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import Helmet from 'react-helmet';
 
 const theme = createMuiTheme({

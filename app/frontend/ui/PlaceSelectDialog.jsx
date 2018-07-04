@@ -1,21 +1,22 @@
-import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
-import PlaceIcon from 'material-ui-icons/Place';
-import TextField from 'material-ui/TextField';
-import List, { ListItem, ListItemAvatar, ListItemText } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
-import Slide from 'material-ui/transitions/Slide';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import CloseIcon from 'material-ui-icons/Close';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import PlaceIcon from '@material-ui/icons/Place';
+import TextField from '@material-ui/core/TextField';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Slide from '@material-ui/core/Slide';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
 const styles = {
   appbar: {
@@ -46,7 +47,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class PlaceSelectDialog extends Component {
+class PlaceSelectDialog extends React.Component {
   constructor(props) {
     super(props);
     this.handlePlaceSelected = this.handlePlaceSelected.bind(this);
@@ -78,7 +79,7 @@ class PlaceSelectDialog extends Component {
         onClose={this.props.onClose}
         fullWidth
         fullScreen={!this.props.large}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
         <DialogContent

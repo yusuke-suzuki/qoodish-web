@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 class ApiClient {
   async signIn(params) {
@@ -16,7 +16,6 @@ class ApiClient {
     let params = {
       registration_token: registrationToken
     };
-    const userId = firebase.auth().currentUser.uid;
     const url = `${process.env.API_ENDPOINT}/devices`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {
@@ -32,7 +31,6 @@ class ApiClient {
   }
 
   async deleteRegistrationToken(registrationToken) {
-    const userId = firebase.auth().currentUser.uid;
     const url = `${process.env.API_ENDPOINT}/devices/${registrationToken}`;
     const token = await firebase.auth().currentUser.getIdToken();
     let options = {

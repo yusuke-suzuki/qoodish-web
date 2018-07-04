@@ -1,17 +1,18 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
-import Card, { CardContent } from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import Avatar from '@material-ui/core/Avatar';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 import Helmet from 'react-helmet';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import { CircularProgress } from 'material-ui/Progress';
-import Button from 'material-ui/Button';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import I18n from '../containers/I18n';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
-import SwipeableViews from 'react-swipeable-views';
+import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 
 const styles = {
   rootLarge: {
@@ -118,7 +119,6 @@ class Profile extends React.Component {
     this.state = {
       tabValue: 0
     };
-    this.handleSwipeChange = this.handleSwipeChange.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
   }
@@ -143,12 +143,6 @@ class Profile extends React.Component {
     this.props.loadMoreReviews(this.props.nextTimestamp);
   }
 
-  handleSwipeChange(value) {
-    this.setState({
-      tabValue: value
-    });
-  }
-
   handleTabChange(e, value) {
     this.setState({
       tabValue: value
@@ -160,14 +154,10 @@ class Profile extends React.Component {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentUser && this.renderHelmet(this.props.currentUser)}
         {this.props.currentUser && this.renderProfileCard(this.props.currentUser)}
-        <SwipeableViews
-          animateHeight
-          index={this.state.tabValue}
-          onChangeIndex={this.handleSwipeChange}
-        >
-          {this.renderReviews()}
-          {this.renderUserMaps()}
-        </SwipeableViews>
+        <div>
+          {this.state.tabValue === 0 && this.renderReviews()}
+          {this.state.tabValue === 1 && this.renderUserMaps()}
+        </div>
       </div>
     );
   }

@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import Dialog, {
-  DialogContent,
-} from 'material-ui/Dialog';
-import Slide from 'material-ui/transitions/Slide';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import CloseIcon from 'material-ui-icons/Close';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import Slide from '@material-ui/core/Slide';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 
 const styles = {
@@ -29,13 +28,13 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class ReviewDialog extends Component {
+class ReviewDialog extends React.Component {
   render() {
     return (
       <Dialog
         open={this.props.dialogOpen}
         onClose={this.props.handleRequestDialogClose}
-        transition={Transition}
+        TransitionComponent={Transition}
         fullWidth
         fullScreen={this.props.large ? false : true}
       >

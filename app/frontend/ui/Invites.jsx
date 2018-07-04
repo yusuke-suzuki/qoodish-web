@@ -1,9 +1,12 @@
 import React from 'react';
-import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import Button from 'material-ui/Button';
-import Avatar from 'material-ui/Avatar';
-import Typography from 'material-ui/Typography';
-import { CircularProgress } from 'material-ui/Progress';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import NoContentsContainer from '../containers/NoContentsContainer';
 

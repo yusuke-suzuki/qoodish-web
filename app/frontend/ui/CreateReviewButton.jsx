@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import EditIcon from 'material-ui-icons/Edit';
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
 
 const styles = {
   buttonLarge: {
@@ -14,24 +14,21 @@ const styles = {
   buttonSmall: {
     zIndex: 1100,
     position: 'fixed',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  withBottomSeat: {
     bottom: 76,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
   },
-  buttonForMap: {
-    zIndex: 1100,
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'red',
-    color: 'white'
+  forMap: {
+    position: 'absolute'
   },
-  disabledButton: {
-    zIndex: 1100,
-    position: 'absolute',
-    bottom: 20,
-    right: 20
+  disabled: {
+    color: 'rgba(0, 0, 0, 0.26)',
+    boxShadow: 'none',
+    backgroundColor: 'rgba(0, 0, 0, 0.12)'
   }
 };
 
@@ -51,14 +48,21 @@ export default class CreateReviewButton extends React.Component {
   }
 
   buttonStyle(props) {
-    if (props.buttonForMap) {
-      if (props.disabled) {
-        return styles.disabledButton;
-      } else {
-        return styles.buttonForMap;
-      }
+    let style = {};
+    if (props.large) {
+      style = Object.assign(style, styles.buttonLarge);
     } else {
-      return props.large ? styles.buttonLarge : styles.buttonSmall;
+      style = Object.assign(style, styles.buttonSmall)
     }
+    if (props.buttonWithBottomSeat) {
+      style = Object.assign(style, styles.withBottomSeat);
+    }
+    if (props.buttonForMap) {
+      style = Object.assign(style, styles.forMap);
+    }
+    if (props.disabled) {
+      style = Object.assign(style, styles.disabled);
+    }
+    return style;
   }
 }

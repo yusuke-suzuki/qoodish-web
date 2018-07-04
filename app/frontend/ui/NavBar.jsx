@@ -1,32 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import Drawer from 'material-ui/Drawer';
-import SwipeableDrawer from 'material-ui/SwipeableDrawer';
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction
-} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import HomeIcon from 'material-ui-icons/Home';
-import ExploreIcon from 'material-ui-icons/Explore';
-import MapIcon from 'material-ui-icons/Map';
-import AccountCircleIcon from 'material-ui-icons/AccountCircle';
-import SettingsIcon from 'material-ui-icons/Settings';
-import MailIcon from 'material-ui-icons/Mail';
-import Avatar from 'material-ui/Avatar';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import NotificationsIcon from 'material-ui-icons/Notifications';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Drawer from '@material-ui/core/Drawer';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Divider from '@material-ui/core/Divider';
+import HomeIcon from '@material-ui/icons/Home';
+import ExploreIcon from '@material-ui/icons/Explore';
+import MapIcon from '@material-ui/icons/Map';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SettingsIcon from '@material-ui/icons/Settings';
+import MailIcon from '@material-ui/icons/Mail';
+import Avatar from '@material-ui/core/Avatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import moment from 'moment';
-import Badge from 'material-ui/Badge';
-import ArrowBackIcon from 'material-ui-icons/ArrowBack';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Badge from '@material-ui/core/Badge';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 
 const styles = {
@@ -53,6 +54,9 @@ const styles = {
   },
   tabs: {
     width: '100%'
+  },
+  tabIndicator: {
+    backgroundColor: '#fff'
   },
   tabLarge: {
     height: 64
@@ -331,10 +335,9 @@ class NavBar extends React.Component {
         <Tabs
           value={this.props.mapsTabValue}
           fullWidth
-          indicatorColor="#fff"
-          textColor="inherit"
           centered
           style={styles.tabs}
+          TabIndicatorProps={{ style: styles.tabIndicator }}
         >
           <Tab
             label="Following"

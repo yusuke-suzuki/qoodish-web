@@ -18,10 +18,10 @@ import CreateReviewButtonContainer from '../containers/CreateReviewButtonContain
 import LocationButtonContainer from '../containers/LocationButtonContainer';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import Helmet from 'react-helmet';
-import Avatar from 'material-ui/Avatar';
-import Button from 'material-ui/Button';
-import Tooltip from 'material-ui/Tooltip';
-import Drawer from 'material-ui/Drawer';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import Drawer from '@material-ui/core/Drawer';
 
 const styles = {
   mapWrapperLarge: {
@@ -149,7 +149,7 @@ const MapWithAnOverlayView = compose(
     {<DirectionsRenderer directions={props.directions} />}
     <div style={styles.buttonContainer}>
       <CreateReviewButtonContainer
-        buttonForMap={props.large ? false : true}
+        buttonForMap
         disabled={!(props.currentMap && props.currentMap.postable)}
       />
       <LocationButtonContainer />
@@ -193,7 +193,7 @@ export default class MapDetail extends React.Component {
         <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
-        <SpotCardContainer mapId={this.props.match.params.mapId} />
+        <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
       </div>
     );
   }

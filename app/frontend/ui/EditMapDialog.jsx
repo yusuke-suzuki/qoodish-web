@@ -1,22 +1,21 @@
-import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import { FormControlLabel } from 'material-ui/Form';
-import Switch from 'material-ui/Switch';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Slide from 'material-ui/transitions/Slide';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import CloseIcon from 'material-ui-icons/Close';
-import IconButton from 'material-ui/IconButton';
-import Chip from 'material-ui/Chip';
-import PlaceIcon from 'material-ui-icons/Place';
-import Avatar from 'material-ui/Avatar';
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Slide from '@material-ui/core/Slide';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
+import Chip from '@material-ui/core/Chip';
+import PlaceIcon from '@material-ui/icons/Place';
+import Avatar from '@material-ui/core/Avatar';
 
 const styles = {
   flex: {
@@ -36,7 +35,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class EditMapDialog extends Component {
+class EditMapDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -211,7 +210,7 @@ class EditMapDialog extends Component {
         disableEscapeKeyDown
         fullWidth
         fullScreen={!this.props.large}
-        transition={Transition}
+        TransitionComponent={Transition}
       >
         {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
         <DialogContent

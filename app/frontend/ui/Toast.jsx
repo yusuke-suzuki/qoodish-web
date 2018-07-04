@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import Snackbar from 'material-ui/Snackbar';
+import React from 'react';
+import Snackbar from '@material-ui/core/Snackbar';
 
-export default class Toast extends Component {
+export default class Toast extends React.Component {
   render() {
     return (
       <div>

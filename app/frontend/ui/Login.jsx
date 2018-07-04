@@ -1,17 +1,22 @@
 import React from 'react';
-import firebase from 'firebase';
-import Typography from 'material-ui/Typography';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import Typography from '@material-ui/core/Typography';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Grid from 'material-ui/Grid';
-import Card, { CardContent, CardMedia } from 'material-ui/Card';
-import PlaceIcon from 'material-ui-icons/Place';
-import ExploreIcon from 'material-ui-icons/Explore';
-import { amber } from 'material-ui/colors';
-import ArrowUpwardIcon from 'material-ui-icons/ArrowUpward';
-import Button from 'material-ui/Button';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import PlaceIcon from '@material-ui/icons/Place';
+import ExploreIcon from '@material-ui/icons/Explore';
+import amber from '@material-ui/core/colors/amber';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import Button from '@material-ui/core/Button';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
 import FacebookProvider, { Page } from 'react-facebook';
@@ -68,7 +73,8 @@ const styles = {
     width: '100%'
   },
   firebaseContainer: {
-    marginTop: 20
+    marginTop: 20,
+    whiteSpace: 'initial'
   },
   carouselContainerLarge: {
     textAlign: 'center',
@@ -96,19 +102,26 @@ class Login extends React.Component {
   componentWillMount() {
     this.uiConfig = {
       callbacks: {
-        signInSuccess: (currentUser, credential, redirectUrl) => {
-          this.props.signIn(currentUser, credential, redirectUrl);
+        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+          this.props.signIn(authResult, redirectUrl);
         }
       },
       signInFlow: 'popup',
       signInSuccessUrl: process.env.ENDPOINT,
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+        {
+          provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          scopes :[
+            'public_profile',
+            'email'
+          ]
+        },
         firebase.auth.TwitterAuthProvider.PROVIDER_ID,
         firebase.auth.GithubAuthProvider.PROVIDER_ID
       ],
-      tosUrl: process.env.ENDPOINT
+      tosUrl: `${process.env.ENDPOINT}/terms`,
+      privacyPolicyUrl: `${process.env.ENDPOINT}/privacy`
     };
 
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -143,7 +156,7 @@ class Login extends React.Component {
               : styles.carouselContainerSmall
           }
         >
-          <GridList cols={1} spacing={0} cellHeight={500}>
+          <GridList cols={1} spacing={0} cellHeight={600}>
             <GridListTile key="carousel">
               <img src={process.env.LP_CAROUSEL_1} />
               <GridListTileBar

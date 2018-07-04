@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form';
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-class IssueDialog extends Component {
+class IssueDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

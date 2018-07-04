@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
-import { CircularProgress } from 'material-ui/Progress';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import Helmet from 'react-helmet';
 
@@ -18,7 +18,7 @@ const styles = {
   }
 };
 
-class ReviewDetail extends Component {
+class ReviewDetail extends React.Component {
   async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentReview) {

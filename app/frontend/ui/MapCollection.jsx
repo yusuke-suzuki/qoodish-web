@@ -1,8 +1,10 @@
 import React from 'react';
-import LockIcon from 'material-ui-icons/Lock';
-import GroupIcon from 'material-ui-icons/Group';
-import PersonIcon from 'material-ui-icons/Person';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import LockIcon from '@material-ui/icons/Lock';
+import GroupIcon from '@material-ui/icons/Group';
+import PersonIcon from '@material-ui/icons/Person';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 const styles = {
   container: {
