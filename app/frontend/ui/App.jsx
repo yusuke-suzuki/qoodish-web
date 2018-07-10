@@ -209,10 +209,10 @@ class App extends Component {
       return (
         <div>
           <Grid container>
-            <Grid item xs={this.props.large ? 3 : 12}>
+            <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
               <NavBarContainer />
             </Grid>
-            <Grid item xs={this.props.large && !this.isMapDetail() ? 6 : 12}>
+            <Grid item xs={12} sm={12} md={this.isMapDetail() ? 12 : 6} lg={this.isMapDetail() ? 12 : 8} xl={this.isMapDetail() ? 12 : 8}>
               {this.renderUserRoutes()}
             </Grid>
           </Grid>

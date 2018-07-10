@@ -12,7 +12,8 @@ import NoContentsContainer from '../containers/NoContentsContainer';
 
 const styles = {
   rootLarge: {
-    marginTop: 94
+    margin: '94px auto 200px',
+    maxWidth: 700
   },
   rootSmall: {
     margin: '72px auto'
