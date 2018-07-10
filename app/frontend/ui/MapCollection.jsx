@@ -51,7 +51,7 @@ export default class MapCollection extends React.Component {
         onClick={() => this.props.handleClickMap(map)}
         style={styles.gridTile}
       >
-        <img src={map.image_url} />
+        <img src={this.props.large ? map.image_url : map.thumbnail_url} />
         <GridListTileBar
           title={map.name}
           subtitle={<span>by: {map.owner_name}</span>}
