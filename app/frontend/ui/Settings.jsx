@@ -8,7 +8,8 @@ import DeleteAccountDialogContainer from '../containers/DeleteAccountDialogConta
 
 const styles = {
   rootLarge: {
-    marginTop: 94
+    margin: '94px auto 20px',
+    maxWidth: 700
   },
   rootSmall: {
     padding: 20,

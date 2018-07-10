@@ -12,8 +12,8 @@ import CreateReviewButtonContainer from '../containers/CreateReviewButtonContain
 
 const styles = {
   rootLarge: {
-    marginTop: 94,
-    marginBottom: 200
+    margin: '94px auto 200px',
+    maxWidth: 700
   },
   rootSmall: {
     margin: '56px auto 56px',

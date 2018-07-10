@@ -6,8 +6,8 @@ import NotificationListContainer from '../containers/NotificationListContainer';
 
 const styles = {
   containerLarge: {
-    marginTop: 94,
-    marginBottom: 200
+    margin: '94px auto 200px',
+    maxWidth: 700
   },
   containerSmall: {
     margin: '56px auto 56px'
