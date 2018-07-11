@@ -15,8 +15,7 @@ const styles = {
   },
   progress: {
     textAlign: 'center',
-    padding: 10,
-    marginTop: 20
+    padding: 20
   },
   gridHeader: {
     width: '100%',
@@ -67,7 +66,11 @@ export default class Maps extends React.Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        <SwipeableViews animateHeight index={this.props.tabValue} onChangeIndex={this.handleTabChange}>
+        <SwipeableViews
+          animateHeight
+          index={this.props.tabValue}
+          onChangeIndex={this.handleTabChange}
+        >
           {this.renderFollowingMaps()}
           {this.renderMyMaps()}
         </SwipeableViews>

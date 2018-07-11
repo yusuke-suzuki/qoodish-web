@@ -23,6 +23,12 @@ const styles = {
     marginTop: 56,
     marginBottom: 56
   },
+  cardMapContainerLarge: {
+    minHeight: 300
+  },
+  cardMapContainerSmall: {
+    minHeight: 200
+  },
   mapWrapperLarge: {
     height: 300
   },
@@ -213,7 +219,9 @@ class Profile extends React.Component {
   renderProfileCard(currentUser) {
     return (
       <Card>
-        {this.renderGoogleMap()}
+        <div style={this.props.large ? styles.cardMapContainerLarge : styles.cardMapContainerSmall}>
+          {this.renderGoogleMap()}
+        </div>
         <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
           <Avatar
             src={currentUser && currentUser.image_url}
