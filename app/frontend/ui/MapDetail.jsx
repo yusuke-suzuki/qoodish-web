@@ -159,8 +159,6 @@ const MapWithAnOverlayView = compose(
 
 export default class MapDetail extends React.Component {
   async componentWillMount() {
-    this.props.updatePageTitle();
-
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
       this.props.fetchSpots();
@@ -173,6 +171,7 @@ export default class MapDetail extends React.Component {
       this.props.fetchMapReviews();
       this.props.initCenter(this.props.currentMap);
     }
+    this.props.updatePageTitle(this.props.currentMap.name);
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': `/maps/${this.props.currentMap.id}`,

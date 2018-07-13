@@ -82,7 +82,8 @@ const styles = {
   },
   secondaryAvatar: {
     borderRadius: 0,
-    marginRight: 12
+    marginRight: 12,
+    cursor: 'pointer'
   },
   mapTypeIcon: {
     marginLeft: 8
