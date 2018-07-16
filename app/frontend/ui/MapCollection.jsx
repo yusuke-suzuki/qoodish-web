@@ -1,10 +1,10 @@
 import React from 'react';
 import LockIcon from '@material-ui/icons/Lock';
-import GroupIcon from '@material-ui/icons/Group';
-import PersonIcon from '@material-ui/icons/Person';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
+import Typography from '@material-ui/core/Typography';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const styles = {
   container: {
@@ -17,6 +17,15 @@ const styles = {
   },
   gridTile: {
     cursor: 'pointer'
+  },
+  tileBar: {
+    height: 90
+  },
+  followCheckIcon: {
+    position: 'absolute',
+    right: 12,
+    top: 12,
+    zIndex: 1
   },
   mapTypeIcon: {
     marginLeft: 16,
@@ -37,6 +46,7 @@ export default class MapCollection extends React.Component {
           cols={this.props.large ? 4 : 2}
           style={styles.gridList}
           spacing={this.props.large ? 20 : 10}
+          cellHeight={220}
         >
           {this.renderMaps(this.props.maps)}
         </GridList>
@@ -51,26 +61,46 @@ export default class MapCollection extends React.Component {
         onClick={() => this.props.handleClickMap(map)}
         style={styles.gridTile}
       >
+        {map.following && this.renderFollowCheckIcon() }
         <img src={this.props.large ? map.image_url : map.thumbnail_url} />
         <GridListTileBar
           title={map.name}
-          subtitle={<span>by: {map.owner_name}</span>}
-          actionIcon={<div style={styles.mapTypeContainer}>{this.renderMapTypeIcon(map)}</div>}
+          subtitle={
+            <div>
+              <Typography
+                variant="body2"
+                color="inherit"
+              >
+                by: {map.owner_name}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="inherit"
+              >
+                {map.followers_count} followers
+              </Typography>
+            </div>
+          }
+          actionIcon={
+            <div style={styles.mapTypeContainer}>
+              {map.private && this.renderPrivateIcon()}
+            </div>
+          }
+          style={styles.tileBar}
         />
       </GridListTile>
     ));
   }
 
-  renderMapTypeIcon(map) {
-    let actions = [];
-    if (map.private) {
-      actions.push(<LockIcon style={styles.mapTypeIcon} key="private" />);
-    }
-    if (map.shared) {
-      actions.push(<GroupIcon style={styles.mapTypeIcon} key="shared" />);
-    } else {
-      actions.push(<PersonIcon style={styles.mapTypeIcon} key="personal" />);
-    }
-    return actions;
+  renderFollowCheckIcon() {
+    return (
+      <CheckCircleIcon color="primary" style={styles.followCheckIcon} />
+    );
+  }
+
+  renderPrivateIcon() {
+    return (
+      <LockIcon style={styles.mapTypeIcon} />
+    );
   }
 }

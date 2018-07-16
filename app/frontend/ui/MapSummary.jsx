@@ -19,7 +19,6 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import LockIcon from '@material-ui/icons/Lock';
 import GroupIcon from '@material-ui/icons/Group';
-import PersonIcon from '@material-ui/icons/Person';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import moment from 'moment';
@@ -143,7 +142,7 @@ class MapSummary extends React.Component {
                 component="h2"
                 gutterBottom
               >
-                {map.name} <span style={styles.mapTypeContainer}>{this.renderMapTypeIcon(map)}</span>
+                {map.name} <span style={styles.mapTypeContainer}>{map.private && this.renderPrivateIcon()}</span>
               </Typography>
             ) : (
               <Chip style={styles.skeltonMapName} />
@@ -303,29 +302,12 @@ class MapSummary extends React.Component {
       .format('LL');
   }
 
-  renderMapTypeIcon(map) {
-    let actions = [];
-    if (map.private) {
-      actions.push(
-        <Tooltip title="Only owner and followers are available." key="private">
-          <LockIcon color="inherit" style={styles.mapTypeIcon} />
-        </Tooltip>
-      );
-    }
-    if (map.shared) {
-      actions.push(
-        <Tooltip title="Owner and followers can post reports." key="shared">
-          <GroupIcon color="inherit" style={styles.mapTypeIcon} />
-        </Tooltip>
-      );
-    } else {
-      actions.push(
-        <Tooltip title="Only owner can post reports." key="personal">
-          <PersonIcon color="inherit" style={styles.mapTypeIcon} />
-        </Tooltip>
-      );
-    }
-    return actions;
+  renderPrivateIcon() {
+    return (
+      <Tooltip title="Only owner and followers are available." key="private">
+        <LockIcon color="inherit" style={styles.mapTypeIcon} />
+      </Tooltip>
+    );
   }
 }
 
