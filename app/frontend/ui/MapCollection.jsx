@@ -4,7 +4,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import Button from '@material-ui/core/Button';
 
 const styles = {
   container: {
@@ -21,11 +21,12 @@ const styles = {
   tileBar: {
     height: 90
   },
-  followCheckIcon: {
+  followCheckButton: {
     position: 'absolute',
     right: 12,
     top: 12,
-    zIndex: 1
+    zIndex: 1,
+    border: '1px solid #ffc107'
   },
   mapTypeIcon: {
     marginLeft: 16,
@@ -61,7 +62,7 @@ export default class MapCollection extends React.Component {
         onClick={() => this.props.handleClickMap(map)}
         style={styles.gridTile}
       >
-        {map.following && this.renderFollowCheckIcon() }
+        {map.following && this.renderFollowCheckButton() }
         <img src={this.props.large ? map.image_url : map.thumbnail_url} />
         <GridListTileBar
           title={map.name}
@@ -92,9 +93,11 @@ export default class MapCollection extends React.Component {
     ));
   }
 
-  renderFollowCheckIcon() {
+  renderFollowCheckButton() {
     return (
-      <CheckCircleIcon color="primary" style={styles.followCheckIcon} />
+      <Button variant="outlined" size="small" color="primary" style={styles.followCheckButton}>
+        Following
+      </Button>
     );
   }
 
