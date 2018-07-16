@@ -20,7 +20,7 @@ const styles = {
   },
   expandButtonContainer: {
     width: '100%',
-    position: 'inherit',
+    position: 'fixed',
     bottom: 116,
     textAlign: 'center'
   },
