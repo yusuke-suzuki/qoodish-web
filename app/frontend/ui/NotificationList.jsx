@@ -12,7 +12,8 @@ const styles = {
   },
   secondaryAvatar: {
     borderRadius: 0,
-    marginRight: 12
+    marginRight: 12,
+    cursor: 'pointer'
   }
 };
 
@@ -46,7 +47,11 @@ export default class NotificationList extends React.Component {
           }
         />
         {notification.notifiable.thumbnail_url && (
-          <ListItemSecondaryAction>
+          <ListItemSecondaryAction
+            onClick={() => {
+              this.props.handleNotificationClick(notification);
+            }}
+          >
             <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
           </ListItemSecondaryAction>
         )}

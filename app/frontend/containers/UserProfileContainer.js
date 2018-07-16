@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updatePageTitle('Profile'));
     },
 
-    fetchUserProfile: async (loginUser) => {
+    fetchUserProfile: async () => {
       const client = new ApiClient();
       let response = await client.fetchUser(ownProps.match.params.userId);
       let user = await response.json();

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
 import updatePageTitle from '../actions/updatePageTitle';
-import fetchUserProfile from '../actions/fetchUserProfile';
+import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchUserMaps from '../actions/fetchUserMaps';
 import loadUserMapsStart from '../actions/loadUserMapsStart';
 import loadUserMapsEnd from '../actions/loadUserMapsEnd';
@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch) => {
       const client = new ApiClient();
       let response = await client.fetchUser();
       let user = await response.json();
-      dispatch(fetchUserProfile(user));
+      dispatch(fetchMyProfile(user));
     },
 
     fetchReviews: async () => {
