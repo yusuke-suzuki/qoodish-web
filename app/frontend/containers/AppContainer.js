@@ -1,18 +1,19 @@
 import { connect } from 'react-redux';
 import App from '../ui/App';
 import updateWindowSize from '../actions/updateWindowSize';
-import firebase from 'firebase/app';
-import 'firebase/messaging';
 import ApiClient from '../containers/ApiClient';
-import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
 import signOut from '../actions/signOut';
+import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 
 const mapStateToProps = state => {
   return {
     authenticated: state.app.authenticated,
     large: state.shared.large,
     registrationToken: state.app.registrationToken,
+    notificationPermitted: state.app.notificationPermitted,
     pathname: state.router.location.pathname
   };
 };
@@ -23,24 +24,12 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateWindowSize(width));
     },
 
-    initMessaging: async () => {
-      const messaging = firebase.messaging();
-      const client = new ApiClient();
-      let registrationToken;
-      try {
-        await messaging.requestPermission();
-        registrationToken = await messaging.getToken();
-      } catch (e) {
-        console.log('Unable to get permission to notify.', e);
-      }
-      if (!registrationToken) {
-        return;
-      }
-      const response = await client.sendRegistrationToken(registrationToken);
-      if (response.ok) {
-        dispatch(fetchRegistrationToken(registrationToken));
+    initMessaging: (permitted) => {
+      if (permitted === null) {
+        dispatch(openRequestNotificationDialog());
       }
 
+      const messaging = firebase.messaging();
       messaging.onMessage(payload => {
         console.log('Message received. ', payload);
       });

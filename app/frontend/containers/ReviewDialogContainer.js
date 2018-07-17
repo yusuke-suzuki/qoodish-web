@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import ReviewDialog from '../ui/ReviewDialog';
 import closeReviewDialog from '../actions/closeReviewDialog';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
@@ -20,7 +19,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeReviewDialog());

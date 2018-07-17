@@ -20,7 +20,9 @@ import {
   SHOW_BACK_BUTTON,
   HIDE_BACK_BUTTON,
   SHOW_MAPS_TAB,
-  HIDE_MAPS_TAB
+  HIDE_MAPS_TAB,
+  OPEN_REQUEST_NOTIFICATION_DIALOG,
+  CLOSE_REQUEST_NOTIFICATION_DIALOG
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -43,7 +45,8 @@ const initialState = {
   loadingNotifications: false,
   showBackButton: false,
   mapsTabActive: false,
-  previous: false
+  previous: false,
+  requestNotificationDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -163,11 +166,20 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mapsTabActive: false
       });
+    case OPEN_REQUEST_NOTIFICATION_DIALOG:
+      return Object.assign({}, state, {
+        requestNotificationDialogOpen: true
+      });
+    case CLOSE_REQUEST_NOTIFICATION_DIALOG:
+      return Object.assign({}, state, {
+        requestNotificationDialogOpen: false
+      });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         previous: action.payload.state ? action.payload.state.previous : false,
         issueDialogOpen: false,
-        likesDialogOpen: false
+        likesDialogOpen: false,
+        requestNotificationDialogOpen: false
       });
     default:
       return state;
