@@ -71,12 +71,14 @@ export default class MapCollection extends React.Component {
               <Typography
                 variant="body2"
                 color="inherit"
+                noWrap
               >
                 by: {map.owner_name}
               </Typography>
               <Typography
                 variant="body2"
                 color="inherit"
+                noWrap
               >
                 {map.followers_count} followers
               </Typography>

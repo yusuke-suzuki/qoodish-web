@@ -2,13 +2,15 @@ import {
   SIGN_IN,
   SIGN_OUT,
   FETCH_REGISTRATION_TOKEN,
-  FETCH_MY_PROFILE
+  FETCH_MY_PROFILE,
+  FORBID_NOTIFICATION
 } from '../actionTypes';
 
 const initialState = {
   authenticated: false,
   currentUser: null,
-  registrationToken: null
+  registrationToken: null,
+  notificationPermitted: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -22,11 +24,17 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         authenticated: false,
         currentUser: null,
-        registrationToken: null
+        registrationToken: null,
+        notificationPermitted: null
       });
     case FETCH_REGISTRATION_TOKEN:
       return Object.assign({}, state, {
-        registrationToken: action.payload.token
+        registrationToken: action.payload.token,
+        notificationPermitted: true
+      });
+    case FORBID_NOTIFICATION:
+      return Object.assign({}, state, {
+        notificationPermitted: false
       });
     case FETCH_MY_PROFILE:
       return Object.assign({}, state, {

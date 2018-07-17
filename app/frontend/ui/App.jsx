@@ -23,6 +23,7 @@ import InvitesContainer from '../containers/InvitesContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
+import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
 import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
@@ -113,7 +114,7 @@ class App extends Component {
       this.setState({
         waitForInitialize: false
       });
-      this.props.initMessaging();
+      this.props.initMessaging(this.props.notificationPermitted);
       this.props.fetchPostableMaps();
     }
   }
@@ -133,6 +134,7 @@ class App extends Component {
               ? this.renderUserOnly()
               : this.renderGuestOnly()}
           </div>
+          <RequestNotificationDialogContainer />
           <ToastContainer />
           <BlockUiContainer />
           <IssueDialogContainer />
