@@ -23,6 +23,12 @@ const styles = {
     marginTop: 56,
     marginBottom: 56
   },
+  cardMapContainerLarge: {
+    minHeight: 300
+  },
+  cardMapContainerSmall: {
+    minHeight: 200
+  },
   mapWrapperLarge: {
     height: 300
   },
@@ -39,11 +45,6 @@ const styles = {
   cardContent: {
     textAlign: 'center'
   },
-  listLarge: {
-    maxWidth: 600,
-    margin: '0 auto'
-  },
-  listSmall: {},
   secondaryAvatar: {
     borderRadius: 0,
     marginRight: 12,
@@ -201,7 +202,9 @@ class SpotDetail extends React.Component {
   renderSpotCard(spot) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-        {this.renderMap()}
+        <div style={this.props.large ? styles.cardMapContainerLarge : styles.cardMapContainerSmall}>
+          {this.renderMap()}
+        </div>
         <CardContent style={styles.cardContent}>
           <PlaceIcon />
           <Typography variant="headline">{spot.name}</Typography>
@@ -209,7 +212,7 @@ class SpotDetail extends React.Component {
             {spot.formatted_address}
           </Typography>
         </CardContent>
-        <List style={this.props.large ? styles.listLarge : styles.listSmall}>
+        <List>
           {this.renderSpotReviews(this.props.spotReviews)}
         </List>
       </Card>
