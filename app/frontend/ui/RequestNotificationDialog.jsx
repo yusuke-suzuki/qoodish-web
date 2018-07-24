@@ -7,11 +7,11 @@ import Drawer from '@material-ui/core/Drawer';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -23,9 +23,20 @@ const styles = {
   },
   drawerPaperSmall: {
   },
-  substitute: {
-    width: 60,
-    height: 60
+  cardContent: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    maxHeight: 200,
+    overflowY: 'scroll'
+  },
+  listItemText: {
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  cardActions: {
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingBottom: 16
   },
   buttonContainer: {
     width: '100%',
@@ -64,37 +75,33 @@ class RequestNotificationDialog extends React.Component {
         <Card>
           <CardHeader
             avatar={
-              <Avatar src={process.env.SUBSTITUTE_URL} style={styles.substitute} />
+              <Avatar src={process.env.SUBSTITUTE_URL} />
             }
             action={
               <IconButton onClick={this.props.handleCancelButtonClick}>
                 <CloseIcon />
               </IconButton>
             }
-            title={
-              <Typography gutterBottom variant="title">
-                Qoodish からのプッシュ通知を受け取りますか？
-              </Typography>
-            }
+            title="Qoodish からのプッシュ通知を受け取りますか？"
             subheader="qoodish.com"
           />
-          <CardContent>
-            <Typography component="p" gutterBottom>
+          <CardContent style={styles.cardContent}>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
               プッシュ通知を許可すると次のことが実現できます。
             </Typography>
             <List disablePadding>
               {this.renderListItems()}
             </List>
-            <div style={styles.buttonContainer}>
-              <Button
-                variant="raised"
-                onClick={this.props.handleAllowNotificationButtonClick}
-                color="primary"
-              >
-                プッシュ通知を許可する
-              </Button>
-            </div>
           </CardContent>
+          <CardActions style={styles.cardActions}>
+            <Button
+              variant="raised"
+              onClick={this.props.handleAllowNotificationButtonClick}
+              color="primary"
+            >
+              プッシュ通知を許可する
+            </Button>
+          </CardActions>
         </Card>
       </Drawer>
     );
@@ -106,7 +113,14 @@ class RequestNotificationDialog extends React.Component {
         <ListItemIcon>
           <DoneIcon />
         </ListItemIcon>
-        <ListItemText primary={message} />
+        <ListItemText
+          primary={
+            <Typography variant="body1">
+              {message}
+            </Typography>
+          }
+          style={styles.listItemText}
+        />
       </ListItem>
     ));
   }

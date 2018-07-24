@@ -7,6 +7,7 @@ import signOut from '../actions/signOut';
 import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
 import firebase from 'firebase/app';
 import 'firebase/messaging';
+import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 
 const mapStateToProps = state => {
   return {
@@ -25,13 +26,30 @@ const mapDispatchToProps = dispatch => {
     },
 
     initMessaging: (permitted) => {
-      if (permitted === null) {
+      if (permitted === null && 'serviceWorker' in navigator && 'PushManager' in window) {
         dispatch(openRequestNotificationDialog());
       }
 
+      const client = new ApiClient();
       const messaging = firebase.messaging();
+
       messaging.onMessage(payload => {
         console.log('Message received. ', payload);
+      });
+
+      messaging.onTokenRefresh(async () => {
+        console.log('Registration token was refreshed.');
+        const refreshedToken = await messaging.getToken();
+        if (!refreshedToken) {
+          console.log('Unable to get registration token.');
+          return;
+        }
+        const response = await client.sendRegistrationToken(refreshedToken);
+        if (response.ok) {
+          dispatch(fetchRegistrationToken(refreshedToken));
+        } else {
+          console.log('Failed to send registration token.');
+        }
       });
     },
 
