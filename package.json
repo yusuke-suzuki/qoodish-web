@@ -6,7 +6,7 @@
   "author": "Yusuke Suzuki",
   "license": "MIT",
   "engines": {
-    "node": "8.9.4",
+    "node": "10.7.0",
     "yarn": "1.7.0"
   },
   "scripts": {
