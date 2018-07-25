@@ -1006,7 +1006,7 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-firebase-admin@^5.11.0:
+firebase-admin@^5.13.1:
   version "5.13.1"
   resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-5.13.1.tgz#79cfa2ce20c90061ae09176e33b7767c1eb02f96"
   dependencies:
@@ -1019,9 +1019,9 @@ firebase-admin@^5.11.0:
     jsonwebtoken "8.1.0"
     node-forge "0.7.4"
 
-firebase-functions@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-1.1.0.tgz#f6419b860fdbec6302c351ff5b0020e68936e097"
+firebase-functions@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-2.0.0.tgz#c9df411bdd746b58703c6911409114c613a6392e"
   dependencies:
     "@types/cors" "^2.8.1"
     "@types/express" "^4.11.1"
