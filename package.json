@@ -9,9 +9,9 @@
     "node": "8.11.3"
   },
   "scripts": {
+    "postinstall": "cd ./functions && yarn && cd ../",
     "build": "webpack --colors --progress --mode development",
     "watch:build": "webpack --watch --colors --progress --mode development",
-    "serve": "firebase use default && firebase serve -p 5000 -o 0.0.0.0",
     "test:chrome": "testcafe chrome tests/",
     "build:prod": "webpack --colors --progress --mode production",
     "prettier": "prettier ./app/frontend/**/* --write --single-quote",
