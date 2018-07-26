@@ -283,34 +283,11 @@ class ReviewCard extends React.Component {
         open={this.state.vertMenuOpen}
         onClose={this.handleRequestVertMenuClose}
       >
-        {this.props.currentReview.editable ? this.renderEditButton() : null}
-        {this.props.currentReview.editable ? this.renderDeleteButton() : null}
         <MenuItem
           key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentReview);
-          }}
-        >
-          Issue
-        </MenuItem>
-      </Menu>
-    );
-  }
-
-  renderMoreVertMenu() {
-    return (
-      <Menu
-        id="vert-menu"
-        anchorEl={this.state.anchorElVert}
-        open={this.state.vertMenuOpen}
-        onClose={this.handleRequestVertMenuClose}
-      >
-        <MenuItem
-          key="issue"
-          onClick={() => {
-            this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentReview);
+            this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentReview);
           }}
         >
           Issue

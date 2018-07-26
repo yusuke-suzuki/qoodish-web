@@ -1,22 +1,31 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import NoContents from '../ui/NoContents';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
+import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
   return {
-    large: state.shared.large
+    large: state.shared.large,
+    currentUser: state.app.currentUser
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleCreateMapButtonClick: () => {
+    handleCreateMapButtonClick: (currentUser) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openCreateMapDialog());
     },
 
-    handleCreateReviewButtonClick: () => {
+    handleCreateReviewButtonClick: (currentUser) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openPlaceSelectDialog());
     }
   };

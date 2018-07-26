@@ -33,8 +33,11 @@ export default class Maps extends React.Component {
   componentWillMount() {
     this.props.showTabs();
     this.props.updatePageTitle();
-    this.props.refreshMyMaps();
-    this.props.refreshFollowingMaps();
+
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.refreshMyMaps();
+      this.props.refreshFollowingMaps();
+    }
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/maps',

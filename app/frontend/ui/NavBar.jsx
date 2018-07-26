@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -163,6 +164,9 @@ class NavBar extends React.Component {
   }
 
   componentWillMount() {
+    if (this.props.currentUser.isAnonymous) {
+      return;
+    }
     this.props.handleMount();
   }
 
@@ -258,12 +262,30 @@ class NavBar extends React.Component {
           {this.props.pageTitle}
         </Typography>
         <div style={styles.rightContents}>
-          {this.props.large && this.renderNotificationCenter()}
-          {this.renderNotificationMenu()}
-          {this.renderAvatar()}
-          {this.renderAvatarMenu()}
+          {this.props.currentUser && this.props.currentUser.isAnonymous ? this.renderRightContentsForAnonymous() : this.renderRightContents()}
         </div>
       </Toolbar>
+    );
+  }
+
+  renderRightContents() {
+    return (
+      <div>
+        {this.props.large && this.renderNotificationCenter()}
+        {this.renderNotificationMenu()}
+        {this.renderAvatar()}
+        {this.renderAvatarMenu()}
+      </div>
+    );
+  }
+
+  renderRightContentsForAnonymous() {
+    return (
+      <div>
+        <Button color="inherit" onClick={this.props.requestSignIn}>
+          Login
+        </Button>
+      </div>
     );
   }
 
@@ -278,11 +300,21 @@ class NavBar extends React.Component {
   }
 
   renderLargeDrawer() {
-    if (this.isMapDetail()) {
+    if (this.sideNavUnnecessary()) {
       return this.renderTemporaryDrawer();
     } else {
       return this.renderPermanentDrawer();
     }
+  }
+
+  sideNavUnnecessary() {
+    const path = this.props.pathname;
+    return (
+      this.isMapDetail() ||
+      path.includes('/login') ||
+      path.includes('/terms') ||
+      path.includes('/privacy')
+    );
   }
 
   isMapDetail() {

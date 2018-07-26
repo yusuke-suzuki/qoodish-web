@@ -57,7 +57,7 @@ export default class NoContents extends React.Component {
           <Button
             variant="raised"
             color="primary"
-            onClick={this.props.handleCreateMapButtonClick}
+            onClick={() => this.props.handleCreateMapButtonClick(this.props.currentUser)}
           >
             Create New Map
           </Button>
@@ -67,7 +67,7 @@ export default class NoContents extends React.Component {
           <Button
             variant="raised"
             color="primary"
-            onClick={this.props.handleCreateReviewButtonClick}
+            onClick={() => this.props.handleCreateReviewButtonClick(this.props.currentUser)}
           >
             Create New Report
           </Button>

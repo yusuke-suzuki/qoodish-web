@@ -8,6 +8,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
+import PersonIcon from '@material-ui/icons/Person';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import I18n from '../containers/I18n';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
@@ -64,6 +65,9 @@ const styles = {
     margin: '-54px auto 20px',
     width: 80,
     height: 80
+  },
+  personIcon: {
+    fontSize: 40
   },
   cardContentLarge: {
     padding: 24
@@ -131,9 +135,12 @@ class Profile extends React.Component {
 
   componentWillMount() {
     this.props.updatePageTitle();
-    this.props.fetchUserProfile();
-    this.props.fetchReviews();
-    this.props.fetchUserMaps();
+
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.fetchUserProfile();
+      this.props.fetchReviews();
+      this.props.fetchUserMaps();
+    }
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/profile',
@@ -158,8 +165,8 @@ class Profile extends React.Component {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        {this.props.currentUser && this.renderHelmet(this.props.currentUser)}
-        {this.props.currentUser && this.renderProfileCard(this.props.currentUser)}
+        {this.renderHelmet(this.props.currentUser)}
+        {this.renderProfileCard(this.props.currentUser)}
         <div>
           {this.state.tabValue === 0 && this.renderReviews()}
           {this.state.tabValue === 1 && this.renderUserMaps()}
@@ -171,7 +178,7 @@ class Profile extends React.Component {
   renderHelmet(currentUser) {
     return (
       <Helmet
-        title={`${currentUser.name} | Qoodish`}
+        title={`${currentUser.name ? currentUser.name : 'Profile'} | Qoodish`}
         link={[
           { rel: 'canonical', href: `${process.env.ENDPOINT}/profile` }
         ]}
@@ -223,13 +230,10 @@ class Profile extends React.Component {
           {this.renderGoogleMap()}
         </div>
         <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
-          <Avatar
-            src={currentUser && currentUser.image_url}
-            style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
-          />
+          {this.renderAvatar(currentUser)}
           <div style={styles.profileContainer}>
             <Typography variant="headline" gutterBottom>
-              {currentUser && currentUser.name}
+              {currentUser.isAnonymous ? "Anonymous user" : currentUser.name}
             </Typography>
           </div>
           <Tabs
@@ -242,16 +246,35 @@ class Profile extends React.Component {
           >
             <Tab
               icon="Reports"
-              label={<div style={styles.count}>{this.props.currentUser.reviews_count}</div>}
+              label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
             />
             <Tab
               icon="Maps"
-              label={<div style={styles.count}>{this.props.currentUser.maps_count}</div>}
+              label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
             />
           </Tabs>
         </CardContent>
       </Card>
     );
+  }
+
+  renderAvatar(currentUser) {
+    if (currentUser.isAnonymous) {
+      return (
+        <Avatar
+          style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
+        >
+          <PersonIcon style={styles.personIcon} />
+        </Avatar>
+      );
+    } else {
+      return (
+        <Avatar
+          src={currentUser.image_url}
+          style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
+        />
+      );
+    }
   }
 
   renderReviews() {
@@ -281,6 +304,7 @@ class Profile extends React.Component {
       return (
         <NoContentsContainer
           contentType="review"
+          action="create-review"
           message={I18n.t('reports will see here')}
         />
       );
@@ -353,6 +377,7 @@ class Profile extends React.Component {
       return (
         <NoContentsContainer
           contentType="map"
+          action="create-map"
           message="No maps have been created."
         />
       );

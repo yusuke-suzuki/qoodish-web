@@ -43,7 +43,11 @@ const styles = {
 export default class Invites extends React.Component {
   componentWillMount() {
     this.props.updatePageTitle();
-    this.props.fetchInvites();
+
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.fetchInvites();
+    }
+
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/invites',
       'page_title': 'Invites | Qoodish'

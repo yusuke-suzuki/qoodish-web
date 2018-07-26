@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import Maps from '../ui/Maps';
 import ApiClient from '../containers/ApiClient';
-import signOut from '../actions/signOut';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchMyMaps from '../actions/fetchMyMaps';
@@ -19,6 +18,7 @@ import switchFollowingMaps from '../actions/switchFollowingMaps';
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.app.currentUser,
     myMaps: state.maps.myMaps,
     followingMaps: state.maps.followingMaps,
     loadingMyMaps: state.maps.loadingMyMaps,

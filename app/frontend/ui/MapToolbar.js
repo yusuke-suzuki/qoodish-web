@@ -230,7 +230,7 @@ class MapToolbar extends React.Component {
           key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentMap);
+            this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentMap);
           }}
         >
           Issue

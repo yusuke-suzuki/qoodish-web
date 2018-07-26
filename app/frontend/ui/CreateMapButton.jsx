@@ -30,7 +30,7 @@ export default class CreateMapButton extends React.Component {
         style={
           this.props.large ? styles.createButtonLarge : styles.createButtonSmall
         }
-        onClick={this.props.handleButtonClick}
+        onClick={() => this.props.handleButtonClick(this.props.currentUser)}
       >
         <AddIcon />
       </Button>

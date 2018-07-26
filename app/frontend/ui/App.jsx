@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import NavBarContainer from '../containers/NavBarContainer';
 import BottomNavContainer from '../containers/BottomNavContainer';
 import ToastContainer from '../containers/ToastContainer';
@@ -23,6 +23,7 @@ import InvitesContainer from '../containers/InvitesContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
+import SignInRequiredDialogContainer from '../containers/SignInRequiredDialogContainer';
 import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
 import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
@@ -70,30 +71,30 @@ const styles = {
   }
 };
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       waitForInitialize: true
     };
     this.retryCount = 0;
-    this.maxRetryCount = 10;
+    this.maxRetryCount = 20;
   }
 
   componentWillMount() {
     this.props.handleWindowSizeChange(this.props.width);
     this.retryCount = 0;
-    if (this.props.authenticated) {
-      this.setTimerForInitialize();
-    }
+    this.setTimerForInitialize();
+
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        await this.props.signInAnonymously();
+      }
+    });
   }
 
   componentWillReceiveProps(props) {
     this.props.handleWindowSizeChange(props.width);
-    this.retryCount = 0;
-    if (props.authenticated && !props.registrationToken) {
-      this.setTimerForInitialize();
-    }
   }
 
   setTimerForInitialize() {
@@ -107,15 +108,17 @@ class App extends Component {
     }, 1000);
   }
 
-  waitForCurrentUser(timer) {
+  async waitForCurrentUser(timer) {
     const currentUser = firebase.auth().currentUser;
     if (currentUser || this.retryCount > this.maxRetryCount) {
       clearInterval(timer);
       this.setState({
         waitForInitialize: false
       });
-      this.props.initMessaging(this.props.notificationPermitted);
-      this.props.fetchPostableMaps();
+      if (!currentUser.isAnonymous) {
+        this.props.initMessaging(this.props.notificationPermitted);
+        this.props.fetchPostableMaps();
+      }
     }
   }
 
@@ -129,11 +132,8 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <div>
           {this.renderHelmet()}
-          <div>
-            {this.props.authenticated
-              ? this.renderUserOnly()
-              : this.renderGuestOnly()}
-          </div>
+          {this.renderLayout()}
+          <SignInRequiredDialogContainer />
           <RequestNotificationDialogContainer />
           <ToastContainer />
           <BlockUiContainer />
@@ -193,7 +193,7 @@ class App extends Component {
     );
   }
 
-  renderUserOnly() {
+  renderLayout() {
     if (this.state.waitForInitialize) {
       return (
         <div style={styles.progressContainer}>
@@ -214,8 +214,15 @@ class App extends Component {
             <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
               <NavBarContainer />
             </Grid>
-            <Grid item xs={12} sm={12} md={this.isMapDetail() ? 12 : 6} lg={this.isMapDetail() ? 12 : 8} xl={this.isMapDetail() ? 12 : 8}>
-              {this.renderUserRoutes()}
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={this.sideNavUnnecessary() ? 12 : 6}
+              lg={this.sideNavUnnecessary() ? 12 : 8}
+              xl={this.sideNavUnnecessary() ? 12 : 8}
+            >
+              {this.renderRoutes()}
             </Grid>
           </Grid>
           {!this.props.large && <BottomNavContainer />}
@@ -224,11 +231,17 @@ class App extends Component {
     }
   }
 
-  isMapDetail() {
-    return this.props.pathname.includes('/maps/') && !this.props.pathname.includes('/reports');
+  sideNavUnnecessary() {
+    const path = this.props.pathname;
+    return (
+      (path.includes('/maps/') && !path.includes('/reports')) ||
+      path.includes('/login') ||
+      path.includes('/terms') ||
+      path.includes('/privacy')
+    );
   }
 
-  renderUserRoutes() {
+  renderRoutes() {
     return (
       <Switch>
         <Route exact path="/" component={TimelineContainer} />
@@ -252,21 +265,9 @@ class App extends Component {
         <Route exact path="/invites" component={InvitesContainer} />
         <Route exact path="/terms" component={TermsContainer} />
         <Route exact path="/privacy" component={PrivacyContainer} />
+        <Route path="/login" component={LoginContainer} />
         <Redirect from="*" to="/" />
       </Switch>
-    );
-  }
-
-  renderGuestOnly() {
-    return (
-      <div>
-        <Switch>
-          <Route path="/login" component={LoginContainer} />
-          <Route exact path="/terms" component={TermsContainer} />
-          <Route exact path="/privacy" component={PrivacyContainer} />
-          <Redirect from="*" to="/login" />
-        </Switch>
-      </div>
     );
   }
 }

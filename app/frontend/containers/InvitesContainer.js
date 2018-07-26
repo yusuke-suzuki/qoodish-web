@@ -12,6 +12,7 @@ import { push } from 'react-router-redux';
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.app.currentUser,
     large: state.shared.large,
     invites: state.invites.invites,
     loadingInvites: state.invites.loadingInvites

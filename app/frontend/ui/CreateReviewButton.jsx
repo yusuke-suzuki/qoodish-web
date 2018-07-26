@@ -39,7 +39,7 @@ export default class CreateReviewButton extends React.Component {
         variant="fab"
         aria-label="add"
         style={this.buttonStyle(this.props)}
-        onClick={this.props.handleButtonClick}
+        onClick={() => this.props.handleButtonClick(this.props.currentUser)}
         disabled={this.props.disabled}
       >
         <EditIcon />

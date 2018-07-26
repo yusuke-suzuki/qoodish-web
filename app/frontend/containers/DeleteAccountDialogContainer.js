@@ -7,6 +7,8 @@ import signOut from '../actions/signOut';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const mapStateToProps = state => {
   return {
@@ -25,6 +27,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestStart());
       const client = new ApiClient();
       await client.deleteAccount(currentUser.uid);
+      await firebase.auth().signOut();
       dispatch(requestFinish());
       dispatch(closeDeleteAccountDialog());
       dispatch(signOut());

@@ -6,7 +6,6 @@ import selectMap from '../actions/selectMap';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openToast from '../actions/openToast';
 import updatePageTitle from '../actions/updatePageTitle';
-import signOut from '../actions/signOut';
 import requestCurrentPosition from '../actions/requestCurrentPosition';
 import getMapBasePosition from '../actions/getMapBasePosition';
 import requestMapBase from '../actions/requestMapBase';
@@ -52,7 +51,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         let map = await response.json();
         dispatch(selectMap(map));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
         dispatch(push('/maps'));

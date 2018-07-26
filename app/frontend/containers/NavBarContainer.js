@@ -18,7 +18,6 @@ import switchFollowingMaps from '../actions/switchFollowingMaps';
 
 const mapStateToProps = state => {
   return {
-    authenticated: state.app.authenticated,
     currentUser: state.app.currentUser,
     large: state.shared.large,
     pageTitle: state.shared.pageTitle,
@@ -43,6 +42,10 @@ const mapDispatchToProps = dispatch => {
       }
     },
 
+    requestSignIn: () => {
+      dispatch(push('/login'));
+    },
+
     signOut: async () => {
       dispatch(requestStart());
       const client = new ApiClient();
@@ -50,6 +53,7 @@ const mapDispatchToProps = dispatch => {
       const registrationToken = await messaging.getToken();
       await client.deleteRegistrationToken(registrationToken);
       await firebase.auth().signOut();
+      dispatch(push('/login'));
       dispatch(requestFinish());
       dispatch(signOut());
     },
