@@ -39,9 +39,9 @@ app.get(pageRoutes, async (req, res) => {
   }
 });
 
-exports.host = functions.https.onRequest(app);
+exports.host = functions.region('asia-northeast1').https.onRequest(app);
 
-exports.generateThumbnail = functions.storage.bucket(process.env.FIREBASE_IMAGE_BUCKET_NAME).object().onFinalize((object) => {
+exports.generateThumbnail = functions.region('asia-northeast1').storage.bucket(process.env.FIREBASE_IMAGE_BUCKET_NAME).object().onFinalize((object) => {
   const fileBucket = object.bucket;
   const filePath = object.name;
   const contentType = object.contentType;
