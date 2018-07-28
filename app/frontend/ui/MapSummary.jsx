@@ -92,6 +92,9 @@ const styles = {
   },
   followMapButton: {
     marginTop: 16
+  },
+  ownerMark: {
+    right: 12
   }
 };
 
@@ -241,8 +244,17 @@ class MapSummary extends React.Component {
       >
         <Avatar src={collaborator.profile_image_url} />
         <ListItemText primary={collaborator.name} />
+        {collaborator.owner && this.renderOwnerMark()}
       </ListItem>
     ));
+  }
+
+  renderOwnerMark() {
+    return (
+      <ListItemSecondaryAction style={styles.ownerMark}>
+        <Chip label="Owner" />
+      </ListItemSecondaryAction>
+    );
   }
 
   renderSpots(spots) {
