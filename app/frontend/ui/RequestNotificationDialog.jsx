@@ -36,7 +36,8 @@ const styles = {
   cardActions: {
     paddingLeft: 24,
     paddingRight: 24,
-    paddingBottom: 16
+    paddingBottom: 16,
+    justifyContent: 'flex-end'
   },
   buttonContainer: {
     width: '100%',
@@ -77,11 +78,6 @@ class RequestNotificationDialog extends React.Component {
             avatar={
               <Avatar src={process.env.SUBSTITUTE_URL} />
             }
-            action={
-              <IconButton onClick={this.props.handleCancelButtonClick}>
-                <CloseIcon />
-              </IconButton>
-            }
             title="Qoodish からのプッシュ通知を受け取りますか？"
             subheader="qoodish.com"
           />
@@ -95,11 +91,16 @@ class RequestNotificationDialog extends React.Component {
           </CardContent>
           <CardActions style={styles.cardActions}>
             <Button
+              onClick={this.props.handleCancelButtonClick}
+            >
+              受け取らない
+            </Button>
+            <Button
               variant="raised"
               onClick={this.props.handleAllowNotificationButtonClick}
               color="primary"
             >
-              プッシュ通知を許可する
+              受け取る
             </Button>
           </CardActions>
         </Card>
