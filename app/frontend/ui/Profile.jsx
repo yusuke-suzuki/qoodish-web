@@ -99,6 +99,9 @@ const styles = {
   },
   reviewCardContainerLarge: {
     marginTop: 20
+  },
+  noReviewsContainer: {
+    marginTop: 20
   }
 };
 
@@ -302,11 +305,13 @@ class Profile extends React.Component {
       );
     } else {
       return (
-        <NoContentsContainer
-          contentType="review"
-          action="create-review"
-          message={I18n.t('reports will see here')}
-        />
+        <div style={styles.noReviewsContainer}>
+          <NoContentsContainer
+            contentType="review"
+            action="create-review"
+            message={I18n.t('reports will see here')}
+          />
+        </div>
       );
     }
   }
