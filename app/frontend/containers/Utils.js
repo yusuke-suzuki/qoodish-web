@@ -9,7 +9,7 @@ export const fetchCurrentPosition = (options = {}) => {
   });
 };
 
-export const uploadToStorage = image => {
+export const uploadToStorage = (image, dir = 'images') => {
   return new Promise((resolve, reject) => {
     const storage = firebase.app().storage(process.env.FIREBASE_IMAGE_BUCKET);
     const storageRef = storage.ref();
@@ -17,7 +17,7 @@ export const uploadToStorage = image => {
       contentType: 'image/jpeg',
       cacheControl: 'public,max-age=86400',
     };
-    const fileName = `images/${uuidv1()}.jpg`;
+    const fileName = `${dir}/${uuidv1()}.jpg`;
     const uploadTask = storageRef
       .child(fileName)
       .put(image, metadata);

@@ -8,6 +8,8 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
+import { uploadToStorage, downloadImage } from './Utils';
+
 const mapStateToProps = (state) => {
   return {
   };
@@ -35,27 +37,29 @@ const mapDispatchToProps = dispatch => {
         return;
       }
       dispatch(requestStart());
+
       const credential = authResult.credential;
       let accessToken = await currentUser.getIdToken();
       let provider = currentUser.providerData.find(data => {
         return data.providerId == credential.providerId;
       });
+
+      const blob = await downloadImage(provider.photoURL);
+      const uploadResponse = await uploadToStorage(blob, 'profile');
+
       let params = {
         user: {
           uid: currentUser.uid,
-          provider_uid: provider.uid,
-          email: provider.email,
-          provider: provider.providerId,
           display_name: provider.displayName,
-          photo_url: provider.photoURL,
-          token: accessToken,
-          provider_token: credential.accessToken
+          photo_url: uploadResponse.imageUrl,
+          token: accessToken
         }
       };
       const apiClient = new ApiClient();
       let response = await apiClient.signIn(params);
-      dispatch(requestFinish());
       let json = await response.json();
+      dispatch(requestFinish());
+
       if (response.ok) {
         dispatch(signIn(json));
         dispatch(push(''));
