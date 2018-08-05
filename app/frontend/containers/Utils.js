@@ -9,7 +9,7 @@ export const fetchCurrentPosition = (options = {}) => {
   });
 };
 
-export const uploadToStorage = (image, dir = 'images') => {
+export const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
   return new Promise((resolve, reject) => {
     const storage = firebase.app().storage(process.env.FIREBASE_IMAGE_BUCKET);
     const storageRef = storage.ref();
@@ -18,9 +18,17 @@ export const uploadToStorage = (image, dir = 'images') => {
       cacheControl: 'public,max-age=86400',
     };
     const fileName = `${dir}/${uuidv1()}.jpg`;
-    const uploadTask = storageRef
-      .child(fileName)
-      .put(image, metadata);
+
+    let uploadTask;
+    if (fileType === 'blob') {
+      uploadTask = storageRef
+        .child(fileName)
+        .put(image, metadata);
+    } else {
+      uploadTask = storageRef
+        .child(fileName)
+        .putString(image, fileType, metadata);
+    }
 
     uploadTask.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
@@ -47,7 +55,7 @@ export const uploadToStorage = (image, dir = 'images') => {
         reject();
       },
       async () => {
-        const imageUrl = await storage.ref(fileName).getDownloadURL()
+        const imageUrl = await storage.ref(fileName).getDownloadURL();
         resolve({
           imageUrl: imageUrl,
           fileName: uploadTask.snapshot.ref.name

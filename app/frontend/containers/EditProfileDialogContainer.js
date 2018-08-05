@@ -6,6 +6,7 @@ import closeEditProfileDialog from '../actions/closeEditProfileDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
+import { uploadToStorage } from './Utils';
 
 const mapStateToProps = state => {
   return {
@@ -23,6 +24,12 @@ const mapDispatchToProps = dispatch => {
 
     handleSaveButtonClick: async params => {
       dispatch(requestStart());
+
+      if (params.image_url) {
+        const uploadResponse = await uploadToStorage(params.image_url, 'profile', 'data_url');
+        params.image_url = uploadResponse.imageUrl;
+      }
+
       const client = new ApiClient();
       let response = await client.editProfile(params);
       let json = await response.json();
