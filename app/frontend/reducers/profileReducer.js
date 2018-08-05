@@ -13,7 +13,9 @@ import {
   LIKE_REVIEW,
   UNLIKE_REVIEW,
   FETCH_USER_PROFILE,
-  CLEAR_PROFILE_STATE
+  CLEAR_PROFILE_STATE,
+  OPEN_EDIT_PROFILE_DIALOG,
+  CLOSE_EDIT_PROFILE_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -24,7 +26,8 @@ const initialState = {
   loadingReviews: false,
   loadingMoreReviews: false,
   noMoreReviews: false,
-  nextTimestamp: ''
+  nextTimestamp: '',
+  editProfileDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -111,8 +114,20 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentReviews: rejected
       });
+    case OPEN_EDIT_PROFILE_DIALOG:
+      return Object.assign({}, state, {
+        editProfileDialogOpen: true
+      });
+    case CLOSE_EDIT_PROFILE_DIALOG:
+      return Object.assign({}, state, {
+        editProfileDialogOpen: false
+      });
     case CLEAR_PROFILE_STATE:
       return Object.assign({}, state, initialState);
+    case '@@router/LOCATION_CHANGE':
+      return Object.assign({}, state, {
+        editProfileDialogOpen: false
+      });
     default:
       return state;
   }

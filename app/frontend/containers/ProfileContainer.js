@@ -13,6 +13,7 @@ import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
 import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import clearProfileState from '../actions/clearProfileState';
+import openEditProfileDialog from '../actions/openEditProfileDialog';
 import ApiClient from './ApiClient.js';
 
 const mapStateToProps = state => {
@@ -27,7 +28,8 @@ const mapStateToProps = state => {
     loadingReviews: state.profile.loadingReviews,
     loadingMoreReviews: state.profile.loadingMoreReviews,
     noMoreReviews: state.profile.noMoreReviews,
-    nextTimestamp: state.profile.nextTimestamp
+    nextTimestamp: state.profile.nextTimestamp,
+    pathname: state.router.location.pathname
   };
 };
 
@@ -77,6 +79,10 @@ const mapDispatchToProps = (dispatch) => {
 
     clearProfileState: () => {
       dispatch(clearProfileState());
+    },
+
+    handleEditProfileButtonClick: () => {
+      dispatch(openEditProfileDialog());
     }
   };
 };

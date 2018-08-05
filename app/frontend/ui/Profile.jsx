@@ -226,6 +226,18 @@ class Profile extends React.Component {
     );
   }
 
+  renderEditProfileButton() {
+    return (
+      <Button
+        variant="raised"
+        onClick={this.props.handleEditProfileButtonClick}
+        color="primary"
+      >
+        Edit Profile
+      </Button>
+    );
+  }
+
   renderProfileCard(currentUser) {
     return (
       <Card>
@@ -238,6 +250,7 @@ class Profile extends React.Component {
             <Typography variant="headline" gutterBottom>
               {currentUser.isAnonymous ? "Anonymous user" : currentUser.name}
             </Typography>
+            {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
           <Tabs
             value={this.state.tabValue}
