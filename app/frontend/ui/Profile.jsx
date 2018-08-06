@@ -230,7 +230,7 @@ class Profile extends React.Component {
     return (
       <Button
         variant="raised"
-        onClick={this.props.handleEditProfileButtonClick}
+        onClick={() => this.props.handleEditProfileButtonClick(this.props.currentUser)}
         color="primary"
       >
         Edit Profile
