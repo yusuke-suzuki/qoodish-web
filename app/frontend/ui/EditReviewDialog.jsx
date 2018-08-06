@@ -24,6 +24,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { sleep } from '../containers/Utils';
+import I18n from '../containers/I18n';
 
 const styles = {
   appbar: {
@@ -146,12 +147,12 @@ class EditReviewDialog extends React.Component {
     let errorText;
     if (comment) {
       if (comment.length > 200) {
-        errorText = 'The maximum number of characters is 200';
+        errorText = I18n.t('max characters 200');
       } else {
         errorText = '';
       }
     } else {
-      errorText = 'Comment is required';
+      errorText = I18n.t('comment is required');
     }
 
     this.setState(
@@ -334,7 +335,7 @@ class EditReviewDialog extends React.Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
+        {this.props.currentReview ? I18n.t('edit report') : I18n.t('create new report')}
       </DialogTitle>
     );
   }
@@ -346,12 +347,11 @@ class EditReviewDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.handleRequestClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex}>
-            {this.props.currentReview ? 'Edit Report' : 'Create New Report'}
+            {this.props.currentReview ? I18n.t('edit report') : I18n.t('create new report')}
           </Typography>
           <Button
             variant="raised"
@@ -359,7 +359,7 @@ class EditReviewDialog extends React.Component {
             color="secondary"
             disabled={this.state.disabled}
           >
-            Save
+            {I18n.t('save')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -369,14 +369,14 @@ class EditReviewDialog extends React.Component {
   renderActionsLarge() {
     return (
       <DialogActions>
-        <Button onClick={this.handleRequestClose}>Cancel</Button>
+        <Button onClick={this.handleRequestClose}>{I18n.t('cancel')}</Button>
         <Button
           variant="raised"
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}
         >
-          Save
+          {I18n.t('save')}
         </Button>
       </DialogActions>
     );
@@ -401,7 +401,7 @@ class EditReviewDialog extends React.Component {
         error={this.state.mapId ? false : true}
         disabled={this.props.currentReview ? true : false}
       >
-        <InputLabel htmlFor="map-input">Map</InputLabel>
+        <InputLabel htmlFor="map-input">{I18n.t('map')}</InputLabel>
         <Select
           value={this.state.mapId ? this.state.mapId : ''}
           onChange={this.handleMapChange}
@@ -414,7 +414,7 @@ class EditReviewDialog extends React.Component {
           {this.renderPostableMaps()}
         </Select>
         <FormHelperText>
-          {!this.state.mapId && 'Map is required'}
+          {!this.state.mapId && I18n.t('map is required')}
         </FormHelperText>
       </FormControl>
     );
@@ -439,7 +439,7 @@ class EditReviewDialog extends React.Component {
   renderCommentBox() {
     return (
       <TextField
-        label="Comment"
+        label={I18n.t('comment')}
         onChange={this.handleCommentChange}
         error={this.state.errorComment ? true : false}
         helperText={this.state.errorComment}

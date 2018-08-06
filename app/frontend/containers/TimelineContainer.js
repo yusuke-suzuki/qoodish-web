@@ -11,6 +11,7 @@ import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
 import updatePageTitle from '../actions/updatePageTitle';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -27,7 +28,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Home'));
+      dispatch(updatePageTitle(I18n.t('home')));
     },
 
     refreshReviews: async () => {

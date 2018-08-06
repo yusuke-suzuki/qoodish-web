@@ -11,8 +11,6 @@ import { compose } from 'recompose';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
 import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
-import JoinMapDialogContainer from '../containers/JoinMapDialogContainer';
-import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 import LocationButtonContainer from '../containers/LocationButtonContainer';
@@ -189,8 +187,6 @@ export default class MapDetail extends React.Component {
         {this.props.currentMap && this.renderHelmet(this.props.currentMap)}
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
-        <JoinMapDialogContainer mapId={this.props.match.params.mapId} />
-        <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
         <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
       </div>

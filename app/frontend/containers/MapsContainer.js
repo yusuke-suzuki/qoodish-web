@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import Maps from '../ui/Maps';
 import ApiClient from '../containers/ApiClient';
 
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchMyMaps from '../actions/fetchMyMaps';
 import fetchFollowingMaps from '../actions/fetchFollowingMaps';
 import loadMyMapsStart from '../actions/loadMyMapsStart';
@@ -15,6 +14,7 @@ import showMapsTab from '../actions/showMapsTab';
 import hideMapsTab from '../actions/hideMapsTab';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -31,7 +31,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Maps'));
+      dispatch(updatePageTitle(I18n.t('maps')));
     },
 
     showTabs: () => {

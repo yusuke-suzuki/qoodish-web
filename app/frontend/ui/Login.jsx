@@ -100,7 +100,7 @@ class Login extends React.Component {
   componentWillMount() {
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/login',
-      'page_title': 'Login | Qoodish'
+      'page_title': `${I18n.t('login')} | Qoodish`
     });
   }
 

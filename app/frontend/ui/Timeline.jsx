@@ -68,7 +68,7 @@ export default class Feed extends React.Component {
     }
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/',
-      'page_title': 'Home | Qoodish'
+      'page_title': `${I18n.t('home')} | Qoodish`
     });
   }
 

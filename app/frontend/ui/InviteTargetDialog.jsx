@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
+import I18n from '../containers/I18n';
 
 const styles = {
   appbar: {
@@ -87,7 +88,7 @@ class InviteTargetDialog extends React.Component {
           }
         >
           <TextField
-            label="Search users..."
+            label={I18n.t('search users')}
             onChange={this.handleInputChange}
             fullWidth
             autoFocus
@@ -102,7 +103,7 @@ class InviteTargetDialog extends React.Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        Select Invite Target
+        {I18n.t('select invite target')}
       </DialogTitle>
     );
   }
@@ -114,12 +115,11 @@ class InviteTargetDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.props.onClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex}>
-            Select Invite Target
+            {I18n.t('select invite target')}
           </Typography>
           <Button
             variant="raised"
@@ -129,7 +129,7 @@ class InviteTargetDialog extends React.Component {
             color="secondary"
             disabled={!this.state.selectedUserId}
           >
-            SEND
+            {I18n.t('send')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -139,7 +139,7 @@ class InviteTargetDialog extends React.Component {
   renderAction() {
     return (
       <DialogActions>
-        <Button onClick={this.props.onClose}>Cancel</Button>
+        <Button onClick={this.props.onClose}>{I18n.t('cancel')}</Button>
         <Button
           variant="raised"
           onClick={() => {
@@ -148,7 +148,7 @@ class InviteTargetDialog extends React.Component {
           color="primary"
           disabled={!this.state.selectedUserId}
         >
-          SEND
+          {I18n.t('send')}
         </Button>
       </DialogActions>
     );

@@ -5,6 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
+import I18n from '../containers/I18n';
 
 const styles = {
   notificationText: {
@@ -63,15 +64,15 @@ export default class NotificationList extends React.Component {
     if (notification.key == 'invited') {
       return (
         <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {notification.key} you to{' '}
-          {notification.notifiable.type}.
+          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
+          {I18n.t(notification.notifiable.type)}
         </div>
       );
     } else {
       return (
         <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {notification.key} your{' '}
-          {notification.notifiable.type}.
+          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
+          {I18n.t(notification.notifiable.type)}
         </div>
       );
     }

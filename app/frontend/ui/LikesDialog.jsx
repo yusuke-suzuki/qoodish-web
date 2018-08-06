@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
+import I18n from '../containers/I18n';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -39,12 +40,11 @@ class LikesDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.props.handleRequestDialogClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex} noWrap>
-            Likes
+            {I18n.t('likes')}
           </Typography>
         </Toolbar>
         <Divider />

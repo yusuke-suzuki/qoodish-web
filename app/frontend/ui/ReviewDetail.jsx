@@ -3,6 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import Helmet from 'react-helmet';
+import I18n from '../containers/I18n';
 
 const styles = {
   containerLarge: {
@@ -89,7 +90,7 @@ class ReviewDetail extends React.Component {
       return (
         <NoContentsContainer
           contentType="review"
-          message="Report not found."
+          message={I18n.t('reports will see here')}
         />
       );
     }

@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import I18n from '../containers/I18n';
 
 export default class CreateMapButton extends React.Component {
   render() {
@@ -19,23 +20,23 @@ export default class CreateMapButton extends React.Component {
     if (map.editable) {
       return (
         <Button variant="raised" disabled>
-          OWNER
+          {I18n.t('owner')}
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button variant="raised" onClick={this.props.handleLeaveButtonClick}>
-          UNFOLLOW
+        <Button variant="raised" onClick={this.props.handleUnfollowButtonClick}>
+          {I18n.t('unfollow')}
         </Button>
       );
     } else {
       return (
         <Button
           variant="raised"
-          onClick={() => this.props.handleJoinButtonClick(this.props.currentUser)}
+          onClick={() => this.props.handleFollowButtonClick(this.props.currentUser)}
           color="primary"
         >
-          FOLLOW
+          {I18n.t('follow')}
         </Button>
       );
     }

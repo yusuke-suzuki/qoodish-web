@@ -3,10 +3,6 @@ import {
   OPEN_PLACE_SELECT_DIALOG,
   CLOSE_PLACE_SELECT_DIALOG,
   EDIT_MAP,
-  OPEN_JOIN_MAP_DIALOG,
-  CLOSE_JOIN_MAP_DIALOG,
-  OPEN_LEAVE_MAP_DIALOG,
-  CLOSE_LEAVE_MAP_DIALOG,
   JOIN_MAP,
   LEAVE_MAP,
   SWITCH_SUMMARY,
@@ -22,8 +18,6 @@ import {
 const initialState = {
   currentMap: null,
   placeSelectDialogOpen: false,
-  joinMapDialogOpen: false,
-  leaveMapDialogOpen: false,
   inviteTargetDialogOpen: false,
   pickedUsers: [],
   loadingUsers: false,
@@ -69,22 +63,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentMap: action.payload.map
       });
-    case OPEN_JOIN_MAP_DIALOG:
-      return Object.assign({}, state, {
-        joinMapDialogOpen: true
-      });
-    case CLOSE_JOIN_MAP_DIALOG:
-      return Object.assign({}, state, {
-        joinMapDialogOpen: false
-      });
-    case OPEN_LEAVE_MAP_DIALOG:
-      return Object.assign({}, state, {
-        leaveMapDialogOpen: true
-      });
-    case CLOSE_LEAVE_MAP_DIALOG:
-      return Object.assign({}, state, {
-        leaveMapDialogOpen: false
-      });
     case JOIN_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.currentMap
@@ -107,16 +85,12 @@ const reducer = (state = initialState, action) => {
         placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,
         pickedUsers: [],
-        joinMapDialogOpen: false,
-        leaveMapDialogOpen: false,
         mapSummaryOpen: false
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,
-        joinMapDialogOpen: false,
-        leaveMapDialogOpen: false,
         mapSummaryOpen: false
       });
     default:

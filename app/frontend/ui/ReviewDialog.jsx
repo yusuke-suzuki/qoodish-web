@@ -8,6 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   appbar: {
@@ -56,12 +57,11 @@ class ReviewDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.props.handleRequestDialogClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex}>
-            Report
+            {I18n.t('report')}
           </Typography>
         </Toolbar>
       </AppBar>

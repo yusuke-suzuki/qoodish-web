@@ -5,6 +5,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import I18n from '../containers/I18n';
 
 const styles = {
   container: {
@@ -80,7 +81,7 @@ export default class MapCollection extends React.Component {
                 color="inherit"
                 noWrap
               >
-                {map.followers_count} followers
+                {map.followers_count} {I18n.t('followers')}
               </Typography>
             </div>
           }
@@ -98,7 +99,7 @@ export default class MapCollection extends React.Component {
   renderFollowCheckButton() {
     return (
       <Button variant="outlined" size="small" color="primary" style={styles.followCheckButton}>
-        Following
+        {I18n.t('following')}
       </Button>
     );
   }

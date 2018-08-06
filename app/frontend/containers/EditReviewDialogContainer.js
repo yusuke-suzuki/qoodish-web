@@ -12,6 +12,7 @@ import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import requestMapCenter from '../actions/requestMapCenter';
 import selectSpot from '../actions/selectSpot';
 import { sleep, uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -41,7 +42,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(closeEditReviewDialog());
-        dispatch(openToast('Successfully created the report!'));
+        dispatch(openToast(I18n.t('create review success')));
 
         gtag('event', 'create', {
           'event_category': 'engagement',
@@ -92,7 +93,7 @@ const mapDispatchToProps = dispatch => {
           deleteFromStorage(oldReview.image.file_name);
         }
         dispatch(closeEditReviewDialog());
-        dispatch(openToast('Successfully updated the report!'));
+        dispatch(openToast(I18n.t('edit review success')));
 
         if (canvas) {
           // wait until thumbnail created on cloud function

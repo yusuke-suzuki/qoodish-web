@@ -25,6 +25,7 @@ import moment from 'moment';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 import SwipeableViews from 'react-swipeable-views';
+import I18n from '../containers/I18n';
 
 const styles = {
   skeltonThumbnail: {
@@ -170,9 +171,9 @@ class MapSummary extends React.Component {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab icon={<TimelineIcon />} label="TIMELINE" style={styles.tab} />
-            <Tab icon={<PlaceIcon />} label="SPOTS" style={styles.tab} />
-            <Tab icon={<GroupIcon />} label="FOLLOWERS" style={styles.tab} />
+            <Tab icon={<TimelineIcon />} label={I18n.t('timeline')} style={styles.tab} />
+            <Tab icon={<PlaceIcon />} label={I18n.t('spots')} style={styles.tab} />
+            <Tab icon={<GroupIcon />} label={I18n.t('followers')} style={styles.tab} />
           </Tabs>
           <SwipeableViews
             animateHeight
@@ -252,7 +253,7 @@ class MapSummary extends React.Component {
   renderOwnerMark() {
     return (
       <ListItemSecondaryAction style={styles.ownerMark}>
-        <Chip label="Owner" />
+        <Chip label={I18n.t('owner')} />
       </ListItemSecondaryAction>
     );
   }
@@ -293,7 +294,7 @@ class MapSummary extends React.Component {
         <ListItemText
           primary={
             <div style={styles.activityText}>
-              <b>{review.author.name}</b> created a report about{' '}
+              <b>{review.author.name}</b> {I18n.t('created a report about')}
               <b>{review.spot.name}</b>
             </div>
           }
@@ -316,7 +317,7 @@ class MapSummary extends React.Component {
 
   renderPrivateIcon() {
     return (
-      <Tooltip title="Only owner and followers are available." key="private">
+      <Tooltip title={I18n.t('this map is private')} key="private">
         <LockIcon color="inherit" style={styles.mapTypeIcon} />
       </Tooltip>
     );

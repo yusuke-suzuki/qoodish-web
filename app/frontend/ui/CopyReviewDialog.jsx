@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
+import I18n from '../containers/I18n';
 
 class CopyReviewDialog extends React.Component {
   render() {
@@ -16,10 +17,10 @@ class CopyReviewDialog extends React.Component {
         onClose={this.props.handleRequestClose}
         fullWidth
       >
-        <DialogTitle>Select map to copy this report to</DialogTitle>
+        <DialogTitle>{I18n.t('select map to copy this report to')}</DialogTitle>
         <DialogContent>{this.renderPostableMaps()}</DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleRequestClose}>Cancel</Button>
+          <Button onClick={this.props.handleRequestClose}>{I18n.t('cancel')}</Button>
         </DialogActions>
       </Dialog>
     );

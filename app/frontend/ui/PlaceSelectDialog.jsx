@@ -17,6 +17,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import I18n from '../containers/I18n';
 
 const styles = {
   appbar: {
@@ -90,12 +91,12 @@ class PlaceSelectDialog extends React.Component {
           }
         >
           <TextField
-            label="Search places..."
+            label={I18n.t('search places')}
             onChange={this.handleInputChange}
             fullWidth
             autoFocus
-            placeholder="例: 「弘前  りんご公園」"
-            helperText="「所在地  プレイス名」のように入力すると見つけやすくなります。"
+            placeholder={I18n.t('search places example')}
+            helperText={I18n.t('search places help')}
           />
           <List>{this.renderPlaces()}</List>
         </DialogContent>
@@ -108,7 +109,7 @@ class PlaceSelectDialog extends React.Component {
     return (
       <DialogTitle>
         <div style={styles.dialogTitle}>
-          <PlaceIcon style={styles.placeIcon} />Select Place
+          <PlaceIcon style={styles.placeIcon} />{I18n.t('select place')}
         </div>
       </DialogTitle>
     );
@@ -121,12 +122,11 @@ class PlaceSelectDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.props.onClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex}>
-            Select Place
+            {I18n.t('select place')}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -136,7 +136,7 @@ class PlaceSelectDialog extends React.Component {
   renderAction() {
     return (
       <DialogActions>
-        <Button onClick={this.props.onClose}>Cancel</Button>
+        <Button onClick={this.props.onClose}>{I18n.t('cancel')}</Button>
       </DialogActions>
     );
   }

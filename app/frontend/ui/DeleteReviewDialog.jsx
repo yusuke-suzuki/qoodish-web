@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import I18n from '../containers/I18n';
 
 class DeleteReviewDialog extends Component {
   constructor(props) {
@@ -43,10 +44,10 @@ class DeleteReviewDialog extends Component {
         fullWidth
       >
         <DialogTitle>
-          Are you sure you want to DELETE this report?
+          {I18n.t('sure to delete report')}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>This cannot be undone.</DialogContentText>
+          <DialogContentText>{I18n.t('this cannot be undone')}</DialogContentText>
           <br />
           <FormControlLabel
             control={
@@ -55,11 +56,11 @@ class DeleteReviewDialog extends Component {
                 onChange={this.handleCheckChange}
               />
             }
-            label="I understand this cannot be undone."
+            label={I18n.t('understand this cannot be undone')}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
+          <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
             variant="raised"
             onClick={() => {
@@ -69,7 +70,7 @@ class DeleteReviewDialog extends Component {
             color="primary"
             disabled={this.state.disabled}
           >
-            DELETE
+            {I18n.t('delete')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -17,6 +17,7 @@ import openToast from '../actions/openToast';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import clearProfileState from '../actions/clearProfileState';
 import ApiClient from './ApiClient.js';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -37,7 +38,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Profile'));
+      dispatch(updatePageTitle(I18n.t('profile')));
     },
 
     fetchUserProfile: async () => {

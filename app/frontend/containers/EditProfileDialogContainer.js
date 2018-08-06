@@ -7,6 +7,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import { uploadToStorage } from './Utils';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -37,7 +38,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(fetchMyProfile(json));
         dispatch(closeEditProfileDialog());
-        dispatch(openToast('Successfully updated your profile!'));
+        dispatch(openToast(I18n.t('edit profie success')));
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
       } else {

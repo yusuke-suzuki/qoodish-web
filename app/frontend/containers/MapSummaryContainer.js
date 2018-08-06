@@ -2,8 +2,6 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import MapSummary from '../ui/MapSummary';
 import requestMapCenter from '../actions/requestMapCenter';
-import openJoinMapDialog from '../actions/openJoinMapDialog';
-import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 import openReviewDialog from '../actions/openReviewDialog';
 import openSpotCard from '../actions/openSpotCard';
 import selectSpot from '../actions/selectSpot';
@@ -37,14 +35,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(push(`/users/${userId}`, {
         previous: true
       }));
-    },
-
-    handleJoinButtonClick: () => {
-      dispatch(openJoinMapDialog());
-    },
-
-    handleLeaveButtonClick: () => {
-      dispatch(openLeaveMapDialog());
     }
   };
 };

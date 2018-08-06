@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -50,7 +51,7 @@ export default class Invites extends React.Component {
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/invites',
-      'page_title': 'Invites | Qoodish'
+      'page_title': `${I18n.t('invites')} | Qoodish'`
     });
   }
 
@@ -81,7 +82,7 @@ export default class Invites extends React.Component {
       return (
         <NoContentsContainer
           contentType="invite"
-          message="When you received invites, you will see here."
+          message={I18n.t('no invites here')}
         />
       );
     }
@@ -121,7 +122,7 @@ export default class Invites extends React.Component {
             onClick={() => this.props.handleFollowButtonClick(invite)}
             disabled={invite.expired}
           >
-            Follow
+            {I18n.t('follow')}
           </Button>
         </CardActions>
       </Card>
