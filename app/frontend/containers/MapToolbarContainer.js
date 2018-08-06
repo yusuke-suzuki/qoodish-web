@@ -6,10 +6,12 @@ import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 import switchMap from '../actions/switchMap';
+import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
   return {
-    currentMap: state.mapSummary.currentMap
+    currentMap: state.mapSummary.currentMap,
+    currentUser: state.app.currentUser
   };
 };
 
@@ -41,7 +43,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(openDeleteMapDialog(map));
     },
 
-    handleIssueButtonClick: map => {
+    handleIssueButtonClick: (currentUser, map) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openIssueDialog(map.id, 'map'));
     },
 

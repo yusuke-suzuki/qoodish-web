@@ -32,7 +32,7 @@ export default class CreateMapButton extends React.Component {
       return (
         <Button
           variant="raised"
-          onClick={this.props.handleJoinButtonClick}
+          onClick={() => this.props.handleJoinButtonClick(this.props.currentUser)}
           color="primary"
         >
           FOLLOW

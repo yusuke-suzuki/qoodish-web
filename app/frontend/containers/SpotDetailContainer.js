@@ -36,7 +36,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         dispatch(fetchSpot(json));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
         dispatch(openToast('Spot not found.'));

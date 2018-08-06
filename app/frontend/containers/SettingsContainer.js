@@ -5,6 +5,7 @@ import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.app.currentUser,
     large: state.shared.large
   };
 };

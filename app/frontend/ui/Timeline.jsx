@@ -2,6 +2,7 @@ import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -20,10 +21,12 @@ const styles = {
     width: '100%'
   },
   formCardLarge: {
-    marginTop: 84
+    marginTop: 84,
+    cursor: 'pointer'
   },
   formCardSmall: {
-    marginTop: 72
+    marginTop: 72,
+    cursor: 'pointer'
   },
   container: {
     display: 'inline-block',
@@ -60,8 +63,9 @@ export default class Feed extends React.Component {
 
   componentWillMount() {
     this.props.updatePageTitle();
-    this.props.refreshReviews();
-
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.refreshReviews();
+    }
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/',
       'page_title': 'Home | Qoodish'
@@ -119,16 +123,10 @@ export default class Feed extends React.Component {
     return (
       <Card
         style={this.props.large ? styles.formCardLarge : styles.formCardSmall}
-        onClick={this.props.handleCreateReviewClick}
+        onClick={() => this.props.handleCreateReviewClick(this.props.currentUser)}
       >
         <CardHeader
-          avatar={
-            <Avatar
-              src={
-                this.props.currentUser ? this.props.currentUser.image_url : ''
-              }
-            />
-          }
+          avatar={this.renderAvatar()}
           title={
             <Typography variant="body2" color="textSecondary">
               {I18n.t('share recent spot')}
@@ -137,6 +135,22 @@ export default class Feed extends React.Component {
         />
       </Card>
     );
+  }
+
+  renderAvatar() {
+    if (this.props.currentUser.isAnonymous) {
+      return (
+        <Avatar>
+          <PersonIcon />
+        </Avatar>
+      );
+    } else {
+      return (
+        <Avatar
+          src={this.props.currentUser.image_url}
+        />
+      );
+    }
   }
 
   renderReviewContainer(reviews) {

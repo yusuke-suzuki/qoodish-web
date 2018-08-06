@@ -34,7 +34,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         dispatch(selectReview(json));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
         dispatch(openToast('Report not found.'));

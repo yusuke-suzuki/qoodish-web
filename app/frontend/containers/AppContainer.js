@@ -3,15 +3,17 @@ import App from '../ui/App';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
-import signOut from '../actions/signOut';
 import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
 import firebase from 'firebase/app';
+import 'firebase/auth';
 import 'firebase/messaging';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
+import openToast from '../actions/openToast';
+import signIn from '../actions/signIn';
 
 const mapStateToProps = state => {
   return {
-    authenticated: state.app.authenticated,
+    currentUser: state.app.currentUser,
     large: state.shared.large,
     registrationToken: state.app.registrationToken,
     notificationPermitted: state.app.notificationPermitted,
@@ -23,6 +25,16 @@ const mapDispatchToProps = dispatch => {
   return {
     handleWindowSizeChange: width => {
       dispatch(updateWindowSize(width));
+    },
+
+    signInAnonymously: async () => {
+      await firebase.auth().signInAnonymously();
+      const currentUser = firebase.auth().currentUser;
+      const user = {
+        uid: currentUser.uid,
+        isAnonymous: true
+      };
+      dispatch(signIn(user));
     },
 
     initMessaging: (permitted) => {
@@ -60,7 +72,6 @@ const mapDispatchToProps = dispatch => {
         let maps = await response.json();
         dispatch(fetchPostableMaps(maps));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       }
     }

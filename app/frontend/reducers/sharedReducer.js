@@ -22,7 +22,9 @@ import {
   SHOW_MAPS_TAB,
   HIDE_MAPS_TAB,
   OPEN_REQUEST_NOTIFICATION_DIALOG,
-  CLOSE_REQUEST_NOTIFICATION_DIALOG
+  CLOSE_REQUEST_NOTIFICATION_DIALOG,
+  OPEN_SIGN_IN_REQUIRED_DIALOG,
+  CLOSE_SIGN_IN_REQUIRED_DIALOG
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -46,7 +48,8 @@ const initialState = {
   showBackButton: false,
   mapsTabActive: false,
   previous: false,
-  requestNotificationDialogOpen: false
+  requestNotificationDialogOpen: false,
+  signInRequiredDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -174,12 +177,21 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         requestNotificationDialogOpen: false
       });
+    case OPEN_SIGN_IN_REQUIRED_DIALOG:
+      return Object.assign({}, state, {
+        signInRequiredDialogOpen: true
+      });
+    case CLOSE_SIGN_IN_REQUIRED_DIALOG:
+      return Object.assign({}, state, {
+        signInRequiredDialogOpen: false
+      });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         previous: action.payload.state ? action.payload.state.previous : false,
         issueDialogOpen: false,
         likesDialogOpen: false,
-        requestNotificationDialogOpen: false
+        requestNotificationDialogOpen: false,
+        signInRequiredDialogOpen: false
       });
     default:
       return state;

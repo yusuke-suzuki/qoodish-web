@@ -17,7 +17,7 @@ import {
 } from '../actionTypes';
 
 const initialState = {
-  currentUser: undefined,
+  currentUser: {},
   currentMaps: [],
   loadingMaps: false,
   currentReviews: [],

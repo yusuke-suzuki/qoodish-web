@@ -20,7 +20,10 @@ const styles = {
 
 class Notifications extends React.Component {
   componentWillMount() {
-    this.props.handleMount();
+    this.props.updatePageTitle();
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.handleMount();
+    }
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/notifications',
       'page_title': 'Notifications | Qoodish'

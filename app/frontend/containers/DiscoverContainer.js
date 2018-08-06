@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import Discover from '../ui/Discover';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
-import signOut from '../actions/signOut';
 import { push } from 'react-router-redux';
 
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
@@ -79,7 +78,6 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(fetchRecentReviews(reviews));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else {
         dispatch(openToast('Failed to fetch recent reviews.'));

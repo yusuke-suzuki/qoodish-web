@@ -13,10 +13,12 @@ import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
 import selectSpot from '../actions/selectSpot';
 import closeReviewDialog from '../actions/closeReviewDialog';
+import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
   return {
-    large: state.shared.large
+    large: state.shared.large,
+    currentUser: state.app.currentUser
   };
 };
 
@@ -71,7 +73,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openDeleteReviewDialog(review));
     },
 
-    handleIssueButtonClick: review => {
+    handleIssueButtonClick: (currentUser, review) => {
+      console.log(currentUser);
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openIssueDialog(review.id, 'review'));
     },
 

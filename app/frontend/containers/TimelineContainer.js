@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import Timeline from '../ui/Timeline';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
-import signOut from '../actions/signOut';
 import fetchReviews from '../actions/fetchReviews';
 import fetchMoreReviews from '../actions/fetchMoreReviews';
 import loadReviewsStart from '../actions/loadReviewsStart';
@@ -11,6 +10,7 @@ import loadMoreReviewsStart from '../actions/loadMoreReviewsStart';
 import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
 import updatePageTitle from '../actions/updatePageTitle';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
+import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
   return {
@@ -39,7 +39,6 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(fetchReviews(reviews));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else {
         dispatch(openToast('Failed to fetch reports.'));
@@ -55,14 +54,17 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(fetchMoreReviews(reviews));
       } else if (response.status == 401) {
-        dispatch(signOut());
         dispatch(openToast('Authenticate failed'));
       } else {
         dispatch(openToast('Failed to fetch reports.'));
       }
     },
 
-    handleCreateReviewClick: () => {
+    handleCreateReviewClick: (currentUser) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openPlaceSelectDialog());
     }
   };

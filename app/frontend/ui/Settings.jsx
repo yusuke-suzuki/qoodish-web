@@ -46,7 +46,8 @@ export default class Invites extends React.Component {
             <Button
               variant="raised"
               onClick={this.props.handleDeleteAccountButtonClick}
-              style={styles.deleteButton}
+              style={this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
+              disabled={this.props.currentUser.isAnonymous}
             >
               Delete Account
             </Button>

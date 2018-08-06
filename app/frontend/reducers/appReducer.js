@@ -7,7 +7,6 @@ import {
 } from '../actionTypes';
 
 const initialState = {
-  authenticated: false,
   currentUser: null,
   registrationToken: null,
   notificationPermitted: null
@@ -17,12 +16,10 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case SIGN_IN:
       return Object.assign({}, state, {
-        authenticated: true,
         currentUser: action.payload.user
       });
     case SIGN_OUT:
       return Object.assign({}, state, {
-        authenticated: false,
         currentUser: null,
         registrationToken: null,
         notificationPermitted: null

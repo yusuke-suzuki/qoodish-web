@@ -9,6 +9,7 @@ import loadNotificationsEnd from '../actions/loadNotificationsEnd';
 
 const mapStateToProps = state => {
   return {
+    currentUser: state.app.currentUser,
     large: state.shared.large,
     notifications: state.shared.notifications,
     loadingNotifications: state.shared.loadingNotifications
@@ -17,8 +18,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleMount: async () => {
+    updatePageTitle: () => {
       dispatch(updatePageTitle('Notifications'));
+    },
+
+    handleMount: async () => {
       dispatch(loadNotificationsStart());
       const client = new ApiClient();
       let response = await client.fetchNotifications();
