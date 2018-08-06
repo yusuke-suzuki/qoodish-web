@@ -6,6 +6,7 @@ import PlaceIcon from '@material-ui/icons/Place';
 import MailIcon from '@material-ui/icons/Mail';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import I18n from '../containers/I18n';
 
 const styles = {
   container: {
@@ -59,7 +60,7 @@ export default class NoContents extends React.Component {
             color="primary"
             onClick={() => this.props.handleCreateMapButtonClick(this.props.currentUser)}
           >
-            Create New Map
+            {I18n.t('create new map')}
           </Button>
         );
       case 'create-review':
@@ -69,7 +70,7 @@ export default class NoContents extends React.Component {
             color="primary"
             onClick={() => this.props.handleCreateReviewButtonClick(this.props.currentUser)}
           >
-            Create New Report
+            {I18n.t('create new report')}
           </Button>
         );
       default:

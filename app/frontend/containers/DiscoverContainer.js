@@ -4,7 +4,6 @@ import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import { push } from 'react-router-redux';
 
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer';
 import fetchRecentReviews from '../actions/fetchRecentReviews';
 import fetchPopularMaps from '../actions/fetchPopularMaps';
 import fetchTrendingSpots from '../actions/fetchTrendingSpots';
@@ -19,6 +18,7 @@ import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
 import updatePageTitle from '../actions/updatePageTitle';
 import openReviewDialog from '../actions/openReviewDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -36,7 +36,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Discover'));
+      dispatch(updatePageTitle(I18n.t('discover')));
     },
 
     handleCreateMapButtonClick: () => {

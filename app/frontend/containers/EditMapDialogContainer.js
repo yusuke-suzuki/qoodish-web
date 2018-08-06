@@ -7,6 +7,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import openBaseSelectDialog from '../actions/openBaseSelectDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -36,7 +37,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(editMap(json));
         dispatch(closeEditMapDialog());
-        dispatch(openToast('Successfully updated the map!'));
+        dispatch(openToast(I18n.t('edit map success')));
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
       } else {

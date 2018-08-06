@@ -20,6 +20,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -111,7 +112,7 @@ export default class Discover extends React.Component {
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/discover',
-      'page_title': 'Discover | Qoodish'
+      'page_title': `${I18n.t('discover')} | Qoodish`
     });
   }
 
@@ -133,7 +134,7 @@ export default class Discover extends React.Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <ExploreIcon style={styles.headerIcon} /> Pick Up
+            <ExploreIcon style={styles.headerIcon} /> {I18n.t('pick up')}
           </Typography>
           <br />
           {this.renderPickUp(this.props.mapPickedUp)}
@@ -145,7 +146,7 @@ export default class Discover extends React.Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <RateReviewIcon style={styles.headerIcon} /> Recent Reports
+            <RateReviewIcon style={styles.headerIcon} /> {I18n.t('recent reports')}
           </Typography>
           <br />
           {this.props.loadingRecentReviews
@@ -159,7 +160,7 @@ export default class Discover extends React.Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <TrendingUpIcon style={styles.headerIcon} /> Trending Maps
+            <TrendingUpIcon style={styles.headerIcon} /> {I18n.t('trending maps')}
           </Typography>
           {this.props.loadingPopularMaps
             ? this.renderProgress()
@@ -172,7 +173,7 @@ export default class Discover extends React.Component {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <PlaceIcon style={styles.headerIcon} /> Trending Spots
+            <PlaceIcon style={styles.headerIcon} /> {I18n.t('trending spots')}
           </Typography>
           <br />
           {this.props.loadingTrendingSpots
@@ -222,8 +223,8 @@ export default class Discover extends React.Component {
   renderTrendingSpotsContainer(spots) {
     return (
       <List disablePadding style={styles.trendingSpotsList}>
-        {this.props.trendingSpots.length > 0
-          ? this.renderSpots(this.props.trendingSpots)
+        {spots.length > 0
+          ? this.renderSpots(spots)
           : null}
       </List>
     );
@@ -270,7 +271,7 @@ export default class Discover extends React.Component {
       return (
         <NoContentsContainer
           contentType="review"
-          message="No reports."
+          message={I18n.t('reports will see here')}
         />
       );
     }
@@ -337,7 +338,7 @@ export default class Discover extends React.Component {
       return (
         <NoContentsContainer
           contentType="map"
-          message="No maps."
+          message={I18n.t('maps will see here')}
         />
       );
     }

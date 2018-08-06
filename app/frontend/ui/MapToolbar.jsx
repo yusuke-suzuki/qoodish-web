@@ -10,6 +10,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import I18n from '../containers/I18n';
 
 const styles = {
   leftButton: {
@@ -115,7 +116,7 @@ class MapToolbar extends React.Component {
                 this.props.handleFacebookButtonClick(map);
               }}
             >
-              Share with Facebook
+              {I18n.t('share with facebook')}
             </MenuItem>
             <MenuItem
               key="twitter"
@@ -124,7 +125,7 @@ class MapToolbar extends React.Component {
                 this.props.handleTweetButtonClick(map);
               }}
             >
-              Share with Twitter
+              {I18n.t('share with twitter')}
             </MenuItem>
             <CopyToClipboard
               text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
@@ -132,7 +133,7 @@ class MapToolbar extends React.Component {
               key="copy"
             >
               <MenuItem key="copy" onClick={this.handleRequestShareMenuClose}>
-                Copy link
+                {I18n.t('copy link')}
               </MenuItem>
             </CopyToClipboard>
           </Menu>
@@ -167,7 +168,6 @@ class MapToolbar extends React.Component {
       <IconButton
         color="inherit"
         onClick={this.props.handleRequestClose}
-        aria-label="Close"
         style={this.props.large ? {} : styles.leftButton}
       >
         <CloseIcon />
@@ -233,7 +233,7 @@ class MapToolbar extends React.Component {
             this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentMap);
           }}
         >
-          Issue
+          {I18n.t('issue')}
         </MenuItem>
       </Menu>
     );
@@ -248,7 +248,7 @@ class MapToolbar extends React.Component {
           this.props.handleEditMapButtonClick(this.props.currentMap);
         }}
       >
-        Edit
+        {I18n.t('edit')}
       </MenuItem>
     );
   }
@@ -262,7 +262,7 @@ class MapToolbar extends React.Component {
           this.props.handleDeleteMapButtonClick(this.props.currentMap);
         }}
       >
-        Delete
+        {I18n.t('delete')}
       </MenuItem>
     );
   }

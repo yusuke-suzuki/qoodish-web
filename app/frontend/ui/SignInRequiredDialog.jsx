@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 
 import LoginButtonsContainer from '../containers/LoginButtonsContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   dialogContent: {
@@ -28,14 +29,14 @@ class SignInRequiredDialog extends React.Component {
         TransitionComponent={Transition}
       >
         <DialogTitle>
-          This action requires Sign in
+          {I18n.t('this action requires sign in')}
         </DialogTitle>
         <DialogContent style={styles.dialogContent}>
           <LoginButtonsContainer />
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.onClose}>
-            Cancel
+            {I18n.t('cancel')}
           </Button>
         </DialogActions>
       </Dialog>

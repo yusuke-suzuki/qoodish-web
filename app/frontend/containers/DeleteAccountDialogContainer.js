@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import DeleteAccountDialog from '../ui/DeleteAccountDialog';
 import closeDeleteAccountDialog from '../actions/closeDeleteAccountDialog';
 import ApiClient from './ApiClient';

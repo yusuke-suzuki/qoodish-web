@@ -12,6 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DoneIcon from '@material-ui/icons/Done';
+import I18n from '../containers/I18n';
 
 const styles = {
   drawerPaperLarge: {
@@ -47,10 +48,9 @@ class RequestNotificationDialog extends React.Component {
   constructor(props) {
     super(props);
     this.notificationMessages = [
-      'フォロー中のマップに新しい投稿があった際に通知を受け取ることができます。',
-      '作成したマップが誰かにフォローされた際に通知を受け取ることができます。',
-      '自分の投稿に「いいね！」がされた際に通知を受け取ることができます。',
-      //'コメントなど最新の投稿をリロードせずに画面上に反映できるようになります。'
+      I18n.t('by allow push 1'),
+      I18n.t('by allow push 2'),
+      I18n.t('by allow push 3'),
     ];
   }
 
@@ -76,12 +76,12 @@ class RequestNotificationDialog extends React.Component {
             avatar={
               <Avatar src={process.env.SUBSTITUTE_URL} />
             }
-            title="Qoodish からのプッシュ通知を受け取りますか？"
+            title={I18n.t('allow push notification')}
             subheader="qoodish.com"
           />
           <CardContent style={styles.cardContent}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              プッシュ通知を許可すると次のことが実現できます。
+              {I18n.t('if allow push notification')}
             </Typography>
             <List disablePadding>
               {this.renderListItems()}
@@ -91,14 +91,14 @@ class RequestNotificationDialog extends React.Component {
             <Button
               onClick={this.props.handleCancelButtonClick}
             >
-              受け取らない
+              {I18n.t('cancel')}
             </Button>
             <Button
               variant="raised"
               onClick={this.props.handleAllowNotificationButtonClick}
               color="primary"
             >
-              受け取る
+              {I18n.t('ok')}
             </Button>
           </CardActions>
         </Card>

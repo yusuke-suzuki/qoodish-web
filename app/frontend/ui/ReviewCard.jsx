@@ -17,6 +17,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import Badge from '@material-ui/core/Badge';
 import twitter from 'twitter-text';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import I18n from '../containers/I18n';
 
 const styles = {
   card: {},
@@ -235,7 +236,7 @@ class ReviewCard extends React.Component {
             this.props.handleFacebookButtonClick(this.props.currentReview);
           }}
         >
-          Share with Facebook
+          {I18n.t('share with facebook')}
         </MenuItem>
         <MenuItem
           key="twitter"
@@ -244,7 +245,7 @@ class ReviewCard extends React.Component {
             this.props.handleTweetButtonClick(this.props.currentReview);
           }}
         >
-          Share with Twitter
+          {I18n.t('share with twitter')}
         </MenuItem>
         <CopyToClipboard
           text={`${process.env.ENDPOINT}/maps/${
@@ -254,7 +255,7 @@ class ReviewCard extends React.Component {
           key="copy"
         >
           <MenuItem key="copy-link" onClick={this.handleRequestShareMenuClose}>
-            Copy link
+            {I18n.t('copy link')}
           </MenuItem>
         </CopyToClipboard>
       </Menu>
@@ -290,7 +291,7 @@ class ReviewCard extends React.Component {
             this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentReview);
           }}
         >
-          Issue
+          {I18n.t('issue')}
         </MenuItem>
       </Menu>
     );
@@ -320,7 +321,7 @@ class ReviewCard extends React.Component {
           this.props.handleEditReviewButtonClick(this.props.currentReview);
         }}
       >
-        Edit
+        {I18n.t('edit')}
       </MenuItem>
     );
   }
@@ -334,7 +335,7 @@ class ReviewCard extends React.Component {
           this.props.handleCopyReviewButtonClick(this.props.currentReview);
         }}
       >
-        Copy
+        {I18n.t('copy')}
       </MenuItem>
     );
   }
@@ -348,7 +349,7 @@ class ReviewCard extends React.Component {
           this.props.handleDeleteReviewButtonClick(this.props.currentReview);
         }}
       >
-        Delete
+        {I18n.t('delete')}
       </MenuItem>
     );
   }

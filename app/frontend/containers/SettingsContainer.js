@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import Settings from '../ui/Settings';
 import openDeleteAccountDialog from '../actions/openDeleteAccountDialog';
 import updatePageTitle from '../actions/updatePageTitle';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -13,7 +14,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Settings'));
+      dispatch(updatePageTitle(I18n.t('settings')));
     },
 
     handleDeleteAccountButtonClick: () => {

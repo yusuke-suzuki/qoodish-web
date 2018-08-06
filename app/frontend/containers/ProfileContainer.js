@@ -16,6 +16,7 @@ import clearProfileState from '../actions/clearProfileState';
 import openEditProfileDialog from '../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 import ApiClient from './ApiClient.js';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -37,7 +38,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Profile'));
+      dispatch(updatePageTitle(I18n.t('profile')));
     },
 
     fetchUserProfile: async () => {

@@ -13,6 +13,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-map
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -185,7 +186,7 @@ class SpotDetail extends React.Component {
       return (
         <NoContentsContainer
           contentType="spot"
-          message="Place not found."
+          message={I18n.t('place not found')}
         />
       );
     }

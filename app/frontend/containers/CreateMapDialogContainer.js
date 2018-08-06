@@ -9,6 +9,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import openBaseSelectDialog from '../actions/openBaseSelectDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -41,7 +42,7 @@ const mapDispatchToProps = dispatch => {
         dispatch(push(`/maps/${json.id}`, {
           previous: true
         }));
-        dispatch(openToast('Successfully created the map!'));
+        dispatch(openToast(I18n.t('create map success')));
 
         gtag('event', 'create', {
           'event_category': 'engagement',

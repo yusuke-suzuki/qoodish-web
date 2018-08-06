@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import IconButton from '@material-ui/core/IconButton';
+import I18n from '../containers/I18n';
 
 const styles = {
   avatarContainer: {
@@ -72,12 +73,12 @@ class EditProfileDialog extends React.Component {
     let errorText;
     if (name) {
       if (name.length > 30) {
-        errorText = 'The maximum number of characters is 30';
+        errorText = I18n.t('max characters 30');
       } else {
         errorText = null;
       }
     } else {
-      errorText = 'Name is required';
+      errorText = I18n.t('name is required');
     }
 
     this.setState(
@@ -149,7 +150,7 @@ class EditProfileDialog extends React.Component {
         fullScreen={!this.props.large}
         TransitionComponent={Transition}
       >
-        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogTitle>{I18n.t('edit profile')}</DialogTitle>
         <DialogContent>
           <div style={styles.avatarContainer}>
             <Avatar
@@ -172,14 +173,14 @@ class EditProfileDialog extends React.Component {
           {this.renderNameText()}
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+          <Button onClick={this.props.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
             variant="raised"
             onClick={this.handleSaveButtonClick}
             color="primary"
             disabled={this.state.disabled}
           >
-            Save
+            {I18n.t('save')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -189,7 +190,7 @@ class EditProfileDialog extends React.Component {
   renderNameText() {
     return (
       <TextField
-        label="Name"
+        label={I18n.t('name')}
         onChange={this.handleNameChange}
         error={this.state.errorName ? true : false}
         helperText={this.state.errorName}

@@ -4,6 +4,7 @@ import SwipeableViews from 'react-swipeable-views';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateMapButtonContainer from '../containers/CreateMapButtonContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -41,7 +42,7 @@ export default class Maps extends React.Component {
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/maps',
-      'page_title': 'Maps | Qoodish'
+      'page_title': `${I18n.t('maps')} | Qoodish`
     });
   }
 
@@ -112,7 +113,7 @@ export default class Maps extends React.Component {
         <NoContentsContainer
           contentType="map"
           action="create-map"
-          message="When you create or follow maps, you will see maps here."
+          message={I18n.t('maps will see here')}
         />
       );
     }

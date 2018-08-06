@@ -3,6 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import NotificationListContainer from '../containers/NotificationListContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   containerLarge: {
@@ -26,7 +27,7 @@ class Notifications extends React.Component {
     }
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/notifications',
-      'page_title': 'Notifications | Qoodish'
+      'page_title': `${I18n.t('notifications')} | Qoodish`
     });
   }
 
@@ -53,7 +54,7 @@ class Notifications extends React.Component {
       return (
         <NoContentsContainer
           contentType="notification"
-          message="When you received notifications, you will see here."
+          message={I18n.t('notifications will see here')}
         />
       );
     }

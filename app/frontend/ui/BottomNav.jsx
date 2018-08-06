@@ -9,6 +9,7 @@ import MapIcon from '@material-ui/icons/Map';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import I18n from '../containers/I18n';
 
 const styles = {
   bottomNav: {
@@ -69,27 +70,27 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
-            label={<Link to="/" style={styles.link}>Home</Link>}
+            label={<Link to="/" style={styles.link}>{I18n.t('home')}</Link>}
             icon={<Link to="/" style={styles.link}><HomeIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/discover" style={styles.link}>Discover</Link>}
+            label={<Link to="/discover" style={styles.link}>{I18n.t('discover')}</Link>}
             icon={<Link to="/discover" style={styles.link}><ExploreIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/maps" style={styles.link}>Maps</Link>}
+            label={<Link to="/maps" style={styles.link}>{I18n.t('maps')}</Link>}
             icon={<Link to="/maps" style={styles.link}><MapIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/profile" style={styles.link}>Profile</Link>}
+            label={<Link to="/profile" style={styles.link}>{I18n.t('profile')}</Link>}
             icon={<Link to="/profile" style={styles.link}><AccountCircleIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/notifications" style={styles.link}>Notice</Link>}
+            label={<Link to="/notifications" style={styles.link}>{I18n.t('notice')}</Link>}
             icon={
               <Link to="/notifications" style={styles.link}>
                 {this.renderNotificationIcon()}

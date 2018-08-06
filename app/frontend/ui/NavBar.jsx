@@ -30,6 +30,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   title: {
@@ -283,7 +284,7 @@ class NavBar extends React.Component {
     return (
       <div>
         <Button color="inherit" onClick={this.props.requestSignIn}>
-          Login
+          {I18n.t('login')}
         </Button>
       </div>
     );
@@ -372,12 +373,12 @@ class NavBar extends React.Component {
           TabIndicatorProps={{ style: styles.tabIndicator }}
         >
           <Tab
-            label="Following"
+            label={I18n.t('following')}
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
             onClick={this.props.handleFollowingMapsTabClick}
           />
           <Tab
-            label="My Maps"
+            label={I18n.t('my maps')}
             style={this.props.large ? styles.tabLarge : styles.tabSmall}
             onClick={this.props.handleMyMapsTabClick}
           />
@@ -470,7 +471,7 @@ class NavBar extends React.Component {
       <MenuItem style={styles.noContentsContainer}>
         <NotificationsIcon style={styles.noContentsIcon} />
         <Typography variant="subheading" color="inherit">
-          No notifications.
+          {I18n.t('no notifications')}
         </Typography>
       </MenuItem>
     );
@@ -508,15 +509,15 @@ class NavBar extends React.Component {
     if (notification.key == 'invited') {
       return (
         <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {notification.key} you to{' '}
-          {notification.notifiable.type}.
+          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
+          {I18n.t(notification.notifiable.type)}
         </div>
       );
     } else {
       return (
         <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {notification.key} your{' '}
-          {notification.notifiable.type}.
+          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
+          {I18n.t(notification.notifiable.type)}
         </div>
       );
     }
@@ -554,12 +555,12 @@ class NavBar extends React.Component {
       >
         <MenuItem onClick={this.handleRequestAvatarMenuClose} selected={false}>
           <Link to="/profile" style={styles.link}>
-            Profile
+            {I18n.t('profile')}
           </Link>
         </MenuItem>
         <MenuItem onClick={this.handleRequestAvatarMenuClose}>
           <Link to="/settings" style={styles.link}>
-            Settings
+            {I18n.t('settings')}
           </Link>
         </MenuItem>
         <MenuItem
@@ -568,7 +569,7 @@ class NavBar extends React.Component {
             this.props.signOut();
           }}
         >
-          Logout
+          {I18n.t('logout')}
         </MenuItem>
       </Menu>
     );
@@ -585,7 +586,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
-                <ListItemText primary="Home" />
+                <ListItemText primary={I18n.t('home')} />
               </ListItem>
             </Link>
             <Link to="/discover" style={styles.link}>
@@ -593,7 +594,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <ExploreIcon />
                 </ListItemIcon>
-                <ListItemText primary="Discover" />
+                <ListItemText primary={I18n.t('discover')} />
               </ListItem>
             </Link>
             <Link to="/maps" style={styles.link}>
@@ -601,7 +602,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <MapIcon />
                 </ListItemIcon>
-                <ListItemText primary="Maps" />
+                <ListItemText primary={I18n.t('maps')} />
               </ListItem>
             </Link>
             <Link to="/profile" style={styles.link}>
@@ -609,7 +610,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <AccountCircleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Profile" />
+                <ListItemText primary={I18n.t('profile')} />
               </ListItem>
             </Link>
             <Link to="/notifications" style={styles.link}>
@@ -617,7 +618,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <NotificationsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Notifications" />
+                <ListItemText primary={I18n.t('notifications')} />
               </ListItem>
             </Link>
             <Divider />
@@ -626,7 +627,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Settings" />
+                <ListItemText primary={I18n.t('settings')} />
               </ListItem>
             </Link>
             <Link to="/invites" style={styles.link}>
@@ -634,7 +635,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <MailIcon />
                 </ListItemIcon>
-                <ListItemText primary="Invites" />
+                <ListItemText primary={I18n.t('invites')} />
               </ListItem>
             </Link>
           </div>

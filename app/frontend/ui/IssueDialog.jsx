@@ -9,6 +9,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import I18n from '../containers/I18n';
 
 class IssueDialog extends React.Component {
   constructor(props) {
@@ -42,12 +43,11 @@ class IssueDialog extends React.Component {
         onClose={this.props.handleRequestDialogClose}
         fullWidth
       >
-        <DialogTitle>Report inappropriate content</DialogTitle>
+        <DialogTitle>{I18n.t('report inappropriate content')}</DialogTitle>
         <DialogContent>
           <FormControl required>
             <FormLabel focused>
-              Help us understand the problem. What is going on with this
-              content?
+              {I18n.t('report inappropriate content detail')}
             </FormLabel>
             <br />
             <RadioGroup
@@ -59,30 +59,30 @@ class IssueDialog extends React.Component {
               <FormControlLabel
                 value="0"
                 control={<Radio checked={this.state.value == '0'} />}
-                label="I'm not interested in this content"
+                label={I18n.t('not interested in')}
               />
               <FormControlLabel
                 value="1"
                 control={<Radio checked={this.state.value == '1'} />}
-                label="It's spam"
+                label={I18n.t('spam')}
               />
               <FormControlLabel
                 value="2"
                 control={<Radio checked={this.state.value == '2'} />}
-                label="It displays a sensitive image"
+                label={I18n.t('sensitive')}
               />
               <FormControlLabel
                 value="3"
                 control={<Radio checked={this.state.value == '3'} />}
-                label="It's abusive or harmful"
+                label={I18n.t('abusive or harmful')}
               />
             </RadioGroup>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>Cancel</Button>
+          <Button onClick={this.props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
           <Button variant="raised" onClick={this.handleSendButtonClick} color="primary">
-            Send
+            {I18n.t('send')}
           </Button>
         </DialogActions>
       </Dialog>

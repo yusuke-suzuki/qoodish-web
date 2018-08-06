@@ -5,6 +5,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import DeleteAccountDialogContainer from '../containers/DeleteAccountDialogContainer';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -36,10 +37,10 @@ export default class Invites extends React.Component {
         <Card>
           <CardContent>
             <Typography variant="headline" component="h2" gutterBottom>
-              Delete Account
+              {I18n.t('delete account')}
             </Typography>
             <Typography component="p">
-              This cannot be undone. Really.
+              {I18n.t('this cannot be undone')}
             </Typography>
           </CardContent>
           <CardActions>
@@ -49,7 +50,7 @@ export default class Invites extends React.Component {
               style={this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
               disabled={this.props.currentUser.isAnonymous}
             >
-              Delete Account
+              {I18n.t('delete account')}
             </Button>
           </CardActions>
         </Card>

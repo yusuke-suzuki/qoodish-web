@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import I18n from '../containers/I18n';
 
 class DeleteMapDialog extends Component {
   constructor(props) {
@@ -42,11 +43,10 @@ class DeleteMapDialog extends Component {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-        <DialogTitle>Are you sure you want to DELETE this map?</DialogTitle>
+        <DialogTitle>{I18n.t('sure to delete map')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            When you delete a map, it also deletes all of the content that has
-            been registered in the map. This cannot be undone.
+            {I18n.t('delete map detail')}
           </DialogContentText>
           <br />
           <FormControlLabel
@@ -56,11 +56,11 @@ class DeleteMapDialog extends Component {
                 onChange={this.handleCheckChange}
               />
             }
-            label="I understand this cannot be undone."
+            label={I18n.t('understand this cannot be undone')}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>Cancel</Button>
+          <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
             variant="raised"
             onClick={() => {
@@ -70,7 +70,7 @@ class DeleteMapDialog extends Component {
             color="primary"
             disabled={this.state.disabled}
           >
-            DELETE
+            {I18n.t('delete')}
           </Button>
         </DialogActions>
       </Dialog>

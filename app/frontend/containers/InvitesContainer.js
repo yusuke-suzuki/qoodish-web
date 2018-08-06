@@ -9,6 +9,7 @@ import fetchInvites from '../actions/fetchInvites';
 import loadInvitesStart from '../actions/loadInvitesStart';
 import loadInvitesEnd from '../actions/loadInvitesEnd';
 import { push } from 'react-router-redux';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -22,7 +23,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Invites'));
+      dispatch(updatePageTitle(I18n.t('invites')));
     },
 
     fetchInvites: async () => {

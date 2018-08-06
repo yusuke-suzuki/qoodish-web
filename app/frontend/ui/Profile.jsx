@@ -10,10 +10,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import PersonIcon from '@material-ui/icons/Person';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
-import I18n from '../containers/I18n';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
+import I18n from '../containers/I18n';
 
 const styles = {
   rootLarge: {
@@ -151,7 +151,7 @@ class Profile extends React.Component {
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/profile',
-      'page_title': 'Profile | Qoodish'
+      'page_title': `${I18n.t('profile')} | Qoodish`
     });
   }
 
@@ -185,7 +185,7 @@ class Profile extends React.Component {
   renderHelmet(currentUser) {
     return (
       <Helmet
-        title={`${currentUser.name ? currentUser.name : 'Profile'} | Qoodish`}
+        title={`${currentUser.name ? currentUser.name : I18n.t('profile')} | Qoodish`}
         link={[
           { rel: 'canonical', href: `${process.env.ENDPOINT}/profile` }
         ]}
@@ -238,7 +238,7 @@ class Profile extends React.Component {
         color="primary"
         style={styles.editProfileButton}
       >
-        Edit Profile
+        {I18n.t('edit profile')}
       </Button>
     );
   }
@@ -253,7 +253,7 @@ class Profile extends React.Component {
           {this.renderAvatar(currentUser)}
           <div style={styles.profileContainer}>
             <Typography variant="headline" gutterBottom>
-              {currentUser.isAnonymous ? "Anonymous user" : currentUser.name}
+              {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
             </Typography>
             {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
@@ -266,11 +266,11 @@ class Profile extends React.Component {
             textColor="primary"
           >
             <Tab
-              icon="Reports"
+              icon={I18n.t('reports')}
               label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
             />
             <Tab
-              icon="Maps"
+              icon={I18n.t('maps')}
               label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
             />
           </Tabs>
@@ -401,7 +401,7 @@ class Profile extends React.Component {
         <NoContentsContainer
           contentType="map"
           action="create-map"
-          message="No maps have been created."
+          message={I18n.t('maps will see here')}
         />
       );
     }

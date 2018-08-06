@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 import PlaceIcon from '@material-ui/icons/Place';
 import Avatar from '@material-ui/core/Avatar';
+import I18n from '../containers/I18n';
 
 const styles = {
   flex: {
@@ -109,12 +110,12 @@ class EditMapDialog extends React.Component {
     let errorText;
     if (name) {
       if (name.length > 30) {
-        errorText = 'The maximum number of characters is 30';
+        errorText = I18n.t('max characters 30');
       } else {
         errorText = null;
       }
     } else {
-      errorText = 'Map name is required';
+      errorText = I18n.t('map name is required');
     }
 
     this.setState(
@@ -133,12 +134,12 @@ class EditMapDialog extends React.Component {
     let errorText;
     if (description) {
       if (description.length > 200) {
-        errorText = 'The maximum number of characters is 200';
+        errorText = I18n.t('max characters 200');
       } else {
         errorText = null;
       }
     } else {
-      errorText = 'Description is required';
+      errorText = I18n.t('description is required');
     }
 
     this.setState(
@@ -226,7 +227,7 @@ class EditMapDialog extends React.Component {
           <br />
           <br />
           <Typography variant="subheading" gutterBottom color="textSecondary">
-            The center of this map (Optional)
+            {I18n.t('center of map')}
           </Typography>
           <Chip
             avatar={
@@ -234,7 +235,7 @@ class EditMapDialog extends React.Component {
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.state.baseName ? this.state.baseName : 'Undefined'}
+            label={this.state.baseName ? this.state.baseName : I18n.t('undefined')}
             onClick={this.props.handleMapBaseClick}
           />
           <br />
@@ -246,7 +247,7 @@ class EditMapDialog extends React.Component {
                 onChange={this.handlePrivateFlugChange}
               />
             }
-            label="Set this map to private."
+            label={I18n.t('set this map to private')}
           />
           <br />
           <FormControlLabel
@@ -256,7 +257,7 @@ class EditMapDialog extends React.Component {
                 onChange={this.handleInvitableFlugChange}
               />
             }
-            label="Allow collaborators to invite other users."
+            label={I18n.t('allow followers to invite')}
           />
           <br />
           <FormControlLabel
@@ -266,7 +267,7 @@ class EditMapDialog extends React.Component {
                 onChange={this.handleSharedFlugChange}
               />
             }
-            label="Allow collaborators to add spots."
+            label={I18n.t('allow followers to post')}
           />
         </DialogContent>
         {this.props.large && this.renderDialogActions()}
@@ -277,7 +278,7 @@ class EditMapDialog extends React.Component {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
+        {this.props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
       </DialogTitle>
     );
   }
@@ -289,12 +290,11 @@ class EditMapDialog extends React.Component {
           <IconButton
             color="inherit"
             onClick={this.props.handleRequestDialogClose}
-            aria-label="Close"
           >
             <CloseIcon />
           </IconButton>
           <Typography variant="title" color="inherit" style={styles.flex}>
-            {this.props.currentMap ? 'Edit Map' : 'Create New Map'}
+            {this.props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
           </Typography>
           <Button
             variant="raised"
@@ -302,7 +302,7 @@ class EditMapDialog extends React.Component {
             color="secondary"
             disabled={this.state.disabled}
           >
-            Save
+            {I18n.t('save')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -319,7 +319,7 @@ class EditMapDialog extends React.Component {
           color="primary"
           disabled={this.state.disabled}
         >
-          Save
+          {I18n.t('save')}
         </Button>
       </DialogActions>
     );
@@ -328,7 +328,7 @@ class EditMapDialog extends React.Component {
   renderMapNameText() {
     return (
       <TextField
-        label="Map name"
+        label={I18n.t('map name')}
         onChange={this.handleMapNameChange}
         error={this.state.errorMapName ? true : false}
         helperText={this.state.errorMapName}
@@ -342,7 +342,7 @@ class EditMapDialog extends React.Component {
   renderDescriptionText() {
     return (
       <TextField
-        label="Map description"
+        label={I18n.t('description')}
         onChange={this.handleMapDescriptionChange}
         error={this.state.errorDescription ? true : false}
         helperText={this.state.errorDescription}
