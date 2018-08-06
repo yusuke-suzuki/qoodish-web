@@ -165,6 +165,22 @@ class ApiClient {
     return response;
   }
 
+  async editProfile(params) {
+    const currentUser = firebase.auth().currentUser;
+    const url = `${process.env.API_ENDPOINT}/users/${currentUser.uid}`;
+    const token = await currentUser.getIdToken();
+    let options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchTrendingSpots() {
     const url = `${process.env.API_ENDPOINT}/spots?popular=true`;
     const token = await firebase.auth().currentUser.getIdToken();

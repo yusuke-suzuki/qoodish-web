@@ -99,6 +99,9 @@ const styles = {
   },
   reviewCardContainerLarge: {
     marginTop: 20
+  },
+  noReviewsContainer: {
+    marginTop: 20
   }
 };
 
@@ -188,14 +191,14 @@ class Profile extends React.Component {
           { name: 'twitter:card', content: 'summary' },
           { name: 'twitter:title', content: `${currentUser.name} | Qoodish` },
           { name: 'twitter:description', content: '' },
-          { name: 'twitter:image', content: currentUser.image_url },
+          { name: 'twitter:image', content: currentUser.thumbnail_url },
           { property: 'og:title', content: `${currentUser.name} | Qoodish` },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
             content: `${process.env.ENDPOINT}/profile`
           },
-          { property: 'og:image', content: currentUser.image_url },
+          { property: 'og:image', content: currentUser.thumbnail_url },
           {
             property: 'og:description',
             content: ''
@@ -223,6 +226,18 @@ class Profile extends React.Component {
     );
   }
 
+  renderEditProfileButton() {
+    return (
+      <Button
+        variant="raised"
+        onClick={this.props.handleEditProfileButtonClick}
+        color="primary"
+      >
+        Edit Profile
+      </Button>
+    );
+  }
+
   renderProfileCard(currentUser) {
     return (
       <Card>
@@ -235,6 +250,7 @@ class Profile extends React.Component {
             <Typography variant="headline" gutterBottom>
               {currentUser.isAnonymous ? "Anonymous user" : currentUser.name}
             </Typography>
+            {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
           <Tabs
             value={this.state.tabValue}
@@ -270,7 +286,7 @@ class Profile extends React.Component {
     } else {
       return (
         <Avatar
-          src={currentUser.image_url}
+          src={currentUser.thumbnail_url}
           style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
         />
       );
@@ -302,11 +318,13 @@ class Profile extends React.Component {
       );
     } else {
       return (
-        <NoContentsContainer
-          contentType="review"
-          action="create-review"
-          message={I18n.t('reports will see here')}
-        />
+        <div style={styles.noReviewsContainer}>
+          <NoContentsContainer
+            contentType="review"
+            action="create-review"
+            message={I18n.t('reports will see here')}
+          />
+        </div>
       );
     }
   }

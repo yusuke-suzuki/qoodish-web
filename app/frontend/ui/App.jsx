@@ -32,6 +32,7 @@ import BaseSelectDialogContainer from '../containers/BaseSelectDialogContainer';
 import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
 import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
 import EditMapDialogContainer from '../containers/EditMapDialogContainer';
+import EditProfileDialogContainer from '../containers/EditProfileDialogContainer';
 
 import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -147,6 +148,7 @@ class App extends React.Component {
           <ReviewDialogContainer />
           <CreateMapDialogContainer />
           <EditMapDialogContainer />
+          <EditProfileDialogContainer />
         </div>
       </MuiThemeProvider>
     );
