@@ -14,6 +14,7 @@ import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import clearProfileState from '../actions/clearProfileState';
 import openEditProfileDialog from '../actions/openEditProfileDialog';
+import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 import ApiClient from './ApiClient.js';
 
 const mapStateToProps = state => {
@@ -81,7 +82,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearProfileState());
     },
 
-    handleEditProfileButtonClick: () => {
+    handleEditProfileButtonClick: (currentUser) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       dispatch(openEditProfileDialog());
     }
   };
