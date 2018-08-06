@@ -2,7 +2,6 @@ import QoodishClient from './QoodishClient';
 
 const BOTS = [
   '\\+https:\\/\\/developers.google.com\\/\\+\\/web\\/snippet\\/',
-  'googlebot',
   'baiduspider',
   'gurujibot',
   'yandexbot',
