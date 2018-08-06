@@ -102,6 +102,10 @@ const styles = {
   },
   noReviewsContainer: {
     marginTop: 20
+  },
+  editProfileButton: {
+    marginTop: 10,
+    marginBottom: 20
   }
 };
 
@@ -232,6 +236,7 @@ class Profile extends React.Component {
         variant="raised"
         onClick={() => this.props.handleEditProfileButtonClick(this.props.currentUser)}
         color="primary"
+        style={styles.editProfileButton}
       >
         Edit Profile
       </Button>
