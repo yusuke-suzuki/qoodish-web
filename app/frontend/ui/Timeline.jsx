@@ -147,7 +147,7 @@ export default class Feed extends React.Component {
     } else {
       return (
         <Avatar
-          src={this.props.currentUser.image_url}
+          src={this.props.currentUser.thumbnail_url}
         />
       );
     }

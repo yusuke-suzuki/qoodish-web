@@ -191,14 +191,14 @@ class Profile extends React.Component {
           { name: 'twitter:card', content: 'summary' },
           { name: 'twitter:title', content: `${currentUser.name} | Qoodish` },
           { name: 'twitter:description', content: '' },
-          { name: 'twitter:image', content: currentUser.image_url },
+          { name: 'twitter:image', content: currentUser.thumbnail_url },
           { property: 'og:title', content: `${currentUser.name} | Qoodish` },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
             content: `${process.env.ENDPOINT}/profile`
           },
-          { property: 'og:image', content: currentUser.image_url },
+          { property: 'og:image', content: currentUser.thumbnail_url },
           {
             property: 'og:description',
             content: ''
@@ -286,7 +286,7 @@ class Profile extends React.Component {
     } else {
       return (
         <Avatar
-          src={currentUser.image_url}
+          src={currentUser.thumbnail_url}
           style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
         />
       );

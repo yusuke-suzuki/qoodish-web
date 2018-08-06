@@ -537,7 +537,7 @@ class NavBar extends React.Component {
         onClick={this.handleAvatarClick}
       >
         <Avatar
-          src={this.props.currentUser ? this.props.currentUser.image_url : ''}
+          src={this.props.currentUser ? this.props.currentUser.thumbnail_url : ''}
           style={styles.profileAvatar}
         />
       </IconButton>

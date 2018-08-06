@@ -53,7 +53,7 @@ class EditProfileDialog extends React.Component {
     if (nextProps.currentUser) {
       this.setState({
         name: nextProps.currentUser.name,
-        imageUrl: nextProps.currentUser.image_url
+        imageUrl: nextProps.currentUser.thumbnail_url
       });
     }
   }
