@@ -35,6 +35,12 @@ class FeedbackDialog extends React.Component {
     this.validate = this.validate.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.dialogOpen) {
+      this.clearState();
+    }
+  }
+
   clearState() {
     this.setState({
       feedbackNegative: '',
