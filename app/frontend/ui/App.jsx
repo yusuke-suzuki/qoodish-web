@@ -23,6 +23,7 @@ import InvitesContainer from '../containers/InvitesContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
+import FeedbackDialogContainer from '../containers/FeedbackDialogContainer';
 import SignInRequiredDialogContainer from '../containers/SignInRequiredDialogContainer';
 import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
@@ -134,6 +135,7 @@ class App extends React.Component {
         <div>
           {this.renderHelmet()}
           {this.renderLayout()}
+          <FeedbackDialogContainer />
           <SignInRequiredDialogContainer />
           <RequestNotificationDialogContainer />
           <ToastContainer />

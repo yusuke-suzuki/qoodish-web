@@ -45,6 +45,7 @@
   "followers": "followers",
   "max characters 30": "The maximum number of characters is 30",
   "max characters 200": "The maximum number of characters is 200",
+  "max characters 500": "The maximum number of characters is 500",
   "map name is required": "Map name is required.",
   "description is required": "Description is required.",
   "center of map": "The center of this map (Optional)",
@@ -114,5 +115,9 @@
   "unable to get permission": "Unable to get permission to notify.",
   "unable to get registration token": "Unable to get registration token.",
   "push successfully enabled": "Push notification was successfully enabled.",
-  "an error occured": "An error occured."
+  "an error occured": "An error occured.",
+  "send feedback": "Send Feedback",
+  "feedback negative": "Please tell me what you think is not good for Qoodish.",
+  "feedback positive": "Please tell me what you think is good for Qoodish.",
+  "send feedback success": "Successfully sent feedback. Thank you!"
 }

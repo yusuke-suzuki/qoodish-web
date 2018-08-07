@@ -15,6 +15,7 @@ import showBackButton from '../actions/showBackButton';
 import hideBackButton from '../actions/hideBackButton';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
+import openFeedbackDialog from '../actions/openFeedbackDialog';
 
 const mapStateToProps = state => {
   return {
@@ -102,6 +103,10 @@ const mapDispatchToProps = dispatch => {
 
     handleMyMapsTabClick: () => {
       dispatch(switchMyMaps());
+    },
+
+    handleFeedbackClick: () => {
+      dispatch(openFeedbackDialog());
     }
   };
 };

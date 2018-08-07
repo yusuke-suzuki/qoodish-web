@@ -20,6 +20,7 @@ import MapIcon from '@material-ui/icons/Map';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
+import SendIcon from '@material-ui/icons/Send';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -636,6 +637,12 @@ class NavBar extends React.Component {
                 <ListItemText primary={I18n.t('invites')} />
               </ListItem>
             </Link>
+            <ListItem button onClick={this.props.handleFeedbackClick}>
+              <ListItemIcon>
+                <SendIcon />
+              </ListItemIcon>
+              <ListItemText primary={I18n.t('send feedback')} />
+            </ListItem>
           </div>
         </List>
       </div>
