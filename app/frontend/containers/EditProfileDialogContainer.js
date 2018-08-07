@@ -6,7 +6,7 @@ import closeEditProfileDialog from '../actions/closeEditProfileDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import { uploadToStorage } from './Utils';
+import { sleep, uploadToStorage } from './Utils';
 import I18n from './I18n';
 
 const mapStateToProps = state => {
@@ -36,9 +36,11 @@ const mapDispatchToProps = dispatch => {
       let json = await response.json();
       dispatch(requestFinish());
       if (response.ok) {
-        dispatch(fetchMyProfile(json));
         dispatch(closeEditProfileDialog());
         dispatch(openToast(I18n.t('edit profile success')));
+        // wait until thumbnail created on cloud function
+        await sleep(5000);
+        dispatch(fetchMyProfile(json));
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
       } else {
