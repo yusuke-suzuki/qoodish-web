@@ -38,7 +38,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(fetchMyProfile(json));
         dispatch(closeEditProfileDialog());
-        dispatch(openToast(I18n.t('edit profie success')));
+        dispatch(openToast(I18n.t('edit profile success')));
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
       } else {
