@@ -110,5 +110,9 @@
   "edit profile success": "プロフィールを更新しました！",
   "create review success": "レポートを作成しました！",
   "edit review success": "レポートを更新しました！",
-  "spot": "スポット"
+  "spot": "スポット",
+  "unable to get permission": "プッシュ通知の許可が確認できませんでした。",
+  "unable to get registration token": "プッシュ通知が有効化できませんでした。",
+  "push successfully enabled": "プッシュ通知が有効化されました。",
+  "an error occured": "エラーが発生しました。"
 }
