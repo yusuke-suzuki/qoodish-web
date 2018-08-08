@@ -302,7 +302,7 @@ class EditMapDialog extends React.Component {
             color="secondary"
             disabled={this.state.disabled}
           >
-            {I18n.t('save')}
+            {I18n.t('send')}
           </Button>
         </Toolbar>
       </AppBar>
