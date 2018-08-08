@@ -6,6 +6,7 @@ import fetchNotifications from '../actions/fetchNotifications';
 import updatePageTitle from '../actions/updatePageTitle';
 import loadNotificationsStart from '../actions/loadNotificationsStart';
 import loadNotificationsEnd from '../actions/loadNotificationsEnd';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -19,7 +20,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle('Notifications'));
+      dispatch(updatePageTitle(I18n.t('notifications')));
     },
 
     handleMount: async () => {
