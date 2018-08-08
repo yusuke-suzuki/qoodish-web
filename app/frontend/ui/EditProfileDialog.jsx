@@ -57,6 +57,9 @@ class EditProfileDialog extends React.Component {
         imageUrl: nextProps.currentUser.thumbnail_url
       });
     }
+    if (!nextProps.dialogOpen) {
+      this.clearState();
+    }
   }
 
   clearState() {

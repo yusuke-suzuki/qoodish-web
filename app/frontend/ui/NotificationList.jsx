@@ -65,14 +65,12 @@ export default class NotificationList extends React.Component {
       return (
         <div style={styles.notificationText}>
           <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-          {I18n.t(notification.notifiable.type)}
         </div>
       );
     } else {
       return (
         <div style={styles.notificationText}>
           <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-          {I18n.t(notification.notifiable.type)}
         </div>
       );
     }

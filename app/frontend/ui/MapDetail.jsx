@@ -202,6 +202,7 @@ export default class MapDetail extends React.Component {
         ]}
         meta={[
           { name: 'title', content: `${map.name} | Qoodish` },
+          { name: 'keywords', content: `${map.name}, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: map.description },
           { name: 'twitter:card', content: 'summary_large_image' },
           { name: 'twitter:title', content: `${map.name} | Qoodish` },

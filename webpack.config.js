@@ -27,6 +27,7 @@ const plugins = [
     'API_ENDPOINT',
     'npm_package_version',
     'SUBSTITUTE_URL',
+    'FIREBASE_PROJECT_ID',
     'FIREBASE_API_KEY',
     'FIREBASE_AUTH_DOMAIN',
     'FIREBASE_DB_URL',

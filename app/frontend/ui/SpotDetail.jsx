@@ -130,6 +130,7 @@ class SpotDetail extends React.Component {
         ]}
         meta={[
           { name: 'title', content: `${spot.name} | Qoodish` },
+          { name: 'keywords', content: `${spot.name}, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: spot.formatted_address },
           { name: 'twitter:card', content: 'summary' },
           { name: 'twitter:title', content: `${spot.name} | Qoodish` },

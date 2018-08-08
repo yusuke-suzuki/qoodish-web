@@ -23,6 +23,7 @@ import InvitesContainer from '../containers/InvitesContainer';
 import TermsContainer from '../containers/TermsContainer';
 import PrivacyContainer from '../containers/PrivacyContainer';
 
+import FeedbackDialogContainer from '../containers/FeedbackDialogContainer';
 import SignInRequiredDialogContainer from '../containers/SignInRequiredDialogContainer';
 import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import ReviewDialogContainer from '../containers/ReviewDialogContainer';
@@ -134,6 +135,7 @@ class App extends React.Component {
         <div>
           {this.renderHelmet()}
           {this.renderLayout()}
+          <FeedbackDialogContainer />
           <SignInRequiredDialogContainer />
           <RequestNotificationDialogContainer />
           <ToastContainer />
@@ -163,6 +165,7 @@ class App extends React.Component {
         ]}
         meta={[
           { name: 'title', content: 'Qoodish' },
+          { name: 'keywords', content: 'qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'},
           { name: 'theme-color', content: '#ffc107' },
           {
             name: 'description',

@@ -7,8 +7,7 @@ import forbidNotification from '../actions/forbidNotification';
 import openToast from '../actions/openToast';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import ApiClient from '../containers/ApiClient';
-import requestStart from '../actions/requestStart';
-import requestFinish from '../actions/requestFinish';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -37,26 +36,24 @@ const mapDispatchToProps = dispatch => {
         await messaging.requestPermission();
       } catch (e) {
         console.log(e);
-        dispatch(openToast('Unable to get permission to notify.'));
+        dispatch(openToast(I18n.t('unable to get permission')));
         return;
       }
 
-      dispatch(requestStart());
       const registrationToken = await messaging.getToken();
       if (!registrationToken) {
-        dispatch(openToast('Unable to get registration token.'));
+        dispatch(openToast(I18n.t('unable to get registration token')));
         return;
       }
 
-      const response = await client.sendRegistrationToken(registrationToken);
-      dispatch(requestFinish());
+      dispatch(closeRequestNotificationDialog());
+      dispatch(openToast(I18n.t('push successfully enabled')));
 
+      const response = await client.sendRegistrationToken(registrationToken);
       if (response.ok) {
         dispatch(fetchRegistrationToken(registrationToken));
-        dispatch(closeRequestNotificationDialog());
-        dispatch(openToast('Push notification was successfully enabled.'));
       } else {
-        dispatch(openToast('An error occured.'));
+        dispatch(openToast(I18n.t('an error occured')));
       }
     }
   };
