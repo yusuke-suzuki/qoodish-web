@@ -9,6 +9,10 @@ const express = require('express');
 const ejs = require('ejs');
 import { isBot, generateMetadata } from './Utils';
 
+const Slack = require('slack-node');
+const slack = new Slack();
+slack.setWebhook(process.env.FEEDBACK_WEBHOOK_URL)
+
 const app = express();
 
 const pageRoutes = [
@@ -40,6 +44,18 @@ app.get(pageRoutes, async (req, res) => {
 });
 
 exports.host = functions.https.onRequest(app);
+
+exports.notifyFeedback = functions.firestore
+  .document('feedbacks/{feedbackId}')
+  .onCreate((snap, context) => {
+    slack.webhook({
+      channel: "#qoodish-notice",
+      username: "Feedback",
+      text: "ユーザーからのフィードバックがあったよ！"
+    }, (err, response) => {
+      console.log(response);
+    });
+  });
 
 exports.generateThumbnail = functions.storage.bucket(process.env.FIREBASE_IMAGE_BUCKET_NAME).object().onFinalize((object) => {
   const fileBucket = object.bucket;

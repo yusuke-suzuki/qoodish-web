@@ -20,7 +20,8 @@
     "firebase-admin": "^5.13.1",
     "firebase-functions": "^2.0.0",
     "node-fetch": "^2.1.2",
-    "regenerator-runtime": "^0.11.1"
+    "regenerator-runtime": "^0.11.1",
+    "slack-node": "^0.1.8"
   },
   "private": true
 }
