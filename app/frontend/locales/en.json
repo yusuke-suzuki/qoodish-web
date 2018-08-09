@@ -49,7 +49,6 @@
   "map name is required": "Map name is required.",
   "description is required": "Description is required.",
   "center of map": "The center of this map (Optional)",
-  "undefined": "Undefined",
   "set this map to private": "Set this map to private.",
   "allow followers to invite": "Allow followers to invite other users.",
   "allow followers to post": "Allow followers to post reports.",

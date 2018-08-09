@@ -29,6 +29,10 @@ const styles = {
   toolbar: {
     paddingLeft: 8,
     height: 56
+  },
+  mapCenterChip: {
+    marginTop: 16,
+    marginBottom: 16
   }
 };
 
@@ -222,24 +226,17 @@ class EditMapDialog extends React.Component {
           }
         >
           {this.renderMapNameText()}
-          <br />
           {this.renderDescriptionText()}
-          <br />
-          <br />
-          <Typography variant="subheading" gutterBottom color="textSecondary">
-            {I18n.t('center of map')}
-          </Typography>
           <Chip
             avatar={
               <Avatar>
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.state.baseName ? this.state.baseName : I18n.t('undefined')}
+            label={this.state.baseName ? this.state.baseName : I18n.t('center of map')}
             onClick={this.props.handleMapBaseClick}
+            style={styles.mapCenterChip}
           />
-          <br />
-          <br />
           <FormControlLabel
             control={
               <Switch
@@ -249,7 +246,6 @@ class EditMapDialog extends React.Component {
             }
             label={I18n.t('set this map to private')}
           />
-          <br />
           <FormControlLabel
             control={
               <Switch
@@ -259,7 +255,6 @@ class EditMapDialog extends React.Component {
             }
             label={I18n.t('allow followers to invite')}
           />
-          <br />
           <FormControlLabel
             control={
               <Switch
@@ -302,7 +297,7 @@ class EditMapDialog extends React.Component {
             color="secondary"
             disabled={this.state.disabled}
           >
-            {I18n.t('send')}
+            {I18n.t('save')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -335,6 +330,7 @@ class EditMapDialog extends React.Component {
         fullWidth
         autoFocus
         value={this.state.name}
+        margin="normal"
       />
     );
   }
@@ -348,6 +344,7 @@ class EditMapDialog extends React.Component {
         helperText={this.state.errorDescription}
         fullWidth
         value={this.state.description}
+        margin="normal"
       />
     );
   }

@@ -46,7 +46,7 @@ const styles = {
     position: 'absolute',
     top: 64,
     bottom: 0,
-    width: 350,
+    width: 380,
     zIndex: 1
   },
   cardContainerSmall: {
@@ -191,7 +191,7 @@ class MapSummary extends React.Component {
 
   renderThumbnail(map) {
     return (
-      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 350 : 250}>
+      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 380 : 250}>
         <GridListTile key={map && map.id}>
           <img src={map && map.image_url ? map.image_url : ''} />
           <GridListTileBar

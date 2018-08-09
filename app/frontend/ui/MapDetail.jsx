@@ -27,7 +27,7 @@ const styles = {
     top: 0,
     bottom: 0,
     right: 0,
-    left: 350,
+    left: 380,
     marginTop: 64
   },
   containerLarge: {

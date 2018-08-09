@@ -47,13 +47,15 @@ const styles = {
     marginTop: 84,
     zIndex: 1000,
     backgroundColor: 'initial',
-    borderRight: 'initial'
+    borderRight: 'initial',
+    maxWidth: 230
   },
   drawerPaperWithTabs: {
     marginTop: 144,
     zIndex: 1000,
     backgroundColor: 'initial',
-    borderRight: 'initial'
+    borderRight: 'initial',
+    maxWidth: 230
   },
   tabs: {
     width: '100%'

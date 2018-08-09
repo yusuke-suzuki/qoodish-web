@@ -26,7 +26,7 @@ const styles = {
   drawerPaperLarge: {
     zIndex: 1,
     height: 'calc(100vh - 64px)',
-    width: 350,
+    width: 380,
     marginTop: 64
   },
   drawerPaperSmall: {
@@ -46,7 +46,7 @@ const styles = {
   spotImageLarge: {
     width: '100%',
     objectFit: 'cover',
-    height: 350
+    height: 380
   },
   spotImageSmall: {
     width: '100%',
