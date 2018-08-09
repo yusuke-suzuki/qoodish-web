@@ -49,14 +49,18 @@ const mapDispatchToProps = dispatch => {
 
     signOut: async () => {
       dispatch(requestStart());
+      await firebase.auth().signOut();
+      dispatch(push('/login'));
+      dispatch(signOut());
+      dispatch(requestFinish());
+
       const client = new ApiClient();
       const messaging = firebase.messaging();
       const registrationToken = await messaging.getToken();
+      if (!registrationToken) {
+        return;
+      }
       await client.deleteRegistrationToken(registrationToken);
-      await firebase.auth().signOut();
-      dispatch(push('/login'));
-      dispatch(requestFinish());
-      dispatch(signOut());
     },
 
     readNotifications: async notifications => {

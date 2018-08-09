@@ -200,6 +200,7 @@ class EditProfileDialog extends React.Component {
         fullWidth
         autoFocus
         value={this.state.name}
+        margin="normal"
       />
     );
   }

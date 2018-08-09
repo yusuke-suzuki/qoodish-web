@@ -92,6 +92,7 @@ class InviteTargetDialog extends React.Component {
             onChange={this.handleInputChange}
             fullWidth
             autoFocus
+            margin="normal"
           />
           <List>{this.renderUsers()}</List>
         </DialogContent>

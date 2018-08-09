@@ -308,13 +308,8 @@ class EditReviewDialog extends React.Component {
             label={this.state.placeName}
             onClick={this.props.handleSpotClick}
           />
-          <br />
-          <br />
           {this.renderMapSelect()}
-          <br />
           {this.renderCommentBox()}
-          <br />
-          <br />
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
           <input
@@ -400,6 +395,7 @@ class EditReviewDialog extends React.Component {
         fullWidth
         error={this.state.mapId ? false : true}
         disabled={this.props.currentReview ? true : false}
+        margin="normal"
       >
         <InputLabel htmlFor="map-input">{I18n.t('map')}</InputLabel>
         <Select
@@ -449,6 +445,7 @@ class EditReviewDialog extends React.Component {
         autoFocus
         rowsMax="5"
         rows="5"
+        margin="normal"
       />
     );
   }
