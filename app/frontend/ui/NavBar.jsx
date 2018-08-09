@@ -639,12 +639,20 @@ class NavBar extends React.Component {
                 <ListItemText primary={I18n.t('invites')} />
               </ListItem>
             </Link>
+            <Divider />
             <ListItem button onClick={this.props.handleFeedbackClick}>
-              <ListItemIcon>
-                <SendIcon />
-              </ListItemIcon>
               <ListItemText primary={I18n.t('send feedback')} />
             </ListItem>
+            <Link to="/terms" style={styles.link}>
+              <ListItem button>
+                <ListItemText primary={I18n.t('terms of service')} />
+              </ListItem>
+            </Link>
+            <Link to="/privacy" style={styles.link}>
+              <ListItem button>
+                <ListItemText primary={I18n.t('privacy policy')} />
+              </ListItem>
+            </Link>
           </div>
         </List>
       </div>
