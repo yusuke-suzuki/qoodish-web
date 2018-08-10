@@ -5,8 +5,9 @@ class I18n {
   static t(key) {
     switch (window.currentLocale) {
       case 'ja':
+      case 'ja-JP':
+      case 'ja-jp':
         return ja[key];
-        break;
       default:
         return en[key];
     }
