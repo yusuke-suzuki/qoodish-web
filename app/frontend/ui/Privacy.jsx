@@ -10,12 +10,9 @@ const styles = {
     width: '100%',
     overflowX: 'hidden'
   },
-  toolbarLarge: {
+  toolbar: {
     paddingLeft: 10,
     paddingRight: 10
-  },
-  toolbarSmall: {
-    height: 56
   },
   toolbarCenter: {
     width: '100%',
@@ -59,7 +56,7 @@ class Privacy extends React.Component {
     return (
       <div>
         <AppBar position="fixed">
-          <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
+          <Toolbar disableGutters style={styles.toolbar}>
             <IconButton
               style={styles.backButton}
               onClick={this.props.handleBackButtonClick}

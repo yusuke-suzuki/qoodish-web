@@ -236,6 +236,7 @@ class EditMapDialog extends React.Component {
             label={this.state.baseName ? this.state.baseName : I18n.t('center of map')}
             onClick={this.props.handleMapBaseClick}
             style={styles.mapCenterChip}
+            clickable
           />
           <FormControlLabel
             control={

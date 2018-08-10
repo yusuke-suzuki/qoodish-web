@@ -13,6 +13,7 @@ import requestMapCenter from '../actions/requestMapCenter';
 import selectSpot from '../actions/selectSpot';
 import { sleep, uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 import I18n from './I18n';
+import openCreateMapDialog from '../actions/openCreateMapDialog';
 
 const mapStateToProps = state => {
   return {
@@ -117,6 +118,11 @@ const mapDispatchToProps = dispatch => {
 
     handleSpotClick: () => {
       dispatch(openPlaceSelectDialog());
+    },
+
+    handleCreateMapButtonClick: () => {
+      dispatch(closeEditReviewDialog());
+      dispatch(openCreateMapDialog());
     }
   };
 };
