@@ -192,7 +192,8 @@ class App extends React.Component {
             property: 'og:description',
             content:
               'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
-          }
+          },
+          { 'http-equiv': 'content-language', content: window.currentLocale }
         ]}
       />
     );
