@@ -19,7 +19,7 @@
   "home": "ホーム",
   "discover": "見つける",
   "maps": "マップ",
-  "profile": "プロフィール",
+  "account": "アカウント",
   "notice": "お知らせ",
   "notifications": "お知らせ",
   "settings": "設定",
@@ -118,5 +118,7 @@
   "send feedback": "フィードバックを送信",
   "feedback negative": "Qoodish の改善すべきと思った点を教えてください。",
   "feedback positive": "Qoodish の良いと思った点を教えてください。",
-  "send feedback success": "フィードバックを送信しました！頑張って改善していきます！"
+  "send feedback success": "フィードバックを送信しました！頑張って改善していきます！",
+  "sure to unfollow map": "フォロー解除してよろしいですか？",
+  "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。"
 }

@@ -56,10 +56,9 @@ const mapDispatchToProps = dispatch => {
           console.log('Unable to get registration token.');
           return;
         }
+        dispatch(fetchRegistrationToken(refreshedToken));
         const response = await client.sendRegistrationToken(refreshedToken);
-        if (response.ok) {
-          dispatch(fetchRegistrationToken(refreshedToken));
-        } else {
+        if (!response.ok) {
           console.log('Failed to send registration token.');
         }
       });

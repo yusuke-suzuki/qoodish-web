@@ -15,6 +15,7 @@ import InviteTargetDialogContainer from '../containers/InviteTargetDialogContain
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 import LocationButtonContainer from '../containers/LocationButtonContainer';
 import SpotCardContainer from '../containers/SpotCardContainer';
+import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import Helmet from 'react-helmet';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -189,6 +190,7 @@ export default class MapDetail extends React.Component {
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
         <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
+        <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
     );
   }

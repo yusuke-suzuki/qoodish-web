@@ -111,6 +111,8 @@ class EditProfileDialog extends React.Component {
       this.setState({
         imageUrl: dataUrl,
         editImage: true
+      }, () => {
+        this.validate();
       });
     };
 

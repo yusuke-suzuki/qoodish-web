@@ -6,8 +6,8 @@ import requestFinish from '../actions/requestFinish';
 import fetchCollaborators from '../actions/fetchCollaborators';
 import ApiClient from './ApiClient';
 import joinMap from '../actions/joinMap';
-import leaveMap from '../actions/leaveMap';
 import openToast from '../actions/openToast';
+import openLeaveMapDialog from '../actions/openLeaveMapDialog';
 
 const mapStateToProps = state => {
   return {
@@ -47,28 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleUnfollowButtonClick: async () => {
-      dispatch(requestStart());
-      const client = new ApiClient();
-      let response = await client.unfollowMap(ownProps.currentMap.id);
-      dispatch(requestFinish());
-      if (response.ok) {
-        let map = await response.json();
-        dispatch(leaveMap(map));
-        dispatch(openToast('Unfollowed map successfully'));
-
-        gtag('event', 'unfollow', {
-          'event_category': 'engagement',
-          'event_label': 'map'
-        });
-
-        let colloboratorsResponse = await client.fetchCollaborators(
-          ownProps.currentMap.id
-        );
-        let collaborators = await colloboratorsResponse.json();
-        dispatch(fetchCollaborators(collaborators));
-      } else {
-        dispatch(openToast('Failed to unfollow map'));
-      }
+      dispatch(openLeaveMapDialog());
     }
   };
 };

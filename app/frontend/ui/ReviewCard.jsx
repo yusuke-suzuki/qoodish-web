@@ -195,11 +195,11 @@ class ReviewCard extends React.Component {
   renderLikeButton(review) {
     return (
       <IconButton
-        onClick={
+        onClick={() => {
           review.liked
-            ? this.props.handleUnlikeButtonClick
-            : this.props.handleLikeButtonClick
-        }
+            ? this.props.handleUnlikeButtonClick()
+            : this.props.handleLikeButtonClick(this.props.currentUser)
+        }}
       >
         {review.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
       </IconButton>

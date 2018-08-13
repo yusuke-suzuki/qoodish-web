@@ -91,6 +91,10 @@ class App extends React.Component {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (!user) {
         await this.props.signInAnonymously();
+      } else {
+        if (!user.isAnonymous) {
+          this.props.fetchPostableMaps();
+        }
       }
     });
   }
@@ -119,7 +123,6 @@ class App extends React.Component {
       });
       if (!currentUser.isAnonymous) {
         this.props.initMessaging(this.props.notificationPermitted);
-        this.props.fetchPostableMaps();
       }
     }
   }
