@@ -74,7 +74,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleIssueButtonClick: (currentUser, review) => {
-      console.log(currentUser);
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -82,7 +81,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(openIssueDialog(review.id, 'review'));
     },
 
-    handleLikeButtonClick: async () => {
+    handleLikeButtonClick: async (currentUser) => {
+      if (currentUser.isAnonymous) {
+        dispatch(openSignInRequiredDialog());
+        return;
+      }
       const client = new ApiClient();
       let response = await client.likeReview(ownProps.currentReview.id);
       if (response.ok) {
