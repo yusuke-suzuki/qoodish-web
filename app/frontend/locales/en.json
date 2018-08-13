@@ -118,5 +118,7 @@
   "send feedback": "Send Feedback",
   "feedback negative": "Please tell me what you think is not good for Qoodish.",
   "feedback positive": "Please tell me what you think is good for Qoodish.",
-  "send feedback success": "Successfully sent feedback. Thank you!"
+  "send feedback success": "Successfully sent feedback. Thank you!",
+  "sure to unfollow map": "Are you sure you want to unfollow this map?",
+  "unfollow map detail": "The reports you've written will not be deleted by unfollowing the map."
 }

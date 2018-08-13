@@ -5,6 +5,8 @@ import {
   EDIT_MAP,
   JOIN_MAP,
   LEAVE_MAP,
+  OPEN_LEAVE_MAP_DIALOG,
+  CLOSE_LEAVE_MAP_DIALOG,
   SWITCH_SUMMARY,
   SWITCH_MAP,
   OPEN_INVITE_TARGET_DIALOG,
@@ -23,6 +25,7 @@ const initialState = {
   loadingUsers: false,
   spotReviews: [],
   mapSummaryOpen: false,
+  leaveMapDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -69,7 +72,8 @@ const reducer = (state = initialState, action) => {
       });
     case LEAVE_MAP:
       return Object.assign({}, state, {
-        currentMap: action.payload.currentMap
+        currentMap: action.payload.currentMap,
+        leaveMapDialogOpen: false
       });
     case SWITCH_SUMMARY:
       return Object.assign({}, state, {
@@ -79,18 +83,28 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mapSummaryOpen: false
       });
+    case OPEN_LEAVE_MAP_DIALOG:
+      return Object.assign({}, state, {
+        leaveMapDialogOpen: true
+      });
+    case CLOSE_LEAVE_MAP_DIALOG:
+      return Object.assign({}, state, {
+        leaveMapDialogOpen: false
+      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
         placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,
         pickedUsers: [],
+        leaveMapDialogOpen: false,
         mapSummaryOpen: false
       });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,
+        leaveMapDialogOpen: false,
         mapSummaryOpen: false
       });
     default:
