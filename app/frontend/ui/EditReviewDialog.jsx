@@ -25,6 +25,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { sleep } from '../containers/Utils';
 import I18n from '../containers/I18n';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = {
   appbar: {
@@ -307,8 +308,17 @@ class EditReviewDialog extends React.Component {
             }
             label={this.state.placeName}
             onClick={this.props.handleSpotClick}
+            clickable
           />
           {this.renderMapSelect()}
+          <Button
+            variant="extendedFab"
+            onClick={this.props.handleCreateMapButtonClick}
+            size="small"
+          >
+            <AddIcon />
+            {I18n.t('create new map')}
+          </Button>
           {this.renderCommentBox()}
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
