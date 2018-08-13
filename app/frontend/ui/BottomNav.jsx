@@ -9,6 +9,7 @@ import MapIcon from '@material-ui/icons/Map';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Typography from '@material-ui/core/Typography';
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -19,7 +20,12 @@ const styles = {
     zIndex: 1
   },
   bottomAction: {
-    minWidth: 'auto'
+    width: '20%',
+    minWidth: 'auto',
+    overflow: 'hidden'
+  },
+  label: {
+    fontSize: 'small'
   },
   link: {
     textDecoration: 'none',
@@ -70,27 +76,83 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
-            label={<Link to="/" style={styles.link}>{I18n.t('home')}</Link>}
+            label={
+              <Link to="/" style={styles.link}>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  noWrap
+                  style={styles.label}
+                >
+                  {I18n.t('home')}
+                </Typography>
+              </Link>
+            }
             icon={<Link to="/" style={styles.link}><HomeIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/discover" style={styles.link}>{I18n.t('discover')}</Link>}
+            label={
+              <Link to="/discover" style={styles.link}>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  noWrap
+                  style={styles.label}
+                >
+                  {I18n.t('discover')}
+                </Typography>
+              </Link>
+            }
             icon={<Link to="/discover" style={styles.link}><ExploreIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/maps" style={styles.link}>{I18n.t('maps')}</Link>}
+            label={
+              <Link to="/maps" style={styles.link}>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  noWrap
+                  style={styles.label}
+
+                >
+                  {I18n.t('maps')}
+                </Typography>
+              </Link>
+            }
             icon={<Link to="/maps" style={styles.link}><MapIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/profile" style={styles.link}>{I18n.t('profile')}</Link>}
+            label={
+              <Link to="/profile" style={styles.link}>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  noWrap
+                  style={styles.label}
+                >
+                  {I18n.t('account')}
+                </Typography>
+              </Link>
+            }
             icon={<Link to="/profile" style={styles.link}><AccountCircleIcon /></Link>}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
-            label={<Link to="/notifications" style={styles.link}>{I18n.t('notice')}</Link>}
+            label={
+              <Link to="/notifications" style={styles.link}>
+                <Typography
+                  variant="body1"
+                  color="inherit"
+                  noWrap
+                  style={styles.label}
+                >
+                  {I18n.t('notice')}
+                </Typography>
+              </Link>
+            }
             icon={
               <Link to="/notifications" style={styles.link}>
                 {this.renderNotificationIcon()}

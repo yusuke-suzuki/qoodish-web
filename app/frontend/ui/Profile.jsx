@@ -151,7 +151,7 @@ class Profile extends React.Component {
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/profile',
-      'page_title': `${I18n.t('profile')} | Qoodish`
+      'page_title': `${I18n.t('account')} | Qoodish`
     });
   }
 
@@ -185,7 +185,7 @@ class Profile extends React.Component {
   renderHelmet(currentUser) {
     return (
       <Helmet
-        title={`${currentUser.name ? currentUser.name : I18n.t('profile')} | Qoodish`}
+        title={`${currentUser.name ? currentUser.name : I18n.t('account')} | Qoodish`}
         link={[
           { rel: 'canonical', href: `${process.env.ENDPOINT}/profile` }
         ]}

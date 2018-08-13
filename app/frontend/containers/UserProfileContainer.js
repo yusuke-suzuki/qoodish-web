@@ -38,7 +38,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('profile')));
+      dispatch(updatePageTitle(I18n.t('account')));
     },
 
     fetchUserProfile: async () => {

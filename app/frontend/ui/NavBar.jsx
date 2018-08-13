@@ -556,7 +556,7 @@ class NavBar extends React.Component {
       >
         <MenuItem onClick={this.handleRequestAvatarMenuClose} selected={false}>
           <Link to="/profile" style={styles.link}>
-            {I18n.t('profile')}
+            {I18n.t('account')}
           </Link>
         </MenuItem>
         <MenuItem onClick={this.handleRequestAvatarMenuClose}>
@@ -611,7 +611,7 @@ class NavBar extends React.Component {
                 <ListItemIcon>
                   <AccountCircleIcon />
                 </ListItemIcon>
-                <ListItemText primary={I18n.t('profile')} />
+                <ListItemText primary={I18n.t('account')} />
               </ListItem>
             </Link>
             <Link to="/notifications" style={styles.link}>

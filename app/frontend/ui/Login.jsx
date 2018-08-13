@@ -136,7 +136,7 @@ class Login extends React.Component {
               <GridListTileBar
                 title={
                   <Typography
-                    variant="display3"
+                    variant={this.props.large ? "display3" : "display2"}
                     color="inherit"
                     style={styles.carouselTileBarText}
                     gutterBottom
@@ -147,7 +147,7 @@ class Login extends React.Component {
                 subtitle={
                   <div>
                     <Typography
-                      variant="headline"
+                      variant={this.props.large ? "headline" : "title"}
                       color="inherit"
                       style={styles.carouselTileBarText}
                     >
