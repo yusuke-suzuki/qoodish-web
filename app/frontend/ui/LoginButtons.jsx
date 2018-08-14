@@ -3,6 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { useIOS } from '../containers/Utils';
 
 class LoginButtons extends React.Component {
   componentWillMount() {
@@ -12,7 +13,7 @@ class LoginButtons extends React.Component {
           this.props.signIn(authResult, redirectUrl);
         }
       },
-      signInFlow: 'popup',
+      signInFlow: useIOS() ? 'redirect' : 'popup',
       signInSuccessUrl: process.env.ENDPOINT,
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
