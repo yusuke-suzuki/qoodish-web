@@ -49,18 +49,20 @@ const mapDispatchToProps = dispatch => {
 
     signOut: async () => {
       dispatch(requestStart());
+
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        const messaging = firebase.messaging();
+        const registrationToken = await messaging.getToken();
+        if (registrationToken) {
+          const client = new ApiClient();
+          await client.deleteRegistrationToken(registrationToken);
+        }
+      }
+
       await firebase.auth().signOut();
       dispatch(push('/login'));
       dispatch(signOut());
       dispatch(requestFinish());
-
-      const client = new ApiClient();
-      const messaging = firebase.messaging();
-      const registrationToken = await messaging.getToken();
-      if (!registrationToken) {
-        return;
-      }
-      await client.deleteRegistrationToken(registrationToken);
     },
 
     readNotifications: async notifications => {
