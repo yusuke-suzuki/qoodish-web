@@ -3578,9 +3578,9 @@ firebase@^5.2.0:
     "@firebase/polyfill" "0.3.3"
     "@firebase/storage" "0.2.3"
 
-firebaseui@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-3.2.0.tgz#950a04fd9ff18efd8f4169726380cb7da77c4409"
+firebaseui@^3.2.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-3.3.0.tgz#59c360963f988c80f1dc60fe34598f57fb315d15"
   dependencies:
     dialog-polyfill "^0.4.7"
 
@@ -6394,11 +6394,11 @@ react-facebook@^5.0.3:
     prop-types "^15.6.1"
     react-spinner-children "^1.0.8"
 
-react-firebaseui@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/react-firebaseui/-/react-firebaseui-3.0.4.tgz#faeef2cee1aa681d832ffd9d28fdf69789b2abf2"
+react-firebaseui@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/react-firebaseui/-/react-firebaseui-3.0.6.tgz#8b5c83725464168394a9b43f732d1d35bfa2c575"
   dependencies:
-    firebaseui "^3.0.0"
+    firebaseui "^3.2.0"
 
 react-google-maps@^9.4.5:
   version "9.4.5"
