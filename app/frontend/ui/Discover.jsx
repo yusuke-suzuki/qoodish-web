@@ -71,9 +71,6 @@ const styles = {
   reviewCard: {
     margin: 3
   },
-  profileImage: {
-    width: 40
-  },
   cardContentLarge: {
     paddingTop: 0,
     paddingRight: 120
@@ -287,13 +284,7 @@ export default class Discover extends React.Component {
         <Card style={styles.reviewCard}>
           <CardHeader
             avatar={
-              <Avatar>
-                <img
-                  src={review.author.profile_image_url}
-                  alt={review.author.name}
-                  style={styles.profileImage}
-                />
-              </Avatar>
+              <Avatar src={review.author.profile_image_url} />
             }
             title={review.author.name}
             subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
