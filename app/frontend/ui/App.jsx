@@ -234,7 +234,7 @@ class App extends React.Component {
               {this.renderRoutes()}
             </Grid>
           </Grid>
-          {!this.props.large && <BottomNavContainer />}
+          {!this.props.large && !this.sideNavUnnecessary() && <BottomNavContainer />}
         </div>
       );
     }
