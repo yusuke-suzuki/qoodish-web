@@ -1,29 +1,11 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import IconButton from '@material-ui/core/IconButton';
+import I18n from '../containers/I18n';
 
 const styles = {
   root: {
     width: '100%',
     overflowX: 'hidden'
-  },
-  toolbar: {
-    paddingLeft: 10,
-    paddingRight: 10
-  },
-  toolbarCenter: {
-    width: '100%',
-    textAlign: 'center',
-    position: 'absolute'
-  },
-  logo: {
-    color: 'white',
-    cursor: 'pointer',
-    width: 'fit-content',
-    margin: '0 auto'
   },
   containerLarge: {
     width: '80%',
@@ -46,6 +28,7 @@ const styles = {
 
 class Privacy extends React.Component {
   componentWillMount() {
+    this.props.updatePageTitle(this.props.large ? I18n.t('privacy policy') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/privacy',
       'page_title': 'Privacy | Qoodish'
@@ -55,26 +38,6 @@ class Privacy extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position="fixed">
-          <Toolbar disableGutters style={styles.toolbar}>
-            <IconButton
-              style={styles.backButton}
-              onClick={this.props.handleBackButtonClick}
-            >
-              <ArrowBackIcon style={styles.backIcon} />
-            </IconButton>
-            <div style={styles.toolbarCenter}>
-              <Typography
-                variant="title"
-                color="inherit"
-                style={styles.logo}
-                onClick={this.props.handleLogoClick}
-              >
-                Qoodish
-              </Typography>
-            </div>
-          </Toolbar>
-        </AppBar>
         <div
           style={
             this.props.large ? styles.containerLarge : styles.containerSmall

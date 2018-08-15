@@ -1,7 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -20,13 +18,6 @@ import FacebookProvider, { Page } from 'react-facebook';
 import LoginButtonsContainer from '../containers/LoginButtonsContainer';
 
 const styles = {
-  toolbar: {
-    alignSelf: 'center'
-  },
-  logo: {
-    color: 'white',
-    cursor: 'pointer'
-  },
   loginContainerLarge: {
     textAlign: 'center',
     width: '80%',
@@ -98,6 +89,7 @@ const styles = {
 
 class Login extends React.Component {
   componentWillMount() {
+    this.props.updatePageTitle(this.props.large ? I18n.t('login') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/login',
       'page_title': `${I18n.t('login')} | Qoodish`
@@ -111,18 +103,6 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position="fixed">
-          <Toolbar style={styles.toolbar}>
-            <Typography
-              variant="title"
-              color="inherit"
-              style={styles.logo}
-              onClick={this.handleScrollTopClick}
-            >
-              Qoodish
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <div
           style={
             this.props.large

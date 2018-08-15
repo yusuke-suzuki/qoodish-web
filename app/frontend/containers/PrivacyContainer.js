@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Privacy from '../ui/Privacy';
-import { push, goBack } from 'react-router-redux';
+import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = state => {
   return {
@@ -10,12 +10,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleLogoClick: () => {
-      dispatch(push('/'));
-    },
-
-    handleBackButtonClick: () => {
-      dispatch(goBack());
+    updatePageTitle: (title) => {
+      dispatch(updatePageTitle(title));
     }
   };
 };
