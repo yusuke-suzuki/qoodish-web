@@ -20,7 +20,6 @@ import MapIcon from '@material-ui/icons/Map';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
-import SendIcon from '@material-ui/icons/Send';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -87,12 +86,16 @@ const styles = {
     marginLeft: 24
   },
   pageTitleSmall: {
-    cursor: 'pointer',
-    marginLeft: 8
+    cursor: 'pointer'
+  },
+  pageTitleContainerLarge: {
+  },
+  pageTitleContainerSmall: {
+    margin: '0 auto'
   },
   rightContents: {
-    marginLeft: 'auto',
-    paddingRight: 10,
+    position: 'absolute',
+    right: 10,
     display: 'flex'
   },
   listItemContent: {
@@ -134,7 +137,8 @@ const styles = {
     height: 35,
   },
   leftButton: {
-    marginLeft: 8
+    marginLeft: 8,
+    position: 'absolute'
   },
   link: {
     textDecoration: 'none',
@@ -254,17 +258,19 @@ class NavBar extends React.Component {
           ? this.renderBackButton()
           : this.renderMenuButton()}
         {this.props.large ? this.renderLogo() : null}
-        <Typography
-          variant="headline"
-          color="inherit"
-          noWrap
-          style={
-            this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
-          }
-          onClick={this.handleTitleClick}
-        >
-          {this.props.pageTitle}
-        </Typography>
+        <div style={this.props.large ? styles.pageTitleContainerLarge : styles.pageTitleContainerSmall}>
+          <Typography
+            variant="headline"
+            color="inherit"
+            noWrap
+            style={
+              this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
+            }
+            onClick={this.handleTitleClick}
+          >
+            {this.props.pageTitle}
+          </Typography>
+        </div>
         <div style={styles.rightContents}>
           {this.props.currentUser && this.props.currentUser.isAnonymous ? this.renderRightContentsForAnonymous() : this.renderRightContents()}
         </div>
