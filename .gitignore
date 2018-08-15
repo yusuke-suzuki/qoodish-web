@@ -67,6 +67,6 @@ functions/hosting/*.hot-update.*
 docker-compose.yml
 
 firebase-debug.log
-
+.firebase
 functions/node_modules/
 functions/*.js
