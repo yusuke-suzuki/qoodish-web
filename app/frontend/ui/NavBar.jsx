@@ -581,7 +581,7 @@ class NavBar extends React.Component {
       <div>
         <List disablePadding>
           <div>
-            {!this.props.large || this.isMapDetail() ? this.renderTitle() : null}
+            {!this.props.large || this.sideNavUnnecessary() ? this.renderTitle() : null}
             <Link to="/" style={styles.link}>
               <ListItem button>
                 <ListItemIcon>
