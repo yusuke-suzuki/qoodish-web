@@ -286,7 +286,11 @@ class NavBar extends React.Component {
   renderRightContentsForAnonymous() {
     return (
       <div>
-        <Button color="inherit" onClick={this.props.requestSignIn}>
+        <Button
+          color="inherit"
+          component={Link}
+          to="/login"
+        >
           {I18n.t('login')}
         </Button>
       </div>
@@ -554,15 +558,21 @@ class NavBar extends React.Component {
         open={this.state.accountMenuOpen}
         onClose={this.handleRequestAvatarMenuClose}
       >
-        <MenuItem onClick={this.handleRequestAvatarMenuClose} selected={false}>
-          <Link to="/profile" style={styles.link}>
-            {I18n.t('account')}
-          </Link>
+        <MenuItem
+          onClick={this.handleRequestAvatarMenuClose}
+          selected={false}
+          component={Link}
+          to="/profile"
+        >
+          {I18n.t('account')}
         </MenuItem>
-        <MenuItem onClick={this.handleRequestAvatarMenuClose}>
-          <Link to="/settings" style={styles.link}>
-            {I18n.t('settings')}
-          </Link>
+        <MenuItem
+          onClick={this.handleRequestAvatarMenuClose}
+          selected={false}
+          component={Link}
+          to="/settings"
+        >
+          {I18n.t('settings')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -579,81 +589,61 @@ class NavBar extends React.Component {
   renderDrawerContents() {
     return (
       <div>
-        <List disablePadding>
-          <div>
-            {!this.props.large || this.sideNavUnnecessary() ? this.renderTitle() : null}
-            <Link to="/" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('home')} />
-              </ListItem>
-            </Link>
-            <Link to="/discover" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <ExploreIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('discover')} />
-              </ListItem>
-            </Link>
-            <Link to="/maps" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <MapIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('maps')} />
-              </ListItem>
-            </Link>
-            <Link to="/profile" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('account')} />
-              </ListItem>
-            </Link>
-            <Link to="/notifications" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <NotificationsIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('notifications')} />
-              </ListItem>
-            </Link>
-            <Divider />
-            <Link to="/settings" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('settings')} />
-              </ListItem>
-            </Link>
-            <Link to="/invites" style={styles.link}>
-              <ListItem button>
-                <ListItemIcon>
-                  <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('invites')} />
-              </ListItem>
-            </Link>
-            <Divider />
-            <ListItem button onClick={this.props.handleFeedbackClick}>
-              <ListItemText primary={I18n.t('send feedback')} />
-            </ListItem>
-            <Link to="/terms" style={styles.link}>
-              <ListItem button>
-                <ListItemText primary={I18n.t('terms of service')} />
-              </ListItem>
-            </Link>
-            <Link to="/privacy" style={styles.link}>
-              <ListItem button>
-                <ListItemText primary={I18n.t('privacy policy')} />
-              </ListItem>
-            </Link>
-          </div>
+        <List disablePadding component="nav">
+          {!this.props.large || this.sideNavUnnecessary() ? this.renderTitle() : null}
+          <ListItem button component={Link} to="/">
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('home')} />
+          </ListItem>
+          <ListItem button component={Link} to="/discover">
+            <ListItemIcon>
+              <ExploreIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('discover')} />
+          </ListItem>
+          <ListItem button component={Link} to="/maps">
+            <ListItemIcon>
+              <MapIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('maps')} />
+          </ListItem>
+          <ListItem button component={Link} to="/profile">
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('account')} />
+          </ListItem>
+          <ListItem button component={Link} to="/notifications">
+            <ListItemIcon>
+              <NotificationsIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('notifications')} />
+          </ListItem>
+          <Divider />
+          <ListItem button component={Link} to="/settings">
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('settings')} />
+          </ListItem>
+          <ListItem button component={Link} to="/invites">
+            <ListItemIcon>
+              <MailIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('invites')} />
+          </ListItem>
+          <Divider />
+          <ListItem button onClick={this.props.handleFeedbackClick}>
+            <ListItemText primary={I18n.t('send feedback')} />
+          </ListItem>
+          <ListItem button component={Link} to="/terms">
+            <ListItemText primary={I18n.t('terms of service')} />
+          </ListItem>
+          <ListItem button component={Link} to="/privacy">
+            <ListItemText primary={I18n.t('privacy policy')} />
+          </ListItem>
         </List>
       </div>
     );
@@ -661,7 +651,12 @@ class NavBar extends React.Component {
 
   renderTitle() {
     return (
-      <ListItem divider={true} style={this.props.large ? styles.titleLarge : styles.titleSmall}>
+      <ListItem
+        divider
+        component={Link}
+        to="/"
+        style={this.props.large ? styles.titleLarge : styles.titleSmall}
+      >
         <ListItemText
           disableTypography
           primary={
@@ -669,7 +664,6 @@ class NavBar extends React.Component {
               variant="headline"
               color="textSecondary"
               style={styles.title}
-              onClick={this.props.requestHome}
             >
               Qoodish
             </Typography>

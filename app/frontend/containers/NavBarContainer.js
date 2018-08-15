@@ -43,10 +43,6 @@ const mapDispatchToProps = dispatch => {
       }
     },
 
-    requestSignIn: () => {
-      dispatch(push('/login'));
-    },
-
     signOut: async () => {
       dispatch(requestStart());
 
