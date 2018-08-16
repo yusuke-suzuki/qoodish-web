@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import NotificationList from '../ui/NotificationList';
 import ApiClient from './ApiClient';
 import readNotification from '../actions/readNotification';
@@ -27,12 +26,6 @@ const mapDispatchToProps = dispatch => {
         }
         await sleep(3000);
       });
-    },
-
-    handleNotificationClick: notification => {
-      dispatch(push(notification.click_action, {
-        previous: true
-      }));
     }
   };
 };

@@ -26,6 +26,7 @@ import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
 
 const styles = {
   skeltonThumbnail: {
@@ -241,7 +242,8 @@ class MapSummary extends React.Component {
       <ListItem
         button
         key={collaborator.id}
-        onClick={() => this.props.handleUserClick(collaborator.id)}
+        component={Link}
+        to={`/users/${collaborator.id}`}
       >
         <Avatar src={collaborator.profile_image_url} />
         <ListItemText primary={collaborator.name} />

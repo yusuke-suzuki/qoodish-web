@@ -15,9 +15,11 @@ import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import Badge from '@material-ui/core/Badge';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import twitter from 'twitter-text';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
 
 const styles = {
   card: {},
@@ -25,15 +27,11 @@ const styles = {
     minHeight: 'calc(100vh - 56px)'
   },
   cardTitle: {
-    cursor: 'pointer',
     width: 'fit-content',
     wordBreak: 'break-all'
   },
   reviewComment: {
     wordBreak: 'break-all'
-  },
-  profileAvatar: {
-    cursor: 'pointer'
   },
   cardContent: {
     paddingTop: 0
@@ -121,35 +119,47 @@ class ReviewCard extends React.Component {
           : this.renderMoreVertMenu()}
         <CardHeader
           avatar={
-            <Avatar
-              src={review.author.profile_image_url}
-              style={styles.profileAvatar}
-              onClick={() => this.props.handleUserClick(review.author.id)}
-            />
+            <ButtonBase
+              component={Link}
+              to={`/users/${review.author.id}`}
+            >
+              <Avatar
+                src={review.author.profile_image_url}
+              />
+            </ButtonBase>
           }
           action={[this.renderShareButton(), this.renderMoreVertButton()]}
           title={review.author.name}
           subheader={this.renderCreatedAt(review)}
         />
         <CardContent style={styles.cardContent}>
-          <Typography
-            style={styles.cardTitle}
-            variant="subheading"
-            color="primary"
-            gutterBottom
-            onClick={this.props.handleMapClick}
+          <ButtonBase
+            component={Link}
+            to={`/maps/${review.map_id}`}
           >
-            {review.map_name}
-          </Typography>
-          <Typography
-            style={styles.cardTitle}
-            variant="headline"
-            component="h2"
-            gutterBottom
-            onClick={() => this.props.handleSpotNameClick(review.spot)}
+            <Typography
+              variant="subheading"
+              color="primary"
+              style={styles.cardTitle}
+              gutterBottom
+            >
+              {review.map_name}
+            </Typography>
+          </ButtonBase>
+          <br/>
+          <ButtonBase
+            component={Link}
+            to={`/spots/${review.spot.place_id}`}
           >
-            {review.spot.name}
-          </Typography>
+            <Typography
+              variant="headline"
+              component="h2"
+              style={styles.cardTitle}
+              gutterBottom
+            >
+              {review.spot.name}
+            </Typography>
+          </ButtonBase>
           <Typography component="p" dangerouslySetInnerHTML={commentHtml} style={styles.reviewComment}>
           </Typography>
         </CardContent>

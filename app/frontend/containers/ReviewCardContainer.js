@@ -24,20 +24,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleMapClick: () => {
-      dispatch(push(`/maps/${ownProps.currentReview.map_id}`, {
-        previous: true
-      }));
-    },
-
-    handleSpotNameClick: async spot => {
-      dispatch(closeReviewDialog());
-      dispatch(selectSpot(spot));
-      dispatch(push(`/spots/${spot.place_id}`, {
-        previous: true
-      }));
-    },
-
     handleTweetButtonClick: review => {
       let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
         review.id
@@ -127,12 +113,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchReviewLikes(likes));
         dispatch(openLikesDialog());
       }
-    },
-
-    handleUserClick: (userId) => {
-      dispatch(push(`/users/${userId}`, {
-        previous: true
-      }));
     }
   };
 };

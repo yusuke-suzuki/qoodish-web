@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -60,7 +61,8 @@ class LikesDialog extends React.Component {
       <ListItem
         button
         key={like.id}
-        onClick={() => this.props.handleLikeClick(like)}
+        component={Link}
+        to={`/users/${like.voter.id}`}
       >
         <ListItemAvatar>
           <Avatar src={like.voter.profile_image_url} />

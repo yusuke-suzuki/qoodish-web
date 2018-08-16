@@ -76,88 +76,83 @@ export default class BottomNav extends React.Component {
       <Paper style={styles.bottomNav} elevation={20}>
         <BottomNavigation showLabels value={this.state.tabValue}>
           <BottomNavigationAction
+            component={Link}
+            to="/"
             label={
-              <Link to="/" style={styles.link}>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  noWrap
-                  style={styles.label}
-                >
-                  {I18n.t('home')}
-                </Typography>
-              </Link>
+              <Typography
+                variant="body1"
+                color="inherit"
+                noWrap
+                style={styles.label}
+              >
+                {I18n.t('home')}
+              </Typography>
             }
-            icon={<Link to="/" style={styles.link}><HomeIcon /></Link>}
+            icon={<HomeIcon />}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
+            component={Link}
+            to="/discover"
             label={
-              <Link to="/discover" style={styles.link}>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  noWrap
-                  style={styles.label}
-                >
-                  {I18n.t('discover')}
-                </Typography>
-              </Link>
+              <Typography
+                variant="body1"
+                color="inherit"
+                noWrap
+                style={styles.label}
+              >
+                {I18n.t('discover')}
+              </Typography>
             }
-            icon={<Link to="/discover" style={styles.link}><ExploreIcon /></Link>}
+            icon={<ExploreIcon />}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
+            component={Link}
+            to="/maps"
             label={
-              <Link to="/maps" style={styles.link}>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  noWrap
-                  style={styles.label}
-
-                >
-                  {I18n.t('maps')}
-                </Typography>
-              </Link>
+              <Typography
+                variant="body1"
+                color="inherit"
+                noWrap
+                style={styles.label}
+              >
+                {I18n.t('maps')}
+              </Typography>
             }
-            icon={<Link to="/maps" style={styles.link}><MapIcon /></Link>}
+            icon={<MapIcon />}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
+            component={Link}
+            to="/profile"
             label={
-              <Link to="/profile" style={styles.link}>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  noWrap
-                  style={styles.label}
-                >
-                  {I18n.t('account')}
-                </Typography>
-              </Link>
+              <Typography
+                variant="body1"
+                color="inherit"
+                noWrap
+                style={styles.label}
+              >
+                {I18n.t('account')}
+              </Typography>
             }
-            icon={<Link to="/profile" style={styles.link}><AccountCircleIcon /></Link>}
+            icon={<AccountCircleIcon />}
             style={styles.bottomAction}
           />
           <BottomNavigationAction
+            component={Link}
+            to="/notifications"
             label={
-              <Link to="/notifications" style={styles.link}>
-                <Typography
-                  variant="body1"
-                  color="inherit"
-                  noWrap
-                  style={styles.label}
-                >
-                  {I18n.t('notice')}
-                </Typography>
-              </Link>
+              <Typography
+                variant="body1"
+                color="inherit"
+                noWrap
+                style={styles.label}
+              >
+                {I18n.t('notice')}
+              </Typography>
             }
-            icon={
-              <Link to="/notifications" style={styles.link}>
-                {this.renderNotificationIcon()}
-              </Link>
-            }
+            icon={this.renderNotificationIcon()}
             style={styles.bottomAction}
           />
         </BottomNavigation>
