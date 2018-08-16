@@ -203,7 +203,7 @@ export default class MapDetail extends React.Component {
           { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${map.id}` }
         ]}
         meta={[
-          map.private && { name: 'robots', content: 'noindex' },
+          map.private ? { name: 'robots', content: 'noindex' } : {},
           { name: 'title', content: `${map.name} | Qoodish` },
           { name: 'keywords', content: `${map.name}, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: map.description },
