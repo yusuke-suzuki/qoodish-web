@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import Discover from '../ui/Discover';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
-import { push } from 'react-router-redux';
 
 import fetchRecentReviews from '../actions/fetchRecentReviews';
 import fetchPopularMaps from '../actions/fetchPopularMaps';
@@ -63,12 +62,6 @@ const mapDispatchToProps = dispatch => {
       }
     },
 
-    handleSpotClick: (spot) => {
-      dispatch(push(`/spots/${spot.place_id}`, {
-        previous: true
-      }));
-    },
-
     fetchRecentReviews: async () => {
       dispatch(loadRecentReviewsStart());
       const client = new ApiClient();
@@ -98,9 +91,6 @@ const mapDispatchToProps = dispatch => {
         return;
       }
       dispatch(selectMap(map));
-      dispatch(push(`/maps/${map.id}`, {
-        previous: true
-      }));
       dispatch(openToast(`Log in to ${map.name}!`));
     },
 

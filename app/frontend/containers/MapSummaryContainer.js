@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import MapSummary from '../ui/MapSummary';
 import requestMapCenter from '../actions/requestMapCenter';
 import openReviewDialog from '../actions/openReviewDialog';
@@ -29,12 +28,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(selectSpot(review.spot));
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
       dispatch(openReviewDialog(review));
-    },
-
-    handleUserClick: userId => {
-      dispatch(push(`/users/${userId}`, {
-        previous: true
-      }));
     }
   };
 };

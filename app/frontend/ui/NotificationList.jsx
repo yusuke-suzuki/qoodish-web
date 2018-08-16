@@ -6,6 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 const styles = {
   notificationText: {
@@ -34,11 +36,10 @@ export default class NotificationList extends React.Component {
   renderNotifications(notifications) {
     return notifications.map(notification => (
       <ListItem
-        onClick={() => {
-          this.props.handleNotificationClick(notification);
-        }}
         key={notification.id}
         button
+        component={Link}
+        to={notification.click_action}
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
@@ -48,12 +49,10 @@ export default class NotificationList extends React.Component {
           }
         />
         {notification.notifiable.thumbnail_url && (
-          <ListItemSecondaryAction
-            onClick={() => {
-              this.props.handleNotificationClick(notification);
-            }}
-          >
-            <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
+          <ListItemSecondaryAction>
+            <ButtonBase component={Link} to={notification.click_action}>
+              <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
+            </ButtonBase>
           </ListItemSecondaryAction>
         )}
       </ListItem>

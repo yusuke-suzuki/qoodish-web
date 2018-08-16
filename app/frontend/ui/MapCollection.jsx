@@ -6,6 +6,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
 
 const styles = {
   container: {
@@ -15,9 +16,6 @@ const styles = {
   },
   gridList: {
     width: '100%'
-  },
-  gridTile: {
-    cursor: 'pointer'
   },
   tileBar: {
     height: 90
@@ -61,7 +59,8 @@ export default class MapCollection extends React.Component {
       <GridListTile
         key={map.id}
         onClick={() => this.props.handleClickMap(map)}
-        style={styles.gridTile}
+        component={Link}
+        to={`/maps/${map.id}`}
       >
         {map.following && this.renderFollowCheckButton() }
         <img src={this.props.large ? map.image_url : map.thumbnail_url} />

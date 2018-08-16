@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import LikesDialog from '../ui/LikesDialog';
 import closeLikesDialog from '../actions/closeLikesDialog';
 
@@ -14,12 +13,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeLikesDialog());
-    },
-
-    handleLikeClick: like => {
-      dispatch(push(`/users/${like.voter.id}`, {
-        previous: true
-      }));
     }
   };
 };

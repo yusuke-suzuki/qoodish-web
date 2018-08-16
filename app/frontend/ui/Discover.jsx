@@ -22,6 +22,8 @@ import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import I18n from '../containers/I18n';
 
+import { Link } from 'react-router-dom';
+
 const styles = {
   rootLarge: {
     marginTop: 94,
@@ -48,7 +50,6 @@ const styles = {
     cursor: 'pointer'
   },
   pickUpTile: {
-    cursor: 'pointer',
     height: 330
   },
   pickUpTileBar: {
@@ -188,6 +189,8 @@ export default class Discover extends React.Component {
           key={map && map.id}
           onClick={() => this.props.handleClickMap(map)}
           style={styles.pickUpTile}
+          component={Link}
+          to={`/maps/${map && map.id}`}
         >
           <img src={map && map.image_url} />
           <GridListTileBar
@@ -232,7 +235,8 @@ export default class Discover extends React.Component {
       <ListItem
         button
         key={spot.place_id}
-        onClick={() => this.props.handleSpotClick(spot)}
+        component={Link}
+        to={`/spots/${spot.place_id}`}
       >
         <Avatar src={spot.image_url} />
         <ListItemText
