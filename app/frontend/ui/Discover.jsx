@@ -55,6 +55,10 @@ const styles = {
   pickUpTileBar: {
     height: '100%'
   },
+  pickUpText: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word'
+  },
   progress: {
     textAlign: 'center',
     padding: 10,
@@ -196,10 +200,10 @@ export default class Discover extends React.Component {
           <GridListTileBar
             title={
               <Typography
-                variant={this.props.large ? 'display3' : 'display2'}
+                variant={this.props.large ? 'display3' : 'display1'}
                 color="inherit"
-                noWrap
                 gutterBottom
+                style={styles.pickUpText}
               >
                 {map && map.name}
               </Typography>
@@ -208,7 +212,7 @@ export default class Discover extends React.Component {
               <Typography
                 variant={this.props.large ? 'display1' : 'headline'}
                 color="inherit"
-                noWrap
+                style={styles.pickUpText}
               >
                 <span>{map && `by: ${map.owner_name}`}</span>
               </Typography>
