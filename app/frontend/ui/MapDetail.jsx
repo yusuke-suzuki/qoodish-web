@@ -9,6 +9,7 @@ import {
 } from 'react-google-maps';
 import { compose } from 'recompose';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
+import ExpandMapSummaryButtonContainer from '../containers/ExpandMapSummaryButtonContainer';
 import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
@@ -242,6 +243,7 @@ export default class MapDetail extends React.Component {
         <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
           {this.renderGoogleMap()}
         </div>
+        <ExpandMapSummaryButtonContainer />
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
         {this.renderMapSummaryDrawer()}
       </div>
