@@ -77,12 +77,6 @@ const mapDispatchToProps = dispatch => {
       });
     },
 
-    handleNotificationClick: notification => {
-      dispatch(push(notification.click_action, {
-        previous: true
-      }));
-    },
-
     handleBackButtonClick: (previous) => {
       if (previous) {
         dispatch(goBack());

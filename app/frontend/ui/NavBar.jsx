@@ -31,6 +31,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import I18n from '../containers/I18n';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 const styles = {
   title: {
@@ -493,12 +494,11 @@ class NavBar extends React.Component {
   renderNotifications(notifications) {
     return notifications.map(notification => (
       <MenuItem
-        onClick={() => {
-          this.handleRequestNotificationClose();
-          this.props.handleNotificationClick(notification);
-        }}
+        onClick={this.handleRequestNotificationClose}
         key={notification.id}
         style={styles.notificationMenuItem}
+        component={Link}
+        to={notification.click_action}
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
@@ -511,7 +511,13 @@ class NavBar extends React.Component {
         />
         {notification.notifiable.thumbnail_url && (
           <ListItemSecondaryAction>
-            <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
+            <ButtonBase
+              component={Link}
+              to={notification.click_action}
+              onClick={this.handleRequestNotificationClose}
+            >
+              <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
+            </ButtonBase>
           </ListItemSecondaryAction>
         )}
       </MenuItem>
