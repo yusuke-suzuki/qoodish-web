@@ -11,8 +11,6 @@ import likeReview from '../actions/likeReview';
 import unlikeReview from '../actions/unlikeReview';
 import fetchReviewLikes from '../actions/fetchReviewLikes';
 import openLikesDialog from '../actions/openLikesDialog';
-import selectSpot from '../actions/selectSpot';
-import closeReviewDialog from '../actions/closeReviewDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {

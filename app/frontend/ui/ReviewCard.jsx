@@ -129,7 +129,14 @@ class ReviewCard extends React.Component {
             </ButtonBase>
           }
           action={[this.renderShareButton(), this.renderMoreVertButton()]}
-          title={review.author.name}
+          title={
+            <ButtonBase
+              component={Link}
+              to={`/users/${review.author.id}`}
+            >
+              {review.author.name}
+            </ButtonBase>
+          }
           subheader={this.renderCreatedAt(review)}
         />
         <CardContent style={styles.cardContent}>

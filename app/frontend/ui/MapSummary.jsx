@@ -97,6 +97,9 @@ const styles = {
   },
   ownerMark: {
     right: 12
+  },
+  mapName: {
+    wordBreak: 'break-all'
   }
 };
 
@@ -146,6 +149,7 @@ class MapSummary extends React.Component {
                 variant="headline"
                 component="h2"
                 gutterBottom
+                style={styles.mapName}
               >
                 {map.name} <span style={styles.mapTypeContainer}>{map.private && this.renderPrivateIcon()}</span>
               </Typography>

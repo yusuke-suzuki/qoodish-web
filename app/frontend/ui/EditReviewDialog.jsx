@@ -54,6 +54,9 @@ const styles = {
   },
   imageInput: {
     display: 'none'
+  },
+  createMapButton: {
+    padding: 0
   }
 };
 
@@ -312,9 +315,9 @@ class EditReviewDialog extends React.Component {
           />
           {this.renderMapSelect()}
           <Button
-            variant="extendedFab"
             onClick={this.props.handleCreateMapButtonClick}
             size="small"
+            style={styles.createMapButton}
           >
             <AddIcon />
             {I18n.t('create new map')}

@@ -1,10 +1,8 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import SpotCard from '../ui/SpotCard';
 import closeSpotCard from '../actions/closeSpotCard';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
-import fetchSpot from '../actions/fetchSpot';
 import openReviewDialog from '../actions/openReviewDialog';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
 import { fetchCurrentPosition } from './Utils';
@@ -25,13 +23,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleCloseSpotButtonClick: () => {
       dispatch(closeSpotCard());
-    },
-
-    handleShowDetailButtonClick: spot => {
-      dispatch(fetchSpot(spot));
-      dispatch(push(`/spots/${spot.place_id}`, {
-        previous: true
-      }));
     },
 
     handleLocationButtonClick: (spot) => {
