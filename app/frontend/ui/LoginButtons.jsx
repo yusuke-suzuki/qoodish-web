@@ -5,7 +5,7 @@ import firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useIOS } from '../containers/Utils';
 
-class LoginButtons extends React.Component {
+class LoginButtons extends React.PureComponent {
   componentWillMount() {
     this.uiConfig = {
       callbacks: {

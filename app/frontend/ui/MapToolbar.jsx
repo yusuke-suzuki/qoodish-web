@@ -38,7 +38,7 @@ const styles = {
   },
 };
 
-class MapToolbar extends React.Component {
+class MapToolbar extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

@@ -12,7 +12,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class LeaveMapDialog extends React.Component {
+class LeaveMapDialog extends React.PureComponent {
   render() {
     return (
       <Dialog

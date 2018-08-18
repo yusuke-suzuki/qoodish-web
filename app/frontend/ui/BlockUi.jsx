@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-export default class BlockUi extends React.Component {
+export default class BlockUi extends React.PureComponent {
   render() {
     return <div>{this.props.blocking ? this.renderBlockUi() : null}</div>;
   }

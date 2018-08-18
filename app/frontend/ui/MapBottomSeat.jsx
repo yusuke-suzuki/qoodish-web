@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-class MapBottomSeat extends React.Component {
+class MapBottomSeat extends React.PureComponent {
   render() {
     return (
       <div>

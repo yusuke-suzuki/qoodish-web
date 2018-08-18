@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -16,7 +16,7 @@ const styles = {
   }
 };
 
-class DeleteAccountDialog extends Component {
+class DeleteAccountDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

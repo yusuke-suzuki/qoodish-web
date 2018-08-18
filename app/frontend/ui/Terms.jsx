@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-class Terms extends React.Component {
+class Terms extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle(this.props.large ? I18n.t('terms of service') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {

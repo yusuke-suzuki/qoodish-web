@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
 
-class CopyReviewDialog extends React.Component {
+class CopyReviewDialog extends React.PureComponent {
   render() {
     return (
       <Dialog

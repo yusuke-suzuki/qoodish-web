@@ -19,7 +19,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class SignInRequiredDialog extends React.Component {
+class SignInRequiredDialog extends React.PureComponent {
   render() {
     return (
       <Dialog

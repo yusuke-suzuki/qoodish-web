@@ -19,7 +19,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class FeedbackDialog extends React.Component {
+class FeedbackDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

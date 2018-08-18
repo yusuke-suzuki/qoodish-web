@@ -28,7 +28,7 @@ const styles = {
   }
 };
 
-class LikesDialog extends React.Component {
+class LikesDialog extends React.PureComponent {
   render() {
     return (
       <Dialog

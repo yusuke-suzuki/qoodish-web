@@ -25,7 +25,7 @@ const styles = {
   }
 };
 
-export default class Maps extends React.Component {
+export default class Maps extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleTabChange = this.handleTabChange.bind(this);

@@ -157,7 +157,7 @@ const MapWithAnOverlayView = compose(
   </GoogleMap>
 );
 
-export default class MapDetail extends React.Component {
+export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);

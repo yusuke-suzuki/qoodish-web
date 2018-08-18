@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import I18n from '../containers/I18n';
 
-export default class CreateMapButton extends React.Component {
+export default class CreateMapButton extends React.PureComponent {
   render() {
     return (
       <div>

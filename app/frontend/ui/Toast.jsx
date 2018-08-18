@@ -1,7 +1,7 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 
-export default class Toast extends React.Component {
+export default class Toast extends React.PureComponent {
   render() {
     return (
       <div>

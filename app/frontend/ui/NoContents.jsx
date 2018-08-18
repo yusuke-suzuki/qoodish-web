@@ -20,7 +20,7 @@ const styles = {
   }
 };
 
-export default class NoContents extends React.Component {
+export default class NoContents extends React.PureComponent {
   render() {
     return (
       <div style={styles.container}>

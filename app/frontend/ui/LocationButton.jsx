@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-export default class LocationButton extends React.Component {
+export default class LocationButton extends React.PureComponent {
   render() {
     return (
       <Button

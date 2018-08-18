@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-class ReviewDetail extends React.Component {
+class ReviewDetail extends React.PureComponent {
   async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentReview) {

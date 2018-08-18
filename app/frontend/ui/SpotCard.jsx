@@ -83,7 +83,7 @@ const styles = {
   },
 };
 
-class SpotCard extends React.Component {
+class SpotCard extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../containers/I18n';
 
-class IssueDialog extends React.Component {
+class IssueDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

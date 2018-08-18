@@ -103,7 +103,7 @@ const styles = {
   }
 };
 
-class MapSummary extends React.Component {
+class MapSummary extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

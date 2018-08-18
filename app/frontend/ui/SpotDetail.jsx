@@ -92,7 +92,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   </GoogleMap>
 )));
 
-class SpotDetail extends React.Component {
+class SpotDetail extends React.PureComponent {
   async componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentSpot) {

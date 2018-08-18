@@ -87,7 +87,7 @@ const styles = {
   }
 };
 
-class Login extends React.Component {
+class Login extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle(this.props.large ? I18n.t('login') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {
