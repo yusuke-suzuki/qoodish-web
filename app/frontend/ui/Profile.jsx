@@ -14,11 +14,11 @@ import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
+import StackGrid from 'react-stack-grid';
 
 const styles = {
   rootLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
+    margin: '94px auto 20px'
   },
   rootSmall: {
     marginTop: 56,
@@ -47,11 +47,11 @@ const styles = {
     marginTop: 8,
     marginBottom: 64
   },
-  reviewsContainerLarge: {
-    margin: '0 auto 20px'
-  },
   reviewsContainerSmall: {
-    margin: '0 auto'
+    marginTop: 16
+  },
+  reviewsContainerLarge: {
+    marginTop: 20
   },
   profileContainer: {
     textAlign: 'center'
@@ -79,7 +79,12 @@ const styles = {
     fontSize: 24,
     fontWeight: 'bold'
   },
-  buttonContainer: {
+  buttonContainerLarge: {
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 72
+  },
+  buttonContainerSmall: {
     textAlign: 'center',
     marginTop: 16,
     marginBottom: 72
@@ -93,12 +98,6 @@ const styles = {
     width: '100%',
     display: 'inline-flex',
     marginBottom: 15
-  },
-  reviewCardContainerSmall: {
-    marginTop: 16
-  },
-  reviewCardContainerLarge: {
-    marginTop: 20
   },
   noReviewsContainer: {
     marginTop: 20
@@ -300,10 +299,7 @@ class Profile extends React.Component {
 
   renderReviews() {
     return (
-      <div
-        style={this.props.large ? styles.reviewsContainerLarge : styles.reviewsContainerSmall}
-        key='reviews'
-      >
+      <div key='reviews'>
         {this.props.loadingReviews
           ? this.renderProgress()
           : this.renderReviewContainer(this.props.currentReviews)}
@@ -314,8 +310,14 @@ class Profile extends React.Component {
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
-        <div>
-          {this.renderReviewCards(reviews)}
+        <div style={this.props.large ? styles.reviewsContainerLarge : styles.reviewsContainerSmall}>
+          <StackGrid
+            columnWidth={this.props.large ? "50%" : "100%"}
+            gutterWidth={this.props.large ? 20 : 16}
+            gutterHeight={this.props.large ? 20 : 16}
+          >
+            {this.renderReviewCards(reviews)}
+          </StackGrid>
           {this.props.loadingMoreReviews
             ? this.renderProgress()
             : this.renderLoadMoreButton()}
@@ -336,16 +338,7 @@ class Profile extends React.Component {
 
   renderReviewCards(reviews) {
     return reviews.map(review => (
-      <div
-        key={review.id}
-        style={
-          this.props.large
-            ? styles.reviewCardContainerLarge
-            : styles.reviewCardContainerSmall
-        }
-      >
-        <ReviewCardContainer currentReview={review} />
-      </div>
+      <ReviewCardContainer key={review.id} currentReview={review} />
     ));
   }
 
@@ -362,15 +355,10 @@ class Profile extends React.Component {
       return null;
     }
     return (
-      <div style={styles.buttonContainer}>
+      <div style={this.props.large ? styles.buttonContainerLarge : styles.buttonContainerSmall}>
         <Button
           variant="raised"
           onClick={this.handleClickLoadMoreButton}
-          style={
-            this.props.large
-              ? styles.raisedButtonLarge
-              : styles.raisedButtonSmall
-          }
         >
           {I18n.t('load more')}
         </Button>
