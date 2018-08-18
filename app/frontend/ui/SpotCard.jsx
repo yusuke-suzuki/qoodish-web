@@ -21,6 +21,7 @@ import Divider from '@material-ui/core/Divider';
 import Toolbar from '@material-ui/core/Toolbar';
 import PlaceIcon from '@material-ui/icons/Place';
 import SwipeableViews from 'react-swipeable-views';
+import { Link } from 'react-router-dom';
 
 const styles = {
   drawerPaperLarge: {
@@ -156,7 +157,8 @@ class SpotCard extends React.Component {
           <BottomNavigationAction
             label="Detail"
             icon={<InfoIcon />}
-            onClick={() => this.props.handleShowDetailButtonClick(spot)}
+            component={Link}
+            to={`/spots/${spot.place_id}`}
           />
         </BottomNavigation>
         <Divider />
