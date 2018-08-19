@@ -31,7 +31,7 @@ export default class SpotMarkers extends React.PureComponent {
           <Button
             variant="fab"
             style={styles.overlayButton}
-            onClick={() => props.onSpotMarkerClick(spot)}
+            onClick={() => this.props.onSpotMarkerClick(spot)}
           >
             <Avatar src={spot.image_url} />
           </Button>

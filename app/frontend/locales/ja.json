@@ -95,6 +95,7 @@
   "select place": "プレイスを選択します",
   "anonymous user": "ログインしていません",
   "reports": "レポート",
+  "report": "レポート",
   "allow push notification": "Qoodish からのプッシュ通知を受け取りますか？",
   "if allow push notification": "プッシュ通知を許可すると次のことが実現できます。",
   "ok": "OK",

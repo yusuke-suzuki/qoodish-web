@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updatePageTitle(mapName ? mapName : 'Map'));
     },
 
-    initCenter: async map => {
+    initCenter: map => {
       if (map.base.place_id) {
         dispatch(getMapBasePosition(map.base.lat, map.base.lng));
         dispatch(requestMapBase());
