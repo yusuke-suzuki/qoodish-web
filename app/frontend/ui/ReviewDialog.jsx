@@ -29,7 +29,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class ReviewDialog extends React.Component {
+class ReviewDialog extends React.PureComponent {
   render() {
     return (
       <Dialog

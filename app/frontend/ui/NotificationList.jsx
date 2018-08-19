@@ -20,7 +20,7 @@ const styles = {
   }
 };
 
-export default class NotificationList extends React.Component {
+export default class NotificationList extends React.PureComponent {
   componentWillMount() {
     this.props.readNotifications(this.props.notifications);
   }

@@ -15,7 +15,7 @@ const styles = {
   }
 };
 
-export default class ExpandMapSummaryButton extends React.Component {
+export default class ExpandMapSummaryButton extends React.PureComponent {
   render() {
     return (
       <div style={styles.expandButtonContainer}>

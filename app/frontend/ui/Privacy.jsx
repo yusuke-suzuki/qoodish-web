@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-class Privacy extends React.Component {
+class Privacy extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle(this.props.large ? I18n.t('privacy policy') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {

@@ -55,7 +55,7 @@ const styles = {
   }
 };
 
-export default class Feed extends React.Component {
+export default class Feed extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);

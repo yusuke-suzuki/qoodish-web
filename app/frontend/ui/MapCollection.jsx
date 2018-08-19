@@ -38,7 +38,7 @@ const styles = {
   }
 };
 
-export default class MapCollection extends React.Component {
+export default class MapCollection extends React.PureComponent {
   render() {
     return (
       <div style={styles.container}>

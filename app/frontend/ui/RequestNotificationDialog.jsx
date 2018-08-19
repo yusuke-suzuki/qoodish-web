@@ -44,7 +44,7 @@ const styles = {
   }
 };
 
-class RequestNotificationDialog extends React.Component {
+class RequestNotificationDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.notificationMessages = [

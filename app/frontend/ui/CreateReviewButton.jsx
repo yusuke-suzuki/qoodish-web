@@ -32,7 +32,7 @@ const styles = {
   }
 };
 
-export default class CreateReviewButton extends React.Component {
+export default class CreateReviewButton extends React.PureComponent {
   render() {
     return (
       <Button

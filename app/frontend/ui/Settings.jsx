@@ -22,7 +22,7 @@ const styles = {
   }
 };
 
-export default class Invites extends React.Component {
+export default class Invites extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle();
     gtag('config', process.env.GA_TRACKING_ID, {

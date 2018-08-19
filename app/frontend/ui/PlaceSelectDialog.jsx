@@ -48,7 +48,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class PlaceSelectDialog extends React.Component {
+class PlaceSelectDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handlePlaceSelected = this.handlePlaceSelected.bind(this);

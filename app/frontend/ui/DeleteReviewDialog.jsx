@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../containers/I18n';
 
-class DeleteReviewDialog extends Component {
+class DeleteReviewDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

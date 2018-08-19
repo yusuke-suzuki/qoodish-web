@@ -15,7 +15,7 @@ import {
 
 const initialState = {
   currentMap: null,
-  collaborators: [],
+  followers: [],
   mapReviews: []
 };
 
@@ -31,11 +31,11 @@ const reducer = (state = initialState, action) => {
       });
     case FETCH_COLLABORATORS:
       return Object.assign({}, state, {
-        collaborators: action.payload.collaborators
+        followers: action.payload.collaborators
       });
     case FETCH_MAP_REVIEWS:
       return Object.assign({}, state, {
-        mapReviews: action.payload.reviews
+        mapReviews: [...action.payload.reviews]
       });
     case JOIN_MAP:
       return Object.assign({}, state, {
@@ -93,7 +93,7 @@ const reducer = (state = initialState, action) => {
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
-        collaborators: [],
+        followers: [],
         mapReviews: []
       });
     default:

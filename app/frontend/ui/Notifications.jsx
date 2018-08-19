@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-class Notifications extends React.Component {
+class Notifications extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle();
     if (!this.props.currentUser.isAnonymous) {

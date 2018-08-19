@@ -55,7 +55,7 @@ const styles = {
   }
 };
 
-class ReviewCard extends React.Component {
+class ReviewCard extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

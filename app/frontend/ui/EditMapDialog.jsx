@@ -40,7 +40,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class EditMapDialog extends React.Component {
+class EditMapDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -238,6 +238,7 @@ class EditMapDialog extends React.Component {
             style={styles.mapCenterChip}
             clickable
           />
+          <br/>
           <FormControlLabel
             control={
               <Switch

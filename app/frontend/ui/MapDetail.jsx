@@ -1,37 +1,16 @@
 import React from 'react';
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-  OverlayView,
-  DirectionsRenderer
-} from 'react-google-maps';
-import { compose } from 'recompose';
+import GMapContainer from '../containers/GMapContainer';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
 import ExpandMapSummaryButtonContainer from '../containers/ExpandMapSummaryButtonContainer';
 import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
-import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
-import LocationButtonContainer from '../containers/LocationButtonContainer';
 import SpotCardContainer from '../containers/SpotCardContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import Helmet from 'react-helmet';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 import Drawer from '@material-ui/core/Drawer';
 
 const styles = {
-  mapWrapperLarge: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 380,
-    marginTop: 64
-  },
   containerLarge: {
   },
   containerSmall: {
@@ -43,133 +22,20 @@ const styles = {
     display: 'block',
     width: '100%'
   },
-  mapWrapperSmall: {
-    height: '100%'
-  },
-  mapContainerLarge: {
-    height: '100%',
-    width: '100%'
-  },
-  mapContainerSmall: {
-    height: '100%',
-    width: '100%',
-    position: 'relative',
-    overflow: 'hidden'
-  },
-  overlayButton: {
-    backgroundColor: 'white'
-  },
-  buttonContainer: {
-    position: 'relative',
-    right: 0,
-    bottom: 0
-  },
   drawerPaper: {
     height: '100%',
     overflow: 'hidden'
-  },
+  }
 };
 
-const MapWithAnOverlayView = compose(
-  withScriptjs,
-  withGoogleMap
-)(props =>
-  <GoogleMap
-    ref={props.onMapLoad}
-    options={{
-      zoomControlOptions: {
-        position: google.maps.ControlPosition.RIGHT_TOP,
-        style: google.maps.ZoomControlStyle.SMALL
-      },
-      streetViewControl: true,
-      streetViewControlOptions: {
-        position: google.maps.ControlPosition.RIGHT_TOP
-      },
-      scaleControl: true,
-      mapTypeControl: false,
-      gestureHandling: 'greedy'
-    }}
-    defaultCenter={props.defaultCenter}
-    defaultZoom={props.defaultZoom}
-    center={
-      new google.maps.LatLng(
-        parseFloat(props.center.lat),
-        parseFloat(props.center.lng)
-      )
-    }
-    zoom={props.zoom}
-    onZoomChanged={() => props.onZoomChanged(props.gMap.getZoom())}
-    onCenterChanged={() => props.onCenterChanged(props.gMap.getCenter())}
-    onMapLoad={props.onMapMounted}
-  >
-    {props.spots.map((spot, index) => (
-      <OverlayView
-        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-        key={index}
-        position={
-          new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
-        }
-      >
-        {props.large ?
-        <Tooltip title={spot.name}>
-          <Button
-            variant="fab"
-            style={styles.overlayButton}
-            onClick={() => props.onSpotMarkerClick(spot)}
-          >
-            <Avatar src={spot.image_url} />
-          </Button>
-        </Tooltip>
-        :
-        <Button
-          variant="fab"
-          style={styles.overlayButton}
-          onClick={() => props.onSpotMarkerClick(spot)}
-        >
-          <Avatar src={spot.image_url} />
-        </Button>
-        }
-      </OverlayView>
-    ))}
-    {props.currentPosition.lat && props.currentPosition.lng ? (
-      <Marker
-        options={{
-          position: props.currentPosition,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: '#0088ff',
-            fillOpacity: 0.8,
-            strokeColor: '#0088ff',
-            strokeOpacity: 0.2
-          }
-        }}
-      />
-    ) : null}
-    {<DirectionsRenderer directions={props.directions} />}
-    <div style={styles.buttonContainer}>
-      <CreateReviewButtonContainer
-        buttonForMap
-        disabled={!(props.currentMap && props.currentMap.postable)}
-      />
-      <LocationButtonContainer />
-    </div>
-  </GoogleMap>
-);
-
-export default class MapDetail extends React.Component {
+export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
+    this.props.fetchSpots();
+
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
-      this.props.fetchSpots();
-      this.props.fetchCollaborators();
-      this.props.fetchMapReviews();
     } else {
       await this.props.fetchMap();
-      this.props.fetchSpots();
-      this.props.fetchCollaborators();
-      this.props.fetchMapReviews();
-      this.props.initCenter(this.props.currentMap);
     }
     this.props.updatePageTitle(this.props.currentMap.name);
 
@@ -232,7 +98,7 @@ export default class MapDetail extends React.Component {
     return (
       <div>
         <MapSummaryContainer mapId={this.props.match.params.mapId} />
-        {this.renderGoogleMap()}
+        <GMapContainer />
       </div>
     );
   }
@@ -241,31 +107,12 @@ export default class MapDetail extends React.Component {
     return (
       <div>
         <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
-          {this.renderGoogleMap()}
+          <GMapContainer />
         </div>
         <ExpandMapSummaryButtonContainer />
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
         {this.renderMapSummaryDrawer()}
       </div>
-    );
-  }
-
-  renderGoogleMap() {
-    return (
-      <MapWithAnOverlayView
-        {...this.props}
-        googleMapURL={process.env.GOOGLE_MAP_URL}
-        containerElement={
-          <div
-            style={
-              this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
-            }
-          />
-        }
-        mapElement={<div style={this.props.large ? styles.mapContainerLarge : styles.mapContainerSmall} />}
-        loadingElement={<div style={{ height: '100%' }} />}
-        onMapLoad={this.props.onMapMounted}
-      />
     );
   }
 

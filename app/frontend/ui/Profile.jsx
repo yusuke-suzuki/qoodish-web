@@ -129,7 +129,7 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
   </GoogleMap>
 )));
 
-class Profile extends React.Component {
+class Profile extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {

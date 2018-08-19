@@ -46,7 +46,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class InviteTargetDialog extends React.Component {
+class InviteTargetDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);

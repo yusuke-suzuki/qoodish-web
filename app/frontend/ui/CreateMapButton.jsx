@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-export default class CreateMapButton extends React.Component {
+export default class CreateMapButton extends React.PureComponent {
   render() {
     return (
       <Button

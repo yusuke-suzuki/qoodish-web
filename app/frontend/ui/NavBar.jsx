@@ -147,7 +147,7 @@ const styles = {
   }
 };
 
-class NavBar extends React.Component {
+class NavBar extends React.PureComponent {
   constructor(props) {
     super(props);
     this.handleToggleDrawer = this.handleToggleDrawer.bind(this);

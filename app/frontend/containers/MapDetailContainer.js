@@ -10,30 +10,14 @@ import requestCurrentPosition from '../actions/requestCurrentPosition';
 import getMapBasePosition from '../actions/getMapBasePosition';
 import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
-import fetchCollaborators from '../actions/fetchCollaborators';
-import openSpotCard from '../actions/openSpotCard';
 import clearMapState from '../actions/clearMapState';
-import gMapMounted from '../actions/gMapMounted';
-import mapZoomChanged from '../actions/mapZoomChanged';
-import mapCenterChanged from '../actions/mapCenterChanged';
-import fetchMapReviews from '../actions/fetchMapReviews';
-import selectSpot from '../actions/selectSpot';
 
 const mapStateToProps = state => {
   return {
-    gMap: state.gMap.gMap,
-    currentMap: state.mapDetail.currentMap,
-    defaultCenter: state.gMap.defaultCenter,
-    defaultZoom: state.gMap.defaultZoom,
-    center: state.gMap.center,
-    zoom: state.gMap.zoom,
-    spots: state.gMap.spots,
-    currentPosition: state.gMap.currentPosition,
-    directions: state.gMap.directions,
     large: state.shared.large,
+    currentMap: state.mapDetail.currentMap,
     currentSpot: state.spotCard.currentSpot,
     spotCardOpen: state.spotCard.spotCardOpen,
-    mapReviews: state.mapSummary.mapReviews,
     mapSummaryOpen: state.mapDetail.mapSummaryOpen
   };
 };
@@ -42,6 +26,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: (mapName = undefined) => {
       dispatch(updatePageTitle(mapName ? mapName : 'Map'));
+    },
+
+    initCenter: async map => {
+      if (map.base.place_id) {
+        dispatch(getMapBasePosition(map.base.lat, map.base.lng));
+        dispatch(requestMapBase());
+      } else {
+        dispatch(requestCurrentPosition());
+      }
     },
 
     fetchMap: async () => {
@@ -59,15 +52,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    initCenter: async map => {
-      if (map.base.place_id) {
-        dispatch(getMapBasePosition(map.base.lat, map.base.lng));
-        dispatch(requestMapBase());
-      } else {
-        dispatch(requestCurrentPosition());
-      }
-    },
-
     fetchSpots: async () => {
       const client = new ApiClient();
       let response = await client.fetchSpots(ownProps.match.params.mapId);
@@ -77,45 +61,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    fetchCollaborators: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchCollaborators(
-        ownProps.match.params.mapId
-      );
-      if (response.ok) {
-        let collaborators = await response.json();
-        dispatch(fetchCollaborators(collaborators));
-      }
-    },
-
-    fetchMapReviews: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchMapReviews(ownProps.match.params.mapId);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchMapReviews(reviews));
-      }
-    },
-
     handleCreateReviewClick: () => {
       dispatch(openPlaceSelectDialog());
-    },
-
-    onSpotMarkerClick: async spot => {
-      dispatch(selectSpot(spot));
-      dispatch(openSpotCard());
-    },
-
-    onMapMounted: map => {
-      dispatch(gMapMounted(map));
-    },
-
-    onZoomChanged: zoom => {
-      dispatch(mapZoomChanged(zoom));
-    },
-
-    onCenterChanged: center => {
-      dispatch(mapCenterChanged({ lat: center.lat(), lng: center.lng() }));
     },
 
     handleUnmount: () => {

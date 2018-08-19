@@ -104,7 +104,7 @@ const styles = {
   }
 };
 
-export default class Discover extends React.Component {
+export default class Discover extends React.PureComponent {
   componentWillMount() {
     this.props.updatePageTitle();
     this.props.pickUpMap();

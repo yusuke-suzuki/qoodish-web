@@ -34,7 +34,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class EditProfileDialog extends React.Component {
+class EditProfileDialog extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
