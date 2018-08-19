@@ -10,9 +10,7 @@ import requestCurrentPosition from '../actions/requestCurrentPosition';
 import getMapBasePosition from '../actions/getMapBasePosition';
 import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
-import fetchCollaborators from '../actions/fetchCollaborators';
 import clearMapState from '../actions/clearMapState';
-import fetchMapReviews from '../actions/fetchMapReviews';
 
 const mapStateToProps = state => {
   return {
@@ -20,7 +18,6 @@ const mapStateToProps = state => {
     currentMap: state.mapDetail.currentMap,
     currentSpot: state.spotCard.currentSpot,
     spotCardOpen: state.spotCard.spotCardOpen,
-    mapReviews: state.mapSummary.mapReviews,
     mapSummaryOpen: state.mapDetail.mapSummaryOpen
   };
 };
@@ -61,26 +58,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         let spots = await response.json();
         dispatch(fetchSpots(spots));
-      }
-    },
-
-    fetchCollaborators: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchCollaborators(
-        ownProps.match.params.mapId
-      );
-      if (response.ok) {
-        let collaborators = await response.json();
-        dispatch(fetchCollaborators(collaborators));
-      }
-    },
-
-    fetchMapReviews: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchMapReviews(ownProps.match.params.mapId);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchMapReviews(reviews));
       }
     },
 

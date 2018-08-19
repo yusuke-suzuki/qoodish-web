@@ -30,17 +30,12 @@ const styles = {
 
 export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
+    this.props.fetchSpots();
+
     if (this.props.currentMap) {
       this.props.initCenter(this.props.currentMap);
-      this.props.fetchSpots();
-      this.props.fetchCollaborators();
-      this.props.fetchMapReviews();
     } else {
       await this.props.fetchMap();
-      this.props.fetchSpots();
-      this.props.fetchCollaborators();
-      this.props.fetchMapReviews();
-      this.props.initCenter(this.props.currentMap);
     }
     this.props.updatePageTitle(this.props.currentMap.name);
 

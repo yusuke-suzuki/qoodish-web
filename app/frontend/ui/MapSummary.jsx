@@ -1,9 +1,4 @@
 import React from 'react';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
@@ -21,12 +16,13 @@ import LockIcon from '@material-ui/icons/Lock';
 import GroupIcon from '@material-ui/icons/Group';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import moment from 'moment';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
+import MapReviewsListContainer from '../containers/MapReviewsListContainer';
+import MapSpotsListContainer from '../containers/MapSpotsListContainer';
+import MapFollowersListContainer from '../containers/MapFollowersListContainer';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../containers/I18n';
-import { Link } from 'react-router-dom';
 
 const styles = {
   skeltonThumbnail: {
@@ -69,22 +65,9 @@ const styles = {
   cardContentSmall: {
     textAlign: 'center'
   },
-  activityText: {
-    paddingRight: 32,
-    fontSize: 14
-  },
-  spotImage: {
-    width: 40,
-    height: 40
-  },
   tab: {
     minWidth: 0,
     width: 110
-  },
-  secondaryAvatar: {
-    borderRadius: 0,
-    marginRight: 12,
-    cursor: 'pointer'
   },
   mapTypeIcon: {
     marginLeft: 8
@@ -94,9 +77,6 @@ const styles = {
   },
   followMapButton: {
     marginTop: 16
-  },
-  ownerMark: {
-    right: 12
   },
   mapName: {
     wordBreak: 'break-all'
@@ -168,29 +148,41 @@ class MapSummary extends React.PureComponent {
             </div>
           </CardContent>
           <Divider />
-          <Tabs
-            value={this.state.tabValue}
-            onChange={this.handleTabChange}
-            fullWidth
-            centered
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab icon={<TimelineIcon />} label={I18n.t('timeline')} style={styles.tab} />
-            <Tab icon={<PlaceIcon />} label={I18n.t('spots')} style={styles.tab} />
-            <Tab icon={<GroupIcon />} label={I18n.t('followers')} style={styles.tab} />
-          </Tabs>
-          <SwipeableViews
-            animateHeight
-            index={this.state.tabValue}
-            onChangeIndex={this.handleSwipeChange}
-          >
-            {this.renderTimelineTab()}
-            {this.renderSpotTab()}
-            {this.renderMemberTab()}
-          </SwipeableViews>
+          {this.renderTabs()}
+          {this.renderTabContents()}
         </Card>
       </div>
+    );
+  }
+
+  renderTabs() {
+    return (
+      <Tabs
+        value={this.state.tabValue}
+        onChange={this.handleTabChange}
+        fullWidth
+        centered
+        indicatorColor="primary"
+        textColor="primary"
+      >
+        <Tab icon={<TimelineIcon />} label={I18n.t('timeline')} style={styles.tab} />
+        <Tab icon={<PlaceIcon />} label={I18n.t('spots')} style={styles.tab} />
+        <Tab icon={<GroupIcon />} label={I18n.t('followers')} style={styles.tab} />
+      </Tabs>
+    );
+  }
+
+  renderTabContents() {
+    return (
+      <SwipeableViews
+        animateHeight
+        index={this.state.tabValue}
+        onChangeIndex={this.handleSwipeChange}
+      >
+        <MapReviewsListContainer mapId={this.props.mapId} />
+        <MapSpotsListContainer />
+        <MapFollowersListContainer mapId={this.props.mapId} />
+      </SwipeableViews>
     );
   }
 
@@ -209,116 +201,6 @@ class MapSummary extends React.PureComponent {
         </GridListTile>
       </GridList>
     );
-  }
-
-  renderSpotTab() {
-    return (
-      <List disablePadding>
-        {this.props.spots.length > 0
-          ? this.renderSpots(this.props.spots)
-          : null}
-      </List>
-    );
-  }
-
-  renderMemberTab() {
-    return (
-      <List disablePadding>
-        {this.props.collaborators.length > 0
-          ? this.renderCollaborators(this.props.collaborators)
-          : null}
-      </List>
-    );
-  }
-
-  renderTimelineTab() {
-    return (
-      <List disablePadding>
-        {this.props.mapReviews.length > 0
-          ? this.renderActivities(this.props.mapReviews)
-          : null}
-      </List>
-    );
-  }
-
-  renderCollaborators(collaborators) {
-    return collaborators.map(collaborator => (
-      <ListItem
-        button
-        key={collaborator.id}
-        component={Link}
-        to={`/users/${collaborator.id}`}
-      >
-        <Avatar src={collaborator.profile_image_url} />
-        <ListItemText primary={collaborator.name} />
-        {collaborator.owner && this.renderOwnerMark()}
-      </ListItem>
-    ));
-  }
-
-  renderOwnerMark() {
-    return (
-      <ListItemSecondaryAction style={styles.ownerMark}>
-        <Chip label={I18n.t('owner')} />
-      </ListItemSecondaryAction>
-    );
-  }
-
-  renderSpots(spots) {
-    return spots.map(spot => (
-      <ListItem
-        button
-        key={spot.place_id}
-        onClick={() => this.props.handleSpotClick(spot)}
-      >
-        <Avatar src={spot.image_url} />
-        <ListItemText
-          disableTypography={true}
-          primary={
-            <Typography variant="subheading" noWrap>
-              {spot.name}
-            </Typography>
-          }
-          secondary={
-            <Typography component="p" noWrap color="textSecondary">
-              {spot.formatted_address}
-            </Typography>
-          }
-        />
-      </ListItem>
-    ));
-  }
-
-  renderActivities(mapReviews) {
-    return mapReviews.map(review => (
-      <ListItem
-        button
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-      >
-        <Avatar src={review.author.profile_image_url} />
-        <ListItemText
-          primary={
-            <div style={styles.activityText}>
-              <b>{review.author.name}</b> {I18n.t('created a report about')}
-              <b>{review.spot.name}</b>
-            </div>
-          }
-          secondary={this.fromNow(review)}
-        />
-        {review.image && (
-          <ListItemSecondaryAction onClick={() => this.props.handleReviewClick(review)}>
-            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
-          </ListItemSecondaryAction>
-        )}
-      </ListItem>
-    ));
-  }
-
-  fromNow(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-      .locale(window.currentLocale)
-      .format('LL');
   }
 
   renderPrivateIcon() {
