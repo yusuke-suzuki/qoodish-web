@@ -50,8 +50,14 @@ const styles = {
     marginTop: 16
   },
   reviewsContainerLarge: {
-    margin: '20px auto',
+    margin: '0 auto',
     maxWidth: 700
+  },
+  reviewCardContainerLarge: {
+    marginTop: 20
+  },
+  reviewCardContainerSmall: {
+    marginTop: 16
   },
   profileContainer: {
     textAlign: 'center'
@@ -332,7 +338,9 @@ class Profile extends React.PureComponent {
 
   renderReviewCards(reviews) {
     return reviews.map(review => (
-      <ReviewCardContainer key={review.id} currentReview={review} />
+      <div style={this.props.large ? styles.reviewCardContainerLarge : styles.reviewCardContainerSmall}>
+        <ReviewCardContainer key={review.id} currentReview={review} />
+      </div>
     ));
   }
 
