@@ -14,7 +14,6 @@ import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
-import StackGrid from 'react-stack-grid';
 
 const styles = {
   rootLarge: {
@@ -51,7 +50,8 @@ const styles = {
     marginTop: 16
   },
   reviewsContainerLarge: {
-    marginTop: 20
+    margin: '20px auto',
+    maxWidth: 700
   },
   profileContainer: {
     textAlign: 'center'
@@ -311,13 +311,7 @@ class Profile extends React.PureComponent {
     if (reviews.length > 0) {
       return (
         <div style={this.props.large ? styles.reviewsContainerLarge : styles.reviewsContainerSmall}>
-          <StackGrid
-            columnWidth={this.props.large ? "50%" : "100%"}
-            gutterWidth={this.props.large ? 20 : 16}
-            gutterHeight={this.props.large ? 20 : 16}
-          >
-            {this.renderReviewCards(reviews)}
-          </StackGrid>
+          {this.renderReviewCards(reviews)}
           {this.props.loadingMoreReviews
             ? this.renderProgress()
             : this.renderLoadMoreButton()}
