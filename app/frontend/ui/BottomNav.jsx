@@ -78,6 +78,7 @@ export default class BottomNav extends React.PureComponent {
           <BottomNavigationAction
             component={Link}
             to="/"
+            title={I18n.t('home')}
             label={
               <Typography
                 variant="body1"
@@ -94,6 +95,7 @@ export default class BottomNav extends React.PureComponent {
           <BottomNavigationAction
             component={Link}
             to="/discover"
+            title={I18n.t('discover')}
             label={
               <Typography
                 variant="body1"
@@ -110,6 +112,7 @@ export default class BottomNav extends React.PureComponent {
           <BottomNavigationAction
             component={Link}
             to="/maps"
+            title={I18n.t('maps')}
             label={
               <Typography
                 variant="body1"
@@ -126,6 +129,7 @@ export default class BottomNav extends React.PureComponent {
           <BottomNavigationAction
             component={Link}
             to="/profile"
+            title={I18n.t('account')}
             label={
               <Typography
                 variant="body1"
@@ -142,6 +146,7 @@ export default class BottomNav extends React.PureComponent {
           <BottomNavigationAction
             component={Link}
             to="/notifications"
+            title={I18n.t('notice')}
             label={
               <Typography
                 variant="body1"

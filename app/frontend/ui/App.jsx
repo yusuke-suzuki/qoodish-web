@@ -168,7 +168,7 @@ class App extends React.PureComponent {
         ]}
         meta={[
           { name: 'title', content: 'Qoodish' },
-          { name: 'keywords', content: 'qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'},
+          { name: 'keywords', content: 'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'},
           { name: 'theme-color', content: '#ffc107' },
           {
             name: 'description',

@@ -39,7 +39,10 @@ export default class MapReviewsList extends React.PureComponent {
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
       >
-        <Avatar src={review.author.profile_image_url} />
+        <Avatar
+          src={review.author.profile_image_url}
+          alt={review.author.name}
+        />
         <ListItemText
           primary={
             <div style={styles.activityText}>
@@ -51,7 +54,11 @@ export default class MapReviewsList extends React.PureComponent {
         />
         {review.image && (
           <ListItemSecondaryAction onClick={() => this.props.handleReviewClick(review)}>
-            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
+            <Avatar
+              src={review.image.thumbnail_url}
+              style={styles.secondaryAvatar}
+              alt={review.spot.name}
+            />
           </ListItemSecondaryAction>
         )}
       </ListItem>

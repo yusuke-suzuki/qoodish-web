@@ -41,7 +41,10 @@ export default class NotificationList extends React.PureComponent {
         component={Link}
         to={notification.click_action}
       >
-        <Avatar src={notification.notifier.profile_image_url} />
+        <Avatar
+          src={notification.notifier.profile_image_url}
+          alt={notification.notifier.name}
+        />
         <ListItemText
           primary={this.renderNotificationText(notification)}
           secondary={

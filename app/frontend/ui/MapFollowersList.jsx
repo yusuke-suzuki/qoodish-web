@@ -35,7 +35,10 @@ export default class MapFollowersList extends React.PureComponent {
         component={Link}
         to={`/users/${follower.id}`}
       >
-        <Avatar src={follower.profile_image_url} />
+        <Avatar
+          src={follower.profile_image_url}
+          alt={follower.name}
+        />
         <ListItemText primary={follower.name} />
         {follower.owner && this.renderOwnerMark()}
       </ListItem>

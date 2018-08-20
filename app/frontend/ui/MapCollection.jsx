@@ -61,9 +61,13 @@ export default class MapCollection extends React.PureComponent {
         onClick={() => this.props.handleClickMap(map)}
         component={Link}
         to={`/maps/${map.id}`}
+        title={map.name}
       >
         {map.following && this.renderFollowCheckButton() }
-        <img src={this.props.large ? map.image_url : map.thumbnail_url} />
+        <img
+          src={this.props.large ? map.image_url : map.thumbnail_url}
+          alt={map.name}
+        />
         <GridListTileBar
           title={map.name}
           subtitle={

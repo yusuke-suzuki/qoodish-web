@@ -21,7 +21,10 @@ export default class MapSpotsList extends React.PureComponent {
         key={spot.place_id}
         onClick={() => this.props.handleSpotClick(spot)}
       >
-        <Avatar src={spot.image_url} />
+        <Avatar
+          src={spot.image_url}
+          alt={spot.name}
+        />
         <ListItemText
           disableTypography={true}
           primary={

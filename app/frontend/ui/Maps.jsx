@@ -5,6 +5,7 @@ import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateMapButtonContainer from '../containers/CreateMapButtonContainer';
 import I18n from '../containers/I18n';
+import Helmet from 'react-helmet';
 
 const styles = {
   rootLarge: {
@@ -70,6 +71,7 @@ export default class Maps extends React.PureComponent {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
+        {this.renderHelmet()}
         <SwipeableViews
           animateHeight
           index={this.props.tabValue}
@@ -80,6 +82,26 @@ export default class Maps extends React.PureComponent {
         </SwipeableViews>
         <CreateMapButtonContainer />
       </div>
+    );
+  }
+
+  renderHelmet() {
+    return (
+      <Helmet
+        title={`${I18n.t('maps')} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/maps` }
+        ]}
+        meta={[
+          { name: 'title', content: `${I18n.t('maps')} | Qoodish` },
+          { property: 'og:title', content: `${process.env.ENDPOINT}/maps` },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: `${process.env.ENDPOINT}/maps`
+          }
+        ]}
+      />
     );
   }
 

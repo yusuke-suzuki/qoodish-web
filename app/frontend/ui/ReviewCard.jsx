@@ -122,9 +122,11 @@ class ReviewCard extends React.PureComponent {
             <ButtonBase
               component={Link}
               to={`/users/${review.author.id}`}
+              title={review.author.name}
             >
               <Avatar
                 src={review.author.profile_image_url}
+                alt={review.author.name}
               />
             </ButtonBase>
           }
@@ -133,6 +135,7 @@ class ReviewCard extends React.PureComponent {
             <ButtonBase
               component={Link}
               to={`/users/${review.author.id}`}
+              title={review.author.name}
             >
               {review.author.name}
             </ButtonBase>
@@ -143,6 +146,7 @@ class ReviewCard extends React.PureComponent {
           <ButtonBase
             component={Link}
             to={`/maps/${review.map_id}`}
+            title={review.map_name}
           >
             <Typography
               variant="subheading"
@@ -157,6 +161,7 @@ class ReviewCard extends React.PureComponent {
           <ButtonBase
             component={Link}
             to={`/spots/${review.spot.place_id}`}
+            title={review.spot.name}
           >
             <Typography
               variant="headline"
@@ -204,7 +209,11 @@ class ReviewCard extends React.PureComponent {
       <CardMedia
         style={styles.cardMedia}
       >
-        <img src={review.image.url} style={styles.reviewImage} alt={review.spot.name} />
+        <img
+          src={review.image.url}
+          style={styles.reviewImage}
+          alt={review.spot.name}
+        />
       </CardMedia>
     );
   }

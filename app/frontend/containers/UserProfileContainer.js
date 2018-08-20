@@ -31,7 +31,8 @@ const mapStateToProps = state => {
     loadingReviews: state.profile.loadingReviews,
     loadingMoreReviews: state.profile.loadingMoreReviews,
     noMoreReviews: state.profile.noMoreReviews,
-    nextTimestamp: state.profile.nextTimestamp
+    nextTimestamp: state.profile.nextTimestamp,
+    pathname: state.router.location.pathname
   };
 };
 

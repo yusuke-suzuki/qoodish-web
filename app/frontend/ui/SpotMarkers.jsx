@@ -33,7 +33,10 @@ export default class SpotMarkers extends React.PureComponent {
             style={styles.overlayButton}
             onClick={() => this.props.onSpotMarkerClick(spot)}
           >
-            <Avatar src={spot.image_url} />
+            <Avatar
+              src={spot.image_url}
+              alt={spot.name}
+            />
           </Button>
         </Tooltip>
         :
@@ -42,7 +45,9 @@ export default class SpotMarkers extends React.PureComponent {
           style={styles.overlayButton}
           onClick={() => this.props.onSpotMarkerClick(spot)}
         >
-          <Avatar src={spot.image_url} />
+          <Avatar
+            src={spot.image_url}
+          />
         </Button>
         }
       </OverlayView>

@@ -182,7 +182,7 @@ class Profile extends React.PureComponent {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        {this.renderHelmet(this.props.currentUser)}
+        {this.props.currentUser.name && this.renderHelmet(this.props.currentUser)}
         {this.renderProfileCard(this.props.currentUser)}
         <SwipeableViews
           animateHeight
@@ -199,28 +199,21 @@ class Profile extends React.PureComponent {
   renderHelmet(currentUser) {
     return (
       <Helmet
-        title={`${currentUser.name ? currentUser.name : I18n.t('account')} | Qoodish`}
+        title={this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish`}
         link={[
-          { rel: 'canonical', href: `${process.env.ENDPOINT}/profile` }
+          { rel: 'canonical', href: `${process.env.ENDPOINT}${this.props.pathname}` }
         ]}
         meta={[
-          { name: 'title', content: `${currentUser.name} | Qoodish` },
-          { name: 'description', content: '' },
-          { name: 'twitter:card', content: 'summary' },
-          { name: 'twitter:title', content: `${currentUser.name} | Qoodish` },
-          { name: 'twitter:description', content: '' },
+          { name: 'title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
+          { name: 'twitter:title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
           { name: 'twitter:image', content: currentUser.thumbnail_url },
-          { property: 'og:title', content: `${currentUser.name} | Qoodish` },
+          { property: 'og:title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
-            content: `${process.env.ENDPOINT}/profile`
+            content: `${process.env.ENDPOINT}${this.props.pathname}`
           },
-          { property: 'og:image', content: currentUser.thumbnail_url },
-          {
-            property: 'og:description',
-            content: ''
-          }
+          this.props.pathname != '/profile' ? { property: 'og:image', content: currentUser.thumbnail_url } : {}
         ]}
       />
     );
@@ -307,6 +300,7 @@ class Profile extends React.PureComponent {
         <Avatar
           src={currentUser.thumbnail_url}
           style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
+          alt={currentUser.name}
         />
       );
     }
