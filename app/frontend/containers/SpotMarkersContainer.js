@@ -5,7 +5,8 @@ import selectSpot from '../actions/selectSpot';
 
 const mapStateToProps = state => {
   return {
-    spots: state.gMap.spots
+    spots: state.gMap.spots,
+    large: state.shared.large
   };
 };
 

@@ -32,11 +32,10 @@ export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
     this.props.fetchSpots();
 
-    if (this.props.currentMap) {
-      this.props.initCenter(this.props.currentMap);
-    } else {
+    if (!this.props.currentMap) {
       await this.props.fetchMap();
     }
+    this.props.initCenter(this.props.currentMap);
     this.props.updatePageTitle(this.props.currentMap.name);
 
     gtag('config', process.env.GA_TRACKING_ID, {

@@ -22,6 +22,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import PlaceIcon from '@material-ui/icons/Place';
 import SwipeableViews from 'react-swipeable-views';
 import { Link } from 'react-router-dom';
+import I18n from '../containers/I18n';
 
 const styles = {
   drawerPaperLarge: {
@@ -95,9 +96,7 @@ class SpotCard extends React.PureComponent {
     let reviews = nextProps.mapReviews.filter(review => {
       return review.place_id === nextProps.currentSpot.place_id;
     });
-    this.setState({
-      reviews: reviews
-    });
+    this.setState(Object.assign(this.state.reviews, reviews));
   }
 
   render() {
@@ -140,22 +139,22 @@ class SpotCard extends React.PureComponent {
         <Divider />
         <BottomNavigation showLabels>
           <BottomNavigationAction
-            label="Location"
+            label={I18n.t('location')}
             icon={<PlaceIcon />}
             onClick={() => this.props.handleLocationButtonClick(spot)}
           />
           <BottomNavigationAction
-            label="Routes"
+            label={I18n.t('routes')}
             icon={<DirectionsIcon />}
             onClick={() => this.props.handleRouteButtonClick(spot)}
           />
           <BottomNavigationAction
-            label="Report"
+            label={I18n.t('report')}
             icon={<RateReviewIcon />}
             onClick={() => this.props.handleCreateReviewClick(spot)}
           />
           <BottomNavigationAction
-            label="Detail"
+            label={I18n.t('detail')}
             icon={<InfoIcon />}
             component={Link}
             to={`/spots/${spot.place_id}`}

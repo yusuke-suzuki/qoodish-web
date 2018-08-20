@@ -95,6 +95,7 @@
   "select place": "プレイスを選択します",
   "anonymous user": "ログインしていません",
   "reports": "レポート",
+  "report": "レポート",
   "allow push notification": "Qoodish からのプッシュ通知を受け取りますか？",
   "if allow push notification": "プッシュ通知を許可すると次のことが実現できます。",
   "ok": "OK",
@@ -120,5 +121,8 @@
   "feedback positive": "Qoodish の良いと思った点を教えてください。",
   "send feedback success": "フィードバックを送信しました！頑張って改善していきます！",
   "sure to unfollow map": "フォロー解除してよろしいですか？",
-  "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。"
+  "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。",
+  "location": "位置",
+  "routes": "ルート",
+  "detail": "詳細"
 }
