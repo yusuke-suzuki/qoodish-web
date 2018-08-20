@@ -2,7 +2,6 @@ import React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import Typography from '@material-ui/core/Typography';
 
 const styles = {
   container: {
@@ -12,6 +11,9 @@ const styles = {
   },
   gridList: {
     width: '100%'
+  },
+  gridTile: {
+    cursor: 'pointer'
   }
 };
 
@@ -44,6 +46,7 @@ export default class ReviewGridList extends React.PureComponent {
       <GridListTile
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
+        style={styles.gridTile}
       >
         <img src={review.image ? this.reviewImage(review) : process.env.SUBSTITUTE_URL} />
         <GridListTileBar
