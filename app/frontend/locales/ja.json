@@ -121,5 +121,8 @@
   "feedback positive": "Qoodish の良いと思った点を教えてください。",
   "send feedback success": "フィードバックを送信しました！頑張って改善していきます！",
   "sure to unfollow map": "フォロー解除してよろしいですか？",
-  "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。"
+  "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。",
+  "location": "位置",
+  "routes": "ルート",
+  "detail": "詳細"
 }
