@@ -100,8 +100,11 @@ const styles = {
     display: 'inline-flex',
     marginBottom: 15
   },
-  noReviewsContainer: {
-    marginTop: 20
+  noReviewsContainerLarge: {
+    paddingTop: 20
+  },
+  noReviewsContainerSmall: {
+    paddingTop: 8
   },
   editProfileButton: {
     marginTop: 10,
@@ -137,6 +140,7 @@ class Profile extends React.PureComponent {
       tabValue: 0
     };
     this.handleTabChange = this.handleTabChange.bind(this);
+    this.handleChangeIndex = this.handleChangeIndex.bind(this);
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
   }
 
@@ -169,6 +173,12 @@ class Profile extends React.PureComponent {
     });
   }
 
+  handleChangeIndex(value) {
+    this.setState({
+      tabValue: value
+    });
+  }
+
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
@@ -177,7 +187,7 @@ class Profile extends React.PureComponent {
         <SwipeableViews
           animateHeight
           index={this.state.tabValue}
-          onChangeIndex={this.handleTabChange}
+          onChangeIndex={this.handleChangeIndex}
         >
           {this.renderReviews()}
           {this.renderUserMaps()}
@@ -324,7 +334,7 @@ class Profile extends React.PureComponent {
       );
     } else {
       return (
-        <div style={styles.noReviewsContainer}>
+        <div style={this.props.large ? styles.noReviewsContainerLarge : styles.noReviewsContainerSmall}>
           <NoContentsContainer
             contentType="review"
             action="create-review"
