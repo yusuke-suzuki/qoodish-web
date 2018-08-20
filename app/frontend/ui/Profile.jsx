@@ -9,11 +9,12 @@ import Tab from '@material-ui/core/Tab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import PersonIcon from '@material-ui/icons/Person';
-import ReviewCardContainer from '../containers/ReviewCardContainer';
+import ReviewGridListContainer from '../containers/ReviewGridListContainer';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
   rootLarge: {
@@ -40,24 +41,19 @@ const styles = {
   },
   userMapsContainerLarge: {
     marginTop: 20,
-    marginBottom: 20
+    paddingBottom: 20
   },
   userMapsContainerSmall: {
     marginTop: 8,
-    marginBottom: 64
-  },
-  reviewsContainerSmall: {
-    marginTop: 16
+    paddingBottom: 16
   },
   reviewsContainerLarge: {
-    margin: '0 auto',
-    maxWidth: 700
+    marginTop: 20,
+    paddingBottom: 20
   },
-  reviewCardContainerLarge: {
-    marginTop: 20
-  },
-  reviewCardContainerSmall: {
-    marginTop: 16
+  reviewsContainerSmall: {
+    marginTop: 8,
+    paddingBottom: 16
   },
   profileContainer: {
     textAlign: 'center'
@@ -87,17 +83,16 @@ const styles = {
   },
   buttonContainerLarge: {
     textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 72
+    padding: 20
   },
   buttonContainerSmall: {
     textAlign: 'center',
     marginTop: 16,
-    marginBottom: 72
+    paddingBottom: 8
   },
   progress: {
     textAlign: 'center',
-    padding: 10,
+    padding: 20,
     marginTop: 20
   },
   gridHeader: {
@@ -179,10 +174,14 @@ class Profile extends React.PureComponent {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderHelmet(this.props.currentUser)}
         {this.renderProfileCard(this.props.currentUser)}
-        <div>
-          {this.state.tabValue === 0 && this.renderReviews()}
-          {this.state.tabValue === 1 && this.renderUserMaps()}
-        </div>
+        <SwipeableViews
+          animateHeight
+          index={this.state.tabValue}
+          onChangeIndex={this.handleTabChange}
+        >
+          {this.renderReviews()}
+          {this.renderUserMaps()}
+        </SwipeableViews>
       </div>
     );
   }
@@ -317,7 +316,7 @@ class Profile extends React.PureComponent {
     if (reviews.length > 0) {
       return (
         <div style={this.props.large ? styles.reviewsContainerLarge : styles.reviewsContainerSmall}>
-          {this.renderReviewCards(reviews)}
+          <ReviewGridListContainer reviews={reviews} />
           {this.props.loadingMoreReviews
             ? this.renderProgress()
             : this.renderLoadMoreButton()}
@@ -334,14 +333,6 @@ class Profile extends React.PureComponent {
         </div>
       );
     }
-  }
-
-  renderReviewCards(reviews) {
-    return reviews.map(review => (
-      <div style={this.props.large ? styles.reviewCardContainerLarge : styles.reviewCardContainerSmall}>
-        <ReviewCardContainer key={review.id} currentReview={review} />
-      </div>
-    ));
   }
 
   renderProgress() {
