@@ -221,7 +221,7 @@ export default class Discover extends React.PureComponent {
         >
           <img
             src={map && map.image_url}
-            alt={map.name}
+            alt={map && map.name}
           />
           <GridListTileBar
             title={
