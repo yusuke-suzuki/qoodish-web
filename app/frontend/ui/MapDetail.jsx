@@ -31,6 +31,7 @@ const styles = {
 export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
     this.props.fetchSpots();
+    this.props.fetchMapReviews();
 
     if (!this.props.currentMap) {
       await this.props.fetchMap();
