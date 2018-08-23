@@ -3,8 +3,6 @@ import MapReviewsList from '../ui/MapReviewsList';
 import requestMapCenter from '../actions/requestMapCenter';
 import openReviewDialog from '../actions/openReviewDialog';
 import selectSpot from '../actions/selectSpot';
-import fetchMapReviews from '../actions/fetchMapReviews';
-import ApiClient from './ApiClient';
 
 const mapStateToProps = state => {
   return {
@@ -12,17 +10,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    fetchMapReviews: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchMapReviews(ownProps.mapId);
-      if (response.ok) {
-        let reviews = await response.json();
-        dispatch(fetchMapReviews(reviews));
-      }
-    },
-
     handleReviewClick: (review) => {
       dispatch(selectSpot(review.spot));
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));

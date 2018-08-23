@@ -20,10 +20,6 @@ const styles = {
 };
 
 export default class MapReviewsList extends React.PureComponent {
-  componentWillMount() {
-    this.props.fetchMapReviews(this.props.mapId);
-  }
-
   render() {
     return (
       <List disablePadding>
