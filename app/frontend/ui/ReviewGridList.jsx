@@ -48,7 +48,10 @@ export default class ReviewGridList extends React.PureComponent {
         onClick={() => this.props.handleReviewClick(review)}
         style={styles.gridTile}
       >
-        <img src={review.image ? this.reviewImage(review) : process.env.SUBSTITUTE_URL} />
+        <img
+          src={review.image ? this.reviewImage(review) : process.env.SUBSTITUTE_URL}
+          alt={review.spot.name}
+        />
         <GridListTileBar
           title={review.spot.name}
           subtitle={review.map_name}

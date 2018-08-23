@@ -297,6 +297,7 @@ class NavBar extends React.PureComponent {
           color="inherit"
           component={Link}
           to="/login"
+          title={I18n.t('login')}
         >
           {I18n.t('login')}
         </Button>
@@ -432,7 +433,7 @@ class NavBar extends React.PureComponent {
         color="inherit"
         style={styles.logo}
       >
-        <Link to="/" style={styles.link}>
+        <Link to="/" style={styles.link} title="Qoodish">
           Qoodish
         </Link>
       </Typography>
@@ -575,6 +576,7 @@ class NavBar extends React.PureComponent {
           selected={false}
           component={Link}
           to="/profile"
+          title={I18n.t('account')}
         >
           {I18n.t('account')}
         </MenuItem>
@@ -583,6 +585,7 @@ class NavBar extends React.PureComponent {
           selected={false}
           component={Link}
           to="/settings"
+          title={I18n.t('settings')}
         >
           {I18n.t('settings')}
         </MenuItem>
@@ -603,44 +606,44 @@ class NavBar extends React.PureComponent {
       <div>
         <List disablePadding component="nav">
           {!this.props.large || this.sideNavUnnecessary() ? this.renderTitle() : null}
-          <ListItem button component={Link} to="/">
+          <ListItem button component={Link} to="/" title={I18n.t('home')}>
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('home')} />
           </ListItem>
-          <ListItem button component={Link} to="/discover">
+          <ListItem button component={Link} to="/discover" title={I18n.t('discover')}>
             <ListItemIcon>
               <ExploreIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('discover')} />
           </ListItem>
-          <ListItem button component={Link} to="/maps">
+          <ListItem button component={Link} to="/maps" title={I18n.t('maps')}>
             <ListItemIcon>
               <MapIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('maps')} />
           </ListItem>
-          <ListItem button component={Link} to="/profile">
+          <ListItem button component={Link} to="/profile" title={I18n.t('account')}>
             <ListItemIcon>
               <AccountCircleIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('account')} />
           </ListItem>
-          <ListItem button component={Link} to="/notifications">
+          <ListItem button component={Link} to="/notifications" title={I18n.t('notifications')}>
             <ListItemIcon>
               <NotificationsIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('notifications')} />
           </ListItem>
           <Divider />
-          <ListItem button component={Link} to="/settings">
+          <ListItem button component={Link} to="/settings" title={I18n.t('settings')}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('settings')} />
           </ListItem>
-          <ListItem button component={Link} to="/invites">
+          <ListItem button component={Link} to="/invites" title={I18n.t('invites')}>
             <ListItemIcon>
               <MailIcon />
             </ListItemIcon>
@@ -650,10 +653,10 @@ class NavBar extends React.PureComponent {
           <ListItem button onClick={this.props.handleFeedbackClick}>
             <ListItemText primary={I18n.t('send feedback')} />
           </ListItem>
-          <ListItem button component={Link} to="/terms">
+          <ListItem button component={Link} to="/terms" title={I18n.t('terms of service')}>
             <ListItemText primary={I18n.t('terms of service')} />
           </ListItem>
-          <ListItem button component={Link} to="/privacy">
+          <ListItem button component={Link} to="/privacy" title={I18n.t('privacy policy')}>
             <ListItemText primary={I18n.t('privacy policy')} />
           </ListItem>
         </List>

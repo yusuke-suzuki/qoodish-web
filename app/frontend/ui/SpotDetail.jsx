@@ -130,7 +130,7 @@ class SpotDetail extends React.PureComponent {
         ]}
         meta={[
           { name: 'title', content: `${spot.name} | Qoodish` },
-          { name: 'keywords', content: `${spot.name}, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
+          { name: 'keywords', content: `${spot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: spot.formatted_address },
           { name: 'twitter:card', content: 'summary' },
           { name: 'twitter:title', content: `${spot.name} | Qoodish` },
@@ -228,7 +228,10 @@ class SpotDetail extends React.PureComponent {
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
       >
-        <Avatar src={review.author.profile_image_url} />
+        <Avatar
+          src={review.author.profile_image_url}
+          alt={review.author.name}
+        />
         <ListItemText
           disableTypography={true}
           primary={
@@ -251,7 +254,11 @@ class SpotDetail extends React.PureComponent {
           <ListItemSecondaryAction
             onClick={() => this.props.handleReviewClick(review)}
           >
-            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
+            <Avatar
+              src={review.image.thumbnail_url}
+              style={styles.secondaryAvatar}
+              alt={review.spot.name}
+            />
           </ListItemSecondaryAction>
         )}
       </ListItem>

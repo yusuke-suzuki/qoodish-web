@@ -23,6 +23,7 @@ import NoContentsContainer from '../containers/NoContentsContainer';
 import I18n from '../containers/I18n';
 
 import { Link } from 'react-router-dom';
+import Helmet from 'react-helmet';
 
 const styles = {
   rootLarge: {
@@ -129,6 +130,7 @@ export default class Discover extends React.PureComponent {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
+        {this.renderHelmet()}
         <div style={styles.container}>
           <Typography
             variant="subheading"
@@ -186,6 +188,26 @@ export default class Discover extends React.PureComponent {
     );
   }
 
+  renderHelmet() {
+    return (
+      <Helmet
+        title={`${I18n.t('discover')} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/discover` }
+        ]}
+        meta={[
+          { name: 'title', content: `${I18n.t('discover')} | Qoodish` },
+          { property: 'og:title', content: `${I18n.t('discover')} | Qoodish` },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: `${process.env.ENDPOINT}/discover`
+          }
+        ]}
+      />
+    );
+  }
+
   renderPickUp(map) {
     return (
       <GridList cols={1} style={styles.gridList} spacing={20}>
@@ -195,8 +217,12 @@ export default class Discover extends React.PureComponent {
           style={styles.pickUpTile}
           component={Link}
           to={`/maps/${map && map.id}`}
+          title={map && map.name}
         >
-          <img src={map && map.image_url} />
+          <img
+            src={map && map.image_url}
+            alt={map.name}
+          />
           <GridListTileBar
             title={
               <Typography
@@ -241,8 +267,12 @@ export default class Discover extends React.PureComponent {
         key={spot.place_id}
         component={Link}
         to={`/spots/${spot.place_id}`}
+        title={spot.name}
       >
-        <Avatar src={spot.image_url} />
+        <Avatar
+          src={spot.image_url}
+          alt={spot.name}
+        />
         <ListItemText
           disableTypography={true}
           primary={
@@ -292,7 +322,10 @@ export default class Discover extends React.PureComponent {
         <Card style={styles.reviewCard}>
           <CardHeader
             avatar={
-              <Avatar src={review.author.profile_image_url} />
+              <Avatar
+                src={review.author.profile_image_url}
+                alt={review.author.name}
+              />
             }
             title={review.author.name}
             subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
@@ -320,6 +353,7 @@ export default class Discover extends React.PureComponent {
           <ListItemSecondaryAction>
             <Avatar
               src={review.image.thumbnail_url}
+              alt={review.spot.name}
               style={this.props.large ? styles.secondaryAvatarLarge : styles.secondaryAvatarSmall}
             />
           </ListItemSecondaryAction>

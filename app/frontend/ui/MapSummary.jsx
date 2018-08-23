@@ -189,7 +189,10 @@ class MapSummary extends React.PureComponent {
     return (
       <GridList cols={1} spacing={0} cellHeight={this.props.large ? 380 : 250}>
         <GridListTile key={map && map.id}>
-          <img src={map && map.image_url ? map.image_url : ''} />
+          <img
+            src={map && map.image_url ? map.image_url : ''}
+            alt={map && map.name}
+          />
           <GridListTileBar
             style={
               map && map.image_url

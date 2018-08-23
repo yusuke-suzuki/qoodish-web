@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
 import FacebookProvider, { Page } from 'react-facebook';
 import LoginButtonsContainer from '../containers/LoginButtonsContainer';
+import Helmet from 'react-helmet';
 
 const styles = {
   loginContainerLarge: {
@@ -98,6 +99,26 @@ class Login extends React.PureComponent {
 
   handleScrollTopClick() {
     window.scrollTo(0, 0);
+  }
+
+  renderHelmet() {
+    return (
+      <Helmet
+        title={`${I18n.t('login')} | Qoodish`}
+        link={[
+          { rel: "canonical", href: `${process.env.ENDPOINT}/login` }
+        ]}
+        meta={[
+          { name: 'title', content: `${I18n.t('login')} | Qoodish` },
+          { property: 'og:title', content: `${I18n.t('login')} | Qoodish` },
+          { property: 'og:type', content: 'website' },
+          {
+            property: 'og:url',
+            content: `${process.env.ENDPOINT}/login`
+          }
+        ]}
+      />
+    );
   }
 
   render() {

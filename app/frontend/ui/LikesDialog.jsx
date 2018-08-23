@@ -63,9 +63,13 @@ class LikesDialog extends React.PureComponent {
         key={like.id}
         component={Link}
         to={`/users/${like.voter.id}`}
+        title={like.voter.name}
       >
         <ListItemAvatar>
-          <Avatar src={like.voter.profile_image_url} />
+          <Avatar
+            src={like.voter.profile_image_url}
+            alt={like.voter.name}
+          />
         </ListItemAvatar>
         <ListItemText primary={like.voter.name} />
       </ListItem>

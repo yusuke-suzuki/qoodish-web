@@ -174,6 +174,7 @@ class SpotCard extends React.PureComponent {
         key={review.id}
         src={review.image ? review.image.url : process.env.SUBSTITUTE_URL}
         style={this.props.large ? styles.spotImageLarge : styles.spotImageSmall}
+        alt={review.spot.name}
       />
     ));
   }
@@ -185,7 +186,10 @@ class SpotCard extends React.PureComponent {
         key={review.id}
         onClick={() => this.props.handleReviewClick(review)}
       >
-        <Avatar src={review.author.profile_image_url} />
+        <Avatar
+          src={review.author.profile_image_url}
+          alt={review.spot.name}
+        />
         <ListItemText
           disableTypography={true}
           primary={
@@ -208,7 +212,11 @@ class SpotCard extends React.PureComponent {
           <ListItemSecondaryAction
             onClick={() => this.props.handleReviewClick(review)}
           >
-            <Avatar src={review.image.thumbnail_url} style={styles.secondaryAvatar} />
+            <Avatar
+              src={review.image.thumbnail_url}
+              style={styles.secondaryAvatar}
+              alt={review.spot.name}
+            />
           </ListItemSecondaryAction>
         )}
       </ListItem>

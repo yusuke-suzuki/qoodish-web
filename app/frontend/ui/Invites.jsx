@@ -25,9 +25,6 @@ const styles = {
   cardSmall: {
     marginTop: 16
   },
-  avatar: {
-    width: 40
-  },
   cardContent: {
     paddingTop: 0
   },
@@ -100,12 +97,9 @@ export default class Invites extends React.PureComponent {
       >
         <CardHeader
           avatar={
-            <Avatar>
-              <img
-                src={invite.invitable.image_url}
-                style={styles.avatar}
-              />
-            </Avatar>
+            <Avatar
+              src={invite.invitable.image_url}
+            />
           }
           title={invite.invitable.name}
           subheader={this.renderCreatedAt(invite)}

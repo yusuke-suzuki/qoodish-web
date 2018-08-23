@@ -148,6 +148,7 @@ export default class Feed extends React.PureComponent {
       return (
         <Avatar
           src={this.props.currentUser.thumbnail_url}
+          alt={this.props.currentUser.name}
         />
       );
     }
