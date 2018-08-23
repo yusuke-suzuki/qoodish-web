@@ -54,7 +54,7 @@ export default class ReviewGridList extends React.PureComponent {
         />
         <GridListTileBar
           title={review.spot.name}
-          subtitle={review.map_name}
+          subtitle={review.map.name}
         />
       </GridListTile>
     ));

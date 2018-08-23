@@ -145,8 +145,8 @@ class ReviewCard extends React.PureComponent {
         <CardContent style={styles.cardContent}>
           <ButtonBase
             component={Link}
-            to={`/maps/${review.map_id}`}
-            title={review.map_name}
+            to={`/maps/${review.map.id}`}
+            title={review.map.name}
           >
             <Typography
               variant="subheading"
@@ -154,7 +154,7 @@ class ReviewCard extends React.PureComponent {
               style={styles.cardTitle}
               gutterBottom
             >
-              {review.map_name}
+              {review.map.name}
             </Typography>
           </ButtonBase>
           <br/>
@@ -275,7 +275,7 @@ class ReviewCard extends React.PureComponent {
         </MenuItem>
         <CopyToClipboard
           text={`${process.env.ENDPOINT}/maps/${
-            this.props.currentReview.map_id
+            this.props.currentReview.map.id
           }/reports/${this.props.currentReview.id}`}
           onCopy={this.props.handleUrlCopied}
           key="copy"

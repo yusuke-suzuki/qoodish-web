@@ -101,7 +101,7 @@ class EditReviewDialog extends React.PureComponent {
       this.setState(
         {
           id: currentReview.id,
-          mapId: currentReview.map_id,
+          mapId: currentReview.map.id,
           comment: currentReview.comment,
           placeId: currentReview.place_id,
           placeName: currentReview.spot.name,

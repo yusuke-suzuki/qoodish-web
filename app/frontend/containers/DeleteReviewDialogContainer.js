@@ -36,12 +36,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(closeReviewDialog());
         dispatch(closeDeleteReviewDialog());
         if (ownProps.mapId) {
-          let spotResponse = await client.fetchSpots(review.map_id);
+          let spotResponse = await client.fetchSpots(review.map.id);
           if (spotResponse.ok) {
             let spots = await spotResponse.json();
             dispatch(fetchSpots(spots));
           }
-          dispatch(push(`/maps/${review.map_id}`, {
+          dispatch(push(`/maps/${review.map.id}`, {
             previous: true
           }));
         }

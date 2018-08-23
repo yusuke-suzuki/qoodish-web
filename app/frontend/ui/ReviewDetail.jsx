@@ -26,8 +26,8 @@ class ReviewDetail extends React.PureComponent {
       await this.props.fetchReview();
     }
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': `/maps/${this.props.currentReview.map_id}/reports/${this.props.currentReview.id}`,
-      'page_title': `${this.props.currentReview.spot.name} - ${this.props.currentReview.map_name} | Qoodish`
+      'page_path': `/maps/${this.props.currentReview.map.id}/reports/${this.props.currentReview.id}`,
+      'page_title': `${this.props.currentReview.spot.name} - ${this.props.currentReview.map.name} | Qoodish`
     });
   }
 
@@ -53,21 +53,21 @@ class ReviewDetail extends React.PureComponent {
       <Helmet
         title={`${review.spot.name} | Qoodish`}
         link={[
-          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${review.map_id}/${review.id}` }
+          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}` }
         ]}
         meta={[
-          { name: 'title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
-          { name: 'keywords', content: `${review.map_name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
+          { name: 'title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
+          { name: 'keywords', content: `${review.map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: review.comment },
           { name: 'twitter:card', content: 'summary_large_image' },
-          { name: 'twitter:title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
+          { name: 'twitter:title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
           { name: 'twitter:description', content: review.comment },
           { name: 'twitter:image', content: review.image ? review.image.url : process.env.SUBSTITUTE_URL },
-          { property: 'og:title', content: `${review.spot.name} - ${review.map_name} | Qoodish` },
+          { property: 'og:title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
-            content: `${process.env.ENDPOINT}/maps/${review.map_id}/${review.id}`
+            content: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}`
           },
           { property: 'og:image', content: review.image ? review.image.url : process.env.SUBSTITUTE_URL },
           {

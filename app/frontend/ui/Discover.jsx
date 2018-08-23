@@ -339,7 +339,7 @@ export default class Discover extends React.PureComponent {
               gutterBottom
               noWrap
             >
-              {review.map_name}
+              {review.map.name}
             </Typography>
             <Typography variant="title" gutterBottom noWrap>
               {review.spot.name}

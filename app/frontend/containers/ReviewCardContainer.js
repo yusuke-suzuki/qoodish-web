@@ -23,15 +23,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleTweetButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
         review.id
       }`;
-      let text = review.editable ? `「${review.map_name}」にレポートを投稿しました。` : '';
+      let text = review.editable ? `「${review.map.name}」にレポートを投稿しました。` : '';
       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
     },
 
     handleFacebookButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
         review.id
       }`;
       window.open(

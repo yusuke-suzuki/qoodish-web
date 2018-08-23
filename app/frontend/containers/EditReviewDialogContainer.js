@@ -55,7 +55,7 @@ const mapDispatchToProps = dispatch => {
           await sleep(5000);
         }
         dispatch(createReview(json));
-        let spotsResponse = await client.fetchSpots(json.map_id);
+        let spotsResponse = await client.fetchSpots(json.map.id);
         let spots = await spotsResponse.json();
         dispatch(fetchSpots(spots));
 
@@ -101,7 +101,7 @@ const mapDispatchToProps = dispatch => {
           await sleep(5000);
         }
         dispatch(editReview(json));
-        let spotsResponse = await client.fetchSpots(json.map_id);
+        let spotsResponse = await client.fetchSpots(json.map.id);
         let spots = await spotsResponse.json();
         dispatch(fetchSpots(spots));
       } else {
