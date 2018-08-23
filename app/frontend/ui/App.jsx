@@ -198,6 +198,44 @@ class App extends React.PureComponent {
           },
           { 'http-equiv': 'content-language', content: window.currentLocale }
         ]}
+        script={[
+          {
+            type: 'application/ld+json',
+            innerHTML:(JSON.stringify({
+              '@context': 'http://schema.org',
+              '@type': 'WebSite',
+              'name': 'Qoodish',
+              'mainEntityOfPage': {
+                '@type': 'WebPage',
+                '@id':  process.env.ENDPOINT
+              },
+              'headline': 'Qoodish | マップベースド SNS',
+              'image': {
+                '@type': 'ImageObject',
+                'url': process.env.ICON_512,
+                'width': 512,
+                'height': 512
+              },
+              'datePublished': '',
+              'dateModified': '',
+              'author': {
+                '@type': 'Person',
+                'name': ''
+              },
+              'publisher': {
+                '@type': 'Organization',
+                'name': 'Qoodish',
+                'logo': {
+                  '@type': 'ImageObject',
+                  'url': process.env.ICON_512,
+                  'width': 512,
+                  'height': 512
+                }
+              },
+              'description': 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+            }))
+          }
+        ]}
       />
     );
   }
