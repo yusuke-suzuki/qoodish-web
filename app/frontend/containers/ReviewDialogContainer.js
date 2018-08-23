@@ -26,15 +26,15 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     handleTweetButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
         review.id
       }`;
-      let text = `「${review.map_name}」にレポートを投稿しました。`;
+      let text = `「${review.map.name}」にレポートを投稿しました。`;
       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
     },
 
     handleFacebookButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map_id}/reports/${
+      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
         review.id
       }`;
       window.open(
