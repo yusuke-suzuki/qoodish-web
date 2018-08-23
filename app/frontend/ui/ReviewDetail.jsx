@@ -56,6 +56,7 @@ class ReviewDetail extends React.PureComponent {
           { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}` }
         ]}
         meta={[
+          review.map.private ? { name: 'robots', content: 'noindex' } : {},
           { name: 'title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
           { name: 'keywords', content: `${review.map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
           { name: 'description', content: review.comment },
