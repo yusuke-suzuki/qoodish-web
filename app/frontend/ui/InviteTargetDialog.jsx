@@ -130,7 +130,7 @@ class InviteTargetDialog extends React.PureComponent {
             color="secondary"
             disabled={!this.state.selectedUserId}
           >
-            {I18n.t('send')}
+            {I18n.t('invite')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -149,7 +149,7 @@ class InviteTargetDialog extends React.PureComponent {
           color="primary"
           disabled={!this.state.selectedUserId}
         >
-          {I18n.t('send')}
+          {I18n.t('invite')}
         </Button>
       </DialogActions>
     );

@@ -8,6 +8,7 @@ import loadUsersEnd from '../actions/loadUsersEnd';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import openToast from '../actions/openToast';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -31,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(closeInviteTargetDialog());
-        dispatch(openToast('Send invite successfully!'));
+        dispatch(openToast(I18n.t('send invitation success')));
       } else {
         dispatch(openToast('Failed to send invites'));
       }
