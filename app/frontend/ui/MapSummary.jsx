@@ -177,6 +177,7 @@ class MapSummary extends React.PureComponent {
       <SwipeableViews
         index={this.state.tabValue}
         onChangeIndex={this.handleSwipeChange}
+        animateHeight
       >
         <MapReviewsListContainer mapId={this.props.mapId} />
         <MapSpotsListContainer />
