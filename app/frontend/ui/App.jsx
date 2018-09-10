@@ -1,39 +1,8 @@
 import React from 'react';
 import NavBarContainer from '../containers/NavBarContainer';
 import BottomNavContainer from '../containers/BottomNavContainer';
-import ToastContainer from '../containers/ToastContainer';
-import BlockUiContainer from '../containers/BlockUiContainer';
-import IssueDialogContainer from '../containers/IssueDialogContainer';
-import LikesDialogContainer from '../containers/LikesDialogContainer';
-import CopyReviewDialogContainer from '../containers/CopyReviewDialogContainer';
-import { Route, Switch, Redirect } from 'react-router-dom';
-
-import LoginContainer from '../containers/LoginContainer';
-import DiscoverContainer from '../containers/DiscoverContainer';
-import TimelineContainer from '../containers/TimelineContainer';
-import MapsContainer from '../containers/MapsContainer';
-import ProfileContainer from '../containers/ProfileContainer';
-import UserProfileContainer from '../containers/UserProfileContainer';
-import NotificationsContainer from '../containers/NotificationsContainer';
-import MapDetailContainer from '../containers/MapDetailContainer';
-import ReviewDetailContainer from '../containers/ReviewDetailContainer';
-import SpotDetailContainer from '../containers/SpotDetailContainer';
-import SettingsContainer from '../containers/SettingsContainer';
-import InvitesContainer from '../containers/InvitesContainer';
-import TermsContainer from '../containers/TermsContainer';
-import PrivacyContainer from '../containers/PrivacyContainer';
-
-import FeedbackDialogContainer from '../containers/FeedbackDialogContainer';
-import SignInRequiredDialogContainer from '../containers/SignInRequiredDialogContainer';
-import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
-import ReviewDialogContainer from '../containers/ReviewDialogContainer';
-import DeleteReviewDialogContainer from '../containers/DeleteReviewDialogContainer';
-import PlaceSelectDialogContainer from '../containers/PlaceSelectDialogContainer';
-import BaseSelectDialogContainer from '../containers/BaseSelectDialogContainer';
-import EditReviewDialogContainer from '../containers/EditReviewDialogContainer';
-import CreateMapDialogContainer from '../containers/CreateMapDialogContainer.js';
-import EditMapDialogContainer from '../containers/EditMapDialogContainer';
-import EditProfileDialogContainer from '../containers/EditProfileDialogContainer';
+import Routes from './Routes';
+import SharedDialogs from './SharedDialogs';
 
 import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -138,22 +107,7 @@ class App extends React.PureComponent {
         <div>
           {this.renderHelmet()}
           {this.renderLayout()}
-          <FeedbackDialogContainer />
-          <SignInRequiredDialogContainer />
-          <RequestNotificationDialogContainer />
-          <ToastContainer />
-          <BlockUiContainer />
-          <IssueDialogContainer />
-          <LikesDialogContainer />
-          <CopyReviewDialogContainer />
-          <PlaceSelectDialogContainer />
-          <BaseSelectDialogContainer />
-          <EditReviewDialogContainer />
-          <DeleteReviewDialogContainer />
-          <ReviewDialogContainer />
-          <CreateMapDialogContainer />
-          <EditMapDialogContainer />
-          <EditProfileDialogContainer />
+          <SharedDialogs />
         </div>
       </MuiThemeProvider>
     );
@@ -269,7 +223,7 @@ class App extends React.PureComponent {
               lg={this.sideNavUnnecessary() ? 12 : 8}
               xl={this.sideNavUnnecessary() ? 12 : 8}
             >
-              {this.renderRoutes()}
+              <Routes />
             </Grid>
           </Grid>
           {!this.props.large && !this.sideNavUnnecessary() && <BottomNavContainer />}
@@ -285,36 +239,6 @@ class App extends React.PureComponent {
       path.includes('/login') ||
       path.includes('/terms') ||
       path.includes('/privacy')
-    );
-  }
-
-  renderRoutes() {
-    return (
-      <Switch>
-        <Route exact path="/" component={TimelineContainer} />
-        <Route exact path="/discover" component={DiscoverContainer} />
-        <Route exact path="/maps" component={MapsContainer} />
-        <Route exact path="/maps/:mapId" component={MapDetailContainer} />
-        <Route exact path="/notifications" component={NotificationsContainer} />
-        <Route exact path="/profile" component={ProfileContainer} />
-        <Route exact path="/users/:userId" component={UserProfileContainer} />
-        <Route
-          exact
-          path="/maps/:mapId/reports/:reviewId"
-          component={ReviewDetailContainer}
-        />
-        <Route
-          exact
-          path="/spots/:placeId"
-          component={SpotDetailContainer}
-        />
-        <Route exact path="/settings" component={SettingsContainer} />
-        <Route exact path="/invites" component={InvitesContainer} />
-        <Route exact path="/terms" component={TermsContainer} />
-        <Route exact path="/privacy" component={PrivacyContainer} />
-        <Route path="/login" component={LoginContainer} />
-        <Redirect from="*" to="/" />
-      </Switch>
     );
   }
 }
