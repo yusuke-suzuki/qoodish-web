@@ -9,8 +9,8 @@ import Helmet from 'react-helmet';
 
 const styles = {
   rootLarge: {
-    marginTop: 154,
-    marginBottom: 200
+    maxWidth: 900,
+    margin: '154px auto 200px'
   },
   rootSmall: {
     margin: '120px auto 64px'
