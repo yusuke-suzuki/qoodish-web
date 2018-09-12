@@ -238,7 +238,6 @@ class EditMapDialog extends React.PureComponent {
             style={styles.mapCenterChip}
             clickable
           />
-          <br/>
           <FormControlLabel
             control={
               <Switch
@@ -309,7 +308,9 @@ class EditMapDialog extends React.PureComponent {
   renderDialogActions() {
     return (
       <DialogActions>
-        <Button onClick={this.props.handleRequestDialogClose}>Cancel</Button>
+        <Button onClick={this.props.handleRequestDialogClose}>
+          {I18n.t('cancel')}
+        </Button>
         <Button
           variant="raised"
           onClick={this.handleSaveButtonClick}

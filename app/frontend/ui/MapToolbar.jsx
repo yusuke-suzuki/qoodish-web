@@ -2,6 +2,8 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Toolbar from '@material-ui/core/Toolbar';
 import ShareIcon from '@material-ui/icons/Share';
@@ -9,8 +11,18 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share';
 
 const styles = {
   leftButton: {
@@ -36,6 +48,9 @@ const styles = {
     cursor: 'pointer',
     marginLeft: 8
   },
+  shareText: {
+    marginLeft: 16
+  }
 };
 
 class MapToolbar extends React.PureComponent {
@@ -87,6 +102,10 @@ class MapToolbar extends React.PureComponent {
     return this.props.currentMap && this.renderToolbar(this.props.currentMap);
   }
 
+  shareUrl(map) {
+    return map ? `${process.env.ENDPOINT}/maps/${map.id}` : '';
+  }
+
   renderToolbar(map) {
     return (
       <Toolbar style={this.props.skelton ? styles.mapToolbarSkelton : styles.mapToolbar} disableGutters>
@@ -111,29 +130,52 @@ class MapToolbar extends React.PureComponent {
           >
             <MenuItem
               key="facebook"
-              onClick={() => {
-                this.handleRequestShareMenuClose();
-                this.props.handleFacebookButtonClick(map);
-              }}
+              onClick={this.handleRequestShareMenuClose}
+              component={FacebookShareButton}
+              url={this.shareUrl(map)}
             >
-              {I18n.t('share with facebook')}
+              <ListItemIcon>
+                <FacebookIcon
+                  round
+                  size={24}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={I18n.t('share with facebook')}
+                style={styles.shareText}
+              />
             </MenuItem>
             <MenuItem
               key="twitter"
-              onClick={() => {
-                this.handleRequestShareMenuClose();
-                this.props.handleTweetButtonClick(map);
-              }}
+              onClick={this.handleRequestShareMenuClose}
+              component={TwitterShareButton}
+              url={this.shareUrl(map)}
+              title={map && map.name}
             >
-              {I18n.t('share with twitter')}
+              <ListItemIcon>
+                <TwitterIcon
+                  round
+                  size={24}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={I18n.t('share with twitter')}
+                style={styles.shareText}
+              />
             </MenuItem>
             <CopyToClipboard
               text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
               onCopy={this.props.handleUrlCopied}
               key="copy"
             >
-              <MenuItem key="copy" onClick={this.handleRequestShareMenuClose}>
-                {I18n.t('copy link')}
+              <MenuItem
+                key="copy"
+                onClick={this.handleRequestShareMenuClose}
+              >
+                <ListItemIcon>
+                  <ContentCopyIcon />
+                </ListItemIcon>
+                <ListItemText primary={I18n.t('copy link')} />
               </MenuItem>
             </CopyToClipboard>
           </Menu>
@@ -233,7 +275,12 @@ class MapToolbar extends React.PureComponent {
             this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentMap);
           }}
         >
-          {I18n.t('issue')}
+          <ListItemIcon>
+            <ReportProblemIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={I18n.t('report')}
+          />
         </MenuItem>
       </Menu>
     );
@@ -248,7 +295,12 @@ class MapToolbar extends React.PureComponent {
           this.props.handleEditMapButtonClick(this.props.currentMap);
         }}
       >
-        {I18n.t('edit')}
+        <ListItemIcon>
+          <EditIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('edit')}
+        />
       </MenuItem>
     );
   }
@@ -262,7 +314,12 @@ class MapToolbar extends React.PureComponent {
           this.props.handleDeleteMapButtonClick(this.props.currentMap);
         }}
       >
-        {I18n.t('delete')}
+        <ListItemIcon>
+          <DeleteIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('delete')}
+        />
       </MenuItem>
     );
   }

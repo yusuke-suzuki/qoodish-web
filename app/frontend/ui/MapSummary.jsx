@@ -23,6 +23,12 @@ import MapSpotsListContainer from '../containers/MapSpotsListContainer';
 import MapFollowersListContainer from '../containers/MapFollowersListContainer';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../containers/I18n';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon
+} from 'react-share';
 
 const styles = {
   skeltonThumbnail: {
@@ -64,6 +70,13 @@ const styles = {
   },
   cardContentSmall: {
     textAlign: 'center'
+  },
+  shareButtonContainer: {
+    marginTop: 16,
+    display: 'flex'
+  },
+  shareButton: {
+    marginRight: 16
   },
   tab: {
     minWidth: 0,
@@ -137,12 +150,18 @@ class MapSummary extends React.PureComponent {
               <Chip style={styles.skeltonMapName} />
             )}
             {map && map.description ? (
-              <Typography component="p">
+              <Typography
+                component="p"
+              >
                 {map.description}
               </Typography>
             ) : (
               <Chip style={styles.skeltonMapDescription} />
             )}
+            <div style={styles.shareButtonContainer}>
+              {map && this.renderShareButton('facebook', map)}
+              {map && this.renderShareButton('twitter', map)}
+            </div>
             <div style={styles.followMapButton}>
               <FollowMapButtonContainer currentMap={this.props.currentMap} />
             </div>
@@ -153,6 +172,40 @@ class MapSummary extends React.PureComponent {
         </Card>
       </div>
     );
+  }
+
+  renderShareButton(service, map) {
+    const shareUrl = `${process.env.ENDPOINT}/maps/${map.id}`;
+
+    switch(service) {
+      case 'facebook':
+        return (
+          <FacebookShareButton
+            url={shareUrl}
+            style={styles.shareButton}
+          >
+            <FacebookIcon
+              size={40}
+              round
+            />
+          </FacebookShareButton>
+        );
+      case 'twitter':
+        return (
+          <TwitterShareButton
+            url={shareUrl}
+            title={map && map.name}
+            style={styles.shareButton}
+          >
+            <TwitterIcon
+              size={40}
+              round
+            />
+          </TwitterShareButton>
+        );
+      default:
+        return null;
+    }
   }
 
   renderTabs() {
@@ -177,7 +230,6 @@ class MapSummary extends React.PureComponent {
       <SwipeableViews
         index={this.state.tabValue}
         onChangeIndex={this.handleSwipeChange}
-        animateHeight
       >
         <MapReviewsListContainer mapId={this.props.mapId} />
         <MapSpotsListContainer />
@@ -188,7 +240,7 @@ class MapSummary extends React.PureComponent {
 
   renderThumbnail(map) {
     return (
-      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 380 : 250}>
+      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 300 : 250}>
         <GridListTile key={map && map.id}>
           <img
             src={map && map.image_url ? map.image_url : ''}
