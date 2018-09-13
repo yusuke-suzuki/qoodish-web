@@ -72,9 +72,14 @@ const styles = {
   cardContentSmall: {
     textAlign: 'center'
   },
-  shareButtonContainer: {
+  shareButtonContainerLarge: {
     marginTop: 16,
     display: 'flex'
+  },
+  shareButtonContainerSmall: {
+    marginTop: 16,
+    display: 'flex',
+    justifyContent: 'center'
   },
   shareButton: {
     marginRight: 16
@@ -159,7 +164,7 @@ class MapSummary extends React.PureComponent {
             ) : (
               <Chip style={styles.skeltonMapDescription} />
             )}
-            <div style={styles.shareButtonContainer}>
+            <div style={this.props.large ? styles.shareButtonContainerLarge : styles.shareButtonContainerSmall}>
               {map && this.renderShareButton('facebook', map)}
               {map && this.renderShareButton('twitter', map)}
             </div>
@@ -198,7 +203,6 @@ class MapSummary extends React.PureComponent {
             component={TwitterShareButton}
             url={shareUrl}
             title={map && map.name}
-            style={styles.shareButton}
           >
             <TwitterIcon
               size={40}
