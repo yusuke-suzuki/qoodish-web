@@ -15,6 +15,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import LockIcon from '@material-ui/icons/Lock';
 import GroupIcon from '@material-ui/icons/Group';
 import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
@@ -180,7 +181,8 @@ class MapSummary extends React.PureComponent {
     switch(service) {
       case 'facebook':
         return (
-          <FacebookShareButton
+          <IconButton
+            component={FacebookShareButton}
             url={shareUrl}
             style={styles.shareButton}
           >
@@ -188,11 +190,12 @@ class MapSummary extends React.PureComponent {
               size={40}
               round
             />
-          </FacebookShareButton>
+          </IconButton>
         );
       case 'twitter':
         return (
-          <TwitterShareButton
+          <IconButton
+            component={TwitterShareButton}
             url={shareUrl}
             title={map && map.name}
             style={styles.shareButton}
@@ -201,7 +204,7 @@ class MapSummary extends React.PureComponent {
               size={40}
               round
             />
-          </TwitterShareButton>
+          </IconButton>
         );
       default:
         return null;
