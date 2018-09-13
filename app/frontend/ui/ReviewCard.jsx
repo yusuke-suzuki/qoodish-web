@@ -10,6 +10,8 @@ import moment from 'moment';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -18,8 +20,19 @@ import Badge from '@material-ui/core/Badge';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import twitter from 'twitter-text';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ReportProblemIcon from '@material-ui/icons/ReportProblem';
+import AddLocationIcon from '@material-ui/icons/AddLocation';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share';
 
 const styles = {
   card: {},
@@ -52,6 +65,9 @@ const styles = {
   },
   shareButton: {
     marginLeft: 'auto'
+  },
+  shareText: {
+    marginLeft: 16
   }
 };
 
@@ -247,6 +263,10 @@ class ReviewCard extends React.PureComponent {
     );
   }
 
+  shareUrl() {
+    return `${process.env.ENDPOINT}/maps/${this.props.currentReview.map.id}/reports/${this.props.currentReview.id}`;
+  }
+
   renderShareMenu() {
     return (
       <Menu
@@ -257,21 +277,38 @@ class ReviewCard extends React.PureComponent {
       >
         <MenuItem
           key="facebook"
-          onClick={() => {
-            this.handleRequestShareMenuClose();
-            this.props.handleFacebookButtonClick(this.props.currentReview);
-          }}
+          onClick={this.handleRequestShareMenuClose}
+          component={FacebookShareButton}
+          url={this.shareUrl()}
         >
-          {I18n.t('share with facebook')}
+          <ListItemIcon>
+            <FacebookIcon
+              round
+              size={24}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary={I18n.t('share with facebook')}
+            style={styles.shareText}
+          />
         </MenuItem>
         <MenuItem
           key="twitter"
-          onClick={() => {
-            this.handleRequestShareMenuClose();
-            this.props.handleTweetButtonClick(this.props.currentReview);
-          }}
+          onClick={this.handleRequestShareMenuClose}
+          component={TwitterShareButton}
+          url={this.shareUrl()}
+          title={`${this.props.currentReview.spot.name} - ${this.props.currentReview.map.name}`}
         >
-          {I18n.t('share with twitter')}
+          <ListItemIcon>
+            <TwitterIcon
+              round
+              size={24}
+            />
+          </ListItemIcon>
+          <ListItemText
+            primary={I18n.t('share with twitter')}
+            style={styles.shareText}
+          />
         </MenuItem>
         <CopyToClipboard
           text={`${process.env.ENDPOINT}/maps/${
@@ -280,8 +317,14 @@ class ReviewCard extends React.PureComponent {
           onCopy={this.props.handleUrlCopied}
           key="copy"
         >
-          <MenuItem key="copy-link" onClick={this.handleRequestShareMenuClose}>
-            {I18n.t('copy link')}
+          <MenuItem
+            key="copy-link"
+            onClick={this.handleRequestShareMenuClose}
+          >
+            <ListItemIcon>
+              <ContentCopyIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('copy link')} />
           </MenuItem>
         </CopyToClipboard>
       </Menu>
@@ -317,7 +360,12 @@ class ReviewCard extends React.PureComponent {
             this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentReview);
           }}
         >
-          {I18n.t('issue')}
+          <ListItemIcon>
+            <ReportProblemIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={I18n.t('report')}
+          />
         </MenuItem>
       </Menu>
     );
@@ -347,7 +395,12 @@ class ReviewCard extends React.PureComponent {
           this.props.handleEditReviewButtonClick(this.props.currentReview);
         }}
       >
-        {I18n.t('edit')}
+        <ListItemIcon>
+          <EditIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('edit')}
+        />
       </MenuItem>
     );
   }
@@ -361,7 +414,12 @@ class ReviewCard extends React.PureComponent {
           this.props.handleCopyReviewButtonClick(this.props.currentReview);
         }}
       >
-        {I18n.t('copy')}
+        <ListItemIcon>
+          <AddLocationIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('copy')}
+        />
       </MenuItem>
     );
   }
@@ -375,7 +433,12 @@ class ReviewCard extends React.PureComponent {
           this.props.handleDeleteReviewButtonClick(this.props.currentReview);
         }}
       >
-        {I18n.t('delete')}
+        <ListItemIcon>
+          <DeleteIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('delete')}
+        />
       </MenuItem>
     );
   }

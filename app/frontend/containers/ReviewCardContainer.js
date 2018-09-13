@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import ReviewCard from '../ui/ReviewCard';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
 import openCopyReviewDialog from '../actions/openCopyReviewDialog';
@@ -22,25 +21,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleTweetButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
-        review.id
-      }`;
-      let text = review.editable ? `「${review.map.name}」にレポートを投稿しました。` : '';
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
-    },
-
-    handleFacebookButtonClick: review => {
-      let url = `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
-        review.id
-      }`;
-      window.open(
-        `https://www.facebook.com/dialog/share?app_id=${
-          process.env.FB_APP_ID
-        }&href=${url}`
-      );
-    },
-
     handleUrlCopied: () => {
       dispatch(openToast('Copied!'));
     },

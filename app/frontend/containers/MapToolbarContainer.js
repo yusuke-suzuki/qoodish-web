@@ -17,20 +17,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleTweetButtonClick: map => {
-      let url = `${process.env.ENDPOINT}/maps/${map.id}`;
-      window.open(`https://twitter.com/intent/tweet?text=${map.name}&url=${url}`);
-    },
-
-    handleFacebookButtonClick: map => {
-      let url = `${process.env.ENDPOINT}/maps/${map.id}`;
-      window.open(
-        `https://www.facebook.com/dialog/share?app_id=${
-          process.env.FB_APP_ID
-        }&href=${url}`
-      );
-    },
-
     handleUrlCopied: () => {
       dispatch(openToast('Copied!'));
     },
