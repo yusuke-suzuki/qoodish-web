@@ -5,11 +5,7 @@
   "repository": "git@github.com:yusuke-suzuki/qoodish-web.git",
   "author": "Yusuke Suzuki",
   "license": "MIT",
-  "engines": {
-    "node": "6.14.3"
-  },
   "scripts": {
-    "postinstall": "cd ./functions && yarn && cd ../",
     "build": "webpack --colors --progress --mode development",
     "watch:build": "webpack --watch --colors --progress --mode development",
     "test:chrome": "testcafe chrome tests/",
@@ -49,12 +45,14 @@
     "@babel/plugin-transform-async-to-generator": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@google-cloud/functions-emulator": "^1.0.0-beta.5",
     "babel-loader": "^8.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",
     "dotenv": "^6.0.0",
     "file-loader": "^1.1.11",
+    "firebase-tools": "^4.2.1",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.3.1",
     "prettier": "^1.13.7",
