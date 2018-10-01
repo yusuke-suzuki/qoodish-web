@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "engines": {
-    "node": "6.14.3"
+    "node": "8"
   },
   "scripts": {
     "serve": "firebase serve --only functions",

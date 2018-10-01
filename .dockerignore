@@ -1,0 +1,6 @@
+.git
+.gitignore
+.env.sample
+.firebase
+yarn-error.log
+node_modules
