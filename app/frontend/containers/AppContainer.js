@@ -40,6 +40,8 @@ const mapDispatchToProps = dispatch => {
     initMessaging: (permitted) => {
       if (permitted === null && 'serviceWorker' in navigator && 'PushManager' in window) {
         dispatch(openRequestNotificationDialog());
+      } else {
+        return;
       }
 
       const client = new ApiClient();
