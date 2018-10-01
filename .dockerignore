@@ -4,3 +4,4 @@
 .firebase
 yarn-error.log
 node_modules
+functions/node_modules

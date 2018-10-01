@@ -20,6 +20,8 @@ RUN apk add --no-cache --virtual=.build-dependencies \
       autoconf \
       automake
 RUN yarn --ignore-engines
+
 RUN apk del .build-dependencies
 
 ADD . /qoodish-web
+RUN cd ./functions && yarn && cd ../
