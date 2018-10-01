@@ -87,8 +87,8 @@ class App extends React.PureComponent {
         waitForInitialize: false
       });
       if (!currentUser.isAnonymous) {
-        this.props.initMessaging(this.props.notificationPermitted);
         this.props.fetchPostableMaps();
+        this.props.initMessaging(this.props.notificationPermitted);
       }
     }
   }
