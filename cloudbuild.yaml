@@ -1,0 +1,30 @@
+steps:
+
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=.env.production.enc
+  - --plaintext-file=.env
+  - --location=global
+  - --keyring=qoodish
+  - --key=qoodish
+
+- name: 'gcr.io/cloud-builders/yarn'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      yarn --ignore-engines
+      cd ./functions && yarn && cd ../
+      yarn build:functions
+      PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID} yarn build:prod
+
+- name: 'gcr.io/cloud-builders/yarn'
+  args:
+    - 'firebase'
+    - 'deploy'
+    - '--token'
+    - '${_FIREBASE_TOKEN}'
+    - '--project'
+    - 'prod'
