@@ -70,3 +70,5 @@ firebase-debug.log
 .firebase
 functions/node_modules/
 functions/*.js
+
+.env.production
