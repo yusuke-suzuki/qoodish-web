@@ -1,5 +1,8 @@
+secrets:
+  - kmsKeyName: projects/api-project-411341268038/locations/global/keyRings/qoodish/cryptoKeys/qoodish
+    secretEnv:
+      FIREBASE_TOKEN: CiQAVBSmKWUA7WqWw7syWUzhb7wrtZvZCgQsj3wCpc/zHpoyBzISVgDAy7Gw6hSCWBiW3LXOm9CmEB8xYBsN9sgI8S/xruXvqcv9vI2g+rFPcmDZLiA7japB1vnA4zgvHqcfjvSkOCrupgGQRZe06/W/PJyvtCYl65ilPM8e
 steps:
-
 - name: gcr.io/cloud-builders/gcloud
   args:
   - kms
@@ -9,7 +12,6 @@ steps:
   - --location=global
   - --keyring=qoodish
   - --key=qoodish
-
 - name: 'gcr.io/cloud-builders/yarn'
   entrypoint: 'bash'
   args:
@@ -19,12 +21,10 @@ steps:
       cd ./functions && yarn && cd ../
       yarn build:functions
       PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID} yarn build:prod
-
 - name: 'gcr.io/cloud-builders/yarn'
   args:
     - 'firebase'
     - 'deploy'
-    - '--token'
-    - '${_FIREBASE_TOKEN}'
     - '--project'
     - 'prod'
+  secretEnv: ['FIREBASE_TOKEN']
