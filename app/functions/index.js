@@ -11,7 +11,7 @@ import { isBot, generateMetadata } from './Utils';
 
 const Slack = require('slack-node');
 const slack = new Slack();
-slack.setWebhook(process.env.FEEDBACK_WEBHOOK_URL)
+slack.setWebhook(functions.config().app.feedback_webhook_url)
 
 const app = express();
 
@@ -57,7 +57,7 @@ exports.notifyFeedback = functions.firestore
     });
   });
 
-exports.generateThumbnail = functions.storage.bucket(process.env.FIREBASE_IMAGE_BUCKET_NAME).object().onFinalize((object) => {
+exports.generateThumbnail = functions.storage.bucket(functions.config().app.firebase_image_bucket_name).object().onFinalize((object) => {
   const fileBucket = object.bucket;
   const filePath = object.name;
   const contentType = object.contentType;
