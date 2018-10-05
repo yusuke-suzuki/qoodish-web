@@ -1,4 +1,4 @@
-FROM node:8.9.4-alpine
+FROM node:6.14.4-alpine
 
 RUN mkdir /qoodish-web
 WORKDIR /qoodish-web
@@ -20,4 +20,5 @@ RUN yarn
 RUN apk del .build-dependencies
 
 ADD . /qoodish-web
-RUN cd ./functions && yarn && cd ../
+RUN cd ./functions && yarn --ignore-engines && cd ../
+RUN yarn global add firebase-tools
