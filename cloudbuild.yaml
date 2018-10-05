@@ -21,9 +21,8 @@ steps:
       cd ./functions && yarn && cd ../
       yarn build:functions
       PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID} yarn build:prod
-- name: 'gcr.io/cloud-builders/yarn'
+- name: 'gcr.io/$PROJECT_ID/firebase'
   args:
-    - 'firebase'
     - 'deploy'
     - '--project'
     - 'prod'
