@@ -73,7 +73,6 @@ export default class Maps extends React.PureComponent {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderHelmet()}
         <SwipeableViews
-          animateHeight
           index={this.props.tabValue}
           onChangeIndex={this.handleTabChange}
         >

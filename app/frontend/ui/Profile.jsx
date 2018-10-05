@@ -186,7 +186,6 @@ class Profile extends React.PureComponent {
         {this.props.currentUser.name && this.renderHelmet(this.props.currentUser)}
         {this.renderProfileCard(this.props.currentUser)}
         <SwipeableViews
-          animateHeight
           index={this.state.tabValue}
           onChangeIndex={this.handleChangeIndex}
         >
