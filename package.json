@@ -9,7 +9,7 @@
     "build": "webpack --colors --progress --mode development",
     "watch:build": "webpack --watch --colors --progress --mode development",
     "test:chrome": "testcafe chrome tests/",
-    "build:prod": "webpack --colors --progress --mode production",
+    "build:prod": "webpack --colors --mode production",
     "prettier": "prettier ./app/frontend/**/* --write --single-quote",
     "build:functions": "babel app/functions/ --out-dir functions/"
   },
