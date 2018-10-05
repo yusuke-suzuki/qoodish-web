@@ -15,7 +15,7 @@ RUN apk add --no-cache --virtual=.build-dependencies \
       make \
       autoconf \
       automake
-RUN yarn --ignore-engines
+RUN yarn
 
 RUN apk del .build-dependencies
 
