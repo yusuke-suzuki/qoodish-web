@@ -9,9 +9,9 @@ const express = require('express');
 const ejs = require('ejs');
 import { isBot, generateMetadata } from './Utils';
 
-const Slack = require('slack-node');
-const slack = new Slack();
-slack.setWebhook(functions.config().app.feedback_webhook_url)
+const { IncomingWebhook } = require('@slack/client');
+const feedbackWebhook = new IncomingWebhook(functions.config().app.feedback_webhook_url);
+const cloudBuildWebhook = new IncomingWebhook(functions.config().app.cloud_build_webhook_url);
 
 const app = express();
 
@@ -45,15 +45,62 @@ app.get(pageRoutes, async (req, res) => {
 
 exports.host = functions.https.onRequest(app);
 
+// eventToBuild transforms pubsub event message to a build object.
+const eventToBuild = (data) => {
+  return JSON.parse(new Buffer(data, 'base64').toString());
+}
+
+// createSlackMessage creates a message from a build object.
+const createSlackMessage = (build) => {
+  let message = {
+    text: `Build ${build.id} :cocoa5:`,
+    mrkdwn: true,
+    attachments: [
+      {
+        title: 'Build logs',
+        title_link: build.logUrl,
+        fields: [{
+          title: 'Status',
+          value: build.status
+        }]
+      }
+    ]
+  };
+  return message;
+}
+
+exports.subscribeCloudBuild = functions.pubsub
+  .topic('cloud-builds')
+  .onPublish((message) => {
+    const build = eventToBuild(message.data);
+
+    // Skip if the current status is not in the status list.
+    // Add additional statuses to list if you'd like:
+    // QUEUED, WORKING, SUCCESS, FAILURE,
+    // INTERNAL_ERROR, TIMEOUT, CANCELLED
+    const status = ['SUCCESS', 'FAILURE', 'INTERNAL_ERROR', 'TIMEOUT'];
+    if (status.indexOf(build.status) === -1) {
+      return callback();
+    }
+
+    cloudBuildWebhook.send(createSlackMessage(build), (err, res) => {
+      if (err) {
+        console.log('Error: ', err);
+      } else {
+        console.log('Message sent: ', res);
+      }
+    });
+  });
+
 exports.notifyFeedback = functions.firestore
   .document('feedbacks/{feedbackId}')
   .onCreate((snap, context) => {
-    slack.webhook({
-      channel: "#qoodish-notice",
-      username: "Feedback",
-      text: "ユーザーからのフィードバックがあったよ！"
-    }, (err, response) => {
-      console.log(response);
+    feedbackWebhook.send('ユーザーからのフィードバックがあったよ！', (err, res) => {
+      if (err) {
+        console.log('Error: ', err);
+      } else {
+        console.log('Message sent: ', res);
+      }
     });
   });
 
