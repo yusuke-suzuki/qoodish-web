@@ -17,7 +17,7 @@ steps:
   args:
     - '-c'
     - |
-      yarn --ignore-engines
+      yarn
       cd ./functions && yarn && cd ../
       yarn build:functions
       PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID} yarn build:prod
