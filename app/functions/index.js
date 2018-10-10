@@ -80,7 +80,8 @@ exports.subscribeCloudBuild = functions.pubsub
     // INTERNAL_ERROR, TIMEOUT, CANCELLED
     const status = ['SUCCESS', 'FAILURE', 'INTERNAL_ERROR', 'TIMEOUT'];
     if (status.indexOf(build.status) === -1) {
-      return callback();
+      console.log('Build status is not the target status.');
+      return null;
     }
 
     cloudBuildWebhook.send(createSlackMessage(build), (err, res) => {
