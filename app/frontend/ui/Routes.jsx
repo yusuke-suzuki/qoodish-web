@@ -1,21 +1,21 @@
 import React from 'react';
-
 import { Route, Switch, Redirect } from 'react-router-dom';
+import loadable from 'loadable-components'
 
-import LoginContainer from '../containers/LoginContainer';
-import DiscoverContainer from '../containers/DiscoverContainer';
-import TimelineContainer from '../containers/TimelineContainer';
-import MapsContainer from '../containers/MapsContainer';
-import ProfileContainer from '../containers/ProfileContainer';
-import UserProfileContainer from '../containers/UserProfileContainer';
-import NotificationsContainer from '../containers/NotificationsContainer';
-import MapDetailContainer from '../containers/MapDetailContainer';
-import ReviewDetailContainer from '../containers/ReviewDetailContainer';
-import SpotDetailContainer from '../containers/SpotDetailContainer';
-import SettingsContainer from '../containers/SettingsContainer';
-import InvitesContainer from '../containers/InvitesContainer';
-import TermsContainer from '../containers/TermsContainer';
-import PrivacyContainer from '../containers/PrivacyContainer';
+const LoginContainer = loadable(() => import(/* webpackChunkName: "login" */ '../containers/LoginContainer'));
+const DiscoverContainer = loadable(() => import(/* webpackChunkName: "discover" */'../containers/DiscoverContainer'));
+const TimelineContainer = loadable(() => import(/* webpackChunkName: "timeline" */'../containers/TimelineContainer'));
+const MapsContainer = loadable(() => import(/* maps: "login" */'../containers/MapsContainer'));
+const ProfileContainer = loadable(() => import(/* webpackChunkName: "profile" */'../containers/ProfileContainer'));
+const UserProfileContainer = loadable(() => import(/* webpackChunkName: "user_profile" */'../containers/UserProfileContainer'));
+const NotificationsContainer = loadable(() => import(/* webpackChunkName: "notification" */'../containers/NotificationsContainer'));
+const MapDetailContainer = loadable(() => import(/* webpackChunkName: "map_detail" */'../containers/MapDetailContainer'));
+const ReviewDetailContainer = loadable(() => import(/* webpackChunkName: "review_detail" */'../containers/ReviewDetailContainer'));
+const SpotDetailContainer = loadable(() => import(/* webpackChunkName: "spot_detail" */'../containers/SpotDetailContainer'));
+const SettingsContainer = loadable(() => import(/* webpackChunkName: "settings" */'../containers/SettingsContainer'));
+const InvitesContainer = loadable(() => import(/* webpackChunkName: "invites" */'../containers/InvitesContainer'));
+const TermsContainer = loadable(() => import(/* webpackChunkName: "terms" */'../containers/TermsContainer'));
+const PrivacyContainer = loadable(() => import(/* webpackChunkName: "privacy" */'../containers/PrivacyContainer'));
 
 export default class Routes extends React.Component {
   render() {

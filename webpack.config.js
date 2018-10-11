@@ -71,9 +71,10 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
+      filename: '[name].bundle.js',
+      chunkFilename: '[name].bundle.js',
       path: __dirname + '/functions/hosting',
-      publicPath: '/',
-      filename: 'bundle.js'
+      publicPath: '/'
     },
     resolve: {
       extensions: ['.js', '.jsx']
