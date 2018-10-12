@@ -14,6 +14,7 @@ import selectSpot from '../actions/selectSpot';
 import { sleep, uploadToStorage, deleteFromStorage, canvasToBlob } from './Utils';
 import I18n from './I18n';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
+import fetchPostableMaps from '../actions/fetchPostableMaps';
 
 const mapStateToProps = state => {
   return {
@@ -123,6 +124,17 @@ const mapDispatchToProps = dispatch => {
     handleCreateMapButtonClick: () => {
       dispatch(closeEditReviewDialog());
       dispatch(openCreateMapDialog());
+    },
+
+    fetchPostableMaps: async () => {
+      const client = new ApiClient();
+      let response = await client.fetchPostableMaps();
+      if (response.ok) {
+        let maps = await response.json();
+        dispatch(fetchPostableMaps(maps));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      }
     }
   };
 };

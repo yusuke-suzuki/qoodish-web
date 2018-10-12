@@ -173,7 +173,7 @@ class NavBar extends React.PureComponent {
   }
 
   componentWillMount() {
-    if (this.props.currentUser.isAnonymous) {
+    if (!this.props.currentUser || this.props.currentUser.isAnonymous) {
       return;
     }
     this.props.handleMount();

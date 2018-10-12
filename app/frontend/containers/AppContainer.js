@@ -2,13 +2,11 @@ import { connect } from 'react-redux';
 import App from '../ui/App';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
-import fetchPostableMaps from '../actions/fetchPostableMaps';
 import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/messaging';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
-import openToast from '../actions/openToast';
 import signIn from '../actions/signIn';
 
 const mapStateToProps = state => {
@@ -27,9 +25,11 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateWindowSize(width));
     },
 
-    signInAnonymously: async () => {
-      await firebase.auth().signInAnonymously();
-      const currentUser = firebase.auth().currentUser;
+    signInAnonymously: async (currentUser = null) => {
+      if (!currentUser) {
+        await firebase.auth().signInAnonymously();
+        currentUser = firebase.auth().currentUser;
+      }
       const user = {
         uid: currentUser.uid,
         isAnonymous: true
@@ -64,17 +64,6 @@ const mapDispatchToProps = dispatch => {
           console.log('Failed to send registration token.');
         }
       });
-    },
-
-    fetchPostableMaps: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchPostableMaps();
-      if (response.ok) {
-        let maps = await response.json();
-        dispatch(fetchPostableMaps(maps));
-      } else if (response.status == 401) {
-        dispatch(openToast('Authenticate failed'));
-      }
     }
   };
 };
