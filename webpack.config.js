@@ -12,7 +12,7 @@ const serviceWorkerPlugins = [
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(['./functions/hosting/bundle.js', './functions/hosting/index.html'], {}),
+  new CleanWebpackPlugin(['./functions/hosting/*.bundle.js', './functions/hosting/index.html'], {}),
   new HtmlWebpackPlugin({
     template: 'app/views/index.html',
     hash: true,
