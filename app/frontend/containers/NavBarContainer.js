@@ -16,6 +16,7 @@ import hideBackButton from '../actions/hideBackButton';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 import openFeedbackDialog from '../actions/openFeedbackDialog';
+import signIn from '../actions/signIn';
 
 const mapStateToProps = state => {
   return {
@@ -56,8 +57,15 @@ const mapDispatchToProps = dispatch => {
       }
 
       await firebase.auth().signOut();
+      await firebase.auth().signInAnonymously();
+      const currentUser = firebase.auth().currentUser;
+      const user = {
+        uid: currentUser.uid,
+        isAnonymous: true
+      };
+      dispatch(signIn(user));
+
       dispatch(push('/login'));
-      dispatch(signOut());
       dispatch(requestFinish());
     },
 

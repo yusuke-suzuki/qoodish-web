@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/storage';
+import 'firebase/auth';
 import uuidv1 from 'uuid/v1';
 import 'blueimp-canvas-to-blob';
 
@@ -136,3 +137,15 @@ export const canvasToBlob = canvas => {
     );
   });
 };
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        resolve(user);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}

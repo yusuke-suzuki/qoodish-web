@@ -11,13 +11,11 @@ import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import Helmet from 'react-helmet';
+
+import { getCurrentUser } from '../containers/Utils';
 
 const theme = createMuiTheme({
   palette: {
@@ -36,64 +34,24 @@ const theme = createMuiTheme({
   }
 });
 
-const styles = {
-  progressContainer: {
-    top: '50%',
-    left: '50%',
-    position: 'absolute',
-    transform: 'translate(-50%, -50%)'
-  }
-};
-
 class App extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      waitForInitialize: true
-    };
-    this.retryCount = 0;
-    this.maxRetryCount = 20;
-  }
-
-  componentWillMount() {
+  async componentWillMount() {
     this.props.handleWindowSizeChange(this.props.width);
-    this.retryCount = 0;
-    this.setTimerForInitialize();
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (!user) {
-        await this.props.signInAnonymously();
+    let currentUser = await getCurrentUser();
+    if (currentUser) {
+      if (currentUser.isAnonymous) {
+        await this.props.signInAnonymously(currentUser);
+      } else {
+        this.props.initMessaging(this.props.notificationPermitted);
       }
-    });
+    } else {
+      await this.props.signInAnonymously();
+    }
   }
 
   componentWillReceiveProps(props) {
     this.props.handleWindowSizeChange(props.width);
-  }
-
-  setTimerForInitialize() {
-    if (!this.state.waitForInitialize) {
-      return;
-    }
-    const timer = setInterval(() => {
-      console.log('Wait for initialize...');
-      this.waitForCurrentUser(timer);
-      this.retryCount++;
-    }, 1000);
-  }
-
-  async waitForCurrentUser(timer) {
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser || this.retryCount > this.maxRetryCount) {
-      clearInterval(timer);
-      this.setState({
-        waitForInitialize: false
-      });
-      if (!currentUser.isAnonymous) {
-        this.props.fetchPostableMaps();
-        this.props.initMessaging(this.props.notificationPermitted);
-      }
-    }
   }
 
   scrollTop() {
@@ -198,41 +156,26 @@ class App extends React.PureComponent {
   }
 
   renderLayout() {
-    if (this.state.waitForInitialize) {
-      return (
-        <div style={styles.progressContainer}>
-          <Typography
-            variant={this.props.large ? 'display3' : 'display2'}
-            color="primary"
-            gutterBottom
-          >
-            Qoodish
-          </Typography>
-          <LinearProgress />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Grid container>
-            <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
-              <NavBarContainer />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={this.sideNavUnnecessary() ? 12 : 6}
-              lg={this.sideNavUnnecessary() ? 12 : 8}
-              xl={this.sideNavUnnecessary() ? 12 : 8}
-            >
-              <Routes />
-            </Grid>
+    return (
+      <div>
+        <Grid container>
+          <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
+            <NavBarContainer />
           </Grid>
-          {!this.props.large && !this.sideNavUnnecessary() && <BottomNavContainer />}
-        </div>
-      );
-    }
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={this.sideNavUnnecessary() ? 12 : 6}
+            lg={this.sideNavUnnecessary() ? 12 : 8}
+            xl={this.sideNavUnnecessary() ? 12 : 8}
+          >
+            <Routes />
+          </Grid>
+        </Grid>
+        {!this.props.large && !this.sideNavUnnecessary() && <BottomNavContainer />}
+      </div>
+    );
   }
 
   sideNavUnnecessary() {

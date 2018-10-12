@@ -288,6 +288,7 @@ class EditReviewDialog extends React.PureComponent {
     return (
       <Dialog
         open={this.props.dialogOpen}
+        onEnter={this.props.fetchPostableMaps}
         onClose={this.handleRequestClose}
         disableBackdropClick
         disableEscapeKeyDown
