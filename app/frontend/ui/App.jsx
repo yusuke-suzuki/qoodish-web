@@ -2,6 +2,9 @@ import React from 'react';
 import NavBarContainer from '../containers/NavBarContainer';
 import BottomNavContainer from '../containers/BottomNavContainer';
 import Routes from './Routes';
+import ToastContainer from '../containers/ToastContainer';
+import BlockUiContainer from '../containers/BlockUiContainer';
+import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import SharedDialogs from './SharedDialogs';
 
 import withWidth from '@material-ui/core/withWidth';
@@ -104,6 +107,9 @@ class App extends React.PureComponent {
         <div>
           {this.renderHelmet()}
           {this.renderLayout()}
+          <ToastContainer />
+          <BlockUiContainer />
+          <RequestNotificationDialogContainer />
           <SharedDialogs />
         </div>
       </MuiThemeProvider>
