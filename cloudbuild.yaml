@@ -20,7 +20,10 @@ steps:
       yarn
       cd ./functions && yarn && cd ../
       yarn build:functions
-      PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID} yarn build:prod
+      yarn build:prod
+  env:
+    - 'PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}'
+    - 'API_ENDPOINT=${_API_ENDPOINT}'
 - name: 'gcr.io/$PROJECT_ID/firebase'
   args:
     - 'deploy'
