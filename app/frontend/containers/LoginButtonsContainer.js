@@ -8,7 +8,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-import { uploadToStorage, downloadImage } from './Utils';
+import { sleep, uploadToStorage, downloadImage } from './Utils';
 
 const mapStateToProps = (state) => {
   return {
@@ -71,12 +71,15 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
 
       if (response.ok) {
-        dispatch(signIn(json));
         dispatch(push(''));
         dispatch(openToast('Signed in successfully!'));
         gtag('event', 'login', {
           'method': authResult.additionalUserInfo.providerId
         });
+
+        // wait until thumbnail created on cloud function
+        await sleep(10000);
+        dispatch(signIn(json));
       } else {
         dispatch(openToast(json.detail));
       }
