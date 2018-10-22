@@ -14,6 +14,7 @@ class CopyReviewDialog extends React.PureComponent {
     return (
       <Dialog
         open={this.props.dialogOpen}
+        onEnter={this.props.fetchPostableMaps}
         onClose={this.props.handleRequestClose}
         fullWidth
       >
