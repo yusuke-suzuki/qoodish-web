@@ -126,5 +126,6 @@
   "unfollow map detail": "マップをフォロー解除してもこれまでに投稿したレポートは削除されません。",
   "location": "位置",
   "routes": "ルート",
-  "detail": "詳細"
+  "detail": "詳細",
+  "you are hear": "現在地"
 }
