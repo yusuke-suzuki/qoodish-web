@@ -3,7 +3,9 @@ import CurrentPositionMarker from '../ui/CurrentPositionMarker';
 
 const mapStateToProps = state => {
   return {
-    currentPosition: state.gMap.currentPosition
+    currentPosition: state.gMap.currentPosition,
+    currentUser: state.app.currentUser,
+    large: state.shared.large
   };
 };
 

@@ -15,7 +15,6 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import LockIcon from '@material-ui/icons/Lock';
 import GroupIcon from '@material-ui/icons/Group';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
@@ -24,12 +23,6 @@ import MapSpotsListContainer from '../containers/MapSpotsListContainer';
 import MapFollowersListContainer from '../containers/MapFollowersListContainer';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../containers/I18n';
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  TwitterShareButton,
-  TwitterIcon
-} from 'react-share';
 
 const styles = {
   skeltonThumbnail: {
@@ -71,18 +64,6 @@ const styles = {
   },
   cardContentSmall: {
     textAlign: 'center'
-  },
-  shareButtonContainerLarge: {
-    marginTop: 16,
-    display: 'flex'
-  },
-  shareButtonContainerSmall: {
-    marginTop: 16,
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  shareButton: {
-    marginRight: 16
   },
   tab: {
     minWidth: 0,
@@ -164,10 +145,6 @@ class MapSummary extends React.PureComponent {
             ) : (
               <Chip style={styles.skeltonMapDescription} />
             )}
-            <div style={this.props.large ? styles.shareButtonContainerLarge : styles.shareButtonContainerSmall}>
-              {map && this.renderShareButton('facebook', map)}
-              {map && this.renderShareButton('twitter', map)}
-            </div>
             <div style={styles.followMapButton}>
               <FollowMapButtonContainer currentMap={this.props.currentMap} />
             </div>
@@ -178,41 +155,6 @@ class MapSummary extends React.PureComponent {
         </Card>
       </div>
     );
-  }
-
-  renderShareButton(service, map) {
-    const shareUrl = `${process.env.ENDPOINT}/maps/${map.id}`;
-
-    switch(service) {
-      case 'facebook':
-        return (
-          <IconButton
-            component={FacebookShareButton}
-            url={shareUrl}
-            style={styles.shareButton}
-          >
-            <FacebookIcon
-              size={40}
-              round
-            />
-          </IconButton>
-        );
-      case 'twitter':
-        return (
-          <IconButton
-            component={TwitterShareButton}
-            url={shareUrl}
-            title={map && map.name}
-          >
-            <TwitterIcon
-              size={40}
-              round
-            />
-          </IconButton>
-        );
-      default:
-        return null;
-    }
   }
 
   renderTabs() {

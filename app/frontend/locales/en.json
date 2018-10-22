@@ -126,5 +126,6 @@
   "unfollow map detail": "The reports you've written will not be deleted by unfollowing the map.",
   "location": "Location",
   "routes": "Routes",
-  "detail": "Detail"
+  "detail": "Detail",
+  "you are hear": "You are here"
 }

@@ -6,6 +6,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import createReview from '../actions/createReview';
+import fetchPostableMaps from '../actions/fetchPostableMaps';
 import { uploadToStorage, deleteFromStorage, downloadImage } from './Utils';
 
 const mapStateToProps = state => {
@@ -53,6 +54,15 @@ const mapDispatchToProps = dispatch => {
         if (fileName) {
           deleteFromStorage(fileName);
         }
+      }
+    },
+
+    fetchPostableMaps: async () => {
+      const client = new ApiClient();
+      let response = await client.fetchPostableMaps();
+      if (response.ok) {
+        let maps = await response.json();
+        dispatch(fetchPostableMaps(maps));
       }
     }
   };

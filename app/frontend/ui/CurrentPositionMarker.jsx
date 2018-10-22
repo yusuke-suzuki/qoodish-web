@@ -1,11 +1,31 @@
 import React from 'react';
 import {
-  Marker,
+  OverlayView,
+  Marker
 } from 'react-google-maps';
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import Avatar from '@material-ui/core/Avatar';
+import I18n from '../containers/I18n';
+
+const styles = {
+  overlayButton: {
+    backgroundColor: 'white'
+  }
+};
 
 export default class SpotMarkers extends React.PureComponent {
   render() {
-    return this.props.currentPosition.lat && this.props.currentPosition.lng ? this.renderMarker() : null;
+    return this.props.currentPosition.lat && this.props.currentPosition.lng ? this.renderMarkers() : null;
+  }
+
+  renderMarkers() {
+    return (
+      <div>
+        {this.renderMarker()}
+        {this.renderProfileIcon()}
+      </div>
+    );
   }
 
   renderMarker() {
@@ -23,6 +43,39 @@ export default class SpotMarkers extends React.PureComponent {
           }
         }}
       />
+    );
+  }
+
+  renderProfileIcon() {
+    return (
+      <OverlayView
+        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        position={this.props.currentPosition}
+      >
+        {this.props.large ?
+        <Tooltip title={I18n.t("you are hear")}>
+          <Button
+            variant="fab"
+            style={styles.overlayButton}
+          >
+            <Avatar
+              src={this.props.currentUser.thumbnail_url}
+              alt={I18n.t("you are hear")}
+            />
+          </Button>
+        </Tooltip>
+        :
+        <Button
+          variant="fab"
+          style={styles.overlayButton}
+        >
+          <Avatar
+            src={this.props.currentUser.thumbnail_url}
+            alt={I18n.t("you are hear")}
+          />
+        </Button>
+        }
+      </OverlayView>
     );
   }
 }
