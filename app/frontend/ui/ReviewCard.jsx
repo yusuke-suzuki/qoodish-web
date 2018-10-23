@@ -117,7 +117,11 @@ class ReviewCard extends React.PureComponent {
   }
 
   render() {
-    return <div>{this.renderReviewCard(this.props.currentReview)}</div>;
+    return (
+      <div>
+        {this.renderReviewCard(this.props.currentReview)}
+      </div>
+    );
   }
 
   renderReviewCard(review) {
@@ -188,7 +192,12 @@ class ReviewCard extends React.PureComponent {
               {review.spot.name}
             </Typography>
           </ButtonBase>
-          <Typography component="p" dangerouslySetInnerHTML={commentHtml} style={styles.reviewComment}>
+          <Typography
+            component="p"
+            dangerouslySetInnerHTML={commentHtml}
+            style={styles.reviewComment}
+            data-test="review-card-comment"
+          >
           </Typography>
         </CardContent>
         {review.image ? this.renderCardMedia(review) : null}

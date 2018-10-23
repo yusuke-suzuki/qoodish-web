@@ -367,6 +367,7 @@ class EditReviewDialog extends React.PureComponent {
             onClick={this.handleSaveButtonClick}
             color="secondary"
             disabled={this.state.disabled}
+            data-test="save-review-button"
           >
             {I18n.t('save')}
           </Button>
@@ -384,6 +385,7 @@ class EditReviewDialog extends React.PureComponent {
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}
+          data-test="save-review-button"
         >
           {I18n.t('save')}
         </Button>
@@ -460,6 +462,7 @@ class EditReviewDialog extends React.PureComponent {
         rowsMax="5"
         rows="5"
         margin="normal"
+        data-test="review-comment-input"
       />
     );
   }

@@ -16,7 +16,7 @@ or
 `firebase serve`
 
 ## Test
-`yarn test:chrome`
+`yarn jest`
 
 ## Run prettier
 `yarn prettier`

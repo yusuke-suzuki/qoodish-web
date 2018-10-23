@@ -98,6 +98,7 @@ class PlaceSelectDialog extends React.PureComponent {
             placeholder={I18n.t('search places example')}
             helperText={I18n.t('search places help')}
             margin="normal"
+            data-test="place-name-input"
           />
           <List>{this.renderPlaces()}</List>
         </DialogContent>
@@ -148,6 +149,7 @@ class PlaceSelectDialog extends React.PureComponent {
         button
         key={place.place_id}
         onClick={() => this.handlePlaceSelected(place)}
+        data-test="place-list-item"
       >
         <ListItemAvatar>
           <Avatar>
