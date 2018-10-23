@@ -1,4 +1,5 @@
 import QoodishClient from './QoodishClient';
+const functions = require('firebase-functions');
 
 const BOTS = [
   '\\+https:\\/\\/developers.google.com\\/\\+\\/web\\/snippet\\/',
@@ -35,8 +36,8 @@ export const isBot = (req) => {
 export const generateMetadata = async (req) => {
   let title = 'Qoodish';
   let description = 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
-  let pageUrl = process.env.ENDPOINT;
-  let imageUrl = process.env.SUBSTITUTE_URL;
+  let pageUrl = functions.config().app.endpoint;
+  let imageUrl = functions.config().app.substitute_url;
   let twitterCard = 'summary';
 
   const client = new QoodishClient;
