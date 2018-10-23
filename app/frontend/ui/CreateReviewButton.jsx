@@ -41,6 +41,7 @@ export default class CreateReviewButton extends React.PureComponent {
         style={this.buttonStyle(this.props)}
         onClick={() => this.props.handleButtonClick(this.props.currentUser)}
         disabled={this.props.disabled}
+        data-test="create-review-button"
       >
         <EditIcon />
       </Button>
