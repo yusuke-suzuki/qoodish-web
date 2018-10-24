@@ -11,7 +11,7 @@ const DeleteReviewDialogContainer = loadable(() => import(/* webpackChunkName: "
 const PlaceSelectDialogContainer = loadable(() => import(/* webpackChunkName: "place_select_dialog" */ '../containers/PlaceSelectDialogContainer'));
 const BaseSelectDialogContainer = loadable(() => import(/* webpackChunkName: "base_select_dialog" */ '../containers/BaseSelectDialogContainer'));
 const EditReviewDialogContainer = loadable(() => import(/* webpackChunkName: "edit_review_dialog" */ '../containers/EditReviewDialogContainer'));
-const CreateMapDialogContainer = loadable(() => import(/* webpackChunkName: "create_map_dialog" */ '../containers/CreateMapDialogContainer.js'));
+const CreateMapDialogContainer = loadable(() => import(/* webpackChunkName: "create_map_dialog" */ '../containers/CreateMapDialogContainer'));
 const EditMapDialogContainer = loadable(() => import(/* webpackChunkName: "edit_map_dialog" */ '../containers/EditMapDialogContainer'));
 const EditProfileDialogContainer = loadable(() => import(/* webpackChunkName: "edit_profile_dialog" */ '../containers/EditProfileDialogContainer'));
 

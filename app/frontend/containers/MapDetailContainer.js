@@ -12,7 +12,6 @@ import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
 import clearMapState from '../actions/clearMapState';
 import fetchMapReviews from '../actions/fetchMapReviews';
-import switchMap from '../actions/switchMap';
 import switchSummary from '../actions/switchSummary';
 
 const mapStateToProps = state => {
@@ -79,10 +78,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleUnmount: () => {
       dispatch(clearMapState());
-    },
-
-    handleSummaryClose: () => {
-      dispatch(switchMap());
     },
 
     handleSummaryOpen: () => {

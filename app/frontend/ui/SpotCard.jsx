@@ -9,7 +9,6 @@ import DirectionsIcon from '@material-ui/icons/Directions';
 import InfoIcon from '@material-ui/icons/Info';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -120,16 +119,14 @@ class SpotCard extends React.PureComponent {
 
   renderSwipeable() {
     return (
-      <SwipeableDrawer
+      <Drawer
         anchor="bottom"
         open={this.props.open}
-        onClose={this.props.handleClose}
-        swipeAreaWidth={0}
         PaperProps={{ style: styles.drawerPaperSmall }}
       >
         {this.renderToolbar()}
         {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
-      </SwipeableDrawer>
+      </Drawer>
     );
   }
 
