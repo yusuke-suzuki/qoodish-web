@@ -63,7 +63,6 @@ class MapBottomSeat extends React.PureComponent {
   renderHeader(map) {
     return (
       <ListItem
-        onClick={this.props.handleShowTimelineClick}
         disableGutters
         style={styles.listItem}
       >

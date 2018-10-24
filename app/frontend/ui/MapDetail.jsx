@@ -8,7 +8,7 @@ import InviteTargetDialogContainer from '../containers/InviteTargetDialogContain
 import SpotCardContainer from '../containers/SpotCardContainer';
 import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
 import Helmet from 'react-helmet';
-import Drawer from '@material-ui/core/Drawer';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 const styles = {
   containerLarge: {
@@ -118,14 +118,16 @@ export default class MapDetail extends React.PureComponent {
 
   renderMapSummaryDrawer() {
     return (
-      <Drawer
-        variant="temporary"
+      <SwipeableDrawer
         anchor="bottom"
         open={this.props.mapSummaryOpen}
         PaperProps={{ style: styles.drawerPaper }}
+        onOpen={this.props.handleSummaryOpen}
+        onClose={this.props.handleSummaryClose}
+        swipeAreaWidth={116}
       >
         <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
-      </Drawer>
+      </SwipeableDrawer>
     );
   }
 }
