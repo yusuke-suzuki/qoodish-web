@@ -28,7 +28,7 @@ export default class MapSpotsList extends React.PureComponent {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {spot.name}
             </Typography>
           }

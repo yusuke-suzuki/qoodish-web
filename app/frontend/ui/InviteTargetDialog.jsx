@@ -119,11 +119,11 @@ class InviteTargetDialog extends React.PureComponent {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" style={styles.flex}>
+          <Typography variant="h6" color="inherit" style={styles.flex}>
             {I18n.t('select invite target')}
           </Typography>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={() => {
               this.props.handleSendButtonClick(this.state.selectedUserId);
             }}
@@ -142,7 +142,7 @@ class InviteTargetDialog extends React.PureComponent {
       <DialogActions>
         <Button onClick={this.props.onClose}>{I18n.t('cancel')}</Button>
         <Button
-          variant="raised"
+          variant="contained"
           onClick={() => {
             this.props.handleSendButtonClick(this.state.selectedUserId);
           }}

@@ -261,7 +261,7 @@ class NavBar extends React.PureComponent {
         {this.props.large ? this.renderLogo() : null}
         <div style={this.props.large ? styles.pageTitleContainerLarge : styles.pageTitleContainerSmall}>
           <Typography
-            variant="headline"
+            variant="h5"
             color="inherit"
             noWrap
             style={
@@ -429,7 +429,7 @@ class NavBar extends React.PureComponent {
   renderLogo() {
     return (
       <Typography
-        variant="headline"
+        variant="h5"
         color="inherit"
         style={styles.logo}
       >
@@ -485,7 +485,7 @@ class NavBar extends React.PureComponent {
     return (
       <MenuItem style={styles.noContentsContainer}>
         <NotificationsIcon style={styles.noContentsIcon} />
-        <Typography variant="subheading" color="inherit">
+        <Typography variant="subtitle1" color="inherit">
           {I18n.t('no notifications')}
         </Typography>
       </MenuItem>
@@ -676,7 +676,7 @@ class NavBar extends React.PureComponent {
           disableTypography
           primary={
             <Typography
-              variant="headline"
+              variant="h5"
               color="textSecondary"
               style={styles.title}
             >

@@ -123,13 +123,13 @@ class SpotCard extends React.PureComponent {
         </CardMedia>
         <CardContent>
           <Typography
-            variant="headline"
+            variant="h5"
             gutterBottom
           >
             {spot.name}
           </Typography>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             color="textSecondary"
             gutterBottom
           >
@@ -193,7 +193,7 @@ class SpotCard extends React.PureComponent {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {review.author.name}
             </Typography>
           }

@@ -126,7 +126,7 @@ class MapSummary extends React.PureComponent {
           <CardContent style={this.props.large ? {} : styles.cardContentSmall}>
             {map && map.name ? (
               <Typography
-                variant="headline"
+                variant="h5"
                 component="h2"
                 gutterBottom
                 style={styles.mapName}

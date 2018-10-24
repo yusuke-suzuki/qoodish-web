@@ -81,7 +81,7 @@ class IssueDialog extends React.PureComponent {
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
-          <Button variant="raised" onClick={this.handleSendButtonClick} color="primary">
+          <Button variant="contained" onClick={this.handleSendButtonClick} color="primary">
             {I18n.t('send')}
           </Button>
         </DialogActions>

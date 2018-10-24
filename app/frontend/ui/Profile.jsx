@@ -240,7 +240,7 @@ class Profile extends React.PureComponent {
   renderEditProfileButton() {
     return (
       <Button
-        variant="raised"
+        variant="contained"
         onClick={() => this.props.handleEditProfileButtonClick(this.props.currentUser)}
         color="primary"
         style={styles.editProfileButton}
@@ -259,7 +259,7 @@ class Profile extends React.PureComponent {
         <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
           {this.renderAvatar(currentUser)}
           <div style={styles.profileContainer}>
-            <Typography variant="headline" gutterBottom>
+            <Typography variant="h5" gutterBottom>
               {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
             </Typography>
             {this.props.pathname === '/profile' && this.renderEditProfileButton()}
@@ -354,7 +354,7 @@ class Profile extends React.PureComponent {
     return (
       <div style={this.props.large ? styles.buttonContainerLarge : styles.buttonContainerSmall}>
         <Button
-          variant="raised"
+          variant="contained"
           onClick={this.handleClickLoadMoreButton}
         >
           {I18n.t('load more')}

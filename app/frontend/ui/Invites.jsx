@@ -111,7 +111,7 @@ export default class Invites extends React.PureComponent {
         </CardContent>
         <CardActions>
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={() => this.props.handleFollowButtonClick(invite)}
             disabled={invite.expired}

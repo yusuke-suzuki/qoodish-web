@@ -30,7 +30,7 @@ class LeaveMapDialog extends React.PureComponent {
         <DialogActions>
           <Button onClick={this.props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={this.props.handleLeaveButtonClick}
             color="primary"
           >

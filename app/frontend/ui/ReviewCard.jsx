@@ -65,9 +65,6 @@ const styles = {
   },
   shareButton: {
     marginLeft: 'auto'
-  },
-  shareText: {
-    marginLeft: 16
   }
 };
 
@@ -169,7 +166,7 @@ class ReviewCard extends React.PureComponent {
             title={review.map.name}
           >
             <Typography
-              variant="subheading"
+              variant="subtitle1"
               color="primary"
               style={styles.cardTitle}
               gutterBottom
@@ -184,7 +181,7 @@ class ReviewCard extends React.PureComponent {
             title={review.spot.name}
           >
             <Typography
-              variant="headline"
+              variant="h5"
               component="h2"
               style={styles.cardTitle}
               gutterBottom
@@ -298,7 +295,6 @@ class ReviewCard extends React.PureComponent {
           </ListItemIcon>
           <ListItemText
             primary={I18n.t('share with facebook')}
-            style={styles.shareText}
           />
         </MenuItem>
         <MenuItem
@@ -316,7 +312,6 @@ class ReviewCard extends React.PureComponent {
           </ListItemIcon>
           <ListItemText
             primary={I18n.t('share with twitter')}
-            style={styles.shareText}
           />
         </MenuItem>
         <CopyToClipboard

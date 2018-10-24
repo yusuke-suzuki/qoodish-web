@@ -36,7 +36,7 @@ export default class Invites extends React.PureComponent {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         <Card>
           <CardContent>
-            <Typography variant="headline" component="h2" gutterBottom>
+            <Typography variant="h5" component="h2" gutterBottom>
               {I18n.t('delete account')}
             </Typography>
             <Typography component="p">
@@ -45,7 +45,7 @@ export default class Invites extends React.PureComponent {
           </CardContent>
           <CardActions>
             <Button
-              variant="raised"
+              variant="contained"
               onClick={this.props.handleDeleteAccountButtonClick}
               style={this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
               disabled={this.props.currentUser.isAnonymous}

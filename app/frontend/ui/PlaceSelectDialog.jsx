@@ -127,7 +127,7 @@ class PlaceSelectDialog extends React.PureComponent {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" style={styles.flex}>
+          <Typography variant="h6" color="inherit" style={styles.flex}>
             {I18n.t('select place')}
           </Typography>
         </Toolbar>

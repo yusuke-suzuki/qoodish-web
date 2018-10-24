@@ -74,7 +74,7 @@ class MapBottomSeat extends React.PureComponent {
         <ListItemText
           disableTypography
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {map && map.name}
             </Typography>
           }

@@ -133,7 +133,7 @@ export default class Discover extends React.PureComponent {
         {this.renderHelmet()}
         <div style={styles.container}>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -145,7 +145,7 @@ export default class Discover extends React.PureComponent {
         </div>
         <div style={styles.container}>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -159,7 +159,7 @@ export default class Discover extends React.PureComponent {
         </div>
         <div style={styles.mapsContainer}>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -172,7 +172,7 @@ export default class Discover extends React.PureComponent {
         </div>
         <div style={styles.container}>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             gutterBottom
             color="textSecondary"
             style={styles.gridHeader}
@@ -226,7 +226,7 @@ export default class Discover extends React.PureComponent {
           <GridListTileBar
             title={
               <Typography
-                variant={this.props.large ? 'display3' : 'display1'}
+                variant={this.props.large ? 'h2' : 'h4'}
                 color="inherit"
                 gutterBottom
                 style={styles.pickUpText}
@@ -236,7 +236,7 @@ export default class Discover extends React.PureComponent {
             }
             subtitle={
               <Typography
-                variant={this.props.large ? 'display1' : 'headline'}
+                variant={this.props.large ? 'h4' : 'h5'}
                 color="inherit"
                 style={styles.pickUpText}
               >
@@ -276,7 +276,7 @@ export default class Discover extends React.PureComponent {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {i + 1}. {spot.name}
             </Typography>
           }
@@ -297,7 +297,7 @@ export default class Discover extends React.PureComponent {
           cols={this.props.large ? 2 : 1}
           style={styles.gridList}
           spacing={20}
-          cellHeight={190}
+          cellHeight={210}
         >
           {this.renderRecentReviews(reviews)}
         </GridList>
@@ -334,14 +334,14 @@ export default class Discover extends React.PureComponent {
           />
           <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
             <Typography
-              variant="subheading"
+              variant="subtitle1"
               color="primary"
               gutterBottom
               noWrap
             >
               {review.map.name}
             </Typography>
-            <Typography variant="title" gutterBottom noWrap>
+            <Typography variant="h6" gutterBottom noWrap>
               {review.spot.name}
             </Typography>
             <Typography component="p" noWrap>

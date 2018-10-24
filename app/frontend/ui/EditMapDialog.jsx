@@ -289,11 +289,11 @@ class EditMapDialog extends React.PureComponent {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" style={styles.flex}>
+          <Typography variant="h6" color="inherit" style={styles.flex}>
             {this.props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
           </Typography>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={this.handleSaveButtonClick}
             color="secondary"
             disabled={this.state.disabled}
@@ -312,7 +312,7 @@ class EditMapDialog extends React.PureComponent {
           {I18n.t('cancel')}
         </Button>
         <Button
-          variant="raised"
+          variant="contained"
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}
