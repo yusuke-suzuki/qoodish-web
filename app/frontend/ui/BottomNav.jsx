@@ -21,8 +21,7 @@ const styles = {
   },
   bottomAction: {
     width: '20%',
-    minWidth: 'auto',
-    overflow: 'hidden'
+    minWidth: 'auto'
   },
   label: {
     fontSize: 'small'
