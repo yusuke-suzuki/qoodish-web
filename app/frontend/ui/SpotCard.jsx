@@ -9,6 +9,7 @@ import DirectionsIcon from '@material-ui/icons/Directions';
 import InfoIcon from '@material-ui/icons/Info';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -100,16 +101,35 @@ class SpotCard extends React.PureComponent {
   }
 
   render() {
+    return this.props.large ? this.renderDrawer() : this.renderSwipeable();
+  }
+
+  renderDrawer() {
     return (
       <Drawer
-        variant={this.props.large ? "persistent" : "temporary"}
-        anchor={this.props.large ? "left" : "bottom"}
+        variant="persistent"
+        anchor="left"
         open={this.props.open}
-        PaperProps={{ style: this.props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall }}
+        PaperProps={{ style: styles.drawerPaperLarge }}
       >
         {this.renderToolbar()}
         {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
       </Drawer>
+    );
+  }
+
+  renderSwipeable() {
+    return (
+      <SwipeableDrawer
+        anchor="bottom"
+        open={this.props.open}
+        onClose={this.props.handleClose}
+        swipeAreaWidth={0}
+        PaperProps={{ style: styles.drawerPaperSmall }}
+      >
+        {this.renderToolbar()}
+        {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
+      </SwipeableDrawer>
     );
   }
 
@@ -123,13 +143,13 @@ class SpotCard extends React.PureComponent {
         </CardMedia>
         <CardContent>
           <Typography
-            variant="headline"
+            variant="h5"
             gutterBottom
           >
             {spot.name}
           </Typography>
           <Typography
-            variant="subheading"
+            variant="subtitle1"
             color="textSecondary"
             gutterBottom
           >
@@ -193,7 +213,7 @@ class SpotCard extends React.PureComponent {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {review.author.name}
             </Typography>
           }
@@ -235,7 +255,7 @@ class SpotCard extends React.PureComponent {
     return (
       <IconButton
         color="inherit"
-        onClick={this.props.handleCloseSpotButtonClick}
+        onClick={this.props.handleClose}
         style={styles.leftButton}
       >
         {this.props.large ? <ArrowBackIcon /> : <CloseIcon />}

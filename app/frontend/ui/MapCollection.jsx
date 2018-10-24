@@ -73,14 +73,14 @@ export default class MapCollection extends React.PureComponent {
           subtitle={
             <div>
               <Typography
-                variant="body2"
+                variant="body1"
                 color="inherit"
                 noWrap
               >
                 by: {map.owner_name}
               </Typography>
               <Typography
-                variant="body2"
+                variant="body1"
                 color="inherit"
                 noWrap
               >

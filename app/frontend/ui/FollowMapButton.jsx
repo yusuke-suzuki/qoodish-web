@@ -9,7 +9,7 @@ export default class CreateMapButton extends React.PureComponent {
         {this.props.currentMap ? (
           this.renderRoleButton(this.props.currentMap)
         ) : (
-          <Button variant="raised" color="secondary" disabled>{''}</Button>
+          <Button variant="contained" color="secondary" disabled>{''}</Button>
         )}
       </div>
     );
@@ -19,20 +19,20 @@ export default class CreateMapButton extends React.PureComponent {
   renderRoleButton(map) {
     if (map.editable) {
       return (
-        <Button variant="raised" disabled>
+        <Button variant="contained" disabled>
           {I18n.t('owner')}
         </Button>
       );
     } else if (map.following) {
       return (
-        <Button variant="raised" onClick={this.props.handleUnfollowButtonClick}>
+        <Button variant="contained" onClick={this.props.handleUnfollowButtonClick}>
           {I18n.t('unfollow')}
         </Button>
       );
     } else {
       return (
         <Button
-          variant="raised"
+          variant="contained"
           onClick={() => this.props.handleFollowButtonClick(this.props.currentUser)}
           color="primary"
         >

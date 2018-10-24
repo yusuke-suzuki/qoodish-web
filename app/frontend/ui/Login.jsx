@@ -137,7 +137,7 @@ class Login extends React.PureComponent {
               <GridListTileBar
                 title={
                   <Typography
-                    variant={this.props.large ? "display3" : "display2"}
+                    variant={this.props.large ? "h2" : "h3"}
                     color="inherit"
                     style={styles.carouselTileBarText}
                     gutterBottom
@@ -148,7 +148,7 @@ class Login extends React.PureComponent {
                 subtitle={
                   <div>
                     <Typography
-                      variant={this.props.large ? "headline" : "title"}
+                      variant={this.props.large ? "h5" : "title"}
                       color="inherit"
                       style={styles.carouselTileBarText}
                     >
@@ -178,7 +178,7 @@ class Login extends React.PureComponent {
                   <Typography gutterBottom>
                     <PlaceIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography variant="display1" gutterBottom>
+                  <Typography variant="h4" gutterBottom>
                     {I18n.t('share favorite spot')}
                   </Typography>
                   <Typography component="p" gutterBottom>
@@ -196,7 +196,7 @@ class Login extends React.PureComponent {
                   <Typography gutterBottom>
                     <ExploreIcon style={styles.descriptionIcon} />
                   </Typography>
-                  <Typography variant="display1" gutterBottom>
+                  <Typography variant="h4" gutterBottom>
                     {I18n.t('find your best place')}
                   </Typography>
                   <Typography component="p" gutterBottom>

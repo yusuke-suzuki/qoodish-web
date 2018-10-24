@@ -21,7 +21,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleCloseSpotButtonClick: () => {
+    handleClose: () => {
       dispatch(closeSpotCard());
     },
 

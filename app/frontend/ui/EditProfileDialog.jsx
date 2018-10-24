@@ -180,7 +180,7 @@ class EditProfileDialog extends React.PureComponent {
         <DialogActions>
           <Button onClick={this.props.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={this.handleSaveButtonClick}
             color="primary"
             disabled={this.state.disabled}

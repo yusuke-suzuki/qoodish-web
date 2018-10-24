@@ -91,7 +91,7 @@ export default class Feed extends React.PureComponent {
     return (
       <div style={styles.buttonContainer}>
         <Button
-          variant="raised"
+          variant="contained"
           onClick={this.handleClickLoadMoreButton}
           style={
             this.props.large
@@ -128,7 +128,7 @@ export default class Feed extends React.PureComponent {
         <CardHeader
           avatar={this.renderAvatar()}
           title={
-            <Typography variant="body2" color="textSecondary">
+            <Typography variant="body1" color="textSecondary">
               {I18n.t('share recent spot')}
             </Typography>
           }

@@ -62,7 +62,7 @@ class DeleteMapDialog extends React.PureComponent {
         <DialogActions>
           <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={() => {
               this.props.handleDeleteButtonClick();
               this.handleRequestDialogClose();

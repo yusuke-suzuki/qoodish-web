@@ -144,7 +144,7 @@ class FeedbackDialog extends React.PureComponent {
             {I18n.t('cancel')}
           </Button>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={this.handleSendButtonClick}
             color="primary"
             disabled={this.state.disabled}

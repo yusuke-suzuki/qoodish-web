@@ -359,11 +359,11 @@ class EditReviewDialog extends React.PureComponent {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" style={styles.flex}>
+          <Typography variant="h6" color="inherit" style={styles.flex}>
             {this.props.currentReview ? I18n.t('edit report') : I18n.t('create new report')}
           </Typography>
           <Button
-            variant="raised"
+            variant="contained"
             onClick={this.handleSaveButtonClick}
             color="secondary"
             disabled={this.state.disabled}
@@ -381,7 +381,7 @@ class EditReviewDialog extends React.PureComponent {
       <DialogActions>
         <Button onClick={this.handleRequestClose}>{I18n.t('cancel')}</Button>
         <Button
-          variant="raised"
+          variant="contained"
           onClick={this.handleSaveButtonClick}
           color="primary"
           disabled={this.state.disabled}

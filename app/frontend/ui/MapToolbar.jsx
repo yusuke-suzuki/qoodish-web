@@ -47,9 +47,6 @@ const styles = {
   mapName: {
     cursor: 'pointer',
     marginLeft: 8
-  },
-  shareText: {
-    marginLeft: 16
   }
 };
 
@@ -142,7 +139,6 @@ class MapToolbar extends React.PureComponent {
               </ListItemIcon>
               <ListItemText
                 primary={I18n.t('share with facebook')}
-                style={styles.shareText}
               />
             </MenuItem>
             <MenuItem
@@ -160,7 +156,6 @@ class MapToolbar extends React.PureComponent {
               </ListItemIcon>
               <ListItemText
                 primary={I18n.t('share with twitter')}
-                style={styles.shareText}
               />
             </MenuItem>
             <CopyToClipboard
@@ -220,7 +215,7 @@ class MapToolbar extends React.PureComponent {
   renderMapName() {
     return (
       <Typography
-        variant="headline"
+        variant="h5"
         color="inherit"
         noWrap
         style={styles.mapName}

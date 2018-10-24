@@ -25,7 +25,7 @@ export default class NoContents extends React.PureComponent {
     return (
       <div style={styles.container}>
         {this.renderContentsIcon()}
-        <Typography variant="subheading" color="inherit">
+        <Typography variant="subtitle1" color="inherit">
           {this.props.message}
         </Typography>
         <br />
@@ -56,7 +56,7 @@ export default class NoContents extends React.PureComponent {
       case 'create-map':
         return (
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={() => this.props.handleCreateMapButtonClick(this.props.currentUser)}
           >
@@ -66,7 +66,7 @@ export default class NoContents extends React.PureComponent {
       case 'create-review':
         return (
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={() => this.props.handleCreateReviewButtonClick(this.props.currentUser)}
           >

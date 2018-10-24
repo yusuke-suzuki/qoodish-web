@@ -21,8 +21,7 @@ const styles = {
   },
   bottomAction: {
     width: '20%',
-    minWidth: 'auto',
-    overflow: 'hidden'
+    minWidth: 'auto'
   },
   label: {
     fontSize: 'small'
@@ -81,7 +80,7 @@ export default class BottomNav extends React.PureComponent {
             title={I18n.t('home')}
             label={
               <Typography
-                variant="body1"
+                variant="body2"
                 color="inherit"
                 noWrap
                 style={styles.label}
@@ -98,7 +97,7 @@ export default class BottomNav extends React.PureComponent {
             title={I18n.t('discover')}
             label={
               <Typography
-                variant="body1"
+                variant="body2"
                 color="inherit"
                 noWrap
                 style={styles.label}
@@ -115,7 +114,7 @@ export default class BottomNav extends React.PureComponent {
             title={I18n.t('maps')}
             label={
               <Typography
-                variant="body1"
+                variant="body2"
                 color="inherit"
                 noWrap
                 style={styles.label}
@@ -132,7 +131,7 @@ export default class BottomNav extends React.PureComponent {
             title={I18n.t('account')}
             label={
               <Typography
-                variant="body1"
+                variant="body2"
                 color="inherit"
                 noWrap
                 style={styles.label}
@@ -149,7 +148,7 @@ export default class BottomNav extends React.PureComponent {
             title={I18n.t('notice')}
             label={
               <Typography
-                variant="body1"
+                variant="body2"
                 color="inherit"
                 noWrap
                 style={styles.label}

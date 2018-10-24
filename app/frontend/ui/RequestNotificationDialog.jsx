@@ -80,7 +80,7 @@ class RequestNotificationDialog extends React.PureComponent {
             subheader="qoodish.com"
           />
           <CardContent style={styles.cardContent}>
-            <Typography variant="body2" color="textSecondary" gutterBottom>
+            <Typography variant="body1" color="textSecondary" gutterBottom>
               {I18n.t('if allow push notification')}
             </Typography>
             <List disablePadding>
@@ -94,7 +94,7 @@ class RequestNotificationDialog extends React.PureComponent {
               {I18n.t('cancel')}
             </Button>
             <Button
-              variant="raised"
+              variant="contained"
               onClick={this.props.handleAllowNotificationButtonClick}
               color="primary"
             >
@@ -114,7 +114,7 @@ class RequestNotificationDialog extends React.PureComponent {
         </ListItemIcon>
         <ListItemText
           primary={
-            <Typography variant="body1">
+            <Typography variant="body2">
               {message}
             </Typography>
           }

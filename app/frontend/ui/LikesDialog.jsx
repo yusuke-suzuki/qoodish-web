@@ -44,7 +44,7 @@ class LikesDialog extends React.PureComponent {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" style={styles.flex} noWrap>
+          <Typography variant="h6" color="inherit" style={styles.flex} noWrap>
             {I18n.t('likes')}
           </Typography>
         </Toolbar>

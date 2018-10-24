@@ -209,8 +209,8 @@ class SpotDetail extends React.PureComponent {
         </div>
         <CardContent style={styles.cardContent}>
           <PlaceIcon />
-          <Typography variant="headline">{spot.name}</Typography>
-          <Typography variant="subheading" color="textSecondary">
+          <Typography variant="h5">{spot.name}</Typography>
+          <Typography variant="subtitle1" color="textSecondary">
             {spot.formatted_address}
           </Typography>
         </CardContent>
@@ -235,7 +235,7 @@ class SpotDetail extends React.PureComponent {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {review.author.name}
             </Typography>
           }

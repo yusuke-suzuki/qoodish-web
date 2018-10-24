@@ -63,7 +63,6 @@ class MapBottomSeat extends React.PureComponent {
   renderHeader(map) {
     return (
       <ListItem
-        onClick={this.props.handleShowTimelineClick}
         disableGutters
         style={styles.listItem}
       >
@@ -74,7 +73,7 @@ class MapBottomSeat extends React.PureComponent {
         <ListItemText
           disableTypography
           primary={
-            <Typography variant="subheading" noWrap>
+            <Typography variant="subtitle1" noWrap>
               {map && map.name}
             </Typography>
           }
