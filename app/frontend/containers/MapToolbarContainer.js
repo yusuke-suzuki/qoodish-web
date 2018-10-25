@@ -5,13 +5,14 @@ import openDeleteMapDialog from '../actions/openDeleteMapDialog';
 import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import openInviteTargetDialog from '../actions/openInviteTargetDialog';
-import switchMap from '../actions/switchMap';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
   return {
     currentMap: state.mapSummary.currentMap,
-    currentUser: state.app.currentUser
+    currentUser: state.app.currentUser,
+    large: state.shared.large,
+    previous: state.shared.previous
   };
 };
 
@@ -39,10 +40,6 @@ const mapDispatchToProps = (dispatch) => {
 
     handleInviteButtonClick: () => {
       dispatch(openInviteTargetDialog());
-    },
-
-    handleRequestClose: () => {
-      dispatch(switchMap());
     }
   };
 };

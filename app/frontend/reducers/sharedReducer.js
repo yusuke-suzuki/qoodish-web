@@ -26,7 +26,9 @@ import {
   OPEN_SIGN_IN_REQUIRED_DIALOG,
   CLOSE_SIGN_IN_REQUIRED_DIALOG,
   OPEN_FEEDBACK_DIALOG,
-  CLOSE_FEEDBACK_DIALOG
+  CLOSE_FEEDBACK_DIALOG,
+  OPEN_DRAWER,
+  CLOSE_DRAWER
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -52,7 +54,8 @@ const initialState = {
   previous: false,
   requestNotificationDialogOpen: false,
   signInRequiredDialogOpen: false,
-  feedbackDialogOpen: false
+  feedbackDialogOpen: false,
+  drawerOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -196,6 +199,14 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         feedbackDialogOpen: false
       });
+    case OPEN_DRAWER:
+      return Object.assign({}, state, {
+        drawerOpen: true
+      });
+    case CLOSE_DRAWER:
+      return Object.assign({}, state, {
+        drawerOpen: false
+      });
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         previous: action.payload.state ? action.payload.state.previous : false,
@@ -203,7 +214,8 @@ const reducer = (state = initialState, action) => {
         likesDialogOpen: false,
         requestNotificationDialogOpen: false,
         signInRequiredDialogOpen: false,
-        feedbackDialogOpen: false
+        feedbackDialogOpen: false,
+        drawerOpen: false
       });
     default:
       return state;

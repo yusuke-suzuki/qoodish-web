@@ -21,9 +21,10 @@ const styles = {
     display: 'block',
     width: '100%'
   },
-  drawerPaper: {
-    height: '100%',
-    overflow: 'hidden'
+  drawerPaperLarge: {
+  },
+  drawerPaperSmall: {
+    height: '100%'
   }
 };
 
@@ -36,7 +37,6 @@ export default class MapDetail extends React.PureComponent {
       await this.props.fetchMap();
     }
     this.props.initCenter(this.props.currentMap);
-    this.props.updatePageTitle(this.props.currentMap.name);
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': `/maps/${this.props.currentMap.id}`,
@@ -96,7 +96,7 @@ export default class MapDetail extends React.PureComponent {
   renderLarge() {
     return (
       <div>
-        <MapSummaryContainer mapId={this.props.match.params.mapId} />
+        {this.renderMapSummaryDrawer()}
         <GMapContainer />
       </div>
     );
@@ -117,12 +117,15 @@ export default class MapDetail extends React.PureComponent {
   renderMapSummaryDrawer() {
     return (
       <Drawer
-        variant="temporary"
-        anchor="bottom"
-        open={this.props.mapSummaryOpen}
-        PaperProps={{ style: styles.drawerPaper }}
+        variant={this.props.large ? "persistent" : "temporary"}
+        anchor={this.props.large ? "left" : "bottom"}
+        open={this.props.large ? true : this.props.mapSummaryOpen}
+        PaperProps={{ style: this.props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall }}
       >
-        <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
+        <MapSummaryContainer
+          mapId={this.props.match.params.mapId}
+          dialogMode={this.props.large ? false : true}
+        />
       </Drawer>
     );
   }
