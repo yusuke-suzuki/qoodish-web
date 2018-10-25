@@ -53,7 +53,7 @@ const styles = {
   spotImageSmall: {
     width: '100%',
     objectFit: 'cover',
-    height: 250
+    height: 200
   },
   reviewComment: {
     marginRight: 20

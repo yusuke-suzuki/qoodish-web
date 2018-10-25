@@ -26,7 +26,7 @@ export default class CreateMapButton extends React.PureComponent {
     } else if (map.following) {
       return (
         <Button variant="contained" onClick={this.props.handleUnfollowButtonClick}>
-          {I18n.t('unfollow')}
+          {I18n.t('following')}
         </Button>
       );
     } else {

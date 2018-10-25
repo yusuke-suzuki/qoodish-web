@@ -1,7 +1,6 @@
 import React from 'react';
 import GMapContainer from '../containers/GMapContainer';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
-import ExpandMapSummaryButtonContainer from '../containers/ExpandMapSummaryButtonContainer';
 import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
@@ -17,7 +16,7 @@ const styles = {
     position: 'fixed',
     top: 56,
     left: 0,
-    bottom: 136,
+    bottom: 71,
     right: 0,
     display: 'block',
     width: '100%'
@@ -109,7 +108,6 @@ export default class MapDetail extends React.PureComponent {
         <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
           <GMapContainer />
         </div>
-        <ExpandMapSummaryButtonContainer />
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
         {this.renderMapSummaryDrawer()}
       </div>

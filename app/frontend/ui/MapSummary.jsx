@@ -189,7 +189,7 @@ class MapSummary extends React.PureComponent {
 
   renderThumbnail(map) {
     return (
-      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 300 : 250}>
+      <GridList cols={1} spacing={0} cellHeight={this.props.large ? 300 : 200}>
         <GridListTile key={map && map.id}>
           <img
             src={map && map.image_url ? map.image_url : ''}

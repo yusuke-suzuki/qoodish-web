@@ -6,36 +6,22 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
-import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
+import IconButton from '@material-ui/core/IconButton';
+import ListIcon from '@material-ui/icons/List';
 
 const styles = {
   card: {
-    minHeight: 136
-  },
-  listItem: {
-    padding: 0
+    minHeight: 71
   },
   cardContent: {
-    paddingTop: 24,
-    paddingBottom: 16
-  },
-  cardActions: {
-    display: 'flex',
-    marginTop: 16
+    padding: 0
   }
 };
 
 class MapBottomSeat extends React.PureComponent {
   render() {
-    return (
-      <div>
-        {this.renderDrawer()}
-      </div>
-    );
-  }
-
-  renderDrawer() {
     return (
       <Drawer
         variant="persistent"
@@ -51,10 +37,9 @@ class MapBottomSeat extends React.PureComponent {
     return (
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
-          <List disablePadding>{this.renderHeader(this.props.currentMap)}</List>
-          <div style={styles.cardActions}>
-            <FollowMapButtonContainer currentMap={this.props.currentMap} />
-          </div>
+          <List disablePadding>
+            {this.renderHeader(this.props.currentMap)}
+          </List>
         </CardContent>
       </Card>
     );
@@ -63,8 +48,8 @@ class MapBottomSeat extends React.PureComponent {
   renderHeader(map) {
     return (
       <ListItem
-        disableGutters
-        style={styles.listItem}
+        onClick={this.props.handleSummaryOpen}
+        button
       >
         <Avatar
           src={map && map.thumbnail_url}
@@ -87,6 +72,13 @@ class MapBottomSeat extends React.PureComponent {
             </Typography>
           }
         />
+        <ListItemSecondaryAction
+          onClick={this.props.handleSummaryOpen}
+        >
+          <IconButton>
+            <ListIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
     );
   }
