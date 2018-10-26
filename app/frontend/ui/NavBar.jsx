@@ -80,6 +80,10 @@ const styles = {
     cursor: 'pointer',
     paddingLeft: 8
   },
+  pageTitleContainerSmall: {
+    position: 'relative',
+    margin: '0 auto'
+  },
   pageTitleLarge: {
     cursor: 'pointer',
     borderLeft: '1px solid rgba(255,255,255,0.2)',
@@ -232,17 +236,19 @@ class NavBar extends React.PureComponent {
           ? this.renderBackButton()
           : <AppMenuButtonContainer />}
         {this.props.large ? this.renderLogo() : null}
-        <Typography
-          variant="h5"
-          color="inherit"
-          noWrap
-          style={
-            this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
-          }
-          onClick={this.handleTitleClick}
-        >
-          {this.props.pageTitle}
-        </Typography>
+        <div style={this.props.large ? {} : styles.pageTitleContainerSmall}>
+          <Typography
+            variant="h5"
+            color="inherit"
+            noWrap
+            style={
+              this.props.large ? styles.pageTitleLarge : styles.pageTitleSmall
+            }
+            onClick={this.handleTitleClick}
+          >
+            {this.props.pageTitle}
+          </Typography>
+        </div>
         <div style={styles.rightContents}>
           {this.props.currentUser && this.props.currentUser.isAnonymous ? this.renderRightContentsForAnonymous() : this.renderRightContents()}
         </div>

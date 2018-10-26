@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 const styles = {
   leftButton: {
+    position: 'absolute',
     marginLeft: 8,
     color: 'white'
   }
