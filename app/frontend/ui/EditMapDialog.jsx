@@ -238,6 +238,7 @@ class EditMapDialog extends React.PureComponent {
             style={styles.mapCenterChip}
             clickable
           />
+          <br />
           <FormControlLabel
             control={
               <Switch
