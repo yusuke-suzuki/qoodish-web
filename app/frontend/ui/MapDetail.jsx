@@ -1,7 +1,6 @@
 import React from 'react';
 import GMapContainer from '../containers/GMapContainer';
 import MapSummaryContainer from '../containers/MapSummaryContainer';
-import ExpandMapSummaryButtonContainer from '../containers/ExpandMapSummaryButtonContainer';
 import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
 import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
 import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
@@ -17,14 +16,15 @@ const styles = {
     position: 'fixed',
     top: 56,
     left: 0,
-    bottom: 136,
+    bottom: 71,
     right: 0,
     display: 'block',
     width: '100%'
   },
-  drawerPaper: {
-    height: '100%',
-    overflow: 'hidden'
+  drawerPaperLarge: {
+  },
+  drawerPaperSmall: {
+    height: '100%'
   }
 };
 
@@ -37,7 +37,6 @@ export default class MapDetail extends React.PureComponent {
       await this.props.fetchMap();
     }
     this.props.initCenter(this.props.currentMap);
-    this.props.updatePageTitle(this.props.currentMap.name);
 
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': `/maps/${this.props.currentMap.id}`,
@@ -56,7 +55,7 @@ export default class MapDetail extends React.PureComponent {
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
-        <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
+        <SpotCardContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
     );
@@ -97,7 +96,7 @@ export default class MapDetail extends React.PureComponent {
   renderLarge() {
     return (
       <div>
-        <MapSummaryContainer mapId={this.props.match.params.mapId} />
+        {this.renderMapSummaryDrawer()}
         <GMapContainer />
       </div>
     );
@@ -109,7 +108,6 @@ export default class MapDetail extends React.PureComponent {
         <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
           <GMapContainer />
         </div>
-        <ExpandMapSummaryButtonContainer />
         <MapBottomSeatContainer currentMap={this.props.currentMap} />
         {this.renderMapSummaryDrawer()}
       </div>
@@ -119,12 +117,15 @@ export default class MapDetail extends React.PureComponent {
   renderMapSummaryDrawer() {
     return (
       <Drawer
-        variant="temporary"
-        anchor="bottom"
-        open={this.props.mapSummaryOpen}
-        PaperProps={{ style: styles.drawerPaper }}
+        variant={this.props.large ? "persistent" : "temporary"}
+        anchor={this.props.large ? "left" : "bottom"}
+        open={this.props.large ? true : this.props.mapSummaryOpen}
+        PaperProps={{ style: this.props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall }}
       >
-        <MapSummaryContainer mapId={this.props.match.params.mapId} dialogMode />
+        <MapSummaryContainer
+          mapId={this.props.match.params.mapId}
+          dialogMode={this.props.large ? false : true}
+        />
       </Drawer>
     );
   }

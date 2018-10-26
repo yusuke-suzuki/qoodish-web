@@ -7,10 +7,14 @@ import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 const styles = {
   ownerMark: {
     right: 12
+  },
+  subheader: {
+    height: 36
   }
 }
 
@@ -21,7 +25,11 @@ export default class MapFollowersList extends React.PureComponent {
 
   render() {
     return (
-      <List disablePadding>
+      <List
+        subheader={
+          <ListSubheader style={styles.subheader}>{I18n.t('followers')}</ListSubheader>
+        }
+      >
         {this.renderFollowers(this.props.followers)}
       </List>
     );

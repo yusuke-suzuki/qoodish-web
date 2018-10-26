@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { push, goBack } from 'react-router-redux';
 import NavBar from '../ui/NavBar';
-import signOut from '../actions/signOut';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import firebase from 'firebase/app';
@@ -16,6 +15,8 @@ import hideBackButton from '../actions/hideBackButton';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 import openFeedbackDialog from '../actions/openFeedbackDialog';
+import openDrawer from '../actions/openDrawer';
+import closeDrawer from '../actions/closeDrawer';
 import signIn from '../actions/signIn';
 
 const mapStateToProps = state => {
@@ -29,7 +30,8 @@ const mapStateToProps = state => {
     pathname: state.router.location.pathname,
     mapsTabActive: state.shared.mapsTabActive,
     mapsTabValue: state.maps.tabValue,
-    previous: state.shared.previous
+    previous: state.shared.previous,
+    drawerOpen: state.shared.drawerOpen
   };
 };
 
@@ -111,6 +113,14 @@ const mapDispatchToProps = dispatch => {
 
     handleFeedbackClick: () => {
       dispatch(openFeedbackDialog());
+    },
+
+    handleOpenDrawer: () => {
+      dispatch(openDrawer());
+    },
+
+    handleCloseDrawer: () => {
+      dispatch(closeDrawer());
     }
   };
 };

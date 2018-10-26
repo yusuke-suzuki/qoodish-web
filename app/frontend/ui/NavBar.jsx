@@ -5,7 +5,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
-import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
@@ -30,6 +29,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
+import AppMenuButtonContainer from '../containers/AppMenuButtonContainer';
 import I18n from '../containers/I18n';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
@@ -80,6 +80,10 @@ const styles = {
     cursor: 'pointer',
     paddingLeft: 8
   },
+  pageTitleContainerSmall: {
+    position: 'relative',
+    margin: '0 auto'
+  },
   pageTitleLarge: {
     cursor: 'pointer',
     borderLeft: '1px solid rgba(255,255,255,0.2)',
@@ -88,11 +92,6 @@ const styles = {
   },
   pageTitleSmall: {
     cursor: 'pointer'
-  },
-  pageTitleContainerLarge: {
-  },
-  pageTitleContainerSmall: {
-    margin: '0 auto'
   },
   rightContents: {
     position: 'absolute',
@@ -150,9 +149,6 @@ const styles = {
 class NavBar extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.handleToggleDrawer = this.handleToggleDrawer.bind(this);
-    this.handleOpenDrawer = this.handleOpenDrawer.bind(this);
-    this.handleCloseDrawer = this.handleCloseDrawer.bind(this);
     this.handleAvatarClick = this.handleAvatarClick.bind(this);
     this.handleRequestAvatarMenuClose = this.handleRequestAvatarMenuClose.bind(
       this
@@ -165,7 +161,6 @@ class NavBar extends React.PureComponent {
     );
 
     this.state = {
-      drawerOpen: false,
       anchorEl: undefined,
       accountMenuOpen: false,
       notificationOpen: false
@@ -222,24 +217,6 @@ class NavBar extends React.PureComponent {
     });
   }
 
-  handleToggleDrawer(event) {
-    this.setState({
-      drawerOpen: !this.state.drawerOpen
-    });
-  }
-
-  handleOpenDrawer() {
-    this.setState({
-      drawerOpen: true
-    });
-  }
-
-  handleCloseDrawer() {
-    this.setState({
-      drawerOpen: false
-    });
-  }
-
   render() {
     return (
       <div>
@@ -257,9 +234,9 @@ class NavBar extends React.PureComponent {
       <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
         {!this.props.large && this.props.backButton
           ? this.renderBackButton()
-          : this.renderMenuButton()}
+          : <AppMenuButtonContainer />}
         {this.props.large ? this.renderLogo() : null}
-        <div style={this.props.large ? styles.pageTitleContainerLarge : styles.pageTitleContainerSmall}>
+        <div style={this.props.large ? {} : styles.pageTitleContainerSmall}>
           <Typography
             variant="h5"
             color="inherit"
@@ -310,7 +287,7 @@ class NavBar extends React.PureComponent {
       <MapToolbarContainer
         showMapName
         showBackButton
-        handleBackButtonClick={this.props.handleBackButtonClick}
+        handleBackButtonClick={() => this.props.handleBackButtonClick(this.props.previous)}
       />
     );
   }
@@ -340,9 +317,9 @@ class NavBar extends React.PureComponent {
   renderTemporaryDrawer() {
     return (
       <Drawer
-        open={this.state.drawerOpen}
-        onClose={this.handleCloseDrawer}
-        onClick={this.handleCloseDrawer}
+        open={this.props.drawerOpen}
+        onClose={this.props.handleCloseDrawer}
+        onClick={this.props.handleCloseDrawer}
       >
         {this.renderDrawerContents()}
       </Drawer>
@@ -355,9 +332,9 @@ class NavBar extends React.PureComponent {
         variant="permanent"
         anchor="left"
         PaperProps={{ style: this.props.mapsTabActive ? styles.drawerPaperWithTabs : styles.drawerPaper }}
-        open={this.state.drawerOpen}
-        onClose={this.handleCloseDrawer}
-        onClick={this.handleCloseDrawer}
+        open={this.props.drawerOpen}
+        onClose={this.props.handleCloseDrawer}
+        onClick={this.props.handleCloseDrawer}
       >
         {this.renderDrawerContents()}
       </Drawer>
@@ -367,10 +344,10 @@ class NavBar extends React.PureComponent {
   renderSwipeableDrawer() {
     return (
       <SwipeableDrawer
-        open={this.state.drawerOpen}
-        onOpen={this.handleOpenDrawer}
-        onClose={this.handleCloseDrawer}
-        onClick={this.handleCloseDrawer}
+        open={this.props.drawerOpen}
+        onOpen={this.props.handleOpenDrawer}
+        onClose={this.props.handleCloseDrawer}
+        onClick={this.props.handleCloseDrawer}
       >
         {this.renderDrawerContents()}
       </SwipeableDrawer>
@@ -399,18 +376,6 @@ class NavBar extends React.PureComponent {
           />
         </Tabs>
       </Toolbar>
-    );
-  }
-
-  renderMenuButton() {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={this.handleToggleDrawer}
-        style={this.props.large ? {} : styles.leftButton}
-      >
-        <MenuIcon />
-      </IconButton>
     );
   }
 

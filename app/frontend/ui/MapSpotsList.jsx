@@ -4,11 +4,23 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import I18n from '../containers/I18n';
+
+const styles = {
+  subheader: {
+    height: 36
+  }
+};
 
 export default class MapSpotsList extends React.PureComponent {
   render() {
     return (
-      <List disablePadding>
+      <List
+        subheader={
+          <ListSubheader style={styles.subheader}>{I18n.t('spots')}</ListSubheader>
+        }
+      >
         {this.renderSpots(this.props.spots)}
       </List>
     );

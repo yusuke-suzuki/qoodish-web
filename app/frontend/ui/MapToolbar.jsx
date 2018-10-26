@@ -10,13 +10,13 @@ import ShareIcon from '@material-ui/icons/Share';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
 import ContentCopyIcon from '@material-ui/icons/ContentCopy';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
+import AppMenuButtonContainer from '../containers/AppMenuButtonContainer';
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -29,12 +29,10 @@ const styles = {
     marginLeft: 8,
     color: 'white'
   },
-  mapToolbarSkelton: {
-    backgroundImage: 'linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,0))',
-    position: 'absolute',
-    zIndex: 1,
-    right: 0,
-    left: 0
+  mapToolbarLarge: {
+    paddingLeft: 10
+  },
+  mapToolbarSmall: {
   },
   toolbarActions: {
     marginLeft: 'auto',
@@ -46,7 +44,7 @@ const styles = {
   },
   mapName: {
     cursor: 'pointer',
-    marginLeft: 8
+    marginLeft: 4
   }
 };
 
@@ -96,7 +94,7 @@ class MapToolbar extends React.PureComponent {
   }
 
   render() {
-    return this.props.currentMap && this.renderToolbar(this.props.currentMap);
+    return this.renderToolbar(this.props.currentMap);
   }
 
   shareUrl(map) {
@@ -105,9 +103,9 @@ class MapToolbar extends React.PureComponent {
 
   renderToolbar(map) {
     return (
-      <Toolbar style={this.props.skelton ? styles.mapToolbarSkelton : styles.mapToolbar} disableGutters>
+      <Toolbar style={this.props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
         {this.props.showBackButton && this.renderBackButton()}
-        {this.props.showCloseButton && this.renderCloseButton()}
+        {this.props.showMenuButton && <AppMenuButtonContainer />}
         {this.props.showMapName && this.renderMapName()}
         <div style={styles.toolbarActions}>
           {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
@@ -200,22 +198,10 @@ class MapToolbar extends React.PureComponent {
     );
   }
 
-  renderCloseButton() {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={this.props.handleRequestClose}
-        style={this.props.large ? {} : styles.leftButton}
-      >
-        <CloseIcon />
-      </IconButton>
-    );
-  }
-
   renderMapName() {
     return (
       <Typography
-        variant="h5"
+        variant={this.props.large ? "h5": "h6"}
         color="inherit"
         noWrap
         style={styles.mapName}

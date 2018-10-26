@@ -6,6 +6,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import I18n from '../containers/I18n';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 const styles = {
   activityText: {
@@ -16,13 +17,20 @@ const styles = {
     borderRadius: 0,
     marginRight: 12,
     cursor: 'pointer'
+  },
+  subheader: {
+    height: 36
   }
 };
 
 export default class MapReviewsList extends React.PureComponent {
   render() {
     return (
-      <List disablePadding>
+      <List
+        subheader={
+          <ListSubheader style={styles.subheader}>{I18n.t('timeline')}</ListSubheader>
+        }
+      >
         {this.renderReviews(this.props.mapReviews)}
       </List>
     );

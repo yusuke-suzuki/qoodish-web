@@ -97,7 +97,6 @@ class PlaceSelectDialog extends React.PureComponent {
             autoFocus
             placeholder={I18n.t('search places example')}
             helperText={I18n.t('search places help')}
-            margin="normal"
             data-test="place-name-input"
           />
           <List>{this.renderPlaces()}</List>

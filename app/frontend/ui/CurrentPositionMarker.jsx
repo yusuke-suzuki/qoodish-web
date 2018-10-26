@@ -10,7 +10,9 @@ import I18n from '../containers/I18n';
 
 const styles = {
   overlayButton: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: 40,
+    height: 40
   }
 };
 

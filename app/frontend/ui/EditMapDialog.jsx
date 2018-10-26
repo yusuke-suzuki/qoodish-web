@@ -333,7 +333,6 @@ class EditMapDialog extends React.PureComponent {
         fullWidth
         autoFocus
         value={this.state.name}
-        margin="normal"
       />
     );
   }

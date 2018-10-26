@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import SpotCard from '../ui/SpotCard';
+import openSpotCard from '../actions/openSpotCard';
 import closeSpotCard from '../actions/closeSpotCard';
 import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
@@ -21,6 +22,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    handleOpen: () => {
+      dispatch(openSpotCard());
+    },
+
     handleClose: () => {
       dispatch(closeSpotCard());
     },
@@ -28,16 +33,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleLocationButtonClick: (spot) => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(switchMap());
-      if (!ownProps.large) {
-        dispatch(closeSpotCard());
-      }
     },
 
     handleRouteButtonClick: async (spot) => {
       dispatch(switchMap());
-      if (!ownProps.large) {
-        dispatch(closeSpotCard());
-      }
       const currentPosition = await fetchCurrentPosition();
       dispatch(
         getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)
