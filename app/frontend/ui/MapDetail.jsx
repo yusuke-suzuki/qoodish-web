@@ -55,7 +55,7 @@ export default class MapDetail extends React.PureComponent {
         {this.props.large ? this.renderLarge() : this.renderSmall()}
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
-        <SpotCardContainer mapId={this.props.match.params.mapId} large={this.props.large} />
+        <SpotCardContainer mapId={this.props.match.params.mapId} />
         <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
     );
