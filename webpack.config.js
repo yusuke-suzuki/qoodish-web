@@ -12,7 +12,7 @@ const serviceWorkerPlugins = [
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(['./functions/hosting/*.bundle.js', './functions/hosting/index.html'], {}),
+  new CleanWebpackPlugin(['./functions/hosting/*.*.js', './functions/hosting/index.html'], {}),
   new HtmlWebpackPlugin({
     template: 'app/views/index.html',
     hash: true,
@@ -71,8 +71,8 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './app/frontend/index.js'],
     output: {
-      filename: '[name].bundle.js',
-      chunkFilename: '[name].bundle.js',
+      filename: '[name].[contenthash].js',
+      chunkFilename: '[name].[contenthash].js',
       path: __dirname + '/functions/hosting',
       publicPath: '/'
     },
