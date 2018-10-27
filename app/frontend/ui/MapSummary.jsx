@@ -10,13 +10,14 @@ import MapSummaryCardContainer from '../containers/MapSummaryCardContainer';
 import MapReviewsListContainer from '../containers/MapReviewsListContainer';
 import MapSpotsListContainer from '../containers/MapSpotsListContainer';
 import MapFollowersListContainer from '../containers/MapFollowersListContainer';
+import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../containers/I18n';
 
-import HomeIcon from '@material-ui/icons/Home';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PlaceIcon from '@material-ui/icons/Place';
 import GroupIcon from '@material-ui/icons/Group';
+import HomeIcon from '@material-ui/icons/Home';
 
 const styles = {
   containerLarge: {
@@ -26,6 +27,11 @@ const styles = {
   containerSmall: {
     height: '100%'
   },
+  bottomNav: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%'
+  },
   toolbarContainerLarge: {
     position: 'absolute',
     top: 64,
@@ -33,6 +39,9 @@ const styles = {
   },
   toolbarLarge: {
     height: 64
+  },
+  toolbarSmall: {
+    height: 56
   },
   tabsLarge: {
     height: 64,
@@ -51,14 +60,19 @@ const styles = {
   },
   tabContentsLarge: {
     marginTop: 128,
-    height: 'calc(100% - 128px)'
+    marginBottom: 64,
+    height: 'calc(100% - 192px)'
   },
   tabContentsSmall: {
     marginTop: 112,
-    height: 'calc(100% - 112px)'
+    marginBottom: 56,
+    height: 'calc(100% - 168px)'
   },
   tabIcon: {
     position: 'absolute'
+  },
+  followMapButtonContainer: {
+    marginLeft: 'auto'
   }
 };
 
@@ -104,6 +118,7 @@ class MapSummary extends React.PureComponent {
         </AppBar>
         {this.renderTabContents()}
         {this.props.large && this.renderTabBarLarge()}
+        {this.renderBottomNav()}
       </div>
     );
   }
@@ -132,6 +147,24 @@ class MapSummary extends React.PureComponent {
       >
         {this.renderTabs()}
       </Toolbar>
+    );
+  }
+
+  renderBottomNav() {
+    return (
+      <Paper
+        style={styles.bottomNav}
+        square
+        elevation={1}
+      >
+        <Toolbar
+          style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}
+        >
+          <div style={styles.followMapButtonContainer}>
+            <FollowMapButtonContainer currentMap={this.props.currentMap} />
+          </div>
+        </Toolbar>
+      </Paper>
     );
   }
 

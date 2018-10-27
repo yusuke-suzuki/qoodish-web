@@ -6,7 +6,8 @@ import openSpotCard from '../actions/openSpotCard';
 
 const mapStateToProps = state => {
   return {
-    spots: state.gMap.spots
+    spots: state.gMap.spots,
+    large: state.shared.large
   };
 };
 

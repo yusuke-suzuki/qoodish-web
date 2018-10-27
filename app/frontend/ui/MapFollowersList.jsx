@@ -26,7 +26,7 @@ export default class MapFollowersList extends React.PureComponent {
   render() {
     return (
       <List
-        subheader={
+        subheader={this.props.large &&
           <ListSubheader style={styles.subheader}>{I18n.t('followers')}</ListSubheader>
         }
       >

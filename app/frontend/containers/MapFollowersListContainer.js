@@ -5,7 +5,8 @@ import ApiClient from './ApiClient';
 
 const mapStateToProps = state => {
   return {
-    followers: state.mapSummary.followers
+    followers: state.mapSummary.followers,
+    large: state.shared.large
   };
 };
 

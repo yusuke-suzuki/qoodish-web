@@ -19,11 +19,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import PlaceIcon from '@material-ui/icons/Place';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
-import PersonIcon from '@material-ui/icons/Person';
 import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
 import SwipeableViews from 'react-swipeable-views';
-import Badge from '@material-ui/core/Badge';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -99,6 +97,9 @@ const styles = {
     width: '33.3333333333%',
     minWidth: 'auto',
     paddingTop: 8
+  },
+  tileBar: {
+    height: 50
   }
 };
 
@@ -251,16 +252,6 @@ class SpotCard extends React.PureComponent {
               </Typography>
             }
           />
-          <ListItemSecondaryAction>
-            <IconButton>
-              <Badge
-                badgeContent={this.state.reviews.length}
-                color="primary"
-              >
-                <PersonIcon />
-              </Badge>
-            </IconButton>
-          </ListItemSecondaryAction>
         </ListItem>
       </List>
     );
@@ -292,6 +283,7 @@ class SpotCard extends React.PureComponent {
       >
         <img src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL} alt={review.spot.name} />
         <GridListTileBar
+          style={styles.tileBar}
           actionIcon={
             <Avatar
               src={review.author.profile_image_url}

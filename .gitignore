@@ -59,7 +59,7 @@ typings/
 
 functions/hosting/index.html
 functions/hosting/bundle.js
-functions/hosting/*.bundle.js
+functions/hosting/*.*.js
 functions/hosting/firebase-messaging-sw.js
 functions/hosting/*.hot-update.*
 

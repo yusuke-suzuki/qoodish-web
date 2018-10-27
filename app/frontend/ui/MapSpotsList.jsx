@@ -17,7 +17,7 @@ export default class MapSpotsList extends React.PureComponent {
   render() {
     return (
       <List
-        subheader={
+        subheader={this.props.large &&
           <ListSubheader style={styles.subheader}>{I18n.t('spots')}</ListSubheader>
         }
       >
