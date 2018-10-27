@@ -15,6 +15,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import LockIcon from '@material-ui/icons/Lock';
+import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../containers/I18n';
 import AppMenuButtonContainer from '../containers/AppMenuButtonContainer';
 import {
@@ -37,7 +39,6 @@ const styles = {
   toolbarActions: {
     marginLeft: 'auto',
     display: 'flex',
-    paddingLeft: 12
   },
   mapMenuIcon: {
     color: 'white'
@@ -45,6 +46,9 @@ const styles = {
   mapName: {
     cursor: 'pointer',
     marginLeft: 4
+  },
+  mapTypeIcon: {
+    marginRight: 6
   }
 };
 
@@ -106,7 +110,8 @@ class MapToolbar extends React.PureComponent {
       <Toolbar style={this.props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
         {this.props.showBackButton && this.renderBackButton()}
         {this.props.showMenuButton && <AppMenuButtonContainer />}
-        {this.props.showMapName && this.renderMapName()}
+        {map && map.private && this.renderPrivateIcon()}
+        {this.props.showMapName && map && this.renderMapName(map)}
         <div style={styles.toolbarActions}>
           {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
           <IconButton
@@ -198,16 +203,24 @@ class MapToolbar extends React.PureComponent {
     );
   }
 
-  renderMapName() {
+  renderMapName(map) {
     return (
       <Typography
-        variant={this.props.large ? "h5": "h6"}
+        variant="h6"
         color="inherit"
         noWrap
         style={styles.mapName}
       >
-        {this.props.currentMap && this.props.currentMap.name}
+        {map.name}
       </Typography>
+    );
+  }
+
+  renderPrivateIcon() {
+    return (
+      <Tooltip title={I18n.t('this map is private')}>
+        <LockIcon color="inherit" style={styles.mapTypeIcon} fontSize="small" />
+      </Tooltip>
     );
   }
 

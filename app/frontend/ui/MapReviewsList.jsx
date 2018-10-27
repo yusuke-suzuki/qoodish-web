@@ -7,6 +7,8 @@ import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import I18n from '../containers/I18n';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Chip from '@material-ui/core/Chip';
+import PersonIcon from '@material-ui/icons/Person';
 
 const styles = {
   activityText: {
@@ -20,6 +22,14 @@ const styles = {
   },
   subheader: {
     height: 36
+  },
+  skeltonTextPrimary: {
+    width: '100%',
+    height: '1.5rem'
+  },
+  skeltonTextSecondary: {
+    width: '50%',
+    height: '0.875rem'
   }
 };
 
@@ -27,13 +37,31 @@ export default class MapReviewsList extends React.PureComponent {
   render() {
     return (
       <List
-        subheader={
+        subheader={this.props.large &&
           <ListSubheader style={styles.subheader}>{I18n.t('timeline')}</ListSubheader>
         }
       >
-        {this.renderReviews(this.props.mapReviews)}
+        {this.props.mapReviews.length > 0 ? this.renderReviews(this.props.mapReviews) : this.renderSkeltonReviews()}
       </List>
     );
+  }
+
+  renderSkeltonReviews() {
+    return [...Array(8).keys()].map(i => (
+      <ListItem key={i}>
+        <Avatar>
+          <PersonIcon />
+        </Avatar>
+        <ListItemText
+          primary={
+            <div style={styles.activityText}>
+              <Chip style={styles.skeltonTextPrimary} />
+            </div>
+          }
+          secondary={<Chip style={styles.skeltonTextSecondary} />}
+        />
+      </ListItem>
+    ));
   }
 
   renderReviews(mapReviews) {

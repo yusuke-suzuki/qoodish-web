@@ -49,6 +49,7 @@
   "map name is required": "Map name is required.",
   "description is required": "Description is required.",
   "center of map": "The center of this map (Optional)",
+  "map base": "Base",
   "set this map to private": "Set this map to private.",
   "allow followers to invite": "Allow followers to invite other users.",
   "allow followers to post": "Allow followers to post reports.",
@@ -128,5 +129,14 @@
   "location": "Location",
   "routes": "Routes",
   "detail": "Detail",
-  "you are hear": "You are here"
+  "you are hear": "You are here",
+  "created date": "Created at",
+  "map type": "Map type",
+  "public": "Public",
+  "private": "Private",
+  "shared": "Collaborative",
+  "personal": "Personal",
+  "reviews count": "reports",
+  "followers count": "followers",
+  "not set": "Not set"
 }
