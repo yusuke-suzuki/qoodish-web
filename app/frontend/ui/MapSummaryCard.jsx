@@ -12,8 +12,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import LockIcon from '@material-ui/icons/Lock';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+import ReviewTilesContainer from '../containers/ReviewTilesContainer';
 
 const styles = {
   text: {
@@ -51,17 +50,6 @@ const styles = {
     width: 40,
     height: 40,
     marginBottom: 16
-  },
-  gridContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around'
-  },
-  gridList: {
-    width: '100%'
-  },
-  gridTile: {
-    cursor: 'pointer'
   }
 };
 
@@ -146,7 +134,7 @@ export default class MapSummaryCard extends React.PureComponent {
                 <PlaceIcon />
               </Avatar>
             }
-            label={map && (map.base ? map.base.name : I18n.t('not set'))}
+            label={map && (map.base.name ? map.base.name : I18n.t('not set'))}
             style={styles.chip}
             clickable
             onClick={() => this.props.handleBaseClick(map)}
@@ -199,47 +187,19 @@ export default class MapSummaryCard extends React.PureComponent {
             {map ? this.renderFollowers() : <Avatar style={styles.skeltonAvatar}><PersonIcon /></Avatar>}
           </div>
 
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {`${this.props.mapReviews.length} ${I18n.t('reviews count')}`}
-          </Typography>
-          <div style={styles.gridContainer}>
-            <GridList
-              cols={3}
-              style={styles.gridList}
-              spacing={4}
-              cellHeight={100}
-            >
-              {this.renderReviewTiles(this.props.mapReviews)}
-            </GridList>
-          </div>
-
+          <ReviewTilesContainer
+            reviews={this.props.mapReviews}
+            showSubheader
+          />
         </CardContent>
       </div>
     );
   }
 
-  renderReviewTiles(reviews) {
-    return reviews.map(review => (
-      <GridListTile
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-        style={styles.gridTile}
-      >
-        <img
-          src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL}
-          alt={review.spot.name}
-        />
-      </GridListTile>
-    ));
-  }
-
   renderFollowers() {
     return this.props.followers.slice(0, 9).map(follower => (
       <ButtonBase
+        key={follower.id}
         component={Link}
         to={`/users/${follower.id}`}
         title={follower.name}
@@ -264,6 +224,7 @@ export default class MapSummaryCard extends React.PureComponent {
     if (map.private) {
       mapTypes.push(
         <Chip
+          key="private"
           avatar={
             <Avatar>
               <LockIcon />
@@ -276,6 +237,7 @@ export default class MapSummaryCard extends React.PureComponent {
     } else {
       mapTypes.push(
         <Chip
+          key="public"
           avatar={
             <Avatar>
               <PublicIcon />
@@ -289,6 +251,7 @@ export default class MapSummaryCard extends React.PureComponent {
     if (map.shared) {
       mapTypes.push(
         <Chip
+          key="shared"
           avatar={
             <Avatar>
               <GroupIcon />
@@ -301,6 +264,7 @@ export default class MapSummaryCard extends React.PureComponent {
     } else {
       mapTypes.push(
         <Chip
+          key="personal"
           avatar={
             <Avatar>
               <PersonIcon />

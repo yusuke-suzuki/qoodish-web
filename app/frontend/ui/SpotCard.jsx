@@ -10,11 +10,9 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Divider from '@material-ui/core/Divider';
 import Toolbar from '@material-ui/core/Toolbar';
 import PlaceIcon from '@material-ui/icons/Place';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
@@ -27,6 +25,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Paper from '@material-ui/core/Paper';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ReviewTilesContainer from '../containers/ReviewTilesContainer';
 
 const styles = {
   drawerPaperLarge: {
@@ -46,10 +45,7 @@ const styles = {
   spotImage: {
     width: '100%',
     objectFit: 'cover',
-    height: 300
-  },
-  reviewComment: {
-    marginRight: 20
+    height: 250
   },
   listItem: {
     paddingTop: 0
@@ -65,11 +61,6 @@ const styles = {
     zIndex: 1,
     right: 0,
     left: 0
-  },
-  secondaryAvatar: {
-    borderRadius: 0,
-    marginRight: 12,
-    marginTop: 4
   },
   modal: {
     height: 0
@@ -100,6 +91,14 @@ const styles = {
   },
   tileBar: {
     height: 50
+  },
+  bottomNavLarge: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%'
+  },
+  reviewTilesContainer: {
+    marginTop: 16
   }
 };
 
@@ -170,20 +169,23 @@ class SpotCard extends React.PureComponent {
           >
             {spot.formatted_address}
           </Typography>
+          {this.state.reviews.length > 0 && (
+            <div style={styles.reviewTilesContainer}>
+              <ReviewTilesContainer
+                reviews={this.state.reviews}
+                showSubheader
+              />
+            </div>
+          )}
         </CardContent>
-        <Divider />
         {this.renderBottomNavigation(spot)}
-        <Divider />
-        <List disablePadding>
-          {this.renderSpotReviews(this.state.reviews)}
-        </List>
       </Card>
     );
   }
 
   renderBottomNavigation(spot) {
     return (
-      <Paper style={styles.bottomNav} elevation={this.props.large ? 0 : 2}>
+      <Paper style={this.props.large ? styles.bottomNavLarge : {}} elevation={2}>
         <BottomNavigation showLabels>
           <BottomNavigationAction
             label={I18n.t('location')}
@@ -306,50 +308,6 @@ class SpotCard extends React.PureComponent {
         style={styles.spotImage}
         alt={review.spot.name}
       />
-    ));
-  }
-
-  renderSpotReviews(reviews) {
-    return reviews.map(review => (
-      <ListItem
-        button
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-      >
-        <Avatar
-          src={review.author.profile_image_url}
-          alt={review.author.name}
-        />
-        <ListItemText
-          disableTypography={true}
-          primary={
-            <Typography variant="subtitle1" noWrap>
-              {review.author.name}
-            </Typography>
-          }
-          secondary={
-            <Typography
-              component="p"
-              noWrap
-              color="textSecondary"
-              style={styles.reviewComment}
-            >
-              {review.comment}
-            </Typography>
-          }
-        />
-        {review.image && (
-          <ListItemSecondaryAction
-            onClick={() => this.props.handleReviewClick(review)}
-          >
-            <Avatar
-              src={review.image.thumbnail_url}
-              style={styles.secondaryAvatar}
-              alt={review.spot.name}
-            />
-          </ListItemSecondaryAction>
-        )}
-      </ListItem>
     ));
   }
 
