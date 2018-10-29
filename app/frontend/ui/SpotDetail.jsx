@@ -1,9 +1,4 @@
 import React from 'react';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +9,7 @@ import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 import I18n from '../containers/I18n';
+import ReviewTilesContainer from '../containers/ReviewTilesContainer';
 
 const styles = {
   rootLarge: {
@@ -46,18 +42,13 @@ const styles = {
   cardContent: {
     textAlign: 'center'
   },
-  secondaryAvatar: {
-    borderRadius: 0,
-    marginRight: 12,
-    marginTop: 4
-  },
   progress: {
     textAlign: 'center',
     padding: 10,
     marginTop: 20
   },
-  reviewComment: {
-    marginRight: 20
+  reviewTilesContainer: {
+    marginTop: 16
   }
 };
 
@@ -213,56 +204,17 @@ class SpotDetail extends React.PureComponent {
           <Typography variant="subtitle1" color="textSecondary">
             {spot.formatted_address}
           </Typography>
+          <div style={styles.reviewTilesContainer}>
+            <ReviewTilesContainer
+              reviews={this.props.spotReviews}
+              spacing={this.props.large ? 16 : 4}
+              cellHeight={this.props.large ? 140 : 100}
+              showSubheader
+            />
+          </div>
         </CardContent>
-        <List>
-          {this.renderSpotReviews(this.props.spotReviews)}
-        </List>
       </Card>
     );
-  }
-
-  renderSpotReviews(reviews) {
-    return reviews.map(review => (
-      <ListItem
-        button
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-      >
-        <Avatar
-          src={review.author.profile_image_url}
-          alt={review.author.name}
-        />
-        <ListItemText
-          disableTypography={true}
-          primary={
-            <Typography variant="subtitle1" noWrap>
-              {review.author.name}
-            </Typography>
-          }
-          secondary={
-            <Typography
-              component="p"
-              noWrap
-              color="textSecondary"
-              style={styles.reviewComment}
-            >
-              {review.comment}
-            </Typography>
-          }
-        />
-        {review.image && (
-          <ListItemSecondaryAction
-            onClick={() => this.props.handleReviewClick(review)}
-          >
-            <Avatar
-              src={review.image.thumbnail_url}
-              style={styles.secondaryAvatar}
-              alt={review.spot.name}
-            />
-          </ListItemSecondaryAction>
-        )}
-      </ListItem>
-    ));
   }
 }
 
