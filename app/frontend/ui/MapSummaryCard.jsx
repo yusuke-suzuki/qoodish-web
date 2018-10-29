@@ -53,228 +53,223 @@ const styles = {
   }
 };
 
-export default class MapSummaryCard extends React.PureComponent {
-  render() {
-    return this.renderCard(this.props.currentMap);
-  }
+const Followers = (props) => {
+  return props.followers.slice(0, 9).map(follower => (
+    <ButtonBase
+      key={follower.id}
+      component={Link}
+      to={`/users/${follower.id}`}
+      title={follower.name}
+    >
+      <Avatar
+        src={follower.profile_image_url}
+        alt={follower.name}
+        style={styles.followerAvatar}
+      />
+    </ButtonBase>
+  ));
+}
 
-  renderCard(map) {
-    return (
-      <div>
-        <CardContent>
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('map name')}
-          </Typography>
-          {map ?
-            <Typography
-              variant="h5"
-              gutterBottom
-              style={styles.text}
-            >
-              {map && map.name}
-            </Typography>
-          : <Chip style={styles.skeltonTextPrimary} />}
+const createdAt = (map) => {
+  return moment(map.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+    .locale(window.currentLocale)
+    .format('LL');
+}
 
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('owner')}
-          </Typography>
-          <ButtonBase
-            component={Link}
-            to={map ? `/users/${map.owner_id}` : "/"}
-            title={map && map.owner_name}
-          >
-            <Chip
-              avatar={
-                <Avatar
-                  src={map && map.owner_image_url}
-                  alt={map && map.owner_name}
-                />
-              }
-              label={map && map.owner_name}
-              style={styles.chip}
-              clickable
-            />
-          </ButtonBase>
-
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('description')}
-          </Typography>
-          {map ?
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={styles.text}
-            >
-              {map.description}
-            </Typography>
-          : <Chip style={styles.skeltonTextSecondary} />}
-
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('map base')}
-          </Typography>
-          <Chip
-            avatar={
-              <Avatar>
-                <PlaceIcon />
-              </Avatar>
-            }
-            label={map && (map.base.name ? map.base.name : I18n.t('not set'))}
-            style={styles.chip}
-            clickable
-            onClick={() => this.props.handleBaseClick(map)}
-          />
-
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('created date')}
-          </Typography>
-          {map ?
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={styles.text}
-            >
-              {this.createdAt(map)}
-            </Typography>
-          :
-            <Chip style={styles.skeltonTextSecondary} />
-          }
-
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {I18n.t('map type')}
-          </Typography>
-          {map ?
-            this.renderMapTypes(map)
-          : <Chip
-              avatar={
-                <Avatar src="" alt="" />
-              }
-              style={styles.chip}
-            />
-          }
-
-          <Typography
-            variant="subtitle2"
-            gutterBottom
-            color="textSecondary"
-          >
-            {`${map ? map.followers_count : 0} ${I18n.t('followers count')}`}
-          </Typography>
-          <div style={styles.followersContainer}>
-            {map ? this.renderFollowers() : <Avatar style={styles.skeltonAvatar}><PersonIcon /></Avatar>}
-          </div>
-
-          <ReviewTilesContainer
-            reviews={this.props.mapReviews}
-            showSubheader
-          />
-        </CardContent>
-      </div>
+const MapTypes = (props) => {
+  let mapTypes = [];
+  if (props.map.private) {
+    mapTypes.push(
+      <Chip
+        key="private"
+        avatar={
+          <Avatar>
+            <LockIcon />
+          </Avatar>
+        }
+        label={I18n.t('private')}
+        style={styles.chip}
+      />
+    );
+  } else {
+    mapTypes.push(
+      <Chip
+        key="public"
+        avatar={
+          <Avatar>
+            <PublicIcon />
+          </Avatar>
+        }
+        label={I18n.t('public')}
+        style={styles.chip}
+      />
     );
   }
-
-  renderFollowers() {
-    return this.props.followers.slice(0, 9).map(follower => (
-      <ButtonBase
-        key={follower.id}
-        component={Link}
-        to={`/users/${follower.id}`}
-        title={follower.name}
-      >
-        <Avatar
-          src={follower.profile_image_url}
-          alt={follower.name}
-          style={styles.followerAvatar}
-        />
-      </ButtonBase>
-    ));
+  if (props.map.shared) {
+    mapTypes.push(
+      <Chip
+        key="shared"
+        avatar={
+          <Avatar>
+            <GroupIcon />
+          </Avatar>
+        }
+        label={I18n.t('shared')}
+        style={styles.chip}
+      />
+    );
+  } else {
+    mapTypes.push(
+      <Chip
+        key="personal"
+        avatar={
+          <Avatar>
+            <PersonIcon />
+          </Avatar>
+        }
+        label={I18n.t('personal')}
+        style={styles.chip}
+      />
+    );
   }
-
-  createdAt(map) {
-    return moment(map.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-      .locale(window.currentLocale)
-      .format('LL');
-  }
-
-  renderMapTypes(map) {
-    let mapTypes = [];
-    if (map.private) {
-      mapTypes.push(
-        <Chip
-          key="private"
-          avatar={
-            <Avatar>
-              <LockIcon />
-            </Avatar>
-          }
-          label={I18n.t('private')}
-          style={styles.chip}
-        />
-      );
-    } else {
-      mapTypes.push(
-        <Chip
-          key="public"
-          avatar={
-            <Avatar>
-              <PublicIcon />
-            </Avatar>
-          }
-          label={I18n.t('public')}
-          style={styles.chip}
-        />
-      );
-    }
-    if (map.shared) {
-      mapTypes.push(
-        <Chip
-          key="shared"
-          avatar={
-            <Avatar>
-              <GroupIcon />
-            </Avatar>
-          }
-          label={I18n.t('shared')}
-          style={styles.chip}
-        />
-      );
-    } else {
-      mapTypes.push(
-        <Chip
-          key="personal"
-          avatar={
-            <Avatar>
-              <PersonIcon />
-            </Avatar>
-          }
-          label={I18n.t('personal')}
-          style={styles.chip}
-        />
-      );
-    }
-    return mapTypes;
-  }
+  return mapTypes;
 }
+
+const MapSummaryCard = (props) => {
+  return (
+    <div>
+      <CardContent>
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('map name')}
+        </Typography>
+        {props.map ?
+          <Typography
+            variant="h5"
+            gutterBottom
+            style={styles.text}
+          >
+            {props.map.name}
+          </Typography>
+        : <Chip style={styles.skeltonTextPrimary} />}
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('owner')}
+        </Typography>
+        <ButtonBase
+          component={Link}
+          to={props.map ? `/users/${props.map.owner_id}` : "/"}
+          title={props.map && props.map.owner_name}
+        >
+          <Chip
+            avatar={
+              <Avatar
+                src={props.map && props.map.owner_image_url}
+                alt={props.map && props.map.owner_name}
+              />
+            }
+            label={props.map && props.map.owner_name}
+            style={styles.chip}
+            clickable
+          />
+        </ButtonBase>
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('description')}
+        </Typography>
+        {props.map ?
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            style={styles.text}
+          >
+            {props.map.description}
+          </Typography>
+        : <Chip style={styles.skeltonTextSecondary} />}
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('map base')}
+        </Typography>
+        <Chip
+          avatar={
+            <Avatar>
+              <PlaceIcon />
+            </Avatar>
+          }
+          label={props.map && (props.map.base.name ? props.map.base.name : I18n.t('not set'))}
+          style={styles.chip}
+          clickable
+          onClick={() => props.handleBaseClick(props.map)}
+        />
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('created date')}
+        </Typography>
+        {props.map ?
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            style={styles.text}
+          >
+            {createdAt(props.map)}
+          </Typography>
+        :
+          <Chip style={styles.skeltonTextSecondary} />
+        }
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {I18n.t('map type')}
+        </Typography>
+        {props.map ?
+          <MapTypes {...props} />
+        : <Chip
+            avatar={
+              <Avatar src="" alt="" />
+            }
+            style={styles.chip}
+          />
+        }
+
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          color="textSecondary"
+        >
+          {`${props.map ? props.map.followers_count : 0} ${I18n.t('followers count')}`}
+        </Typography>
+        <div style={styles.followersContainer}>
+          {props.map ? <Followers {...props} /> : <Avatar style={styles.skeltonAvatar}><PersonIcon /></Avatar>}
+        </div>
+
+        <ReviewTilesContainer
+          reviews={props.mapReviews}
+          showSubheader
+        />
+      </CardContent>
+    </div>
+  );
+}
+ export default MapSummaryCard;

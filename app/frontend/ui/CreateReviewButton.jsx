@@ -32,38 +32,38 @@ const styles = {
   }
 };
 
-export default class CreateReviewButton extends React.PureComponent {
-  render() {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={this.buttonStyle(this.props)}
-        onClick={() => this.props.handleButtonClick(this.props.currentUser)}
-        disabled={this.props.disabled}
-        data-test="create-review-button"
-      >
-        <EditIcon />
-      </Button>
-    );
+const buttonStyle = (props) => {
+  let style = {};
+  if (props.large) {
+    style = Object.assign(style, styles.buttonLarge);
+  } else {
+    style = Object.assign(style, styles.buttonSmall)
   }
-
-  buttonStyle(props) {
-    let style = {};
-    if (props.large) {
-      style = Object.assign(style, styles.buttonLarge);
-    } else {
-      style = Object.assign(style, styles.buttonSmall)
-    }
-    if (props.buttonWithBottomSeat) {
-      style = Object.assign(style, styles.withBottomSeat);
-    }
-    if (props.buttonForMap) {
-      style = Object.assign(style, styles.forMap);
-    }
-    if (props.disabled) {
-      style = Object.assign(style, styles.disabled);
-    }
-    return style;
+  if (props.buttonWithBottomSeat) {
+    style = Object.assign(style, styles.withBottomSeat);
   }
+  if (props.buttonForMap) {
+    style = Object.assign(style, styles.forMap);
+  }
+  if (props.disabled) {
+    style = Object.assign(style, styles.disabled);
+  }
+  return style;
 }
+
+const CreateReviewButton = (props) => {
+  return (
+    <Button
+      variant="fab"
+      aria-label="add"
+      style={buttonStyle(props)}
+      onClick={() => props.handleButtonClick(props.currentUser)}
+      disabled={props.disabled}
+      data-test="create-review-button"
+    >
+      <EditIcon />
+    </Button>
+  );
+}
+
+export default CreateReviewButton;

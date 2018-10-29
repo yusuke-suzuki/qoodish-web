@@ -210,9 +210,9 @@ class MapSummary extends React.PureComponent {
         style={this.props.large ? styles.tabContentsLarge : styles.tabContentsSmall}
       >
         <MapSummaryCardContainer />
-        <MapReviewsListContainer mapId={this.props.mapId} />
+        <MapReviewsListContainer />
         <MapSpotsListContainer />
-        <MapFollowersListContainer mapId={this.props.mapId} />
+        <MapFollowersListContainer />
       </SwipeableViews>
     );
   }

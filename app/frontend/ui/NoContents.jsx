@@ -20,61 +20,61 @@ const styles = {
   }
 };
 
-export default class NoContents extends React.PureComponent {
-  render() {
-    return (
-      <div style={styles.container}>
-        {this.renderContentsIcon()}
-        <Typography variant="subtitle1" color="inherit">
-          {this.props.message}
-        </Typography>
-        <br />
-        {this.renderActions()}
-      </div>
-    );
-  }
-
-  renderContentsIcon() {
-    switch (this.props.contentType) {
-      case 'map':
-        return <MapIcon style={styles.icon} />;
-      case 'review':
-        return <RateReviewIcon style={styles.icon} />;
-      case 'notification':
-        return <NotificationsIcon style={styles.icon} />;
-      case 'spot':
-        return <PlaceIcon style={styles.icon} />;
-      case 'invite':
-        return <MailIcon style={styles.icon} />;
-      default:
-        return null;
-    }
-  }
-
-  renderActions() {
-    switch (this.props.action) {
-      case 'create-map':
-        return (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.props.handleCreateMapButtonClick(this.props.currentUser)}
-          >
-            {I18n.t('create new map')}
-          </Button>
-        );
-      case 'create-review':
-        return (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.props.handleCreateReviewButtonClick(this.props.currentUser)}
-          >
-            {I18n.t('create new report')}
-          </Button>
-        );
-      default:
-        return null;
-    }
+const ContentsIcon = (props) => {
+  switch (props.contentType) {
+    case 'map':
+      return <MapIcon style={styles.icon} />;
+    case 'review':
+      return <RateReviewIcon style={styles.icon} />;
+    case 'notification':
+      return <NotificationsIcon style={styles.icon} />;
+    case 'spot':
+      return <PlaceIcon style={styles.icon} />;
+    case 'invite':
+      return <MailIcon style={styles.icon} />;
+    default:
+      return null;
   }
 }
+
+const Actions = (props) => {
+  switch (props.action) {
+    case 'create-map':
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => props.handleCreateMapButtonClick(props.currentUser)}
+        >
+          {I18n.t('create new map')}
+        </Button>
+      );
+    case 'create-review':
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => props.handleCreateReviewButtonClick(props.currentUser)}
+        >
+          {I18n.t('create new report')}
+        </Button>
+      );
+    default:
+      return null;
+  }
+}
+
+const NoContents = (props) => {
+  return (
+    <div style={styles.container}>
+      <ContentsIcon {...props} />
+      <Typography variant="subtitle1" color="inherit">
+        {props.message}
+      </Typography>
+      <br />
+      <Actions {...props} />
+    </div>
+  );
+}
+
+export default NoContents;

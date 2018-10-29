@@ -15,24 +15,23 @@ const CreateMapDialogContainer = loadable(() => import(/* webpackChunkName: "cre
 const EditMapDialogContainer = loadable(() => import(/* webpackChunkName: "edit_map_dialog" */ '../containers/EditMapDialogContainer'));
 const EditProfileDialogContainer = loadable(() => import(/* webpackChunkName: "edit_profile_dialog" */ '../containers/EditProfileDialogContainer'));
 
-export default class SharedDialogs extends React.PureComponent {
-  render() {
-    return (
-      <div>
-        <FeedbackDialogContainer />
-        <SignInRequiredDialogContainer />
-        <IssueDialogContainer />
-        <LikesDialogContainer />
-        <CopyReviewDialogContainer />
-        <PlaceSelectDialogContainer />
-        <BaseSelectDialogContainer />
-        <EditReviewDialogContainer />
-        <DeleteReviewDialogContainer />
-        <ReviewDialogContainer />
-        <CreateMapDialogContainer />
-        <EditMapDialogContainer />
-        <EditProfileDialogContainer />
-      </div>
-    );
-  }
+const SharedDialogs = () => {
+  return (
+    <div>
+      <FeedbackDialogContainer />
+      <SignInRequiredDialogContainer />
+      <IssueDialogContainer />
+      <LikesDialogContainer />
+      <CopyReviewDialogContainer />
+      <PlaceSelectDialogContainer />
+      <BaseSelectDialogContainer />
+      <EditReviewDialogContainer />
+      <DeleteReviewDialogContainer />
+      <ReviewDialogContainer />
+      <CreateMapDialogContainer />
+      <EditMapDialogContainer />
+      <EditProfileDialogContainer />
+    </div>
+  );
 }
+ export default SharedDialogs;

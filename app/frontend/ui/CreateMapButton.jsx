@@ -21,19 +21,19 @@ const styles = {
   }
 };
 
-export default class CreateMapButton extends React.PureComponent {
-  render() {
-    return (
-      <Button
-        variant="fab"
-        aria-label="add"
-        style={
-          this.props.large ? styles.createButtonLarge : styles.createButtonSmall
-        }
-        onClick={() => this.props.handleButtonClick(this.props.currentUser)}
-      >
-        <AddIcon />
-      </Button>
-    );
-  }
+const CreateMapButton = (props) => {
+  return (
+    <Button
+      variant="fab"
+      aria-label="add"
+      style={
+        props.large ? styles.createButtonLarge : styles.createButtonSmall
+      }
+      onClick={() => props.handleButtonClick(props.currentUser)}
+    >
+      <AddIcon />
+    </Button>
+  );
 }
+
+export default CreateMapButton;

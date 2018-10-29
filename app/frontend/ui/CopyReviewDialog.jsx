@@ -9,38 +9,36 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
 
-class CopyReviewDialog extends React.PureComponent {
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onEnter={this.props.fetchPostableMaps}
-        onClose={this.props.handleRequestClose}
-        fullWidth
-      >
-        <DialogTitle>{I18n.t('select map to copy this report to')}</DialogTitle>
-        <DialogContent>{this.renderPostableMaps()}</DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.handleRequestClose}>{I18n.t('cancel')}</Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+const PostableMaps = (props) => {
+  return props.postableMaps.map(map => (
+    <ListItem
+      button
+      key={map.id}
+      onClick={() =>
+        props.handleMapSelected(props.currentReview, map)
+      }
+    >
+      <Avatar src={map.thumbnail_url} />
+      <ListItemText primary={map.name} />
+    </ListItem>
+  ));
+}
 
-  renderPostableMaps() {
-    return this.props.postableMaps.map(map => (
-      <ListItem
-        button
-        key={map.id}
-        onClick={() =>
-          this.props.handleMapSelected(this.props.currentReview, map)
-        }
-      >
-        <Avatar src={map.thumbnail_url} />
-        <ListItemText primary={map.name} />
-      </ListItem>
-    ));
-  }
+const CopyReviewDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onEnter={props.fetchPostableMaps}
+      onClose={props.handleRequestClose}
+      fullWidth
+    >
+      <DialogTitle>{I18n.t('select map to copy this report to')}</DialogTitle>
+      <DialogContent><PostableMaps {...props} /></DialogContent>
+      <DialogActions>
+        <Button onClick={props.handleRequestClose}>{I18n.t('cancel')}</Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 export default CopyReviewDialog;

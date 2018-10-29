@@ -12,6 +12,7 @@ import requestMapBase from '../actions/requestMapBase';
 import fetchSpots from '../actions/fetchSpots';
 import clearMapState from '../actions/clearMapState';
 import fetchMapReviews from '../actions/fetchMapReviews';
+import fetchCollaborators from '../actions/fetchCollaborators';
 
 const mapStateToProps = state => {
   return {
@@ -68,6 +69,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         let reviews = await response.json();
         dispatch(fetchMapReviews(reviews));
+      }
+    },
+
+    fetchFollowers: async () => {
+      const client = new ApiClient();
+      let response = await client.fetchCollaborators(
+        ownProps.match.params.mapId
+      );
+      if (response.ok) {
+        let followers = await response.json();
+        dispatch(fetchCollaborators(followers));
       }
     },
 
