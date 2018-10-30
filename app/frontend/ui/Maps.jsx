@@ -32,7 +32,7 @@ export default class Maps extends React.PureComponent {
     this.handleTabChange = this.handleTabChange.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.showTabs();
     this.props.updatePageTitle();
 

@@ -167,7 +167,7 @@ class NavBar extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.currentUser || this.props.currentUser.isAnonymous) {
       return;
     }
@@ -181,9 +181,9 @@ class NavBar extends React.PureComponent {
       nextProps.pathname.includes('/spots/') ||
       nextProps.pathname.includes('/users/')
     ) {
-      this.props.showBackButton();
+      nextProps.showBackButton();
     } else {
-      this.props.hideBackButton();
+      nextProps.hideBackButton();
     }
   }
 

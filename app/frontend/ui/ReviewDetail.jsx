@@ -20,7 +20,7 @@ const styles = {
 };
 
 class ReviewDetail extends React.PureComponent {
-  async componentWillMount() {
+  async componentDidMount() {
     this.props.updatePageTitle();
     if (!this.props.currentReview) {
       await this.props.fetchReview();

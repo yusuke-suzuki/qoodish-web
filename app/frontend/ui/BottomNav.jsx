@@ -37,7 +37,7 @@ export default class BottomNav extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.switchBottomNav(this.props);
   }
 
