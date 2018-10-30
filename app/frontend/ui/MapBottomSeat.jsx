@@ -58,7 +58,7 @@ const Header = (props) => {
   );
 }
 
-const MapBottomSeat = () => {
+const MapBottomSeat = (props) => {
   return (
     <Drawer
       variant="persistent"
