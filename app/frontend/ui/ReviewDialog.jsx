@@ -25,57 +25,50 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
-class ReviewDialog extends React.PureComponent {
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onClose={this.props.handleRequestDialogClose}
-        TransitionComponent={Transition}
-        fullWidth
-        fullScreen={this.props.large ? false : true}
-      >
-        {!this.props.large && this.renderAppBar()}
-        <DialogContent style={styles.dialogContent}>
-          <div>
-            {this.props.currentReview &&
-              this.renderReviewCard(this.props.currentReview)}
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+const DialogAppBar = (props) => {
+  return (
+    <AppBar style={styles.appbar} color="primary">
+      <Toolbar style={styles.toolbar}>
+        <IconButton
+          color="inherit"
+          onClick={props.handleRequestDialogClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h6" color="inherit" style={styles.flex}>
+          {I18n.t('report')}
+        </Typography>
+      </Toolbar>
+    </AppBar>
+  );
+}
 
-  renderAppBar() {
-    return (
-      <AppBar style={styles.appbar} color="primary">
-        <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.handleRequestDialogClose}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" style={styles.flex}>
-            {I18n.t('report')}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    );
-  }
-
-  renderReviewCard(review) {
-    return (
-      <ReviewCardContainer
-        currentReview={review}
-        detail={!this.props.large}
-      />
-    );
-  }
+const ReviewDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onClose={props.handleRequestDialogClose}
+      TransitionComponent={Transition}
+      fullWidth
+      fullScreen={props.large ? false : true}
+    >
+      {!props.large && <DialogAppBar {...props} />}
+      <DialogContent style={styles.dialogContent}>
+        <div>
+          {props.currentReview &&
+            <ReviewCardContainer
+              currentReview={props.currentReview}
+              detail={!props.large}
+            />
+          }
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default ReviewDialog;

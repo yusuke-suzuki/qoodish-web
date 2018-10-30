@@ -85,27 +85,23 @@ const MapWithAnOverlayView = compose(
   </GoogleMap>
 );
 
-export default class GMap extends React.PureComponent {
-  render() {
-    return this.renderGoogleMap();
-  }
-
-  renderGoogleMap() {
-    return (
-      <MapWithAnOverlayView
-        {...this.props}
-        googleMapURL={process.env.GOOGLE_MAP_URL}
-        containerElement={
-          <div
-            style={
-              this.props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
-            }
-          />
-        }
-        mapElement={<div style={this.props.large ? styles.mapContainerLarge : styles.mapContainerSmall} />}
-        loadingElement={<div style={{ height: '100%' }} />}
-        onMapLoad={this.props.onMapMounted}
-      />
-    );
-  }
+const GMap = (props) => {
+  return (
+    <MapWithAnOverlayView
+      {...props}
+      googleMapURL={process.env.GOOGLE_MAP_URL}
+      containerElement={
+        <div
+          style={
+            props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
+          }
+        />
+      }
+      mapElement={<div style={props.large ? styles.mapContainerLarge : styles.mapContainerSmall} />}
+      loadingElement={<div style={{ height: '100%' }} />}
+      onMapLoad={props.onMapMounted}
+    />
+  );
 }
+
+export default GMap;

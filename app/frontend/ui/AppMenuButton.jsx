@@ -10,16 +10,16 @@ const styles = {
   }
 };
 
-export default class AppMenuButton extends React.PureComponent {
-  render() {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={() => this.props.handleToggleDrawer(this.props.drawerOpen)}
-        style={this.props.large ? {} : styles.leftButton}
-      >
-        <MenuIcon />
-      </IconButton>
-    );
-  }
+const AppMenuButton = (props) => {
+  return (
+    <IconButton
+      color="inherit"
+      onClick={() => props.handleToggleDrawer(props.drawerOpen)}
+      style={props.large ? {} : styles.leftButton}
+    >
+      <MenuIcon />
+    </IconButton>
+  );
 }
+
+export default AppMenuButton;

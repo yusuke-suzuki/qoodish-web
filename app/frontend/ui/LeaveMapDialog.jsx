@@ -8,37 +8,36 @@ import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import I18n from '../containers/I18n';
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
-class LeaveMapDialog extends React.PureComponent {
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onClose={this.props.handleRequestDialogClose}
-        fullWidth
-        TransitionComponent={Transition}
-      >
-        <DialogTitle>{I18n.t('sure to unfollow map')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {I18n.t('unfollow map detail')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
-          <Button
-            variant="contained"
-            onClick={this.props.handleLeaveButtonClick}
-            color="primary"
-          >
-            {I18n.t('unfollow')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+const LeaveMapDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onClose={props.handleRequestDialogClose}
+      fullWidth
+      TransitionComponent={Transition}
+    >
+      <DialogTitle>{I18n.t('sure to unfollow map')}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {I18n.t('unfollow map detail')}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
+        <Button
+          variant="contained"
+          onClick={props.handleLeaveButtonClick}
+          color="primary"
+        >
+          {I18n.t('unfollow')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
- export default LeaveMapDialog;
+
+export default LeaveMapDialog;

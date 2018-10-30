@@ -15,7 +15,7 @@ import Divider from '@material-ui/core/Divider';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
@@ -28,53 +28,53 @@ const styles = {
   }
 };
 
-class LikesDialog extends React.PureComponent {
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onClose={this.props.handleRequestDialogClose}
-        fullWidth
-        TransitionComponent={Transition}
-      >
-        <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.handleRequestDialogClose}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" style={styles.flex} noWrap>
-            {I18n.t('likes')}
-          </Typography>
-        </Toolbar>
-        <Divider />
-        <DialogContent style={styles.dialogContent}>
-          <List disablePadding>{this.renderLikes(this.props.likes)}</List>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+const Likes = (props) => {
+  return props.likes.map(like => (
+    <ListItem
+      button
+      key={like.id}
+      component={Link}
+      to={`/users/${like.voter.id}`}
+      title={like.voter.name}
+    >
+      <ListItemAvatar>
+        <Avatar
+          src={like.voter.profile_image_url}
+          alt={like.voter.name}
+        />
+      </ListItemAvatar>
+      <ListItemText primary={like.voter.name} />
+    </ListItem>
+  ));
+}
 
-  renderLikes(likes) {
-    return likes.map(like => (
-      <ListItem
-        button
-        key={like.id}
-        component={Link}
-        to={`/users/${like.voter.id}`}
-        title={like.voter.name}
-      >
-        <ListItemAvatar>
-          <Avatar
-            src={like.voter.profile_image_url}
-            alt={like.voter.name}
-          />
-        </ListItemAvatar>
-        <ListItemText primary={like.voter.name} />
-      </ListItem>
-    ));
-  }
+const LikesDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onClose={props.handleRequestDialogClose}
+      fullWidth
+      TransitionComponent={Transition}
+    >
+      <Toolbar style={styles.toolbar}>
+        <IconButton
+          color="inherit"
+          onClick={props.handleRequestDialogClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h6" color="inherit" style={styles.flex} noWrap>
+          {I18n.t('likes')}
+        </Typography>
+      </Toolbar>
+      <Divider />
+      <DialogContent style={styles.dialogContent}>
+        <List disablePadding>
+          <Likes {...props} />
+        </List>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 export default LikesDialog;

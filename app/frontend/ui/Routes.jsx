@@ -17,34 +17,34 @@ const InvitesContainer = loadable(() => import(/* webpackChunkName: "invites" */
 const TermsContainer = loadable(() => import(/* webpackChunkName: "terms" */'../containers/TermsContainer'));
 const PrivacyContainer = loadable(() => import(/* webpackChunkName: "privacy" */'../containers/PrivacyContainer'));
 
-export default class Routes extends React.Component {
-  render() {
-    return (
-      <Switch>
-        <Route exact path="/" component={TimelineContainer} />
-        <Route exact path="/discover" component={DiscoverContainer} />
-        <Route exact path="/maps" component={MapsContainer} />
-        <Route exact path="/maps/:mapId" component={MapDetailContainer} />
-        <Route exact path="/notifications" component={NotificationsContainer} />
-        <Route exact path="/profile" component={ProfileContainer} />
-        <Route exact path="/users/:userId" component={UserProfileContainer} />
-        <Route
-          exact
-          path="/maps/:mapId/reports/:reviewId"
-          component={ReviewDetailContainer}
-        />
-        <Route
-          exact
-          path="/spots/:placeId"
-          component={SpotDetailContainer}
-        />
-        <Route exact path="/settings" component={SettingsContainer} />
-        <Route exact path="/invites" component={InvitesContainer} />
-        <Route exact path="/terms" component={TermsContainer} />
-        <Route exact path="/privacy" component={PrivacyContainer} />
-        <Route path="/login" component={LoginContainer} />
-        <Redirect from="*" to="/" />
-      </Switch>
-    );
-  }
+const Routes = () => {
+  return (
+    <Switch>
+      <Route exact path="/" component={TimelineContainer} />
+      <Route exact path="/discover" component={DiscoverContainer} />
+      <Route exact path="/maps" component={MapsContainer} />
+      <Route exact path="/maps/:mapId" component={MapDetailContainer} />
+      <Route exact path="/notifications" component={NotificationsContainer} />
+      <Route exact path="/profile" component={ProfileContainer} />
+      <Route exact path="/users/:userId" component={UserProfileContainer} />
+      <Route
+        exact
+        path="/maps/:mapId/reports/:reviewId"
+        component={ReviewDetailContainer}
+      />
+      <Route
+        exact
+        path="/spots/:placeId"
+        component={SpotDetailContainer}
+      />
+      <Route exact path="/settings" component={SettingsContainer} />
+      <Route exact path="/invites" component={InvitesContainer} />
+      <Route exact path="/terms" component={TermsContainer} />
+      <Route exact path="/privacy" component={PrivacyContainer} />
+      <Route path="/login" component={LoginContainer} />
+      <Redirect from="*" to="/" />
+    </Switch>
+  );
 }
+
+export default Routes;

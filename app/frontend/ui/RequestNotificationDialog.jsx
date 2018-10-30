@@ -44,85 +44,70 @@ const styles = {
   }
 };
 
-class RequestNotificationDialog extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.notificationMessages = [
-      I18n.t('by allow push 1'),
-      I18n.t('by allow push 2'),
-      I18n.t('by allow push 3'),
-    ];
-  }
+const notificationMessages = [
+  I18n.t('by allow push 1'),
+  I18n.t('by allow push 2'),
+  I18n.t('by allow push 3'),
+];
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.registrationToken) {
-      this.props.handleNotificationAllowed();
-    }
-  }
-
-  render() {
-    return (
-      <Drawer
-        variant="persistent"
-        anchor={this.props.large ? "top" : "bottom"}
-        open={this.props.dialogOpen}
-        PaperProps={{
-          style: this.props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall,
-          elevation: 3
-        }}
-      >
-        <Card>
-          <CardHeader
-            avatar={
-              <Avatar src={process.env.SUBSTITUTE_URL} />
-            }
-            title={I18n.t('allow push notification')}
-            subheader="qoodish.com"
-          />
-          <CardContent style={styles.cardContent}>
-            <Typography variant="body1" color="textSecondary" gutterBottom>
-              {I18n.t('if allow push notification')}
-            </Typography>
-            <List disablePadding>
-              {this.renderListItems()}
-            </List>
-          </CardContent>
-          <CardActions style={styles.cardActions}>
-            <Button
-              onClick={this.props.handleCancelButtonClick}
-            >
-              {I18n.t('cancel')}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={this.props.handleAllowNotificationButtonClick}
-              color="primary"
-            >
-              {I18n.t('ok')}
-            </Button>
-          </CardActions>
-        </Card>
-      </Drawer>
-    );
-  }
-
-  renderListItems() {
-    return this.notificationMessages.map((message, i) => (
-      <ListItem disableGutters key={i}>
-        <ListItemIcon>
-          <DoneIcon />
-        </ListItemIcon>
-        <ListItemText
-          primary={
-            <Typography variant="body2">
-              {message}
-            </Typography>
+const RequestNotificationDialog = (props) => {
+  return (
+    <Drawer
+      variant="persistent"
+      anchor={props.large ? "top" : "bottom"}
+      open={props.dialogOpen}
+      PaperProps={{
+        style: props.large ? styles.drawerPaperLarge : styles.drawerPaperSmall,
+        elevation: 3
+      }}
+    >
+      <Card>
+        <CardHeader
+          avatar={
+            <Avatar src={process.env.SUBSTITUTE_URL} />
           }
-          style={styles.listItemText}
+          title={I18n.t('allow push notification')}
+          subheader="qoodish.com"
         />
-      </ListItem>
-    ));
-  }
+        <CardContent style={styles.cardContent}>
+          <Typography variant="body1" color="textSecondary" gutterBottom>
+            {I18n.t('if allow push notification')}
+          </Typography>
+          <List disablePadding>
+            {notificationMessages.map((message, i) => (
+              <ListItem disableGutters key={i}>
+                <ListItemIcon>
+                  <DoneIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography variant="body2">
+                      {message}
+                    </Typography>
+                  }
+                  style={styles.listItemText}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+        <CardActions style={styles.cardActions}>
+          <Button
+            onClick={props.handleCancelButtonClick}
+          >
+            {I18n.t('cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={props.handleAllowNotificationButtonClick}
+            color="primary"
+          >
+            {I18n.t('ok')}
+          </Button>
+        </CardActions>
+      </Card>
+    </Drawer>
+  );
 }
 
 export default RequestNotificationDialog;

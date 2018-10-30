@@ -44,121 +44,110 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
+};
+
+const handleInputChange = (input, props) => {
+  if (props.loadingPlaces || !input) {
+    return;
+  }
+  props.handleInputChange(input);
 }
 
-class PlaceSelectDialog extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.handlePlaceSelected = this.handlePlaceSelected.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
+const handlePlaceSelected = (place, props) => {
+  let params = {
+    placeId: place.place_id,
+    description: place.description
+  };
+  props.onClose();
+  props.onPlaceSelected(params);
+}
 
-  handleInputChange(e) {
-    let input = e.target.value;
-    if (this.props.loadingPlaces || !input) {
-      return;
-    }
-    this.props.handleInputChange(input);
-  }
+const PlaceDialogTitle = () => {
+  return (
+    <DialogTitle>
+      <div style={styles.dialogTitle}>
+        <PlaceIcon style={styles.placeIcon} />{I18n.t('select place')}
+      </div>
+    </DialogTitle>
+  );
+}
 
-  handlePlaceSelected(place) {
-    let params = {
-      placeId: place.place_id,
-      description: place.description
-    };
-    this.props.onClose();
-    this.props.onPlaceSelected(params);
-  }
-
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onEnter={this.props.onEnter}
-        onClose={this.props.onClose}
-        fullWidth
-        fullScreen={!this.props.large}
-        TransitionComponent={Transition}
-      >
-        {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
-        <DialogContent
-          style={
-            this.props.large
-              ? styles.dialogContentLarge
-              : styles.dialogContentSmall
-          }
+const PlaceAppBar = (props) => {
+  return (
+    <AppBar style={styles.appbar} color="primary">
+      <Toolbar style={styles.toolbar}>
+        <IconButton
+          color="inherit"
+          onClick={props.onClose}
         >
-          <TextField
-            label={I18n.t('search places')}
-            onChange={this.handleInputChange}
-            fullWidth
-            autoFocus
-            placeholder={I18n.t('search places example')}
-            helperText={I18n.t('search places help')}
-            data-test="place-name-input"
-          />
-          <List>{this.renderPlaces()}</List>
-        </DialogContent>
-        {this.props.large && this.renderAction()}
-      </Dialog>
-    );
-  }
+          <CloseIcon />
+        </IconButton>
+        <Typography variant="h6" color="inherit" style={styles.flex}>
+          {I18n.t('select place')}
+        </Typography>
+      </Toolbar>
+    </AppBar>
+  );
+}
 
-  renderDialogTitle() {
-    return (
-      <DialogTitle>
-        <div style={styles.dialogTitle}>
-          <PlaceIcon style={styles.placeIcon} />{I18n.t('select place')}
-        </div>
-      </DialogTitle>
-    );
-  }
+const PlaceActions = (props) => {
+  return (
+    <DialogActions>
+      <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
+    </DialogActions>
+  );
+}
 
-  renderAppBar() {
-    return (
-      <AppBar style={styles.appbar} color="primary">
-        <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.onClose}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" style={styles.flex}>
-            {I18n.t('select place')}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    );
-  }
-
-  renderAction() {
-    return (
-      <DialogActions>
-        <Button onClick={this.props.onClose}>{I18n.t('cancel')}</Button>
-      </DialogActions>
-    );
-  }
-
-  renderPlaces() {
-    return this.props.places.map(place => (
-      <ListItem
-        button
-        key={place.place_id}
-        onClick={() => this.handlePlaceSelected(place)}
-        data-test="place-list-item"
+const PlaceSelectDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onEnter={props.onEnter}
+      onClose={props.onClose}
+      fullWidth
+      fullScreen={!props.large}
+      TransitionComponent={Transition}
+    >
+      {props.large ? <PlaceDialogTitle {...props} /> : <PlaceAppBar />}
+      <DialogContent
+        style={
+          props.large
+            ? styles.dialogContentLarge
+            : styles.dialogContentSmall
+        }
       >
-        <ListItemAvatar>
-          <Avatar>
-            <PlaceIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={place.description} />
-      </ListItem>
-    ));
-  }
+        <TextField
+          label={I18n.t('search places')}
+          onChange={(e) => handleInputChange(e.target.value, props)}
+          fullWidth
+          autoFocus
+          placeholder={I18n.t('search places example')}
+          helperText={I18n.t('search places help')}
+          data-test="place-name-input"
+        />
+        <List>
+          {props.places.map(place => (
+            <ListItem
+              button
+              key={place.place_id}
+              onClick={() => handlePlaceSelected(place, props)}
+              data-test="place-list-item"
+            >
+              <ListItemAvatar>
+                <Avatar>
+                  <PlaceIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={place.description} />
+            </ListItem>
+          ))}
+        </List>
+      </DialogContent>
+      {props.large && <PlaceActions {...props} />}
+    </Dialog>
+  );
 }
 
 export default PlaceSelectDialog;

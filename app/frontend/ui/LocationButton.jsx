@@ -19,16 +19,16 @@ const styles = {
   }
 };
 
-export default class LocationButton extends React.PureComponent {
-  render() {
-    return (
-      <Button
-        variant="fab"
-        style={this.props.large ? styles.buttonLarge : styles.buttonSmall}
-        onClick={this.props.handleButtonClick}
-      >
-        <MyLocationIcon />
-      </Button>
-    );
-  }
+const LocationButton = (props) => {
+  return (
+    <Button
+      variant="fab"
+      style={props.large ? styles.buttonLarge : styles.buttonSmall}
+      onClick={props.handleButtonClick}
+    >
+      <MyLocationIcon />
+    </Button>
+  );
 }
+
+export default LocationButton;

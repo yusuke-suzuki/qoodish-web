@@ -20,68 +20,60 @@ const styles = {
   }
 };
 
-class MapBottomSeat extends React.PureComponent {
-  render() {
-    return (
-      <Drawer
-        variant="persistent"
-        anchor="bottom"
-        open={true}
+const Header = (props) => {
+  return (
+    <ListItem
+      onClick={props.handleSummaryOpen}
+      button
+    >
+      <Avatar
+        src={props.map && props.map.thumbnail_url}
+        alt={props.map && props.map.name}
+      />
+      <ListItemText
+        disableTypography
+        primary={
+          <Typography variant="subtitle1" noWrap>
+            {props.map && props.map.name}
+          </Typography>
+        }
+        secondary={
+          <Typography
+            component="p"
+            noWrap
+            color="textSecondary"
+          >
+            {props.map && props.map.description}
+          </Typography>
+        }
+      />
+      <ListItemSecondaryAction
+        onClick={props.handleSummaryOpen}
       >
-        {this.renderSummaryCard()}
-      </Drawer>
-    );
-  }
+        <IconButton>
+          <ListIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  );
+}
 
-  renderSummaryCard() {
-    return (
+const MapBottomSeat = () => {
+  return (
+    <Drawer
+      variant="persistent"
+      anchor="bottom"
+      open={true}
+    >
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <List disablePadding>
-            {this.renderHeader(this.props.currentMap)}
+             <Header {...props} />
           </List>
         </CardContent>
       </Card>
-    );
-  }
-
-  renderHeader(map) {
-    return (
-      <ListItem
-        onClick={this.props.handleSummaryOpen}
-        button
-      >
-        <Avatar
-          src={map && map.thumbnail_url}
-          alt={map && map.name}
-        />
-        <ListItemText
-          disableTypography
-          primary={
-            <Typography variant="subtitle1" noWrap>
-              {map && map.name}
-            </Typography>
-          }
-          secondary={
-            <Typography
-              component="p"
-              noWrap
-              color="textSecondary"
-            >
-              {map && map.description}
-            </Typography>
-          }
-        />
-        <ListItemSecondaryAction
-          onClick={this.props.handleSummaryOpen}
-        >
-          <IconButton>
-            <ListIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    );
-  }
+    </Drawer>
+  );
 }
 
 export default MapBottomSeat;

@@ -32,6 +32,7 @@ export default class MapDetail extends React.PureComponent {
   async componentWillMount() {
     this.props.fetchSpots();
     this.props.fetchMapReviews();
+    this.props.fetchFollowers();
 
     if (!this.props.currentMap) {
       await this.props.fetchMap();
@@ -108,7 +109,7 @@ export default class MapDetail extends React.PureComponent {
         <div style={this.props.large ? styles.containerLarge : styles.containerSmall}>
           <GMapContainer />
         </div>
-        <MapBottomSeatContainer currentMap={this.props.currentMap} />
+        <MapBottomSeatContainer map={this.props.currentMap} />
         {this.renderMapSummaryDrawer()}
       </div>
     );

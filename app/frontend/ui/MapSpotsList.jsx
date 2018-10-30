@@ -13,44 +13,44 @@ const styles = {
   }
 };
 
-export default class MapSpotsList extends React.PureComponent {
-  render() {
-    return (
-      <List
-        subheader={this.props.large &&
-          <ListSubheader style={styles.subheader}>{I18n.t('spots')}</ListSubheader>
+const Spots = (props) => {
+  return props.spots.map(spot => (
+    <ListItem
+      button
+      key={spot.place_id}
+      onClick={() => this.props.handleSpotClick(spot)}
+    >
+      <Avatar
+        src={spot.image_url}
+        alt={spot.name}
+      />
+      <ListItemText
+        disableTypography={true}
+        primary={
+          <Typography variant="subtitle1" noWrap>
+            {spot.name}
+          </Typography>
         }
-      >
-        {this.renderSpots(this.props.spots)}
-      </List>
-    );
-  }
-
-  renderSpots(spots) {
-    return spots.map(spot => (
-      <ListItem
-        button
-        key={spot.place_id}
-        onClick={() => this.props.handleSpotClick(spot)}
-      >
-        <Avatar
-          src={spot.image_url}
-          alt={spot.name}
-        />
-        <ListItemText
-          disableTypography={true}
-          primary={
-            <Typography variant="subtitle1" noWrap>
-              {spot.name}
-            </Typography>
-          }
-          secondary={
-            <Typography component="p" noWrap color="textSecondary">
-              {spot.formatted_address}
-            </Typography>
-          }
-        />
-      </ListItem>
-    ));
-  }
+        secondary={
+          <Typography component="p" noWrap color="textSecondary">
+            {spot.formatted_address}
+          </Typography>
+        }
+      />
+    </ListItem>
+  ));
 }
+
+const MapSpotsList = (props) => {
+  return (
+    <List
+      subheader={props.large &&
+        <ListSubheader style={styles.subheader}>{I18n.t('spots')}</ListSubheader>
+      }
+    >
+      <Spots {...props} />
+    </List>
+  );
+}
+
+export default MapSpotsList;

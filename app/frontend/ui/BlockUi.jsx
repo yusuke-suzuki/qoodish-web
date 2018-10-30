@@ -21,18 +21,14 @@ const styles = {
   }
 };
 
-export default class BlockUi extends React.PureComponent {
-  render() {
-    return <div>{this.props.blocking ? this.renderBlockUi() : null}</div>;
-  }
-
-  renderBlockUi() {
-    return (
-      <div style={styles.blockUi}>
-        <div style={styles.progress}>
-          <CircularProgress />
-        </div>
+const BlockUi = (props) => {
+  return props.blocking ? (
+    <div style={styles.blockUi}>
+      <div style={styles.progress}>
+        <CircularProgress />
       </div>
-    );
-  }
+    </div>
+  ) : null;
 }
+
+export default BlockUi;

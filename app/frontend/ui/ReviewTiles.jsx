@@ -18,55 +18,51 @@ const styles = {
   }
 };
 
-export default class ReviewGridList extends React.PureComponent {
-  render() {
-    return (
-      <div>
-        {this.props.showSubheader && this.renderSubheader()}
-        {this.renderGridList()}
-      </div>
-    );
-  }
+const Subheader = (props) => {
+  return (
+    <Typography
+      variant="subtitle2"
+      gutterBottom
+      color="textSecondary"
+    >
+      {`${props.reviews.length} ${I18n.t('reviews count')}`}
+    </Typography>
+  );
+}
 
-  renderSubheader() {
-    return (
-      <Typography
-        variant="subtitle2"
-        gutterBottom
-        color="textSecondary"
-      >
-        {`${this.props.reviews.length} ${I18n.t('reviews count')}`}
-      </Typography>
-    );
-  }
-
-  renderGridList() {
-    return (
+const ReviewGridList = (props) => {
+  return (
+    <div>
+      {props.showSubheader && <Subheader {...props} />}
       <div style={styles.gridContainer}>
         <GridList
-          cols={this.props.cols ? this.props.cols : 3}
           style={styles.gridList}
-          spacing={this.props.spacing ? this.props.spacing : 4}
-          cellHeight={this.props.cellHeight ? this.props.cellHeight : 100}
+          cols={props.cols}
+          spacing={props.spacing}
+          cellHeight={props.cellHeight}
         >
-          {this.renderReviewTiles(this.props.reviews)}
+          {props.reviews.map(review => (
+            <GridListTile
+              key={review.id}
+              onClick={() => props.handleReviewClick(review)}
+              style={styles.gridTile}
+            >
+              <img
+                src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL}
+                alt={review.spot.name}
+              />
+            </GridListTile>
+          ))}
         </GridList>
       </div>
-    );
-  }
-
-  renderReviewTiles(reviews) {
-    return reviews.map(review => (
-      <GridListTile
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-        style={styles.gridTile}
-      >
-        <img
-          src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL}
-          alt={review.spot.name}
-        />
-      </GridListTile>
-    ));
-  }
+    </div>
+  );
 }
+
+ReviewGridList.defaultProps = {
+  cols: 3,
+  spacing: 4,
+  cellHeight: 100
+};
+
+export default ReviewGridList;

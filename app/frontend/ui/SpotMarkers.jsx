@@ -12,46 +12,42 @@ const styles = {
   }
 };
 
-export default class SpotMarkers extends React.PureComponent {
-  render() {
-    return this.renderSpotMarkers();
-  }
-
-  renderSpotMarkers() {
-    return this.props.spots.map((spot, index) => (
-      <OverlayView
-        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-        key={index}
-        position={
-          new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
-        }
-      >
-        {this.props.large ?
-        <Tooltip title={spot.name}>
-          <Button
-            variant="fab"
-            style={styles.overlayButton}
-            onClick={() => this.props.onSpotMarkerClick(spot)}
-          >
-            <Avatar
-              src={spot.image_url}
-              alt={spot.name}
-            />
-          </Button>
-        </Tooltip>
-        :
+const SpotMarkers = (props) => {
+  return props.spots.map((spot, index) => (
+    <OverlayView
+      mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+      key={index}
+      position={
+        new google.maps.LatLng(parseFloat(spot.lat), parseFloat(spot.lng))
+      }
+    >
+      {props.large ?
+      <Tooltip title={spot.name}>
         <Button
           variant="fab"
           style={styles.overlayButton}
-          onClick={() => this.props.onSpotMarkerClick(spot)}
+          onClick={() => props.onSpotMarkerClick(spot)}
         >
           <Avatar
             src={spot.image_url}
             alt={spot.name}
           />
         </Button>
-        }
-      </OverlayView>
-    ));
-  }
+      </Tooltip>
+      :
+      <Button
+        variant="fab"
+        style={styles.overlayButton}
+        onClick={() => props.onSpotMarkerClick(spot)}
+      >
+        <Avatar
+          src={spot.image_url}
+          alt={spot.name}
+        />
+      </Button>
+      }
+    </OverlayView>
+  ));
 }
+
+export default SpotMarkers;

@@ -6,7 +6,7 @@ import selectSpot from '../actions/selectSpot';
 
 const mapStateToProps = state => {
   return {
-    currentMap: state.mapSummary.currentMap,
+    map: state.mapSummary.currentMap,
     mapReviews: state.mapSummary.mapReviews,
     followers: state.mapSummary.followers,
     large: state.shared.large

@@ -18,46 +18,42 @@ const styles = {
   }
 }
 
-export default class MapFollowersList extends React.PureComponent {
-  componentWillMount() {
-    this.props.fetchFollowers(this.props.mapId);
-  }
-
-  render() {
-    return (
-      <List
-        subheader={this.props.large &&
-          <ListSubheader style={styles.subheader}>{I18n.t('followers')}</ListSubheader>
-        }
-      >
-        {this.renderFollowers(this.props.followers)}
-      </List>
-    );
-  }
-
-  renderFollowers(followers) {
-    return followers.map(follower => (
-      <ListItem
-        button
-        key={follower.id}
-        component={Link}
-        to={`/users/${follower.id}`}
-      >
-        <Avatar
-          src={follower.profile_image_url}
-          alt={follower.name}
-        />
-        <ListItemText primary={follower.name} />
-        {follower.owner && this.renderOwnerMark()}
-      </ListItem>
-    ));
-  }
-
-  renderOwnerMark() {
-    return (
-      <ListItemSecondaryAction style={styles.ownerMark}>
-        <Chip label={I18n.t('owner')} />
-      </ListItemSecondaryAction>
-    );
-  }
+const OwnerMark = () => {
+  return (
+    <ListItemSecondaryAction style={styles.ownerMark}>
+      <Chip label={I18n.t('owner')} />
+    </ListItemSecondaryAction>
+  );
 }
+
+const Followers = (props) => {
+  return props.followers.map(follower => (
+    <ListItem
+      button
+      key={follower.id}
+      component={Link}
+      to={`/users/${follower.id}`}
+    >
+      <Avatar
+        src={follower.profile_image_url}
+        alt={follower.name}
+      />
+      <ListItemText primary={follower.name} />
+      {follower.owner && <OwnerMark />}
+    </ListItem>
+  ));
+}
+
+const MapFollowersList = (props) => {
+  return (
+    <List
+      subheader={props.large &&
+        <ListSubheader style={styles.subheader}>{I18n.t('followers')}</ListSubheader>
+      }
+    >
+      <Followers {...props} />
+    </List>
+  );
+}
+
+export default MapFollowersList;

@@ -15,33 +15,31 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
-class SignInRequiredDialog extends React.PureComponent {
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onClose={this.props.onClose}
-        fullWidth
-        TransitionComponent={Transition}
-      >
-        <DialogTitle>
-          {I18n.t('this action requires sign in')}
-        </DialogTitle>
-        <DialogContent style={styles.dialogContent}>
-          <LoginButtonsContainer />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.onClose}>
-            {I18n.t('cancel')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
+const SignInRequiredDialog = (props) => {
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onClose={props.onClose}
+      fullWidth
+      TransitionComponent={Transition}
+    >
+      <DialogTitle>
+        {I18n.t('this action requires sign in')}
+      </DialogTitle>
+      <DialogContent style={styles.dialogContent}>
+        <LoginButtonsContainer />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={props.onClose}>
+          {I18n.t('cancel')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 export default SignInRequiredDialog;

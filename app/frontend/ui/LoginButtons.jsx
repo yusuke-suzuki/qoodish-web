@@ -6,11 +6,13 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { useIOS } from '../containers/Utils';
 
 class LoginButtons extends React.PureComponent {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     this.uiConfig = {
       callbacks: {
         signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-          this.props.signIn(authResult, redirectUrl);
+          props.signIn(authResult, redirectUrl);
         }
       },
       signInFlow: useIOS() ? 'redirect' : 'popup',

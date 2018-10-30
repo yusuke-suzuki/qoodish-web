@@ -24,10 +24,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeRequestNotificationDialog());
     },
 
-    handleNotificationAllowed: () => {
-      dispatch(closeRequestNotificationDialog());
-    },
-
     handleAllowNotificationButtonClick: async () => {
       const messaging = firebase.messaging();
       const client = new ApiClient();
