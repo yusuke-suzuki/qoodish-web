@@ -13,7 +13,7 @@
     "build:functions": "babel app/functions/ --out-dir functions/"
   },
   "dependencies": {
-    "@material-ui/core": "3.2.2",
+    "@material-ui/core": "3.3.2",
     "@material-ui/icons": "^1.1.0",
     "blueimp-canvas-to-blob": "^3.14.0",
     "firebase": "^5.5.3",
