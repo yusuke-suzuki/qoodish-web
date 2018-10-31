@@ -3,7 +3,6 @@ import BottomNav from '../ui/BottomNav';
 
 const mapStateToProps = state => {
   return {
-    pathname: state.router.location.pathname,
     bottomNavValue: state.shared.bottomNavValue,
     unreadNotifications: state.shared.unreadNotifications
   };

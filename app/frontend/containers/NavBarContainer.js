@@ -25,11 +25,12 @@ const mapStateToProps = state => {
     notifications: state.shared.notifications,
     unreadNotifications: state.shared.unreadNotifications,
     showBackButton: state.shared.showBackButton,
-    pathname: state.router.location.pathname,
     mapsTabActive: state.shared.mapsTabActive,
     mapsTabValue: state.maps.tabValue,
     previous: state.shared.previous,
-    drawerOpen: state.shared.drawerOpen
+    drawerOpen: state.shared.drawerOpen,
+    showSideNav: state.shared.showSideNav,
+    isMapDetail: state.shared.isMapDetail
   };
 };
 

@@ -208,7 +208,7 @@ class NavBar extends React.PureComponent {
     return (
       <div>
         <AppBar position="fixed">
-          {this.isMapDetail() && !this.props.large ? this.renderMapToolbar() : this.renderToolbar()}
+          {this.props.isMapDetail && !this.props.large ? this.renderMapToolbar() : this.renderToolbar()}
           {this.props.mapsTabActive && this.renderMapsTab()}
         </AppBar>
         {this.props.large ? this.renderLargeDrawer() : this.renderSwipeableDrawer()}
@@ -280,25 +280,11 @@ class NavBar extends React.PureComponent {
   }
 
   renderLargeDrawer() {
-    if (this.sideNavUnnecessary()) {
-      return this.renderTemporaryDrawer();
-    } else {
+    if (this.props.showSideNav) {
       return this.renderPermanentDrawer();
+    } else {
+      return this.renderTemporaryDrawer();
     }
-  }
-
-  sideNavUnnecessary() {
-    const path = this.props.pathname;
-    return (
-      this.isMapDetail() ||
-      path.includes('/login') ||
-      path.includes('/terms') ||
-      path.includes('/privacy')
-    );
-  }
-
-  isMapDetail() {
-    return this.props.pathname.includes('/maps/') && !this.props.pathname.includes('/reports');
   }
 
   renderTemporaryDrawer() {
@@ -557,7 +543,7 @@ class NavBar extends React.PureComponent {
     return (
       <div>
         <List disablePadding component="nav">
-          {!this.props.large || this.sideNavUnnecessary() ? this.renderTitle() : null}
+          {!this.props.large || !this.props.showSideNav ? this.renderTitle() : null}
           <ListItem button component={Link} to="/" title={I18n.t('home')}>
             <ListItemIcon>
               <HomeIcon />

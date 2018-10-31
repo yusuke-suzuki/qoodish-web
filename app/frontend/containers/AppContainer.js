@@ -15,7 +15,7 @@ const mapStateToProps = state => {
     large: state.shared.large,
     registrationToken: state.app.registrationToken,
     notificationPermitted: state.app.notificationPermitted,
-    pathname: state.router.location.pathname
+    showSideNav: state.shared.showSideNav
   };
 };
 

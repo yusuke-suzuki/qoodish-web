@@ -17,8 +17,6 @@ import {
   READ_NOTIFICATION,
   LOAD_NOTIFICATIONS_START,
   LOAD_NOTIFICATIONS_END,
-  SHOW_BACK_BUTTON,
-  HIDE_BACK_BUTTON,
   SHOW_MAPS_TAB,
   HIDE_MAPS_TAB,
   OPEN_REQUEST_NOTIFICATION_DIALOG,
@@ -56,7 +54,9 @@ const initialState = {
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
-  bottomNavValue: undefined
+  bottomNavValue: undefined,
+  showSideNav: true,
+  isMapDetail: false
 };
 
 const getBottomNavValue = (pathname) => {
@@ -74,6 +74,25 @@ const getBottomNavValue = (pathname) => {
     default:
       return undefined;
   }
+}
+
+const showSideNav = (pathname, large) => {
+  if (!large) {
+    return false;
+  } else if (
+    (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
+    pathname.includes('/login') ||
+    pathname.includes('/terms') ||
+    pathname.includes('/privacy')
+  ) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+const detectMapDetail = (pathname) => {
+  return pathname.includes('/maps/') && !pathname.includes('/reports');
 }
 
 const switchBackButton = (pathname) => {
@@ -240,7 +259,9 @@ const reducer = (state = initialState, action) => {
         requestNotificationDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
-        drawerOpen: false
+        drawerOpen: false,
+        showSideNav: showSideNav(action.payload.pathname, state.large),
+        isMapDetail: detectMapDetail(action.payload.pathname)
       });
     default:
       return state;
