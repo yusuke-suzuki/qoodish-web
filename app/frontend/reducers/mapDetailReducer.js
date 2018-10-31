@@ -23,7 +23,6 @@ const initialState = {
   inviteTargetDialogOpen: false,
   pickedUsers: [],
   loadingUsers: false,
-  spotReviews: [],
   mapSummaryOpen: false,
   leaveMapDialogOpen: false
 };

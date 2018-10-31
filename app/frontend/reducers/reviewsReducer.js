@@ -34,7 +34,7 @@ const initialState = {
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
-  selectedPlace: null
+  selectedPlace: undefined
 };
 
 const reducer = (state = initialState, action) => {
@@ -125,13 +125,17 @@ const reducer = (state = initialState, action) => {
     case OPEN_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: action.payload.review,
-        editReviewDialogOpen: true
+        editReviewDialogOpen: true,
+        selectedPlace: {
+          placeId: action.payload.review.place_id,
+          description: action.payload.review.spot.name
+        }
       });
     case CLOSE_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: null,
         editReviewDialogOpen: false,
-        selectedPlace: null
+        selectedPlace: undefined
       });
     case OPEN_COPY_REVIEW_DIALOG:
       return Object.assign({}, state, {

@@ -32,13 +32,8 @@ class FeedbackDialog extends React.PureComponent {
     this.handleNegativeChange = this.handleNegativeChange.bind(this);
     this.handlePositiveChange = this.handlePositiveChange.bind(this);
     this.handleSendButtonClick = this.handleSendButtonClick.bind(this);
+    this.clearState = this.clearState.bind(this);
     this.validate = this.validate.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.dialogOpen) {
-      this.clearState();
-    }
   }
 
   clearState() {
@@ -129,6 +124,7 @@ class FeedbackDialog extends React.PureComponent {
       <Dialog
         open={this.props.dialogOpen}
         onClose={this.props.onClose}
+        onExit={this.clearState}
         fullWidth
         TransitionComponent={Transition}
       >

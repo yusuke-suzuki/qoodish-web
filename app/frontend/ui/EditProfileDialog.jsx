@@ -30,7 +30,7 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
@@ -48,17 +48,16 @@ class EditProfileDialog extends React.PureComponent {
     this.handleImageChange = this.handleImageChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.validate = this.validate.bind(this);
+    this.clearState = this.clearState.bind(this);
+    this.setCurrentProfile = this.setCurrentProfile.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.currentUser) {
+  setCurrentProfile() {
+    if (this.props.currentUser) {
       this.setState({
-        name: nextProps.currentUser.name,
-        imageUrl: nextProps.currentUser.thumbnail_url
+        name: this.props.currentUser.name,
+        imageUrl: this.props.currentUser.thumbnail_url
       });
-    }
-    if (!nextProps.dialogOpen) {
-      this.clearState();
     }
   }
 
@@ -148,7 +147,9 @@ class EditProfileDialog extends React.PureComponent {
     return (
       <Dialog
         open={this.props.dialogOpen}
+        onEnter={this.setCurrentProfile}
         onClose={this.props.handleRequestDialogClose}
+        onExit={this.clearState}
         disableBackdropClick
         disableEscapeKeyDown
         fullWidth

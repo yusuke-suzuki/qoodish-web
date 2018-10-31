@@ -110,7 +110,7 @@ const PlaceSelectDialog = (props) => {
       fullScreen={!props.large}
       TransitionComponent={Transition}
     >
-      {props.large ? <PlaceDialogTitle {...props} /> : <PlaceAppBar />}
+      {props.large ? <PlaceDialogTitle {...props} /> : <PlaceAppBar {...props} />}
       <DialogContent
         style={
           props.large

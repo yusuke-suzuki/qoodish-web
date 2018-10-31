@@ -10,8 +10,6 @@ import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';
 import readNotification from '../actions/readNotification';
 import { sleep } from './Utils';
-import showBackButton from '../actions/showBackButton';
-import hideBackButton from '../actions/hideBackButton';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 import openFeedbackDialog from '../actions/openFeedbackDialog';
@@ -26,7 +24,7 @@ const mapStateToProps = state => {
     pageTitle: state.shared.pageTitle,
     notifications: state.shared.notifications,
     unreadNotifications: state.shared.unreadNotifications,
-    backButton: state.shared.showBackButton,
+    showBackButton: state.shared.showBackButton,
     pathname: state.router.location.pathname,
     mapsTabActive: state.shared.mapsTabActive,
     mapsTabValue: state.maps.tabValue,
@@ -93,14 +91,6 @@ const mapDispatchToProps = dispatch => {
       } else {
         dispatch(push('/'));
       }
-    },
-
-    showBackButton: () => {
-      dispatch(showBackButton());
-    },
-
-    hideBackButton: () => {
-      dispatch(hideBackButton());
     },
 
     handleFollowingMapsTabClick: () => {

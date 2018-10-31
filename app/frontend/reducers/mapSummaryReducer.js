@@ -10,13 +10,15 @@ import {
   JOIN_MAP,
   LEAVE_MAP,
   LIKE_REVIEW,
-  UNLIKE_REVIEW
+  UNLIKE_REVIEW,
+  SELECT_SPOT
 } from '../actionTypes';
 
 const initialState = {
   currentMap: null,
   followers: [],
-  mapReviews: []
+  mapReviews: [],
+  spotReviews: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -89,6 +91,13 @@ const reducer = (state = initialState, action) => {
       });
       return Object.assign({}, state, {
         mapReviews: mapReviews
+      });
+    case SELECT_SPOT:
+      let reviews = state.mapReviews.filter(review => {
+        return review.place_id === action.payload.spot.place_id;
+      });
+      return Object.assign({}, state, {
+        spotReviews: reviews
       });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {

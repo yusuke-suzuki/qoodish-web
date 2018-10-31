@@ -110,10 +110,19 @@ const reducer = (state = initialState, action) => {
         postableMaps: rejectedPostableMaps
       });
     case OPEN_EDIT_MAP_DIALOG:
-      return Object.assign({}, state, {
+      let newState = {
         targetMap: action.payload.map,
         editMapDialogOpen: true
-      });
+      };
+      if (action.payload.map.base.place_id) {
+        Object.assign(newState, {
+          selectedBase: {
+            placeId: action.payload.map.base.place_id,
+            description: action.payload.map.base.name
+          }
+        });
+      }
+      return Object.assign({}, state, newState);
     case CLOSE_EDIT_MAP_DIALOG:
       return Object.assign({}, state, {
         targetMap: null,

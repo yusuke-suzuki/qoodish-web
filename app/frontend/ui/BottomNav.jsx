@@ -29,100 +29,63 @@ const styles = {
   }
 };
 
-export default class BottomNav extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tabValue: 0
-    };
-  }
-
-  componentDidMount() {
-    this.switchBottomNav(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.switchBottomNav(nextProps);
-  }
-
-  switchBottomNav(props) {
-    let tabValue = undefined;
-    switch (props.pathname) {
-      case '/':
-        tabValue = 0;
-        break;
-      case '/discover':
-        tabValue = 1;
-        break;
-      case '/maps':
-        tabValue = 2;
-        break;
-      case '/profile':
-        tabValue = 3;
-        break;
-      case '/notifications':
-        tabValue = 4;
-        break;
-    }
-    this.setState({ tabValue: tabValue });
-  }
-
-  render() {
+const NotificationIcon = (props) => {
+  if (props.unreadNotifications.length > 0) {
     return (
-      <Paper style={styles.bottomNav} elevation={20}>
-        <BottomNavigation value={this.state.tabValue}>
-          <BottomNavigationAction
-            component={Link}
-            to="/"
-            title={I18n.t('home')}
-            icon={<HomeIcon />}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            component={Link}
-            to="/discover"
-            title={I18n.t('discover')}
-            icon={<ExploreIcon />}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            component={Link}
-            to="/maps"
-            title={I18n.t('maps')}
-            icon={<MapIcon />}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            component={Link}
-            to="/profile"
-            title={I18n.t('account')}
-            icon={<AccountCircleIcon />}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            component={Link}
-            to="/notifications"
-            title={I18n.t('notice')}
-            icon={this.renderNotificationIcon()}
-            style={styles.bottomAction}
-          />
-        </BottomNavigation>
-      </Paper>
+      <Badge
+        badgeContent={props.unreadNotifications.length}
+        color="secondary"
+      >
+        <NotificationsIcon />
+      </Badge>
     );
-  }
-
-  renderNotificationIcon() {
-    if (this.props.unreadNotifications.length > 0) {
-      return (
-        <Badge
-          badgeContent={this.props.unreadNotifications.length}
-          color="secondary"
-        >
-          <NotificationsIcon />
-        </Badge>
-      );
-    } else {
-      return <NotificationsIcon />;
-    }
+  } else {
+    return <NotificationsIcon />;
   }
 }
+
+const BottomNav = (props) => {
+  return (
+    <Paper style={styles.bottomNav} elevation={20}>
+      <BottomNavigation value={props.bottomNavValue}>
+        <BottomNavigationAction
+          component={Link}
+          to="/"
+          title={I18n.t('home')}
+          icon={<HomeIcon />}
+          style={styles.bottomAction}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/discover"
+          title={I18n.t('discover')}
+          icon={<ExploreIcon />}
+          style={styles.bottomAction}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/maps"
+          title={I18n.t('maps')}
+          icon={<MapIcon />}
+          style={styles.bottomAction}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/profile"
+          title={I18n.t('account')}
+          icon={<AccountCircleIcon />}
+          style={styles.bottomAction}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/notifications"
+          title={I18n.t('notice')}
+          icon={<NotificationIcon {...props} />}
+          style={styles.bottomAction}
+        />
+      </BottomNavigation>
+    </Paper>
+  );
+}
+
+export default BottomNav;

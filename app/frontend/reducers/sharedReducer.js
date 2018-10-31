@@ -55,8 +55,39 @@ const initialState = {
   requestNotificationDialogOpen: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
-  drawerOpen: false
+  drawerOpen: false,
+  bottomNavValue: undefined
 };
+
+const getBottomNavValue = (pathname) => {
+  switch (pathname) {
+    case '/':
+      return 0;
+    case '/discover':
+      return 1;
+    case '/maps':
+      return 2;
+    case '/profile':
+      return 3;
+    case '/notifications':
+      return 4;
+    default:
+      return undefined;
+  }
+}
+
+const switchBackButton = (pathname) => {
+  if (
+    pathname.includes('/reports/') ||
+    pathname.includes('/maps/') ||
+    pathname.includes('/spots/') ||
+    pathname.includes('/users/')
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -159,14 +190,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingNotifications: false
       });
-    case SHOW_BACK_BUTTON:
-      return Object.assign({}, state, {
-        showBackButton: true
-      });
-    case HIDE_BACK_BUTTON:
-      return Object.assign({}, state, {
-        showBackButton: false
-      });
     case SHOW_MAPS_TAB:
       return Object.assign({}, state, {
         mapsTabActive: true
@@ -210,6 +233,8 @@ const reducer = (state = initialState, action) => {
     case '@@router/LOCATION_CHANGE':
       return Object.assign({}, state, {
         previous: action.payload.state ? action.payload.state.previous : false,
+        bottomNavValue: getBottomNavValue(action.payload.pathname),
+        showBackButton: switchBackButton(action.payload.pathname),
         issueDialogOpen: false,
         likesDialogOpen: false,
         requestNotificationDialogOpen: false,
