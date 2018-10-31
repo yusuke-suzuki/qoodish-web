@@ -39,6 +39,7 @@ const theme = createMuiTheme({
 
 class App extends React.PureComponent {
   async componentDidMount() {
+    this.props.handleWindowSizeChange(this.props.width);
     let currentUser = await getCurrentUser();
     if (currentUser) {
       if (currentUser.isAnonymous) {
@@ -169,25 +170,15 @@ class App extends React.PureComponent {
             item
             xs={12}
             sm={12}
-            md={this.sideNavUnnecessary() ? 12 : 6}
-            lg={this.sideNavUnnecessary() ? 12 : 8}
-            xl={this.sideNavUnnecessary() ? 12 : 8}
+            md={this.props.showSideNav ? 6 : 12}
+            lg={this.props.showSideNav ? 8 : 12}
+            xl={this.props.showSideNav ? 8 : 12}
           >
             <Routes />
           </Grid>
         </Grid>
-        {!this.props.large && !this.sideNavUnnecessary() && <BottomNavContainer />}
+        {!this.props.large && this.props.showSideNav && <BottomNavContainer />}
       </div>
-    );
-  }
-
-  sideNavUnnecessary() {
-    const path = this.props.pathname;
-    return (
-      (path.includes('/maps/') && !path.includes('/reports')) ||
-      path.includes('/login') ||
-      path.includes('/terms') ||
-      path.includes('/privacy')
     );
   }
 }

@@ -148,7 +148,7 @@ class Login extends React.PureComponent {
                 subtitle={
                   <div>
                     <Typography
-                      variant={this.props.large ? "h5" : "title"}
+                      variant={this.props.large ? "h5" : "h6"}
                       color="inherit"
                       style={styles.carouselTileBarText}
                     >
