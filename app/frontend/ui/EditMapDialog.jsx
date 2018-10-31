@@ -47,8 +47,6 @@ class EditMapDialog extends React.PureComponent {
       mapId: '',
       name: '',
       description: '',
-      baseId: '',
-      baseName: '',
       private: false,
       invitable: false,
       shared: false,
@@ -65,31 +63,21 @@ class EditMapDialog extends React.PureComponent {
     this.handleInvitableFlugChange = this.handleInvitableFlugChange.bind(this);
     this.handleSharedFlugChange = this.handleSharedFlugChange.bind(this);
     this.validate = this.validate.bind(this);
+    this.clearState = this.clearState.bind(this);
+    this.setCurrentMap = this.setCurrentMap.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    let currentMap = nextProps.currentMap;
-    if (nextProps.currentMap) {
+  setCurrentMap() {
+    if (this.props.currentMap) {
       this.setState({
-        mapId: currentMap.id,
-        name: currentMap.name,
-        description: currentMap.description,
-        baseId: currentMap.base.place_id,
-        baseName: currentMap.base.name,
-        private: currentMap.private,
-        invitable: currentMap.invitable,
-        shared: currentMap.shared,
+        mapId: this.props.currentMap.id,
+        name: this.props.currentMap.name,
+        description: this.props.currentMap.description,
+        private: this.props.currentMap.private,
+        invitable: this.props.currentMap.invitable,
+        shared: this.props.currentMap.shared,
         disabled: false
       });
-    }
-    if (nextProps.selectedBase) {
-      this.setState({
-        baseId: nextProps.selectedBase.placeId,
-        baseName: nextProps.selectedBase.description,
-      });
-    }
-    if (!nextProps.dialogOpen) {
-      this.clearState();
     }
   }
 
@@ -98,8 +86,6 @@ class EditMapDialog extends React.PureComponent {
       mapId: '',
       name: '',
       description: '',
-      baseId: '',
-      baseName: '',
       private: false,
       invitable: false,
       shared: false,
@@ -180,8 +166,8 @@ class EditMapDialog extends React.PureComponent {
       map_id: this.state.mapId,
       name: this.state.name,
       description: this.state.description,
-      base_id: this.state.baseId,
-      base_name: this.state.baseName,
+      base_id: this.props.selectedBase ? this.props.selectedBase.placeId : '',
+      base_name: this.props.selectedBase ? this.props.selectedBase.description : '',
       private: this.state.private,
       invitable: this.state.invitable,
       shared: this.state.shared
@@ -211,6 +197,8 @@ class EditMapDialog extends React.PureComponent {
       <Dialog
         open={this.props.dialogOpen}
         onClose={this.props.handleRequestDialogClose}
+        onEnter={this.setCurrentMap}
+        onExit={this.clearState}
         disableBackdropClick
         disableEscapeKeyDown
         fullWidth
@@ -233,7 +221,7 @@ class EditMapDialog extends React.PureComponent {
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.state.baseName ? this.state.baseName : I18n.t('center of map')}
+            label={this.props.selectedBase ? this.props.selectedBase.description : I18n.t('center of map')}
             onClick={this.props.handleMapBaseClick}
             style={styles.mapCenterChip}
             clickable

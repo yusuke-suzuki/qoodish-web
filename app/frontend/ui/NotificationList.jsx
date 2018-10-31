@@ -21,7 +21,7 @@ const styles = {
 };
 
 export default class NotificationList extends React.PureComponent {
-  componentWillMount() {
+  componentDidMount() {
     this.props.readNotifications(this.props.notifications);
   }
 

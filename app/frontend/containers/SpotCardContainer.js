@@ -16,7 +16,7 @@ const mapStateToProps = state => {
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
     large: state.shared.large,
-    mapReviews: state.mapSummary.mapReviews
+    spotReviews: state.mapSummary.spotReviews
   };
 };
 

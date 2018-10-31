@@ -167,24 +167,11 @@ class NavBar extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.currentUser || this.props.currentUser.isAnonymous) {
       return;
     }
     this.props.handleMount();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.pathname.includes('/reports/') ||
-      nextProps.pathname.includes('/maps/') ||
-      nextProps.pathname.includes('/spots/') ||
-      nextProps.pathname.includes('/users/')
-    ) {
-      this.props.showBackButton();
-    } else {
-      this.props.hideBackButton();
-    }
   }
 
   handleTitleClick() {
@@ -232,7 +219,7 @@ class NavBar extends React.PureComponent {
   renderToolbar() {
     return (
       <Toolbar disableGutters style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}>
-        {!this.props.large && this.props.backButton
+        {!this.props.large && this.props.showBackButton
           ? this.renderBackButton()
           : <AppMenuButtonContainer />}
         {this.props.large ? this.renderLogo() : null}

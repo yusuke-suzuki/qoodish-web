@@ -23,7 +23,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { sleep } from '../containers/Utils';
 import I18n from '../containers/I18n';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -60,7 +59,7 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = (props) => {
   return <Slide direction="up" {...props} />;
 }
 
@@ -71,8 +70,6 @@ class EditReviewDialog extends React.PureComponent {
       id: null,
       mapId: undefined,
       comment: '',
-      placeId: '',
-      placeName: '',
       image: null,
       imagePreviewUrl: '',
       errorComment: '',
@@ -83,55 +80,43 @@ class EditReviewDialog extends React.PureComponent {
     this.handleCommentChange = this.handleCommentChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
-    this.handleRequestClose = this.handleRequestClose.bind(this);
     this.handleClearImageClick = this.handleClearImageClick.bind(this);
     this.clearInputs = this.clearInputs.bind(this);
+    this.setCurrentMap = this.setCurrentMap.bind(this);
+    this.setCurrentReview = this.setCurrentReview.bind(this);
+    this.initForm = this.initForm.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.dialogOpen) {
-      return;
-    }
-    let currentReview = nextProps.currentReview;
-    if (currentReview) {
-      let imagePreviewUrl = '';
-      if (currentReview.image) {
-        imagePreviewUrl = currentReview.image.url;
-      }
+  async initForm() {
+    this.setCurrentReview(this.props);
+    await this.props.fetchPostableMaps();
+    this.setCurrentMap(this.props);
+  }
+
+  setCurrentReview(props) {
+    if (props.currentReview) {
       this.setState(
         {
-          id: currentReview.id,
-          mapId: currentReview.map.id,
-          comment: currentReview.comment,
-          placeId: currentReview.place_id,
-          placeName: currentReview.spot.name,
-          imagePreviewUrl: imagePreviewUrl,
+          id: props.currentReview.id,
+          comment: props.currentReview.comment,
+          imagePreviewUrl: props.currentReview.image ? props.currentReview.image.url : '',
           disabled: false
         },
-        async () => {
-          await sleep(1000);
-          this.drawImagePreview(imagePreviewUrl);
-        }
+        this.drawImagePreview
       );
-    } else {
-      this.clearInputs();
-      if (nextProps.currentMap) {
-        this.setState({
-          mapId: nextProps.currentMap.id
-        });
-      } else if (nextProps.postableMaps.length > 0) {
-        this.setState({
-          mapId: nextProps.postableMaps[0].id
-        });
-      }
     }
+  }
 
-    if (nextProps.selectedPlace) {
-      this.setState({
-        placeId: nextProps.selectedPlace.placeId,
-        placeName: nextProps.selectedPlace.description
-      });
+  setCurrentMap(props) {
+    let mapId = undefined;
+    if (props.currentReview) {
+      mapId = props.currentReview.map.id;
+    } else if (props.currentMap) {
+      mapId = props.currentMap.id;
+    } else if (props.postableMaps.length > 0) {
+      mapId = props.postableMaps[0].id;
     }
+    this.setState({ mapId: mapId });
   }
 
   handleMapChange(e) {
@@ -185,7 +170,7 @@ class EditReviewDialog extends React.PureComponent {
   handleSaveButtonClick() {
     let params = {
       comment: this.state.comment,
-      place_id: this.state.placeId
+      place_id: this.props.selectedPlace.placeId
     };
     let canvas = document.getElementById('canvas');
     if (this.imageNotChanged()) {
@@ -228,19 +213,20 @@ class EditReviewDialog extends React.PureComponent {
 
     reader.onloadend = () => {
       let dataUrl = reader.result;
-      this.setState({
-        image: file,
-        imagePreviewUrl: dataUrl,
-        imageDeleteRequest: false
-      });
-
-      this.drawImagePreview(dataUrl);
-    };
+      this.setState(
+        {
+          image: file,
+          imagePreviewUrl: dataUrl,
+          imageDeleteRequest: false
+        },
+        this.drawImagePreview
+      );
+    }
 
     reader.readAsDataURL(file);
   }
 
-  drawImagePreview(imageUrl) {
+  drawImagePreview() {
     let canvas = document.getElementById('canvas');
     if (!canvas) {
       return;
@@ -248,7 +234,7 @@ class EditReviewDialog extends React.PureComponent {
     if (canvas.getContext) {
       let context = canvas.getContext('2d');
       let image = new Image();
-      image.src = imageUrl;
+      image.src = this.state.imagePreviewUrl;
       image.onload = () => {
         canvas.width = image.width;
         canvas.height = image.height;
@@ -265,18 +251,11 @@ class EditReviewDialog extends React.PureComponent {
     });
   }
 
-  handleRequestClose() {
-    this.props.handleRequestClose();
-    this.clearInputs();
-  }
-
   clearInputs() {
     this.setState({
       id: null,
       mapId: null,
       comment: '',
-      placeId: '',
-      placeName: '',
       image: null,
       imagePreviewUrl: '',
       errorComment: '',
@@ -288,8 +267,9 @@ class EditReviewDialog extends React.PureComponent {
     return (
       <Dialog
         open={this.props.dialogOpen}
-        onEnter={this.props.fetchPostableMaps}
-        onClose={this.handleRequestClose}
+        onEnter={this.initForm}
+        onClose={this.props.handleRequestClose}
+        onExit={this.clearInputs}
         disableBackdropClick
         disableEscapeKeyDown
         fullWidth
@@ -310,7 +290,7 @@ class EditReviewDialog extends React.PureComponent {
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.state.placeName}
+            label={this.props.selectedPlace && this.props.selectedPlace.description}
             onClick={this.props.handleSpotClick}
             clickable
           />
@@ -355,7 +335,7 @@ class EditReviewDialog extends React.PureComponent {
         <Toolbar style={styles.toolbar}>
           <IconButton
             color="inherit"
-            onClick={this.handleRequestClose}
+            onClick={this.props.handleRequestClose}
           >
             <CloseIcon />
           </IconButton>
@@ -379,7 +359,7 @@ class EditReviewDialog extends React.PureComponent {
   renderActionsLarge() {
     return (
       <DialogActions>
-        <Button onClick={this.handleRequestClose}>{I18n.t('cancel')}</Button>
+        <Button onClick={this.props.handleRequestClose}>{I18n.t('cancel')}</Button>
         <Button
           variant="contained"
           onClick={this.handleSaveButtonClick}

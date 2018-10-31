@@ -102,237 +102,189 @@ const styles = {
   }
 };
 
-class SpotCard extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reviews: []
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    let reviews = nextProps.mapReviews.filter(review => {
-      return review.place_id === nextProps.currentSpot.place_id;
-    });
-    this.setState(Object.assign(this.state.reviews, reviews));
-  }
-
-  render() {
-    return this.renderDrawer();
-  }
-
-  renderDrawer() {
-    return (
-      <SwipeableDrawer
-        variant={this.props.large ? "persistent" : "temporary"}
-        anchor={this.props.large ? "left": "bottom"}
-        open={this.props.open}
-        PaperProps={{
-          style: this.props.large ? styles.drawerPaperLarge : {},
-          square: this.props.large ? true : false
-        }}
-        onOpen={this.props.handleOpen}
-        onClose={this.props.handleClose}
-        disableSwipeToOpen
-        disableBackdropTransition
-        ModalProps={{ hideBackdrop: true, style: this.props.large ? {} : styles.modal }}
-      >
-        {this.props.large && this.renderToolbar()}
-        {this.props.currentSpot && this.renderSpotCard(this.props.currentSpot)}
-      </SwipeableDrawer>
-    );
-  }
-
-  renderSpotCard(spot) {
-    return this.props.large ? this.renderSpotCardLarge(spot) : this.renderSpotCardSmall(spot);
-  }
-
-  renderSpotCardLarge(spot) {
-    return (
-      <Card style={styles.cardLarge}>
-        <CardMedia>
-          <SwipeableViews>
-            {this.renderReviewImages(this.state.reviews)}
-          </SwipeableViews>
-        </CardMedia>
-        <CardContent>
-          <Typography
-            variant="h5"
-            gutterBottom
-          >
-            {spot.name}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="textSecondary"
-            gutterBottom
-          >
-            {spot.formatted_address}
-          </Typography>
-          {this.state.reviews.length > 0 && (
-            <div style={styles.reviewTilesContainer}>
-              <ReviewTilesContainer
-                reviews={this.state.reviews}
-                showSubheader
-              />
-            </div>
-          )}
-        </CardContent>
-        {this.renderBottomNavigation(spot)}
-      </Card>
-    );
-  }
-
-  renderBottomNavigation(spot) {
-    return (
-      <Paper style={this.props.large ? styles.bottomNavLarge : {}} elevation={2}>
-        <BottomNavigation showLabels>
-          <BottomNavigationAction
-            label={I18n.t('location')}
-            icon={<PlaceIcon />}
-            onClick={() => this.props.handleLocationButtonClick(spot)}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            label={I18n.t('routes')}
-            icon={<DirectionsIcon />}
-            onClick={() => this.props.handleRouteButtonClick(spot)}
-            style={styles.bottomAction}
-          />
-          <BottomNavigationAction
-            label={I18n.t('detail')}
-            icon={<InfoIcon />}
-            component={Link}
-            to={`/spots/${spot.place_id}`}
-            style={styles.bottomAction}
-          />
-        </BottomNavigation>
-      </Paper>
-    );
-  }
-
-  renderSpotCardSmall(spot) {
-    return (
-      <div>
-        <CardContent style={styles.cardContentSmall}>
-          <div style={styles.dragHandleContainer}>
-            <DragHandleIcon color="disabled" />
-          </div>
-          {this.renderCardHeader(spot)}
-          <GridList
-            cols={2.5}
-            cellHeight={100}
-            style={styles.gridList}
-          >
-            {this.renderCreateReviewTile(spot)}
-            {this.renderReviewTiles(this.state.reviews)}
-          </GridList>
-        </CardContent>
-        {this.renderBottomNavigation(spot)}
-      </div>
-    );
-  }
-
-  renderCardHeader(spot) {
-    return (
-      <List disablePadding>
-        <ListItem disableGutters style={styles.listItem}>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography variant="h6" noWrap>
-                {spot.name}
-              </Typography>
-            }
-            secondary={
-              <Typography
-                component="p"
-                noWrap
-                color="textSecondary"
-              >
-                {spot.formatted_address}
-              </Typography>
-            }
-          />
-        </ListItem>
-      </List>
-    );
-  }
-
-  renderCreateReviewTile(spot) {
-    return (
-      <GridListTile
-        key="add-review"
-        onClick={() => this.props.handleCreateReviewClick(spot)}
-      >
-        <img src={process.env.SUBSTITUTE_URL} />
-        <GridListTileBar
-          style={styles.createReviewTile}
-          title={
-            <AddIcon fontSize="large" />
-          }
-          subtitle={I18n.t('create new report')}
+const SpotBottomNavigation = (props) => {
+  return (
+    <Paper style={props.large ? styles.bottomNavLarge : {}} elevation={2}>
+      <BottomNavigation showLabels>
+        <BottomNavigationAction
+          label={I18n.t('location')}
+          icon={<PlaceIcon />}
+          onClick={() => props.handleLocationButtonClick(props.currentSpot)}
+          style={styles.bottomAction}
         />
-      </GridListTile>
-    );
-  }
+        <BottomNavigationAction
+          label={I18n.t('routes')}
+          icon={<DirectionsIcon />}
+          onClick={() => props.handleRouteButtonClick(props.currentSpot)}
+          style={styles.bottomAction}
+        />
+        <BottomNavigationAction
+          label={I18n.t('detail')}
+          icon={<InfoIcon />}
+          component={Link}
+          to={`/spots/${props.currentSpot.place_id}`}
+          style={styles.bottomAction}
+        />
+      </BottomNavigation>
+    </Paper>
+  );
+}
 
-  renderReviewTiles(reviews) {
-    return reviews.map(review => (
-      <GridListTile
-        key={review.id}
-        onClick={() => this.props.handleReviewClick(review)}
-      >
-        <img src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL} alt={review.spot.name} />
-        <GridListTileBar
-          style={styles.tileBar}
-          actionIcon={
-            <Avatar
-              src={review.author.profile_image_url}
-              alt={review.author.name}
-              style={styles.avatarGridTile}
+const SpotCardHeader = (props) => {
+  return (
+    <List disablePadding>
+      <ListItem disableGutters style={styles.listItem}>
+        <ListItemText
+          disableTypography
+          primary={
+            <Typography variant="h6" noWrap>
+              {props.currentSpot.name}
+            </Typography>
+          }
+          secondary={
+            <Typography
+              component="p"
+              noWrap
+              color="textSecondary"
+            >
+              {props.currentSpot.formatted_address}
+            </Typography>
+          }
+        />
+      </ListItem>
+    </List>
+  );
+}
+
+const SpotCardSmall = (props) => {
+  return (
+    <div>
+      <CardContent style={styles.cardContentSmall}>
+        <div style={styles.dragHandleContainer}>
+          <DragHandleIcon color="disabled" />
+        </div>
+        <SpotCardHeader {...props} />
+        <GridList
+          cols={2.5}
+          cellHeight={100}
+          style={styles.gridList}
+        >
+          <GridListTile
+            key="add-review"
+            onClick={() => props.handleCreateReviewClick(props.currentSpot)}
+          >
+            <img src={process.env.SUBSTITUTE_URL} />
+            <GridListTileBar
+              style={styles.createReviewTile}
+              title={
+                <AddIcon fontSize="large" />
+              }
+              subtitle={I18n.t('create new report')}
             />
-          }
-          actionPosition="left"
-          subtitle={review.comment}
-        />
-      </GridListTile>
-    ));
-  }
+          </GridListTile>
+          {props.spotReviews.map(review => (
+            <GridListTile
+              key={review.id}
+              onClick={() => props.handleReviewClick(review)}
+            >
+              <img src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL} alt={review.spot.name} />
+              <GridListTileBar
+                style={styles.tileBar}
+                actionIcon={
+                  <Avatar
+                    src={review.author.profile_image_url}
+                    alt={review.author.name}
+                    style={styles.avatarGridTile}
+                  />
+                }
+                actionPosition="left"
+                subtitle={review.comment}
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+      </CardContent>
+      <SpotBottomNavigation {...props} />
+    </div>
+  );
+}
 
-  renderReviewImages(reviews) {
-    return reviews.map(review => (
-      <img
-        key={review.id}
-        src={review.image ? review.image.url : process.env.SUBSTITUTE_URL}
-        style={styles.spotImage}
-        alt={review.spot.name}
-      />
-    ));
-  }
+const SpotCardLarge = (props) => {
+  return (
+    <Card style={styles.cardLarge}>
+      <CardMedia>
+        <SwipeableViews>
+          {props.spotReviews.map(review => (
+            <img
+              key={review.id}
+              src={review.image ? review.image.url : process.env.SUBSTITUTE_URL}
+              style={styles.spotImage}
+              alt={review.spot.name}
+            />
+          ))}
+        </SwipeableViews>
+      </CardMedia>
+      <CardContent>
+        <Typography
+          variant="h5"
+          gutterBottom
+        >
+          {props.currentSpot.name}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          color="textSecondary"
+          gutterBottom
+        >
+          {props.currentSpot.formatted_address}
+        </Typography>
+        {props.spotReviews.length > 0 && (
+          <div style={styles.reviewTilesContainer}>
+            <ReviewTilesContainer
+              reviews={props.spotReviews}
+              showSubheader
+            />
+          </div>
+        )}
+      </CardContent>
+      <SpotBottomNavigation {...props} />
+    </Card>
+  );
+}
 
-  renderToolbar() {
-    return (
-      <Toolbar
-        style={styles.toolbar}
-        disableGutters
-      >
-        {this.renderBackButton()}
-      </Toolbar>
-    );
-  }
-
-  renderBackButton() {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={this.props.handleClose}
-        style={styles.backButton}
-      >
-        <ChevronLeftIcon />
-      </IconButton>
-    );
-  }
+const SpotCard = (props) => {
+  return (
+    <SwipeableDrawer
+      variant={props.large ? "persistent" : "temporary"}
+      anchor={props.large ? "left": "bottom"}
+      open={props.open}
+      PaperProps={{
+        style: props.large ? styles.drawerPaperLarge : {},
+        square: props.large ? true : false
+      }}
+      onOpen={props.handleOpen}
+      onClose={props.handleClose}
+      disableSwipeToOpen
+      disableBackdropTransition
+      ModalProps={{ hideBackdrop: true, style: props.large ? {} : styles.modal }}
+    >
+      {props.large && (
+        <Toolbar
+          style={styles.toolbar}
+          disableGutters
+        >
+          <IconButton
+            color="inherit"
+            onClick={props.handleClose}
+            style={styles.backButton}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+        </Toolbar>
+      )}
+      {props.currentSpot && (props.large ? <SpotCardLarge {...props} /> : <SpotCardSmall {...props} />)}
+    </SwipeableDrawer>
+  );
 }
 
 export default SpotCard;

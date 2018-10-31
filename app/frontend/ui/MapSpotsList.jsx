@@ -18,7 +18,7 @@ const Spots = (props) => {
     <ListItem
       button
       key={spot.place_id}
-      onClick={() => this.props.handleSpotClick(spot)}
+      onClick={() => props.handleSpotClick(spot)}
     >
       <Avatar
         src={spot.image_url}

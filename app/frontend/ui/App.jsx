@@ -38,9 +38,7 @@ const theme = createMuiTheme({
 });
 
 class App extends React.PureComponent {
-  async componentWillMount() {
-    this.props.handleWindowSizeChange(this.props.width);
-
+  async componentDidMount() {
     let currentUser = await getCurrentUser();
     if (currentUser) {
       if (currentUser.isAnonymous) {
@@ -53,8 +51,10 @@ class App extends React.PureComponent {
     }
   }
 
-  componentWillReceiveProps(props) {
-    this.props.handleWindowSizeChange(props.width);
+  componentDidUpdate(prevProps) {
+    if (this.props.width !== prevProps.width) {
+      this.props.handleWindowSizeChange(this.props.width);
+    }
   }
 
   scrollTop() {

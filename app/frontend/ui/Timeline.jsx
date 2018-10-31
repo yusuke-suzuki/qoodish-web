@@ -61,7 +61,7 @@ export default class Feed extends React.PureComponent {
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.updatePageTitle();
     if (!this.props.currentUser.isAnonymous) {
       this.props.refreshReviews();

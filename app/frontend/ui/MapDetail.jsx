@@ -29,7 +29,7 @@ const styles = {
 };
 
 export default class MapDetail extends React.PureComponent {
-  async componentWillMount() {
+  async componentDidMount() {
     this.props.fetchSpots();
     this.props.fetchMapReviews();
     this.props.fetchFollowers();

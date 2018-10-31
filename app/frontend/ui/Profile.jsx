@@ -145,7 +145,7 @@ class Profile extends React.PureComponent {
     this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.updatePageTitle();
 
     if (!this.props.currentUser.isAnonymous) {

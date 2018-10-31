@@ -39,7 +39,7 @@ const styles = {
 };
 
 export default class Invites extends React.PureComponent {
-  componentWillMount() {
+  componentDidMount() {
     this.props.updatePageTitle();
 
     if (!this.props.currentUser.isAnonymous) {
