@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapToolbar from '../ui/MapToolbar';
 import openEditMapDialog from '../actions/openEditMapDialog';
@@ -43,4 +44,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapToolbar);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapToolbar));

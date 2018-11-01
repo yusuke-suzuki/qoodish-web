@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import CurrentPositionMarker from '../ui/CurrentPositionMarker';
 
@@ -14,4 +15,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CurrentPositionMarker);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CurrentPositionMarker));

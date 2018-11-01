@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Toast from '../ui/Toast';
 import closeToast from '../actions/closeToast';
@@ -17,4 +18,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Toast);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Toast));

@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapBottomSeat from '../ui/MapBottomSeat';
 import switchSummary from '../actions/switchSummary';
@@ -15,4 +16,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapBottomSeat);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapBottomSeat));

@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
 import updatePageTitle from '../actions/updatePageTitle';
@@ -78,4 +79,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Profile));

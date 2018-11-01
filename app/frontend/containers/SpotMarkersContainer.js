@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import SpotMarkers from '../ui/SpotMarkers';
 import openSpotCard from '../actions/openSpotCard';
@@ -19,4 +20,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpotMarkers);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SpotMarkers));

@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import IssueDialog from '../ui/IssueDialog';
 import ApiClient from './ApiClient';
@@ -39,4 +40,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IssueDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(IssueDialog));

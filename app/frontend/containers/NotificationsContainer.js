@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Notifications from '../ui/Notifications';
 import ApiClient from './ApiClient';
@@ -35,4 +36,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Notifications));

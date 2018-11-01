@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import RequestNotificationDialog from '../ui/RequestNotificationDialog';
 import closeRequestNotificationDialog from '../actions/closeRequestNotificationDialog';
@@ -55,4 +56,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RequestNotificationDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(RequestNotificationDialog));

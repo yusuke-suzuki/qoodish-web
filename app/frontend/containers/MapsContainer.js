@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Maps from '../ui/Maps';
 import ApiClient from '../containers/ApiClient';
@@ -74,4 +75,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Maps);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Maps));

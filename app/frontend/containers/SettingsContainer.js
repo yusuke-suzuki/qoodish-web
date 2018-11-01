@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Settings from '../ui/Settings';
 import openDeleteAccountDialog from '../actions/openDeleteAccountDialog';
@@ -23,4 +24,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Settings));

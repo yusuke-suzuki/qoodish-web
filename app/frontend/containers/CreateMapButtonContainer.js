@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import CreateMapButton from '../ui/CreateMapButton';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
@@ -22,4 +23,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateMapButton);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateMapButton));

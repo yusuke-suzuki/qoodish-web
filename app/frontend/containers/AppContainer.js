@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import App from '../ui/App';
@@ -75,4 +76,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));

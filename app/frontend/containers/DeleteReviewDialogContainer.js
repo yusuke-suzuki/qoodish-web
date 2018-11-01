@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import DeleteReviewDialog from '../ui/DeleteReviewDialog';
@@ -53,4 +54,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeleteReviewDialog));
+export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(DeleteReviewDialog)));

@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import BlockUi from '../ui/BlockUi';
 
@@ -11,4 +12,4 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BlockUi);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(BlockUi));

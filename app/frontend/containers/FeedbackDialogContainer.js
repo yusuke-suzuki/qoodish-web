@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import FeedbackDialog from '../ui/FeedbackDialog';
 import closeFeedbackDialog from '../actions/closeFeedbackDialog';
@@ -40,4 +41,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedbackDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(FeedbackDialog));

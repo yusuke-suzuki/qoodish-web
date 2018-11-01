@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import FollowMapButton from '../ui/FollowMapButton';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
@@ -52,4 +53,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FollowMapButton);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(FollowMapButton));

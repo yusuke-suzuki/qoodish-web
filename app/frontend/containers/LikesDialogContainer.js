@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import LikesDialog from '../ui/LikesDialog';
 import closeLikesDialog from '../actions/closeLikesDialog';
@@ -17,4 +18,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LikesDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(LikesDialog));

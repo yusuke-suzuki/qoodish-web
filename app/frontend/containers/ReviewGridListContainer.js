@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import ReviewGridList from '../ui/ReviewGridList';
 import openReviewDialog from '../actions/openReviewDialog';
@@ -16,4 +17,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewGridList);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewGridList));

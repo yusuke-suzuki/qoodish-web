@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import NavBar from '../ui/NavBar';
@@ -116,4 +117,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar));
+export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar)));

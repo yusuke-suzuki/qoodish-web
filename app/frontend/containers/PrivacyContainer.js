@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Privacy from '../ui/Privacy';
 import updatePageTitle from '../actions/updatePageTitle';
@@ -16,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Privacy);
+export default Reaact.memo(connect(mapStateToProps, mapDispatchToProps)(Privacy));

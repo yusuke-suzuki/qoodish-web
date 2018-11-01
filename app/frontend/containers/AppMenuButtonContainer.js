@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import AppMenuButton from '../ui/AppMenuButton';
 import openDrawer from '../actions/openDrawer';
@@ -22,4 +23,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppMenuButton);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(AppMenuButton));

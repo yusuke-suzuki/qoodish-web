@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import ReviewCard from '../ui/ReviewCard';
 import openEditReviewDialog from '../actions/openEditReviewDialog';
@@ -95,4 +96,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewCard);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewCard));

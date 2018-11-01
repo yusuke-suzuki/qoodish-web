@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import SpotDetail from '../ui/SpotDetail';
 import ApiClient from './ApiClient.js';
@@ -66,4 +67,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpotDetail);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SpotDetail));

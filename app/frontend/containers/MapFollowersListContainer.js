@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapFollowersList from '../ui/MapFollowersList';
 
@@ -13,4 +14,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapFollowersList);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapFollowersList));

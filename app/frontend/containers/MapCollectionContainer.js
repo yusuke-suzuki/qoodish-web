@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapCollection from '../ui/MapCollection';
 import openToast from '../actions/openToast';
@@ -18,4 +19,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapCollection);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapCollection));

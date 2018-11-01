@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import GMap from '../ui/GMap';
 import gMapMounted from '../actions/gMapMounted';
@@ -28,4 +29,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GMap);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(GMap));
