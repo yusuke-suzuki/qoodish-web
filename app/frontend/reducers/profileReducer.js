@@ -15,7 +15,8 @@ import {
   FETCH_USER_PROFILE,
   CLEAR_PROFILE_STATE,
   OPEN_EDIT_PROFILE_DIALOG,
-  CLOSE_EDIT_PROFILE_DIALOG
+  CLOSE_EDIT_PROFILE_DIALOG,
+  LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
@@ -124,7 +125,7 @@ const reducer = (state = initialState, action) => {
       });
     case CLEAR_PROFILE_STATE:
       return Object.assign({}, state, initialState);
-    case '@@router/LOCATION_CHANGE':
+    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         editProfileDialogOpen: false
       });

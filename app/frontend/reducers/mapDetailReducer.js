@@ -14,7 +14,8 @@ import {
   FETCH_USERS,
   LOAD_USERS_START,
   LOAD_USERS_END,
-  CLEAR_MAP_STATE
+  CLEAR_MAP_STATE,
+  LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
@@ -99,7 +100,7 @@ const reducer = (state = initialState, action) => {
         leaveMapDialogOpen: false,
         mapSummaryOpen: false
       });
-    case '@@router/LOCATION_CHANGE':
+    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,

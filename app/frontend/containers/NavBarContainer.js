@@ -27,7 +27,7 @@ const mapStateToProps = state => {
     showBackButton: state.shared.showBackButton,
     mapsTabActive: state.shared.mapsTabActive,
     mapsTabValue: state.maps.tabValue,
-    previous: state.shared.previous,
+    previousLocation: state.shared.previousLocation,
     drawerOpen: state.shared.drawerOpen,
     showSideNav: state.shared.showSideNav,
     isMapDetail: state.shared.isMapDetail
@@ -86,8 +86,8 @@ const mapDispatchToProps = dispatch => {
       });
     },
 
-    handleBackButtonClick: (previous) => {
-      if (previous) {
+    handleBackButtonClick: (previousLocation) => {
+      if (previousLocation) {
         dispatch(goBack());
       } else {
         dispatch(push('/'));

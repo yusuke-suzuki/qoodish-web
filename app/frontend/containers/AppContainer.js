@@ -1,5 +1,7 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import App from '../ui/App';
+import locationChange from '../actions/locationChange';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
 import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
@@ -23,6 +25,10 @@ const mapDispatchToProps = dispatch => {
   return {
     handleWindowSizeChange: width => {
       dispatch(updateWindowSize(width));
+    },
+
+    handleLocationChange: (location) => {
+      dispatch(locationChange(location));
     },
 
     signInAnonymously: async (currentUser = null) => {
@@ -68,4 +74,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

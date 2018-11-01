@@ -7,14 +7,14 @@ const mapStateToProps = state => {
   return {
     currentMap: state.mapSummary.currentMap,
     large: state.shared.large,
-    previous: state.shared.previous
+    previousLocation: state.shared.previousLocation
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleBackButtonClick: (previous) => {
-      if (previous) {
+    handleBackButtonClick: (previousLocation) => {
+      if (previousLocation) {
         dispatch(goBack());
       } else {
         dispatch(push('/'));

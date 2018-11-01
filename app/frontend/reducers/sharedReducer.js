@@ -26,7 +26,8 @@ import {
   OPEN_FEEDBACK_DIALOG,
   CLOSE_FEEDBACK_DIALOG,
   OPEN_DRAWER,
-  CLOSE_DRAWER
+  CLOSE_DRAWER,
+  LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -49,14 +50,15 @@ const initialState = {
   loadingNotifications: false,
   showBackButton: false,
   mapsTabActive: false,
-  previous: false,
   requestNotificationDialogOpen: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
   bottomNavValue: undefined,
   showSideNav: true,
-  isMapDetail: false
+  isMapDetail: false,
+  previousLocation: undefined,
+  currentLocation: undefined
 };
 
 const getBottomNavValue = (pathname) => {
@@ -249,19 +251,20 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         drawerOpen: false
       });
-    case '@@router/LOCATION_CHANGE':
+    case LOCATION_CHANGE:
       return Object.assign({}, state, {
-        previous: action.payload.state ? action.payload.state.previous : false,
-        bottomNavValue: getBottomNavValue(action.payload.pathname),
-        showBackButton: switchBackButton(action.payload.pathname),
+        previousLocation: state.currentLocation ? state.currentLocation : undefined,
+        currentLocation: action.payload.location.pathname,
+        bottomNavValue: getBottomNavValue(action.payload.location.pathname),
+        showBackButton: switchBackButton(action.payload.location.pathname),
         issueDialogOpen: false,
         likesDialogOpen: false,
         requestNotificationDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         drawerOpen: false,
-        showSideNav: showSideNav(action.payload.pathname, state.large),
-        isMapDetail: detectMapDetail(action.payload.pathname)
+        showSideNav: showSideNav(action.payload.location.pathname, state.large),
+        isMapDetail: detectMapDetail(action.payload.location.pathname)
       });
     default:
       return state;

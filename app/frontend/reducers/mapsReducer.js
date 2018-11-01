@@ -19,7 +19,8 @@ import {
   SWITCH_FOLLOWING_MAPS,
   OPEN_BASE_SELECT_DIALOG,
   CLOSE_BASE_SELECT_DIALOG,
-  SELECT_MAP_BASE
+  SELECT_MAP_BASE,
+  LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
@@ -159,7 +160,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selectedBase: action.payload.place
       });
-    case '@@router/LOCATION_CHANGE':
+    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         createMapDialogOpen: false,
         editMapDialogOpen: false,

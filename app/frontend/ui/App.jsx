@@ -40,6 +40,8 @@ const theme = createMuiTheme({
 class App extends React.PureComponent {
   async componentDidMount() {
     this.props.handleWindowSizeChange(this.props.width);
+    this.props.handleLocationChange(this.props.location);
+
     let currentUser = await getCurrentUser();
     if (currentUser) {
       if (currentUser.isAnonymous) {
@@ -53,6 +55,9 @@ class App extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.props.handleLocationChange(this.props.location);
+    }
     if (this.props.width !== prevProps.width) {
       this.props.handleWindowSizeChange(this.props.width);
     }

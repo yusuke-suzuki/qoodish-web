@@ -112,7 +112,7 @@ class MapSummary extends React.PureComponent {
             showBackButton={this.props.large ? false : true}
             showMapName
             showMenuButton={this.props.large ? true : false}
-            handleBackButtonClick={() => this.props.large ? this.props.handleBackButtonClick(this.props.previous) : this.props.handleSummaryClose()}
+            handleBackButtonClick={() => this.props.large ? this.props.handleBackButtonClick(this.props.previousLocation) : this.props.handleSummaryClose()}
           />
           {!this.props.large && this.renderTabBarSmall()}
         </AppBar>

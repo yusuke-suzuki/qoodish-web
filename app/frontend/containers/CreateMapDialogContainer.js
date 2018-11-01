@@ -39,9 +39,7 @@ const mapDispatchToProps = dispatch => {
         dispatch(createMap(json));
         dispatch(closeCreateMapDialog());
         dispatch(selectMap(json));
-        dispatch(push(`/maps/${json.id}`, {
-          previous: true
-        }));
+        dispatch(push(`/maps/${json.id}`));
         dispatch(openToast(I18n.t('create map success')));
 
         gtag('event', 'create', {

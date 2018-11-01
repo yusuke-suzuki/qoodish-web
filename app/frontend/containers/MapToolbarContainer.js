@@ -11,8 +11,7 @@ const mapStateToProps = state => {
   return {
     currentMap: state.mapSummary.currentMap,
     currentUser: state.app.currentUser,
-    large: state.shared.large,
-    previous: state.shared.previous
+    large: state.shared.large
   };
 };
 
