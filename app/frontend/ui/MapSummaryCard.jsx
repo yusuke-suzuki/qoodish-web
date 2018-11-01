@@ -272,4 +272,5 @@ const MapSummaryCard = (props) => {
     </div>
   );
 }
- export default MapSummaryCard;
+
+export default MapSummaryCard;
