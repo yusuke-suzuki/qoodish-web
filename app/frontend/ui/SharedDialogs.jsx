@@ -1,5 +1,5 @@
 import React from 'react';
-import loadable from 'loadable-components'
+import loadable from '@loadable/component';
 
 const IssueDialogContainer = loadable(() => import(/* webpackChunkName: "issue_dialog" */ '../containers/IssueDialogContainer'));
 const LikesDialogContainer = loadable(() => import(/* webpackChunkName: "likes_dialog" */ '../containers/LikesDialogContainer'));

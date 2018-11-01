@@ -41,7 +41,7 @@ import(/* webpackChunkName: "firebase" */ 'firebase/app').then((firebase) => {
 
 const middlewares = [];
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV !== 'production') {
   const logger = createLogger();
   middlewares.push(logger);
 }
