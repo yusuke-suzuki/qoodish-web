@@ -1,15 +1,12 @@
 import {
   GET_CURRENT_POSITION,
-  GET_MAP_BASE_POSITION,
   REQUEST_CURRENT_POSITION,
-  REQUEST_MAP_BASE,
   REQUEST_MAP_CENTER,
   FETCH_SPOTS,
   REQUEST_ROUTE,
   CLEAR_MAP_STATE,
   G_MAP_MOUNTED,
-  MAP_ZOOM_CHANGED,
-  MAP_CENTER_CHANGED
+  MAP_ZOOM_CHANGED
 } from '../actionTypes';
 
 const initialState = {
@@ -20,10 +17,6 @@ const initialState = {
   },
   defaultZoom: 17,
   currentPosition: {},
-  mapBasePosition: {
-    lat: 35.710063,
-    lng: 139.8107
-  },
   center: {
     lat: 35.710063,
     lng: 139.8107
@@ -42,13 +35,6 @@ const reducer = (state = initialState, action) => {
           lng: parseFloat(action.payload.lng)
         }
       });
-    case GET_MAP_BASE_POSITION:
-      return Object.assign({}, state, {
-        mapBasePosition: {
-          lat: parseFloat(action.payload.lat),
-          lng: parseFloat(action.payload.lng)
-        }
-      });
     case REQUEST_CURRENT_POSITION:
       if (!state.currentPosition.lat) {
         return state;
@@ -57,14 +43,6 @@ const reducer = (state = initialState, action) => {
         center: {
           lat: state.currentPosition.lat,
           lng: state.currentPosition.lng
-        },
-        zoom: 17
-      });
-    case REQUEST_MAP_BASE:
-      return Object.assign({}, state, {
-        center: {
-          lat: state.mapBasePosition.lat,
-          lng: state.mapBasePosition.lng
         },
         zoom: 17
       });
@@ -91,10 +69,6 @@ const reducer = (state = initialState, action) => {
     case MAP_ZOOM_CHANGED:
       return Object.assign({}, state, {
         zoom: action.payload.zoom
-      });
-    case MAP_CENTER_CHANGED:
-      return Object.assign({}, state, {
-        center: action.payload.center
       });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {

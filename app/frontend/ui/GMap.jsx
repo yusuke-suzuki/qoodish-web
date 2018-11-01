@@ -69,7 +69,6 @@ const MapWithAnOverlayView = compose(
     }
     zoom={props.zoom}
     onZoomChanged={() => props.onZoomChanged(props.gMap.getZoom())}
-    onCenterChanged={() => props.onCenterChanged(props.gMap.getCenter())}
     onMapLoad={props.onMapMounted}
   >
     <SpotMarkersContainer />

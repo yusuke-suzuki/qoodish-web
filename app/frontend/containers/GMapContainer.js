@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import GMap from '../ui/GMap';
 import gMapMounted from '../actions/gMapMounted';
 import mapZoomChanged from '../actions/mapZoomChanged';
-import mapCenterChanged from '../actions/mapCenterChanged';
 
 const mapStateToProps = state => {
   return {
@@ -25,10 +24,6 @@ const mapDispatchToProps = (dispatch) => {
 
     onZoomChanged: zoom => {
       dispatch(mapZoomChanged(zoom));
-    },
-
-    onCenterChanged: center => {
-      dispatch(mapCenterChanged({ lat: center.lat(), lng: center.lng() }));
     }
   };
 };

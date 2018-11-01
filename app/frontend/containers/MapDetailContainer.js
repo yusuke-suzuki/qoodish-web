@@ -7,8 +7,7 @@ import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openToast from '../actions/openToast';
 import updatePageTitle from '../actions/updatePageTitle';
 import requestCurrentPosition from '../actions/requestCurrentPosition';
-import getMapBasePosition from '../actions/getMapBasePosition';
-import requestMapBase from '../actions/requestMapBase';
+import requestMapCenter from '../actions/requestMapCenter';
 import fetchSpots from '../actions/fetchSpots';
 import clearMapState from '../actions/clearMapState';
 import fetchMapReviews from '../actions/fetchMapReviews';
@@ -32,8 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     initCenter: map => {
       if (map.base.place_id) {
-        dispatch(getMapBasePosition(map.base.lat, map.base.lng));
-        dispatch(requestMapBase());
+        dispatch(requestMapCenter(map.base.lat, map.base.lng));
       } else {
         dispatch(requestCurrentPosition());
       }
