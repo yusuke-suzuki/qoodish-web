@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Invites from '../ui/Invites';
@@ -58,4 +59,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Invites));
+export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(Invites)));

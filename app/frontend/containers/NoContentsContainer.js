@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import NoContents from '../ui/NoContents';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
@@ -31,4 +32,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoContents);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(NoContents));

@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapReviewsList from '../ui/MapReviewsList';
 import requestMapCenter from '../actions/requestMapCenter';
@@ -21,4 +22,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapReviewsList);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapReviewsList));

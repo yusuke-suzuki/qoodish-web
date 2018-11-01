@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import ReviewDialog from '../ui/ReviewDialog';
 import closeReviewDialog from '../actions/closeReviewDialog';
@@ -96,4 +97,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewDialog));

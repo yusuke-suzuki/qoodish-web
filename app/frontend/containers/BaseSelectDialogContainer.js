@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import PlaceSelectDialog from '../ui/PlaceSelectDialog';
 import ApiClient from './ApiClient';
@@ -39,4 +40,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlaceSelectDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(PlaceSelectDialog));

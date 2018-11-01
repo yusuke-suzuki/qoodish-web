@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import CopyReviewDialog from '../ui/CopyReviewDialog';
 import ApiClient from './ApiClient';
@@ -68,4 +69,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CopyReviewDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CopyReviewDialog));

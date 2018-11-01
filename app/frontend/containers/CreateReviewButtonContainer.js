@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import CreateReviewButton from '../ui/CreateReviewButton';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
@@ -31,4 +32,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateReviewButton);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateReviewButton));

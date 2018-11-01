@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import LocationButton from '../ui/LocationButton';
 import { fetchCurrentPosition } from './Utils';
@@ -22,4 +23,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LocationButton);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(LocationButton));

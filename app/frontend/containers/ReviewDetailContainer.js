@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import ReviewDetail from '../ui/ReviewDetail';
 import ApiClient from './ApiClient.js';
@@ -49,4 +50,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReviewDetail);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewDetail));

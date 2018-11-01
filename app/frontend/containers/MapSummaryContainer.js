@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import MapSummary from '../ui/MapSummary';
@@ -27,4 +28,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MapSummary));
+export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(MapSummary)));

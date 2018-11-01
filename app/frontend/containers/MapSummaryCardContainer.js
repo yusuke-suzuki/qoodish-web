@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import MapSummaryCard from '../ui/MapSummaryCard';
 import requestMapCenter from '../actions/requestMapCenter';
@@ -27,4 +28,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapSummaryCard);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapSummaryCard));

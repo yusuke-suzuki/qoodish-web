@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import SignInRequiredDialog from '../ui/SignInRequiredDialog';
 import closeSignInRequiredDialog from '../actions/closeSignInRequiredDialog';
@@ -16,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignInRequiredDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SignInRequiredDialog));

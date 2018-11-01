@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import EditProfileDialog from '../ui/EditProfileDialog';
 import ApiClient from './ApiClient';
@@ -50,4 +51,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfileDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(EditProfileDialog));

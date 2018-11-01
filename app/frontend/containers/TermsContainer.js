@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Terms from '../ui/Terms';
 import updatePageTitle from '../actions/updatePageTitle';
@@ -16,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Terms);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Terms));

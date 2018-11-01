@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import InviteTargetDialog from '../ui/InviteTargetDialog';
 import ApiClient from './ApiClient';
@@ -51,4 +52,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InviteTargetDialog);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(InviteTargetDialog));

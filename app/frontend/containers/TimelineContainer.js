@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import Timeline from '../ui/Timeline';
 import ApiClient from '../containers/ApiClient';
@@ -71,4 +72,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Timeline));
