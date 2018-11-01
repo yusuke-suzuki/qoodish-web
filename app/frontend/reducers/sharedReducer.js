@@ -56,6 +56,7 @@ const initialState = {
   drawerOpen: false,
   bottomNavValue: undefined,
   showSideNav: true,
+  showBottomNav: true,
   isMapDetail: false,
   previousLocation: undefined,
   currentLocation: undefined
@@ -78,10 +79,21 @@ const getBottomNavValue = (pathname) => {
   }
 }
 
-const showSideNav = (pathname, large) => {
-  if (!large) {
+const showSideNav = (pathname) => {
+  if (
+    (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
+    pathname.includes('/login') ||
+    pathname.includes('/terms') ||
+    pathname.includes('/privacy')
+  ) {
     return false;
-  } else if (
+  } else {
+    return true;
+  }
+}
+
+const showBottomNav = (pathname) => {
+  if (
     (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
     pathname.includes('/login') ||
     pathname.includes('/terms') ||
@@ -263,7 +275,8 @@ const reducer = (state = initialState, action) => {
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         drawerOpen: false,
-        showSideNav: showSideNav(action.payload.location.pathname, state.large),
+        showSideNav: showSideNav(action.payload.location.pathname),
+        showBottomNav: showBottomNav(action.payload.location.pathname),
         isMapDetail: detectMapDetail(action.payload.location.pathname)
       });
     default:

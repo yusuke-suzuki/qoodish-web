@@ -175,14 +175,14 @@ class App extends React.PureComponent {
             item
             xs={12}
             sm={12}
-            md={this.props.showSideNav ? 6 : 12}
-            lg={this.props.showSideNav ? 8 : 12}
-            xl={this.props.showSideNav ? 8 : 12}
+            md={!this.props.large || !this.props.showSideNav ? 12 : 6}
+            lg={!this.props.large || !this.props.showSideNav ? 12 : 8}
+            xl={!this.props.large || !this.props.showSideNav ? 12 : 8}
           >
             <Routes />
           </Grid>
         </Grid>
-        {!this.props.large && this.props.showSideNav && <BottomNavContainer />}
+        {!this.props.large && this.props.showBottomNav && <BottomNavContainer />}
       </div>
     );
   }

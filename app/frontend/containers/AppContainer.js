@@ -17,7 +17,8 @@ const mapStateToProps = state => {
     large: state.shared.large,
     registrationToken: state.app.registrationToken,
     notificationPermitted: state.app.notificationPermitted,
-    showSideNav: state.shared.showSideNav
+    showSideNav: state.shared.showSideNav,
+    showBottomNav: state.shared.showBottomNav
   };
 };
 
