@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import loadable from 'loadable-components'
+import loadable from '@loadable/component';
 
 const LoginContainer = loadable(() => import(/* webpackChunkName: "login" */'../containers/LoginContainer'));
 const DiscoverContainer = loadable(() => import(/* webpackChunkName: "discover" */'../containers/DiscoverContainer'));

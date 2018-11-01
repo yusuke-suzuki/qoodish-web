@@ -13,11 +13,11 @@
     "build:functions": "babel app/functions/ --out-dir functions/"
   },
   "dependencies": {
+    "@loadable/component": "^4.0.2",
     "@material-ui/core": "3.3.2",
     "@material-ui/icons": "^1.1.0",
     "blueimp-canvas-to-blob": "^3.14.0",
     "firebase": "^5.5.3",
-    "loadable-components": "^2.2.3",
     "moment": "^2.20.1",
     "react": "^16.4.0",
     "react-copy-to-clipboard": "^5.0.0",
