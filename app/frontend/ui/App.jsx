@@ -40,6 +40,8 @@ const theme = createMuiTheme({
 class App extends React.PureComponent {
   async componentDidMount() {
     this.props.handleWindowSizeChange(this.props.width);
+    this.props.handleLocationChange(this.props.location);
+
     let currentUser = await getCurrentUser();
     if (currentUser) {
       if (currentUser.isAnonymous) {
@@ -53,6 +55,9 @@ class App extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.props.handleLocationChange(this.props.location);
+    }
     if (this.props.width !== prevProps.width) {
       this.props.handleWindowSizeChange(this.props.width);
     }
@@ -170,14 +175,14 @@ class App extends React.PureComponent {
             item
             xs={12}
             sm={12}
-            md={this.props.showSideNav ? 6 : 12}
-            lg={this.props.showSideNav ? 8 : 12}
-            xl={this.props.showSideNav ? 8 : 12}
+            md={!this.props.large || !this.props.showSideNav ? 12 : 6}
+            lg={!this.props.large || !this.props.showSideNav ? 12 : 8}
+            xl={!this.props.large || !this.props.showSideNav ? 12 : 8}
           >
             <Routes />
           </Grid>
         </Grid>
-        {!this.props.large && this.props.showSideNav && <BottomNavContainer />}
+        {!this.props.large && this.props.showBottomNav && <BottomNavContainer />}
       </div>
     );
   }

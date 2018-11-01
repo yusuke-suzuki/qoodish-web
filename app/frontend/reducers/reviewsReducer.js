@@ -19,7 +19,8 @@ import {
   SELECT_PLACE_FOR_REVIEW,
   LIKE_REVIEW,
   UNLIKE_REVIEW,
-  CLEAR_MAP_STATE
+  CLEAR_MAP_STATE,
+  LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
@@ -179,7 +180,7 @@ const reducer = (state = initialState, action) => {
         copyReviewDialogOpen: false,
         deleteReviewDialogOpen: false
       });
-    case '@@router/LOCATION_CHANGE':
+    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         reviewDialogOpen: false,
         editReviewDialogOpen: false,

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import DeleteReviewDialog from '../ui/DeleteReviewDialog';
 import ApiClient from './ApiClient';
 import deleteReview from '../actions/deleteReview';
@@ -41,9 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             let spots = await spotResponse.json();
             dispatch(fetchSpots(spots));
           }
-          dispatch(push(`/maps/${review.map.id}`, {
-            previous: true
-          }));
+          ownProps.history.push(`/maps/${review.map.id}`);
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast('Delete report successfully'));
@@ -55,4 +53,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteReviewDialog);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeleteReviewDialog));

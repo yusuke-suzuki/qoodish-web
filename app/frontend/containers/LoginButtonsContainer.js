@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 
 import LoginButtons from '../ui/LoginButtons';
 import signIn from '../actions/signIn';
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onClose: () => {
       dispatch(closePlaceSelectDialog());
@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => {
           isAnonymous: true
         };
         dispatch(signIn(user));
-        dispatch(push(''));
+        ownProps.history.push('');
         dispatch(openToast('Signed in as anonymous successfully!'));
         gtag('event', 'login', {
           'method': 'anonymous'
@@ -71,7 +71,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
 
       if (response.ok) {
-        dispatch(push(''));
+        ownProps.history.push('');
         dispatch(openToast('Signed in successfully!'));
         gtag('event', 'login', {
           'method': authResult.additionalUserInfo.providerId
@@ -87,4 +87,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginButtons);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginButtons));

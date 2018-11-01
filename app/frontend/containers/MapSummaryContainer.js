@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push, goBack } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import MapSummary from '../ui/MapSummary';
 import switchMap from '../actions/switchMap';
 
@@ -7,17 +7,17 @@ const mapStateToProps = state => {
   return {
     currentMap: state.mapSummary.currentMap,
     large: state.shared.large,
-    previous: state.shared.previous
+    previousLocation: state.shared.previousLocation
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleBackButtonClick: (previous) => {
-      if (previous) {
-        dispatch(goBack());
+    handleBackButtonClick: (previousLocation) => {
+      if (previousLocation) {
+        ownProps.history.goBack();
       } else {
-        dispatch(push('/'));
+        ownProps.history.push('/');
       }
     },
 
@@ -27,4 +27,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapSummary);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MapSummary));

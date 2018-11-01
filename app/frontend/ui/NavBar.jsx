@@ -274,7 +274,7 @@ class NavBar extends React.PureComponent {
       <MapToolbarContainer
         showMapName
         showBackButton
-        handleBackButtonClick={() => this.props.handleBackButtonClick(this.props.previous)}
+        handleBackButtonClick={() => this.props.handleBackButtonClick(this.props.previousLocation)}
       />
     );
   }
@@ -356,7 +356,7 @@ class NavBar extends React.PureComponent {
     return (
       <IconButton
         color="inherit"
-        onClick={() => this.props.handleBackButtonClick(this.props.previous)}
+        onClick={() => this.props.handleBackButtonClick(this.props.previousLocation)}
         style={this.props.large ? {} : styles.leftButton}
       >
         <ArrowBackIcon />

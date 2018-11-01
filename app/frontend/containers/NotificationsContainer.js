@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import Notifications from '../ui/Notifications';
 import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';

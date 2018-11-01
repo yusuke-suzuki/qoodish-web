@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import Invites from '../ui/Invites';
 import updatePageTitle from '../actions/updatePageTitle';
 import ApiClient from './ApiClient';
@@ -8,7 +9,6 @@ import requestFinish from '../actions/requestFinish';
 import fetchInvites from '../actions/fetchInvites';
 import loadInvitesStart from '../actions/loadInvitesStart';
 import loadInvitesEnd from '../actions/loadInvitesEnd';
-import { push } from 'react-router-redux';
 import I18n from './I18n';
 
 const mapStateToProps = state => {
@@ -20,7 +20,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePageTitle: () => {
       dispatch(updatePageTitle(I18n.t('invites')));
@@ -46,9 +46,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestFinish());
       if (response.ok) {
         dispatch(openToast('Followed map successfully!'));
-        dispatch(push(`/maps/${invite.invitable.id}`, {
-          previous: true
-        }));
+        ownProps.history.push(`/maps/${invite.invitable.id}`);
         gtag('event', 'follow', {
           'event_category': 'engagement',
           'event_label': 'map'
@@ -60,4 +58,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Invites);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Invites));

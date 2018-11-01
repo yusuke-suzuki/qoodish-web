@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push, goBack } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import NavBar from '../ui/NavBar';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
@@ -27,14 +27,14 @@ const mapStateToProps = state => {
     showBackButton: state.shared.showBackButton,
     mapsTabActive: state.shared.mapsTabActive,
     mapsTabValue: state.maps.tabValue,
-    previous: state.shared.previous,
+    previousLocation: state.shared.previousLocation,
     drawerOpen: state.shared.drawerOpen,
     showSideNav: state.shared.showSideNav,
     isMapDetail: state.shared.isMapDetail
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleMount: async () => {
       const client = new ApiClient();
@@ -66,7 +66,7 @@ const mapDispatchToProps = dispatch => {
       };
       dispatch(signIn(user));
 
-      dispatch(push('/login'));
+      ownProps.history.push('/login');
       dispatch(requestFinish());
     },
 
@@ -86,11 +86,11 @@ const mapDispatchToProps = dispatch => {
       });
     },
 
-    handleBackButtonClick: (previous) => {
-      if (previous) {
-        dispatch(goBack());
+    handleBackButtonClick: (previousLocation) => {
+      if (previousLocation) {
+        ownProps.history.goBack();
       } else {
-        dispatch(push('/'));
+        ownProps.history.push('/');
       }
     },
 
@@ -116,4 +116,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar));

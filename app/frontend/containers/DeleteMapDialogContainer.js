@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import DeleteMapDialog from '../ui/DeleteMapDialog';
 import ApiClient from './ApiClient';
 import deleteMap from '../actions/deleteMap';
@@ -28,10 +28,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(requestFinish());
       dispatch(deleteMap(ownProps.mapId));
       dispatch(closeDeleteMapDialog());
-      dispatch(push('/maps'));
+      ownProps.history.push('/maps');
       dispatch(openToast('Delete map successfully'));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteMapDialog);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeleteMapDialog));
