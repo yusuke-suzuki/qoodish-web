@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import MapDetail from '../ui/MapDetail';
 import ApiClient from './ApiClient';
 import selectMap from '../actions/selectMap';
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       } else if (response.status == 401) {
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
-        dispatch(push('/maps'));
+        ownProps.history.push('/maps');
       } else {
         dispatch(openToast('Failed to fetch Map.'));
       }
@@ -91,4 +91,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapDetail);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MapDetail));

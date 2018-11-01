@@ -6,13 +6,7 @@ import AppContainer from './containers/AppContainer';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 
-import createHistory from 'history/createBrowserHistory';
-import { Route } from 'react-router-dom';
-import {
-  ConnectedRouter,
-  routerReducer,
-  routerMiddleware
-} from 'react-router-redux';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
@@ -45,10 +39,7 @@ import(/* webpackChunkName: "firebase" */ 'firebase/app').then((firebase) => {
   firebase.initializeApp(config);
 });
 
-const history = createHistory();
-
 const middlewares = [];
-middlewares.push(routerMiddleware(history));
 
 if (process.env.NODE_ENV != 'production') {
   const logger = createLogger();
@@ -56,7 +47,6 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 const reducer = combineReducers({
-  router: routerReducer,
   app: appReducer,
   shared: sharedReducer,
   discover: discoverReducer,
@@ -80,9 +70,9 @@ const store = compose(persistState('app'), applyMiddleware(...middlewares))(
 window.addEventListener('DOMContentLoaded', () => {
   render(
     <Provider store={store}>
-      <ConnectedRouter history={history}>
+      <BrowserRouter>
         <Route component={AppContainer} />
-      </ConnectedRouter>
+      </BrowserRouter>
     </Provider>,
     document.querySelector('#render-target')
   );

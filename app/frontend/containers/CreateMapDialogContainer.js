@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import EditMapDialog from '../ui/EditMapDialog';
 import ApiClient from './ApiClient';
 import selectMap from '../actions/selectMap';
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleRequestDialogClose: () => {
       dispatch(closeCreateMapDialog());
@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => {
         dispatch(createMap(json));
         dispatch(closeCreateMapDialog());
         dispatch(selectMap(json));
-        dispatch(push(`/maps/${json.id}`));
+        ownProps.history.push(`/maps/${json.id}`);
         dispatch(openToast(I18n.t('create map success')));
 
         gtag('event', 'create', {
@@ -55,4 +55,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMapDialog);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditMapDialog));

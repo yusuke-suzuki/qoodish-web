@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { push, goBack } from 'react-router-redux';
+import { withRouter } from 'react-router-dom';
 import MapSummary from '../ui/MapSummary';
 import switchMap from '../actions/switchMap';
 
@@ -15,9 +15,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleBackButtonClick: (previousLocation) => {
       if (previousLocation) {
-        dispatch(goBack());
+        ownProps.history.goBack();
       } else {
-        dispatch(push('/'));
+        ownProps.history.push('/');
       }
     },
 
@@ -27,4 +27,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapSummary);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MapSummary));

@@ -11,7 +11,6 @@ import loadUserReviewsStart from '../actions/loadUserReviewsStart';
 import loadUserReviewsEnd from '../actions/loadUserReviewsEnd';
 import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
 import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
-import openCreateMapDialog from '../actions/openCreateMapDialog';
 import clearProfileState from '../actions/clearProfileState';
 import openEditProfileDialog from '../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
@@ -73,10 +72,6 @@ const mapDispatchToProps = (dispatch) => {
       let maps = await response.json();
       dispatch(fetchUserMaps(maps));
       dispatch(loadUserMapsEnd());
-    },
-
-    handleCreateMapButtonClick: () => {
-      dispatch(openCreateMapDialog());
     },
 
     clearProfileState: () => {
