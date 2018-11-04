@@ -27,6 +27,19 @@ class QoodishClient {
     const response = await fetch(url, options);
     return response;
   }
+
+  async fetchSpotMetadata(placeId, locale) {
+    const url = `${functions.config().app.api_endpoint}/spots/${placeId}/metadata`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': locale
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default QoodishClient;
