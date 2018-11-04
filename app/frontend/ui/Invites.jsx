@@ -40,8 +40,6 @@ const styles = {
 
 export default class Invites extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle();
-
     if (!this.props.currentUser.isAnonymous) {
       this.props.fetchInvites();
     }

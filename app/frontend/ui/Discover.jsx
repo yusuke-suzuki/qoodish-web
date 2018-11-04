@@ -107,7 +107,6 @@ const styles = {
 
 export default class Discover extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle();
     this.props.pickUpMap();
     this.props.fetchTrendingSpots();
     this.props.fetchRecentReviews();

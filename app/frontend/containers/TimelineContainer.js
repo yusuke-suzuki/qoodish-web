@@ -9,10 +9,8 @@ import loadReviewsStart from '../actions/loadReviewsStart';
 import loadReviewsEnd from '../actions/loadReviewsEnd';
 import loadMoreReviewsStart from '../actions/loadMoreReviewsStart';
 import loadMoreReviewsEnd from '../actions/loadMoreReviewsEnd';
-import updatePageTitle from '../actions/updatePageTitle';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -28,10 +26,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('home')));
-    },
-
     refreshReviews: async () => {
       dispatch(loadReviewsStart());
       const client = new ApiClient();

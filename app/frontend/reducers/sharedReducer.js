@@ -4,7 +4,6 @@ import {
   REQUEST_START,
   REQUEST_FINISH,
   UPDATE_WINDOW_SIZE,
-  UPDATE_PAGE_TITLE,
   OPEN_ISSUE_DIALOG,
   CLOSE_ISSUE_DIALOG,
   LOAD_PLACES_START,
@@ -17,8 +16,6 @@ import {
   READ_NOTIFICATION,
   LOAD_NOTIFICATIONS_START,
   LOAD_NOTIFICATIONS_END,
-  SHOW_MAPS_TAB,
-  HIDE_MAPS_TAB,
   OPEN_REQUEST_NOTIFICATION_DIALOG,
   CLOSE_REQUEST_NOTIFICATION_DIALOG,
   OPEN_SIGN_IN_REQUIRED_DIALOG,
@@ -30,6 +27,7 @@ import {
   LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
+import I18n from '../containers/I18n';
 
 const initialState = {
   toastOpen: false,
@@ -76,6 +74,44 @@ const getBottomNavValue = (pathname) => {
       return 4;
     default:
       return undefined;
+  }
+}
+
+const switchPageTitle = (pathname, large) => {
+  if (pathname === '/') {
+    return I18n.t('home');
+  } else if (pathname === '/discover') {
+    return I18n.t('discover');
+  } else if (pathname === '/maps') {
+    return I18n.t('maps');
+  } else if (pathname.includes('/reports')) {
+    return I18n.t('report');
+  } else if (pathname.includes('/spots')) {
+    return I18n.t('spot');
+  } else if (pathname.includes('/users') || pathname === '/profile') {
+    return I18n.t('account');
+  } else if (pathname === '/notifications') {
+    return I18n.t('notifications');
+  } else if (pathname === '/settings') {
+    return I18n.t('settings');
+  } else if (pathname === '/invites') {
+    return I18n.t('invites');
+  } else if (pathname === '/terms') {
+    return large ? I18n.t('terms of service') : 'Qoodish';
+  } else if (pathname === '/privacy') {
+    return large ? I18n.t('privacy policy') : 'Qoodish';
+  } else if (pathname === '/login') {
+    return I18n.t('login');
+  } else {
+    return '';
+  }
+}
+
+const switchMapsTab = (pathname) => {
+  if (pathname.includes('/maps') && !pathname.includes('/maps/')) {
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -145,10 +181,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         width: action.payload.width,
         large: isWidthUp('md', action.payload.width)
-      });
-    case UPDATE_PAGE_TITLE:
-      return Object.assign({}, state, {
-        pageTitle: action.payload.title ? action.payload.title : ''
       });
     case OPEN_ISSUE_DIALOG:
       return Object.assign({}, state, {
@@ -223,14 +255,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingNotifications: false
       });
-    case SHOW_MAPS_TAB:
-      return Object.assign({}, state, {
-        mapsTabActive: true
-      });
-    case HIDE_MAPS_TAB:
-      return Object.assign({}, state, {
-        mapsTabActive: false
-      });
     case OPEN_REQUEST_NOTIFICATION_DIALOG:
       return Object.assign({}, state, {
         requestNotificationDialogOpen: true
@@ -267,6 +291,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         previousLocation: state.currentLocation ? state.currentLocation : undefined,
         currentLocation: action.payload.location.pathname,
+        pageTitle: switchPageTitle(action.payload.location.pathname, state.large),
         bottomNavValue: getBottomNavValue(action.payload.location.pathname),
         showBackButton: switchBackButton(action.payload.location.pathname),
         issueDialogOpen: false,
@@ -277,7 +302,8 @@ const reducer = (state = initialState, action) => {
         drawerOpen: false,
         showSideNav: showSideNav(action.payload.location.pathname),
         showBottomNav: showBottomNav(action.payload.location.pathname),
-        isMapDetail: detectMapDetail(action.payload.location.pathname)
+        isMapDetail: detectMapDetail(action.payload.location.pathname),
+        mapsTabActive: switchMapsTab(action.payload.location.pathname)
       });
     default:
       return state;

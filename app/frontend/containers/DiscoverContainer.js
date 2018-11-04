@@ -16,9 +16,7 @@ import loadTrendingSpotsEnd from '../actions/loadTrendingSpotsEnd';
 import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
-import updatePageTitle from '../actions/updatePageTitle';
 import openReviewDialog from '../actions/openReviewDialog';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -35,10 +33,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('discover')));
-    },
-
     handleCreateMapButtonClick: () => {
       dispatch(openCreateMapDialog());
     },

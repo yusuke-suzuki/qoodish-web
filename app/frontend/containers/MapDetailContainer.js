@@ -6,7 +6,6 @@ import ApiClient from './ApiClient';
 import selectMap from '../actions/selectMap';
 import openPlaceSelectDialog from '../actions/openPlaceSelectDialog';
 import openToast from '../actions/openToast';
-import updatePageTitle from '../actions/updatePageTitle';
 import requestCurrentPosition from '../actions/requestCurrentPosition';
 import requestMapCenter from '../actions/requestMapCenter';
 import fetchSpots from '../actions/fetchSpots';
@@ -26,10 +25,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePageTitle: (mapName = undefined) => {
-      dispatch(updatePageTitle(mapName ? mapName : 'Map'));
-    },
-
     initCenter: map => {
       if (map.base.place_id) {
         dispatch(requestMapCenter(map.base.lat, map.base.lng));

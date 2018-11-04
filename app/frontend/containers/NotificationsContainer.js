@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import Notifications from '../ui/Notifications';
 import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';
-import updatePageTitle from '../actions/updatePageTitle';
 import loadNotificationsStart from '../actions/loadNotificationsStart';
 import loadNotificationsEnd from '../actions/loadNotificationsEnd';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -19,10 +17,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('notifications')));
-    },
-
     handleMount: async () => {
       dispatch(loadNotificationsStart());
       const client = new ApiClient();

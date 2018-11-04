@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
-import updatePageTitle from '../actions/updatePageTitle';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchUserMaps from '../actions/fetchUserMaps';
 import loadUserMapsStart from '../actions/loadUserMapsStart';
@@ -16,7 +15,6 @@ import clearProfileState from '../actions/clearProfileState';
 import openEditProfileDialog from '../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 import ApiClient from './ApiClient.js';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -37,10 +35,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('account')));
-    },
-
     fetchUserProfile: async () => {
       const client = new ApiClient();
       let response = await client.fetchUser();

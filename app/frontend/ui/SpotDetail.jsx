@@ -85,10 +85,10 @@ const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
 
 class SpotDetail extends React.PureComponent {
   async componentDidMount() {
-    this.props.updatePageTitle();
     if (!this.props.currentSpot) {
       await this.props.fetchSpot();
     }
+
     this.props.fetchSpotReviews();
 
     gtag('config', process.env.GA_TRACKING_ID, {

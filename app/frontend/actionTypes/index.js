@@ -14,11 +14,8 @@ export const REQUEST_FINISH = 'REQUEST_FINISH';
 export const OPEN_TOAST = 'OPEN_TOAST';
 export const CLOSE_TOAST = 'CLOSE_TOAST';
 export const UPDATE_WINDOW_SIZE = 'UPDATE_WINDOW_SIZE';
-export const UPDATE_PAGE_TITLE = 'UPDATE_PAGE_TITLE';
 export const OPEN_ISSUE_DIALOG = 'OPEN_ISSUE_DIALOG';
 export const CLOSE_ISSUE_DIALOG = 'CLOSE_ISSUE_DIALOG';
-export const SHOW_MAPS_TAB = 'SHOW_MAPS_TAB';
-export const HIDE_MAPS_TAB = 'HIDE_MAPS_TAB';
 
 export const PICK_UP_MAP = 'PICK_UP_MAP';
 export const FETCH_MY_MAPS = 'FETCH_MY_MAPS';

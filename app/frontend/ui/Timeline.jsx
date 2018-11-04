@@ -56,24 +56,15 @@ const styles = {
 };
 
 export default class Feed extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
-  }
-
   componentDidMount() {
-    this.props.updatePageTitle();
     if (!this.props.currentUser.isAnonymous) {
       this.props.refreshReviews();
     }
+
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/',
       'page_title': `${I18n.t('home')} | Qoodish`
     });
-  }
-
-  handleClickLoadMoreButton() {
-    this.props.loadMoreReviews(this.props.nextTimestamp);
   }
 
   renderProgress() {
@@ -92,7 +83,7 @@ export default class Feed extends React.PureComponent {
       <div style={styles.buttonContainer}>
         <Button
           variant="contained"
-          onClick={this.handleClickLoadMoreButton}
+          onClick={() => this.props.loadMoreReviews(this.props.nextTimestamp)}
           style={
             this.props.large
               ? styles.raisedButtonLarge
@@ -169,6 +160,7 @@ export default class Feed extends React.PureComponent {
         <NoContentsContainer
           contentType="review"
           action="create-review"
+          secondaryAction="discover-reviews"
           message={I18n.t('reports will see here')}
         />
       );

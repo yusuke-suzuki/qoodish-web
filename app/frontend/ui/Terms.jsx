@@ -28,7 +28,6 @@ const styles = {
 
 class Terms extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle(this.props.large ? I18n.t('terms of service') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/terms',
       'page_title': 'Terms | Qoodish'
