@@ -115,6 +115,7 @@ export default class Maps extends React.PureComponent {
         <NoContentsContainer
           contentType="map"
           action="create-map"
+          secondaryAction="discover-maps"
           message={I18n.t('maps will see here')}
         />
       );

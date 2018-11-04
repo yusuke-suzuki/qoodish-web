@@ -56,6 +56,9 @@ const styles = {
   },
   createMapButton: {
     padding: 0
+  },
+  buttonIcon: {
+    marginRight: 8
   }
 };
 
@@ -300,7 +303,7 @@ class EditReviewDialog extends React.PureComponent {
             size="small"
             style={styles.createMapButton}
           >
-            <AddIcon />
+            <AddIcon style={styles.buttonIcon} />
             {I18n.t('create new map')}
           </Button>
           {this.renderCommentBox()}
