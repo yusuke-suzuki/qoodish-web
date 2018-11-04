@@ -27,13 +27,7 @@ const styles = {
 };
 
 export default class Maps extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.handleTabChange = this.handleTabChange.bind(this);
-  }
-
   componentDidMount() {
-    this.props.showTabs();
     this.props.updatePageTitle();
 
     if (!this.props.currentUser.isAnonymous) {
@@ -47,10 +41,6 @@ export default class Maps extends React.PureComponent {
     });
   }
 
-  componentWillUnmount() {
-    this.props.hideTabs();
-  }
-
   renderProgress() {
     return (
       <div style={styles.progress}>
@@ -59,22 +49,13 @@ export default class Maps extends React.PureComponent {
     );
   }
 
-  handleTabChange() {
-    let currentTabValue = this.props.tabValue;
-    if (currentTabValue === 0) {
-      this.props.handleMyMapsActive();
-    } else {
-      this.props.handleFollowingMapsActive();
-    }
-  }
-
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderHelmet()}
         <SwipeableViews
           index={this.props.tabValue}
-          onChangeIndex={this.handleTabChange}
+          onChangeIndex={() => this.props.handleTabChange(this.props.tabValue)}
         >
           {this.renderFollowingMaps()}
           {this.renderMyMaps()}

@@ -17,8 +17,6 @@ import {
   READ_NOTIFICATION,
   LOAD_NOTIFICATIONS_START,
   LOAD_NOTIFICATIONS_END,
-  SHOW_MAPS_TAB,
-  HIDE_MAPS_TAB,
   OPEN_REQUEST_NOTIFICATION_DIALOG,
   CLOSE_REQUEST_NOTIFICATION_DIALOG,
   OPEN_SIGN_IN_REQUIRED_DIALOG,
@@ -76,6 +74,14 @@ const getBottomNavValue = (pathname) => {
       return 4;
     default:
       return undefined;
+  }
+}
+
+const switchMapsTab = (pathname) => {
+  if (pathname.includes('/maps') && !pathname.includes('/maps/')) {
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -223,14 +229,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingNotifications: false
       });
-    case SHOW_MAPS_TAB:
-      return Object.assign({}, state, {
-        mapsTabActive: true
-      });
-    case HIDE_MAPS_TAB:
-      return Object.assign({}, state, {
-        mapsTabActive: false
-      });
     case OPEN_REQUEST_NOTIFICATION_DIALOG:
       return Object.assign({}, state, {
         requestNotificationDialogOpen: true
@@ -277,7 +275,8 @@ const reducer = (state = initialState, action) => {
         drawerOpen: false,
         showSideNav: showSideNav(action.payload.location.pathname),
         showBottomNav: showBottomNav(action.payload.location.pathname),
-        isMapDetail: detectMapDetail(action.payload.location.pathname)
+        isMapDetail: detectMapDetail(action.payload.location.pathname),
+        mapsTabActive: switchMapsTab(action.payload.location.pathname)
       });
     default:
       return state;

@@ -60,9 +60,6 @@ const styles = {
   tabs: {
     width: '100%'
   },
-  tabIndicator: {
-    backgroundColor: '#fff'
-  },
   tabLarge: {
     height: 64
   },
@@ -332,10 +329,9 @@ class NavBar extends React.PureComponent {
       <Toolbar disableGutters>
         <Tabs
           value={this.props.mapsTabValue}
-          fullWidth
+          fullWidth={!this.props.large}
           centered
           style={styles.tabs}
-          TabIndicatorProps={{ style: styles.tabIndicator }}
         >
           <Tab
             label={I18n.t('following')}
