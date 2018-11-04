@@ -90,7 +90,6 @@ const styles = {
 
 class Login extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle(this.props.large ? I18n.t('login') : 'Qoodish');
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/login',
       'page_title': `${I18n.t('login')} | Qoodish`

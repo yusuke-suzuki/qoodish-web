@@ -21,7 +21,6 @@ const styles = {
 
 class Notifications extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle();
     if (!this.props.currentUser.isAnonymous) {
       this.props.handleMount();
     }

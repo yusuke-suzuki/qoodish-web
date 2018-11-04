@@ -7,8 +7,6 @@ import selectReview from '../actions/selectReview';
 import loadReviewStart from '../actions/loadReviewStart';
 import loadReviewEnd from '../actions/loadReviewEnd';
 import clearReviewState from '../actions/clearReviewState';
-import updatePageTitle from '../actions/updatePageTitle';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -20,10 +18,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('report')));
-    },
-
     fetchReview: async () => {
       dispatch(loadReviewStart());
       const client = new ApiClient();

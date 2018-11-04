@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Terms from '../ui/Terms';
-import updatePageTitle from '../actions/updatePageTitle';
 
 const mapStateToProps = state => {
   return {
@@ -11,9 +10,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updatePageTitle: (title) => {
-      dispatch(updatePageTitle(title));
-    }
   };
 };
 

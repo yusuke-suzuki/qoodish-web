@@ -8,9 +8,7 @@ import fetchSpotReviews from '../actions/fetchSpotReviews';
 import loadSpotStart from '../actions/loadSpotStart';
 import loadSpotEnd from '../actions/loadSpotEnd';
 import clearSpotState from '../actions/clearSpotState';
-import updatePageTitle from '../actions/updatePageTitle';
 import openReviewDialog from '../actions/openReviewDialog';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -25,10 +23,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('spot')));
-    },
-
     fetchSpot: async () => {
       dispatch(loadSpotStart());
       const client = new ApiClient();

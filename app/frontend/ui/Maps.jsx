@@ -28,8 +28,6 @@ const styles = {
 
 export default class Maps extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle();
-
     if (!this.props.currentUser.isAnonymous) {
       this.props.refreshMyMaps();
       this.props.refreshFollowingMaps();

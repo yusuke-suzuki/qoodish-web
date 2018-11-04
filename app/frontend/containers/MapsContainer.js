@@ -10,10 +10,8 @@ import loadMyMapsEnd from '../actions/loadMyMapsEnd';
 import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
 import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
-import updatePageTitle from '../actions/updatePageTitle';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -29,10 +27,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('maps')));
-    },
-
     handleCreateMapButtonClick: () => {
       dispatch(openCreateMapDialog());
     },

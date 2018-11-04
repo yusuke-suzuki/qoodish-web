@@ -57,10 +57,10 @@ const styles = {
 
 export default class Feed extends React.PureComponent {
   componentDidMount() {
-    this.props.updatePageTitle();
     if (!this.props.currentUser.isAnonymous) {
       this.props.refreshReviews();
     }
+
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': '/',
       'page_title': `${I18n.t('home')} | Qoodish`

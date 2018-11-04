@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Invites from '../ui/Invites';
-import updatePageTitle from '../actions/updatePageTitle';
 import ApiClient from './ApiClient';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
@@ -10,7 +9,6 @@ import requestFinish from '../actions/requestFinish';
 import fetchInvites from '../actions/fetchInvites';
 import loadInvitesStart from '../actions/loadInvitesStart';
 import loadInvitesEnd from '../actions/loadInvitesEnd';
-import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -23,10 +21,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePageTitle: () => {
-      dispatch(updatePageTitle(I18n.t('invites')));
-    },
-
     fetchInvites: async () => {
       dispatch(loadInvitesStart());
       const client = new ApiClient();

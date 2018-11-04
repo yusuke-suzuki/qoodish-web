@@ -21,10 +21,10 @@ const styles = {
 
 class ReviewDetail extends React.PureComponent {
   async componentDidMount() {
-    this.props.updatePageTitle();
     if (!this.props.currentReview) {
       await this.props.fetchReview();
     }
+
     gtag('config', process.env.GA_TRACKING_ID, {
       'page_path': `/maps/${this.props.currentReview.map.id}/reports/${this.props.currentReview.id}`,
       'page_title': `${this.props.currentReview.spot.name} - ${this.props.currentReview.map.name} | Qoodish`
