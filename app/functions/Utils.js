@@ -63,6 +63,16 @@ export const generateMetadata = async (req) => {
       pageUrl = req.originalUrl;
       twitterCard = 'summary_large_image';
     }
+  } else if (req.params.placeId) {
+    response = await client.fetchSpotMetadata(req.params.placeId, req.headers['accept-language']);
+    if (response.ok) {
+      json = await response.json();
+      title = `${json.title} | Qoodish`
+      description = json.description;
+      imageUrl = json.image_url;
+      pageUrl = req.originalUrl;
+      twitterCard = 'summary_large_image';
+    }
   }
 
   const metadata = {

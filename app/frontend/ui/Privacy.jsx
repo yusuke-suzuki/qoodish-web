@@ -1,6 +1,5 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import I18n from '../containers/I18n';
 
 const styles = {
   root: {
