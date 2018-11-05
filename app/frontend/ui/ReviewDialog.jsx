@@ -55,6 +55,7 @@ const ReviewDialog = (props) => {
       TransitionComponent={Transition}
       fullWidth
       fullScreen={props.large ? false : true}
+      scroll={props.large ? 'body' : 'paper'}
     >
       {!props.large && <DialogAppBar {...props} />}
       <DialogContent style={styles.dialogContent}>
