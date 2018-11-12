@@ -40,7 +40,9 @@ const plugins = [
     'LP_IMAGE_1',
     'LP_IMAGE_2',
     'GA_TRACKING_ID',
-    'GOOGLE_MAP_URL'
+    'GOOGLE_MAP_URL',
+    'CLOUD_STORAGE_ENDPOINT',
+    'CLOUD_STORAGE_BUCKET_NAME'
   ])
 ];
 
