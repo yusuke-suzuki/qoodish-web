@@ -78,7 +78,7 @@ export const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
         reject();
       },
       async () => {
-        const imageUrl = await storage.ref(fileName).getDownloadURL();
+        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${fileName}`;
         resolve({
           imageUrl: imageUrl,
           fileName: uploadTask.snapshot.ref.name
