@@ -103,6 +103,20 @@ class ApiClient {
     return response;
   }
 
+  async fetchActiveMaps() {
+    const url = `${process.env.API_ENDPOINT}/maps?active=true`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchRecentMaps() {
     const url = `${process.env.API_ENDPOINT}/maps?recent=true`;
     const token = await this.getCurrentToken();

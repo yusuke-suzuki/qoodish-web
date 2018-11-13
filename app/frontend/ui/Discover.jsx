@@ -3,6 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
 import PlaceIcon from '@material-ui/icons/Place';
 import RateReviewIcon from '@material-ui/icons/RateReview';
+import WhatshotIcon from '@material-ui/icons/Whatshot';
 import MapIcon from '@material-ui/icons/Map';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GridList from '@material-ui/core/GridList';
@@ -111,6 +112,7 @@ export default class Discover extends React.PureComponent {
     this.props.pickUpMap();
     this.props.fetchTrendingSpots();
     this.props.fetchRecentReviews();
+    this.props.refreshActiveMaps();
     this.props.refreshRecentMaps();
     this.props.refreshPopularMaps();
 
@@ -165,11 +167,24 @@ export default class Discover extends React.PureComponent {
             color="textSecondary"
             style={styles.gridHeader}
           >
+            <WhatshotIcon style={styles.headerIcon} /> {I18n.t('active maps')}
+          </Typography>
+          {this.props.loadingActiveMaps
+            ? this.renderProgress()
+            : this.renderMapContainer(this.props.activeMaps)}
+        </div>
+        <div style={styles.mapsContainer}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
             <MapIcon style={styles.headerIcon} /> {I18n.t('recent maps')}
           </Typography>
           {this.props.loadingRecentMaps
             ? this.renderProgress()
-            : this.renderRecentMapContainer(this.props.recentMaps)}
+            : this.renderMapContainer(this.props.recentMaps)}
         </div>
         <div style={styles.mapsContainer}>
           <Typography
@@ -182,7 +197,7 @@ export default class Discover extends React.PureComponent {
           </Typography>
           {this.props.loadingPopularMaps
             ? this.renderProgress()
-            : this.renderPopularMapContainer(this.props.popularMaps)}
+            : this.renderMapContainer(this.props.popularMaps)}
         </div>
         <div style={styles.container}>
           <Typography
@@ -376,22 +391,7 @@ export default class Discover extends React.PureComponent {
     ));
   }
 
-  renderRecentMapContainer(maps) {
-    if (maps.length > 0) {
-      return (
-        <MapCollectionContainer maps={maps} />
-      );
-    } else {
-      return (
-        <NoContentsContainer
-          contentType="map"
-          message={I18n.t('maps will see here')}
-        />
-      );
-    }
-  }
-
-  renderPopularMapContainer(maps) {
+  renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
         <MapCollectionContainer maps={maps} />

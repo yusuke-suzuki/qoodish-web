@@ -4,18 +4,26 @@ import Discover from '../ui/Discover';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 
-import fetchRecentReviews from '../actions/fetchRecentReviews';
-import fetchRecentMaps from '../actions/fetchRecentMaps';
-import fetchPopularMaps from '../actions/fetchPopularMaps';
-import fetchTrendingSpots from '../actions/fetchTrendingSpots';
 import loadRecentReviewsStart from '../actions/loadRecentReviewsStart';
 import loadRecentReviewsEnd from '../actions/loadRecentReviewsEnd';
+import fetchRecentReviews from '../actions/fetchRecentReviews';
+
+import loadActiveMapsStart from '../actions/loadActiveMapsStart';
+import loadActiveMapsEnd from '../actions/loadActiveMapsEnd';
+import fetchActiveMaps from '../actions/fetchActiveMaps';
+
 import loadRecentMapsStart from '../actions/loadRecentMapsStart';
 import loadRecentMapsEnd from '../actions/loadRecentMapsEnd';
+import fetchRecentMaps from '../actions/fetchRecentMaps';
+
 import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
+import fetchPopularMaps from '../actions/fetchPopularMaps';
+
 import loadTrendingSpotsStart from '../actions/loadTrendingSpotsStart';
 import loadTrendingSpotsEnd from '../actions/loadTrendingSpotsEnd';
+import fetchTrendingSpots from '../actions/fetchTrendingSpots';
+
 import selectMap from '../actions/selectMap';
 import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
@@ -24,8 +32,10 @@ import openReviewDialog from '../actions/openReviewDialog';
 const mapStateToProps = state => {
   return {
     mapPickedUp: state.discover.mapPickedUp,
+    activeMaps: state.discover.activeMaps,
     recentMaps: state.discover.recentMaps,
     popularMaps: state.discover.popularMaps,
+    loadingActiveMaps: state.discover.loadingActiveMaps,
     loadingRecentMaps: state.discover.loadingRecentMaps,
     loadingPopularMaps: state.discover.loadingPopularMaps,
     large: state.shared.large,
@@ -75,6 +85,15 @@ const mapDispatchToProps = dispatch => {
       } else {
         dispatch(openToast('Failed to fetch recent reviews.'));
       }
+    },
+
+    refreshActiveMaps: async () => {
+      dispatch(loadActiveMapsStart());
+      const client = new ApiClient();
+      let response = await client.fetchActiveMaps();
+      let maps = await response.json();
+      dispatch(fetchActiveMaps(maps));
+      dispatch(loadActiveMapsEnd());
     },
 
     refreshRecentMaps: async () => {
