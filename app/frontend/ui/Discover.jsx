@@ -3,6 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
 import PlaceIcon from '@material-ui/icons/Place';
 import RateReviewIcon from '@material-ui/icons/RateReview';
+import MapIcon from '@material-ui/icons/Map';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -110,6 +111,7 @@ export default class Discover extends React.PureComponent {
     this.props.pickUpMap();
     this.props.fetchTrendingSpots();
     this.props.fetchRecentReviews();
+    this.props.refreshRecentMaps();
     this.props.refreshPopularMaps();
 
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -163,11 +165,24 @@ export default class Discover extends React.PureComponent {
             color="textSecondary"
             style={styles.gridHeader}
           >
+            <MapIcon style={styles.headerIcon} /> {I18n.t('recent maps')}
+          </Typography>
+          {this.props.loadingRecentMaps
+            ? this.renderProgress()
+            : this.renderRecentMapContainer(this.props.recentMaps)}
+        </div>
+        <div style={styles.mapsContainer}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            color="textSecondary"
+            style={styles.gridHeader}
+          >
             <TrendingUpIcon style={styles.headerIcon} /> {I18n.t('trending maps')}
           </Typography>
           {this.props.loadingPopularMaps
             ? this.renderProgress()
-            : this.renderMapContainer(this.props.popularMaps)}
+            : this.renderPopularMapContainer(this.props.popularMaps)}
         </div>
         <div style={styles.container}>
           <Typography
@@ -361,7 +376,22 @@ export default class Discover extends React.PureComponent {
     ));
   }
 
-  renderMapContainer(maps) {
+  renderRecentMapContainer(maps) {
+    if (maps.length > 0) {
+      return (
+        <MapCollectionContainer maps={maps} />
+      );
+    } else {
+      return (
+        <NoContentsContainer
+          contentType="map"
+          message={I18n.t('maps will see here')}
+        />
+      );
+    }
+  }
+
+  renderPopularMapContainer(maps) {
     if (maps.length > 0) {
       return (
         <MapCollectionContainer maps={maps} />
