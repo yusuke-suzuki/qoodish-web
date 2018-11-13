@@ -5,10 +5,13 @@ import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 
 import fetchRecentReviews from '../actions/fetchRecentReviews';
+import fetchRecentMaps from '../actions/fetchRecentMaps';
 import fetchPopularMaps from '../actions/fetchPopularMaps';
 import fetchTrendingSpots from '../actions/fetchTrendingSpots';
 import loadRecentReviewsStart from '../actions/loadRecentReviewsStart';
 import loadRecentReviewsEnd from '../actions/loadRecentReviewsEnd';
+import loadRecentMapsStart from '../actions/loadRecentMapsStart';
+import loadRecentMapsEnd from '../actions/loadRecentMapsEnd';
 import loadPopularMapsStart from '../actions/loadPopularMapsStart';
 import loadPopularMapsEnd from '../actions/loadPopularMapsEnd';
 import loadTrendingSpotsStart from '../actions/loadTrendingSpotsStart';
@@ -21,7 +24,9 @@ import openReviewDialog from '../actions/openReviewDialog';
 const mapStateToProps = state => {
   return {
     mapPickedUp: state.discover.mapPickedUp,
+    recentMaps: state.discover.recentMaps,
     popularMaps: state.discover.popularMaps,
+    loadingRecentMaps: state.discover.loadingRecentMaps,
     loadingPopularMaps: state.discover.loadingPopularMaps,
     large: state.shared.large,
     recentReviews: state.discover.recentReviews,
@@ -70,6 +75,15 @@ const mapDispatchToProps = dispatch => {
       } else {
         dispatch(openToast('Failed to fetch recent reviews.'));
       }
+    },
+
+    refreshRecentMaps: async () => {
+      dispatch(loadRecentMapsStart());
+      const client = new ApiClient();
+      let response = await client.fetchRecentMaps();
+      let maps = await response.json();
+      dispatch(fetchRecentMaps(maps));
+      dispatch(loadRecentMapsEnd());
     },
 
     refreshPopularMaps: async () => {
