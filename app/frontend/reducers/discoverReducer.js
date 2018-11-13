@@ -1,4 +1,7 @@
 import {
+  FETCH_ACTIVE_MAPS,
+  LOAD_ACTIVE_MAPS_START,
+  LOAD_ACTIVE_MAPS_END,
   FETCH_RECENT_MAPS,
   LOAD_RECENT_MAPS_START,
   LOAD_RECENT_MAPS_END,
@@ -17,9 +20,12 @@ import {
 const initialState = {
   mapPickedUp: null,
   recentReviews: [],
+  activeMaps: [],
   recentMaps: [],
   popularMaps: [],
   trendingSpots: [],
+  loadingActiveMaps: false,
+  loadingRecentMaps: false,
   loadingPopularMaps: false,
   loadingRecentReviews: false,
   loadingTrendingSpots: false
@@ -27,6 +33,18 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case LOAD_ACTIVE_MAPS_START:
+      return Object.assign({}, state, {
+        loadingActiveMaps: true
+      });
+    case LOAD_ACTIVE_MAPS_END:
+      return Object.assign({}, state, {
+        loadingActiveMaps: false
+      });
+    case FETCH_ACTIVE_MAPS:
+      return Object.assign({}, state, {
+        activeMaps: action.payload.maps
+      });
     case LOAD_RECENT_MAPS_START:
       return Object.assign({}, state, {
         loadingRecentMaps: true
