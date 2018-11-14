@@ -14,7 +14,12 @@ import I18n from '../containers/I18n';
 import moment from 'moment';
 
 const styles = {
-  gridList: {
+  gridListLarge: {
+    width: '100%'
+  },
+  gridListSmall: {
+    flexWrap: 'nowrap',
+    transform: 'translateZ(0)',
     width: '100%'
   },
   gridTile: {
@@ -40,7 +45,8 @@ const styles = {
     textOverflow: 'ellipsis',
     WebkitLineClamp: '3',
     WebkitBoxOrient: 'vertical',
-    display: '-webkit-box'
+    display: '-webkit-box',
+    wordBreak: 'break-all'
   },
   secondaryAvatarLarge: {
     borderRadius: 0,
@@ -83,8 +89,8 @@ const RecentReviews = (props) => {
   } else {
     return (
       <GridList
-        cols={props.large ? 2 : 1}
-        style={styles.gridList}
+        cols={props.large ? 2 : 1.2}
+        style={props.large ? styles.gridListLarge : styles.gridListSmall}
         spacing={20}
         cellHeight={240}
       >
