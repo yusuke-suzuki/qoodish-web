@@ -2,26 +2,24 @@ import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
 import PlaceIcon from '@material-ui/icons/Place';
-import RateReviewIcon from '@material-ui/icons/RateReview';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
-import MapIcon from '@material-ui/icons/Map';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import GradeIcon from '@material-ui/icons/Grade';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Button from '@material-ui/core/Button';
 
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
+import RecentReviewsContainer from '../containers/RecentReviewsContainer';
 import I18n from '../containers/I18n';
 
 import { Link } from 'react-router-dom';
@@ -41,6 +39,27 @@ const styles = {
     justifyContent: 'space-around',
     marginTop: 40,
     marginBottom: 20
+  },
+  listContainerLarge: {
+    display: 'flex'
+  },
+  listContainerSmall: {
+  },
+  rankingContainerLarge: {
+    marginTop: 40,
+    marginBottom: 20,
+    width: '50%'
+  },
+  rankingContainerSmall: {
+    marginTop: 40,
+    marginBottom: 20,
+    paddingRight: 10
+  },
+  mapListItem: {
+    paddingRight: 90
+  },
+  spotListItem: {
+    paddingRight: 56
   },
   mapsContainer: {
     marginTop: 40,
@@ -75,35 +94,6 @@ const styles = {
   headerIcon: {
     marginLeft: 10,
     marginRight: 10
-  },
-  reviewCard: {
-    margin: 3
-  },
-  cardContentLarge: {
-    paddingTop: 0,
-    paddingRight: 120
-  },
-  cardContentSmall: {
-    paddingTop: 0,
-    paddingRight: 112
-  },
-  reviewImage: {
-    width: '100%'
-  },
-  trendingSpotsList: {
-    width: '100%'
-  },
-  secondaryAvatarLarge: {
-    borderRadius: 0,
-    marginRight: 24,
-    width: 80,
-    height: 80
-  },
-  secondaryAvatarSmall: {
-    borderRadius: 0,
-    marginRight: 16,
-    width: 80,
-    height: 80
   }
 };
 
@@ -134,6 +124,7 @@ export default class Discover extends React.PureComponent {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderHelmet()}
+
         <div style={styles.container}>
           <Typography
             variant="subtitle1"
@@ -146,6 +137,7 @@ export default class Discover extends React.PureComponent {
           <br />
           {this.renderPickUp(this.props.mapPickedUp)}
         </div>
+
         <div style={styles.container}>
           <Typography
             variant="subtitle1"
@@ -153,13 +145,12 @@ export default class Discover extends React.PureComponent {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <RateReviewIcon style={styles.headerIcon} /> {I18n.t('recent reports')}
+            <FiberNewIcon style={styles.headerIcon} /> {I18n.t('recent reports')}
           </Typography>
           <br />
-          {this.props.loadingRecentReviews
-            ? this.renderProgress()
-            : this.renderRecentReviewContainer(this.props.recentReviews)}
+          <RecentReviewsContainer />
         </div>
+
         <div style={styles.mapsContainer}>
           <Typography
             variant="subtitle1"
@@ -173,6 +164,7 @@ export default class Discover extends React.PureComponent {
             ? this.renderProgress()
             : this.renderMapContainer(this.props.activeMaps)}
         </div>
+
         <div style={styles.mapsContainer}>
           <Typography
             variant="subtitle1"
@@ -180,38 +172,43 @@ export default class Discover extends React.PureComponent {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <MapIcon style={styles.headerIcon} /> {I18n.t('recent maps')}
+            <FiberNewIcon style={styles.headerIcon} /> {I18n.t('recent maps')}
           </Typography>
           {this.props.loadingRecentMaps
             ? this.renderProgress()
             : this.renderMapContainer(this.props.recentMaps)}
         </div>
-        <div style={styles.mapsContainer}>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            color="textSecondary"
-            style={styles.gridHeader}
-          >
-            <TrendingUpIcon style={styles.headerIcon} /> {I18n.t('trending maps')}
-          </Typography>
-          {this.props.loadingPopularMaps
-            ? this.renderProgress()
-            : this.renderMapContainer(this.props.popularMaps)}
-        </div>
-        <div style={styles.container}>
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            color="textSecondary"
-            style={styles.gridHeader}
-          >
-            <PlaceIcon style={styles.headerIcon} /> {I18n.t('trending spots')}
-          </Typography>
-          <br />
-          {this.props.loadingTrendingSpots
-            ? this.renderProgress()
-            : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
+
+        <div style={this.props.large ? styles.listContainerLarge : styles.listContainerSmall}>
+          <div style={this.props.large ? styles.rankingContainerLarge : styles.rankingContainerSmall}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              color="textSecondary"
+              style={styles.gridHeader}
+            >
+              <GradeIcon style={styles.headerIcon} /> {I18n.t('trending maps')}
+            </Typography>
+            <br />
+            {this.props.loadingPopularMaps
+              ? this.renderProgress()
+              : this.renderTrendingMapsContainer(this.props.popularMaps)}
+          </div>
+
+          <div style={this.props.large ? styles.rankingContainerLarge : styles.rankingContainerSmall}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              color="textSecondary"
+              style={styles.gridHeader}
+            >
+              <PlaceIcon style={styles.headerIcon} /> {I18n.t('trending spots')}
+            </Typography>
+            <br />
+            {this.props.loadingTrendingSpots
+              ? this.renderProgress()
+              : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
+          </div>
         </div>
       </div>
     );
@@ -279,9 +276,53 @@ export default class Discover extends React.PureComponent {
     );
   }
 
+  renderTrendingMapsContainer(maps) {
+    return (
+      <List disablePadding>
+        {maps.length > 0
+          ? this.renderTrendingMaps(maps)
+          : null}
+      </List>
+    );
+  }
+
+  renderTrendingMaps(maps) {
+    return maps.map((map, i) => (
+      <ListItem
+        button
+        key={map.id}
+        component={Link}
+        to={`/maps/${map.id}`}
+        title={map.name}
+        style={styles.mapListItem}
+      >
+        <Avatar
+          src={map.thumbnail_url}
+          alt={map.name}
+        />
+        <ListItemText
+          disableTypography={true}
+          primary={
+            <Typography variant="subtitle1" noWrap>
+              {i + 1}. {map.name}
+            </Typography>
+          }
+          secondary={
+            <Typography component="p" noWrap color="textSecondary">
+              {map.description}
+            </Typography>
+          }
+        />
+        <ListItemSecondaryAction>
+          <FollowMapButtonContainer currentMap={map} />
+        </ListItemSecondaryAction>
+      </ListItem>
+    ));
+  }
+
   renderTrendingSpotsContainer(spots) {
     return (
-      <List disablePadding style={styles.trendingSpotsList}>
+      <List disablePadding style={styles.trendingList}>
         {spots.length > 0
           ? this.renderSpots(spots)
           : null}
@@ -297,6 +338,7 @@ export default class Discover extends React.PureComponent {
         component={Link}
         to={`/spots/${spot.place_id}`}
         title={spot.name}
+        style={styles.spotListItem}
       >
         <Avatar
           src={spot.image_url}
@@ -315,79 +357,17 @@ export default class Discover extends React.PureComponent {
             </Typography>
           }
         />
+        <ListItemSecondaryAction>
+          <Button
+            component={Link}
+            to={`/spots/${spot.place_id}`}
+            title={spot.name}
+            variant="outlined"
+          >
+            {I18n.t('detail')}
+          </Button>
+        </ListItemSecondaryAction>
       </ListItem>
-    ));
-  }
-
-  renderRecentReviewContainer(reviews) {
-    if (reviews.length > 0) {
-      return (
-        <GridList
-          cols={this.props.large ? 2 : 1}
-          style={styles.gridList}
-          spacing={20}
-          cellHeight={210}
-        >
-          {this.renderRecentReviews(reviews)}
-        </GridList>
-      );
-    } else {
-      return (
-        <NoContentsContainer
-          contentType="review"
-          message={I18n.t('reports will see here')}
-        />
-      );
-    }
-  }
-
-  renderRecentReviews(reviews) {
-    return reviews.map(review => (
-      <GridListTile
-        key={review.id}
-        onClick={() => this.props.handleClickReview(review)}
-        style={styles.gridTile}
-      >
-        <Card style={styles.reviewCard}>
-          <CardHeader
-            avatar={
-              <Avatar
-                src={review.author.profile_image_url}
-                alt={review.author.name}
-              />
-            }
-            title={review.author.name}
-            subheader={moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-              .locale(window.currentLocale)
-              .fromNow()}
-          />
-          <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
-            <Typography
-              variant="subtitle1"
-              color="primary"
-              gutterBottom
-              noWrap
-            >
-              {review.map.name}
-            </Typography>
-            <Typography variant="h6" gutterBottom noWrap>
-              {review.spot.name}
-            </Typography>
-            <Typography component="p" noWrap>
-              {review.comment}
-            </Typography>
-          </CardContent>
-        </Card>
-        {review.image && (
-          <ListItemSecondaryAction>
-            <Avatar
-              src={review.image.thumbnail_url}
-              alt={review.spot.name}
-              style={this.props.large ? styles.secondaryAvatarLarge : styles.secondaryAvatarSmall}
-            />
-          </ListItemSecondaryAction>
-        )}
-      </GridListTile>
     ));
   }
 

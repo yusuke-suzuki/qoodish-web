@@ -39,8 +39,6 @@ const mapStateToProps = state => {
     loadingRecentMaps: state.discover.loadingRecentMaps,
     loadingPopularMaps: state.discover.loadingPopularMaps,
     large: state.shared.large,
-    recentReviews: state.discover.recentReviews,
-    loadingRecentReviews: state.discover.loadingRecentReviews,
     loadingTrendingSpots: state.discover.loadingTrendingSpots,
     trendingSpots: state.discover.trendingSpots
   };
