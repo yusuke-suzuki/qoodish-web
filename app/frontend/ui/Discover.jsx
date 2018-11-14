@@ -18,7 +18,6 @@ import Button from '@material-ui/core/Button';
 
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
-import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 import RecentReviewsContainer from '../containers/RecentReviewsContainer';
 import I18n from '../containers/I18n';
 
@@ -55,11 +54,8 @@ const styles = {
     marginBottom: 20,
     paddingRight: 10
   },
-  mapListItem: {
-    paddingRight: 90
-  },
-  spotListItem: {
-    paddingRight: 56
+  listItem: {
+    paddingRight: 64
   },
   mapsContainer: {
     marginTop: 40,
@@ -294,7 +290,7 @@ export default class Discover extends React.PureComponent {
         component={Link}
         to={`/maps/${map.id}`}
         title={map.name}
-        style={styles.mapListItem}
+        style={styles.listItem}
       >
         <Avatar
           src={map.thumbnail_url}
@@ -314,7 +310,15 @@ export default class Discover extends React.PureComponent {
           }
         />
         <ListItemSecondaryAction>
-          <FollowMapButtonContainer currentMap={map} />
+          <Button
+            size="small"
+            component={Link}
+            to={`/maps/${map.id}`}
+            title={map.name}
+            variant="outlined"
+          >
+            {I18n.t('detail')}
+          </Button>
         </ListItemSecondaryAction>
       </ListItem>
     ));
@@ -338,7 +342,7 @@ export default class Discover extends React.PureComponent {
         component={Link}
         to={`/spots/${spot.place_id}`}
         title={spot.name}
-        style={styles.spotListItem}
+        style={styles.listItem}
       >
         <Avatar
           src={spot.image_url}
@@ -359,6 +363,7 @@ export default class Discover extends React.PureComponent {
         />
         <ListItemSecondaryAction>
           <Button
+            size="small"
             component={Link}
             to={`/spots/${spot.place_id}`}
             title={spot.name}
