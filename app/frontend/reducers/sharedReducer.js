@@ -9,6 +9,9 @@ import {
   LOAD_PLACES_START,
   LOAD_PLACES_END,
   SEARCH_PLACES,
+  LOAD_MAPS_START,
+  LOAD_MAPS_END,
+  SEARCH_MAPS,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
   FETCH_REVIEW_LIKES,
@@ -57,7 +60,9 @@ const initialState = {
   showBottomNav: true,
   isMapDetail: false,
   previousLocation: undefined,
-  currentLocation: undefined
+  currentLocation: undefined,
+  loadingMaps: false,
+  pickedMaps: []
 };
 
 const getBottomNavValue = (pathname) => {
@@ -205,6 +210,18 @@ const reducer = (state = initialState, action) => {
     case SEARCH_PLACES:
       return Object.assign({}, state, {
         pickedPlaces: action.payload.places
+      });
+    case LOAD_MAPS_START:
+      return Object.assign({}, state, {
+        loadingMaps: true
+      });
+    case LOAD_MAPS_END:
+      return Object.assign({}, state, {
+        loadingMaps: false
+      });
+    case SEARCH_MAPS:
+      return Object.assign({}, state, {
+        pickedMaps: action.payload.maps
       });
     case OPEN_LIKES_DIALOG:
       return Object.assign({}, state, {

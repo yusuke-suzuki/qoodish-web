@@ -28,10 +28,13 @@ import Badge from '@material-ui/core/Badge';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import SearchIcon from '@material-ui/icons/Search';
+
+import SearchBarContainer from '../containers/SearchBarContainer';
 import MapToolbarContainer from '../containers/MapToolbarContainer';
 import AppMenuButtonContainer from '../containers/AppMenuButtonContainer';
 import I18n from '../containers/I18n';
-import ButtonBase from '@material-ui/core/ButtonBase';
 
 const styles = {
   title: {
@@ -142,6 +145,10 @@ const styles = {
   link: {
     textDecoration: 'none',
     color: 'inherit'
+  },
+  searchContainer: {
+    marginLeft: 'auto',
+    marginRight: 150
   }
 };
 
@@ -233,6 +240,7 @@ class NavBar extends React.PureComponent {
         >
           {this.props.pageTitle}
         </Typography>
+        {this.props.large && <div style={styles.searchContainer}><SearchBarContainer /></div>}
         <div style={this.props.large ? styles.rightContentsLarge : styles.rightContentsSmall}>
           {this.props.currentUser && this.props.currentUser.isAnonymous ? this.renderRightContentsForAnonymous() : this.renderRightContents()}
         </div>
@@ -243,6 +251,7 @@ class NavBar extends React.PureComponent {
   renderRightContents() {
     return (
       <div>
+        {!this.props.large && this.renderSearchButton()}
         {this.props.large && this.renderNotificationCenter()}
         {this.renderNotificationMenu()}
         {this.renderAvatar()}
@@ -254,6 +263,7 @@ class NavBar extends React.PureComponent {
   renderRightContentsForAnonymous() {
     return (
       <div>
+        {!this.props.large && this.renderSearchButton()}
         <Button
           color="inherit"
           component={Link}
@@ -263,6 +273,18 @@ class NavBar extends React.PureComponent {
           {I18n.t('login')}
         </Button>
       </div>
+    );
+  }
+
+  renderSearchButton() {
+    return null; // WIP
+    return (
+      <IconButton
+        color="inherit"
+        onClick={this.props.handleSearchButtonClick}
+      >
+        <SearchIcon />
+      </IconButton>
     );
   }
 
