@@ -17,6 +17,11 @@ const styles = {
   gridList: {
     width: '100%'
   },
+  gridListHorizontal: {
+    flexWrap: 'nowrap',
+    transform: 'translateZ(0)',
+    width: '100%'
+  },
   tileBar: {
     height: 90
   },
@@ -56,9 +61,9 @@ const MapCollection = (props) => {
   return (
     <div style={styles.container}>
       <GridList
-        cols={props.large ? 4 : 2}
-        style={styles.gridList}
-        spacing={props.large ? 20 : 10}
+        cols={props.large ? 4 : (props.horizontal ? 1.5 : 2)}
+        style={props.horizontal ? styles.gridListHorizontal : styles.gridList}
+        spacing={props.large || props.horizontal ? 20 : 10}
         cellHeight={220}
       >
         {props.maps.map(map => (

@@ -51,11 +51,18 @@ const styles = {
   },
   rankingContainerSmall: {
     marginTop: 40,
-    marginBottom: 20,
-    paddingRight: 10
+    marginBottom: 20
   },
-  listItem: {
+  listItemLarge: {
+    paddingLeft: 10,
     paddingRight: 64
+  },
+  listItemSmall: {
+    paddingLeft: 10,
+    paddingRight: 64
+  },
+  listItemSecondaryAction: {
+    right: 10
   },
   mapsContainer: {
     marginTop: 40,
@@ -67,8 +74,11 @@ const styles = {
   gridTile: {
     cursor: 'pointer'
   },
-  pickUpTile: {
+  pickUpTileLarge: {
     height: 330
+  },
+  pickUpTileSmall: {
+    height: 280
   },
   pickUpTileBar: {
     height: '100%'
@@ -236,7 +246,7 @@ export default class Discover extends React.PureComponent {
         <GridListTile
           key={map && map.id}
           onClick={() => this.props.handleClickMap(map)}
-          style={styles.pickUpTile}
+          style={this.props.large ? styles.pickUpTileLarge : styles.pickUpTileSmall}
           component={Link}
           to={`/maps/${map && map.id}`}
           title={map && map.name}
@@ -290,7 +300,7 @@ export default class Discover extends React.PureComponent {
         component={Link}
         to={`/maps/${map.id}`}
         title={map.name}
-        style={styles.listItem}
+        style={this.props.large ? styles.listItemLarge : styles.listItemSmall}
       >
         <Avatar
           src={map.thumbnail_url}
@@ -309,7 +319,7 @@ export default class Discover extends React.PureComponent {
             </Typography>
           }
         />
-        <ListItemSecondaryAction>
+        <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
           <Button
             size="small"
             component={Link}
@@ -342,7 +352,7 @@ export default class Discover extends React.PureComponent {
         component={Link}
         to={`/spots/${spot.place_id}`}
         title={spot.name}
-        style={styles.listItem}
+        style={this.props.large ? styles.listItemLarge : styles.listItemSmall}
       >
         <Avatar
           src={spot.image_url}
@@ -361,7 +371,7 @@ export default class Discover extends React.PureComponent {
             </Typography>
           }
         />
-        <ListItemSecondaryAction>
+        <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
           <Button
             size="small"
             component={Link}
@@ -379,7 +389,7 @@ export default class Discover extends React.PureComponent {
   renderMapContainer(maps) {
     if (maps.length > 0) {
       return (
-        <MapCollectionContainer maps={maps} />
+        <MapCollectionContainer maps={maps} horizontal={!this.props.large} />
       );
     } else {
       return (
