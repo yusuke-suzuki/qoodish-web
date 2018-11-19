@@ -528,6 +528,20 @@ class ApiClient {
     return response;
   }
 
+  async searchMaps(input) {
+    const url = `${process.env.API_ENDPOINT}/maps?input=${input}`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async searchPlaces(input) {
     const url = `${process.env.API_ENDPOINT}/places?input=${input}`;
     const token = await this.getCurrentToken();

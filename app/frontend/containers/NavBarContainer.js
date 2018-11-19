@@ -113,6 +113,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     handleCloseDrawer: () => {
       dispatch(closeDrawer());
+    },
+
+    handleSearchButtonClick: () => {
+      // open search dialog like GCP console
     }
   };
 };
