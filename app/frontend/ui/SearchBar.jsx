@@ -3,9 +3,11 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
@@ -54,10 +56,6 @@ const styles = theme => ({
   },
   paper: {
     position: 'absolute'
-  },
-  avatar: {
-    width: 32,
-    height: 32
   }
 });
 
@@ -113,7 +111,7 @@ class SearchBar extends React.PureComponent {
         />
         {this.state.listOpen &&
           <Paper className={classes.paper}>
-            {this.renderMaps()}
+            <List disablePadding>{this.renderMaps()}</List>
           </Paper>
         }
       </div>
@@ -121,17 +119,19 @@ class SearchBar extends React.PureComponent {
   }
 
   renderMaps() {
-    const { classes } = this.props;
     return this.props.pickedMaps.map(map => (
-      <MenuItem
+      <ListItem
+        button
         component={Link}
         to={`/maps/${map.id}`}
         key={map.id}
         onClick={this.handleRequestClose}
       >
-        <Avatar alt={map.name} src={map.thumbnail_url} className={classes.avatar} />
-        <ListItemText primary={map.name} />
-      </MenuItem>
+        <ListItemAvatar>
+          <Avatar alt={map.name} src={map.thumbnail_url} />
+        </ListItemAvatar>
+        <ListItemText primary={map.name} primaryTypographyProps={{ noWrap: true}} />
+      </ListItem>
     ));
   }
 }
