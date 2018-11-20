@@ -14,6 +14,7 @@ const EditReviewDialogContainer = loadable(() => import(/* webpackChunkName: "ed
 const CreateMapDialogContainer = loadable(() => import(/* webpackChunkName: "create_map_dialog" */ '../containers/CreateMapDialogContainer'));
 const EditMapDialogContainer = loadable(() => import(/* webpackChunkName: "edit_map_dialog" */ '../containers/EditMapDialogContainer'));
 const EditProfileDialogContainer = loadable(() => import(/* webpackChunkName: "edit_profile_dialog" */ '../containers/EditProfileDialogContainer'));
+const SearchMapsDialogContainer = loadable(() => import(/* webpackChunkName: "search_maps_dialog" */ '../containers/SearchMapsDialogContainer'));
 
 const SharedDialogs = () => {
   return (
@@ -31,6 +32,7 @@ const SharedDialogs = () => {
       <CreateMapDialogContainer />
       <EditMapDialogContainer />
       <EditProfileDialogContainer />
+      <SearchMapsDialogContainer />
     </div>
   );
 }

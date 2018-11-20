@@ -27,6 +27,8 @@ import {
   CLOSE_FEEDBACK_DIALOG,
   OPEN_DRAWER,
   CLOSE_DRAWER,
+  OPEN_SEARCH_MAPS_DIALOG,
+  CLOSE_SEARCH_MAPS_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
@@ -62,7 +64,8 @@ const initialState = {
   previousLocation: undefined,
   currentLocation: undefined,
   loadingMaps: false,
-  pickedMaps: []
+  pickedMaps: [],
+  searchMapsDialogOpen: false
 };
 
 const getBottomNavValue = (pathname) => {
@@ -304,6 +307,14 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         drawerOpen: false
       });
+    case OPEN_SEARCH_MAPS_DIALOG:
+      return Object.assign({}, state, {
+        searchMapsDialogOpen: true
+      });
+    case CLOSE_SEARCH_MAPS_DIALOG:
+      return Object.assign({}, state, {
+        searchMapsDialogOpen: false
+      });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
         previousLocation: state.currentLocation ? state.currentLocation : undefined,
@@ -317,6 +328,7 @@ const reducer = (state = initialState, action) => {
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         drawerOpen: false,
+        searchMapsDialogOpen: false,
         showSideNav: showSideNav(action.payload.location.pathname),
         showBottomNav: showBottomNav(action.payload.location.pathname),
         isMapDetail: detectMapDetail(action.payload.location.pathname),

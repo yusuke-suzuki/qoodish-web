@@ -14,6 +14,7 @@ import { sleep } from './Utils';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 import openFeedbackDialog from '../actions/openFeedbackDialog';
+import openSearchMapsDialog from '../actions/openSearchMapsDialog';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import signIn from '../actions/signIn';
@@ -116,7 +117,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleSearchButtonClick: () => {
-      // open search dialog like GCP console
+      dispatch(openSearchMapsDialog());
     }
   };
 };
