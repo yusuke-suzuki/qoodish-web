@@ -18,6 +18,15 @@ const styles = {
   toolbar: {
     paddingLeft: 8,
     height: 56
+  },
+  paper: {
+    marginTop: 56
+  },
+  dialogPaper: {
+    background: "#f1f1f1"
+  },
+  input: {
+    padding: 0
   }
 };
 
@@ -57,7 +66,7 @@ const SearchForm = props => {
         disableUnderline: true
       }}
       inputProps={{
-        style: { padding: 0 }
+        style: styles.input
       }}
     />
   );
@@ -86,11 +95,11 @@ const SearchMapsDialog = props => {
       onClose={props.handleRequestClose}
       fullScreen
       PaperProps={{
-        style: { background: "#f1f1f1" }
+        style: styles.dialogPaper
       }}
     >
       <SearchAppBar {...props} />
-      <Paper>
+      <Paper style={styles.paper}>
         <List>
           <Maps {...props} />
         </List>
