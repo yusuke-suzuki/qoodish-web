@@ -100,7 +100,7 @@ const SearchMapsDialog = props => {
     >
       <SearchAppBar {...props} />
       <Paper style={styles.paper}>
-        <List>
+        <List disablePadding={props.pickedMaps.length < 1}>
           <Maps {...props} />
         </List>
       </Paper>
