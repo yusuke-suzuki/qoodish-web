@@ -277,7 +277,6 @@ class NavBar extends React.PureComponent {
   }
 
   renderSearchButton() {
-    return null; // WIP
     return (
       <IconButton
         color="inherit"
