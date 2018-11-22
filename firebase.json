@@ -12,6 +12,17 @@
         "source": "**",
         "function": "host"
       }
+    ],
+    "headers": [
+      {
+        "source": "**/*.*.@(js)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=86400"
+          }
+        ]
+      }
     ]
   },
   "storage": {
