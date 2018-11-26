@@ -5,7 +5,7 @@ import App from '../ui/App';
 import locationChange from '../actions/locationChange';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
-import openRequestNotificationDialog from '../actions/openRequestNotificationDialog';
+import fetchMyProfile from '../actions/fetchMyProfile';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/messaging';
@@ -14,10 +14,7 @@ import signIn from '../actions/signIn';
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.app.currentUser,
     large: state.shared.large,
-    registrationToken: state.app.registrationToken,
-    notificationPermitted: state.app.notificationPermitted,
     showSideNav: state.shared.showSideNav,
     showBottomNav: state.shared.showBottomNav
   };
@@ -33,26 +30,34 @@ const mapDispatchToProps = dispatch => {
       dispatch(locationChange(location));
     },
 
-    signInAnonymously: async (currentUser = null) => {
-      if (!currentUser) {
+    signInAnonymously: async (firebaseUser = null) => {
+      if (!firebaseUser) {
         await firebase.auth().signInAnonymously();
-        currentUser = firebase.auth().currentUser;
+        firebaseUser = firebase.auth().currentUser;
       }
       const user = {
-        uid: currentUser.uid,
+        uid: firebaseUser.uid,
         isAnonymous: true
       };
       dispatch(signIn(user));
     },
 
-    initMessaging: (permitted) => {
-      if (permitted === null && 'serviceWorker' in navigator && 'PushManager' in window) {
-        dispatch(openRequestNotificationDialog());
+    initMessaging: async () => {
+      const client = new ApiClient();
+      const response = await client.fetchUser();
+      if (response.ok) {
+        const user = await response.json();
+        dispatch(fetchMyProfile(user));
+
+        if (!user.push_enabled) {
+          console.log('Push notification is prohibited.');
+          return;
+        }
       } else {
+        console.log('Fetch profile failed.')
         return;
       }
 
-      const client = new ApiClient();
       const messaging = firebase.messaging();
 
       messaging.onMessage(payload => {

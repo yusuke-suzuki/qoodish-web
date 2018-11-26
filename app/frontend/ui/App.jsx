@@ -4,7 +4,6 @@ import BottomNavContainer from '../containers/BottomNavContainer';
 import Routes from './Routes';
 import ToastContainer from '../containers/ToastContainer';
 import BlockUiContainer from '../containers/BlockUiContainer';
-import RequestNotificationDialogContainer from '../containers/RequestNotificationDialogContainer';
 import SharedDialogs from './SharedDialogs';
 
 import withWidth from '@material-ui/core/withWidth';
@@ -37,17 +36,26 @@ const theme = createMuiTheme({
   }
 });
 
+const pushApiAvailable = () => {
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    return true;
+  } else {
+    console.log('Push notification API is not available in this browser.');
+    return false;
+  }
+};
+
 class App extends React.PureComponent {
   async componentDidMount() {
     this.props.handleWindowSizeChange(this.props.width);
     this.props.handleLocationChange(this.props.location);
 
-    let currentUser = await getCurrentUser();
-    if (currentUser) {
-      if (currentUser.isAnonymous) {
-        await this.props.signInAnonymously(currentUser);
-      } else {
-        this.props.initMessaging(this.props.notificationPermitted);
+    let firebaseUser = await getCurrentUser();
+    if (firebaseUser) {
+      if (firebaseUser.isAnonymous) {
+        await this.props.signInAnonymously(firebaseUser);
+      } else if (pushApiAvailable()) {
+        this.props.initMessaging();
       }
     } else {
       await this.props.signInAnonymously();
@@ -76,7 +84,6 @@ class App extends React.PureComponent {
           {this.renderLayout()}
           <ToastContainer />
           <BlockUiContainer />
-          <RequestNotificationDialogContainer />
           <SharedDialogs />
         </div>
       </MuiThemeProvider>
