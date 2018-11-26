@@ -19,8 +19,6 @@ import {
   READ_NOTIFICATION,
   LOAD_NOTIFICATIONS_START,
   LOAD_NOTIFICATIONS_END,
-  OPEN_REQUEST_NOTIFICATION_DIALOG,
-  CLOSE_REQUEST_NOTIFICATION_DIALOG,
   OPEN_SIGN_IN_REQUIRED_DIALOG,
   CLOSE_SIGN_IN_REQUIRED_DIALOG,
   OPEN_FEEDBACK_DIALOG,
@@ -53,7 +51,6 @@ const initialState = {
   loadingNotifications: false,
   showBackButton: false,
   mapsTabActive: false,
-  requestNotificationDialogOpen: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
@@ -275,14 +272,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         loadingNotifications: false
       });
-    case OPEN_REQUEST_NOTIFICATION_DIALOG:
-      return Object.assign({}, state, {
-        requestNotificationDialogOpen: true
-      });
-    case CLOSE_REQUEST_NOTIFICATION_DIALOG:
-      return Object.assign({}, state, {
-        requestNotificationDialogOpen: false
-      });
     case OPEN_SIGN_IN_REQUIRED_DIALOG:
       return Object.assign({}, state, {
         signInRequiredDialogOpen: true
@@ -324,7 +313,6 @@ const reducer = (state = initialState, action) => {
         showBackButton: switchBackButton(action.payload.location.pathname),
         issueDialogOpen: false,
         likesDialogOpen: false,
-        requestNotificationDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         drawerOpen: false,

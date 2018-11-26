@@ -23,6 +23,40 @@ class ApiClient {
     return response;
   }
 
+  async enablePushNotification(registrationToken) {
+    const userId = await this.getCurrentUid();
+    const params = {
+      registration_token: registrationToken
+    };
+    const url = `${process.env.API_ENDPOINT}/users/${userId}/push_notification`;
+    const token = await this.getCurrentToken();
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify(params)
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async disablePushNotification() {
+    const userId = await this.getCurrentUid();
+    const url = `${process.env.API_ENDPOINT}/users/${userId}/push_notification`;
+    const token = await this.getCurrentToken();
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async sendRegistrationToken(registrationToken) {
     let params = {
       registration_token: registrationToken
