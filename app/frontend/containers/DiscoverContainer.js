@@ -117,7 +117,6 @@ const mapDispatchToProps = dispatch => {
         return;
       }
       dispatch(selectMap(map));
-      dispatch(openToast(`Log in to ${map.name}!`));
     },
 
     handleClickReview: review => {

@@ -7,6 +7,7 @@ import openToast from '../actions/openToast';
 import openIssueDialog from '../actions/openIssueDialog';
 import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -19,7 +20,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
   return {
     handleUrlCopied: () => {
-      dispatch(openToast('Copied!'));
+      dispatch(openToast(I18n.t('copied')));
     },
 
     handleEditMapButtonClick: map => {

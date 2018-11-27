@@ -142,5 +142,12 @@
   "not set": "Not set",
   "discover maps": "Discover Maps",
   "discover reviews": "Discover Reports",
-  "search map": "Search maps..."
+  "search map": "Search maps...",
+  "copy report success": "Copied report successfully!",
+  "delete map success": "Delete map successfully",
+  "delete report success": "Delete report successfully",
+  "follow map success": "Followed map successfully!",
+  "unfollow map success": "Unfollowed map successfully",
+  "sign in success": "Signed in successfully!",
+  "copied": "Copied!"
 }

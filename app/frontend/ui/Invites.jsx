@@ -21,10 +21,10 @@ const styles = {
     margin: '56px auto'
   },
   cardLarge: {
-    marginTop: 20
+    marginBottom: 20
   },
   cardSmall: {
-    marginTop: 16
+    marginBottom: 16
   },
   cardContent: {
     paddingTop: 0
@@ -109,14 +109,14 @@ export default class Invites extends React.PureComponent {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.props.handleFollowButtonClick(invite)}
-            disabled={invite.expired}
-          >
-            {I18n.t('follow')}
-          </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.props.handleFollowButtonClick(invite)}
+          disabled={invite.expired}
+        >
+          {I18n.t('follow')}
+        </Button>
         </CardActions>
       </Card>
     ));

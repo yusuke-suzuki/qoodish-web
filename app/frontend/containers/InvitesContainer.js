@@ -9,6 +9,7 @@ import requestFinish from '../actions/requestFinish';
 import fetchInvites from '../actions/fetchInvites';
 import loadInvitesStart from '../actions/loadInvitesStart';
 import loadInvitesEnd from '../actions/loadInvitesEnd';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -40,7 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const response = await client.followMap(invite.invitable.id, invite.id);
       dispatch(requestFinish());
       if (response.ok) {
-        dispatch(openToast('Followed map successfully!'));
+        dispatch(openToast(I18n.t('follow map success')));
         ownProps.history.push(`/maps/${invite.invitable.id}`);
         gtag('event', 'follow', {
           'event_category': 'engagement',

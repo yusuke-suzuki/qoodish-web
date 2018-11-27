@@ -9,6 +9,7 @@ import requestFinish from '../actions/requestFinish';
 import createReview from '../actions/createReview';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
 import { uploadToStorage, deleteFromStorage, downloadImage } from './Utils';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -45,7 +46,7 @@ const mapDispatchToProps = dispatch => {
       if (response.ok) {
         dispatch(closeCopyReviewDialog());
         dispatch(createReview(json));
-        dispatch(openToast('Successfully copied report!'));
+        dispatch(openToast(I18n.t('copy report success')));
         gtag('event', 'create', {
           'event_category': 'engagement',
           'event_label': 'review'
