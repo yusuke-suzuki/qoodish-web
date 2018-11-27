@@ -79,7 +79,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         });
 
         // wait until thumbnail created on cloud function
-        await sleep(10000);
+        await sleep(5000);
         dispatch(signIn(json));
       } else {
         dispatch(openToast(json.detail));
