@@ -25,6 +25,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../containers/I18n';
 import AddIcon from '@material-ui/icons/Add';
+import * as loadImage from 'blueimp-load-image'
 
 const styles = {
   appbar: {
@@ -221,25 +222,30 @@ class EditReviewDialog extends React.PureComponent {
     // 一回リセットしないと canvas の CORS エラーになる
     this.handleClearImageClick();
 
-    let reader = new FileReader();
     let file = e.target.files[0];
     if (!file.type.match(/image\/*/)) {
       return;
     }
 
-    reader.onloadend = () => {
-      let dataUrl = reader.result;
-      this.setState(
-        {
-          image: file,
-          imagePreviewUrl: dataUrl,
-          imageDeleteRequest: false
-        },
-        this.drawImagePreview
-      );
-    }
-
-    reader.readAsDataURL(file);
+    loadImage.parseMetaData(file, (data) => {
+      const options = {
+        canvas: true
+      };
+      if (data.exif) {
+        options.orientation = data.exif.get('Orientation');
+      }
+      loadImage(file, (canvas) => {
+        let dataUrl = canvas.toDataURL('image/jpeg');
+        this.setState(
+          {
+            image: file,
+            imagePreviewUrl: dataUrl,
+            imageDeleteRequest: false
+          },
+          this.drawImagePreview
+        );
+      }, options);
+    });
   }
 
   drawImagePreview() {
