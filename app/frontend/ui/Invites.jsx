@@ -17,7 +17,8 @@ const styles = {
     maxWidth: 700
   },
   rootSmall: {
-    margin: '72px auto'
+    padding: 20,
+    margin: '56px auto'
   },
   cardLarge: {
     marginTop: 20
