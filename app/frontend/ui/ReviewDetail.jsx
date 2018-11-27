@@ -11,7 +11,7 @@ const styles = {
     maxWidth: 700
   },
   containerSmall: {
-    margin: '56px auto 56px'
+    margin: '56px auto 0'
   },
   progress: {
     textAlign: 'center',

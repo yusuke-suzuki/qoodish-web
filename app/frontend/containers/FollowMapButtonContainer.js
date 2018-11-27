@@ -9,6 +9,7 @@ import ApiClient from './ApiClient';
 import joinMap from '../actions/joinMap';
 import openToast from '../actions/openToast';
 import openLeaveMapDialog from '../actions/openLeaveMapDialog';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -30,7 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (followResponse.ok) {
         let map = await followResponse.json();
         dispatch(joinMap(map));
-        dispatch(openToast('Followed map successfully!'));
+        dispatch(openToast(I18n.t('follow map success')));
 
         gtag('event', 'follow', {
           'event_category': 'engagement',

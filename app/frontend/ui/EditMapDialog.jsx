@@ -321,6 +321,7 @@ class EditMapDialog extends React.PureComponent {
         helperText={this.state.errorMapName}
         fullWidth
         autoFocus
+        required
         value={this.state.name}
       />
     );
@@ -334,6 +335,7 @@ class EditMapDialog extends React.PureComponent {
         error={this.state.errorDescription ? true : false}
         helperText={this.state.errorDescription}
         fullWidth
+        required
         value={this.state.description}
         margin="normal"
       />

@@ -11,6 +11,7 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
 import { deleteFromStorage } from './Utils';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -45,7 +46,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           ownProps.history.push(`/maps/${review.map.id}`);
         }
         dispatch(deleteReview(review.id));
-        dispatch(openToast('Delete report successfully'));
+        dispatch(openToast(I18n.t('delete map success')));
       } else {
         let json = await response.json();
         dispatch(openToast(json.detail));

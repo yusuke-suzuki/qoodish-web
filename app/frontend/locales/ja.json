@@ -1,5 +1,5 @@
 {
-  "expand your map": "あなたの地図を広げよう。",
+  "create map together": "みんなで作る、冒険の地図。",
   "where are you going next": "次はどこ行く？",
   "share favorite spot": "お気に入りの場所をシェアしよう！",
   "tell friends spot": "仕事がうまくいったときに訪れるバー、休日を過ごすカフェ、旅行先で見つけた最高のビュースポット。あなただけのベストプレイスを友だちにも教えてあげませんか？",
@@ -119,6 +119,7 @@
   "unable to get registration token": "プッシュ通知が有効化できませんでした。",
   "push successfully enabled": "プッシュ通知が有効化されました。",
   "push successfully disabled": "プッシュ通知が無効化されました。",
+  "push unavailable": "※ このブラウザではプッシュ通知がサポートされていません。",
   "an error occured": "エラーが発生しました。",
   "send feedback": "フィードバックを送信",
   "feedback negative": "Qoodish の改善すべきと思った点を教えてください。",
@@ -141,5 +142,12 @@
   "not set": "未設定",
   "discover maps": "マップを見つける",
   "discover reviews": "レポートを見つける",
-  "search map": "マップ名で検索"
+  "search map": "マップ名で検索",
+  "copy report success": "レポートをコピーしました！",
+  "delete map success": "レポートを削除しました",
+  "delete report success": "レポートを削除しました",
+  "follow map success": "マップをフォローしました！",
+  "unfollow map success": "マップをアンフォローしました",
+  "sign in success": "ログインしました！",
+  "copied": "コピーしました！"
 }

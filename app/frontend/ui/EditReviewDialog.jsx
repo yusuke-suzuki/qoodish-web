@@ -59,6 +59,11 @@ const styles = {
   },
   buttonIcon: {
     marginRight: 8
+  },
+  placeChipLabel: {
+    overflow: 'hidden',
+    maxWidth: 'calc(100vw - 100px)',
+    textOverflow: 'ellipsis'
   }
 };
 
@@ -76,6 +81,7 @@ class EditReviewDialog extends React.PureComponent {
       image: null,
       imagePreviewUrl: '',
       errorComment: '',
+      errorMap: '',
       disabled: true,
       imageDeleteRequest: false
     };
@@ -94,6 +100,7 @@ class EditReviewDialog extends React.PureComponent {
     this.setCurrentReview(this.props);
     await this.props.fetchPostableMaps();
     this.setCurrentMap(this.props);
+    window.scrollTo(0, 0);
   }
 
   setCurrentReview(props) {
@@ -124,9 +131,15 @@ class EditReviewDialog extends React.PureComponent {
 
   handleMapChange(e) {
     let mapId = e.target.value;
+    let errorText = '';
+    if (!mapId) {
+      errorText = I18n.t('map is required');
+    }
+
     this.setState(
       {
-        mapId: mapId
+        mapId: mapId,
+        errorMap: errorText
       },
       () => {
         this.validate();
@@ -160,7 +173,7 @@ class EditReviewDialog extends React.PureComponent {
 
   validate() {
     let disabled;
-    if (this.state.comment && !this.state.errorComment && this.state.mapId) {
+    if (this.state.comment && !this.state.errorComment && !this.state.errorMap) {
       disabled = false;
     } else {
       disabled = true;
@@ -262,6 +275,7 @@ class EditReviewDialog extends React.PureComponent {
       image: null,
       imagePreviewUrl: '',
       errorComment: '',
+      errorMap: '',
       disabled: true
     });
   }
@@ -293,7 +307,11 @@ class EditReviewDialog extends React.PureComponent {
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.props.selectedPlace && this.props.selectedPlace.description}
+            label={
+              <div style={styles.placeChipLabel}>
+                {this.props.selectedPlace && this.props.selectedPlace.description}
+              </div>
+            }
             onClick={this.props.handleSpotClick}
             clickable
           />
@@ -392,9 +410,10 @@ class EditReviewDialog extends React.PureComponent {
     return (
       <FormControl
         fullWidth
-        error={this.state.mapId ? false : true}
+        error={this.state.errorMap ? true : false}
         disabled={this.props.currentReview ? true : false}
         margin="normal"
+        required
       >
         <InputLabel htmlFor="map-input">{I18n.t('map')}</InputLabel>
         <Select
@@ -409,7 +428,7 @@ class EditReviewDialog extends React.PureComponent {
           {this.renderPostableMaps()}
         </Select>
         <FormHelperText>
-          {!this.state.mapId && I18n.t('map is required')}
+          {this.state.errorMap}
         </FormHelperText>
       </FormControl>
     );
@@ -441,6 +460,7 @@ class EditReviewDialog extends React.PureComponent {
         fullWidth
         value={this.state.comment}
         multiline
+        required
         autoFocus
         rowsMax="5"
         rows="5"

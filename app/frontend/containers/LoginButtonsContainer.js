@@ -10,6 +10,7 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
 import { sleep, uploadToStorage, downloadImage } from './Utils';
+import I18n from './I18n';
 
 const mapStateToProps = (state) => {
   return {
@@ -32,7 +33,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         };
         dispatch(signIn(user));
         ownProps.history.push('');
-        dispatch(openToast('Signed in as anonymous successfully!'));
         gtag('event', 'login', {
           'method': 'anonymous'
         });
@@ -73,13 +73,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
       if (response.ok) {
         ownProps.history.push('');
-        dispatch(openToast('Signed in successfully!'));
+        dispatch(openToast(I18n.t('sign in success')));
         gtag('event', 'login', {
           'method': authResult.additionalUserInfo.providerId
         });
 
         // wait until thumbnail created on cloud function
-        await sleep(10000);
+        await sleep(5000);
         dispatch(signIn(json));
       } else {
         dispatch(openToast(json.detail));

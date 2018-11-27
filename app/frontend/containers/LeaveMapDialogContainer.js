@@ -8,6 +8,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchCollaborators from '../actions/fetchCollaborators';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -33,7 +34,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (response.ok) {
         let map = await response.json();
         dispatch(leaveMap(map));
-        dispatch(openToast('Unfollowed map successfully'));
+        dispatch(openToast(I18n.t('unfollow map success')));
 
         gtag('event', 'unfollow', {
           'event_category': 'engagement',

@@ -141,7 +141,7 @@ class Login extends React.PureComponent {
                     style={styles.carouselTileBarText}
                     gutterBottom
                   >
-                    {I18n.t('expand your map')}
+                    {I18n.t('create map together')}
                   </Typography>
                 }
                 subtitle={

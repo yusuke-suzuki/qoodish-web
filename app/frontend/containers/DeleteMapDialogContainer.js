@@ -8,6 +8,7 @@ import closeDeleteMapDialog from '../actions/closeDeleteMapDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -30,7 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(deleteMap(ownProps.mapId));
       dispatch(closeDeleteMapDialog());
       ownProps.history.push('/maps');
-      dispatch(openToast('Delete map successfully'));
+      dispatch(openToast(I18n.t('delete map success')));
     }
   };
 };
