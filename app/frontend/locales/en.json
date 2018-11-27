@@ -119,6 +119,7 @@
   "unable to get registration token": "Unable to get registration token.",
   "push successfully enabled": "Push notification was successfully enabled.",
   "push successfully disabled": "Push notification was successfully disabled.",
+  "push unavailable": "This browser does not support push notifications.",
   "an error occured": "An error occured.",
   "send feedback": "Send Feedback",
   "feedback negative": "Please tell me what you think is not good for Qoodish.",

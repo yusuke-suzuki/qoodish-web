@@ -119,6 +119,7 @@
   "unable to get registration token": "プッシュ通知が有効化できませんでした。",
   "push successfully enabled": "プッシュ通知が有効化されました。",
   "push successfully disabled": "プッシュ通知が無効化されました。",
+  "push unavailable": "※ このブラウザではプッシュ通知がサポートされていません。",
   "an error occured": "エラーが発生しました。",
   "send feedback": "フィードバックを送信",
   "feedback negative": "Qoodish の改善すべきと思った点を教えてください。",

@@ -48,6 +48,10 @@ export default class Invites extends React.PureComponent {
     }
   }
 
+  pushAvailable() {
+    return 'serviceWorker' in navigator && 'PushManager' in window;
+  }
+
   renderPushNotificationCard() {
     return (
       <Card style={styles.card}>
@@ -60,9 +64,10 @@ export default class Invites extends React.PureComponent {
               <Switch
                 checked={this.props.currentUser.push_enabled}
                 onChange={this.handlePushChange}
+                disabled={!this.pushAvailable()}
               />
             }
-            label={I18n.t('enable push notification')}
+            label={this.pushAvailable() ? I18n.t('enable push notification') : I18n.t('enable push notification')}
           />
         </CardContent>
       </Card>
