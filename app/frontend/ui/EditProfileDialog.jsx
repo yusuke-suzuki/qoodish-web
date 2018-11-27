@@ -13,7 +13,8 @@ import I18n from '../containers/I18n';
 
 const styles = {
   avatarContainer: {
-    marginBottom: 20
+    marginBottom: 20,
+    position: 'relative'
   },
   profileAvatar: {
     width: 80,
@@ -27,6 +28,11 @@ const styles = {
     width: '100%',
     height: '100%',
     objectFit: 'cover'
+  },
+  editImageButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16
   }
 };
 
@@ -164,10 +170,10 @@ class EditProfileDialog extends React.PureComponent {
               style={styles.profileAvatar}
             >
               <img src={this.state.imageUrl} style={styles.image} />
-              <IconButton onClick={this.handleAddImageClick}>
-                <PhotoCameraIcon />
-              </IconButton>
             </Avatar>
+            <IconButton onClick={this.handleAddImageClick} style={styles.editImageButton}>
+              <PhotoCameraIcon />
+            </IconButton>
           </div>
           <input
             type="file"
