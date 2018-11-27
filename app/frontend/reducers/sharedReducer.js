@@ -135,7 +135,8 @@ const showSideNav = (pathname) => {
 
 const showBottomNav = (pathname) => {
   if (
-    (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
+    pathname.includes('/maps/') ||
+    pathname.includes('/spots') ||
     pathname.includes('/login') ||
     pathname.includes('/terms') ||
     pathname.includes('/privacy')

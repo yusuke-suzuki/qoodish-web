@@ -17,8 +17,7 @@ const styles = {
     maxWidth: 700
   },
   rootSmall: {
-    marginTop: 56,
-    marginBottom: 56
+    marginTop: 56
   },
   cardMapContainerLarge: {
     minHeight: 300
@@ -37,15 +36,14 @@ const styles = {
   },
   cardLarge: {},
   cardSmall: {
-    minHeight: 'calc(100vh - 112px)'
+    minHeight: 'calc(100vh - 56px)'
   },
   cardContent: {
     textAlign: 'center'
   },
   progress: {
     textAlign: 'center',
-    padding: 10,
-    marginTop: 20
+    paddingTop: 20
   },
   reviewTilesContainer: {
     marginTop: 16
@@ -107,7 +105,7 @@ class SpotDetail extends React.PureComponent {
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
         {this.props.currentSpot &&
-          <CreateReviewButtonContainer spot={this.props.currentSpot} buttonWithBottomSeat={!this.props.large} />}
+          <CreateReviewButtonContainer spot={this.props.currentSpot} />}
       </div>
     );
   }
