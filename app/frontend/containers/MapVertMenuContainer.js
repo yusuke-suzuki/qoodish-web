@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import MapToolbar from '../ui/MapToolbar';
+import MapVertMenu from '../ui/MapVertMenu';
+import openEditMapDialog from '../actions/openEditMapDialog';
+import openDeleteMapDialog from '../actions/openDeleteMapDialog';
 import openIssueDialog from '../actions/openIssueDialog';
-import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
@@ -15,18 +16,22 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    handleEditMapButtonClick: map => {
+      dispatch(openEditMapDialog(map));
+    },
+
+    handleDeleteMapButtonClick: map => {
+      dispatch(openDeleteMapDialog(map));
+    },
+
     handleIssueButtonClick: (currentUser, map) => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
       }
       dispatch(openIssueDialog(map.id, 'map'));
-    },
-
-    handleInviteButtonClick: () => {
-      dispatch(openInviteTargetDialog());
     }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapToolbar));
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapVertMenu));
