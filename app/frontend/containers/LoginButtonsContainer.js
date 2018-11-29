@@ -9,7 +9,9 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 
-import { sleep, uploadToStorage, downloadImage } from './Utils';
+import uploadToStorage from '../utils/uploadToStorage';
+import downloadImage from '../utils/downloadImage';
+import sleep from '../utils/sleep';
 import I18n from './I18n';
 
 const mapStateToProps = (state) => {
@@ -55,15 +57,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
 
-      if (authResult.additionalUserInfo.isNewUser) {
-        const blob = await downloadImage(provider.photoURL);
-        const uploadResponse = await uploadToStorage(blob, 'profile');
-        let paramsForNewUser = {
-          photo_url: uploadResponse.imageUrl,
-          display_name: provider.displayName
-        };
-        Object.assign(params.user, paramsForNewUser);
-      }
+      const blob = await downloadImage(provider.photoURL);
+      const uploadResponse = await uploadToStorage(blob, 'profile');
+      let paramsForNewUser = {
+        photo_url: uploadResponse.imageUrl,
+        display_name: provider.displayName
+      };
+      Object.assign(params.user, paramsForNewUser);
 
       const client = new ApiClient();
       let response = await client.signIn(params);

@@ -8,7 +8,9 @@ import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import createReview from '../actions/createReview';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
-import { uploadToStorage, deleteFromStorage, downloadImage } from './Utils';
+import uploadToStorage from '../utils/uploadToStorage';
+import deleteFromStorage from '../utils/deleteFromStorage';
+import downloadImage from '../utils/downloadImage';
 import I18n from './I18n';
 
 const mapStateToProps = state => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import LocationButton from '../ui/LocationButton';
-import { fetchCurrentPosition } from './Utils';
+import fetchCurrentPosition from '../utils/fetchCurrentPosition';
 import getCurrentPosition from '../actions/getCurrentPosition';
 import requestCurrentPosition from '../actions/requestCurrentPosition';
 

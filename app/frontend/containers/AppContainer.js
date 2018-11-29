@@ -6,9 +6,9 @@ import locationChange from '../actions/locationChange';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/messaging';
+import getFirebase from '../utils/getFirebase';
+import getFirebaseAuth from '../utils/getFirebaseAuth';
+import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import signIn from '../actions/signIn';
 
@@ -32,6 +32,9 @@ const mapDispatchToProps = dispatch => {
 
     signInAnonymously: async (firebaseUser = null) => {
       if (!firebaseUser) {
+        const firebase = await getFirebase();
+        await getFirebaseAuth();
+
         await firebase.auth().signInAnonymously();
         firebaseUser = firebase.auth().currentUser;
       }
@@ -58,6 +61,8 @@ const mapDispatchToProps = dispatch => {
         return;
       }
 
+      const firebase = await getFirebase();
+      await getFirebaseMessaging();
       const messaging = firebase.messaging();
 
       messaging.onMessage(payload => {

@@ -7,7 +7,8 @@ import closeEditProfileDialog from '../actions/closeEditProfileDialog';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import { sleep, uploadToStorage } from './Utils';
+import uploadToStorage from '../utils/uploadToStorage';
+import sleep from '../utils/sleep';
 import I18n from './I18n';
 
 const mapStateToProps = state => {

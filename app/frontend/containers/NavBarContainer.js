@@ -4,13 +4,13 @@ import { withRouter } from 'react-router-dom';
 import NavBar from '../ui/NavBar';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/messaging';
+import getFirebase from '../utils/getFirebase';
+import getFirebaseMessaging from '../utils/getFirebaseMessaging';
+import getFirebaseAuth from '../utils/getFirebaseAuth';
 import ApiClient from './ApiClient';
 import fetchNotifications from '../actions/fetchNotifications';
 import readNotification from '../actions/readNotification';
-import { sleep } from './Utils';
+import sleep from '../utils/sleep';
 import switchMyMaps from '../actions/switchMyMaps';
 import switchFollowingMaps from '../actions/switchFollowingMaps';
 import openFeedbackDialog from '../actions/openFeedbackDialog';
@@ -49,6 +49,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     signOut: async () => {
       dispatch(requestStart());
+      const firebase = await getFirebase();
+      await getFirebaseMessaging();
+      await getFirebaseAuth();
 
       if ('serviceWorker' in navigator && 'PushManager' in window) {
         const messaging = firebase.messaging();

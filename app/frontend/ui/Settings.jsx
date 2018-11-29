@@ -62,9 +62,9 @@ export default class Invites extends React.PureComponent {
           <FormControlLabel
             control={
               <Switch
-                checked={this.props.currentUser.push_enabled}
+                checked={this.props.currentUser && this.props.currentUser.push_enabled}
                 onChange={this.handlePushChange}
-                disabled={!this.pushAvailable()}
+                disabled={!this.pushAvailable() || (this.props.currentUser && this.props.currentUser.isAnonymous)}
               />
             }
             label={this.pushAvailable() ? I18n.t('enable push notification') : I18n.t('enable push notification')}
@@ -89,8 +89,8 @@ export default class Invites extends React.PureComponent {
           <Button
             variant="contained"
             onClick={this.props.handleDeleteAccountButtonClick}
-            style={this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
-            disabled={this.props.currentUser.isAnonymous}
+            style={this.props.currentUser && this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
+            disabled={this.props.currentUser && this.props.currentUser.isAnonymous}
           >
             {I18n.t('delete account')}
           </Button>

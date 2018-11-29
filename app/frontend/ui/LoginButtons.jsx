@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import firebaseui from 'firebaseui';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { useIOS } from '../containers/Utils';
+import { useIOS } from '../utils/detectDevice';
 
 class LoginButtons extends React.PureComponent {
   constructor(props) {

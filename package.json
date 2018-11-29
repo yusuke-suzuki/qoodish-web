@@ -18,7 +18,7 @@
     "@material-ui/icons": "^1.1.0",
     "blueimp-canvas-to-blob": "^3.14.0",
     "blueimp-load-image": "^2.20.1",
-    "firebase": "^5.5.3",
+    "firebase": "^5.5.9",
     "moment": "^2.20.1",
     "react": "^16.6.3",
     "react-copy-to-clipboard": "^5.0.0",

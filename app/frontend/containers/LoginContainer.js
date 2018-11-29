@@ -9,6 +9,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
+  return {
+  };
 };
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Login));
