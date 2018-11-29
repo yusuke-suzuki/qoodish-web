@@ -6,10 +6,12 @@ import {
   DirectionsRenderer
 } from 'react-google-maps';
 import { compose } from 'recompose';
-import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
-import LocationButtonContainer from '../containers/LocationButtonContainer';
-import SpotMarkersContainer from '../containers/SpotMarkersContainer';
-import CurrentPositionMarkerContainer from '../containers/CurrentPositionMarkerContainer';
+import loadable from '@loadable/component';
+
+const CreateReviewButtonContainer = loadable(() => import(/* webpackChunkName: "create_review_button" */ '../containers/CreateReviewButtonContainer'));
+const LocationButtonContainer = loadable(() => import(/* webpackChunkName: "location_button" */ '../containers/LocationButtonContainer'));
+const SpotMarkersContainer = loadable(() => import(/* webpackChunkName: "spot_markers" */ '../containers/SpotMarkersContainer'));
+const CurrentPositionMarkerContainer = loadable(() => import(/* webpackChunkName: "current_position_marker" */ '../containers/CurrentPositionMarkerContainer'));
 
 const styles = {
   mapWrapperLarge: {

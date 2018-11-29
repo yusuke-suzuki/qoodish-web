@@ -1,23 +1,24 @@
 import React from 'react';
+import loadable from '@loadable/component';
+
+const MapToolbarContainer = loadable(() => import(/* webpackChunkName: "map_toolbar" */ '../containers/MapToolbarContainer'));
+const MapSummaryCardContainer = loadable(() => import(/* webpackChunkName: "map_summary_card" */ '../containers/MapSummaryCardContainer'));
+const MapReviewsListContainer = loadable(() => import(/* webpackChunkName: "map_reviews_list" */ '../containers/MapReviewsListContainer'));
+const MapSpotsListContainer = loadable(() => import(/* webpackChunkName: "map_spots_list" */ '../containers/MapSpotsListContainer'));
+const MapFollowersListContainer = loadable(() => import(/* webpackChunkName: "map_followers_list" */ '../containers/MapFollowersListContainer'));
+const FollowMapButtonContainer = loadable(() => import(/* webpackChunkName: "follow_map_button" */ '../containers/FollowMapButtonContainer'));
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
-
-import MapToolbarContainer from '../containers/MapToolbarContainer';
-import MapSummaryCardContainer from '../containers/MapSummaryCardContainer';
-import MapReviewsListContainer from '../containers/MapReviewsListContainer';
-import MapSpotsListContainer from '../containers/MapSpotsListContainer';
-import MapFollowersListContainer from '../containers/MapFollowersListContainer';
-import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
-import SwipeableViews from 'react-swipeable-views';
-import I18n from '../containers/I18n';
-
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PlaceIcon from '@material-ui/icons/Place';
 import GroupIcon from '@material-ui/icons/Group';
 import HomeIcon from '@material-ui/icons/Home';
+import SwipeableViews from 'react-swipeable-views';
+import I18n from '../containers/I18n';
 
 const styles = {
   containerLarge: {

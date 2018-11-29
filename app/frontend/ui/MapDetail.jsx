@@ -1,11 +1,14 @@
 import React from 'react';
-import GMapContainer from '../containers/GMapContainer';
-import MapSummaryContainer from '../containers/MapSummaryContainer';
-import MapBottomSeatContainer from '../containers/MapBottomSeatContainer';
-import DeleteMapDialogContainer from '../containers/DeleteMapDialogContainer';
-import InviteTargetDialogContainer from '../containers/InviteTargetDialogContainer';
-import SpotCardContainer from '../containers/SpotCardContainer';
-import LeaveMapDialogContainer from '../containers/LeaveMapDialogContainer';
+import loadable from '@loadable/component';
+
+const GMapContainer = loadable(() => import(/* webpackChunkName: "gmap" */ '../containers/GMapContainer'));
+const MapSummaryContainer = loadable(() => import(/* webpackChunkName: "map_summary" */ '../containers/MapSummaryContainer'));
+const MapBottomSeatContainer = loadable(() => import(/* webpackChunkName: "map_bottom_seat" */ '../containers/MapBottomSeatContainer'));
+const DeleteMapDialogContainer = loadable(() => import(/* webpackChunkName: "delete_map_dialog" */ '../containers/DeleteMapDialogContainer'));
+const InviteTargetDialogContainer = loadable(() => import(/* webpackChunkName: "invite_target_dialog" */ '../containers/InviteTargetDialogContainer'));
+const SpotCardContainer = loadable(() => import(/* webpackChunkName: "spot_card" */ '../containers/SpotCardContainer'));
+const LeaveMapDialogContainer = loadable(() => import(/* webpackChunkName: "leave_map_dialog" */ '../containers/LeaveMapDialogContainer'));
+
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
 

@@ -105,7 +105,6 @@ class EditReviewDialog extends React.PureComponent {
     this.setCurrentReview(this.props);
     await this.props.fetchPostableMaps();
     this.setCurrentMap(this.props);
-    window.scrollTo(0, 0);
   }
 
   setCurrentReview(props) {
@@ -483,8 +482,8 @@ class EditReviewDialog extends React.PureComponent {
         multiline
         required
         autoFocus
-        rowsMax="5"
-        rows="5"
+        rowsMax={this.props.large ? "5" : "4"}
+        rows={this.props.large ? "5" : "4"}
         margin="normal"
         data-test="review-comment-input"
       />
