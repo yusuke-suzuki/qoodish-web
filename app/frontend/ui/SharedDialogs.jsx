@@ -1,6 +1,8 @@
 import React from 'react';
 import loadable from '@loadable/component';
 
+const ToastContainer = loadable(() => import(/* webpackChunkName: "toast" */ '../containers/ToastContainer'));
+const BlockUiContainer = loadable(() => import(/* webpackChunkName: "block_ui" */ '../containers/BlockUiContainer'));
 const IssueDialogContainer = loadable(() => import(/* webpackChunkName: "issue_dialog" */ '../containers/IssueDialogContainer'));
 const LikesDialogContainer = loadable(() => import(/* webpackChunkName: "likes_dialog" */ '../containers/LikesDialogContainer'));
 const CopyReviewDialogContainer = loadable(() => import(/* webpackChunkName: "copy_reviews_dialog" */ '../containers/CopyReviewDialogContainer'));
@@ -19,6 +21,8 @@ const SearchMapsDialogContainer = loadable(() => import(/* webpackChunkName: "se
 const SharedDialogs = () => {
   return (
     <div>
+      <ToastContainer />
+      <BlockUiContainer />
       <FeedbackDialogContainer />
       <SignInRequiredDialogContainer />
       <IssueDialogContainer />

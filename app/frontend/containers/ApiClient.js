@@ -1,4 +1,4 @@
-import { getCurrentUser } from './Utils';
+import getCurrentUser from '../utils/getCurrentUser';
 
 class ApiClient {
   async getCurrentToken() {

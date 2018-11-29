@@ -4,8 +4,8 @@ import Settings from '../ui/Settings';
 import openDeleteAccountDialog from '../actions/openDeleteAccountDialog';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
-import firebase from 'firebase/app';
-import 'firebase/messaging';
+import getFirebase from '../utils/getFirebase';
+import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import ApiClient from '../containers/ApiClient';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
@@ -42,6 +42,8 @@ const mapDispatchToProps = dispatch => {
 
     handleEnableNotification: async () => {
       dispatch(requestStart());
+      const firebase = await getFirebase();
+      await getFirebaseMessaging();
       const messaging = firebase.messaging();
       const client = new ApiClient();
 

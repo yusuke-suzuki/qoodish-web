@@ -10,7 +10,7 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import fetchSpots from '../actions/fetchSpots';
-import { deleteFromStorage } from './Utils';
+import deleteFromStorage from '../utils/deleteFromStorage';
 import I18n from './I18n';
 
 const mapStateToProps = state => {

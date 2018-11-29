@@ -6,8 +6,8 @@ import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
 import requestFinish from '../actions/requestFinish';
 import I18n from './I18n';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import getFirebase from '../utils/getFirebase';
+import getFirestore from '../utils/getFirestore';
 
 const mapStateToProps = state => {
   return {
@@ -23,6 +23,8 @@ const mapDispatchToProps = dispatch => {
 
     handleSendButtonClick: async (params) => {
       dispatch(requestStart());
+      const firebase = await getFirebase();
+      await getFirestore();
 
       const firestore = firebase.firestore();
       const settings = {

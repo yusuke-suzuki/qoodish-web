@@ -7,7 +7,8 @@ import openToast from '../actions/openToast';
 import requestRoute from '../actions/requestRoute';
 import openReviewDialog from '../actions/openReviewDialog';
 import selectPlaceForReview from '../actions/selectPlaceForReview';
-import { fetchCurrentPosition } from './Utils';
+
+import fetchCurrentPosition from '../utils/fetchCurrentPosition';
 import getCurrentPosition from '../actions/getCurrentPosition';
 import requestMapCenter from '../actions/requestMapCenter';
 import switchMap from '../actions/switchMap';

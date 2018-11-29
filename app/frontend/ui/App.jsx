@@ -1,10 +1,10 @@
 import React from 'react';
-import NavBarContainer from '../containers/NavBarContainer';
-import BottomNavContainer from '../containers/BottomNavContainer';
-import Routes from './Routes';
-import ToastContainer from '../containers/ToastContainer';
-import BlockUiContainer from '../containers/BlockUiContainer';
-import SharedDialogs from './SharedDialogs';
+import loadable from '@loadable/component';
+
+const Routes = loadable(() => import(/* webpackChunkName: "shared_dialogs" */ './Routes'));
+const NavBarContainer = loadable(() => import(/* webpackChunkName: "nav_bar" */ '../containers/NavBarContainer'));
+const BottomNavContainer = loadable(() => import(/* webpackChunkName: "bottom_nav" */ '../containers/BottomNavContainer'));
+const SharedDialogs = loadable(() => import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs'));
 
 import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -14,7 +14,7 @@ import Grid from '@material-ui/core/Grid';
 
 import Helmet from 'react-helmet';
 
-import { getCurrentUser } from '../containers/Utils';
+import getCurrentUser from '../utils/getCurrentUser';
 
 const theme = createMuiTheme({
   palette: {
@@ -82,8 +82,6 @@ class App extends React.PureComponent {
         <div>
           {this.renderHelmet()}
           {this.renderLayout()}
-          <ToastContainer />
-          <BlockUiContainer />
           <SharedDialogs />
         </div>
       </MuiThemeProvider>

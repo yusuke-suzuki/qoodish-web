@@ -7,7 +7,7 @@ import selectPlaceForReview from '../actions/selectPlaceForReview';
 import searchPlaces from '../actions/searchPlaces';
 import loadPlacesStart from '../actions/loadPlacesStart';
 import loadPlacesEnd from '../actions/loadPlacesEnd';
-import { fetchCurrentPosition } from './Utils';
+import fetchCurrentPosition from '../utils/fetchCurrentPosition';
 import getCurrentPosition from '../actions/getCurrentPosition';
 
 const mapStateToProps = state => {

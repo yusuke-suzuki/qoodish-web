@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import NotificationList from '../ui/NotificationList';
 import ApiClient from './ApiClient';
 import readNotification from '../actions/readNotification';
-import { sleep } from './Utils';
+import sleep from '../utils/sleep';
 
 const mapStateToProps = state => {
   return {
