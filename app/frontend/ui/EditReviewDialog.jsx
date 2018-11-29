@@ -55,8 +55,12 @@ const styles = {
   imageInput: {
     display: 'none'
   },
-  createMapButton: {
+  createMapButtonLarge: {
     padding: 0
+  },
+  createMapButtonSmall: {
+    marginRight: 'auto',
+    marginLeft: 6
   },
   buttonIcon: {
     marginRight: 8
@@ -322,14 +326,7 @@ class EditReviewDialog extends React.PureComponent {
             clickable
           />
           {this.renderMapSelect()}
-          <Button
-            onClick={this.props.handleCreateMapButtonClick}
-            size="small"
-            style={styles.createMapButton}
-          >
-            <AddIcon style={styles.buttonIcon} />
-            {I18n.t('create new map')}
-          </Button>
+          {this.props.large && this.renderCreateMapButton()}
           {this.renderCommentBox()}
           {this.state.imagePreviewUrl ? this.renderImagePreview() : null}
           {this.props.large && this.renderAddImageButton()}
@@ -345,6 +342,19 @@ class EditReviewDialog extends React.PureComponent {
           ? this.renderActionsLarge()
           : this.renderActionsSmall()}
       </Dialog>
+    );
+  }
+
+  renderCreateMapButton() {
+    return (
+      <Button
+        onClick={this.props.handleCreateMapButtonClick}
+        size="small"
+        style={this.props.large ? styles.createMapButtonLarge : styles.createMapButtonSmall}
+      >
+        <AddIcon style={styles.buttonIcon} />
+        {I18n.t('create new map')}
+      </Button>
     );
   }
 
@@ -401,7 +411,12 @@ class EditReviewDialog extends React.PureComponent {
   }
 
   renderActionsSmall() {
-    return <DialogActions>{this.renderAddImageButton()}</DialogActions>;
+    return (
+      <DialogActions>
+        {this.renderCreateMapButton()}
+        {this.renderAddImageButton()}
+      </DialogActions>
+    );
   }
 
   renderAddImageButton() {
