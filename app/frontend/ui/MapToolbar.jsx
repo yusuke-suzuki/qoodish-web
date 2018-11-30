@@ -1,30 +1,17 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Toolbar from '@material-ui/core/Toolbar';
-import ShareIcon from '@material-ui/icons/Share';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ReportProblemIcon from '@material-ui/icons/ReportProblem';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import LockIcon from '@material-ui/icons/Lock';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../containers/I18n';
-import AppMenuButtonContainer from '../containers/AppMenuButtonContainer';
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  TwitterShareButton,
-  TwitterIcon,
-} from 'react-share';
+
+import loadable from '@loadable/component';
+const MapShareMenuContainer = loadable(() => import(/* webpackChunkName: "map_share_menu" */ '../containers/MapShareMenuContainer'));
+const MapVertMenuContainer = loadable(() => import(/* webpackChunkName: "map_vert_menu" */ '../containers/MapVertMenuContainer'));
+const AppMenuButtonContainer = loadable(() => import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer'));
 
 const styles = {
   leftButton: {
@@ -52,271 +39,67 @@ const styles = {
   }
 };
 
-class MapToolbar extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorElShare: undefined,
-      shareMenuOpen: false,
-      anchorElVert: undefined,
-      vertMenuOpen: false
-    };
-    this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
-    this.handleVertButtonClick = this.handleVertButtonClick.bind(this);
-    this.handleRequestShareMenuClose = this.handleRequestShareMenuClose.bind(
-      this
-    );
-    this.handleRequestVertMenuClose = this.handleRequestVertMenuClose.bind(
-      this
-    );
-  }
+const isInvitable = (map) => {
+  return map && map.private && (map.editable || map.invitable);
+};
 
-  handleShareButtonClick(event) {
-    this.setState({
-      shareMenuOpen: true,
-      anchorElShare: event.currentTarget
-    });
-  }
+const InviteButton = (props) => {
+  return (
+    <IconButton
+      onClick={props.handleInviteButtonClick}
+    >
+      <PersonAddIcon style={styles.mapMenuIcon} />
+    </IconButton>
+  );
+};
 
-  handleVertButtonClick(event) {
-    this.setState({
-      vertMenuOpen: true,
-      anchorElVert: event.currentTarget
-    });
-  }
+const PrivateIcon = () => {
+  return (
+    <Tooltip title={I18n.t('this map is private')}>
+      <LockIcon color="inherit" style={styles.mapTypeIcon} fontSize="small" />
+    </Tooltip>
+  );
+};
 
-  handleRequestShareMenuClose() {
-    this.setState({
-      shareMenuOpen: false
-    });
-  }
+const MapName = (props) => {
+  return (
+    <Typography
+      variant="h6"
+      color="inherit"
+      noWrap
+      style={styles.mapName}
+    >
+      {props.currentMap.name}
+    </Typography>
+  );
+};
 
-  handleRequestVertMenuClose() {
-    this.setState({
-      vertMenuOpen: false
-    });
-  }
-
-  render() {
-    return this.renderToolbar(this.props.currentMap);
-  }
-
-  shareUrl(map) {
-    return map ? `${process.env.ENDPOINT}/maps/${map.id}` : '';
-  }
-
-  renderToolbar(map) {
-    return (
-      <Toolbar style={this.props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
-        {this.props.showBackButton && this.renderBackButton()}
-        {this.props.showMenuButton && <AppMenuButtonContainer />}
-        {map && map.private && this.renderPrivateIcon()}
-        {this.props.showMapName && map && this.renderMapName(map)}
-        <div style={styles.toolbarActions}>
-          {map && map.private && (map.editable || map.invitable) && this.renderInviteButton()}
-          <IconButton
-            aria-label="More share"
-            aria-owns={this.state.shareMenuOpen ? 'share-menu' : null}
-            aria-haspopup="true"
-            onClick={this.handleShareButtonClick}
-          >
-            <ShareIcon style={styles.mapMenuIcon} />
-          </IconButton>
-          <Menu
-            id="share-menu"
-            anchorEl={this.state.anchorElShare}
-            open={this.state.shareMenuOpen}
-            onClose={this.handleRequestShareMenuClose}
-          >
-            <MenuItem
-              key="facebook"
-              onClick={this.handleRequestShareMenuClose}
-              component={FacebookShareButton}
-              url={this.shareUrl(map)}
-            >
-              <ListItemIcon>
-                <FacebookIcon
-                  round
-                  size={24}
-                />
-              </ListItemIcon>
-              <ListItemText
-                primary={I18n.t('share with facebook')}
-              />
-            </MenuItem>
-            <MenuItem
-              key="twitter"
-              onClick={this.handleRequestShareMenuClose}
-              component={TwitterShareButton}
-              url={this.shareUrl(map)}
-              title={map && map.name}
-            >
-              <ListItemIcon>
-                <TwitterIcon
-                  round
-                  size={24}
-                />
-              </ListItemIcon>
-              <ListItemText
-                primary={I18n.t('share with twitter')}
-              />
-            </MenuItem>
-            <CopyToClipboard
-              text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
-              onCopy={this.props.handleUrlCopied}
-              key="copy"
-            >
-              <MenuItem
-                key="copy"
-                onClick={this.handleRequestShareMenuClose}
-              >
-                <ListItemIcon>
-                  <ContentCopyIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('copy link')} />
-              </MenuItem>
-            </CopyToClipboard>
-          </Menu>
-          <IconButton
-            aria-label="More vert"
-            aria-owns={this.state.vertMenuOpen ? 'vert-menu' : null}
-            aria-haspopup="true"
-            onClick={this.handleVertButtonClick}
-          >
-            <MoreVertIcon style={styles.mapMenuIcon} />
-          </IconButton>
-          {map && this.renderMenu(map)}
-        </div>
-      </Toolbar>
-    );
-  }
-
-  renderBackButton() {
-    return (
-      <IconButton
-        color="inherit"
-        onClick={this.props.handleBackButtonClick}
-        style={this.props.large ? {} : styles.leftButton}
-      >
-        <ArrowBackIcon />
-      </IconButton>
-    );
-  }
-
-  renderMapName(map) {
-    return (
-      <Typography
-        variant="h6"
-        color="inherit"
-        noWrap
-        style={styles.mapName}
-      >
-        {map.name}
-      </Typography>
-    );
-  }
-
-  renderPrivateIcon() {
-    return (
-      <Tooltip title={I18n.t('this map is private')}>
-        <LockIcon color="inherit" style={styles.mapTypeIcon} fontSize="small" />
-      </Tooltip>
-    );
-  }
-
-  renderInviteButton() {
-    return (
-      <IconButton
-        onClick={this.props.handleInviteButtonClick}
-      >
-        <PersonAddIcon style={styles.mapMenuIcon} />
-      </IconButton>
-    );
-  }
-
-  renderMenu(map) {
-    return map.editable
-      ? this.renderMenuForOwner()
-      : this.renderMenuForMember();
-  }
-
-  renderMenuForOwner() {
-    return (
-      <Menu
-        id="vert-menu"
-        anchorEl={this.state.anchorElVert}
-        open={this.state.vertMenuOpen}
-        onClose={this.handleRequestVertMenuClose}
-      >
-        {this.renderEditButton()}
-        {this.renderDeleteButton()}
-      </Menu>
-    );
-  }
-
-  renderMenuForMember() {
-    return (
-      <Menu
-        id="vert-menu"
-        anchorEl={this.state.anchorElVert}
-        open={this.state.vertMenuOpen}
-        onClose={this.handleRequestVertMenuClose}
-      >
-        <MenuItem
-          key="issue"
-          onClick={() => {
-            this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentMap);
-          }}
-        >
-          <ListItemIcon>
-            <ReportProblemIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('report')}
-          />
-        </MenuItem>
-      </Menu>
-    );
-  }
-
-  renderEditButton() {
-    return (
-      <MenuItem
-        key="edit"
-        onClick={() => {
-          this.handleRequestVertMenuClose();
-          this.props.handleEditMapButtonClick(this.props.currentMap);
-        }}
-      >
-        <ListItemIcon>
-          <EditIcon />
-        </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('edit')}
-        />
-      </MenuItem>
-    );
-  }
-
-  renderDeleteButton() {
-    return (
-      <MenuItem
-        key="delete"
-        onClick={() => {
-          this.handleRequestVertMenuClose();
-          this.props.handleDeleteMapButtonClick(this.props.currentMap);
-        }}
-      >
-        <ListItemIcon>
-          <DeleteIcon />
-        </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('delete')}
-        />
-      </MenuItem>
-    );
-  }
+const BackButton = (props) => {
+  return (
+    <IconButton
+      color="inherit"
+      onClick={props.handleBackButtonClick}
+      style={props.large ? {} : styles.leftButton}
+    >
+      <ArrowBackIcon />
+    </IconButton>
+  );
 }
+
+const MapToolbar = (props) => {
+  return (
+    <Toolbar style={props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
+      {props.showBackButton && <BackButton {...props} />}
+      {props.showMenuButton && <AppMenuButtonContainer />}
+      {props.currentMap && props.currentMap.private && <PrivateIcon />}
+      {props.showMapName && props.currentMap && <MapName {...props} />}
+      <div style={styles.toolbarActions}>
+        {isInvitable() && <InviteButton {...props} />}
+        <MapShareMenuContainer />
+        <MapVertMenuContainer />
+      </div>
+    </Toolbar>
+  );
+};
 
 export default MapToolbar;
