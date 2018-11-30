@@ -23,22 +23,28 @@ const mapStateToProps = state => {
   };
 };
 
+const dispatchGtag = (map) => {
+  gtag('config', process.env.GA_TRACKING_ID, {
+    'page_path': `/maps/${map.id}`,
+    'page_title': `${map.name} | Qoodish`
+  });
+};
+
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    initCenter: map => {
-      if (map.base.place_id) {
-        dispatch(requestMapCenter(map.base.lat, map.base.lng));
-      } else {
-        dispatch(requestCurrentPosition());
-      }
-    },
-
     fetchMap: async () => {
       const client = new ApiClient();
       let response = await client.fetchMap(ownProps.match.params.mapId);
       if (response.ok) {
         let map = await response.json();
         dispatch(selectMap(map));
+        dispatchGtag(map);
+
+        if (map.base.place_id) {
+          dispatch(requestMapCenter(map.base.lat, map.base.lng));
+        } else {
+          dispatch(requestCurrentPosition());
+        }
       } else if (response.status == 401) {
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
