@@ -33,30 +33,20 @@ const styles = {
 
 export default class MapDetail extends React.PureComponent {
   componentDidMount() {
-    this.handleMapLoaded();
+    this.refreshMap();
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
-      await this.props.fetchMap();
-      this.handleMapLoaded();
+      this.refreshMap();
     }
   }
 
-  async handleMapLoaded() {
+  refreshMap() {
+    this.props.fetchMap();
     this.props.fetchSpots();
     this.props.fetchMapReviews();
     this.props.fetchFollowers();
-
-    if (!this.props.currentMap) {
-      await this.props.fetchMap();
-    }
-    this.props.initCenter(this.props.currentMap);
-
-    gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': `/maps/${this.props.currentMap.id}`,
-      'page_title': `${this.props.currentMap.name} | Qoodish`
-    });
   }
 
   componentWillUnmount() {
