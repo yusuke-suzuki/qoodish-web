@@ -7,7 +7,8 @@ const mapStateToProps = state => {
   return {
     mapsTabActive: state.shared.mapsTabActive,
     previousLocation: state.shared.previousLocation,
-    isMapDetail: state.shared.isMapDetail
+    isMapDetail: state.shared.isMapDetail,
+    large: state.shared.large
   };
 };
 
