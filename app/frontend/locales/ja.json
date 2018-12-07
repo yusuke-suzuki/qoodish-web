@@ -94,6 +94,8 @@
   "no notifications": "お知らせはありません。",
   "invited": "さんが招待しました。",
   "liked": "さんがいいね！しました。",
+  "liked!": "いいね！しました",
+  "unliked": "いいね！を取り消しました",
   "followed": "さんがフォローしました。",
   "search places": "プレイス名を入力します...",
   "search places example": "例: 「弘前  りんご公園」",
