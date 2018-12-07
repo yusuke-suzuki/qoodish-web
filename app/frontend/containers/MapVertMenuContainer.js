@@ -9,8 +9,7 @@ import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 const mapStateToProps = state => {
   return {
     currentMap: state.mapSummary.currentMap,
-    currentUser: state.app.currentUser,
-    large: state.shared.large
+    currentUser: state.app.currentUser
   };
 };
 
