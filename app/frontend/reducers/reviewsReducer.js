@@ -20,6 +20,10 @@ import {
   LIKE_REVIEW,
   UNLIKE_REVIEW,
   CLEAR_MAP_STATE,
+  SEND_COMMENT_START,
+  SEND_COMMENT_END,
+  OPEN_DELETE_COMMENT_DIALOG,
+  CLOSE_DELETE_COMMENT_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 
@@ -35,7 +39,10 @@ const initialState = {
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
-  selectedPlace: undefined
+  selectedPlace: undefined,
+  sendingComment: false,
+  deleteCommentDialogOpen: false,
+  targetComment: undefined
 };
 
 const reducer = (state = initialState, action) => {
@@ -167,6 +174,24 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         reviewDialogOpen: false
       });
+    case SEND_COMMENT_START:
+      return Object.assign({}, state, {
+        sendingComment: true
+      });
+    case SEND_COMMENT_END:
+      return Object.assign({}, state, {
+        sendingComment: false
+      });
+    case OPEN_DELETE_COMMENT_DIALOG:
+      return Object.assign({}, state, {
+        targetComment: action.payload.comment,
+        deleteCommentDialogOpen: true
+      });
+    case CLOSE_DELETE_COMMENT_DIALOG:
+      return Object.assign({}, state, {
+        targetComment: undefined,
+        deleteCommentDialogOpen: false
+      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentReviews: [],
@@ -185,7 +210,8 @@ const reducer = (state = initialState, action) => {
         reviewDialogOpen: false,
         editReviewDialogOpen: false,
         copyReviewDialogOpen: false,
-        deleteReviewDialogOpen: false
+        deleteReviewDialogOpen: false,
+        deleteCommentDialogOpen: false
       });
     default:
       return state;

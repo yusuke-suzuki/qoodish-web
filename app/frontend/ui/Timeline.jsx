@@ -44,9 +44,6 @@ const styles = {
     padding: 10,
     marginTop: 20
   },
-  profileImage: {
-    width: 40
-  },
   cardContainerSmall: {
     marginTop: 16
   },

@@ -94,7 +94,7 @@ const MapToolbar = (props) => {
       {props.currentMap && props.currentMap.private && <PrivateIcon />}
       {props.showMapName && props.currentMap && <MapName {...props} />}
       <div style={styles.toolbarActions}>
-        {isInvitable() && <InviteButton {...props} />}
+        {isInvitable(props.currentMap) && <InviteButton {...props} />}
         <MapShareMenuContainer />
         <MapVertMenuContainer />
       </div>

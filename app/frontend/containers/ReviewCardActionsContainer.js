@@ -1,69 +1,40 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ReviewCardActions from '../ui/ReviewCardActions';
+import ApiClient from './ApiClient.js';
+import sendCommentStart from '../actions/sendCommentStart';
+import sendCommentEnd from '../actions/sendCommentEnd';
+import editReview from '../actions/editReview';
 import openToast from '../actions/openToast';
-import ApiClient from './ApiClient';
-import likeReview from '../actions/likeReview';
-import unlikeReview from '../actions/unlikeReview';
-import fetchReviewLikes from '../actions/fetchReviewLikes';
-import openLikesDialog from '../actions/openLikesDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.app.currentUser
+    currentUser: state.app.currentUser,
+    sendingComment: state.reviews.sendingComment
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleLikeButtonClick: async (currentUser) => {
+    handleSendCommentButtonClick: async (params, currentUser) => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
       }
+
+      dispatch(sendCommentStart());
       const client = new ApiClient();
-      let response = await client.likeReview(ownProps.review.id);
+      let response = await client.sendComment(ownProps.review.id, params.comment);
       if (response.ok) {
+        dispatch(openToast(I18n.t('added comment')));
         let review = await response.json();
-        dispatch(likeReview(review));
-        dispatch(openToast(I18n.t('liked!')));
-
-        gtag('event', 'like', {
-          'event_category': 'engagement',
-          'event_label': 'review'
-        });
+        dispatch(editReview(review));
       } else {
-        dispatch(openToast('Request failed.'));
+        dispatch(openToast(I18n.t('comment failed')));
       }
-    },
-
-    handleUnlikeButtonClick: async () => {
-      const client = new ApiClient();
-      let response = await client.unlikeReview(ownProps.review.id);
-      if (response.ok) {
-        let review = await response.json();
-        dispatch(unlikeReview(review));
-        dispatch(openToast(I18n.t('unliked')));
-
-        gtag('event', 'unlike', {
-          'event_category': 'engagement',
-          'event_label': 'review'
-        });
-      } else {
-        dispatch(openToast('Request failed.'));
-      }
-    },
-
-    handleLikesClick: async () => {
-      const client = new ApiClient();
-      let response = await client.fetchReviewLikes(ownProps.review.id);
-      if (response.ok) {
-        let likes = await response.json();
-        dispatch(fetchReviewLikes(likes));
-        dispatch(openLikesDialog());
-      }
+      dispatch(sendCommentEnd());
     }
   };
 };

@@ -27,7 +27,7 @@ const fromNow = (review) => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(window.currentLocale)
     .format('LL');
-}
+};
 
 const Reviews = (props) => {
   return props.mapReviews.map(review => (
@@ -60,7 +60,7 @@ const Reviews = (props) => {
       )}
     </ListItem>
   ));
-}
+};
 
 const MapReviewsList = (props) => {
   return (
@@ -72,6 +72,6 @@ const MapReviewsList = (props) => {
       <Reviews {...props} />
     </List>
   );
-}
+};
 
 export default MapReviewsList;
