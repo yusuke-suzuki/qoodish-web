@@ -678,6 +678,35 @@ class ApiClient {
     const response = await fetch(url, options);
     return response;
   }
+
+  async sendComment(reviewId, comment) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/comments`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify({ comment: comment })
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async deleteComment(reviewId, commentId) {
+    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/comments/${commentId}`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
 }
 
 export default ApiClient;

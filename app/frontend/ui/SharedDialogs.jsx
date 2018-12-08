@@ -10,6 +10,7 @@ const FeedbackDialogContainer = loadable(() => import(/* webpackChunkName: "feed
 const SignInRequiredDialogContainer = loadable(() => import(/* webpackChunkName: "sign_in_required_dialog" */ '../containers/SignInRequiredDialogContainer'));
 const ReviewDialogContainer = loadable(() => import(/* webpackChunkName: "review_dialog" */ '../containers/ReviewDialogContainer'));
 const DeleteReviewDialogContainer = loadable(() => import(/* webpackChunkName: "delete_review_dialog" */ '../containers/DeleteReviewDialogContainer'));
+const DeleteCommentDialogContainer = loadable(() => import(/* webpackChunkName: "delete_comment_dialog" */ '../containers/DeleteCommentDialogContainer'));
 const PlaceSelectDialogContainer = loadable(() => import(/* webpackChunkName: "place_select_dialog" */ '../containers/PlaceSelectDialogContainer'));
 const BaseSelectDialogContainer = loadable(() => import(/* webpackChunkName: "base_select_dialog" */ '../containers/BaseSelectDialogContainer'));
 const EditReviewDialogContainer = loadable(() => import(/* webpackChunkName: "edit_review_dialog" */ '../containers/EditReviewDialogContainer'));
@@ -32,6 +33,7 @@ const SharedDialogs = () => {
       <BaseSelectDialogContainer />
       <EditReviewDialogContainer />
       <DeleteReviewDialogContainer />
+      <DeleteCommentDialogContainer />
       <ReviewDialogContainer />
       <CreateMapDialogContainer />
       <EditMapDialogContainer />

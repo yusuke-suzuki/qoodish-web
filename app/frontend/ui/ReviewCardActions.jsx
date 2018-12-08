@@ -1,50 +1,145 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import Badge from '@material-ui/core/Badge';
+import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
+import Button from '@material-ui/core/Button';
+import I18n from '../containers/I18n';
+import ReviewLikeActionsContainer from '../containers/ReviewLikeActionsContainer';
 
 const styles = {
-  likesCount: {
-    cursor: 'pointer',
-    marginLeft: 5
+  root: {
+    width: '100%'
+  },
+  actionsContainer: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center'
+  },
+  textField: {
+    justifyContent: 'center',
+    marginLeft: 16
+  },
+  commentActionsContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end'
+  },
+  avatar: {
+    width: 24,
+    height: 24
   }
 };
 
-const LikeButton = (props) => {
-  return (
-    <IconButton
-      onClick={() => {
-        props.review.liked
-          ? props.handleUnlikeButtonClick()
-          : props.handleLikeButtonClick(props.currentUser)
-      }}
-    >
-      {props.review.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
-    </IconButton>
-  );
-}
+const UserAvatar = (props) => {
+  if (props.currentUser.isAnonymous) {
+    return (
+      <Avatar style={styles.avatar}>
+        <PersonIcon />
+      </Avatar>
+    );
+  } else {
+    return (
+      <Avatar
+        src={props.currentUser.thumbnail_url}
+        alt={props.currentUser.name}
+        style={styles.avatar}
+      />
+    );
+  }
+};
 
-const LikesBadge = (props) => {
-  return (
-    <Badge
-      badgeContent={props.review.likes_count}
-      color="default"
-      onClick={props.handleLikesClick}
-      style={styles.likesCount}
-    >
-      <div />
-    </Badge>
-  );
-}
+class ReviewCardActions extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      commentFormActive: false,
+      comment: undefined
+    };
+    this.handleCommentFocus = this.handleCommentFocus.bind(this);
+    this.handleCommentCancel = this.handleCommentCancel.bind(this);
+    this.handleSendCommentButtonClick = this.handleSendCommentButtonClick.bind(this);
+    this.handleCommentChange = this.handleCommentChange.bind(this);
+  }
 
-const ReviewCardActions = (props) => {
-  return (
-    <div>
-      <LikeButton {...props} />
-      {props.review.likes_count > 0 && <LikesBadge {...props} />}
-    </div>
-  );
+  componentDidUpdate(prevProps) {
+    if (prevProps.sendingComment ===  true && this.props.sendingComment ===  false) {
+      this.setState({
+        commentFormActive: false
+      });
+    }
+  }
+
+  handleCommentFocus(e) {
+    this.setState({
+      commentFormActive: true
+    });
+  }
+
+  handleCommentCancel(e) {
+    this.setState({
+      commentFormActive: false,
+      comment: undefined
+    });
+  }
+
+  handleSendCommentButtonClick() {
+    let params = {
+      comment: this.state.comment
+    };
+    this.props.handleSendCommentButtonClick(params, this.props.currentUser);
+  }
+
+  handleCommentChange(comment) {
+    this.setState({
+      comment: comment
+    });
+  };
+
+  render() {
+    return (
+      <div style={styles.root}>
+        <div style={styles.actionsContainer}>
+          <UserAvatar {...this.props} />
+          {this.renderCommentForm()}
+          {!this.state.commentFormActive && <ReviewLikeActionsContainer {...this.props} />}
+        </div>
+        {this.state.commentFormActive && this.renderCommentActions()}
+      </div>
+    );
+  }
+
+  renderCommentForm() {
+    return (
+      <TextField
+        fullWidth
+        placeholder={I18n.t("add comment")}
+        InputProps={{
+          disableUnderline: true
+        }}
+        style={styles.textField}
+        onFocus={this.handleCommentFocus}
+        autoFocus={this.state.commentFormActive}
+        multiline={this.state.commentFormActive}
+        onChange={(e) => this.handleCommentChange(e.target.value)}
+      />
+    );
+  }
+
+  renderCommentActions() {
+    return (
+      <div style={styles.commentActionsContainer}>
+        <Button onClick={this.handleCommentCancel}>
+          {I18n.t('cancel')}
+        </Button>
+        <Button
+          onClick={this.handleSendCommentButtonClick}
+          color="primary"
+          disabled={!this.state.comment || this.props.sendingComment}
+        >
+          {I18n.t('post')}
+        </Button>
+      </div>
+    );
+  }
 };
 
 export default ReviewCardActions;

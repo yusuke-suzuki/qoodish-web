@@ -157,7 +157,11 @@ class NotificationMenu extends React.PureComponent {
       >
         <Avatar src={notification.notifier.profile_image_url} />
         <ListItemText
-          primary={this.renderNotificationText(notification)}
+          primary={
+            <div style={styles.notificationText}>
+              {this.renderNotificationText(notification)}
+            </div>
+          }
           secondary={
             <div style={styles.fromNow}>{this.fromNow(notification)}</div>
           }
@@ -180,18 +184,21 @@ class NotificationMenu extends React.PureComponent {
   }
 
   renderNotificationText(notification) {
-    if (notification.key == 'invited') {
-      return (
-        <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-        </div>
-      );
-    } else {
-      return (
-        <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-        </div>
-      );
+    switch (notification.key) {
+      case 'comment':
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t('posted comment')}`}
+          </React.Fragment>
+        );
+      default:
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t(notification.key)}`}
+          </React.Fragment>
+        );
     }
   }
 

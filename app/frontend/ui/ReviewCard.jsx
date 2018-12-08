@@ -8,14 +8,15 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Divider from '@material-ui/core/Divider';
 import twitter from 'twitter-text';
 import { Link } from 'react-router-dom';
 import ReviewShareMenuContainer from '../containers/ReviewShareMenuContainer';
 import ReviewVertMenuContainer from '../containers/ReviewVertMenuContainer';
 import ReviewCardActionsContainer from '../containers/ReviewCardActionsContainer';
+import ReviewCommentsContainer from '../containers/ReviewCommentsContainer';
 
 const styles = {
-  card: {},
   cardDetail: {
     minHeight: 'calc(100vh - 56px)'
   },
@@ -35,12 +36,11 @@ const styles = {
   reviewImage: {
     width: '100%'
   },
-  dialogActions: {
-    margin: '4px 4px',
-    justifyContent: 'flex-start'
-  },
   actionContainer: {
     display: 'flex'
+  },
+  cardActions: {
+    paddingLeft: 24
   }
 };
 
@@ -131,8 +131,9 @@ class ReviewCard extends React.PureComponent {
           >
           </Typography>
         </CardContent>
-        {review.image ? this.renderCardMedia(review) : null}
-        <CardActions disableActionSpacing>
+        {review.image ? this.renderCardMedia(review) : <Divider />}
+        {review.comments.length > 0 && <ReviewCommentsContainer review={review} />}
+        <CardActions disableActionSpacing style={styles.cardActions}>
           <ReviewCardActionsContainer review={review} />
         </CardActions>
       </Card>

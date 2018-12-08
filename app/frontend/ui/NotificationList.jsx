@@ -11,7 +11,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 
 const styles = {
   notificationText: {
-    paddingRight: 32
+    paddingRight: 16
   },
   secondaryAvatar: {
     borderRadius: 0,
@@ -46,7 +46,11 @@ export default class NotificationList extends React.PureComponent {
           alt={notification.notifier.name}
         />
         <ListItemText
-          primary={this.renderNotificationText(notification)}
+          primary={
+            <div style={styles.notificationText}>
+              {this.renderNotificationText(notification)}
+            </div>
+          }
           secondary={
             <div>{this.fromNow(notification)}</div>
           }
@@ -63,18 +67,21 @@ export default class NotificationList extends React.PureComponent {
   }
 
   renderNotificationText(notification) {
-    if (notification.key == 'invited') {
-      return (
-        <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-        </div>
-      );
-    } else {
-      return (
-        <div style={styles.notificationText}>
-          <b>{notification.notifier.name}</b> {I18n.t(notification.key)}
-        </div>
-      );
+    switch (notification.key) {
+      case 'comment':
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t('posted comment')}`}
+          </React.Fragment>
+        );
+      default:
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t(notification.key)}`}
+          </React.Fragment>
+        );
     }
   }
 
