@@ -6,8 +6,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import CommentMenuContainer from '../containers/CommentMenuContainer';
 import I18n from '../containers/I18n';
+import { Link } from 'react-router-dom';
 
 import moment from 'moment';
 
@@ -32,10 +34,16 @@ const fromNow = (comment) => {
 const Comments = props => {
   return props.review.comments.map(comment => (
     <ListItem key={comment.id}>
-      <Avatar
-        src={comment.author.profile_image_url}
-        alt={comment.author.name}
-      />
+      <ButtonBase
+        component={Link}
+        to={`/users/${comment.author.id}`}
+        title={comment.author.name}
+      >
+        <Avatar
+          src={comment.author.profile_image_url}
+          alt={comment.author.name}
+        />
+      </ButtonBase>
       <ListItemText
         primary={
           <div style={styles.primaryTextContainer}>
