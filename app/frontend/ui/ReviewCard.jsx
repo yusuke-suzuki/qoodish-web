@@ -44,121 +44,111 @@ const styles = {
   }
 };
 
-class ReviewCard extends React.PureComponent {
-  render() {
-    return (
-      <div>
-        {this.renderReviewCard(this.props.currentReview)}
-      </div>
-    );
-  }
-
-  renderReviewCard(review) {
-    const commentHtml = {
-      __html: twitter.autoLink(
-        twitter.htmlEscape(review.comment),
-        { targetBlank: true }
-      )
-    };
-
-    return (
-      <Card style={this.props.detail ? styles.cardDetail : styles.card}>
-        <CardHeader
-          avatar={
-            <ButtonBase
-              component={Link}
-              to={`/users/${review.author.id}`}
-              title={review.author.name}
-            >
-              <Avatar
-                src={review.author.profile_image_url}
-                alt={review.author.name}
-              />
-            </ButtonBase>
-          }
-          action={
-            <div style={styles.actionContainer}>
-              <ReviewShareMenuContainer currentReview={review} />
-              <ReviewVertMenuContainer currentReview={review} />
-            </div>
-          }
-          title={
-            <ButtonBase
-              component={Link}
-              to={`/users/${review.author.id}`}
-              title={review.author.name}
-            >
-              {review.author.name}
-            </ButtonBase>
-          }
-          subheader={this.renderCreatedAt(review)}
-        />
-        <CardContent style={styles.cardContent}>
-          <ButtonBase
-            component={Link}
-            to={`/maps/${review.map.id}`}
-            title={review.map.name}
-          >
-            <Typography
-              variant="subtitle1"
-              color="primary"
-              style={styles.cardTitle}
-              gutterBottom
-            >
-              {review.map.name}
-            </Typography>
-          </ButtonBase>
-          <br/>
-          <ButtonBase
-            component={Link}
-            to={`/spots/${review.spot.place_id}`}
-            title={review.spot.name}
-          >
-            <Typography
-              variant="h5"
-              component="h2"
-              style={styles.cardTitle}
-              gutterBottom
-            >
-              {review.spot.name}
-            </Typography>
-          </ButtonBase>
-          <Typography
-            component="p"
-            dangerouslySetInnerHTML={commentHtml}
-            style={styles.reviewComment}
-            data-test="review-card-comment"
-          >
-          </Typography>
-        </CardContent>
-        {review.image ? this.renderCardMedia(review) : <Divider />}
-        {review.comments.length > 0 && <ReviewCommentsContainer review={review} />}
-        <CardActions disableActionSpacing style={styles.cardActions}>
-          <ReviewCardActionsContainer review={review} />
-        </CardActions>
-      </Card>
-    );
-  }
-
-  renderCreatedAt(review) {
-    return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-      .locale(window.currentLocale)
-      .format('LL');
-  }
-
-  renderCardMedia(review) {
-    return (
-      <CardMedia
-        style={styles.cardMedia}
-      >
-        <img
-          src={review.image.url}
-          style={styles.reviewImage}
-          alt={review.spot.name}
-        />
-      </CardMedia>
-    );
-  }
+const ReviewCardMedia = props => {
+  return (
+    <CardMedia
+      style={styles.cardMedia}
+    >
+      <img
+        src={props.currentReview.image.url}
+        style={styles.reviewImage}
+        alt={props.currentReview.spot.name}
+      />
+    </CardMedia>
+  );
 }
+
+const createdAt = review => {
+  return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+    .locale(window.currentLocale)
+    .format('LL');
+};
+
+const ReviewCard = props => {
+  const commentHtml = {
+    __html: twitter.autoLink(
+      twitter.htmlEscape(props.currentReview.comment),
+      { targetBlank: true }
+    )
+  };
+
+  return (
+    <Card style={props.detail ? styles.cardDetail : styles.card}>
+      <CardHeader
+        avatar={
+          <ButtonBase
+            component={Link}
+            to={`/users/${props.currentReview.author.id}`}
+            title={props.currentReview.author.name}
+          >
+            <Avatar
+              src={props.currentReview.author.profile_image_url}
+              alt={props.currentReview.author.name}
+            />
+          </ButtonBase>
+        }
+        action={
+          <div style={styles.actionContainer}>
+            <ReviewShareMenuContainer currentReview={props.currentReview} />
+            <ReviewVertMenuContainer currentReview={props.currentReview} />
+          </div>
+        }
+        title={
+          <ButtonBase
+            component={Link}
+            to={`/users/${props.currentReview.author.id}`}
+            title={props.currentReview.author.name}
+          >
+            {props.currentReview.author.name}
+          </ButtonBase>
+        }
+        subheader={createdAt(props.currentReview)}
+      />
+      <CardContent style={styles.cardContent}>
+        <ButtonBase
+          component={Link}
+          to={`/maps/${props.currentReview.map.id}`}
+          title={props.currentReview.map.name}
+        >
+          <Typography
+            variant="subtitle1"
+            color="primary"
+            style={styles.cardTitle}
+            gutterBottom
+          >
+            {props.currentReview.map.name}
+          </Typography>
+        </ButtonBase>
+        <br/>
+        <ButtonBase
+          component={Link}
+          to={`/spots/${props.currentReview.spot.place_id}`}
+          title={props.currentReview.spot.name}
+        >
+          <Typography
+            variant="h5"
+            component="h2"
+            style={styles.cardTitle}
+            gutterBottom
+          >
+            {props.currentReview.spot.name}
+          </Typography>
+        </ButtonBase>
+        <Typography
+          component="p"
+          dangerouslySetInnerHTML={commentHtml}
+          style={styles.reviewComment}
+          data-test="review-card-comment"
+        >
+        </Typography>
+      </CardContent>
+      {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
+      {props.currentReview.comments.length > 0 && <ReviewCommentsContainer comments={props.currentReview.comments} />}
+      <CardActions disableActionSpacing style={styles.cardActions}>
+        <ReviewCardActionsContainer review={props.currentReview} />
+      </CardActions>
+    </Card>
+  );
+};
 
 export default ReviewCard;

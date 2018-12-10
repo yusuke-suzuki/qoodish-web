@@ -60,12 +60,10 @@ const ReviewDialog = (props) => {
       {!props.large && <DialogAppBar {...props} />}
       <DialogContent style={styles.dialogContent}>
         <div>
-          {props.currentReview &&
-            <ReviewCardContainer
-              currentReview={props.currentReview}
-              detail={!props.large}
-            />
-          }
+          <ReviewCardContainer
+            currentReview={props.currentReview}
+            detail={!props.large}
+          />
         </div>
       </DialogContent>
     </Dialog>
