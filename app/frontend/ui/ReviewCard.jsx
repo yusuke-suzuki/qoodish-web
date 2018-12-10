@@ -44,67 +44,44 @@ const styles = {
   }
 };
 
-const ReviewCardMedia = props => {
+const ReviewCardHeader = props => {
   return (
-    <CardMedia
-      style={styles.cardMedia}
-    >
-      <img
-        src={props.currentReview.image.url}
-        style={styles.reviewImage}
-        alt={props.currentReview.spot.name}
-      />
-    </CardMedia>
+    <CardHeader
+      avatar={
+        <ButtonBase
+          component={Link}
+          to={`/users/${props.currentReview.author.id}`}
+          title={props.currentReview.author.name}
+        >
+          <Avatar
+            src={props.currentReview.author.profile_image_url}
+            alt={props.currentReview.author.name}
+          />
+        </ButtonBase>
+      }
+      action={
+        <div style={styles.actionContainer}>
+          <ReviewShareMenuContainer currentReview={props.currentReview} />
+          <ReviewVertMenuContainer currentReview={props.currentReview} />
+        </div>
+      }
+      title={
+        <ButtonBase
+          component={Link}
+          to={`/users/${props.currentReview.author.id}`}
+          title={props.currentReview.author.name}
+        >
+          {props.currentReview.author.name}
+        </ButtonBase>
+      }
+      subheader={createdAt(props.currentReview)}
+    />
   );
-}
-
-const createdAt = review => {
-  return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
-    .format('LL');
 };
 
-const ReviewCard = props => {
-  const commentHtml = {
-    __html: twitter.autoLink(
-      twitter.htmlEscape(props.currentReview.comment),
-      { targetBlank: true }
-    )
-  };
-
+const ReviewCardContent = props => {
   return (
-    <Card style={props.detail ? styles.cardDetail : styles.card}>
-      <CardHeader
-        avatar={
-          <ButtonBase
-            component={Link}
-            to={`/users/${props.currentReview.author.id}`}
-            title={props.currentReview.author.name}
-          >
-            <Avatar
-              src={props.currentReview.author.profile_image_url}
-              alt={props.currentReview.author.name}
-            />
-          </ButtonBase>
-        }
-        action={
-          <div style={styles.actionContainer}>
-            <ReviewShareMenuContainer currentReview={props.currentReview} />
-            <ReviewVertMenuContainer currentReview={props.currentReview} />
-          </div>
-        }
-        title={
-          <ButtonBase
-            component={Link}
-            to={`/users/${props.currentReview.author.id}`}
-            title={props.currentReview.author.name}
-          >
-            {props.currentReview.author.name}
-          </ButtonBase>
-        }
-        subheader={createdAt(props.currentReview)}
-      />
-      <CardContent style={styles.cardContent}>
+    <CardContent style={styles.cardContent}>
         <ButtonBase
           component={Link}
           to={`/maps/${props.currentReview.map.id}`}
@@ -136,16 +113,65 @@ const ReviewCard = props => {
         </ButtonBase>
         <Typography
           component="p"
-          dangerouslySetInnerHTML={commentHtml}
+          dangerouslySetInnerHTML={commentHtml(props.currentReview)}
           style={styles.reviewComment}
           data-test="review-card-comment"
         >
         </Typography>
       </CardContent>
-      {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
-      {props.currentReview.comments.length > 0 && <ReviewCommentsContainer comments={props.currentReview.comments} />}
-      <CardActions disableActionSpacing style={styles.cardActions}>
-        <ReviewCardActionsContainer review={props.currentReview} />
+  );
+};
+
+const ReviewCardMedia = props => {
+  return (
+    <CardMedia
+      style={styles.cardMedia}
+    >
+      <img
+        src={props.currentReview.image.url}
+        style={styles.reviewImage}
+        alt={props.currentReview.spot.name}
+      />
+    </CardMedia>
+  );
+};
+
+const createdAt = review => {
+  return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+    .locale(window.currentLocale)
+    .format('LL');
+};
+
+const commentHtml = review => {
+  return {
+    __html: twitter.autoLink(
+      twitter.htmlEscape(review.comment),
+      { targetBlank: true }
+    )
+  };
+};
+
+const ReviewCard = props => {
+  return (
+    <Card style={props.detail ? styles.cardDetail : styles.card}>
+      <ReviewCardHeader {...props} />
+      <ReviewCardContent {...props} />
+      {props.currentReview.image ?
+        <ReviewCardMedia {...props} /> :
+        <Divider />
+      }
+      {props.currentReview.comments.length > 0 &&
+        <ReviewCommentsContainer
+          comments={props.currentReview.comments}
+        />
+      }
+      <CardActions
+        disableActionSpacing
+        style={styles.cardActions}
+      >
+        <ReviewCardActionsContainer
+          review={props.currentReview}
+        />
       </CardActions>
     </Card>
   );
