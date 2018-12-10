@@ -32,7 +32,7 @@ const fromNow = (comment) => {
 };
 
 const Comments = props => {
-  return props.review.comments.map(comment => (
+  return props.comments.map(comment => (
     <ListItem key={comment.id}>
       <ButtonBase
         component={Link}
@@ -80,7 +80,7 @@ const ReviewComments = props => {
     <List
       disablePadding
       subheader={
-        <ListSubheader>{`${props.review.comments.length} ${I18n.t('comment count')}`}</ListSubheader>
+        <ListSubheader>{`${props.comments.length} ${I18n.t('comment count')}`}</ListSubheader>
       }
     >
       <Comments {...props} />
