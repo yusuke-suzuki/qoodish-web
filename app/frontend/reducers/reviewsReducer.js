@@ -198,12 +198,7 @@ const reducer = (state = initialState, action) => {
         loadingReviews: false,
         noMoreReviews: false,
         nextTimestamp: '',
-        targetReview: null,
-        currentReview: null,
-        reviewDialogOpen: false,
-        editReviewDialogOpen: false,
-        copyReviewDialogOpen: false,
-        deleteReviewDialogOpen: false
+        targetReview: null
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
