@@ -79,7 +79,7 @@ const MapWithAnOverlayView = compose(
     <div style={styles.buttonContainer}>
       <CreateReviewButtonContainer
         buttonForMap
-        disabled={!(props.currentMap && props.currentMap.postable)}
+        disabled={!(props.currentMap && props.currentMap.postable && props.currentMap.following)}
       />
       <LocationButtonContainer />
     </div>
