@@ -19,13 +19,13 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
 import { Link } from 'react-router-dom';
 import I18n from '../containers/I18n';
-import SwipeableViews from 'react-swipeable-views';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Paper from '@material-ui/core/Paper';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ReviewTilesContainer from '../containers/ReviewTilesContainer';
+import SpotImageStepperContainer from '../containers/SpotImageStepperContainer';
 
 const styles = {
   drawerPaperLarge: {
@@ -41,11 +41,6 @@ const styles = {
   cardContentSmall: {
     paddingBottom: 16,
     paddingTop: 0
-  },
-  spotImage: {
-    width: '100%',
-    objectFit: 'cover',
-    height: 250
   },
   listItem: {
     paddingTop: 0
@@ -128,7 +123,7 @@ const SpotBottomNavigation = (props) => {
       </BottomNavigation>
     </Paper>
   );
-}
+};
 
 const SpotCardHeader = (props) => {
   return (
@@ -207,23 +202,15 @@ const SpotCardSmall = (props) => {
       <SpotBottomNavigation {...props} />
     </div>
   );
-}
+};
 
 const SpotCardLarge = (props) => {
   return (
     <Card style={styles.cardLarge}>
-      <CardMedia>
-        <SwipeableViews>
-          {props.spotReviews.map(review => (
-            <img
-              key={review.id}
-              src={review.image ? review.image.url : process.env.SUBSTITUTE_URL}
-              style={styles.spotImage}
-              alt={review.spot.name}
-            />
-          ))}
-        </SwipeableViews>
-      </CardMedia>
+      <SpotImageStepperContainer
+        spotReviews={props.spotReviews}
+        currentSpot={props.currentSpot}
+      />
       <CardContent>
         <Typography
           variant="h5"
@@ -250,7 +237,7 @@ const SpotCardLarge = (props) => {
       <SpotBottomNavigation {...props} />
     </Card>
   );
-}
+};
 
 const SpotCard = (props) => {
   return (
@@ -285,6 +272,6 @@ const SpotCard = (props) => {
       {props.currentSpot && (props.large ? <SpotCardLarge {...props} /> : <SpotCardSmall {...props} />)}
     </SwipeableDrawer>
   );
-}
+};
 
 export default SpotCard;
