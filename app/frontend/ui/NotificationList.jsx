@@ -8,10 +8,11 @@ import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import Typography from '@material-ui/core/Typography';
 
 const styles = {
-  notificationText: {
-    paddingRight: 16
+  listItemText: {
+    paddingRight: 32
   },
   secondaryAvatar: {
     borderRadius: 0,
@@ -53,14 +54,23 @@ export default class NotificationList extends React.PureComponent {
           alt={notification.notifier.name}
         />
         <ListItemText
+          style={styles.listItemText}
           primary={
-            <div style={styles.notificationText}>
+            <Typography
+              variant="subtitle1"
+            >
               {this.renderNotificationText(notification)}
-            </div>
+            </Typography>
           }
           secondary={
-            <div>{this.fromNow(notification)}</div>
+            <Typography
+              variant="subtitle1"
+              color="textSecondary"
+            >
+              {this.fromNow(notification)}
+            </Typography>
           }
+          disableTypography
         />
         {notification.notifiable.thumbnail_url && (
           <ListItemSecondaryAction>

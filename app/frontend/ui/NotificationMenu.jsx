@@ -10,20 +10,6 @@ import I18n from '../containers/I18n';
 import NotificationListContainer from '../containers/NotificationListContainer';
 
 const styles = {
-  listItemContent: {
-    overflow: 'hidden'
-  },
-  notificationText: {
-    paddingRight: 32,
-    fontSize: 14
-  },
-  fromNow: {
-    fontSize: 14
-  },
-  secondaryAvatar: {
-    borderRadius: 0,
-    marginRight: 12
-  },
   notificationMenu: {
     maxHeight: '50vh'
   },
