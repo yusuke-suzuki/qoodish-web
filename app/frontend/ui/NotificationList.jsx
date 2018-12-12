@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,18 @@ const styles = {
     borderRadius: 0,
     marginRight: 12,
     cursor: 'pointer'
+  },
+  notificationMenuItem: {
+    height: 'auto',
+    whiteSpace: 'initial'
+  }
+};
+
+const Item = props => {
+  if (props.menu) {
+    return <MenuItem {...props} />;
+  } else {
+    return <ListItem {...props} />;
   }
 };
 
@@ -26,20 +38,15 @@ export default class NotificationList extends React.PureComponent {
   }
 
   render() {
-    return (
-      <List>
-        {this.renderNotifications(this.props.notifications)}
-      </List>
-    );
-  }
-
-  renderNotifications(notifications) {
-    return notifications.map(notification => (
-      <ListItem
+    return this.props.notifications.map(notification => (
+      <Item
         key={notification.id}
+        onClick={this.props.handleNotificationClick}
         button
         component={Link}
         to={notification.click_action}
+        item={this.props.item}
+        style={this.props.menu ? styles.notificationMenuItem : {}}
       >
         <Avatar
           src={notification.notifier.profile_image_url}
@@ -62,12 +69,19 @@ export default class NotificationList extends React.PureComponent {
             </ButtonBase>
           </ListItemSecondaryAction>
         )}
-      </ListItem>
+      </Item>
     ));
   }
 
   renderNotificationText(notification) {
     switch (notification.key) {
+      case 'liked':
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
+          </React.Fragment>
+        );
       case 'comment':
         return (
           <React.Fragment>

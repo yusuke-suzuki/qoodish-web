@@ -1,6 +1,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import NotificationListContainer from '../containers/NotificationListContainer';
 import I18n from '../containers/I18n';
@@ -13,7 +14,11 @@ const styles = {
   containerSmall: {
     margin: '56px auto 56px'
   },
-  progress: {
+  progressLarge: {
+    textAlign: 'center',
+    paddingTop: 20
+  },
+  progressSmall: {
     textAlign: 'center',
     paddingTop: 40
   }
@@ -46,7 +51,13 @@ class Notifications extends React.PureComponent {
     if (this.props.notifications.length > 0) {
       return (
         <Paper>
-          <NotificationListContainer notifications={this.props.notifications} />
+          <List>
+            <NotificationListContainer
+              notifications={this.props.notifications}
+              handleNotificationClick={() => {}}
+              item="list"
+            />
+          </List>
         </Paper>
       );
     } else {
@@ -61,7 +72,7 @@ class Notifications extends React.PureComponent {
 
   renderProgress() {
     return (
-      <div style={styles.progress}>
+      <div style={this.props.large ? styles.progressLarge : styles.progressSmall}>
         <CircularProgress />
       </div>
     );
