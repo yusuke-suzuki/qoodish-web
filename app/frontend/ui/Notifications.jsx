@@ -1,6 +1,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import NotificationListContainer from '../containers/NotificationListContainer';
 import I18n from '../containers/I18n';
@@ -46,7 +47,13 @@ class Notifications extends React.PureComponent {
     if (this.props.notifications.length > 0) {
       return (
         <Paper>
-          <NotificationListContainer notifications={this.props.notifications} />
+          <List>
+            <NotificationListContainer
+              notifications={this.props.notifications}
+              handleNotificationClick={() => {}}
+              item="list"
+            />
+          </List>
         </Paper>
       );
     } else {

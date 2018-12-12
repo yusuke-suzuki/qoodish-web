@@ -1,17 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import moment from 'moment';
 import Badge from '@material-ui/core/Badge';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../containers/I18n';
+
+import NotificationListContainer from '../containers/NotificationListContainer';
 
 const styles = {
   listItemContent: {
@@ -30,10 +26,6 @@ const styles = {
   },
   notificationMenu: {
     maxHeight: '50vh'
-  },
-  notificationMenuItem: {
-    height: 'auto',
-    whiteSpace: 'initial'
   },
   notificationButton: {
     marginRight: 10
@@ -129,7 +121,11 @@ class NotificationMenu extends React.PureComponent {
         PaperProps={{ style: styles.notificationMenu }}
       >
         {this.props.notifications.length > 0
-          ? this.renderNotifications(this.props.notifications)
+          ? <NotificationListContainer
+              notifications={this.props.notifications}
+              handleNotificationClick={this.handleRequestNotificationClose}
+              menu={true}
+            />
           : this.renderNoNotifications()}
       </Menu>
     );
@@ -144,68 +140,6 @@ class NotificationMenu extends React.PureComponent {
         </Typography>
       </MenuItem>
     );
-  }
-
-  renderNotifications(notifications) {
-    return notifications.map(notification => (
-      <MenuItem
-        onClick={this.handleRequestNotificationClose}
-        key={notification.id}
-        style={styles.notificationMenuItem}
-        component={Link}
-        to={notification.click_action}
-      >
-        <Avatar src={notification.notifier.profile_image_url} />
-        <ListItemText
-          primary={
-            <div style={styles.notificationText}>
-              {this.renderNotificationText(notification)}
-            </div>
-          }
-          secondary={
-            <div style={styles.fromNow}>{this.fromNow(notification)}</div>
-          }
-          style={styles.listItemContent}
-          disableTypography
-        />
-        {notification.notifiable.thumbnail_url && (
-          <ListItemSecondaryAction>
-            <ButtonBase
-              component={Link}
-              to={notification.click_action}
-              onClick={this.handleRequestNotificationClose}
-            >
-              <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
-            </ButtonBase>
-          </ListItemSecondaryAction>
-        )}
-      </MenuItem>
-    ));
-  }
-
-  renderNotificationText(notification) {
-    switch (notification.key) {
-      case 'comment':
-        return (
-          <React.Fragment>
-            <b>{notification.notifier.name}</b>
-            {` ${I18n.t('posted comment')}`}
-          </React.Fragment>
-        );
-      default:
-        return (
-          <React.Fragment>
-            <b>{notification.notifier.name}</b>
-            {` ${I18n.t(notification.key)}`}
-          </React.Fragment>
-        );
-    }
-  }
-
-  fromNow(notification) {
-    return moment(notification.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-      .locale(window.currentLocale)
-      .fromNow();
   }
 }
 
