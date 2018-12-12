@@ -395,6 +395,48 @@ class ApiClient {
     return response;
   }
 
+  async likeMap(mapId) {
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/like`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async unlikeMap(mapId) {
+    const url = `${process.env.API_ENDPOINT}/maps/${mapId}/like`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchMapLikes(mapId) {
+    let url = `${process.env.API_ENDPOINT}/maps/${mapId}/likes`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchReviews(timestamp = null) {
     let url = `${process.env.API_ENDPOINT}/reviews`;
     if (timestamp) {

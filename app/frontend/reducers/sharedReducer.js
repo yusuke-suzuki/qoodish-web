@@ -14,7 +14,7 @@ import {
   SEARCH_MAPS,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
-  FETCH_REVIEW_LIKES,
+  FETCH_LIKES,
   FETCH_NOTIFICATIONS,
   READ_NOTIFICATION,
   LOAD_NOTIFICATIONS_START,
@@ -232,7 +232,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         likesDialogOpen: false
       });
-    case FETCH_REVIEW_LIKES:
+    case FETCH_LIKES:
       return Object.assign({}, state, {
         likes: action.payload.likes
       });

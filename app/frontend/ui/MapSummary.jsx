@@ -7,6 +7,7 @@ const MapReviewsListContainer = loadable(() => import(/* webpackChunkName: "map_
 const MapSpotsListContainer = loadable(() => import(/* webpackChunkName: "map_spots_list" */ '../containers/MapSpotsListContainer'));
 const MapFollowersListContainer = loadable(() => import(/* webpackChunkName: "map_followers_list" */ '../containers/MapFollowersListContainer'));
 const FollowMapButtonContainer = loadable(() => import(/* webpackChunkName: "follow_map_button" */ '../containers/FollowMapButtonContainer'));
+const MapLikeActionsContainer = loadable(() => import(/* webpackChunkName: "map_like_actions" */ '../containers/MapLikeActionsContainer'));
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -161,6 +162,7 @@ class MapSummary extends React.PureComponent {
         <Toolbar
           style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}
         >
+          <MapLikeActionsContainer target={this.props.currentMap} />
           <div style={styles.followMapButtonContainer}>
             <FollowMapButtonContainer currentMap={this.props.currentMap} />
           </div>

@@ -17,8 +17,6 @@ import {
   OPEN_REVIEW_DIALOG,
   CLOSE_REVIEW_DIALOG,
   SELECT_PLACE_FOR_REVIEW,
-  LIKE_REVIEW,
-  UNLIKE_REVIEW,
   CLEAR_MAP_STATE,
   SEND_COMMENT_START,
   SEND_COMMENT_END,
@@ -95,8 +93,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentReviews: [action.payload.review, ...state.currentReviews]
       });
-    case LIKE_REVIEW:
-    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       if (state.currentReviews.length === 0) {
         return Object.assign({}, state, {
