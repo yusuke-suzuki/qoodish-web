@@ -10,8 +10,6 @@ import {
   FETCH_MORE_USER_REVIEWS,
   EDIT_REVIEW,
   DELETE_REVIEW,
-  LIKE_REVIEW,
-  UNLIKE_REVIEW,
   FETCH_USER_PROFILE,
   CLEAR_PROFILE_STATE,
   OPEN_EDIT_PROFILE_DIALOG,
@@ -88,8 +86,6 @@ const reducer = (state = initialState, action) => {
                 .created_at
             : ''
       });
-    case LIKE_REVIEW:
-    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       let index = state.currentReviews.findIndex(review => {
         return review.id == action.payload.review.id;

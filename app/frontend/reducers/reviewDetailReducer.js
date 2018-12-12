@@ -4,8 +4,6 @@ import {
   SELECT_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
-  LIKE_REVIEW,
-  UNLIKE_REVIEW,
   CLEAR_REVIEW_STATE
 } from '../actionTypes';
 
@@ -28,8 +26,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentReview: action.payload.review
       });
-    case LIKE_REVIEW:
-    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       if (!state.currentReview) {
         return state;

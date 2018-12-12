@@ -29,6 +29,6 @@ const BlockUi = (props) => {
       </div>
     </div>
   ) : null;
-}
+};
 
 export default BlockUi;

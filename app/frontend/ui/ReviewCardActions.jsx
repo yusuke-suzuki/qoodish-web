@@ -100,7 +100,7 @@ class ReviewCardActions extends React.PureComponent {
         <div style={styles.actionsContainer}>
           <UserAvatar {...this.props} />
           {this.renderCommentForm()}
-          {!this.state.commentFormActive && <ReviewLikeActionsContainer {...this.props} />}
+          {!this.state.commentFormActive && <ReviewLikeActionsContainer target={this.props.review} />}
         </div>
         {this.state.commentFormActive && this.renderCommentActions()}
       </div>

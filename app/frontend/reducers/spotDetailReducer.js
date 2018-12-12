@@ -7,8 +7,6 @@ import {
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
-  LIKE_REVIEW,
-  UNLIKE_REVIEW
 } from '../actionTypes';
 
 const initialState = {
@@ -39,8 +37,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spotReviews: [action.payload.review, ...state.spotReviews]
       });
-    case LIKE_REVIEW:
-    case UNLIKE_REVIEW:
     case EDIT_REVIEW:
       if (state.spotReviews.length === 0) {
         return state;

@@ -17,12 +17,12 @@ const LikeButton = (props) => {
   return (
     <IconButton
       onClick={() => {
-        props.review.liked
+        props.target && props.target.liked
           ? props.handleUnlikeButtonClick()
           : props.handleLikeButtonClick(props.currentUser)
       }}
     >
-      {props.review.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+      {props.target && props.target.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
     </IconButton>
   );
 };
@@ -34,18 +34,18 @@ const LikesBadge = (props) => {
       onClick={props.handleLikesClick}
       style={styles.likesButton}
     >
-      {props.review.likes_count}
+      {props.target && props.target.likes_count}
     </Button>
   );
 };
 
-const ReviewLikeActions = (props) => {
+const LikeActions = (props) => {
   return (
     <div style={styles.container}>
       <LikeButton {...props} />
-      {props.review.likes_count > 0 && <LikesBadge {...props} />}
+      {props.target && props.target.likes_count > 0 && <LikesBadge {...props} />}
     </div>
   );
 };
 
-export default ReviewLikeActions;
+export default LikeActions;
