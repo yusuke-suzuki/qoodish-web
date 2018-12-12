@@ -82,43 +82,43 @@ const ReviewCardHeader = props => {
 const ReviewCardContent = props => {
   return (
     <CardContent style={styles.cardContent}>
-        <ButtonBase
-          component={Link}
-          to={`/maps/${props.currentReview.map.id}`}
-          title={props.currentReview.map.name}
-        >
-          <Typography
-            variant="subtitle1"
-            color="primary"
-            style={styles.cardTitle}
-            gutterBottom
-          >
-            {props.currentReview.map.name}
-          </Typography>
-        </ButtonBase>
-        <br/>
-        <ButtonBase
-          component={Link}
-          to={`/spots/${props.currentReview.spot.place_id}`}
-          title={props.currentReview.spot.name}
-        >
-          <Typography
-            variant="h5"
-            component="h2"
-            style={styles.cardTitle}
-            gutterBottom
-          >
-            {props.currentReview.spot.name}
-          </Typography>
-        </ButtonBase>
+      <ButtonBase
+        component={Link}
+        to={`/maps/${props.currentReview.map.id}`}
+        title={props.currentReview.map.name}
+      >
         <Typography
-          component="p"
-          dangerouslySetInnerHTML={commentHtml(props.currentReview)}
-          style={styles.reviewComment}
-          data-test="review-card-comment"
+          variant="subtitle1"
+          color="primary"
+          style={styles.cardTitle}
+          gutterBottom
         >
+          {props.currentReview.map.name}
         </Typography>
-      </CardContent>
+      </ButtonBase>
+      <br/>
+      <ButtonBase
+        component={Link}
+        to={`/spots/${props.currentReview.spot.place_id}`}
+        title={props.currentReview.spot.name}
+      >
+        <Typography
+          variant="h5"
+          component="h2"
+          style={styles.cardTitle}
+          gutterBottom
+        >
+          {props.currentReview.spot.name}
+        </Typography>
+      </ButtonBase>
+      <Typography
+        component="p"
+        dangerouslySetInnerHTML={commentHtml(props.currentReview)}
+        style={styles.reviewComment}
+        data-test="review-card-comment"
+      >
+      </Typography>
+    </CardContent>
   );
 };
 
