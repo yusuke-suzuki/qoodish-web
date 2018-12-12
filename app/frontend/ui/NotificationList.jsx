@@ -75,6 +75,13 @@ export default class NotificationList extends React.PureComponent {
 
   renderNotificationText(notification) {
     switch (notification.key) {
+      case 'liked':
+        return (
+          <React.Fragment>
+            <b>{notification.notifier.name}</b>
+            {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
+          </React.Fragment>
+        );
       case 'comment':
         return (
           <React.Fragment>

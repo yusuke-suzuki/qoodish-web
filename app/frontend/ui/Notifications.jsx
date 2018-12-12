@@ -14,7 +14,11 @@ const styles = {
   containerSmall: {
     margin: '56px auto 56px'
   },
-  progress: {
+  progressLarge: {
+    textAlign: 'center',
+    paddingTop: 20
+  },
+  progressSmall: {
     textAlign: 'center',
     paddingTop: 40
   }
@@ -68,7 +72,7 @@ class Notifications extends React.PureComponent {
 
   renderProgress() {
     return (
-      <div style={styles.progress}>
+      <div style={this.props.large ? styles.progressLarge : styles.progressSmall}>
         <CircularProgress />
       </div>
     );
