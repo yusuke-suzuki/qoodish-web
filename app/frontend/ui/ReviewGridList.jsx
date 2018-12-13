@@ -1,7 +1,6 @@
 import React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 const styles = {
   container: {
@@ -29,10 +28,10 @@ const ReviewGridList = (props) => {
   return (
     <div style={styles.container}>
       <GridList
-        cols={props.large ? 4 : 2}
+        cols={props.large ? 4 : 3}
         style={styles.gridList}
-        spacing={props.large ? 20 : 10}
-        cellHeight={220}
+        spacing={props.large ? 20 : 4}
+        cellHeight={props.large ? 220 : 120}
       >
         {props.reviews.map(review => (
           <GridListTile
@@ -43,10 +42,6 @@ const ReviewGridList = (props) => {
             <img
               src={review.image ? reviewImage(review, props.large) : process.env.SUBSTITUTE_URL}
               alt={review.spot.name}
-            />
-            <GridListTileBar
-              title={review.spot.name}
-              subtitle={review.map.name}
             />
           </GridListTile>
         ))}
