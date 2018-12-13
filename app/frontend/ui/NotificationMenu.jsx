@@ -14,6 +14,7 @@ const styles = {
     maxHeight: '50vh'
   },
   notificationButton: {
+    marginLeft: 10,
     marginRight: 10
   },
   noContentsContainer: {
