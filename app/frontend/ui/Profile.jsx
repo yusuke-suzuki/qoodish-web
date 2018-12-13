@@ -108,8 +108,7 @@ const styles = {
     paddingTop: 8
   },
   editProfileButton: {
-    marginTop: 10,
-    marginBottom: 20
+    marginTop: 10
   }
 };
 
@@ -149,7 +148,8 @@ class Profile extends React.PureComponent {
     if (!this.props.currentUser.isAnonymous) {
       this.props.fetchUserProfile();
       this.props.fetchReviews();
-      this.props.fetchUserMaps();
+      this.props.fetchMyMaps();
+      this.props.fetchFollowingMaps();
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -188,7 +188,8 @@ class Profile extends React.PureComponent {
           onChangeIndex={this.handleChangeIndex}
         >
           {this.renderReviews()}
-          {this.renderUserMaps()}
+          {this.renderMaps("mymaps")}
+          {this.renderMaps("following")}
         </SwipeableViews>
       </div>
     );
@@ -262,24 +263,29 @@ class Profile extends React.PureComponent {
             </Typography>
             {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
-          <Tabs
-            value={this.state.tabValue}
-            onChange={this.handleTabChange}
-            fullWidth
-            centered
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab
-              icon={I18n.t('reports')}
-              label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
-            />
-            <Tab
-              icon={I18n.t('maps')}
-              label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
-            />
-          </Tabs>
         </CardContent>
+        <Tabs
+          value={this.state.tabValue}
+          onChange={this.handleTabChange}
+          fullWidth
+          indicatorColor="primary"
+          textColor="primary"
+          scrollable
+          scrollButtons="off"
+        >
+          <Tab
+            icon={I18n.t('reports')}
+            label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
+          />
+          <Tab
+            icon={I18n.t('maps')}
+            label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
+          />
+          <Tab
+            icon={I18n.t('following')}
+            label={<div style={styles.count}>{this.props.currentUser.following_maps_count || 0}</div>}
+          />
+        </Tabs>
       </Card>
     );
   }
@@ -361,15 +367,25 @@ class Profile extends React.PureComponent {
     );
   }
 
-  renderUserMaps() {
+  renderMaps(key) {
+    let loading;
+    let maps;
+    if (key === "following") {
+      loading = this.props.loadingFollowingMaps
+      maps = this.props.followingMaps;
+    } else {
+      loading = this.props.loadingMyMaps;
+      maps = this.props.myMaps;
+    }
+
     return (
       <div
-        key='usermaps'
+        key={key}
         style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
       >
-        {this.props.loadingMaps
+        {loading
           ? this.renderProgress()
-          : this.renderMapContainer(this.props.currentMaps)}
+          : this.renderMapContainer(maps)}
       </div>
     );
   }
@@ -385,6 +401,7 @@ class Profile extends React.PureComponent {
           contentType="map"
           action="create-map"
           message={I18n.t('maps will see here')}
+          secondaryAction="discover-maps"
         />
       );
     }

@@ -9,7 +9,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import HomeIcon from '@material-ui/icons/Home';
 import ExploreIcon from '@material-ui/icons/Explore';
-import MapIcon from '@material-ui/icons/Map';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
@@ -84,12 +83,6 @@ const DrawerContents = (props) => {
             <ExploreIcon />
           </ListItemIcon>
           <ListItemText primary={I18n.t('discover')} />
-        </ListItem>
-        <ListItem button component={Link} to="/maps" title={I18n.t('maps')}>
-          <ListItemIcon>
-            <MapIcon />
-          </ListItemIcon>
-          <ListItemText primary={I18n.t('maps')} />
         </ListItem>
         <ListItem button component={Link} to="/profile" title={I18n.t('account')}>
           <ListItemIcon>

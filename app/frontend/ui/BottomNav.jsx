@@ -5,11 +5,11 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Paper from '@material-ui/core/Paper';
 import HomeIcon from '@material-ui/icons/Home';
 import ExploreIcon from '@material-ui/icons/Explore';
-import MapIcon from '@material-ui/icons/Map';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import I18n from '../containers/I18n';
+import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
 
 const styles = {
   bottomNav: {
@@ -62,13 +62,7 @@ const BottomNav = (props) => {
           icon={<ExploreIcon />}
           style={styles.bottomAction}
         />
-        <BottomNavigationAction
-          component={Link}
-          to="/maps"
-          title={I18n.t('maps')}
-          icon={<MapIcon />}
-          style={styles.bottomAction}
-        />
+        <CreateReviewButtonContainer bottomAction />
         <BottomNavigationAction
           component={Link}
           to="/profile"

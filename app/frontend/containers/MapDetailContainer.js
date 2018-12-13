@@ -12,6 +12,7 @@ import fetchSpots from '../actions/fetchSpots';
 import clearMapState from '../actions/clearMapState';
 import fetchMapReviews from '../actions/fetchMapReviews';
 import fetchCollaborators from '../actions/fetchCollaborators';
+import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
@@ -48,7 +49,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       } else if (response.status == 401) {
         dispatch(openToast('Authenticate failed'));
       } else if (response.status == 404) {
-        ownProps.history.push('/maps');
+        ownProps.history.push('');
+        dispatch(openToast(I18n.t('map not found')));
       } else {
         dispatch(openToast('Failed to fetch Map.'));
       }

@@ -120,7 +120,7 @@ class ApiClient {
     return response;
   }
 
-  async fetchUserMaps(userId = undefined) {
+  async fetchMyMaps(userId = undefined) {
     if (!userId) {
       userId = await this.getCurrentUid();
     }

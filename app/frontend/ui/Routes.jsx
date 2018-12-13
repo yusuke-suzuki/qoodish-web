@@ -5,7 +5,6 @@ import loadable from '@loadable/component';
 const LoginContainer = loadable(() => import(/* webpackChunkName: "login" */'../containers/LoginContainer'));
 const DiscoverContainer = loadable(() => import(/* webpackChunkName: "discover" */'../containers/DiscoverContainer'));
 const TimelineContainer = loadable(() => import(/* webpackChunkName: "timeline" */'../containers/TimelineContainer'));
-const MapsContainer = loadable(() => import(/* webpackChunkName: "maps" */'../containers/MapsContainer'));
 const ProfileContainer = loadable(() => import(/* webpackChunkName: "profile" */'../containers/ProfileContainer'));
 const UserProfileContainer = loadable(() => import(/* webpackChunkName: "user_profile" */'../containers/UserProfileContainer'));
 const NotificationsContainer = loadable(() => import(/* webpackChunkName: "notification" */'../containers/NotificationsContainer'));
@@ -22,7 +21,6 @@ const Routes = () => {
     <Switch>
       <Route exact path="/" component={TimelineContainer} />
       <Route exact path="/discover" component={DiscoverContainer} />
-      <Route exact path="/maps" component={MapsContainer} />
       <Route exact path="/maps/:mapId" component={MapDetailContainer} />
       <Route exact path="/notifications" component={NotificationsContainer} />
       <Route exact path="/profile" component={ProfileContainer} />

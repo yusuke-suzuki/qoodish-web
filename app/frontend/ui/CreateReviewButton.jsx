@@ -8,7 +8,7 @@ const styles = {
     position: 'fixed',
     bottom: 32,
     right: 32,
-    backgroundColor: 'red',
+    backgroundColor: '#ffc107',
     color: 'white'
   },
   buttonSmall: {
@@ -16,11 +16,13 @@ const styles = {
     position: 'fixed',
     bottom: 20,
     right: 20,
-    backgroundColor: 'red',
+    backgroundColor: '#ffc107',
     color: 'white'
   },
-  withBottomSeat: {
-    bottom: 76,
+  withBottomAction: {
+    position: 'relative',
+    bottom: 28,
+    right: 'unset'
   },
   forMap: {
     position: 'absolute'
@@ -39,8 +41,8 @@ const buttonStyle = (props) => {
   } else {
     style = Object.assign(style, styles.buttonSmall)
   }
-  if (props.buttonWithBottomSeat) {
-    style = Object.assign(style, styles.withBottomSeat);
+  if (props.bottomAction) {
+    style = Object.assign(style, styles.withBottomAction);
   }
   if (props.buttonForMap) {
     style = Object.assign(style, styles.forMap);

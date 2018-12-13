@@ -50,7 +50,6 @@ const initialState = {
   unreadNotifications: [],
   loadingNotifications: false,
   showBackButton: false,
-  mapsTabActive: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
@@ -80,7 +79,7 @@ const getBottomNavValue = (pathname) => {
     default:
       return undefined;
   }
-}
+};
 
 const switchPageTitle = (pathname, large) => {
   if (pathname === '/') {
@@ -110,15 +109,7 @@ const switchPageTitle = (pathname, large) => {
   } else {
     return '';
   }
-}
-
-const switchMapsTab = (pathname) => {
-  if (pathname.includes('/maps') && !pathname.includes('/maps/')) {
-    return true;
-  } else {
-    return false;
-  }
-}
+};
 
 const showSideNav = (pathname) => {
   if (
@@ -131,7 +122,7 @@ const showSideNav = (pathname) => {
   } else {
     return true;
   }
-}
+};
 
 const showBottomNav = (pathname) => {
   if (
@@ -145,11 +136,11 @@ const showBottomNav = (pathname) => {
   } else {
     return true;
   }
-}
+};
 
 const detectMapDetail = (pathname) => {
   return pathname.includes('/maps/') && !pathname.includes('/reports');
-}
+};
 
 const switchBackButton = (pathname) => {
   if (
@@ -162,7 +153,7 @@ const switchBackButton = (pathname) => {
   } else {
     return false;
   }
-}
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -320,8 +311,7 @@ const reducer = (state = initialState, action) => {
         searchMapsDialogOpen: false,
         showSideNav: showSideNav(action.payload.location.pathname),
         showBottomNav: showBottomNav(action.payload.location.pathname),
-        isMapDetail: detectMapDetail(action.payload.location.pathname),
-        mapsTabActive: switchMapsTab(action.payload.location.pathname)
+        isMapDetail: detectMapDetail(action.payload.location.pathname)
       });
     default:
       return state;

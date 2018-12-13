@@ -122,6 +122,7 @@
   "delete account": "Delete Account",
   "this action requires sign in": "This action requires Sign in",
   "place not found": "Place not found.",
+  "map not found": "Map not found.",
   "create map success": "Successfully created the map!",
   "edit map success": "Successfully updated the map!",
   "edit profile success": "Successfully updated your profile!",

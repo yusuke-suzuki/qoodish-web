@@ -104,7 +104,7 @@ class SpotDetail extends React.PureComponent {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
-        {this.props.currentSpot &&
+        {this.props.currentSpot && this.props.large &&
           <CreateReviewButtonContainer spot={this.props.currentSpot} />}
       </div>
     );

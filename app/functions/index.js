@@ -19,7 +19,6 @@ const pageRoutes = [
   '/',
   '/discover',
   '/login',
-  '/maps',
   '/maps/:mapId',
   '/maps/:mapId/reports/:reviewId',
   '/profile',

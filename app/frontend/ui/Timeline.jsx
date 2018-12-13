@@ -102,7 +102,7 @@ export default class Feed extends React.PureComponent {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        <CreateReviewButtonContainer buttonWithBottomSeat={!this.props.large} />
+        {this.props.large && <CreateReviewButtonContainer />}
       </div>
     );
   }
