@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = {
   buttonLarge: {
@@ -8,7 +8,7 @@ const styles = {
     position: 'fixed',
     bottom: 32,
     right: 32,
-    backgroundColor: 'red',
+    backgroundColor: '#ffc107',
     color: 'white'
   },
   buttonSmall: {
@@ -16,11 +16,13 @@ const styles = {
     position: 'fixed',
     bottom: 20,
     right: 20,
-    backgroundColor: 'red',
+    backgroundColor: '#ffc107',
     color: 'white'
   },
-  withBottomSeat: {
-    bottom: 76,
+  withBottomAction: {
+    position: 'relative',
+    bottom: 28,
+    right: 'unset'
   },
   forMap: {
     position: 'absolute'
@@ -39,8 +41,8 @@ const buttonStyle = (props) => {
   } else {
     style = Object.assign(style, styles.buttonSmall)
   }
-  if (props.buttonWithBottomSeat) {
-    style = Object.assign(style, styles.withBottomSeat);
+  if (props.bottomAction) {
+    style = Object.assign(style, styles.withBottomAction);
   }
   if (props.buttonForMap) {
     style = Object.assign(style, styles.forMap);
@@ -49,9 +51,9 @@ const buttonStyle = (props) => {
     style = Object.assign(style, styles.disabled);
   }
   return style;
-}
+};
 
-const CreateReviewButton = (props) => {
+const CreateResourceButton = (props) => {
   return (
     <Button
       variant="fab"
@@ -59,11 +61,10 @@ const CreateReviewButton = (props) => {
       style={buttonStyle(props)}
       onClick={() => props.handleButtonClick(props.currentUser)}
       disabled={props.disabled}
-      data-test="create-review-button"
     >
-      <EditIcon />
+      <AddIcon />
     </Button>
   );
-}
+};
 
-export default CreateReviewButton;
+export default CreateResourceButton;

@@ -9,6 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -59,6 +61,7 @@ export default class Invites extends React.PureComponent {
             ? this.renderProgress()
             : this.renderInvitesContainer(this.props.invites)}
         </div>
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }

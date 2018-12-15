@@ -8,7 +8,7 @@ import {
 import { compose } from 'recompose';
 import loadable from '@loadable/component';
 
-const CreateReviewButtonContainer = loadable(() => import(/* webpackChunkName: "create_review_button" */ '../containers/CreateReviewButtonContainer'));
+const CreateResourceButtonContainer = loadable(() => import(/* webpackChunkName: "create_resource_button" */ '../containers/CreateResourceButtonContainer'));
 const LocationButtonContainer = loadable(() => import(/* webpackChunkName: "location_button" */ '../containers/LocationButtonContainer'));
 const SpotMarkersContainer = loadable(() => import(/* webpackChunkName: "spot_markers" */ '../containers/SpotMarkersContainer'));
 const CurrentPositionMarkerContainer = loadable(() => import(/* webpackChunkName: "current_position_marker" */ '../containers/CurrentPositionMarkerContainer'));
@@ -77,7 +77,7 @@ const MapWithAnOverlayView = compose(
     <CurrentPositionMarkerContainer />
     <DirectionsRenderer directions={props.directions} />
     <div style={styles.buttonContainer}>
-      <CreateReviewButtonContainer
+      <CreateResourceButtonContainer
         buttonForMap
         disabled={!(props.currentMap && props.currentMap.postable && props.currentMap.following)}
       />

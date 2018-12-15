@@ -73,7 +73,7 @@ export default class NotificationList extends React.PureComponent {
           disableTypography
         />
         {notification.notifiable.thumbnail_url && (
-          <ListItemSecondaryAction>
+          <ListItemSecondaryAction onClick={this.props.handleNotificationClick}>
             <ButtonBase component={Link} to={notification.click_action}>
               <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
             </ButtonBase>

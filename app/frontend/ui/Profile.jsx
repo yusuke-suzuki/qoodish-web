@@ -12,9 +12,15 @@ import PersonIcon from '@material-ui/icons/Person';
 import ReviewGridListContainer from '../containers/ReviewGridListContainer';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
 import SwipeableViews from 'react-swipeable-views';
+import LikesList from './LikesList';
+import MapIcon from '@material-ui/icons/Map';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
 const styles = {
   rootLarge: {
@@ -78,9 +84,8 @@ const styles = {
   cardContentSmall: {
     padding: 16
   },
-  count: {
-    fontSize: 24,
-    fontWeight: 'bold'
+  tab: {
+    minWidth: 'auto'
   },
   buttonContainerLarge: {
     textAlign: 'center',
@@ -108,8 +113,13 @@ const styles = {
     paddingTop: 8
   },
   editProfileButton: {
-    marginTop: 10,
-    marginBottom: 20
+    marginTop: 10
+  },
+  likesContainerLarge: {
+    marginTop: 20
+  },
+  likesContainerSmall: {
+    marginTop: 8
   }
 };
 
@@ -149,7 +159,8 @@ class Profile extends React.PureComponent {
     if (!this.props.currentUser.isAnonymous) {
       this.props.fetchUserProfile();
       this.props.fetchReviews();
-      this.props.fetchUserMaps();
+      this.props.fetchMyMaps();
+      this.props.fetchUserLikes();
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -188,8 +199,12 @@ class Profile extends React.PureComponent {
           onChangeIndex={this.handleChangeIndex}
         >
           {this.renderReviews()}
-          {this.renderUserMaps()}
+          {this.renderMyMaps()}
+          <div style={this.props.large ? styles.likesContainerLarge : styles.likesContainerSmall}>
+            <LikesList likes={this.props.likes} />
+          </div>
         </SwipeableViews>
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }
@@ -262,24 +277,31 @@ class Profile extends React.PureComponent {
             </Typography>
             {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
-          <Tabs
-            value={this.state.tabValue}
-            onChange={this.handleTabChange}
-            fullWidth
-            centered
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab
-              icon={I18n.t('reports')}
-              label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
-            />
-            <Tab
-              icon={I18n.t('maps')}
-              label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
-            />
-          </Tabs>
         </CardContent>
+        <Tabs
+          value={this.state.tabValue}
+          onChange={this.handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          fullWidth
+          centered
+        >
+          <Tab
+            icon={<RateReviewIcon />}
+            label={I18n.t('reports')}
+            style={styles.tab}
+          />
+          <Tab
+            icon={<MapIcon />}
+            label={I18n.t('maps')}
+            style={styles.tab}
+          />
+          <Tab
+            icon={<ThumbUpIcon />}
+            label={I18n.t('like')}
+            style={styles.tab}
+          />
+        </Tabs>
       </Card>
     );
   }
@@ -361,15 +383,13 @@ class Profile extends React.PureComponent {
     );
   }
 
-  renderUserMaps() {
+  renderMyMaps() {
     return (
-      <div
-        key='usermaps'
-        style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
+      <div style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
       >
-        {this.props.loadingMaps
+        {this.props.loadingMyMaps
           ? this.renderProgress()
-          : this.renderMapContainer(this.props.currentMaps)}
+          : this.renderMapContainer(this.props.myMaps)}
       </div>
     );
   }
@@ -385,6 +405,7 @@ class Profile extends React.PureComponent {
           contentType="map"
           action="create-map"
           message={I18n.t('maps will see here')}
+          secondaryAction="discover-maps"
         />
       );
     }

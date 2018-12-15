@@ -27,6 +27,8 @@ import {
   CLOSE_DRAWER,
   OPEN_SEARCH_MAPS_DIALOG,
   CLOSE_SEARCH_MAPS_DIALOG,
+  OPEN_CREATE_ACTIONS,
+  CLOSE_CREATE_ACTIONS,
   LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
@@ -50,7 +52,6 @@ const initialState = {
   unreadNotifications: [],
   loadingNotifications: false,
   showBackButton: false,
-  mapsTabActive: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
@@ -62,7 +63,8 @@ const initialState = {
   currentLocation: undefined,
   loadingMaps: false,
   pickedMaps: [],
-  searchMapsDialogOpen: false
+  searchMapsDialogOpen: false,
+  createActionsOpen: false
 };
 
 const getBottomNavValue = (pathname) => {
@@ -71,8 +73,6 @@ const getBottomNavValue = (pathname) => {
       return 0;
     case '/discover':
       return 1;
-    case '/maps':
-      return 2;
     case '/profile':
       return 3;
     case '/notifications':
@@ -80,15 +80,13 @@ const getBottomNavValue = (pathname) => {
     default:
       return undefined;
   }
-}
+};
 
 const switchPageTitle = (pathname, large) => {
   if (pathname === '/') {
     return I18n.t('home');
   } else if (pathname === '/discover') {
     return I18n.t('discover');
-  } else if (pathname === '/maps') {
-    return I18n.t('maps');
   } else if (pathname.includes('/reports')) {
     return I18n.t('report');
   } else if (pathname.includes('/spots')) {
@@ -110,15 +108,7 @@ const switchPageTitle = (pathname, large) => {
   } else {
     return '';
   }
-}
-
-const switchMapsTab = (pathname) => {
-  if (pathname.includes('/maps') && !pathname.includes('/maps/')) {
-    return true;
-  } else {
-    return false;
-  }
-}
+};
 
 const showSideNav = (pathname) => {
   if (
@@ -131,7 +121,7 @@ const showSideNav = (pathname) => {
   } else {
     return true;
   }
-}
+};
 
 const showBottomNav = (pathname) => {
   if (
@@ -145,11 +135,11 @@ const showBottomNav = (pathname) => {
   } else {
     return true;
   }
-}
+};
 
 const detectMapDetail = (pathname) => {
   return pathname.includes('/maps/') && !pathname.includes('/reports');
-}
+};
 
 const switchBackButton = (pathname) => {
   if (
@@ -162,7 +152,7 @@ const switchBackButton = (pathname) => {
   } else {
     return false;
   }
-}
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -305,6 +295,14 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         searchMapsDialogOpen: false
       });
+    case OPEN_CREATE_ACTIONS:
+      return Object.assign({}, state, {
+        createActionsOpen: true
+      });
+    case CLOSE_CREATE_ACTIONS:
+      return Object.assign({}, state, {
+        createActionsOpen: false
+      });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
         previousLocation: state.currentLocation ? state.currentLocation : undefined,
@@ -320,8 +318,7 @@ const reducer = (state = initialState, action) => {
         searchMapsDialogOpen: false,
         showSideNav: showSideNav(action.payload.location.pathname),
         showBottomNav: showBottomNav(action.payload.location.pathname),
-        isMapDetail: detectMapDetail(action.payload.location.pathname),
-        mapsTabActive: switchMapsTab(action.payload.location.pathname)
+        isMapDetail: detectMapDetail(action.payload.location.pathname)
       });
     default:
       return state;

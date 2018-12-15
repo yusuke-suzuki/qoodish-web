@@ -141,7 +141,7 @@ const NavToolbar = (props) => {
         : <AppMenuButtonContainer />}
       {props.large ? <Logo /> : null}
       <Typography
-        variant="h5"
+        variant={props.large ? "h5" : "h6"}
         color="inherit"
         noWrap
         style={

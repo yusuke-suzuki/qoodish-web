@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import CreateMapButton from '../ui/CreateMapButton';
-import openCreateMapDialog from '../actions/openCreateMapDialog';
+import CreateResourceButton from '../ui/CreateResourceButton';
+import openCreateActions from '../actions/openCreateActions';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
@@ -11,16 +11,16 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     handleButtonClick: (currentUser) => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
       }
-      dispatch(openCreateMapDialog());
+      dispatch(openCreateActions());
     }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateMapButton));
+export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateResourceButton));

@@ -120,7 +120,7 @@ class ApiClient {
     return response;
   }
 
-  async fetchUserMaps(userId = undefined) {
+  async fetchMyMaps(userId = undefined) {
     if (!userId) {
       userId = await this.getCurrentUid();
     }
@@ -462,6 +462,23 @@ class ApiClient {
     if (timestamp) {
       url += `?next_timestamp=${timestamp}`;
     }
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async fetchUserLikes(userId = undefined) {
+    if (!userId) {
+      userId = await this.getCurrentUid();
+    }
+    let url = `${process.env.API_ENDPOINT}/users/${userId}/likes`;
     const token = await this.getCurrentToken();
     let options = {
       method: 'GET',

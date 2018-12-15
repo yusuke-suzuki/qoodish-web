@@ -4,6 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import NotificationListContainer from '../containers/NotificationListContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -43,6 +45,7 @@ class Notifications extends React.PureComponent {
         {this.props.loadingNotifications
           ? this.renderProgress()
           : this.renderNotificationsContainer()}
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }

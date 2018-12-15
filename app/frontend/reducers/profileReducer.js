@@ -1,7 +1,11 @@
 import {
-  LOAD_USER_MAPS_START,
-  LOAD_USER_MAPS_END,
-  FETCH_USER_MAPS,
+  LOAD_MY_MAPS_START,
+  LOAD_MY_MAPS_END,
+  LOAD_FOLLOWING_MAPS_START,
+  LOAD_FOLLOWING_MAPS_END,
+  FETCH_MY_MAPS,
+  FETCH_FOLLOWING_MAPS,
+  FETCH_USER_LIKES,
   LOAD_USER_REVIEWS_START,
   LOAD_USER_REVIEWS_END,
   LOAD_MORE_USER_REVIEWS_START,
@@ -19,13 +23,16 @@ import {
 
 const initialState = {
   currentUser: {},
-  currentMaps: [],
-  loadingMaps: false,
+  loadingMyMaps: false,
+  loadingFollowingMaps: false,
+  myMaps: [],
+  followingMaps: [],
   currentReviews: [],
   loadingReviews: false,
   loadingMoreReviews: false,
   noMoreReviews: false,
   nextTimestamp: '',
+  likes: [],
   editProfileDialogOpen: false
 };
 
@@ -35,17 +42,29 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         currentUser: action.payload.user
       });
-    case LOAD_USER_MAPS_START:
+    case LOAD_MY_MAPS_START:
       return Object.assign({}, state, {
-        loadingMaps: true
+        loadingMyMaps: true
       });
-    case LOAD_USER_MAPS_END:
+    case LOAD_MY_MAPS_END:
       return Object.assign({}, state, {
-        loadingMaps: false
+        loadingMyMaps: false
       });
-    case FETCH_USER_MAPS:
+    case LOAD_FOLLOWING_MAPS_START:
       return Object.assign({}, state, {
-        currentMaps: action.payload.maps
+        loadingFollowingMaps: true
+      });
+    case LOAD_FOLLOWING_MAPS_END:
+      return Object.assign({}, state, {
+        loadingFollowingMaps: false
+      });
+    case FETCH_MY_MAPS:
+      return Object.assign({}, state, {
+        myMaps: action.payload.maps
+      });
+    case FETCH_FOLLOWING_MAPS:
+      return Object.assign({}, state, {
+        followingMaps: action.payload.maps
       });
     case LOAD_USER_REVIEWS_START:
       return Object.assign({}, state, {
@@ -85,6 +104,10 @@ const reducer = (state = initialState, action) => {
             ? action.payload.reviews[action.payload.reviews.length - 1]
                 .created_at
             : ''
+      });
+    case FETCH_USER_LIKES:
+      return Object.assign({}, state, {
+        likes: action.payload.likes
       });
     case EDIT_REVIEW:
       let index = state.currentReviews.findIndex(review => {

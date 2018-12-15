@@ -19,6 +19,8 @@ import Button from '@material-ui/core/Button';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import RecentReviewsContainer from '../containers/RecentReviewsContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import I18n from '../containers/I18n';
 
 import { Link } from 'react-router-dom';
@@ -216,6 +218,7 @@ export default class Discover extends React.PureComponent {
               : this.renderTrendingSpotsContainer(this.props.trendingSpots)}
           </div>
         </div>
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }
