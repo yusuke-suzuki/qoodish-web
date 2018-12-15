@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteAccountDialogContainer from '../containers/DeleteAccountDialogContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -105,6 +107,7 @@ export default class Invites extends React.PureComponent {
         {this.renderPushNotificationCard()}
         {this.renderDeleteAccountCard()}
         <DeleteAccountDialogContainer />
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }

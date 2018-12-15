@@ -9,7 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import I18n from '../containers/I18n';
 import ReviewCardContainer from '../containers/ReviewCardContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
-import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
 
 const styles = {
   rootLarge: {
@@ -102,7 +102,7 @@ export default class Feed extends React.PureComponent {
             ? this.renderProgress()
             : this.renderReviewContainer(this.props.currentReviews)}
         </div>
-        {this.props.large && <CreateReviewButtonContainer />}
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }

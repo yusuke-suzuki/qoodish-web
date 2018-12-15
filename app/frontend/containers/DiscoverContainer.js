@@ -25,7 +25,6 @@ import loadTrendingSpotsEnd from '../actions/loadTrendingSpotsEnd';
 import fetchTrendingSpots from '../actions/fetchTrendingSpots';
 
 import selectMap from '../actions/selectMap';
-import openCreateMapDialog from '../actions/openCreateMapDialog';
 import pickUpMap from '../actions/pickUpMap';
 import openReviewDialog from '../actions/openReviewDialog';
 
@@ -46,10 +45,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleCreateMapButtonClick: () => {
-      dispatch(openCreateMapDialog());
-    },
-
     pickUpMap: async () => {
       const client = new ApiClient();
       let response = await client.fetchMap(process.env.PICKED_UP_MAP_ID);

@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = {
   buttonLarge: {
@@ -51,9 +51,9 @@ const buttonStyle = (props) => {
     style = Object.assign(style, styles.disabled);
   }
   return style;
-}
+};
 
-const CreateReviewButton = (props) => {
+const CreateResourceButton = (props) => {
   return (
     <Button
       variant="fab"
@@ -61,11 +61,10 @@ const CreateReviewButton = (props) => {
       style={buttonStyle(props)}
       onClick={() => props.handleButtonClick(props.currentUser)}
       disabled={props.disabled}
-      data-test="create-review-button"
     >
-      <EditIcon />
+      <AddIcon />
     </Button>
   );
-}
+};
 
-export default CreateReviewButton;
+export default CreateResourceButton;

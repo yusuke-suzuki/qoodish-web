@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(requestFinish());
       dispatch(deleteMap(ownProps.mapId));
       dispatch(closeDeleteMapDialog());
-      ownProps.history.push('/maps');
+      ownProps.history.push('');
       dispatch(openToast(I18n.t('delete map success')));
     }
   };

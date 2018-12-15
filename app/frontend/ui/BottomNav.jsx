@@ -9,7 +9,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import I18n from '../containers/I18n';
-import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
 
 const styles = {
   bottomNav: {
@@ -62,7 +62,7 @@ const BottomNav = (props) => {
           icon={<ExploreIcon />}
           style={styles.bottomAction}
         />
-        <CreateReviewButtonContainer bottomAction />
+        <CreateResourceButtonContainer bottomAction />
         <BottomNavigationAction
           component={Link}
           to="/profile"

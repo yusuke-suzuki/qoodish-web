@@ -12,6 +12,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import ReviewGridListContainer from '../containers/ReviewGridListContainer';
 import MapCollectionContainer from '../containers/MapCollectionContainer';
 import NoContentsContainer from '../containers/NoContentsContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
 import SwipeableViews from 'react-swipeable-views';
@@ -202,6 +204,7 @@ class Profile extends React.PureComponent {
             <LikesList likes={this.props.likes} />
           </div>
         </SwipeableViews>
+        {this.props.large && <CreateResourceButtonContainer />}
       </div>
     );
   }

@@ -27,6 +27,8 @@ import {
   CLOSE_DRAWER,
   OPEN_SEARCH_MAPS_DIALOG,
   CLOSE_SEARCH_MAPS_DIALOG,
+  OPEN_CREATE_ACTIONS,
+  CLOSE_CREATE_ACTIONS,
   LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
@@ -61,7 +63,8 @@ const initialState = {
   currentLocation: undefined,
   loadingMaps: false,
   pickedMaps: [],
-  searchMapsDialogOpen: false
+  searchMapsDialogOpen: false,
+  createActionsOpen: false
 };
 
 const getBottomNavValue = (pathname) => {
@@ -70,8 +73,6 @@ const getBottomNavValue = (pathname) => {
       return 0;
     case '/discover':
       return 1;
-    case '/maps':
-      return 2;
     case '/profile':
       return 3;
     case '/notifications':
@@ -86,8 +87,6 @@ const switchPageTitle = (pathname, large) => {
     return I18n.t('home');
   } else if (pathname === '/discover') {
     return I18n.t('discover');
-  } else if (pathname === '/maps') {
-    return I18n.t('maps');
   } else if (pathname.includes('/reports')) {
     return I18n.t('report');
   } else if (pathname.includes('/spots')) {
@@ -295,6 +294,14 @@ const reducer = (state = initialState, action) => {
     case CLOSE_SEARCH_MAPS_DIALOG:
       return Object.assign({}, state, {
         searchMapsDialogOpen: false
+      });
+    case OPEN_CREATE_ACTIONS:
+      return Object.assign({}, state, {
+        createActionsOpen: true
+      });
+    case CLOSE_CREATE_ACTIONS:
+      return Object.assign({}, state, {
+        createActionsOpen: false
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {

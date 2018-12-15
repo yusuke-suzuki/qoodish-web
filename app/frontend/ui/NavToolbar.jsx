@@ -6,7 +6,6 @@ const SearchBarContainer = loadable(() => import(/* webpackChunkName: "search_ba
 const AppMenuButtonContainer = loadable(() => import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer'));
 const AvatarMenuContainer = loadable(() => import(/* webpackChunkName: "avatar_menu" */ '../containers/AvatarMenuContainer'));
 const NotificationMenuContainer = loadable(() => import(/* webpackChunkName: "notification_menu" */ '../containers/NotificationMenuContainer'));
-const CreateMapButtonContainer = loadable(() => import(/* webpackChunkName: "create_map_button" */ '../containers/CreateMapButtonContainer'));
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -59,7 +58,7 @@ const styles = {
   },
   searchContainer: {
     marginLeft: 'auto',
-    marginRight: 200
+    marginRight: 150
   },
   rightContents: {
     display: 'inline-flex',
@@ -127,7 +126,6 @@ const SearchButton = (props) => {
 const RightContents = (props) => {
   return (
     <div style={styles.rightContents}>
-      <CreateMapButtonContainer />
       {!props.large && <SearchButton {...props} />}
       {props.large && <NotificationMenuContainer />}
       <AvatarMenuContainer />

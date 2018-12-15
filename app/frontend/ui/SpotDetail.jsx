@@ -7,7 +7,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
-import CreateReviewButtonContainer from '../containers/CreateReviewButtonContainer';
+import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
 import I18n from '../containers/I18n';
 import ReviewTilesContainer from '../containers/ReviewTilesContainer';
 
@@ -104,8 +104,7 @@ class SpotDetail extends React.PureComponent {
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.props.currentSpot && this.renderHelmet(this.props.currentSpot)}
         {this.renderContainer()}
-        {this.props.currentSpot && this.props.large &&
-          <CreateReviewButtonContainer spot={this.props.currentSpot} />}
+        {this.props.currentSpot && <CreateResourceButtonContainer />}
       </div>
     );
   }
