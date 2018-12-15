@@ -474,6 +474,23 @@ class ApiClient {
     return response;
   }
 
+  async fetchUserLikes(userId = undefined) {
+    if (!userId) {
+      userId = await this.getCurrentUid();
+    }
+    let url = `${process.env.API_ENDPOINT}/users/${userId}/likes`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async fetchSpotReviews(placeId) {
     const url = `${process.env.API_ENDPOINT}/spots/${placeId}/reviews`;
     const token = await this.getCurrentToken();

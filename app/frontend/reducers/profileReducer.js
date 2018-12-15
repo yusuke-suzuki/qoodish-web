@@ -5,6 +5,7 @@ import {
   LOAD_FOLLOWING_MAPS_END,
   FETCH_MY_MAPS,
   FETCH_FOLLOWING_MAPS,
+  FETCH_USER_LIKES,
   LOAD_USER_REVIEWS_START,
   LOAD_USER_REVIEWS_END,
   LOAD_MORE_USER_REVIEWS_START,
@@ -31,6 +32,7 @@ const initialState = {
   loadingMoreReviews: false,
   noMoreReviews: false,
   nextTimestamp: '',
+  likes: [],
   editProfileDialogOpen: false
 };
 
@@ -102,6 +104,10 @@ const reducer = (state = initialState, action) => {
             ? action.payload.reviews[action.payload.reviews.length - 1]
                 .created_at
             : ''
+      });
+    case FETCH_USER_LIKES:
+      return Object.assign({}, state, {
+        likes: action.payload.likes
       });
     case EDIT_REVIEW:
       let index = state.currentReviews.findIndex(review => {

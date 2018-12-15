@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import SearchIcon from '@material-ui/icons/Search';
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import PlaceIcon from '@material-ui/icons/Place';
 import MailIcon from '@material-ui/icons/Mail';
 import Typography from '@material-ui/core/Typography';
@@ -35,6 +36,8 @@ const ContentsIcon = (props) => {
       return <RateReviewIcon style={styles.icon} />;
     case 'notification':
       return <NotificationsIcon style={styles.icon} />;
+    case 'like':
+      return <ThumbUpIcon style={styles.icon} />;
     case 'spot':
       return <PlaceIcon style={styles.icon} />;
     case 'invite':
@@ -42,7 +45,7 @@ const ContentsIcon = (props) => {
     default:
       return null;
   }
-}
+};
 
 const PrimaryAction = (props) => {
   switch (props.action) {
@@ -68,10 +71,21 @@ const PrimaryAction = (props) => {
           {I18n.t('create new report')}
         </Button>
       );
+    case 'discover-reviews':
+      return (
+        <Button
+          color="primary"
+          component={Link}
+          to="/discover"
+        >
+          <SearchIcon style={styles.buttonIcon} />
+          {I18n.t('discover reviews')}
+        </Button>
+      );
     default:
       return null;
   }
-}
+};
 
 const SecondaryAction = (props) => {
   switch (props.secondaryAction) {
@@ -100,7 +114,7 @@ const SecondaryAction = (props) => {
     default:
       return null;
   }
-}
+};
 
 const NoContents = (props) => {
   return (
@@ -119,6 +133,6 @@ const NoContents = (props) => {
       </div>
     </div>
   );
-}
+};
 
 export default NoContents;

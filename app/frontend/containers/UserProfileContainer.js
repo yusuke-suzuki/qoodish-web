@@ -3,17 +3,15 @@ import { connect } from 'react-redux';
 import Profile from '../ui/Profile';
 import fetchUserProfile from '../actions/fetchUserProfile';
 import fetchMyMaps from '../actions/fetchMyMaps';
-import fetchFollowingMaps from '../actions/fetchFollowingMaps';
 import loadMyMapsStart from '../actions/loadMyMapsStart';
 import loadMyMapsEnd from '../actions/loadMyMapsEnd';
-import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
-import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
 import fetchUserReviews from '../actions/fetchUserReviews';
 import fetchMoreUserReviews from '../actions/fetchMoreUserReviews';
 import loadUserReviewsStart from '../actions/loadUserReviewsStart';
 import loadUserReviewsEnd from '../actions/loadUserReviewsEnd';
 import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
 import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
+import fetchUserLikes from '../actions/fetchUserLikes';
 import clearProfileState from '../actions/clearProfileState';
 import ApiClient from './ApiClient.js';
 
@@ -24,14 +22,13 @@ const mapStateToProps = state => {
     defaultZoom: state.gMap.defaultZoom,
     center: state.gMap.center,
     myMaps: state.profile.myMaps,
-    followingMaps: state.profile.followingMaps,
     loadingMyMaps: state.profile.loadingMyMaps,
-    loadingFollowingMaps: state.profile.loadingFollowingMaps,
     currentReviews: state.profile.currentReviews,
     loadingReviews: state.profile.loadingReviews,
     loadingMoreReviews: state.profile.loadingMoreReviews,
     noMoreReviews: state.profile.noMoreReviews,
     nextTimestamp: state.profile.nextTimestamp,
+    likes: state.profile.likes,
     pathname: state.shared.currentLocation
   };
 };
@@ -72,13 +69,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(loadMyMapsEnd());
     },
 
-    fetchFollowingMaps: async () => {
-      dispatch(loadFollowingMapsStart());
+    fetchUserLikes: async () => {
       const client = new ApiClient();
-      let response = await client.fetchFollowingMaps();
-      let maps = await response.json();
-      dispatch(fetchFollowingMaps(maps));
-      dispatch(loadFollowingMapsEnd());
+      let response = await client.fetchUserLikes(ownProps.match.params.userId);
+      let likes = await response.json();
+      dispatch(fetchUserLikes(likes));
     },
 
     clearProfileState: () => {

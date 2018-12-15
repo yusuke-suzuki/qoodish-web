@@ -15,6 +15,10 @@ import NoContentsContainer from '../containers/NoContentsContainer';
 import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
 import SwipeableViews from 'react-swipeable-views';
+import LikesList from './LikesList';
+import MapIcon from '@material-ui/icons/Map';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
 const styles = {
   rootLarge: {
@@ -78,9 +82,8 @@ const styles = {
   cardContentSmall: {
     padding: 16
   },
-  count: {
-    fontSize: 24,
-    fontWeight: 'bold'
+  tab: {
+    minWidth: 'auto'
   },
   buttonContainerLarge: {
     textAlign: 'center',
@@ -109,6 +112,12 @@ const styles = {
   },
   editProfileButton: {
     marginTop: 10
+  },
+  likesContainerLarge: {
+    marginTop: 20
+  },
+  likesContainerSmall: {
+    marginTop: 8
   }
 };
 
@@ -149,7 +158,7 @@ class Profile extends React.PureComponent {
       this.props.fetchUserProfile();
       this.props.fetchReviews();
       this.props.fetchMyMaps();
-      this.props.fetchFollowingMaps();
+      this.props.fetchUserLikes();
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -188,8 +197,10 @@ class Profile extends React.PureComponent {
           onChangeIndex={this.handleChangeIndex}
         >
           {this.renderReviews()}
-          {this.renderMaps("mymaps")}
-          {this.renderMaps("following")}
+          {this.renderMyMaps()}
+          <div style={this.props.large ? styles.likesContainerLarge : styles.likesContainerSmall}>
+            <LikesList likes={this.props.likes} />
+          </div>
         </SwipeableViews>
       </div>
     );
@@ -267,23 +278,25 @@ class Profile extends React.PureComponent {
         <Tabs
           value={this.state.tabValue}
           onChange={this.handleTabChange}
-          fullWidth
           indicatorColor="primary"
           textColor="primary"
-          scrollable
-          scrollButtons="off"
+          fullWidth
+          centered
         >
           <Tab
-            icon={I18n.t('reports')}
-            label={<div style={styles.count}>{this.props.currentUser.reviews_count || 0}</div>}
+            icon={<RateReviewIcon />}
+            label={I18n.t('reports')}
+            style={styles.tab}
           />
           <Tab
-            icon={I18n.t('maps')}
-            label={<div style={styles.count}>{this.props.currentUser.maps_count || 0}</div>}
+            icon={<MapIcon />}
+            label={I18n.t('maps')}
+            style={styles.tab}
           />
           <Tab
-            icon={I18n.t('following')}
-            label={<div style={styles.count}>{this.props.currentUser.following_maps_count || 0}</div>}
+            icon={<ThumbUpIcon />}
+            label={I18n.t('like')}
+            style={styles.tab}
           />
         </Tabs>
       </Card>
@@ -367,25 +380,13 @@ class Profile extends React.PureComponent {
     );
   }
 
-  renderMaps(key) {
-    let loading;
-    let maps;
-    if (key === "following") {
-      loading = this.props.loadingFollowingMaps
-      maps = this.props.followingMaps;
-    } else {
-      loading = this.props.loadingMyMaps;
-      maps = this.props.myMaps;
-    }
-
+  renderMyMaps() {
     return (
-      <div
-        key={key}
-        style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
+      <div style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
       >
-        {loading
+        {this.props.loadingMyMaps
           ? this.renderProgress()
-          : this.renderMapContainer(maps)}
+          : this.renderMapContainer(this.props.myMaps)}
       </div>
     );
   }
