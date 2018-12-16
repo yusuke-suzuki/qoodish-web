@@ -17,7 +17,6 @@ import deleteFromStorage from '../utils/deleteFromStorage';
 import canvasToBlob from '../utils/canvasToBlob';
 import sleep from '../utils/sleep';
 import I18n from './I18n';
-import openCreateMapDialog from '../actions/openCreateMapDialog';
 import fetchPostableMaps from '../actions/fetchPostableMaps';
 
 const mapStateToProps = state => {
@@ -123,11 +122,6 @@ const mapDispatchToProps = dispatch => {
 
     handleSpotClick: () => {
       dispatch(openPlaceSelectDialog());
-    },
-
-    handleCreateMapButtonClick: () => {
-      dispatch(closeEditReviewDialog());
-      dispatch(openCreateMapDialog());
     },
 
     fetchPostableMaps: async () => {

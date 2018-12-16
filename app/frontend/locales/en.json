@@ -28,6 +28,7 @@
   "login": "Login",
   "logout": "Logout",
   "following": "Following",
+  "following maps": "following maps",
   "my maps": "My Maps",
   "select map to copy this report to": "Select map to copy this report to",
   "cancel": "Cancel",
