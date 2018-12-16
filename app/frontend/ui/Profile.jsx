@@ -135,6 +135,9 @@ const styles = {
     paddingLeft: 0,
     paddingRight: 0,
     marginRight: 20
+  },
+  biography: {
+    wordWrap: 'break-word'
   }
 };
 
@@ -295,6 +298,9 @@ class Profile extends React.PureComponent {
               {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
             </Typography>
           </div>
+          <Typography variant="body1" style={styles.biography} gutterBottom>
+            {currentUser.biography}
+          </Typography>
           {this.renderSummary(currentUser)}
         </CardContent>
         <Tabs

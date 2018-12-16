@@ -62,6 +62,7 @@ const FollowingMapsDialog = props => {
       open={props.open}
       onClose={props.onClose}
       fullWidth
+      fullScreen={!props.large}
       TransitionComponent={Transition}
     >
       <Toolbar style={styles.toolbar}>
