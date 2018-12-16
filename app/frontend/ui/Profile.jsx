@@ -60,6 +60,7 @@ const styles = {
     paddingBottom: 16
   },
   profileContainer: {
+    paddingTop: 39
   },
   profileAvatarLarge: {
     marginTop: -64,
@@ -132,7 +133,8 @@ const styles = {
   },
   summaryCountButton: {
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    marginRight: 20
   }
 };
 
@@ -288,7 +290,7 @@ class Profile extends React.PureComponent {
           <div style={styles.profileActionsContainer}>
             {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
-          <div style={styles.profileContainer}>
+          <div style={this.props.pathname === '/profile' ? {} : styles.profileContainer}>
             <Typography variant="h5" gutterBottom>
               {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
             </Typography>
@@ -345,10 +347,25 @@ class Profile extends React.PureComponent {
       <div style={styles.summaryContainer}>
         <Button
           style={styles.summaryCountButton}
+          onClick={() => this.handleTabChange(undefined, 0)}
+        >
+          <Typography variant="subtitle2" style={styles.summaryCount}>
+            {user.reviews_count ? user.reviews_count : 0}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {I18n.t("reviews count")}
+          </Typography>
+        </Button>
+        <Button
+          style={styles.summaryCountButton}
           onClick={this.props.handleFollowingClick}
         >
-          <b style={styles.summaryCount}>{user.following_maps_count}</b>
-          {I18n.t("following maps")}
+          <Typography variant="subtitle2" style={styles.summaryCount}>
+            {user.following_maps_count ? user.following_maps_count : 0}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {I18n.t("following maps")}
+          </Typography>
         </Button>
       </div>
     );

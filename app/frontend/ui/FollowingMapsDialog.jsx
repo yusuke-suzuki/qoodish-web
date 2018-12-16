@@ -24,6 +24,9 @@ const styles = {
   toolbar: {
     paddingLeft: 8
   },
+  listItem: {
+    paddingRight: 100
+  },
   listItemSecondaryAction: {
     paddingRight: 16
   }
@@ -37,11 +40,15 @@ const FollowingMaps = props => {
       to={`/maps/${map.id}`}
       key={map.id}
       onClick={props.onClose}
+      style={styles.listItem}
     >
       <ListItemAvatar>
         <Avatar alt={map.name} src={map.thumbnail_url} />
       </ListItemAvatar>
-      <ListItemText primary={map.name} primaryTypographyProps={{ noWrap: true}} />
+      <ListItemText
+        primary={map.name}
+        primaryTypographyProps={{ noWrap: true}}
+      />
       <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
         <FollowMapButtonContainer currentMap={map} />
       </ListItemSecondaryAction>
