@@ -6,7 +6,8 @@ import closeFollowingMapsDialog from '../actions/closeFollowingMapsDialog';
 const mapStateToProps = state => {
   return {
     open: state.profile.followingMapsDialogOpen,
-    maps: state.profile.followingMaps
+    maps: state.profile.followingMaps,
+    large: state.shared.large
   };
 };
 

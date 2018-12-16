@@ -48,9 +48,11 @@ class EditProfileDialog extends React.PureComponent {
       imageUrl: '',
       editImage: false,
       errorName: undefined,
+      errorBio: undefined,
       disabled: true
     };
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleBioChange = this.handleBioChange.bind(this);
     this.handleImageChange = this.handleImageChange.bind(this);
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.validate = this.validate.bind(this);
@@ -62,6 +64,7 @@ class EditProfileDialog extends React.PureComponent {
     if (this.props.currentUser) {
       this.setState({
         name: this.props.currentUser.name,
+        bio: this.props.currentUser.biography,
         imageUrl: this.props.currentUser.thumbnail_url
       });
     }
@@ -71,7 +74,9 @@ class EditProfileDialog extends React.PureComponent {
     this.setState({
       name: '',
       imageUrl: '',
+      bio: '',
       errorName: undefined,
+      errorBio: undefined,
       disabled: true
     });
   }
@@ -93,6 +98,30 @@ class EditProfileDialog extends React.PureComponent {
       {
         name: name,
         errorName: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
+  }
+
+  handleBioChange(e) {
+    let bio = e.target.value;
+    let errorText;
+    if (bio) {
+      if (bio.length > 160) {
+        errorText = I18n.t('max characters 160');
+      } else {
+        errorText = undefined;
+      }
+    } else {
+      errorText = undefined;
+    }
+
+    this.setState(
+      {
+        bio: bio,
+        errorBio: errorText
       },
       () => {
         this.validate();
@@ -126,7 +155,8 @@ class EditProfileDialog extends React.PureComponent {
 
   handleSaveButtonClick() {
     let params = {
-      display_name: this.state.name
+      display_name: this.state.name,
+      biography: this.state.bio
     };
     if (this.state.editImage) {
       params.image_url = this.state.imageUrl;
@@ -138,7 +168,8 @@ class EditProfileDialog extends React.PureComponent {
     let disabled;
     if (
       this.state.name &&
-      !this.state.errorName
+      !this.state.errorName &&
+      !this.state.errorBio
     ) {
       disabled = false;
     } else {
@@ -183,6 +214,7 @@ class EditProfileDialog extends React.PureComponent {
             style={styles.imageInput}
           />
           {this.renderNameText()}
+          {this.renderBioText()}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
@@ -208,7 +240,25 @@ class EditProfileDialog extends React.PureComponent {
         helperText={this.state.errorName}
         fullWidth
         autoFocus
+        required
         value={this.state.name}
+        margin="normal"
+      />
+    );
+  }
+
+  renderBioText() {
+    return (
+      <TextField
+        label={I18n.t('biography')}
+        onChange={this.handleBioChange}
+        error={this.state.errorBio ? true : false}
+        helperText={this.state.errorBio}
+        fullWidth
+        multiline
+        rowsMax={this.props.large ? "3" : "2"}
+        rows={this.props.large ? "3" : "3"}
+        value={this.state.bio ? this.state.bio : ""}
         margin="normal"
       />
     );
