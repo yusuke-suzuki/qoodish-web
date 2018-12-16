@@ -18,6 +18,8 @@ import {
   CLEAR_PROFILE_STATE,
   OPEN_EDIT_PROFILE_DIALOG,
   CLOSE_EDIT_PROFILE_DIALOG,
+  OPEN_FOLLOWING_MAPS_DIALOG,
+  CLOSE_FOLLOWING_MAPS_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 
@@ -33,7 +35,8 @@ const initialState = {
   noMoreReviews: false,
   nextTimestamp: '',
   likes: [],
-  editProfileDialogOpen: false
+  editProfileDialogOpen: false,
+  followingMapsDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -65,6 +68,14 @@ const reducer = (state = initialState, action) => {
     case FETCH_FOLLOWING_MAPS:
       return Object.assign({}, state, {
         followingMaps: action.payload.maps
+      });
+    case OPEN_FOLLOWING_MAPS_DIALOG:
+      return Object.assign({}, state, {
+        followingMapsDialogOpen: true
+      });
+    case CLOSE_FOLLOWING_MAPS_DIALOG:
+      return Object.assign({}, state, {
+        followingMapsDialogOpen: false
       });
     case LOAD_USER_REVIEWS_START:
       return Object.assign({}, state, {

@@ -18,9 +18,6 @@ import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 import I18n from '../containers/I18n';
 import SwipeableViews from 'react-swipeable-views';
 import LikesList from './LikesList';
-import MapIcon from '@material-ui/icons/Map';
-import RateReviewIcon from '@material-ui/icons/RateReview';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 
 const styles = {
   rootLarge: {
@@ -32,16 +29,16 @@ const styles = {
     marginBottom: 56
   },
   cardMapContainerLarge: {
-    minHeight: 300
-  },
-  cardMapContainerSmall: {
     minHeight: 200
   },
+  cardMapContainerSmall: {
+    minHeight: 150
+  },
   mapWrapperLarge: {
-    height: 300
+    height: 200
   },
   mapWrapperSmall: {
-    height: 200
+    height: 150
   },
   mapContainer: {
     height: '100%'
@@ -63,26 +60,30 @@ const styles = {
     paddingBottom: 16
   },
   profileContainer: {
-    textAlign: 'center'
+    paddingTop: 39
   },
   profileAvatarLarge: {
-    margin: '-64px auto 20px',
+    marginTop: -64,
     width: 80,
-    height: 80
+    height: 80,
+    position: 'absolute'
   },
   profileAvatarSmall: {
-    margin: '-54px auto 20px',
+    marginTop: -54,
     width: 80,
-    height: 80
+    height: 80,
+    position: 'absolute'
   },
   personIcon: {
     fontSize: 40
   },
   cardContentLarge: {
-    padding: 24
+    padding: 24,
+    paddingBottom: 16
   },
   cardContentSmall: {
-    padding: 16
+    padding: 16,
+    paddingBottom: 8
   },
   tab: {
     minWidth: 'auto'
@@ -113,13 +114,27 @@ const styles = {
     paddingTop: 8
   },
   editProfileButton: {
-    marginTop: 10
+  },
+  profileActionsContainer: {
+    width: 'max-content',
+    marginLeft: 'auto'
   },
   likesContainerLarge: {
     marginTop: 20
   },
   likesContainerSmall: {
     marginTop: 8
+  },
+  summaryContainer: {
+    display: 'flex'
+  },
+  summaryCount: {
+    marginRight: '0.5em'
+  },
+  summaryCountButton: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginRight: 20
   }
 };
 
@@ -160,6 +175,7 @@ class Profile extends React.PureComponent {
       this.props.fetchUserProfile();
       this.props.fetchReviews();
       this.props.fetchMyMaps();
+      this.props.fetchFollowingMaps();
       this.props.fetchUserLikes();
     }
 
@@ -253,7 +269,7 @@ class Profile extends React.PureComponent {
   renderEditProfileButton() {
     return (
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={() => this.props.handleEditProfileButtonClick(this.props.currentUser)}
         color="primary"
         style={styles.editProfileButton}
@@ -271,12 +287,15 @@ class Profile extends React.PureComponent {
         </div>
         <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
           {this.renderAvatar(currentUser)}
-          <div style={styles.profileContainer}>
+          <div style={styles.profileActionsContainer}>
+            {this.props.pathname === '/profile' && this.renderEditProfileButton()}
+          </div>
+          <div style={this.props.pathname === '/profile' ? {} : styles.profileContainer}>
             <Typography variant="h5" gutterBottom>
               {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
             </Typography>
-            {this.props.pathname === '/profile' && this.renderEditProfileButton()}
           </div>
+          {this.renderSummary(currentUser)}
         </CardContent>
         <Tabs
           value={this.state.tabValue}
@@ -287,17 +306,14 @@ class Profile extends React.PureComponent {
           centered
         >
           <Tab
-            icon={<RateReviewIcon />}
             label={I18n.t('reports')}
             style={styles.tab}
           />
           <Tab
-            icon={<MapIcon />}
             label={I18n.t('maps')}
             style={styles.tab}
           />
           <Tab
-            icon={<ThumbUpIcon />}
             label={I18n.t('like')}
             style={styles.tab}
           />
@@ -324,6 +340,35 @@ class Profile extends React.PureComponent {
         />
       );
     }
+  }
+
+  renderSummary(user) {
+    return (
+      <div style={styles.summaryContainer}>
+        <Button
+          style={styles.summaryCountButton}
+          onClick={() => this.handleTabChange(undefined, 0)}
+        >
+          <Typography variant="subtitle2" style={styles.summaryCount}>
+            {user.reviews_count ? user.reviews_count : 0}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {I18n.t("reviews count")}
+          </Typography>
+        </Button>
+        <Button
+          style={styles.summaryCountButton}
+          onClick={this.props.handleFollowingClick}
+        >
+          <Typography variant="subtitle2" style={styles.summaryCount}>
+            {user.following_maps_count ? user.following_maps_count : 0}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary">
+            {I18n.t("following maps")}
+          </Typography>
+        </Button>
+      </div>
+    );
   }
 
   renderReviews() {

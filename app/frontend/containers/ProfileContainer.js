@@ -5,6 +5,9 @@ import fetchMyProfile from '../actions/fetchMyProfile';
 import fetchMyMaps from '../actions/fetchMyMaps';
 import loadMyMapsStart from '../actions/loadMyMapsStart';
 import loadMyMapsEnd from '../actions/loadMyMapsEnd';
+import fetchFollowingMaps from '../actions/fetchFollowingMaps';
+import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
+import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
 import fetchUserReviews from '../actions/fetchUserReviews';
 import fetchMoreUserReviews from '../actions/fetchMoreUserReviews';
 import loadUserReviewsStart from '../actions/loadUserReviewsStart';
@@ -15,6 +18,7 @@ import fetchUserLikes from '../actions/fetchUserLikes';
 import clearProfileState from '../actions/clearProfileState';
 import openEditProfileDialog from '../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
+import openFollowingMapsDialog from '../actions/openFollowingMapsDialog';
 import ApiClient from './ApiClient.js';
 
 const mapStateToProps = state => {
@@ -71,6 +75,15 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(loadMyMapsEnd());
     },
 
+    fetchFollowingMaps: async () => {
+      dispatch(loadFollowingMapsStart());
+      const client = new ApiClient();
+      let response = await client.fetchFollowingMaps();
+      let maps = await response.json();
+      dispatch(fetchFollowingMaps(maps));
+      dispatch(loadFollowingMapsEnd());
+    },
+
     fetchUserLikes: async () => {
       const client = new ApiClient();
       let response = await client.fetchUserLikes();
@@ -88,6 +101,10 @@ const mapDispatchToProps = (dispatch) => {
         return;
       }
       dispatch(openEditProfileDialog());
+    },
+
+    handleFollowingClick: () => {
+      dispatch(openFollowingMapsDialog());
     }
   };
 };

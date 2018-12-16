@@ -5,6 +5,9 @@ import fetchUserProfile from '../actions/fetchUserProfile';
 import fetchMyMaps from '../actions/fetchMyMaps';
 import loadMyMapsStart from '../actions/loadMyMapsStart';
 import loadMyMapsEnd from '../actions/loadMyMapsEnd';
+import fetchFollowingMaps from '../actions/fetchFollowingMaps';
+import loadFollowingMapsStart from '../actions/loadFollowingMapsStart';
+import loadFollowingMapsEnd from '../actions/loadFollowingMapsEnd';
 import fetchUserReviews from '../actions/fetchUserReviews';
 import fetchMoreUserReviews from '../actions/fetchMoreUserReviews';
 import loadUserReviewsStart from '../actions/loadUserReviewsStart';
@@ -12,6 +15,7 @@ import loadUserReviewsEnd from '../actions/loadUserReviewsEnd';
 import loadMoreUserReviewsStart from '../actions/loadMoreUserReviewsStart';
 import loadMoreUserReviewsEnd from '../actions/loadMoreUserReviewsEnd';
 import fetchUserLikes from '../actions/fetchUserLikes';
+import openFollowingMapsDialog from '../actions/openFollowingMapsDialog';
 import clearProfileState from '../actions/clearProfileState';
 import ApiClient from './ApiClient.js';
 
@@ -69,11 +73,24 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(loadMyMapsEnd());
     },
 
+    fetchFollowingMaps: async () => {
+      dispatch(loadFollowingMapsStart());
+      const client = new ApiClient();
+      let response = await client.fetchFollowingMaps(ownProps.match.params.userId);
+      let maps = await response.json();
+      dispatch(fetchFollowingMaps(maps));
+      dispatch(loadFollowingMapsEnd());
+    },
+
     fetchUserLikes: async () => {
       const client = new ApiClient();
       let response = await client.fetchUserLikes(ownProps.match.params.userId);
       let likes = await response.json();
       dispatch(fetchUserLikes(likes));
+    },
+
+    handleFollowingClick: () => {
+      dispatch(openFollowingMapsDialog());
     },
 
     clearProfileState: () => {

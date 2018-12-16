@@ -106,8 +106,11 @@ class ApiClient {
     return response;
   }
 
-  async fetchFollowingMaps() {
-    const url = `${process.env.API_ENDPOINT}/maps`;
+  async fetchFollowingMaps(userId = undefined) {
+    if (!userId) {
+      userId = await this.getCurrentUid();
+    }
+    const url = `${process.env.API_ENDPOINT}/users/${userId}/maps?following=true`;
     const token = await this.getCurrentToken();
     let options = {
       method: 'GET',
