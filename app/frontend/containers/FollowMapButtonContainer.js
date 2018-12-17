@@ -49,7 +49,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     handleUnfollowButtonClick: async () => {
-      dispatch(openLeaveMapDialog());
+      dispatch(openLeaveMapDialog(ownProps.currentMap));
     }
   };
 };

@@ -11,7 +11,10 @@ import {
   OPEN_BASE_SELECT_DIALOG,
   CLOSE_BASE_SELECT_DIALOG,
   SELECT_MAP_BASE,
-  LOCATION_CHANGE
+  LOCATION_CHANGE,
+  LEAVE_MAP,
+  OPEN_LEAVE_MAP_DIALOG,
+  CLOSE_LEAVE_MAP_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -21,7 +24,8 @@ const initialState = {
   editMapDialogOpen: false,
   deleteMapDialogOpen: false,
   baseSelectDialogOpen: false,
-  selectedBase: undefined
+  selectedBase: undefined,
+  leaveMapDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -92,12 +96,27 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selectedBase: action.payload.place
       });
+    case LEAVE_MAP:
+      return Object.assign({}, state, {
+        leaveMapDialogOpen: false
+      });
+    case OPEN_LEAVE_MAP_DIALOG:
+      return Object.assign({}, state, {
+        leaveMapDialogOpen: true,
+        targetMap: action.payload.map
+      });
+    case CLOSE_LEAVE_MAP_DIALOG:
+      return Object.assign({}, state, {
+        leaveMapDialogOpen: false,
+        targetMap: undefined,
+      });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
         createMapDialogOpen: false,
         editMapDialogOpen: false,
         deleteMapDialogOpen: false,
-        baseSelectDialogOpen: false
+        baseSelectDialogOpen: false,
+        leaveMapDialogOpen: false
       });
     default:
       return state;

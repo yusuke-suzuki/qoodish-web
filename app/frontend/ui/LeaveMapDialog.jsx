@@ -30,7 +30,7 @@ const LeaveMapDialog = (props) => {
         <Button onClick={props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
         <Button
           variant="contained"
-          onClick={props.handleLeaveButtonClick}
+          onClick={() => props.handleLeaveButtonClick(props.currentMap)}
           color="primary"
         >
           {I18n.t('unfollow')}
