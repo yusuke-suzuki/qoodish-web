@@ -20,6 +20,7 @@ import {
   CLOSE_EDIT_PROFILE_DIALOG,
   OPEN_FOLLOWING_MAPS_DIALOG,
   CLOSE_FOLLOWING_MAPS_DIALOG,
+  LEAVE_MAP,
   LOCATION_CHANGE
 } from '../actionTypes';
 
@@ -60,6 +61,12 @@ const reducer = (state = initialState, action) => {
     case LOAD_FOLLOWING_MAPS_END:
       return Object.assign({}, state, {
         loadingFollowingMaps: false
+      });
+    case LEAVE_MAP:
+      return Object.assign({}, state, {
+        followingMaps: state.followingMaps.filter(map => {
+          return map.id != action.payload.currentMap.id;
+        })
       });
     case FETCH_MY_MAPS:
       return Object.assign({}, state, {

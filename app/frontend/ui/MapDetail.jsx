@@ -7,7 +7,6 @@ const MapBottomSeatContainer = loadable(() => import(/* webpackChunkName: "map_b
 const DeleteMapDialogContainer = loadable(() => import(/* webpackChunkName: "delete_map_dialog" */ '../containers/DeleteMapDialogContainer'));
 const InviteTargetDialogContainer = loadable(() => import(/* webpackChunkName: "invite_target_dialog" */ '../containers/InviteTargetDialogContainer'));
 const SpotCardContainer = loadable(() => import(/* webpackChunkName: "spot_card" */ '../containers/SpotCardContainer'));
-const LeaveMapDialogContainer = loadable(() => import(/* webpackChunkName: "leave_map_dialog" */ '../containers/LeaveMapDialogContainer'));
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
@@ -61,7 +60,6 @@ export default class MapDetail extends React.PureComponent {
         <DeleteMapDialogContainer mapId={this.props.match.params.mapId} />
         <InviteTargetDialogContainer mapId={this.props.match.params.mapId} />
         <SpotCardContainer mapId={this.props.match.params.mapId} />
-        <LeaveMapDialogContainer mapId={this.props.match.params.mapId} />
       </div>
     );
   }

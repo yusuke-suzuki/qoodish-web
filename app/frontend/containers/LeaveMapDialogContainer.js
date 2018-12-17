@@ -12,7 +12,8 @@ import I18n from './I18n';
 
 const mapStateToProps = state => {
   return {
-    dialogOpen: state.mapDetail.leaveMapDialogOpen
+    dialogOpen: state.maps.leaveMapDialogOpen,
+    currentMap: state.maps.targetMap
   };
 };
 
@@ -26,10 +27,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeLeaveMapDialog());
     },
 
-    handleLeaveButtonClick: async () => {
+    handleLeaveButtonClick: async (currentMap) => {
       dispatch(requestStart());
       const client = new ApiClient();
-      let response = await client.unfollowMap(ownProps.mapId);
+      let response = await client.unfollowMap(currentMap.id);
       dispatch(requestFinish());
       if (response.ok) {
         let map = await response.json();
@@ -41,9 +42,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           'event_label': 'map'
         });
 
-        let colloboratorsResponse = await client.fetchCollaborators(
-          ownProps.mapId
-        );
+        let colloboratorsResponse = await client.fetchCollaborators(map.id);
         let collaborators = await colloboratorsResponse.json();
         dispatch(fetchCollaborators(collaborators));
       } else {
