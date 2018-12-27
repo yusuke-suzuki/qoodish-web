@@ -16,6 +16,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 import PlaceIcon from '@material-ui/icons/Place';
 import Avatar from '@material-ui/core/Avatar';
+import LockIcon from '@material-ui/icons/Lock';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import GroupIcon from '@material-ui/icons/Group';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -33,12 +37,24 @@ const styles = {
   mapCenterChip: {
     marginTop: 16,
     marginBottom: 16
+  },
+  selectionLabel: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  selectionIcon: {
+    color: '#616161',
+    position: 'absolute',
+    right: 24
+  },
+  controlLabel: {
+    width: '100%'
   }
 };
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
-}
+};
 
 class EditMapDialog extends React.PureComponent {
   constructor(props) {
@@ -227,33 +243,60 @@ class EditMapDialog extends React.PureComponent {
             clickable
           />
           <br />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={this.state.private}
-                onChange={this.handlePrivateFlugChange}
-              />
-            }
-            label={I18n.t('set this map to private')}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={this.state.invitable}
-                onChange={this.handleInvitableFlugChange}
-              />
-            }
-            label={I18n.t('allow followers to invite')}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={this.state.shared}
-                onChange={this.handleSharedFlugChange}
-              />
-            }
-            label={I18n.t('allow followers to post')}
-          />
+          <ListSubheader disableGutters>
+            {I18n.t('options')}
+          </ListSubheader>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.shared}
+                  onChange={this.handleSharedFlugChange}
+                />
+              }
+              label={
+                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                  {I18n.t('allow followers to post')}
+                  <GroupIcon style={styles.selectionIcon} />
+                </Typography>
+              }
+              style={styles.controlLabel}
+            />
+          </div>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.private}
+                  onChange={this.handlePrivateFlugChange}
+                />
+              }
+              label={
+                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                  {I18n.t('set this map to private')}
+                  <LockIcon style={styles.selectionIcon} />
+                </Typography>
+              }
+              style={styles.controlLabel}
+            />
+          </div>
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.invitable}
+                  onChange={this.handleInvitableFlugChange}
+                />
+              }
+              label={
+                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                  {I18n.t('allow followers to invite')}
+                  <PersonAddIcon style={styles.selectionIcon} />
+                </Typography>
+              }
+              style={styles.controlLabel}
+            />
+          </div>
         </DialogContent>
         {this.props.large && this.renderDialogActions()}
       </Dialog>

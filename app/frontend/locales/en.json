@@ -55,6 +55,7 @@
   "description is required": "Description is required.",
   "center of map": "The center of this map (Optional)",
   "map base": "Base",
+  "options": "Options",
   "set this map to private": "Set this map to private.",
   "allow followers to invite": "Allow followers to invite other users.",
   "allow followers to post": "Allow followers to post reports.",
