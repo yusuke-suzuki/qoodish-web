@@ -1,7 +1,9 @@
 import React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
+import PlaceIcon from '@material-ui/icons/Place';
 import I18n from '../containers/I18n';
 
 const styles = {
@@ -15,6 +17,16 @@ const styles = {
   },
   gridTile: {
     cursor: 'pointer'
+  },
+  tileBar: {
+    height: '100%',
+    textAlign: 'center'
+  },
+  placeIconLarge: {
+    fontSize: 64
+  },
+  placeIconSmall: {
+    fontSize: 36
   }
 };
 
@@ -47,10 +59,17 @@ const ReviewGridList = (props) => {
               onClick={() => props.handleReviewClick(review)}
               style={styles.gridTile}
             >
-              <img
-                src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL}
-                alt={review.spot.name}
-              />
+              {review.image ?
+                <img
+                  src={review.image.thumbnail_url}
+                  alt={review.spot.name}
+                />
+              :
+                <GridListTileBar
+                  title={<PlaceIcon style={props.large ? styles.placeIconLarge : styles.placeIconSmall} />}
+                  style={styles.tileBar}
+                />
+              }
             </GridListTile>
           ))}
         </GridList>
