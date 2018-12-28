@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import I18n from '../containers/I18n';
 
@@ -30,6 +31,10 @@ class MapVertMenu extends React.PureComponent {
       this
     );
   }
+
+  isInvitable(map) {
+    return map && map.private && (map.editable || map.invitable);
+  };
 
   handleVertButtonClick(event) {
     this.setState({
@@ -73,6 +78,7 @@ class MapVertMenu extends React.PureComponent {
       >
         {this.renderEditButton()}
         {this.renderDeleteButton()}
+        {this.isInvitable(this.props.currentMap) && this.renderInviteButton()}
       </Menu>
     );
   }
@@ -100,6 +106,25 @@ class MapVertMenu extends React.PureComponent {
           />
         </MenuItem>
       </Menu>
+    );
+  }
+
+  renderInviteButton() {
+    return (
+      <MenuItem
+        key="invite"
+        onClick={() => {
+          this.handleRequestVertMenuClose();
+          this.props.handleInviteButtonClick();
+        }}
+      >
+        <ListItemIcon>
+          <PersonAddIcon />
+        </ListItemIcon>
+        <ListItemText
+          primary={I18n.t('invite')}
+        />
+      </MenuItem>
     );
   }
 
