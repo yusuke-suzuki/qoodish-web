@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MapToolbar from '../ui/MapToolbar';
 import openIssueDialog from '../actions/openIssueDialog';
-import openInviteTargetDialog from '../actions/openInviteTargetDialog';
 import openSignInRequiredDialog from '../actions/openSignInRequiredDialog';
 
 const mapStateToProps = state => {
@@ -21,10 +20,6 @@ const mapDispatchToProps = (dispatch) => {
         return;
       }
       dispatch(openIssueDialog(map.id, 'map'));
-    },
-
-    handleInviteButtonClick: () => {
-      dispatch(openInviteTargetDialog());
     }
   };
 };

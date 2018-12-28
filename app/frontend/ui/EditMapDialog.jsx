@@ -44,8 +44,7 @@ const styles = {
   },
   selectionIcon: {
     color: '#616161',
-    position: 'absolute',
-    right: 24
+    marginLeft: 10
   },
   controlLabel: {
     width: '100%'

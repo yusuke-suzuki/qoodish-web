@@ -1,7 +1,6 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
@@ -15,13 +14,15 @@ const AppMenuButtonContainer = loadable(() => import(/* webpackChunkName: "app_m
 
 const styles = {
   leftButton: {
-    marginLeft: 8,
     color: 'white'
   },
   mapToolbarLarge: {
-    paddingLeft: 10
+    paddingLeft: 10,
+    paddingRight: 10
   },
   mapToolbarSmall: {
+    paddingLeft: 8,
+    paddingRight: 8
   },
   toolbarActions: {
     marginLeft: 'auto',
@@ -37,20 +38,6 @@ const styles = {
   mapTypeIcon: {
     marginRight: 6
   }
-};
-
-const isInvitable = (map) => {
-  return map && map.private && (map.editable || map.invitable);
-};
-
-const InviteButton = (props) => {
-  return (
-    <IconButton
-      onClick={props.handleInviteButtonClick}
-    >
-      <PersonAddIcon style={styles.mapMenuIcon} />
-    </IconButton>
-  );
 };
 
 const PrivateIcon = () => {
@@ -94,7 +81,6 @@ const MapToolbar = (props) => {
       {props.currentMap && props.currentMap.private && <PrivateIcon />}
       {props.showMapName && props.currentMap && <MapName {...props} />}
       <div style={styles.toolbarActions}>
-        {isInvitable(props.currentMap) && <InviteButton {...props} />}
         <MapShareMenuContainer />
         <MapVertMenuContainer />
       </div>
