@@ -24,7 +24,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../containers/I18n';
-import AddIcon from '@material-ui/icons/Add';
 import * as loadImage from 'blueimp-load-image'
 
 const styles = {

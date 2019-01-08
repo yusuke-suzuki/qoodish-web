@@ -6,6 +6,7 @@ import locationChange from '../actions/locationChange';
 import updateWindowSize from '../actions/updateWindowSize';
 import ApiClient from '../containers/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
+import updateLinkedProviders from '../actions/updateLinkedProviders';
 import getFirebase from '../utils/getFirebase';
 import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
@@ -45,12 +46,16 @@ const mapDispatchToProps = dispatch => {
       dispatch(signIn(user));
     },
 
-    initMessaging: async () => {
+    initMessaging: async (firebaseUser) => {
       const client = new ApiClient();
       const response = await client.fetchUser();
       if (response.ok) {
         const user = await response.json();
         dispatch(fetchMyProfile(user));
+        let linkedProviders = firebaseUser.providerData.map(provider => {
+          return provider.providerId;
+        });
+        dispatch(updateLinkedProviders(linkedProviders));
 
         if (!user.push_enabled) {
           console.log('Push notification is prohibited.');

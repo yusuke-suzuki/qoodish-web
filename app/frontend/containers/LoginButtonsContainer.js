@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import LoginButtons from '../ui/LoginButtons';
 import signIn from '../actions/signIn';
+import updateLinkedProviders from '../actions/updateLinkedProviders';
 import ApiClient from './ApiClient';
 import openToast from '../actions/openToast';
 import requestStart from '../actions/requestStart';
@@ -46,7 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const accessToken = await currentUser.getIdToken();
       const credential = authResult.credential;
 
-      let provider = currentUser.providerData.find(data => {
+      let currentProvider = currentUser.providerData.find(data => {
         return data.providerId == credential.providerId;
       });
 
@@ -57,11 +58,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       };
 
-      const blob = await downloadImage(provider.photoURL);
+      const blob = await downloadImage(currentProvider.photoURL);
       const uploadResponse = await uploadToStorage(blob, 'profile');
       let paramsForNewUser = {
         photo_url: uploadResponse.imageUrl,
-        display_name: provider.displayName
+        display_name: currentProvider.displayName
       };
       Object.assign(params.user, paramsForNewUser);
 
@@ -81,6 +82,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // wait until thumbnail created on cloud function
         await sleep(5000);
         dispatch(signIn(json));
+
+        let linkedProviders = currentUser.providerData.map(provider => {
+          return provider.providerId;
+        });
+        dispatch(updateLinkedProviders(linkedProviders));
       } else {
         dispatch(openToast(json.detail));
       }

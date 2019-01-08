@@ -7,7 +7,7 @@ const Toast = (props) => {
       <Snackbar
         open={props.toastOpen}
         message={props.toastMessage}
-        autoHideDuration={4000}
+        autoHideDuration={props.toastDuration}
         onClose={props.handleRequestClose}
       />
     </div>

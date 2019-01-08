@@ -37,6 +37,7 @@ import I18n from '../containers/I18n';
 const initialState = {
   toastOpen: false,
   toastMessage: '',
+  toastDuration: 4000,
   blocking: false,
   width: '',
   large: true,
@@ -159,11 +160,13 @@ const reducer = (state = initialState, action) => {
     case OPEN_TOAST:
       return Object.assign({}, state, {
         toastOpen: true,
-        toastMessage: action.payload.message
+        toastMessage: action.payload.message,
+        toastDuration: action.payload.duration,
       });
     case CLOSE_TOAST:
       return Object.assign({}, state, {
-        toastOpen: false
+        toastOpen: false,
+        toastDuration: initialState.toastDuration
       });
     case REQUEST_START:
       return Object.assign({}, state, {

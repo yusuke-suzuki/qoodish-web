@@ -6,7 +6,8 @@ import closeToast from '../actions/closeToast';
 const mapStateToProps = state => {
   return {
     toastOpen: state.shared.toastOpen,
-    toastMessage: state.shared.toastMessage
+    toastMessage: state.shared.toastMessage,
+    toastDuration: state.shared.toastDuration
   };
 };
 

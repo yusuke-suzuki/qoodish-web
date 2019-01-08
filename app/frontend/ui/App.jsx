@@ -55,7 +55,7 @@ class App extends React.PureComponent {
       if (firebaseUser.isAnonymous) {
         await this.props.signInAnonymously(firebaseUser);
       } else if (pushApiAvailable()) {
-        this.props.initMessaging();
+        this.props.initMessaging(firebaseUser);
       }
     } else {
       await this.props.signInAnonymously();
