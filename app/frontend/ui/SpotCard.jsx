@@ -1,7 +1,6 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import DirectionsIcon from '@material-ui/icons/Directions';
@@ -149,9 +148,9 @@ const SpotCardHeader = (props) => {
       </ListItem>
     </List>
   );
-}
+};
 
-const SpotCardSmall = (props) => {
+const SpotCardSmall = props => {
   return (
     <div>
       <CardContent style={styles.cardContentSmall}>
@@ -164,19 +163,21 @@ const SpotCardSmall = (props) => {
           cellHeight={100}
           style={styles.gridList}
         >
-          <GridListTile
-            key="add-review"
-            onClick={() => props.handleCreateReviewClick(props.currentSpot)}
-          >
-            <img src={process.env.SUBSTITUTE_URL} />
-            <GridListTileBar
-              style={styles.createReviewTile}
-              title={
-                <AddIcon fontSize="large" />
-              }
-              subtitle={I18n.t('create new report')}
-            />
-          </GridListTile>
+          {props.currentMap.postable && props.currentMap.following && (
+            <GridListTile
+              key="add-review"
+              onClick={() => props.handleCreateReviewClick(props.currentSpot)}
+            >
+              <img src={process.env.SUBSTITUTE_URL} />
+              <GridListTileBar
+                style={styles.createReviewTile}
+                title={
+                  <AddIcon fontSize="large" />
+                }
+                subtitle={I18n.t('create new report')}
+              />
+            </GridListTile>
+          )}
           {props.spotReviews.map(review => (
             <GridListTile
               key={review.id}

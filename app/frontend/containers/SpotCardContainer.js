@@ -18,7 +18,8 @@ const mapStateToProps = state => {
     open: state.spotCard.spotCardOpen,
     currentSpot: state.spotCard.currentSpot,
     large: state.shared.large,
-    spotReviews: state.mapSummary.spotReviews
+    spotReviews: state.mapSummary.spotReviews,
+    currentMap: state.mapDetail.currentMap,
   };
 };
 

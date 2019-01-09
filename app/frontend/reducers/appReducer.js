@@ -17,7 +17,8 @@ const reducer = (state = initialState, action) => {
     case SIGN_IN:
       return Object.assign({}, state, {
         currentUser: action.payload.user,
-        registrationToken: null
+        registrationToken: null,
+        linkedProviders: []
       });
     case SIGN_OUT:
       return Object.assign({}, state, {
