@@ -128,17 +128,13 @@ class FeedbackDialog extends React.PureComponent {
         fullWidth
         TransitionComponent={Transition}
       >
-        <DialogTitle>
-          {I18n.t('send feedback')}
-        </DialogTitle>
+        <DialogTitle>{I18n.t('send feedback')}</DialogTitle>
         <DialogContent style={styles.dialogContent}>
           {this.renderNegativeText()}
           {this.renderPositiveText()}
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onClose}>
-            {I18n.t('cancel')}
-          </Button>
+          <Button onClick={this.props.onClose}>{I18n.t('cancel')}</Button>
           <Button
             variant="contained"
             onClick={this.handleSendButtonClick}

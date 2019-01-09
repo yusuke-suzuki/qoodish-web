@@ -26,8 +26,12 @@ class ReviewDetail extends React.PureComponent {
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': `/maps/${this.props.currentReview.map.id}/reports/${this.props.currentReview.id}`,
-      'page_title': `${this.props.currentReview.spot.name} - ${this.props.currentReview.map.name} | Qoodish`
+      page_path: `/maps/${this.props.currentReview.map.id}/reports/${
+        this.props.currentReview.id
+      }`,
+      page_title: `${this.props.currentReview.spot.name} - ${
+        this.props.currentReview.map.name
+      } | Qoodish`
     });
   }
 
@@ -40,7 +44,8 @@ class ReviewDetail extends React.PureComponent {
       <div
         style={this.props.large ? styles.containerLarge : styles.containerSmall}
       >
-        {this.props.currentReview && this.renderHelmet(this.props.currentReview)}
+        {this.props.currentReview &&
+          this.renderHelmet(this.props.currentReview)}
         {this.props.reviewLoading
           ? this.renderProgress()
           : this.renderReviewCard()}
@@ -53,24 +58,53 @@ class ReviewDetail extends React.PureComponent {
       <Helmet
         title={`${review.spot.name} | Qoodish`}
         link={[
-          { rel: "canonical", href: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}` }
+          {
+            rel: 'canonical',
+            href: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}`
+          }
         ]}
         meta={[
           review.map.private ? { name: 'robots', content: 'noindex' } : {},
-          { name: 'title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
-          { name: 'keywords', content: `${review.map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
+          {
+            name: 'title',
+            content: `${review.spot.name} - ${review.map.name} | Qoodish`
+          },
+          {
+            name: 'keywords',
+            content: `${
+              review.map.name
+            }, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
+          },
           { name: 'description', content: review.comment },
           { name: 'twitter:card', content: 'summary_large_image' },
-          { name: 'twitter:title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
+          {
+            name: 'twitter:title',
+            content: `${review.spot.name} - ${review.map.name} | Qoodish`
+          },
           { name: 'twitter:description', content: review.comment },
-          { name: 'twitter:image', content: review.image ? review.image.url : process.env.SUBSTITUTE_URL },
-          { property: 'og:title', content: `${review.spot.name} - ${review.map.name} | Qoodish` },
+          {
+            name: 'twitter:image',
+            content: review.image
+              ? review.image.url
+              : process.env.SUBSTITUTE_URL
+          },
+          {
+            property: 'og:title',
+            content: `${review.spot.name} - ${review.map.name} | Qoodish`
+          },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
-            content: `${process.env.ENDPOINT}/maps/${review.map.id}/${review.id}`
+            content: `${process.env.ENDPOINT}/maps/${review.map.id}/${
+              review.id
+            }`
           },
-          { property: 'og:image', content: review.image ? review.image.url : process.env.SUBSTITUTE_URL },
+          {
+            property: 'og:image',
+            content: review.image
+              ? review.image.url
+              : process.env.SUBSTITUTE_URL
+          },
           {
             property: 'og:description',
             content: review.comment

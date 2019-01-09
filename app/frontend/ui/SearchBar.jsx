@@ -101,19 +101,19 @@ class SearchBar extends React.PureComponent {
           <SearchIcon />
         </div>
         <InputBase
-          placeholder={I18n.t("search map")}
+          placeholder={I18n.t('search map')}
           classes={{
             root: classes.inputRoot,
             input: classes.inputInput
           }}
           type="search"
-          onChange={(e) => this.handleInputChange(e.target.value)}
+          onChange={e => this.handleInputChange(e.target.value)}
         />
-        {this.state.listOpen &&
+        {this.state.listOpen && (
           <Paper className={classes.paper}>
             <List disablePadding>{this.renderMaps()}</List>
           </Paper>
-        }
+        )}
       </div>
     );
   }
@@ -130,7 +130,10 @@ class SearchBar extends React.PureComponent {
         <ListItemAvatar>
           <Avatar alt={map.name} src={map.thumbnail_url} />
         </ListItemAvatar>
-        <ListItemText primary={map.name} primaryTypographyProps={{ noWrap: true}} />
+        <ListItemText
+          primary={map.name}
+          primaryTypographyProps={{ noWrap: true }}
+        />
       </ListItem>
     ));
   }

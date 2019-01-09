@@ -25,18 +25,15 @@ const styles = {
   }
 };
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
-const DialogAppBar = (props) => {
+const DialogAppBar = props => {
   return (
     <AppBar style={styles.appbar} color="primary">
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.handleRequestDialogClose}
-        >
+        <IconButton color="inherit" onClick={props.handleRequestDialogClose}>
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" style={styles.flex}>
@@ -45,9 +42,9 @@ const DialogAppBar = (props) => {
       </Toolbar>
     </AppBar>
   );
-}
+};
 
-const ReviewDialog = (props) => {
+const ReviewDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -68,6 +65,6 @@ const ReviewDialog = (props) => {
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 export default ReviewDialog;

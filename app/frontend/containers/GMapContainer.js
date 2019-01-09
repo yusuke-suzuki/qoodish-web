@@ -13,11 +13,11 @@ const mapStateToProps = state => {
     defaultZoom: state.gMap.defaultZoom,
     center: state.gMap.center,
     zoom: state.gMap.zoom,
-    directions: state.gMap.directions,
+    directions: state.gMap.directions
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     onMapMounted: map => {
       dispatch(gMapMounted(map));
@@ -29,4 +29,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(GMap));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(GMap)
+);

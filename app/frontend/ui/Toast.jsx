@@ -1,7 +1,7 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 
-const Toast = (props) => {
+const Toast = props => {
   return (
     <div>
       <Snackbar
@@ -12,6 +12,6 @@ const Toast = (props) => {
       />
     </div>
   );
-}
+};
 
 export default Toast;

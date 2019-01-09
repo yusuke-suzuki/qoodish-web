@@ -34,12 +34,12 @@ const styles = {
   }
 };
 
-const buttonStyle = (props) => {
+const buttonStyle = props => {
   let style = {};
   if (props.large) {
     style = Object.assign(style, styles.buttonLarge);
   } else {
-    style = Object.assign(style, styles.buttonSmall)
+    style = Object.assign(style, styles.buttonSmall);
   }
   if (props.bottomAction) {
     style = Object.assign(style, styles.withBottomAction);
@@ -53,7 +53,7 @@ const buttonStyle = (props) => {
   return style;
 };
 
-const CreateResourceButton = (props) => {
+const CreateResourceButton = props => {
   return (
     <Fab
       style={buttonStyle(props)}

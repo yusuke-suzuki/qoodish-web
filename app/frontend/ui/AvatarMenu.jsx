@@ -9,7 +9,7 @@ import I18n from '../containers/I18n';
 const styles = {
   profileAvatar: {
     width: 35,
-    height: 35,
+    height: 35
   }
 };
 
@@ -58,7 +58,9 @@ class AvatarMenu extends React.PureComponent {
         onClick={this.handleAvatarClick}
       >
         <Avatar
-          src={this.props.currentUser ? this.props.currentUser.thumbnail_url : ''}
+          src={
+            this.props.currentUser ? this.props.currentUser.thumbnail_url : ''
+          }
           style={styles.profileAvatar}
         />
         {this.renderMenu()}

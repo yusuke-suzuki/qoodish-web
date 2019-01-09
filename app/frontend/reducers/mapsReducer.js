@@ -108,7 +108,7 @@ const reducer = (state = initialState, action) => {
     case CLOSE_LEAVE_MAP_DIALOG:
       return Object.assign({}, state, {
         leaveMapDialogOpen: false,
-        targetMap: undefined,
+        targetMap: undefined
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {

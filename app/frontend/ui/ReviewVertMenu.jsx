@@ -85,15 +85,16 @@ class ReviewVertMenu extends React.PureComponent {
           key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentReview);
+            this.props.handleIssueButtonClick(
+              this.props.currentUser,
+              this.props.currentReview
+            );
           }}
         >
           <ListItemIcon>
             <ReportProblemIcon />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('report')}
-          />
+          <ListItemText primary={I18n.t('report')} />
         </MenuItem>
       </Menu>
     );
@@ -111,9 +112,7 @@ class ReviewVertMenu extends React.PureComponent {
         <ListItemIcon>
           <EditIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('edit')}
-        />
+        <ListItemText primary={I18n.t('edit')} />
       </MenuItem>
     );
   }
@@ -130,9 +129,7 @@ class ReviewVertMenu extends React.PureComponent {
         <ListItemIcon>
           <AddLocationIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('copy')}
-        />
+        <ListItemText primary={I18n.t('copy')} />
       </MenuItem>
     );
   }
@@ -149,9 +146,7 @@ class ReviewVertMenu extends React.PureComponent {
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('delete')}
-        />
+        <ListItemText primary={I18n.t('delete')} />
       </MenuItem>
     );
   }

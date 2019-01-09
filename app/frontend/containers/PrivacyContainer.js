@@ -9,8 +9,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-  };
+  return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Privacy));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Privacy)
+);

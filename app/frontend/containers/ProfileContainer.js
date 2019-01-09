@@ -39,7 +39,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     fetchUserProfile: async () => {
       const client = new ApiClient();
@@ -95,7 +95,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearProfileState());
     },
 
-    handleEditProfileButtonClick: (currentUser) => {
+    handleEditProfileButtonClick: currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -109,4 +109,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Profile));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Profile)
+);

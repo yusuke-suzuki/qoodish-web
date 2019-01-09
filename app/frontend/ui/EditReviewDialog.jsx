@@ -24,7 +24,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../containers/I18n';
-import * as loadImage from 'blueimp-load-image'
+import * as loadImage from 'blueimp-load-image';
 
 const styles = {
   appbar: {
@@ -64,9 +64,9 @@ const styles = {
   }
 };
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
 class EditReviewDialog extends React.PureComponent {
   constructor(props) {
@@ -105,7 +105,9 @@ class EditReviewDialog extends React.PureComponent {
         {
           id: props.currentReview.id,
           comment: props.currentReview.comment,
-          imagePreviewUrl: props.currentReview.image ? props.currentReview.image.url : '',
+          imagePreviewUrl: props.currentReview.image
+            ? props.currentReview.image.url
+            : '',
           disabled: false
         },
         this.drawImagePreview
@@ -169,7 +171,11 @@ class EditReviewDialog extends React.PureComponent {
 
   validate() {
     let disabled;
-    if (this.state.comment && !this.state.errorComment && !this.state.errorMap) {
+    if (
+      this.state.comment &&
+      !this.state.errorComment &&
+      !this.state.errorMap
+    ) {
       disabled = false;
     } else {
       disabled = true;
@@ -222,24 +228,28 @@ class EditReviewDialog extends React.PureComponent {
       return;
     }
 
-    loadImage.parseMetaData(file, (data) => {
+    loadImage.parseMetaData(file, data => {
       const options = {
         canvas: true
       };
       if (data.exif) {
         options.orientation = data.exif.get('Orientation');
       }
-      loadImage(file, (canvas) => {
-        let dataUrl = canvas.toDataURL('image/jpeg');
-        this.setState(
-          {
-            image: file,
-            imagePreviewUrl: dataUrl,
-            imageDeleteRequest: false
-          },
-          this.drawImagePreview
-        );
-      }, options);
+      loadImage(
+        file,
+        canvas => {
+          let dataUrl = canvas.toDataURL('image/jpeg');
+          this.setState(
+            {
+              image: file,
+              imagePreviewUrl: dataUrl,
+              imageDeleteRequest: false
+            },
+            this.drawImagePreview
+          );
+        },
+        options
+      );
     });
   }
 
@@ -310,7 +320,8 @@ class EditReviewDialog extends React.PureComponent {
             }
             label={
               <div style={styles.placeChipLabel}>
-                {this.props.selectedPlace && this.props.selectedPlace.description}
+                {this.props.selectedPlace &&
+                  this.props.selectedPlace.description}
               </div>
             }
             onClick={this.props.handleSpotClick}
@@ -338,7 +349,9 @@ class EditReviewDialog extends React.PureComponent {
   renderDialogTitle() {
     return (
       <DialogTitle>
-        {this.props.currentReview ? I18n.t('edit report') : I18n.t('create new report')}
+        {this.props.currentReview
+          ? I18n.t('edit report')
+          : I18n.t('create new report')}
       </DialogTitle>
     );
   }
@@ -347,14 +360,13 @@ class EditReviewDialog extends React.PureComponent {
     return (
       <AppBar style={styles.appbar} color="primary">
         <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.handleRequestClose}
-          >
+          <IconButton color="inherit" onClick={this.props.handleRequestClose}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" style={styles.flex}>
-            {this.props.currentReview ? I18n.t('edit report') : I18n.t('create new report')}
+            {this.props.currentReview
+              ? I18n.t('edit report')
+              : I18n.t('create new report')}
           </Typography>
           <Button
             variant="contained"
@@ -373,7 +385,9 @@ class EditReviewDialog extends React.PureComponent {
   renderActionsLarge() {
     return (
       <DialogActions>
-        <Button onClick={this.props.handleRequestClose}>{I18n.t('cancel')}</Button>
+        <Button onClick={this.props.handleRequestClose}>
+          {I18n.t('cancel')}
+        </Button>
         <Button
           variant="contained"
           onClick={this.handleSaveButtonClick}
@@ -388,11 +402,7 @@ class EditReviewDialog extends React.PureComponent {
   }
 
   renderActionsSmall() {
-    return (
-      <DialogActions>
-        {this.renderAddImageButton()}
-      </DialogActions>
-    );
+    return <DialogActions>{this.renderAddImageButton()}</DialogActions>;
   }
 
   renderAddImageButton() {
@@ -424,9 +434,7 @@ class EditReviewDialog extends React.PureComponent {
         >
           {this.renderPostableMaps()}
         </Select>
-        <FormHelperText>
-          {this.state.errorMap}
-        </FormHelperText>
+        <FormHelperText>{this.state.errorMap}</FormHelperText>
       </FormControl>
     );
   }
@@ -459,8 +467,8 @@ class EditReviewDialog extends React.PureComponent {
         multiline
         required
         autoFocus
-        rowsMax={this.props.large ? "5" : "4"}
-        rows={this.props.large ? "5" : "4"}
+        rowsMax={this.props.large ? '5' : '4'}
+        rows={this.props.large ? '5' : '4'}
         margin="normal"
         data-test="review-comment-input"
       />

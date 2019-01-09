@@ -14,7 +14,7 @@ import {
   PICK_UP_MAP,
   FETCH_TRENDING_SPOTS,
   LOAD_TRENDING_SPOTS_START,
-  LOAD_TRENDING_SPOTS_END,
+  LOAD_TRENDING_SPOTS_END
 } from '../actionTypes';
 
 const initialState = {

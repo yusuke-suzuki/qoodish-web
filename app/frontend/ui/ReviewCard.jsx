@@ -96,7 +96,7 @@ const ReviewCardContent = props => {
           {props.currentReview.map.name}
         </Typography>
       </ButtonBase>
-      <br/>
+      <br />
       <ButtonBase
         component={Link}
         to={`/spots/${props.currentReview.spot.place_id}`}
@@ -116,17 +116,14 @@ const ReviewCardContent = props => {
         dangerouslySetInnerHTML={commentHtml(props.currentReview)}
         style={styles.reviewComment}
         data-test="review-card-comment"
-      >
-      </Typography>
+      />
     </CardContent>
   );
 };
 
 const ReviewCardMedia = props => {
   return (
-    <CardMedia
-      style={styles.cardMedia}
-    >
+    <CardMedia style={styles.cardMedia}>
       <img
         src={props.currentReview.image.url}
         style={styles.reviewImage}
@@ -144,10 +141,9 @@ const createdAt = review => {
 
 const commentHtml = review => {
   return {
-    __html: twitter.autoLink(
-      twitter.htmlEscape(review.comment),
-      { targetBlank: true }
-    )
+    __html: twitter.autoLink(twitter.htmlEscape(review.comment), {
+      targetBlank: true
+    })
   };
 };
 
@@ -156,22 +152,12 @@ const ReviewCard = props => {
     <Card style={props.detail ? styles.cardDetail : styles.card}>
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
-      {props.currentReview.image ?
-        <ReviewCardMedia {...props} /> :
-        <Divider />
-      }
-      {props.currentReview.comments.length > 0 &&
-        <ReviewCommentsContainer
-          comments={props.currentReview.comments}
-        />
-      }
-      <CardActions
-        disableActionSpacing
-        style={styles.cardActions}
-      >
-        <ReviewCardActionsContainer
-          review={props.currentReview}
-        />
+      {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
+      {props.currentReview.comments.length > 0 && (
+        <ReviewCommentsContainer comments={props.currentReview.comments} />
+      )}
+      <CardActions disableActionSpacing style={styles.cardActions}>
+        <ReviewCardActionsContainer review={props.currentReview} />
       </CardActions>
     </Card>
   );

@@ -36,7 +36,7 @@ const styles = {
   }
 };
 
-const Title = (props) => {
+const Title = props => {
   return (
     <ListItem
       divider
@@ -47,11 +47,7 @@ const Title = (props) => {
       <ListItemText
         disableTypography
         primary={
-          <Typography
-            variant="h5"
-            color="textSecondary"
-            style={styles.title}
-          >
+          <Typography variant="h5" color="textSecondary" style={styles.title}>
             Qoodish
           </Typography>
         }
@@ -60,7 +56,7 @@ const Title = (props) => {
   );
 };
 
-const DrawerContents = (props) => {
+const DrawerContents = props => {
   return (
     <div>
       <List disablePadding component="nav">
@@ -71,32 +67,57 @@ const DrawerContents = (props) => {
           </ListItemIcon>
           <ListItemText primary={I18n.t('home')} />
         </ListItem>
-        <ListItem button component={Link} to="/discover" title={I18n.t('discover')}>
+        <ListItem
+          button
+          component={Link}
+          to="/discover"
+          title={I18n.t('discover')}
+        >
           <ListItemIcon>
             <ExploreIcon />
           </ListItemIcon>
           <ListItemText primary={I18n.t('discover')} />
         </ListItem>
-        <ListItem button component={Link} to="/profile" title={I18n.t('account')}>
+        <ListItem
+          button
+          component={Link}
+          to="/profile"
+          title={I18n.t('account')}
+        >
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>
           <ListItemText primary={I18n.t('account')} />
         </ListItem>
-        <ListItem button component={Link} to="/notifications" title={I18n.t('notifications')}>
+        <ListItem
+          button
+          component={Link}
+          to="/notifications"
+          title={I18n.t('notifications')}
+        >
           <ListItemIcon>
             <NotificationsIcon />
           </ListItemIcon>
           <ListItemText primary={I18n.t('notifications')} />
         </ListItem>
         <Divider />
-        <ListItem button component={Link} to="/settings" title={I18n.t('settings')}>
+        <ListItem
+          button
+          component={Link}
+          to="/settings"
+          title={I18n.t('settings')}
+        >
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>
           <ListItemText primary={I18n.t('settings')} />
         </ListItem>
-        <ListItem button component={Link} to="/invites" title={I18n.t('invites')}>
+        <ListItem
+          button
+          component={Link}
+          to="/invites"
+          title={I18n.t('invites')}
+        >
           <ListItemIcon>
             <MailIcon />
           </ListItemIcon>
@@ -106,10 +127,20 @@ const DrawerContents = (props) => {
         <ListItem button onClick={props.handleFeedbackClick}>
           <ListItemText primary={I18n.t('send feedback')} />
         </ListItem>
-        <ListItem button component={Link} to="/terms" title={I18n.t('terms of service')}>
+        <ListItem
+          button
+          component={Link}
+          to="/terms"
+          title={I18n.t('terms of service')}
+        >
           <ListItemText primary={I18n.t('terms of service')} />
         </ListItem>
-        <ListItem button component={Link} to="/privacy" title={I18n.t('privacy policy')}>
+        <ListItem
+          button
+          component={Link}
+          to="/privacy"
+          title={I18n.t('privacy policy')}
+        >
           <ListItemText primary={I18n.t('privacy policy')} />
         </ListItem>
       </List>
@@ -117,7 +148,7 @@ const DrawerContents = (props) => {
   );
 };
 
-const Swipeable = (props) => {
+const Swipeable = props => {
   return (
     <SwipeableDrawer
       open={props.drawerOpen}
@@ -128,9 +159,9 @@ const Swipeable = (props) => {
       <DrawerContents {...props} />
     </SwipeableDrawer>
   );
-}
+};
 
-const Temporary = (props) => {
+const Temporary = props => {
   return (
     <Drawer
       open={props.drawerOpen}
@@ -142,7 +173,7 @@ const Temporary = (props) => {
   );
 };
 
-const Permanent = (props) => {
+const Permanent = props => {
   return (
     <Drawer
       variant="permanent"
@@ -155,14 +186,18 @@ const Permanent = (props) => {
       <DrawerContents {...props} />
     </Drawer>
   );
-}
-
-const DrawerLarge = (props) => {
-  return props.showSideNav ? <Permanent {...props} /> : <Temporary {...props} />
 };
 
-const NavDrawer = (props) => {
-  return props.large ? <DrawerLarge {...props} /> : <Swipeable {...props} />
+const DrawerLarge = props => {
+  return props.showSideNav ? (
+    <Permanent {...props} />
+  ) : (
+    <Temporary {...props} />
+  );
+};
+
+const NavDrawer = props => {
+  return props.large ? <DrawerLarge {...props} /> : <Swipeable {...props} />;
 };
 
 export default NavDrawer;

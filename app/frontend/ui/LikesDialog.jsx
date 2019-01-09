@@ -15,7 +15,7 @@ import Divider from '@material-ui/core/Divider';
 import I18n from '../containers/I18n';
 import { Link } from 'react-router-dom';
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
@@ -25,7 +25,7 @@ const styles = {
   }
 };
 
-const Likes = (props) => {
+const Likes = props => {
   return props.likes.map(like => (
     <ListItem
       button
@@ -35,17 +35,14 @@ const Likes = (props) => {
       title={like.voter.name}
     >
       <ListItemAvatar>
-        <Avatar
-          src={like.voter.profile_image_url}
-          alt={like.voter.name}
-        />
+        <Avatar src={like.voter.profile_image_url} alt={like.voter.name} />
       </ListItemAvatar>
       <ListItemText primary={like.voter.name} />
     </ListItem>
   ));
-}
+};
 
-const LikesDialog = (props) => {
+const LikesDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -54,10 +51,7 @@ const LikesDialog = (props) => {
       TransitionComponent={Transition}
     >
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.handleRequestDialogClose}
-        >
+        <IconButton color="inherit" onClick={props.handleRequestDialogClose}>
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" noWrap>
@@ -70,6 +64,6 @@ const LikesDialog = (props) => {
       </List>
     </Dialog>
   );
-}
+};
 
 export default LikesDialog;

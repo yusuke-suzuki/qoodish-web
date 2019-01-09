@@ -2,19 +2,45 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import loadable from '@loadable/component';
 
-const LoginContainer = loadable(() => import(/* webpackChunkName: "login" */'../containers/LoginContainer'));
-const DiscoverContainer = loadable(() => import(/* webpackChunkName: "discover" */'../containers/DiscoverContainer'));
-const TimelineContainer = loadable(() => import(/* webpackChunkName: "timeline" */'../containers/TimelineContainer'));
-const ProfileContainer = loadable(() => import(/* webpackChunkName: "profile" */'../containers/ProfileContainer'));
-const UserProfileContainer = loadable(() => import(/* webpackChunkName: "user_profile" */'../containers/UserProfileContainer'));
-const NotificationsContainer = loadable(() => import(/* webpackChunkName: "notification" */'../containers/NotificationsContainer'));
-const MapDetailContainer = loadable(() => import(/* webpackChunkName: "map_detail" */'../containers/MapDetailContainer'));
-const ReviewDetailContainer = loadable(() => import(/* webpackChunkName: "review_detail" */'../containers/ReviewDetailContainer'));
-const SpotDetailContainer = loadable(() => import(/* webpackChunkName: "spot_detail" */'../containers/SpotDetailContainer'));
-const SettingsContainer = loadable(() => import(/* webpackChunkName: "settings" */'../containers/SettingsContainer'));
-const InvitesContainer = loadable(() => import(/* webpackChunkName: "invites" */'../containers/InvitesContainer'));
-const TermsContainer = loadable(() => import(/* webpackChunkName: "terms" */'../containers/TermsContainer'));
-const PrivacyContainer = loadable(() => import(/* webpackChunkName: "privacy" */'../containers/PrivacyContainer'));
+const LoginContainer = loadable(() =>
+  import(/* webpackChunkName: "login" */ '../containers/LoginContainer')
+);
+const DiscoverContainer = loadable(() =>
+  import(/* webpackChunkName: "discover" */ '../containers/DiscoverContainer')
+);
+const TimelineContainer = loadable(() =>
+  import(/* webpackChunkName: "timeline" */ '../containers/TimelineContainer')
+);
+const ProfileContainer = loadable(() =>
+  import(/* webpackChunkName: "profile" */ '../containers/ProfileContainer')
+);
+const UserProfileContainer = loadable(() =>
+  import(/* webpackChunkName: "user_profile" */ '../containers/UserProfileContainer')
+);
+const NotificationsContainer = loadable(() =>
+  import(/* webpackChunkName: "notification" */ '../containers/NotificationsContainer')
+);
+const MapDetailContainer = loadable(() =>
+  import(/* webpackChunkName: "map_detail" */ '../containers/MapDetailContainer')
+);
+const ReviewDetailContainer = loadable(() =>
+  import(/* webpackChunkName: "review_detail" */ '../containers/ReviewDetailContainer')
+);
+const SpotDetailContainer = loadable(() =>
+  import(/* webpackChunkName: "spot_detail" */ '../containers/SpotDetailContainer')
+);
+const SettingsContainer = loadable(() =>
+  import(/* webpackChunkName: "settings" */ '../containers/SettingsContainer')
+);
+const InvitesContainer = loadable(() =>
+  import(/* webpackChunkName: "invites" */ '../containers/InvitesContainer')
+);
+const TermsContainer = loadable(() =>
+  import(/* webpackChunkName: "terms" */ '../containers/TermsContainer')
+);
+const PrivacyContainer = loadable(() =>
+  import(/* webpackChunkName: "privacy" */ '../containers/PrivacyContainer')
+);
 
 const Routes = () => {
   return (
@@ -30,11 +56,7 @@ const Routes = () => {
         path="/maps/:mapId/reports/:reviewId"
         component={ReviewDetailContainer}
       />
-      <Route
-        exact
-        path="/spots/:placeId"
-        component={SpotDetailContainer}
-      />
+      <Route exact path="/spots/:placeId" component={SpotDetailContainer} />
       <Route exact path="/settings" component={SettingsContainer} />
       <Route exact path="/invites" component={InvitesContainer} />
       <Route exact path="/terms" component={TermsContainer} />
@@ -43,6 +65,6 @@ const Routes = () => {
       <Redirect from="*" to="/" />
     </Switch>
   );
-}
+};
 
 export default Routes;

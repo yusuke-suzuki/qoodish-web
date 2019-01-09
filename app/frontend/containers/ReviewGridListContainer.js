@@ -9,12 +9,17 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleReviewClick: review => {
       dispatch(openReviewDialog(review));
     }
-  }
+  };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewGridList));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewGridList)
+);

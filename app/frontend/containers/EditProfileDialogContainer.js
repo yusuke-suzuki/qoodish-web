@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   return {
     dialogOpen: state.profile.editProfileDialogOpen,
     currentUser: state.app.currentUser,
-    large: state.shared.large,
+    large: state.shared.large
   };
 };
 
@@ -29,7 +29,11 @@ const mapDispatchToProps = dispatch => {
       dispatch(requestStart());
 
       if (params.image_url) {
-        const uploadResponse = await uploadToStorage(params.image_url, 'profile', 'data_url');
+        const uploadResponse = await uploadToStorage(
+          params.image_url,
+          'profile',
+          'data_url'
+        );
         params.image_url = uploadResponse.imageUrl;
       }
 
@@ -52,4 +56,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(EditProfileDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EditProfileDialog)
+);

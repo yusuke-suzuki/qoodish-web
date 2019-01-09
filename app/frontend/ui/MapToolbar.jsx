@@ -8,9 +8,15 @@ import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../containers/I18n';
 
 import loadable from '@loadable/component';
-const MapShareMenuContainer = loadable(() => import(/* webpackChunkName: "map_share_menu" */ '../containers/MapShareMenuContainer'));
-const MapVertMenuContainer = loadable(() => import(/* webpackChunkName: "map_vert_menu" */ '../containers/MapVertMenuContainer'));
-const AppMenuButtonContainer = loadable(() => import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer'));
+const MapShareMenuContainer = loadable(() =>
+  import(/* webpackChunkName: "map_share_menu" */ '../containers/MapShareMenuContainer')
+);
+const MapVertMenuContainer = loadable(() =>
+  import(/* webpackChunkName: "map_vert_menu" */ '../containers/MapVertMenuContainer')
+);
+const AppMenuButtonContainer = loadable(() =>
+  import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer')
+);
 
 const styles = {
   leftButton: {
@@ -26,7 +32,7 @@ const styles = {
   },
   toolbarActions: {
     marginLeft: 'auto',
-    display: 'flex',
+    display: 'flex'
   },
   mapMenuIcon: {
     color: 'white'
@@ -48,20 +54,15 @@ const PrivateIcon = () => {
   );
 };
 
-const MapName = (props) => {
+const MapName = props => {
   return (
-    <Typography
-      variant="h6"
-      color="inherit"
-      noWrap
-      style={styles.mapName}
-    >
+    <Typography variant="h6" color="inherit" noWrap style={styles.mapName}>
       {props.currentMap.name}
     </Typography>
   );
 };
 
-const BackButton = (props) => {
+const BackButton = props => {
   return (
     <IconButton
       color="inherit"
@@ -71,11 +72,14 @@ const BackButton = (props) => {
       <ArrowBackIcon />
     </IconButton>
   );
-}
+};
 
-const MapToolbar = (props) => {
+const MapToolbar = props => {
   return (
-    <Toolbar style={props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall} disableGutters>
+    <Toolbar
+      style={props.large ? styles.mapToolbarLarge : styles.mapToolbarSmall}
+      disableGutters
+    >
       {props.showBackButton && <BackButton {...props} />}
       {props.showMenuButton && <AppMenuButtonContainer />}
       {props.currentMap && props.currentMap.private && <PrivateIcon />}

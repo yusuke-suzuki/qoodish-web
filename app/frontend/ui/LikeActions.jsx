@@ -13,21 +13,25 @@ const styles = {
   }
 };
 
-const LikeButton = (props) => {
+const LikeButton = props => {
   return (
     <IconButton
       onClick={() => {
         props.target && props.target.liked
           ? props.handleUnlikeButtonClick()
-          : props.handleLikeButtonClick(props.currentUser)
+          : props.handleLikeButtonClick(props.currentUser);
       }}
     >
-      {props.target && props.target.liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+      {props.target && props.target.liked ? (
+        <FavoriteIcon color="error" />
+      ) : (
+        <FavoriteBorderIcon />
+      )}
     </IconButton>
   );
 };
 
-const LikesBadge = (props) => {
+const LikesBadge = props => {
   return (
     <Button
       size="small"
@@ -39,11 +43,13 @@ const LikesBadge = (props) => {
   );
 };
 
-const LikeActions = (props) => {
+const LikeActions = props => {
   return (
     <div style={styles.container}>
       <LikeButton {...props} />
-      {props.target && props.target.likes_count > 0 && <LikesBadge {...props} />}
+      {props.target && props.target.likes_count > 0 && (
+        <LikesBadge {...props} />
+      )}
     </div>
   );
 };

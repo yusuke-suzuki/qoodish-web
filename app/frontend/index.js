@@ -54,9 +54,10 @@ const reducer = combineReducers({
   profile: profileReducer
 });
 
-const store = compose(persistState('app'), applyMiddleware(...middlewares))(
-  createStore
-)(reducer);
+const store = compose(
+  persistState('app'),
+  applyMiddleware(...middlewares)
+)(createStore)(reducer);
 
 window.addEventListener('DOMContentLoaded', () => {
   render(
@@ -70,9 +71,15 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').then((registration) => {
-    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-  }).catch((err) => {
-    console.log('ServiceWorker registration failed: ', err);
-  });
+  navigator.serviceWorker
+    .register('/sw.js')
+    .then(registration => {
+      console.log(
+        'ServiceWorker registration successful with scope: ',
+        registration.scope
+      );
+    })
+    .catch(err => {
+      console.log('ServiceWorker registration failed: ', err);
+    });
 }

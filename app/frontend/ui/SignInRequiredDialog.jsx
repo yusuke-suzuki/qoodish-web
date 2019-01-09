@@ -15,11 +15,11 @@ const styles = {
   }
 };
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
-const SignInRequiredDialog = (props) => {
+const SignInRequiredDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -27,19 +27,15 @@ const SignInRequiredDialog = (props) => {
       fullWidth
       TransitionComponent={Transition}
     >
-      <DialogTitle>
-        {I18n.t('this action requires sign in')}
-      </DialogTitle>
+      <DialogTitle>{I18n.t('this action requires sign in')}</DialogTitle>
       <DialogContent style={styles.dialogContent}>
         <LoginButtonsContainer />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onClose}>
-          {I18n.t('cancel')}
-        </Button>
+        <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default SignInRequiredDialog;

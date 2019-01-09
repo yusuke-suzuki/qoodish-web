@@ -12,9 +12,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    handleSpotClick: async (spot) => {
+    handleSpotClick: async spot => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(selectSpot(spot));
       dispatch(openSpotCard());
@@ -22,4 +22,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapSpotsList));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapSpotsList)
+);

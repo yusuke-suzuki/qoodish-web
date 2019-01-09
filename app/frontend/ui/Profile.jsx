@@ -113,8 +113,7 @@ const styles = {
   noReviewsContainerSmall: {
     paddingTop: 8
   },
-  editProfileButton: {
-  },
+  editProfileButton: {},
   profileActionsContainer: {
     width: 'max-content',
     marginLeft: 'auto'
@@ -141,26 +140,27 @@ const styles = {
   }
 };
 
-const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
-  <GoogleMap
-    defaultZoom={props.defaultZoom}
-    options={{
-      zoomControl: false,
-      streetViewControl: false,
-      scaleControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false,
-      gestureHandling: 'none'
-    }}
-    center={
-      new google.maps.LatLng(
-        parseFloat(props.center.lat),
-        parseFloat(props.center.lng)
-      )
-    }
-  >
-  </GoogleMap>
-)));
+const GoogleMapContainer = withScriptjs(
+  withGoogleMap(props => (
+    <GoogleMap
+      defaultZoom={props.defaultZoom}
+      options={{
+        zoomControl: false,
+        streetViewControl: false,
+        scaleControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false,
+        gestureHandling: 'none'
+      }}
+      center={
+        new google.maps.LatLng(
+          parseFloat(props.center.lat),
+          parseFloat(props.center.lng)
+        )
+      }
+    />
+  ))
+);
 
 class Profile extends React.PureComponent {
   constructor(props) {
@@ -183,8 +183,8 @@ class Profile extends React.PureComponent {
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/profile',
-      'page_title': `${I18n.t('account')} | Qoodish`
+      page_path: '/profile',
+      page_title: `${I18n.t('account')} | Qoodish`
     });
   }
 
@@ -211,7 +211,8 @@ class Profile extends React.PureComponent {
   render() {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        {this.props.currentUser.name && this.renderHelmet(this.props.currentUser)}
+        {this.props.currentUser.name &&
+          this.renderHelmet(this.props.currentUser)}
         {this.renderProfileCard(this.props.currentUser)}
         <SwipeableViews
           index={this.state.tabValue}
@@ -219,7 +220,13 @@ class Profile extends React.PureComponent {
         >
           {this.renderReviews()}
           {this.renderMyMaps()}
-          <div style={this.props.large ? styles.likesContainerLarge : styles.likesContainerSmall}>
+          <div
+            style={
+              this.props.large
+                ? styles.likesContainerLarge
+                : styles.likesContainerSmall
+            }
+          >
             <LikesList likes={this.props.likes} />
           </div>
         </SwipeableViews>
@@ -231,21 +238,48 @@ class Profile extends React.PureComponent {
   renderHelmet(currentUser) {
     return (
       <Helmet
-        title={this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish`}
+        title={
+          this.props.pathname === '/profile'
+            ? `${I18n.t('account')} | Qoodish`
+            : `${currentUser.name} | Qoodish`
+        }
         link={[
-          { rel: 'canonical', href: `${process.env.ENDPOINT}${this.props.pathname}` }
+          {
+            rel: 'canonical',
+            href: `${process.env.ENDPOINT}${this.props.pathname}`
+          }
         ]}
         meta={[
-          { name: 'title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
-          { name: 'twitter:title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
+          {
+            name: 'title',
+            content:
+              this.props.pathname === '/profile'
+                ? `${I18n.t('account')} | Qoodish`
+                : `${currentUser.name} | Qoodish`
+          },
+          {
+            name: 'twitter:title',
+            content:
+              this.props.pathname === '/profile'
+                ? `${I18n.t('account')} | Qoodish`
+                : `${currentUser.name} | Qoodish`
+          },
           { name: 'twitter:image', content: currentUser.thumbnail_url },
-          { property: 'og:title', content: this.props.pathname === '/profile' ? `${I18n.t('account')} | Qoodish` : `${currentUser.name} | Qoodish` },
+          {
+            property: 'og:title',
+            content:
+              this.props.pathname === '/profile'
+                ? `${I18n.t('account')} | Qoodish`
+                : `${currentUser.name} | Qoodish`
+          },
           { property: 'og:type', content: 'website' },
           {
             property: 'og:url',
             content: `${process.env.ENDPOINT}${this.props.pathname}`
           },
-          this.props.pathname != '/profile' ? { property: 'og:image', content: currentUser.thumbnail_url } : {}
+          this.props.pathname != '/profile'
+            ? { property: 'og:image', content: currentUser.thumbnail_url }
+            : {}
         ]}
       />
     );
@@ -273,7 +307,9 @@ class Profile extends React.PureComponent {
     return (
       <Button
         variant="outlined"
-        onClick={() => this.props.handleEditProfileButtonClick(this.props.currentUser)}
+        onClick={() =>
+          this.props.handleEditProfileButtonClick(this.props.currentUser)
+        }
         color="primary"
         style={styles.editProfileButton}
       >
@@ -285,17 +321,34 @@ class Profile extends React.PureComponent {
   renderProfileCard(currentUser) {
     return (
       <Card>
-        <div style={this.props.large ? styles.cardMapContainerLarge : styles.cardMapContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.cardMapContainerLarge
+              : styles.cardMapContainerSmall
+          }
+        >
           {this.renderGoogleMap()}
         </div>
-        <CardContent style={this.props.large ? styles.cardContentLarge : styles.cardContentSmall}>
+        <CardContent
+          style={
+            this.props.large ? styles.cardContentLarge : styles.cardContentSmall
+          }
+        >
           {this.renderAvatar(currentUser)}
           <div style={styles.profileActionsContainer}>
-            {this.props.pathname === '/profile' && this.renderEditProfileButton()}
+            {this.props.pathname === '/profile' &&
+              this.renderEditProfileButton()}
           </div>
-          <div style={this.props.pathname === '/profile' ? {} : styles.profileContainer}>
+          <div
+            style={
+              this.props.pathname === '/profile' ? {} : styles.profileContainer
+            }
+          >
             <Typography variant="h5" gutterBottom>
-              {currentUser.isAnonymous ? I18n.t('anonymous user') : currentUser.name}
+              {currentUser.isAnonymous
+                ? I18n.t('anonymous user')
+                : currentUser.name}
             </Typography>
           </div>
           <Typography variant="body1" style={styles.biography} gutterBottom>
@@ -311,18 +364,9 @@ class Profile extends React.PureComponent {
           variant="fullWidth"
           centered
         >
-          <Tab
-            label={I18n.t('reports')}
-            style={styles.tab}
-          />
-          <Tab
-            label={I18n.t('maps')}
-            style={styles.tab}
-          />
-          <Tab
-            label={I18n.t('like')}
-            style={styles.tab}
-          />
+          <Tab label={I18n.t('reports')} style={styles.tab} />
+          <Tab label={I18n.t('maps')} style={styles.tab} />
+          <Tab label={I18n.t('like')} style={styles.tab} />
         </Tabs>
       </Card>
     );
@@ -332,7 +376,11 @@ class Profile extends React.PureComponent {
     if (currentUser.isAnonymous) {
       return (
         <Avatar
-          style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
+          style={
+            this.props.large
+              ? styles.profileAvatarLarge
+              : styles.profileAvatarSmall
+          }
         >
           <PersonIcon style={styles.personIcon} />
         </Avatar>
@@ -341,7 +389,11 @@ class Profile extends React.PureComponent {
       return (
         <Avatar
           src={currentUser.thumbnail_url}
-          style={this.props.large ? styles.profileAvatarLarge : styles.profileAvatarSmall}
+          style={
+            this.props.large
+              ? styles.profileAvatarLarge
+              : styles.profileAvatarSmall
+          }
           alt={currentUser.name}
         />
       );
@@ -359,7 +411,7 @@ class Profile extends React.PureComponent {
             {user.reviews_count ? user.reviews_count : 0}
           </Typography>
           <Typography variant="subtitle2" color="textSecondary">
-            {I18n.t("reviews count")}
+            {I18n.t('reviews count')}
           </Typography>
         </Button>
         <Button
@@ -370,7 +422,7 @@ class Profile extends React.PureComponent {
             {user.following_maps_count ? user.following_maps_count : 0}
           </Typography>
           <Typography variant="subtitle2" color="textSecondary">
-            {I18n.t("following maps")}
+            {I18n.t('following maps')}
           </Typography>
         </Button>
       </div>
@@ -379,7 +431,7 @@ class Profile extends React.PureComponent {
 
   renderReviews() {
     return (
-      <div key='reviews'>
+      <div key="reviews">
         {this.props.loadingReviews
           ? this.renderProgress()
           : this.renderReviewContainer(this.props.currentReviews)}
@@ -390,7 +442,13 @@ class Profile extends React.PureComponent {
   renderReviewContainer(reviews) {
     if (reviews.length > 0) {
       return (
-        <div style={this.props.large ? styles.reviewsContainerLarge : styles.reviewsContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.reviewsContainerLarge
+              : styles.reviewsContainerSmall
+          }
+        >
           <ReviewGridListContainer reviews={reviews} />
           {this.props.loadingMoreReviews
             ? this.renderProgress()
@@ -399,7 +457,13 @@ class Profile extends React.PureComponent {
       );
     } else {
       return (
-        <div style={this.props.large ? styles.noReviewsContainerLarge : styles.noReviewsContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.noReviewsContainerLarge
+              : styles.noReviewsContainerSmall
+          }
+        >
           <NoContentsContainer
             contentType="review"
             action="create-review"
@@ -423,11 +487,14 @@ class Profile extends React.PureComponent {
       return null;
     }
     return (
-      <div style={this.props.large ? styles.buttonContainerLarge : styles.buttonContainerSmall}>
-        <Button
-          variant="contained"
-          onClick={this.handleClickLoadMoreButton}
-        >
+      <div
+        style={
+          this.props.large
+            ? styles.buttonContainerLarge
+            : styles.buttonContainerSmall
+        }
+      >
+        <Button variant="contained" onClick={this.handleClickLoadMoreButton}>
           {I18n.t('load more')}
         </Button>
       </div>
@@ -436,7 +503,12 @@ class Profile extends React.PureComponent {
 
   renderMyMaps() {
     return (
-      <div style={this.props.large ? styles.userMapsContainerLarge : styles.userMapsContainerSmall}
+      <div
+        style={
+          this.props.large
+            ? styles.userMapsContainerLarge
+            : styles.userMapsContainerSmall
+        }
       >
         {this.props.loadingMyMaps
           ? this.renderProgress()
@@ -447,9 +519,7 @@ class Profile extends React.PureComponent {
 
   renderMapContainer(maps) {
     if (maps.length > 0) {
-      return (
-        <MapCollectionContainer maps={maps} />
-      );
+      return <MapCollectionContainer maps={maps} />;
     } else {
       return (
         <NoContentsContainer

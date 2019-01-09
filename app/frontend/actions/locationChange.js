@@ -1,6 +1,6 @@
 import { LOCATION_CHANGE } from '../actionTypes';
 
-const locationChange = (location) => {
+const locationChange = location => {
   return {
     type: LOCATION_CHANGE,
     payload: {

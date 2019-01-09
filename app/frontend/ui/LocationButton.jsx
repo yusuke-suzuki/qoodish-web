@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-const LocationButton = (props) => {
+const LocationButton = props => {
   return (
     <Fab
       style={props.large ? styles.buttonLarge : styles.buttonSmall}
@@ -28,6 +28,6 @@ const LocationButton = (props) => {
       <MyLocationIcon />
     </Fab>
   );
-}
+};
 
 export default LocationButton;

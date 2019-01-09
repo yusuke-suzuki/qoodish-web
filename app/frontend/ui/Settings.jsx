@@ -38,8 +38,8 @@ export default class Invites extends React.PureComponent {
 
   componentDidMount() {
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/settings',
-      'page_title': 'Settings | Qoodish'
+      page_path: '/settings',
+      page_title: 'Settings | Qoodish'
     });
   }
 
@@ -65,12 +65,21 @@ export default class Invites extends React.PureComponent {
           <FormControlLabel
             control={
               <Switch
-                checked={this.props.currentUser && this.props.currentUser.push_enabled}
+                checked={
+                  this.props.currentUser && this.props.currentUser.push_enabled
+                }
                 onChange={this.handlePushChange}
-                disabled={!this.pushAvailable() || (this.props.currentUser && this.props.currentUser.isAnonymous)}
+                disabled={
+                  !this.pushAvailable() ||
+                  (this.props.currentUser && this.props.currentUser.isAnonymous)
+                }
               />
             }
-            label={this.pushAvailable() ? I18n.t('enable push notification') : I18n.t('enable push notification')}
+            label={
+              this.pushAvailable()
+                ? I18n.t('enable push notification')
+                : I18n.t('enable push notification')
+            }
           />
         </CardContent>
       </Card>
@@ -92,8 +101,14 @@ export default class Invites extends React.PureComponent {
           <Button
             variant="contained"
             onClick={this.props.handleDeleteAccountButtonClick}
-            style={this.props.currentUser && this.props.currentUser.isAnonymous ? {} : styles.deleteButton}
-            disabled={this.props.currentUser && this.props.currentUser.isAnonymous}
+            style={
+              this.props.currentUser && this.props.currentUser.isAnonymous
+                ? {}
+                : styles.deleteButton
+            }
+            disabled={
+              this.props.currentUser && this.props.currentUser.isAnonymous
+            }
           >
             {I18n.t('delete account')}
           </Button>

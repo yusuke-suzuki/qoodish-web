@@ -44,8 +44,7 @@ const styles = {
   listContainerLarge: {
     display: 'flex'
   },
-  listContainerSmall: {
-  },
+  listContainerSmall: {},
   rankingContainerLarge: {
     marginTop: 40,
     marginBottom: 20,
@@ -115,8 +114,8 @@ export default class Discover extends React.PureComponent {
     this.props.refreshPopularMaps();
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/discover',
-      'page_title': `${I18n.t('discover')} | Qoodish`
+      page_path: '/discover',
+      page_title: `${I18n.t('discover')} | Qoodish`
     });
   }
 
@@ -153,7 +152,8 @@ export default class Discover extends React.PureComponent {
             color="textSecondary"
             style={styles.gridHeader}
           >
-            <FiberNewIcon style={styles.headerIcon} /> {I18n.t('recent reports')}
+            <FiberNewIcon style={styles.headerIcon} />{' '}
+            {I18n.t('recent reports')}
           </Typography>
           <br />
           <RecentReviewsContainer />
@@ -187,8 +187,20 @@ export default class Discover extends React.PureComponent {
             : this.renderMapContainer(this.props.recentMaps)}
         </div>
 
-        <div style={this.props.large ? styles.listContainerLarge : styles.listContainerSmall}>
-          <div style={this.props.large ? styles.rankingContainerLarge : styles.rankingContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.listContainerLarge
+              : styles.listContainerSmall
+          }
+        >
+          <div
+            style={
+              this.props.large
+                ? styles.rankingContainerLarge
+                : styles.rankingContainerSmall
+            }
+          >
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -203,7 +215,13 @@ export default class Discover extends React.PureComponent {
               : this.renderTrendingMapsContainer(this.props.popularMaps)}
           </div>
 
-          <div style={this.props.large ? styles.rankingContainerLarge : styles.rankingContainerSmall}>
+          <div
+            style={
+              this.props.large
+                ? styles.rankingContainerLarge
+                : styles.rankingContainerSmall
+            }
+          >
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -227,9 +245,7 @@ export default class Discover extends React.PureComponent {
     return (
       <Helmet
         title={`${I18n.t('discover')} | Qoodish`}
-        link={[
-          { rel: "canonical", href: `${process.env.ENDPOINT}/discover` }
-        ]}
+        link={[{ rel: 'canonical', href: `${process.env.ENDPOINT}/discover` }]}
         meta={[
           { name: 'title', content: `${I18n.t('discover')} | Qoodish` },
           { property: 'og:title', content: `${I18n.t('discover')} | Qoodish` },
@@ -249,15 +265,14 @@ export default class Discover extends React.PureComponent {
         <GridListTile
           key={map && map.id}
           onClick={() => this.props.handleClickMap(map)}
-          style={this.props.large ? styles.pickUpTileLarge : styles.pickUpTileSmall}
+          style={
+            this.props.large ? styles.pickUpTileLarge : styles.pickUpTileSmall
+          }
           component={Link}
           to={`/maps/${map && map.id}`}
           title={map && map.name}
         >
-          <img
-            src={map && map.image_url}
-            alt={map && map.name}
-          />
+          <img src={map && map.image_url} alt={map && map.name} />
           <GridListTileBar
             title={
               <Typography
@@ -288,9 +303,7 @@ export default class Discover extends React.PureComponent {
   renderTrendingMapsContainer(maps) {
     return (
       <List disablePadding>
-        {maps.length > 0
-          ? this.renderTrendingMaps(maps)
-          : null}
+        {maps.length > 0 ? this.renderTrendingMaps(maps) : null}
       </List>
     );
   }
@@ -305,10 +318,7 @@ export default class Discover extends React.PureComponent {
         title={map.name}
         style={this.props.large ? styles.listItemLarge : styles.listItemSmall}
       >
-        <Avatar
-          src={map.thumbnail_url}
-          alt={map.name}
-        />
+        <Avatar src={map.thumbnail_url} alt={map.name} />
         <ListItemText
           disableTypography={true}
           primary={
@@ -322,7 +332,7 @@ export default class Discover extends React.PureComponent {
             </Typography>
           }
         />
-        <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
+        <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
           <Button
             size="small"
             component={Link}
@@ -340,9 +350,7 @@ export default class Discover extends React.PureComponent {
   renderTrendingSpotsContainer(spots) {
     return (
       <List disablePadding style={styles.trendingList}>
-        {spots.length > 0
-          ? this.renderSpots(spots)
-          : null}
+        {spots.length > 0 ? this.renderSpots(spots) : null}
       </List>
     );
   }
@@ -357,10 +365,7 @@ export default class Discover extends React.PureComponent {
         title={spot.name}
         style={this.props.large ? styles.listItemLarge : styles.listItemSmall}
       >
-        <Avatar
-          src={spot.image_url}
-          alt={spot.name}
-        />
+        <Avatar src={spot.image_url} alt={spot.name} />
         <ListItemText
           disableTypography={true}
           primary={
@@ -374,7 +379,7 @@ export default class Discover extends React.PureComponent {
             </Typography>
           }
         />
-        <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
+        <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
           <Button
             size="small"
             component={Link}

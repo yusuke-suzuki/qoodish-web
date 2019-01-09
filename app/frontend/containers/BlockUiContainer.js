@@ -12,4 +12,9 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(BlockUi));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(BlockUi)
+);

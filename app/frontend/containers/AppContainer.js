@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateWindowSize(width));
     },
 
-    handleLocationChange: (location) => {
+    handleLocationChange: location => {
       dispatch(locationChange(location));
     },
 
@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(signIn(user));
     },
 
-    initMessaging: async (firebaseUser) => {
+    initMessaging: async firebaseUser => {
       const client = new ApiClient();
       const response = await client.fetchUser();
       if (response.ok) {
@@ -62,7 +62,7 @@ const mapDispatchToProps = dispatch => {
           return;
         }
       } else {
-        console.log('Fetch profile failed.')
+        console.log('Fetch profile failed.');
         return;
       }
 
@@ -91,4 +91,11 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(App)
+  )
+);

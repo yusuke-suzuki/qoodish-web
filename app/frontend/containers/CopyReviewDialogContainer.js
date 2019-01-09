@@ -50,8 +50,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(createReview(json));
         dispatch(openToast(I18n.t('copy report success')));
         gtag('event', 'create', {
-          'event_category': 'engagement',
-          'event_label': 'review'
+          event_category: 'engagement',
+          event_label: 'review'
         });
       } else {
         dispatch(openToast(json.detail));
@@ -72,4 +72,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CopyReviewDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CopyReviewDialog)
+);

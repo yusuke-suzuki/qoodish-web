@@ -16,7 +16,7 @@ const styles = {
   subheader: {
     height: 36
   }
-}
+};
 
 const OwnerMark = () => {
   return (
@@ -24,9 +24,9 @@ const OwnerMark = () => {
       <Chip label={I18n.t('owner')} />
     </ListItemSecondaryAction>
   );
-}
+};
 
-const Followers = (props) => {
+const Followers = props => {
   return props.followers.map(follower => (
     <ListItem
       button
@@ -34,26 +34,27 @@ const Followers = (props) => {
       component={Link}
       to={`/users/${follower.id}`}
     >
-      <Avatar
-        src={follower.profile_image_url}
-        alt={follower.name}
-      />
+      <Avatar src={follower.profile_image_url} alt={follower.name} />
       <ListItemText primary={follower.name} />
       {follower.owner && <OwnerMark />}
     </ListItem>
   ));
-}
+};
 
-const MapFollowersList = (props) => {
+const MapFollowersList = props => {
   return (
     <List
-      subheader={props.large &&
-        <ListSubheader style={styles.subheader}>{I18n.t('followers')}</ListSubheader>
+      subheader={
+        props.large && (
+          <ListSubheader style={styles.subheader}>
+            {I18n.t('followers')}
+          </ListSubheader>
+        )
       }
     >
       <Followers {...props} />
     </List>
   );
-}
+};
 
 export default MapFollowersList;

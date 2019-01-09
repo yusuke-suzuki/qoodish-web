@@ -9,20 +9,17 @@ import I18n from '../containers/I18n';
 
 const DeleteCommentDialog = props => {
   return (
-    <Dialog
-      open={props.dialogOpen}
-      onClose={props.handleRequestDialogClose}
-    >
-      <DialogTitle>
-        {I18n.t('delete comment')}
-      </DialogTitle>
+    <Dialog open={props.dialogOpen} onClose={props.handleRequestDialogClose}>
+      <DialogTitle>{I18n.t('delete comment')}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {I18n.t('sure to delete comment')}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+        <Button onClick={props.handleRequestDialogClose}>
+          {I18n.t('cancel')}
+        </Button>
         <Button
           onClick={() => props.handleDeleteButtonClick(props.comment)}
           color="primary"

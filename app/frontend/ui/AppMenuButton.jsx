@@ -10,7 +10,7 @@ const styles = {
   }
 };
 
-const AppMenuButton = (props) => {
+const AppMenuButton = props => {
   return (
     <IconButton
       color="inherit"
@@ -20,6 +20,6 @@ const AppMenuButton = (props) => {
       <MenuIcon />
     </IconButton>
   );
-}
+};
 
 export default AppMenuButton;

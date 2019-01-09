@@ -11,15 +11,13 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
     const storageRef = storage.ref();
     const metadata = {
       contentType: 'image/jpeg',
-      cacheControl: 'public,max-age=86400',
+      cacheControl: 'public,max-age=86400'
     };
     const fileName = `${dir}/${uuidv1()}.jpg`;
 
     let uploadTask;
     if (fileType === 'blob') {
-      uploadTask = storageRef
-        .child(fileName)
-        .put(image, metadata);
+      uploadTask = storageRef.child(fileName).put(image, metadata);
     } else {
       uploadTask = storageRef
         .child(fileName)
@@ -29,7 +27,7 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
     uploadTask.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
       snapshot => {
-        let progress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
           case firebase.storage.TaskState.PAUSED:
@@ -51,7 +49,9 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
         reject();
       },
       async () => {
-        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${fileName}`;
+        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${
+          process.env.CLOUD_STORAGE_BUCKET_NAME
+        }/${fileName}`;
         resolve({
           imageUrl: imageUrl,
           fileName: uploadTask.snapshot.ref.name

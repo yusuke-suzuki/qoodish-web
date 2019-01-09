@@ -44,7 +44,7 @@ const styles = {
   }
 };
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
@@ -53,7 +53,7 @@ const handleInputChange = (input, props) => {
     return;
   }
   props.handleInputChange(input);
-}
+};
 
 const handlePlaceSelected = (place, props) => {
   let params = {
@@ -62,26 +62,24 @@ const handlePlaceSelected = (place, props) => {
   };
   props.onClose();
   props.onPlaceSelected(params);
-}
+};
 
 const PlaceDialogTitle = () => {
   return (
     <DialogTitle>
       <div style={styles.dialogTitle}>
-        <PlaceIcon style={styles.placeIcon} />{I18n.t('select place')}
+        <PlaceIcon style={styles.placeIcon} />
+        {I18n.t('select place')}
       </div>
     </DialogTitle>
   );
-}
+};
 
-const PlaceAppBar = (props) => {
+const PlaceAppBar = props => {
   return (
     <AppBar style={styles.appbar} color="primary">
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.onClose}
-        >
+        <IconButton color="inherit" onClick={props.onClose}>
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" style={styles.flex}>
@@ -90,17 +88,17 @@ const PlaceAppBar = (props) => {
       </Toolbar>
     </AppBar>
   );
-}
+};
 
-const PlaceActions = (props) => {
+const PlaceActions = props => {
   return (
     <DialogActions>
       <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
     </DialogActions>
   );
-}
+};
 
-const PlaceSelectDialog = (props) => {
+const PlaceSelectDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -110,17 +108,19 @@ const PlaceSelectDialog = (props) => {
       fullScreen={!props.large}
       TransitionComponent={Transition}
     >
-      {props.large ? <PlaceDialogTitle {...props} /> : <PlaceAppBar {...props} />}
+      {props.large ? (
+        <PlaceDialogTitle {...props} />
+      ) : (
+        <PlaceAppBar {...props} />
+      )}
       <DialogContent
         style={
-          props.large
-            ? styles.dialogContentLarge
-            : styles.dialogContentSmall
+          props.large ? styles.dialogContentLarge : styles.dialogContentSmall
         }
       >
         <TextField
           label={I18n.t('search places')}
-          onChange={(e) => handleInputChange(e.target.value, props)}
+          onChange={e => handleInputChange(e.target.value, props)}
           fullWidth
           autoFocus
           placeholder={I18n.t('search places example')}
@@ -148,6 +148,6 @@ const PlaceSelectDialog = (props) => {
       {props.large && <PlaceActions {...props} />}
     </Dialog>
   );
-}
+};
 
 export default PlaceSelectDialog;

@@ -91,8 +91,8 @@ const styles = {
 class Login extends React.PureComponent {
   componentDidMount() {
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/login',
-      'page_title': `${I18n.t('login')} | Qoodish`
+      page_path: '/login',
+      page_title: `${I18n.t('login')} | Qoodish`
     });
   }
 
@@ -104,9 +104,7 @@ class Login extends React.PureComponent {
     return (
       <Helmet
         title={`${I18n.t('login')} | Qoodish`}
-        link={[
-          { rel: "canonical", href: `${process.env.ENDPOINT}/login` }
-        ]}
+        link={[{ rel: 'canonical', href: `${process.env.ENDPOINT}/login` }]}
         meta={[
           { name: 'title', content: `${I18n.t('login')} | Qoodish` },
           { property: 'og:title', content: `${I18n.t('login')} | Qoodish` },
@@ -136,7 +134,7 @@ class Login extends React.PureComponent {
               <GridListTileBar
                 title={
                   <Typography
-                    variant={this.props.large ? "h2" : "h3"}
+                    variant={this.props.large ? 'h2' : 'h3'}
                     color="inherit"
                     style={styles.carouselTileBarText}
                     gutterBottom
@@ -147,7 +145,7 @@ class Login extends React.PureComponent {
                 subtitle={
                   <div>
                     <Typography
-                      variant={this.props.large ? "h5" : "h6"}
+                      variant={this.props.large ? 'h5' : 'h6'}
                       color="inherit"
                       style={styles.carouselTileBarText}
                     >
@@ -227,9 +225,20 @@ class Login extends React.PureComponent {
                   {this.renderFbPage()}
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
-                  <div><Link to="/terms">{I18n.t('terms of service')}</Link></div>
-                  <div><Link to="/privacy">{I18n.t('privacy policy')}</Link></div>
-                  <div><a href="https://github.com/yusuke-suzuki/qoodish-web" target="_blank">GitHub</a></div>
+                  <div>
+                    <Link to="/terms">{I18n.t('terms of service')}</Link>
+                  </div>
+                  <div>
+                    <Link to="/privacy">{I18n.t('privacy policy')}</Link>
+                  </div>
+                  <div>
+                    <a
+                      href="https://github.com/yusuke-suzuki/qoodish-web"
+                      target="_blank"
+                    >
+                      GitHub
+                    </a>
+                  </div>
                 </Grid>
               </Grid>
             </div>

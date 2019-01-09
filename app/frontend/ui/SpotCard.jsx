@@ -96,7 +96,7 @@ const styles = {
   }
 };
 
-const SpotBottomNavigation = (props) => {
+const SpotBottomNavigation = props => {
   return (
     <Paper style={props.large ? styles.bottomNavLarge : {}} elevation={2}>
       <BottomNavigation showLabels>
@@ -124,7 +124,7 @@ const SpotBottomNavigation = (props) => {
   );
 };
 
-const SpotCardHeader = (props) => {
+const SpotCardHeader = props => {
   return (
     <List disablePadding>
       <ListItem disableGutters style={styles.listItem}>
@@ -136,11 +136,7 @@ const SpotCardHeader = (props) => {
             </Typography>
           }
           secondary={
-            <Typography
-              component="p"
-              noWrap
-              color="textSecondary"
-            >
+            <Typography component="p" noWrap color="textSecondary">
               {props.currentSpot.formatted_address}
             </Typography>
           }
@@ -158,11 +154,7 @@ const SpotCardSmall = props => {
           <DragHandleIcon color="disabled" />
         </div>
         <SpotCardHeader {...props} />
-        <GridList
-          cols={2.5}
-          cellHeight={100}
-          style={styles.gridList}
-        >
+        <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
           {props.currentMap.postable && props.currentMap.following && (
             <GridListTile
               key="add-review"
@@ -171,9 +163,7 @@ const SpotCardSmall = props => {
               <img src={process.env.SUBSTITUTE_URL} />
               <GridListTileBar
                 style={styles.createReviewTile}
-                title={
-                  <AddIcon fontSize="large" />
-                }
+                title={<AddIcon fontSize="large" />}
                 subtitle={I18n.t('create new report')}
               />
             </GridListTile>
@@ -183,7 +173,14 @@ const SpotCardSmall = props => {
               key={review.id}
               onClick={() => props.handleReviewClick(review)}
             >
-              <img src={review.image ? review.image.thumbnail_url : process.env.SUBSTITUTE_URL} alt={review.spot.name} />
+              <img
+                src={
+                  review.image
+                    ? review.image.thumbnail_url
+                    : process.env.SUBSTITUTE_URL
+                }
+                alt={review.spot.name}
+              />
               <GridListTileBar
                 style={styles.tileBar}
                 actionIcon={
@@ -205,7 +202,7 @@ const SpotCardSmall = props => {
   );
 };
 
-const SpotCardLarge = (props) => {
+const SpotCardLarge = props => {
   return (
     <Card style={styles.cardLarge}>
       <SpotImageStepperContainer
@@ -213,25 +210,15 @@ const SpotCardLarge = (props) => {
         currentSpot={props.currentSpot}
       />
       <CardContent>
-        <Typography
-          variant="h5"
-          gutterBottom
-        >
+        <Typography variant="h5" gutterBottom>
           {props.currentSpot.name}
         </Typography>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
           {props.currentSpot.formatted_address}
         </Typography>
         {props.spotReviews.length > 0 && (
           <div style={styles.reviewTilesContainer}>
-            <ReviewTilesContainer
-              reviews={props.spotReviews}
-              showSubheader
-            />
+            <ReviewTilesContainer reviews={props.spotReviews} showSubheader />
           </div>
         )}
       </CardContent>
@@ -240,11 +227,11 @@ const SpotCardLarge = (props) => {
   );
 };
 
-const SpotCard = (props) => {
+const SpotCard = props => {
   return (
     <SwipeableDrawer
-      variant={props.large ? "persistent" : "temporary"}
-      anchor={props.large ? "left": "bottom"}
+      variant={props.large ? 'persistent' : 'temporary'}
+      anchor={props.large ? 'left' : 'bottom'}
       open={props.open}
       PaperProps={{
         style: props.large ? styles.drawerPaperLarge : {},
@@ -254,13 +241,13 @@ const SpotCard = (props) => {
       onClose={props.handleClose}
       disableSwipeToOpen
       disableBackdropTransition
-      ModalProps={{ hideBackdrop: true, style: props.large ? {} : styles.modal }}
+      ModalProps={{
+        hideBackdrop: true,
+        style: props.large ? {} : styles.modal
+      }}
     >
       {props.large && (
-        <Toolbar
-          style={styles.toolbar}
-          disableGutters
-        >
+        <Toolbar style={styles.toolbar} disableGutters>
           <IconButton
             color="inherit"
             onClick={props.handleClose}
@@ -270,7 +257,12 @@ const SpotCard = (props) => {
           </IconButton>
         </Toolbar>
       )}
-      {props.currentSpot && (props.large ? <SpotCardLarge {...props} /> : <SpotCardSmall {...props} />)}
+      {props.currentSpot &&
+        (props.large ? (
+          <SpotCardLarge {...props} />
+        ) : (
+          <SpotCardSmall {...props} />
+        ))}
     </SwipeableDrawer>
   );
 };

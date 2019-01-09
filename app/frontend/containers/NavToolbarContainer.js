@@ -16,7 +16,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleBackButtonClick: (previousLocation) => {
+    handleBackButtonClick: previousLocation => {
       if (previousLocation) {
         ownProps.history.goBack();
       } else {
@@ -30,4 +30,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(NavToolbar)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(NavToolbar)
+  )
+);

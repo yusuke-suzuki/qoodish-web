@@ -53,7 +53,7 @@ const styles = {
   }
 };
 
-const Followers = (props) => {
+const Followers = props => {
   return props.followers.slice(0, 9).map(follower => (
     <ButtonBase
       key={follower.id}
@@ -68,15 +68,15 @@ const Followers = (props) => {
       />
     </ButtonBase>
   ));
-}
+};
 
-const createdAt = (map) => {
+const createdAt = map => {
   return moment(map.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(window.currentLocale)
     .format('LL');
-}
+};
 
-const MapTypes = (props) => {
+const MapTypes = props => {
   let mapTypes = [];
   if (props.map.private) {
     mapTypes.push(
@@ -133,39 +133,29 @@ const MapTypes = (props) => {
     );
   }
   return mapTypes;
-}
+};
 
-const MapSummaryCard = (props) => {
+const MapSummaryCard = props => {
   return (
     <div>
       <CardContent>
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('map name')}
         </Typography>
-        {props.map ?
-          <Typography
-            variant="h5"
-            gutterBottom
-            style={styles.text}
-          >
+        {props.map ? (
+          <Typography variant="h5" gutterBottom style={styles.text}>
             {props.map.name}
           </Typography>
-        : <Chip style={styles.skeltonTextPrimary} />}
+        ) : (
+          <Chip style={styles.skeltonTextPrimary} />
+        )}
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('owner')}
         </Typography>
         <ButtonBase
           component={Link}
-          to={props.map ? `/users/${props.map.owner_id}` : "/"}
+          to={props.map ? `/users/${props.map.owner_id}` : '/'}
           title={props.map && props.map.owner_name}
         >
           <Chip
@@ -181,28 +171,18 @@ const MapSummaryCard = (props) => {
           />
         </ButtonBase>
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('description')}
         </Typography>
-        {props.map ?
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            style={styles.text}
-          >
+        {props.map ? (
+          <Typography variant="subtitle1" gutterBottom style={styles.text}>
             {props.map.description}
           </Typography>
-        : <Chip style={styles.skeltonTextSecondary} />}
+        ) : (
+          <Chip style={styles.skeltonTextSecondary} />
+        )}
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('map base')}
         </Typography>
         <Chip
@@ -211,66 +191,54 @@ const MapSummaryCard = (props) => {
               <PlaceIcon />
             </Avatar>
           }
-          label={props.map && (props.map.base.name ? props.map.base.name : I18n.t('not set'))}
+          label={
+            props.map &&
+            (props.map.base.name ? props.map.base.name : I18n.t('not set'))
+          }
           style={styles.chip}
           clickable
           onClick={() => props.handleBaseClick(props.map)}
         />
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('created date')}
         </Typography>
-        {props.map ?
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            style={styles.text}
-          >
+        {props.map ? (
+          <Typography variant="subtitle1" gutterBottom style={styles.text}>
             {createdAt(props.map)}
           </Typography>
-        :
+        ) : (
           <Chip style={styles.skeltonTextSecondary} />
-        }
+        )}
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('map type')}
         </Typography>
-        {props.map ?
+        {props.map ? (
           <MapTypes {...props} />
-        : <Chip
-            avatar={
-              <Avatar src="" alt="" />
-            }
-            style={styles.chip}
-          />
-        }
+        ) : (
+          <Chip avatar={<Avatar src="" alt="" />} style={styles.chip} />
+        )}
 
-        <Typography
-          variant="subtitle2"
-          gutterBottom
-          color="textSecondary"
-        >
-          {`${props.map ? props.map.followers_count : 0} ${I18n.t('followers count')}`}
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
+          {`${props.map ? props.map.followers_count : 0} ${I18n.t(
+            'followers count'
+          )}`}
         </Typography>
         <div style={styles.followersContainer}>
-          {props.map ? <Followers {...props} /> : <Avatar style={styles.skeltonAvatar}><PersonIcon /></Avatar>}
+          {props.map ? (
+            <Followers {...props} />
+          ) : (
+            <Avatar style={styles.skeltonAvatar}>
+              <PersonIcon />
+            </Avatar>
+          )}
         </div>
 
-        <ReviewTilesContainer
-          reviews={props.mapReviews}
-          showSubheader
-        />
+        <ReviewTilesContainer reviews={props.mapReviews} showSubheader />
       </CardContent>
     </div>
   );
-}
+};
 
 export default MapSummaryCard;

@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeLeaveMapDialog());
     },
 
-    handleLeaveButtonClick: async (currentMap) => {
+    handleLeaveButtonClick: async currentMap => {
       dispatch(requestStart());
       const client = new ApiClient();
       let response = await client.unfollowMap(currentMap.id);
@@ -38,8 +38,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('unfollow map success')));
 
         gtag('event', 'unfollow', {
-          'event_category': 'engagement',
-          'event_label': 'map'
+          event_category: 'engagement',
+          event_label: 'map'
         });
 
         let colloboratorsResponse = await client.fetchCollaborators(map.id);
@@ -52,4 +52,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(LeaveMapDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LeaveMapDialog)
+);

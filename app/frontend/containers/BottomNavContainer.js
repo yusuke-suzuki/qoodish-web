@@ -10,8 +10,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-  };
+  return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(BottomNav));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(BottomNav)
+);

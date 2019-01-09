@@ -6,7 +6,7 @@ import {
   CLEAR_SPOT_STATE,
   CREATE_REVIEW,
   EDIT_REVIEW,
-  DELETE_REVIEW,
+  DELETE_REVIEW
 } from '../actionTypes';
 
 const initialState = {

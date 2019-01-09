@@ -15,9 +15,8 @@ import downloadImage from '../utils/downloadImage';
 import sleep from '../utils/sleep';
 import I18n from './I18n';
 
-const mapStateToProps = (state) => {
-  return {
-  };
+const mapStateToProps = state => {
+  return {};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -37,7 +36,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(signIn(user));
         ownProps.history.push('');
         gtag('event', 'login', {
-          'method': 'anonymous'
+          method: 'anonymous'
         });
         return;
       }
@@ -76,7 +75,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         ownProps.history.push('');
         dispatch(openToast(I18n.t('sign in success')));
         gtag('event', 'login', {
-          'method': authResult.additionalUserInfo.providerId
+          method: authResult.additionalUserInfo.providerId
         });
 
         // wait until thumbnail created on cloud function
@@ -94,4 +93,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginButtons)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(LoginButtons)
+  )
+);

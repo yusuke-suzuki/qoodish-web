@@ -32,8 +32,8 @@ class Notifications extends React.PureComponent {
       this.props.handleMount();
     }
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/notifications',
-      'page_title': `${I18n.t('notifications')} | Qoodish`
+      page_path: '/notifications',
+      page_title: `${I18n.t('notifications')} | Qoodish`
     });
   }
 
@@ -75,7 +75,9 @@ class Notifications extends React.PureComponent {
 
   renderProgress() {
     return (
-      <div style={this.props.large ? styles.progressLarge : styles.progressSmall}>
+      <div
+        style={this.props.large ? styles.progressLarge : styles.progressSmall}
+      >
         <CircularProgress />
       </div>
     );

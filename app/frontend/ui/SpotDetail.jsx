@@ -4,7 +4,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import {
+  withScriptjs,
+  withGoogleMap,
+  GoogleMap,
+  Marker
+} from 'react-google-maps';
 import Helmet from 'react-helmet';
 import NoContentsContainer from '../containers/NoContentsContainer';
 import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
@@ -50,36 +55,38 @@ const styles = {
   }
 };
 
-const GoogleMapContainer = withScriptjs(withGoogleMap(props => (
-  <GoogleMap
-    defaultZoom={props.defaultZoom}
-    options={{
-      zoomControl: false,
-      streetViewControl: false,
-      scaleControl: false,
-      mapTypeControl: false,
-      gestureHandling: 'greedy'
-    }}
-    center={
-      props.currentSpot &&
-      new google.maps.LatLng(
-        parseFloat(props.currentSpot.lat),
-        parseFloat(props.currentSpot.lng)
-      )
-    }
-  >
-    <Marker
-      position={
+const GoogleMapContainer = withScriptjs(
+  withGoogleMap(props => (
+    <GoogleMap
+      defaultZoom={props.defaultZoom}
+      options={{
+        zoomControl: false,
+        streetViewControl: false,
+        scaleControl: false,
+        mapTypeControl: false,
+        gestureHandling: 'greedy'
+      }}
+      center={
         props.currentSpot &&
         new google.maps.LatLng(
           parseFloat(props.currentSpot.lat),
           parseFloat(props.currentSpot.lng)
         )
       }
-      defaultAnimation={2}
-    />
-  </GoogleMap>
-)));
+    >
+      <Marker
+        position={
+          props.currentSpot &&
+          new google.maps.LatLng(
+            parseFloat(props.currentSpot.lat),
+            parseFloat(props.currentSpot.lng)
+          )
+        }
+        defaultAnimation={2}
+      />
+    </GoogleMap>
+  ))
+);
 
 class SpotDetail extends React.PureComponent {
   async componentDidMount() {
@@ -90,8 +97,8 @@ class SpotDetail extends React.PureComponent {
     this.props.fetchSpotReviews();
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': `/spots/${this.props.currentSpot.place_id}`,
-      'page_title': `${this.props.currentSpot.name} | Qoodish`
+      page_path: `/spots/${this.props.currentSpot.place_id}`,
+      page_title: `${this.props.currentSpot.name} | Qoodish`
     });
   }
 
@@ -114,11 +121,19 @@ class SpotDetail extends React.PureComponent {
       <Helmet
         title={`${spot.name} | Qoodish`}
         link={[
-          { rel: 'canonical', href: `${process.env.ENDPOINT}/spots/${spot.place_id}` }
+          {
+            rel: 'canonical',
+            href: `${process.env.ENDPOINT}/spots/${spot.place_id}`
+          }
         ]}
         meta={[
           { name: 'title', content: `${spot.name} | Qoodish` },
-          { name: 'keywords', content: `${spot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`},
+          {
+            name: 'keywords',
+            content: `${
+              spot.name
+            }, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
+          },
           { name: 'description', content: spot.formatted_address },
           { name: 'twitter:card', content: 'summary' },
           { name: 'twitter:title', content: `${spot.name} | Qoodish` },
@@ -192,7 +207,13 @@ class SpotDetail extends React.PureComponent {
   renderSpotCard(spot) {
     return (
       <Card style={this.props.large ? styles.cardLarge : styles.cardSmall}>
-        <div style={this.props.large ? styles.cardMapContainerLarge : styles.cardMapContainerSmall}>
+        <div
+          style={
+            this.props.large
+              ? styles.cardMapContainerLarge
+              : styles.cardMapContainerSmall
+          }
+        >
           {this.renderMap()}
         </div>
         <CardContent style={styles.cardContent}>

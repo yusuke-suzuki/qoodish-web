@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeInviteTargetDialog());
     },
 
-    handleSendButtonClick: async (userId) => {
+    handleSendButtonClick: async userId => {
       dispatch(requestStart());
       const client = new ApiClient();
       const response = await client.sendInvite(ownProps.mapId, userId);
@@ -52,4 +52,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(InviteTargetDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(InviteTargetDialog)
+);

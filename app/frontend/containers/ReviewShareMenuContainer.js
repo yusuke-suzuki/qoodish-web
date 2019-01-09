@@ -5,11 +5,10 @@ import openToast from '../actions/openToast';
 import I18n from './I18n';
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleUrlCopied: () => {
       dispatch(openToast(I18n.t('copied')));
@@ -17,4 +16,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewShareMenu));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewShareMenu)
+);

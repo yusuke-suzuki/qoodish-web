@@ -16,7 +16,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import FollowMapButtonContainer from '../containers/FollowMapButtonContainer';
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
@@ -47,9 +47,9 @@ const FollowingMaps = props => {
       </ListItemAvatar>
       <ListItemText
         primary={map.name}
-        primaryTypographyProps={{ noWrap: true}}
+        primaryTypographyProps={{ noWrap: true }}
       />
-      <ListItemSecondaryAction style={styles.listItemSecondaryAction} >
+      <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
         <FollowMapButtonContainer currentMap={map} />
       </ListItemSecondaryAction>
     </ListItem>
@@ -66,10 +66,7 @@ const FollowingMapsDialog = props => {
       TransitionComponent={Transition}
     >
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.onClose}
-        >
+        <IconButton color="inherit" onClick={props.onClose}>
           <CloseIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" noWrap>

@@ -78,7 +78,7 @@ const styles = {
   }
 };
 
-const RecentReviews = (props) => {
+const RecentReviews = props => {
   if (!props.loading && props.recentReviews.length < 1) {
     return (
       <NoContentsContainer
@@ -95,85 +95,104 @@ const RecentReviews = (props) => {
         cellHeight={240}
       >
         {props.loading
-        ? Array.from(new Array(8)).map((v, i) => (
-          <GridListTile key={i}>
-            <Card style={styles.reviewCard}>
-              <CardHeader
-                avatar={
-                  <Avatar style={styles.skeltonAvatar}><PersonIcon /></Avatar>
-                }
-                title={<Chip style={styles.skeltonTextSecondary} />}
-                subheader={<Chip style={styles.skeltonTextSecondary} />}
-              />
-              <CardContent style={props.large ? styles.cardContentLarge : styles.cardContentSmall}>
-                <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  gutterBottom
-                >
-                  <Chip style={styles.skeltonTextSecondary} />
-                </Typography>
-                <Typography variant="h6" gutterBottom>
-                  <Chip style={styles.skeltonTextPrimary} />
-                </Typography>
-                <Typography component="p" style={styles.reviewComment}>
-                  <Chip style={styles.skeltonTextComment} />
-                  <Chip style={styles.skeltonTextComment} />
-                  <Chip style={styles.skeltonTextComment} />
-                </Typography>
-              </CardContent>
-            </Card>
-          </GridListTile>
-        ))
-        : props.recentReviews.map(review => (
-          <GridListTile
-            key={review.id}
-            onClick={() => props.handleReviewClick(review)}
-            style={styles.gridTile}
-          >
-            <Card style={styles.reviewCard}>
-              <CardHeader
-                avatar={
-                  <Avatar
-                    src={review.author.profile_image_url}
-                    alt={review.author.name}
+          ? Array.from(new Array(8)).map((v, i) => (
+              <GridListTile key={i}>
+                <Card style={styles.reviewCard}>
+                  <CardHeader
+                    avatar={
+                      <Avatar style={styles.skeltonAvatar}>
+                        <PersonIcon />
+                      </Avatar>
+                    }
+                    title={<Chip style={styles.skeltonTextSecondary} />}
+                    subheader={<Chip style={styles.skeltonTextSecondary} />}
                   />
-                }
-                title={review.author.name}
-                subheader={
-                  moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-                    .locale(window.currentLocale)
-                    .fromNow()
-                }
-              />
-              <CardContent style={props.large ? styles.cardContentLarge : styles.cardContentSmall}>
-                <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  gutterBottom
-                  noWrap
-                >
-                  {review.map.name}
-                </Typography>
-                <Typography variant="h6" gutterBottom noWrap>
-                  {review.spot.name}
-                </Typography>
-                <Typography component="p" style={styles.reviewComment}>
-                  {review.comment}
-                </Typography>
-              </CardContent>
-            </Card>
-            {review.image && (
-              <ListItemSecondaryAction>
-                <Avatar
-                  src={review.image.thumbnail_url}
-                  alt={review.spot.name}
-                  style={props.large ? styles.secondaryAvatarLarge : styles.secondaryAvatarSmall}
-                />
-              </ListItemSecondaryAction>
-            )}
-          </GridListTile>
-        ))}
+                  <CardContent
+                    style={
+                      props.large
+                        ? styles.cardContentLarge
+                        : styles.cardContentSmall
+                    }
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      color="primary"
+                      gutterBottom
+                    >
+                      <Chip style={styles.skeltonTextSecondary} />
+                    </Typography>
+                    <Typography variant="h6" gutterBottom>
+                      <Chip style={styles.skeltonTextPrimary} />
+                    </Typography>
+                    <Typography component="p" style={styles.reviewComment}>
+                      <Chip style={styles.skeltonTextComment} />
+                      <Chip style={styles.skeltonTextComment} />
+                      <Chip style={styles.skeltonTextComment} />
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </GridListTile>
+            ))
+          : props.recentReviews.map(review => (
+              <GridListTile
+                key={review.id}
+                onClick={() => props.handleReviewClick(review)}
+                style={styles.gridTile}
+              >
+                <Card style={styles.reviewCard}>
+                  <CardHeader
+                    avatar={
+                      <Avatar
+                        src={review.author.profile_image_url}
+                        alt={review.author.name}
+                      />
+                    }
+                    title={review.author.name}
+                    subheader={moment(
+                      review.created_at,
+                      'YYYY-MM-DDThh:mm:ss.SSSZ'
+                    )
+                      .locale(window.currentLocale)
+                      .fromNow()}
+                  />
+                  <CardContent
+                    style={
+                      props.large
+                        ? styles.cardContentLarge
+                        : styles.cardContentSmall
+                    }
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      color="primary"
+                      gutterBottom
+                      noWrap
+                    >
+                      {review.map.name}
+                    </Typography>
+                    <Typography variant="h6" gutterBottom noWrap>
+                      {review.spot.name}
+                    </Typography>
+                    <Typography component="p" style={styles.reviewComment}>
+                      {review.comment}
+                    </Typography>
+                  </CardContent>
+                </Card>
+                {review.image && (
+                  <ListItemSecondaryAction>
+                    <Avatar
+                      src={review.image.thumbnail_url}
+                      alt={review.spot.name}
+                      style={
+                        props.large
+                          ? styles.secondaryAvatarLarge
+                          : styles.secondaryAvatarSmall
+                      }
+                    />
+                  </ListItemSecondaryAction>
+                )}
+              </GridListTile>
+            ))}
       </GridList>
     );
   }

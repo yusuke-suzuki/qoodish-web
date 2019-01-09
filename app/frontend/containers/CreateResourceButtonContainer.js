@@ -13,7 +13,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleButtonClick: (currentUser) => {
+    handleButtonClick: currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -23,4 +23,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateResourceButton));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CreateResourceButton)
+);

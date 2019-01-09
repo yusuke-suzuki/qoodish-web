@@ -8,10 +8,18 @@ import {
 import { compose } from 'recompose';
 import loadable from '@loadable/component';
 
-const CreateResourceButtonContainer = loadable(() => import(/* webpackChunkName: "create_resource_button" */ '../containers/CreateResourceButtonContainer'));
-const LocationButtonContainer = loadable(() => import(/* webpackChunkName: "location_button" */ '../containers/LocationButtonContainer'));
-const SpotMarkersContainer = loadable(() => import(/* webpackChunkName: "spot_markers" */ '../containers/SpotMarkersContainer'));
-const CurrentPositionMarkerContainer = loadable(() => import(/* webpackChunkName: "current_position_marker" */ '../containers/CurrentPositionMarkerContainer'));
+const CreateResourceButtonContainer = loadable(() =>
+  import(/* webpackChunkName: "create_resource_button" */ '../containers/CreateResourceButtonContainer')
+);
+const LocationButtonContainer = loadable(() =>
+  import(/* webpackChunkName: "location_button" */ '../containers/LocationButtonContainer')
+);
+const SpotMarkersContainer = loadable(() =>
+  import(/* webpackChunkName: "spot_markers" */ '../containers/SpotMarkersContainer')
+);
+const CurrentPositionMarkerContainer = loadable(() =>
+  import(/* webpackChunkName: "current_position_marker" */ '../containers/CurrentPositionMarkerContainer')
+);
 
 const styles = {
   mapWrapperLarge: {
@@ -45,7 +53,7 @@ const styles = {
 const MapWithAnOverlayView = compose(
   withScriptjs,
   withGoogleMap
-)(props =>
+)(props => (
   <GoogleMap
     ref={props.onMapLoad}
     options={{
@@ -79,30 +87,40 @@ const MapWithAnOverlayView = compose(
     <div style={styles.buttonContainer}>
       <CreateResourceButtonContainer
         buttonForMap
-        disabled={!(props.currentMap && props.currentMap.postable && props.currentMap.following)}
+        disabled={
+          !(
+            props.currentMap &&
+            props.currentMap.postable &&
+            props.currentMap.following
+          )
+        }
       />
       <LocationButtonContainer />
     </div>
   </GoogleMap>
-);
+));
 
-const GMap = (props) => {
+const GMap = props => {
   return (
     <MapWithAnOverlayView
       {...props}
       googleMapURL={process.env.GOOGLE_MAP_URL}
       containerElement={
         <div
+          style={props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall}
+        />
+      }
+      mapElement={
+        <div
           style={
-            props.large ? styles.mapWrapperLarge : styles.mapWrapperSmall
+            props.large ? styles.mapContainerLarge : styles.mapContainerSmall
           }
         />
       }
-      mapElement={<div style={props.large ? styles.mapContainerLarge : styles.mapContainerSmall} />}
       loadingElement={<div style={{ height: '100%' }} />}
       onMapLoad={props.onMapMounted}
     />
   );
-}
+};
 
 export default GMap;

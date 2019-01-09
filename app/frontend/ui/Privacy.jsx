@@ -28,8 +28,8 @@ const styles = {
 class Privacy extends React.PureComponent {
   componentDidMount() {
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/privacy',
-      'page_title': 'Privacy | Qoodish'
+      page_path: '/privacy',
+      page_title: 'Privacy | Qoodish'
     });
   }
 

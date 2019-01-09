@@ -68,7 +68,7 @@ const initialState = {
   createActionsOpen: false
 };
 
-const getBottomNavValue = (pathname) => {
+const getBottomNavValue = pathname => {
   switch (pathname) {
     case '/':
       return 0;
@@ -111,7 +111,7 @@ const switchPageTitle = (pathname, large) => {
   }
 };
 
-const showSideNav = (pathname) => {
+const showSideNav = pathname => {
   if (
     (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
     pathname.includes('/login') ||
@@ -124,7 +124,7 @@ const showSideNav = (pathname) => {
   }
 };
 
-const showBottomNav = (pathname) => {
+const showBottomNav = pathname => {
   if (
     pathname.includes('/maps/') ||
     pathname.includes('/spots') ||
@@ -138,11 +138,11 @@ const showBottomNav = (pathname) => {
   }
 };
 
-const detectMapDetail = (pathname) => {
+const detectMapDetail = pathname => {
   return pathname.includes('/maps/') && !pathname.includes('/reports');
 };
 
-const switchBackButton = (pathname) => {
+const switchBackButton = pathname => {
   if (
     pathname.includes('/reports/') ||
     pathname.includes('/maps/') ||
@@ -161,7 +161,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         toastOpen: true,
         toastMessage: action.payload.message,
-        toastDuration: action.payload.duration,
+        toastDuration: action.payload.duration
       });
     case CLOSE_TOAST:
       return Object.assign({}, state, {
@@ -308,9 +308,14 @@ const reducer = (state = initialState, action) => {
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
-        previousLocation: state.currentLocation ? state.currentLocation : undefined,
+        previousLocation: state.currentLocation
+          ? state.currentLocation
+          : undefined,
         currentLocation: action.payload.location.pathname,
-        pageTitle: switchPageTitle(action.payload.location.pathname, state.large),
+        pageTitle: switchPageTitle(
+          action.payload.location.pathname,
+          state.large
+        ),
         bottomNavValue: getBottomNavValue(action.payload.location.pathname),
         showBackButton: switchBackButton(action.payload.location.pathname),
         issueDialogOpen: false,

@@ -30,4 +30,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(NavDrawer));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NavDrawer)
+);

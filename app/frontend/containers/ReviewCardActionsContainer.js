@@ -26,7 +26,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
       dispatch(sendCommentStart());
       const client = new ApiClient();
-      let response = await client.sendComment(ownProps.review.id, params.comment);
+      let response = await client.sendComment(
+        ownProps.review.id,
+        params.comment
+      );
       if (response.ok) {
         dispatch(openToast(I18n.t('added comment')));
         let review = await response.json();
@@ -39,4 +42,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewCardActions));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewCardActions)
+);

@@ -30,19 +30,15 @@ const styles = {
   }
 };
 
-const Subheader = (props) => {
+const Subheader = props => {
   return (
-    <Typography
-      variant="subtitle2"
-      gutterBottom
-      color="textSecondary"
-    >
+    <Typography variant="subtitle2" gutterBottom color="textSecondary">
       {`${props.reviews.length} ${I18n.t('reviews count')}`}
     </Typography>
   );
-}
+};
 
-const ReviewGridList = (props) => {
+const ReviewGridList = props => {
   return (
     <div>
       {props.showSubheader && <Subheader {...props} />}
@@ -59,24 +55,29 @@ const ReviewGridList = (props) => {
               onClick={() => props.handleReviewClick(review)}
               style={styles.gridTile}
             >
-              {review.image ?
-                <img
-                  src={review.image.thumbnail_url}
-                  alt={review.spot.name}
-                />
-              :
+              {review.image ? (
+                <img src={review.image.thumbnail_url} alt={review.spot.name} />
+              ) : (
                 <GridListTileBar
-                  title={<PlaceIcon style={props.large ? styles.placeIconLarge : styles.placeIconSmall} />}
+                  title={
+                    <PlaceIcon
+                      style={
+                        props.large
+                          ? styles.placeIconLarge
+                          : styles.placeIconSmall
+                      }
+                    />
+                  }
                   style={styles.tileBar}
                 />
-              }
+              )}
             </GridListTile>
           ))}
         </GridList>
       </div>
     </div>
   );
-}
+};
 
 ReviewGridList.defaultProps = {
   cols: 3,

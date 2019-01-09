@@ -11,7 +11,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleDeleteCommentButtonClick: comment => {
       dispatch(openDeleteCommentDialog(comment));
@@ -23,8 +23,13 @@ const mapDispatchToProps = (dispatch) => {
         return;
       }
       dispatch(openIssueDialog(comment.id, 'comment'));
-    },
+    }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CommentMenu));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommentMenu)
+);

@@ -29,22 +29,19 @@ const styles = {
   }
 };
 
-const NotificationIcon = (props) => {
+const NotificationIcon = props => {
   if (props.unreadNotifications.length > 0) {
     return (
-      <Badge
-        badgeContent={props.unreadNotifications.length}
-        color="secondary"
-      >
+      <Badge badgeContent={props.unreadNotifications.length} color="secondary">
         <NotificationsIcon />
       </Badge>
     );
   } else {
     return <NotificationsIcon />;
   }
-}
+};
 
-const BottomNav = (props) => {
+const BottomNav = props => {
   return (
     <Paper style={styles.bottomNav} elevation={20}>
       <BottomNavigation value={props.bottomNavValue}>
@@ -80,6 +77,6 @@ const BottomNav = (props) => {
       </BottomNavigation>
     </Paper>
   );
-}
+};
 
 export default BottomNav;

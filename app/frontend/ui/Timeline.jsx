@@ -59,8 +59,8 @@ export default class Feed extends React.PureComponent {
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/',
-      'page_title': `${I18n.t('home')} | Qoodish`
+      page_path: '/',
+      page_title: `${I18n.t('home')} | Qoodish`
     });
   }
 
@@ -111,7 +111,9 @@ export default class Feed extends React.PureComponent {
     return (
       <Card
         style={this.props.large ? styles.formCardLarge : styles.formCardSmall}
-        onClick={() => this.props.handleCreateReviewClick(this.props.currentUser)}
+        onClick={() =>
+          this.props.handleCreateReviewClick(this.props.currentUser)
+        }
       >
         <CardHeader
           avatar={this.renderAvatar()}

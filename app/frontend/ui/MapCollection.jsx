@@ -45,23 +45,26 @@ const styles = {
 
 const FollowCheckButton = () => {
   return (
-    <Button variant="outlined" size="small" color="primary" style={styles.followCheckButton}>
+    <Button
+      variant="outlined"
+      size="small"
+      color="primary"
+      style={styles.followCheckButton}
+    >
       {I18n.t('following')}
     </Button>
   );
-}
+};
 
 const PrivateIcon = () => {
-  return (
-    <LockIcon style={styles.mapTypeIcon} />
-  );
-}
+  return <LockIcon style={styles.mapTypeIcon} />;
+};
 
-const MapCollection = (props) => {
+const MapCollection = props => {
   return (
     <div style={styles.container}>
       <GridList
-        cols={props.large ? 4 : (props.horizontal ? 1.5 : 2)}
+        cols={props.large ? 4 : props.horizontal ? 1.5 : 2}
         style={props.horizontal ? styles.gridListHorizontal : styles.gridList}
         spacing={props.large || props.horizontal ? 20 : 10}
         cellHeight={220}
@@ -74,7 +77,7 @@ const MapCollection = (props) => {
             to={`/maps/${map.id}`}
             title={map.name}
           >
-            {map.following && <FollowCheckButton /> }
+            {map.following && <FollowCheckButton />}
             <img
               src={props.large ? map.image_url : map.thumbnail_url}
               alt={map.name}
@@ -83,18 +86,10 @@ const MapCollection = (props) => {
               title={map.name}
               subtitle={
                 <div>
-                  <Typography
-                    variant="body1"
-                    color="inherit"
-                    noWrap
-                  >
+                  <Typography variant="body1" color="inherit" noWrap>
                     by: {map.owner_name}
                   </Typography>
-                  <Typography
-                    variant="body1"
-                    color="inherit"
-                    noWrap
-                  >
+                  <Typography variant="body1" color="inherit" noWrap>
                     {map.followers_count} {I18n.t('followers')}
                   </Typography>
                 </div>
@@ -111,6 +106,6 @@ const MapCollection = (props) => {
       </GridList>
     </div>
   );
-}
+};
 
 export default MapCollection;

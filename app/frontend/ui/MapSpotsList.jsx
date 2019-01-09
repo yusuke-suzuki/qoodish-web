@@ -13,17 +13,14 @@ const styles = {
   }
 };
 
-const Spots = (props) => {
+const Spots = props => {
   return props.spots.map(spot => (
     <ListItem
       button
       key={spot.place_id}
       onClick={() => props.handleSpotClick(spot)}
     >
-      <Avatar
-        src={spot.image_url}
-        alt={spot.name}
-      />
+      <Avatar src={spot.image_url} alt={spot.name} />
       <ListItemText
         disableTypography={true}
         primary={
@@ -39,18 +36,22 @@ const Spots = (props) => {
       />
     </ListItem>
   ));
-}
+};
 
-const MapSpotsList = (props) => {
+const MapSpotsList = props => {
   return (
     <List
-      subheader={props.large &&
-        <ListSubheader style={styles.subheader}>{I18n.t('spots')}</ListSubheader>
+      subheader={
+        props.large && (
+          <ListSubheader style={styles.subheader}>
+            {I18n.t('spots')}
+          </ListSubheader>
+        )
       }
     >
       <Spots {...props} />
     </List>
   );
-}
+};
 
 export default MapSpotsList;

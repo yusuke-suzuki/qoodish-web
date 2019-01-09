@@ -29,7 +29,7 @@ const styles = {
   }
 };
 
-const UserAvatar = (props) => {
+const UserAvatar = props => {
   if (props.currentUser.isAnonymous) {
     return (
       <Avatar style={styles.avatar}>
@@ -56,12 +56,17 @@ class ReviewCardActions extends React.PureComponent {
     };
     this.handleCommentFocus = this.handleCommentFocus.bind(this);
     this.handleCommentCancel = this.handleCommentCancel.bind(this);
-    this.handleSendCommentButtonClick = this.handleSendCommentButtonClick.bind(this);
+    this.handleSendCommentButtonClick = this.handleSendCommentButtonClick.bind(
+      this
+    );
     this.handleCommentChange = this.handleCommentChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.sendingComment ===  true && this.props.sendingComment ===  false) {
+    if (
+      prevProps.sendingComment === true &&
+      this.props.sendingComment === false
+    ) {
       this.setState({
         commentFormActive: false
       });
@@ -92,7 +97,7 @@ class ReviewCardActions extends React.PureComponent {
     this.setState({
       comment: comment
     });
-  };
+  }
 
   render() {
     return (
@@ -100,7 +105,9 @@ class ReviewCardActions extends React.PureComponent {
         <div style={styles.actionsContainer}>
           <UserAvatar {...this.props} />
           {this.renderCommentForm()}
-          {!this.state.commentFormActive && <ReviewLikeActionsContainer target={this.props.review} />}
+          {!this.state.commentFormActive && (
+            <ReviewLikeActionsContainer target={this.props.review} />
+          )}
         </div>
         {this.state.commentFormActive && this.renderCommentActions()}
       </div>
@@ -111,7 +118,7 @@ class ReviewCardActions extends React.PureComponent {
     return (
       <TextField
         fullWidth
-        placeholder={I18n.t("add comment")}
+        placeholder={I18n.t('add comment')}
         InputProps={{
           disableUnderline: true
         }}
@@ -119,7 +126,7 @@ class ReviewCardActions extends React.PureComponent {
         onFocus={this.handleCommentFocus}
         autoFocus={this.state.commentFormActive}
         multiline={this.state.commentFormActive}
-        onChange={(e) => this.handleCommentChange(e.target.value)}
+        onChange={e => this.handleCommentChange(e.target.value)}
       />
     );
   }
@@ -127,9 +134,7 @@ class ReviewCardActions extends React.PureComponent {
   renderCommentActions() {
     return (
       <div style={styles.commentActionsContainer}>
-        <Button onClick={this.handleCommentCancel}>
-          {I18n.t('cancel')}
-        </Button>
+        <Button onClick={this.handleCommentCancel}>{I18n.t('cancel')}</Button>
         <Button
           onClick={this.handleSendCommentButtonClick}
           color="primary"
@@ -140,6 +145,6 @@ class ReviewCardActions extends React.PureComponent {
       </div>
     );
   }
-};
+}
 
 export default ReviewCardActions;

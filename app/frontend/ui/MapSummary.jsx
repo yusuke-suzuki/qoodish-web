@@ -1,13 +1,27 @@
 import React from 'react';
 import loadable from '@loadable/component';
 
-const MapToolbarContainer = loadable(() => import(/* webpackChunkName: "map_toolbar" */ '../containers/MapToolbarContainer'));
-const MapSummaryCardContainer = loadable(() => import(/* webpackChunkName: "map_summary_card" */ '../containers/MapSummaryCardContainer'));
-const MapReviewsListContainer = loadable(() => import(/* webpackChunkName: "map_reviews_list" */ '../containers/MapReviewsListContainer'));
-const MapSpotsListContainer = loadable(() => import(/* webpackChunkName: "map_spots_list" */ '../containers/MapSpotsListContainer'));
-const MapFollowersListContainer = loadable(() => import(/* webpackChunkName: "map_followers_list" */ '../containers/MapFollowersListContainer'));
-const FollowMapButtonContainer = loadable(() => import(/* webpackChunkName: "follow_map_button" */ '../containers/FollowMapButtonContainer'));
-const MapLikeActionsContainer = loadable(() => import(/* webpackChunkName: "map_like_actions" */ '../containers/MapLikeActionsContainer'));
+const MapToolbarContainer = loadable(() =>
+  import(/* webpackChunkName: "map_toolbar" */ '../containers/MapToolbarContainer')
+);
+const MapSummaryCardContainer = loadable(() =>
+  import(/* webpackChunkName: "map_summary_card" */ '../containers/MapSummaryCardContainer')
+);
+const MapReviewsListContainer = loadable(() =>
+  import(/* webpackChunkName: "map_reviews_list" */ '../containers/MapReviewsListContainer')
+);
+const MapSpotsListContainer = loadable(() =>
+  import(/* webpackChunkName: "map_spots_list" */ '../containers/MapSpotsListContainer')
+);
+const MapFollowersListContainer = loadable(() =>
+  import(/* webpackChunkName: "map_followers_list" */ '../containers/MapFollowersListContainer')
+);
+const FollowMapButtonContainer = loadable(() =>
+  import(/* webpackChunkName: "follow_map_button" */ '../containers/FollowMapButtonContainer')
+);
+const MapLikeActionsContainer = loadable(() =>
+  import(/* webpackChunkName: "map_like_actions" */ '../containers/MapLikeActionsContainer')
+);
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -49,8 +63,7 @@ const styles = {
     height: 64,
     width: '100%'
   },
-  tabsSmall: {
-  },
+  tabsSmall: {},
   tabLarge: {
     height: 64,
     minHeight: 64,
@@ -104,18 +117,18 @@ class MapSummary extends React.PureComponent {
   render() {
     return (
       <div
-        style={
-          this.props.large
-            ? styles.containerLarge
-            : styles.containerSmall
-        }
+        style={this.props.large ? styles.containerLarge : styles.containerSmall}
       >
         <AppBar position="absolute">
           <MapToolbarContainer
             showBackButton={this.props.large ? false : true}
             showMapName
             showMenuButton={this.props.large ? true : false}
-            handleBackButtonClick={() => this.props.large ? this.props.handleBackButtonClick(this.props.previousLocation) : this.props.handleSummaryClose()}
+            handleBackButtonClick={() =>
+              this.props.large
+                ? this.props.handleBackButtonClick(this.props.previousLocation)
+                : this.props.handleSummaryClose()
+            }
           />
           {!this.props.large && this.renderTabBarSmall()}
         </AppBar>
@@ -128,15 +141,8 @@ class MapSummary extends React.PureComponent {
 
   renderTabBarLarge() {
     return (
-      <Paper
-        style={styles.toolbarContainerLarge}
-        square
-        elevation={1}
-      >
-        <Toolbar
-          style={styles.toolbarLarge}
-          disableGutters
-        >
+      <Paper style={styles.toolbarContainerLarge} square elevation={1}>
+        <Toolbar style={styles.toolbarLarge} disableGutters>
           {this.renderTabs()}
         </Toolbar>
       </Paper>
@@ -144,22 +150,12 @@ class MapSummary extends React.PureComponent {
   }
 
   renderTabBarSmall() {
-    return (
-      <Toolbar
-        style={styles.toolbarSmall}
-      >
-        {this.renderTabs()}
-      </Toolbar>
-    );
+    return <Toolbar style={styles.toolbarSmall}>{this.renderTabs()}</Toolbar>;
   }
 
   renderBottomNav() {
     return (
-      <Paper
-        style={styles.bottomNav}
-        square
-        elevation={1}
-      >
+      <Paper style={styles.bottomNav} square elevation={1}>
         <Toolbar
           style={this.props.large ? styles.toolbarLarge : styles.toolbarSmall}
         >
@@ -178,9 +174,9 @@ class MapSummary extends React.PureComponent {
         value={this.state.tabValue}
         onChange={this.handleTabChange}
         style={this.props.large ? styles.tabsLarge : styles.tabsSmall}
-        variant={this.props.large ? "fullWidth" : "standard"}
-        indicatorColor={this.props.large ? "primary" : "secondary"}
-        textColor={this.props.large ? "primary" : "inherit"}
+        variant={this.props.large ? 'fullWidth' : 'standard'}
+        indicatorColor={this.props.large ? 'primary' : 'secondary'}
+        textColor={this.props.large ? 'primary' : 'inherit'}
       >
         <Tab
           icon={this.props.large ? <HomeIcon style={styles.tabIcon} /> : null}
@@ -188,7 +184,9 @@ class MapSummary extends React.PureComponent {
           style={this.props.large ? styles.tabLarge : styles.tabSmall}
         />
         <Tab
-          icon={this.props.large ? <TimelineIcon style={styles.tabIcon} /> : null}
+          icon={
+            this.props.large ? <TimelineIcon style={styles.tabIcon} /> : null
+          }
           label={this.props.large ? null : I18n.t('timeline')}
           style={this.props.large ? styles.tabLarge : styles.tabSmall}
         />
@@ -211,7 +209,9 @@ class MapSummary extends React.PureComponent {
       <SwipeableViews
         index={this.state.tabValue}
         onChangeIndex={this.handleSwipeChange}
-        style={this.props.large ? styles.tabContentsLarge : styles.tabContentsSmall}
+        style={
+          this.props.large ? styles.tabContentsLarge : styles.tabContentsSmall
+        }
       >
         <MapSummaryCardContainer />
         <MapReviewsListContainer />

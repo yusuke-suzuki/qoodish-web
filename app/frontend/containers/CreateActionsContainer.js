@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeCreateActions());
     },
 
-    handleCreateReviewButtonClick: (spot) => {
+    handleCreateReviewButtonClick: spot => {
       if (spot) {
         let place = {
           description: spot.name,
@@ -40,4 +40,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CreateActions));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CreateActions)
+);

@@ -36,9 +36,9 @@ const styles = {
   }
 };
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
 class EditProfileDialog extends React.PureComponent {
   constructor(props) {
@@ -57,7 +57,7 @@ class EditProfileDialog extends React.PureComponent {
     this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
     this.validate = this.validate.bind(this);
     this.clearState = this.clearState.bind(this);
-    this.setCurrentProfile = this.setCurrentProfile.bind(this)
+    this.setCurrentProfile = this.setCurrentProfile.bind(this);
   }
 
   setCurrentProfile() {
@@ -142,12 +142,15 @@ class EditProfileDialog extends React.PureComponent {
 
     reader.onloadend = () => {
       let dataUrl = reader.result;
-      this.setState({
-        imageUrl: dataUrl,
-        editImage: true
-      }, () => {
-        this.validate();
-      });
+      this.setState(
+        {
+          imageUrl: dataUrl,
+          editImage: true
+        },
+        () => {
+          this.validate();
+        }
+      );
     };
 
     reader.readAsDataURL(file);
@@ -166,11 +169,7 @@ class EditProfileDialog extends React.PureComponent {
 
   validate() {
     let disabled;
-    if (
-      this.state.name &&
-      !this.state.errorName &&
-      !this.state.errorBio
-    ) {
+    if (this.state.name && !this.state.errorName && !this.state.errorBio) {
       disabled = false;
     } else {
       disabled = true;
@@ -196,13 +195,13 @@ class EditProfileDialog extends React.PureComponent {
         <DialogTitle>{I18n.t('edit profile')}</DialogTitle>
         <DialogContent>
           <div style={styles.avatarContainer}>
-            <Avatar
-              src={this.state.imageUrl}
-              style={styles.profileAvatar}
-            >
+            <Avatar src={this.state.imageUrl} style={styles.profileAvatar}>
               <img src={this.state.imageUrl} style={styles.image} />
             </Avatar>
-            <IconButton onClick={this.handleAddImageClick} style={styles.editImageButton}>
+            <IconButton
+              onClick={this.handleAddImageClick}
+              style={styles.editImageButton}
+            >
               <PhotoCameraIcon />
             </IconButton>
           </div>
@@ -217,7 +216,9 @@ class EditProfileDialog extends React.PureComponent {
           {this.renderBioText()}
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+          <Button onClick={this.props.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
           <Button
             variant="contained"
             onClick={this.handleSaveButtonClick}
@@ -256,9 +257,9 @@ class EditProfileDialog extends React.PureComponent {
         helperText={this.state.errorBio}
         fullWidth
         multiline
-        rowsMax={this.props.large ? "3" : "2"}
-        rows={this.props.large ? "3" : "3"}
-        value={this.state.bio ? this.state.bio : ""}
+        rowsMax={this.props.large ? '3' : '2'}
+        rows={this.props.large ? '3' : '3'}
+        value={this.state.bio ? this.state.bio : ''}
         margin="normal"
       />
     );

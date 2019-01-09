@@ -13,7 +13,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleEditReviewButtonClick: review => {
       dispatch(openEditReviewDialog(review));
@@ -33,8 +33,13 @@ const mapDispatchToProps = (dispatch) => {
         return;
       }
       dispatch(openIssueDialog(review.id, 'review'));
-    },
+    }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewVertMenu));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewVertMenu)
+);

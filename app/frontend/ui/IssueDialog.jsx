@@ -80,8 +80,14 @@ class IssueDialog extends React.PureComponent {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
-          <Button variant="contained" onClick={this.handleSendButtonClick} color="primary">
+          <Button onClick={this.props.handleCancelButtonClick}>
+            {I18n.t('cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={this.handleSendButtonClick}
+            color="primary"
+          >
             {I18n.t('send')}
           </Button>
         </DialogActions>

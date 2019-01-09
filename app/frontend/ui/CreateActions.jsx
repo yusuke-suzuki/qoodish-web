@@ -21,7 +21,7 @@ const ActionsList = props => {
         <ListItemIcon>
           <EditIcon />
         </ListItemIcon>
-        <ListItemText primary={I18n.t("create new report")} />
+        <ListItemText primary={I18n.t('create new report')} />
       </ListItem>
       <ListItem
         button
@@ -32,7 +32,7 @@ const ActionsList = props => {
         <ListItemIcon>
           <MapIcon />
         </ListItemIcon>
-        <ListItemText primary={I18n.t("create new map")} />
+        <ListItemText primary={I18n.t('create new map')} />
       </ListItem>
     </List>
   );
@@ -40,11 +40,7 @@ const ActionsList = props => {
 
 const ActionsDrawer = props => {
   return (
-    <Drawer
-      anchor="bottom"
-      open={props.open}
-      onClose={props.handleCloseDrawer}
-    >
+    <Drawer anchor="bottom" open={props.open} onClose={props.handleCloseDrawer}>
       <ActionsList {...props} />
     </Drawer>
   );
@@ -52,18 +48,18 @@ const ActionsDrawer = props => {
 
 const ActionsDialog = props => {
   return (
-    <Dialog
-      open={props.open}
-      onClose={props.handleCloseDrawer}
-      fullWidth
-    >
+    <Dialog open={props.open} onClose={props.handleCloseDrawer} fullWidth>
       <ActionsList {...props} />
     </Dialog>
   );
 };
 
 const CreateActions = props => {
-  return props.large ? <ActionsDialog {...props} /> : <ActionsDrawer {...props} />
+  return props.large ? (
+    <ActionsDialog {...props} />
+  ) : (
+    <ActionsDrawer {...props} />
+  );
 };
 
 export default CreateActions;

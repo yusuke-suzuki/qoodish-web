@@ -10,8 +10,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-  };
+  return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapFollowersList));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapFollowersList)
+);

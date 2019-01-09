@@ -4,9 +4,9 @@ import getFirebaseAuth from './getFirebaseAuth';
 const getCurrentUser = () => {
   return new Promise(async (resolve, reject) => {
     await getFirebaseAuth();
-    const firebase = await getFirebase()
+    const firebase = await getFirebase();
 
-    firebase.auth().onAuthStateChanged(async (user) => {
+    firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         resolve(user);
       } else {

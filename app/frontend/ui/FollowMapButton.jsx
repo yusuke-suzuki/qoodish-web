@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import I18n from '../containers/I18n';
 
-const RoleButton = (props) => {
+const RoleButton = props => {
   if (props.currentMap.editable) {
     return (
       <Button variant="contained" disabled>
@@ -26,18 +26,20 @@ const RoleButton = (props) => {
       </Button>
     );
   }
-}
+};
 
-const FollowMapButton = (props) => {
+const FollowMapButton = props => {
   return (
     <div>
       {props.currentMap ? (
         <RoleButton {...props} />
       ) : (
-        <Button variant="contained" color="secondary" disabled>{''}</Button>
+        <Button variant="contained" color="secondary" disabled>
+          {''}
+        </Button>
       )}
     </div>
   );
-}
+};
 
 export default FollowMapButton;

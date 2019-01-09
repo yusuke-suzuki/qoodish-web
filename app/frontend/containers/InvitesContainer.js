@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    handleFollowButtonClick: async (invite) => {
+    handleFollowButtonClick: async invite => {
       dispatch(requestStart());
       const client = new ApiClient();
       const response = await client.followMap(invite.invitable.id, invite.id);
@@ -44,8 +44,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('follow map success')));
         ownProps.history.push(`/maps/${invite.invitable.id}`);
         gtag('event', 'follow', {
-          'event_category': 'engagement',
-          'event_label': 'map'
+          event_category: 'engagement',
+          event_label: 'map'
         });
       } else {
         dispatch(openToast('Failed to follow map'));
@@ -54,4 +54,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(Invites)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Invites)
+  )
+);

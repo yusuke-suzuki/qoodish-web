@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-const BlockUi = (props) => {
+const BlockUi = props => {
   return props.blocking ? (
     <div style={styles.blockUi}>
       <div style={styles.progress}>
