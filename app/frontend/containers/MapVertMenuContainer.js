@@ -14,7 +14,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleEditMapButtonClick: map => {
       dispatch(openEditMapDialog(map));
@@ -38,4 +38,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapVertMenu));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapVertMenu)
+);

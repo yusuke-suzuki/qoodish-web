@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 const styles = {
@@ -34,12 +34,12 @@ const styles = {
   }
 };
 
-const buttonStyle = (props) => {
+const buttonStyle = props => {
   let style = {};
   if (props.large) {
     style = Object.assign(style, styles.buttonLarge);
   } else {
-    style = Object.assign(style, styles.buttonSmall)
+    style = Object.assign(style, styles.buttonSmall);
   }
   if (props.bottomAction) {
     style = Object.assign(style, styles.withBottomAction);
@@ -53,17 +53,16 @@ const buttonStyle = (props) => {
   return style;
 };
 
-const CreateResourceButton = (props) => {
+const CreateResourceButton = props => {
   return (
-    <Button
-      variant="fab"
-      aria-label="add"
+    <Fab
       style={buttonStyle(props)}
       onClick={() => props.handleButtonClick(props.currentUser)}
       disabled={props.disabled}
+      data-test="create-resource-button"
     >
       <AddIcon />
-    </Button>
+    </Fab>
   );
 };
 

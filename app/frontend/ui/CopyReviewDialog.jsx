@@ -9,22 +9,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
 
-const PostableMaps = (props) => {
+const PostableMaps = props => {
   return props.postableMaps.map(map => (
     <ListItem
       button
       key={map.id}
-      onClick={() =>
-        props.handleMapSelected(props.currentReview, map)
-      }
+      onClick={() => props.handleMapSelected(props.currentReview, map)}
     >
       <Avatar src={map.thumbnail_url} />
       <ListItemText primary={map.name} />
     </ListItem>
   ));
-}
+};
 
-const CopyReviewDialog = (props) => {
+const CopyReviewDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -33,12 +31,14 @@ const CopyReviewDialog = (props) => {
       fullWidth
     >
       <DialogTitle>{I18n.t('select map to copy this report to')}</DialogTitle>
-      <DialogContent><PostableMaps {...props} /></DialogContent>
+      <DialogContent>
+        <PostableMaps {...props} />
+      </DialogContent>
       <DialogActions>
         <Button onClick={props.handleRequestClose}>{I18n.t('cancel')}</Button>
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default CopyReviewDialog;

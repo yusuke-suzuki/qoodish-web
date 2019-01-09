@@ -78,4 +78,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Settings));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Settings)
+);

@@ -19,7 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleFollowButtonClick: async (currentUser) => {
+    handleFollowButtonClick: async currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -34,8 +34,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('follow map success')));
 
         gtag('event', 'follow', {
-          'event_category': 'engagement',
-          'event_label': 'map'
+          event_category: 'engagement',
+          event_label: 'map'
         });
 
         let colloboratorsResponse = await client.fetchCollaborators(
@@ -54,4 +54,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(FollowMapButton));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FollowMapButton)
+);

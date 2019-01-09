@@ -11,9 +11,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    handleToggleDrawer: (drawerOpen) => {
+    handleToggleDrawer: drawerOpen => {
       if (drawerOpen) {
         dispatch(closeDrawer());
       } else {
@@ -23,4 +23,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(AppMenuButton));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AppMenuButton)
+);

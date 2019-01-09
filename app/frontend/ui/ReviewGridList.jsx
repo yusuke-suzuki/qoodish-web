@@ -36,7 +36,7 @@ const reviewImage = (review, large) => {
   }
 };
 
-const ReviewGridList = (props) => {
+const ReviewGridList = props => {
   return (
     <div style={styles.container}>
       <GridList
@@ -51,22 +51,30 @@ const ReviewGridList = (props) => {
             onClick={() => props.handleReviewClick(review)}
             style={styles.gridTile}
           >
-            {review.image ?
+            {review.image ? (
               <img
                 src={reviewImage(review, props.large)}
                 alt={review.spot.name}
               />
-            :
+            ) : (
               <GridListTileBar
-                title={<PlaceIcon style={props.large ? styles.placeIconLarge : styles.placeIconSmall} />}
+                title={
+                  <PlaceIcon
+                    style={
+                      props.large
+                        ? styles.placeIconLarge
+                        : styles.placeIconSmall
+                    }
+                  />
+                }
                 style={styles.tileBar}
               />
-            }
+            )}
           </GridListTile>
         ))}
       </GridList>
     </div>
   );
-}
+};
 
 export default ReviewGridList;

@@ -56,7 +56,7 @@ const mapDispatchToProps = dispatch => {
       }
     },
 
-    handleCreateReviewClick: (currentUser) => {
+    handleCreateReviewClick: currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -66,4 +66,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Timeline));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Timeline)
+);

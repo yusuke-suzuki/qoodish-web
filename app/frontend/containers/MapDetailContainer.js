@@ -24,10 +24,10 @@ const mapStateToProps = state => {
   };
 };
 
-const dispatchGtag = (map) => {
+const dispatchGtag = map => {
   gtag('config', process.env.GA_TRACKING_ID, {
-    'page_path': `/maps/${map.id}`,
-    'page_title': `${map.name} | Qoodish`
+    page_path: `/maps/${map.id}`,
+    page_title: `${map.name} | Qoodish`
   });
 };
 
@@ -95,4 +95,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(MapDetail)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(MapDetail)
+  )
+);

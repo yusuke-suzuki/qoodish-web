@@ -17,7 +17,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleLikeButtonClick: async (currentUser) => {
+    handleLikeButtonClick: async currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -30,8 +30,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('liked!')));
 
         gtag('event', 'like', {
-          'event_category': 'engagement',
-          'event_label': 'review'
+          event_category: 'engagement',
+          event_label: 'review'
         });
       } else {
         dispatch(openToast('Request failed.'));
@@ -47,8 +47,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('unliked')));
 
         gtag('event', 'unlike', {
-          'event_category': 'engagement',
-          'event_label': 'review'
+          event_category: 'engagement',
+          event_label: 'review'
         });
       } else {
         dispatch(openToast('Request failed.'));
@@ -67,4 +67,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(LikeActions));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LikeActions)
+);

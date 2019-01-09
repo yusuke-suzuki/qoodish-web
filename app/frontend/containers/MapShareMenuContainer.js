@@ -10,7 +10,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleUrlCopied: () => {
       dispatch(openToast(I18n.t('copied')));
@@ -18,4 +18,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapShareMenu));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapShareMenu)
+);

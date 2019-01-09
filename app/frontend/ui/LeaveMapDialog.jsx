@@ -8,11 +8,11 @@ import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import I18n from '../containers/I18n';
 
-const Transition = (props) => {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
-const LeaveMapDialog = (props) => {
+const LeaveMapDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
@@ -22,12 +22,12 @@ const LeaveMapDialog = (props) => {
     >
       <DialogTitle>{I18n.t('sure to unfollow map')}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {I18n.t('unfollow map detail')}
-        </DialogContentText>
+        <DialogContentText>{I18n.t('unfollow map detail')}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleCancelButtonClick}>{I18n.t('cancel')}</Button>
+        <Button onClick={props.handleCancelButtonClick}>
+          {I18n.t('cancel')}
+        </Button>
         <Button
           variant="contained"
           onClick={() => props.handleLeaveButtonClick(props.currentMap)}
@@ -38,6 +38,6 @@ const LeaveMapDialog = (props) => {
       </DialogActions>
     </Dialog>
   );
-}
+};
 
 export default LeaveMapDialog;

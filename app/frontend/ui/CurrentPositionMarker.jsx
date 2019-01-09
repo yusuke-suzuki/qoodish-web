@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-  OverlayView,
-  Marker
-} from 'react-google-maps';
-import Button from '@material-ui/core/Button';
+import { OverlayView, Marker } from 'react-google-maps';
+import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
@@ -16,7 +13,7 @@ const styles = {
   }
 };
 
-const CircleMarker = (props) => {
+const CircleMarker = props => {
   return (
     <Marker
       options={{
@@ -32,48 +29,42 @@ const CircleMarker = (props) => {
       }}
     />
   );
-}
+};
 
-const ProfileIcon = (props) => {
+const ProfileIcon = props => {
   return (
     <OverlayView
       mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
       position={props.currentPosition}
     >
-      {props.large ?
-      <Tooltip title={I18n.t("you are hear")}>
-        <Button
-          variant="fab"
-          style={styles.overlayButton}
-        >
+      {props.large ? (
+        <Tooltip title={I18n.t('you are hear')}>
+          <Fab style={styles.overlayButton}>
+            <Avatar
+              src={props.currentUser.thumbnail_url}
+              alt={I18n.t('you are hear')}
+            />
+          </Fab>
+        </Tooltip>
+      ) : (
+        <Fab style={styles.overlayButton}>
           <Avatar
             src={props.currentUser.thumbnail_url}
-            alt={I18n.t("you are hear")}
+            alt={I18n.t('you are hear')}
           />
-        </Button>
-      </Tooltip>
-      :
-      <Button
-        variant="fab"
-        style={styles.overlayButton}
-      >
-        <Avatar
-          src={props.currentUser.thumbnail_url}
-          alt={I18n.t("you are hear")}
-        />
-      </Button>
-      }
+        </Fab>
+      )}
     </OverlayView>
   );
-}
+};
 
-const CurrentPositionMarker = (props) => {
+const CurrentPositionMarker = props => {
   return props.currentPosition.lat && props.currentPosition.lng ? (
     <div>
       <CircleMarker {...props} />
       <ProfileIcon {...props} />
     </div>
   ) : null;
-}
+};
 
 export default CurrentPositionMarker;

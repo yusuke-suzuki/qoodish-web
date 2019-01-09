@@ -50,8 +50,8 @@ const mapDispatchToProps = dispatch => {
         dispatch(openToast(I18n.t('create review success')));
 
         gtag('event', 'create', {
-          'event_category': 'engagement',
-          'event_label': 'review'
+          event_category: 'engagement',
+          event_label: 'review'
         });
 
         if (canvas) {
@@ -137,4 +137,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(EditReviewDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EditReviewDialog)
+);

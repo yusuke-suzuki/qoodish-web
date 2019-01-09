@@ -110,7 +110,9 @@ class ApiClient {
     if (!userId) {
       userId = await this.getCurrentUid();
     }
-    const url = `${process.env.API_ENDPOINT}/users/${userId}/maps?following=true`;
+    const url = `${
+      process.env.API_ENDPOINT
+    }/users/${userId}/maps?following=true`;
     const token = await this.getCurrentToken();
     let options = {
       method: 'GET',
@@ -567,7 +569,7 @@ class ApiClient {
   async followMap(mapId, inviteId = undefined) {
     let url = `${process.env.API_ENDPOINT}/maps/${mapId}/follow`;
     if (inviteId) {
-      url += `?invite_id=${inviteId}`
+      url += `?invite_id=${inviteId}`;
     }
     const token = await this.getCurrentToken();
     let options = {
@@ -698,7 +700,7 @@ class ApiClient {
   async fetchUsers(input = undefined) {
     let url = `${process.env.API_ENDPOINT}/users`;
     if (input) {
-      url += `?input=${input}`
+      url += `?input=${input}`;
     }
     const token = await this.getCurrentToken();
     let options = {
@@ -757,7 +759,9 @@ class ApiClient {
   }
 
   async deleteComment(reviewId, commentId) {
-    const url = `${process.env.API_ENDPOINT}/reviews/${reviewId}/comments/${commentId}`;
+    const url = `${
+      process.env.API_ENDPOINT
+    }/reviews/${reviewId}/comments/${commentId}`;
     const token = await this.getCurrentToken();
     let options = {
       method: 'DELETE',

@@ -48,8 +48,8 @@ export default class Invites extends React.PureComponent {
     }
 
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/invites',
-      'page_title': `${I18n.t('invites')} | Qoodish'`
+      page_path: '/invites',
+      page_title: `${I18n.t('invites')} | Qoodish'`
     });
   }
 
@@ -76,7 +76,7 @@ export default class Invites extends React.PureComponent {
 
   renderInvitesContainer(invites) {
     if (invites.length > 0) {
-      return this.renderInviteCards(invites)
+      return this.renderInviteCards(invites);
     } else {
       return (
         <NoContentsContainer
@@ -88,21 +88,13 @@ export default class Invites extends React.PureComponent {
   }
 
   renderInviteCards(invites) {
-    return invites.map((invite) => (
+    return invites.map(invite => (
       <Card
         key={invite.id}
-        style={
-          this.props.large
-            ? styles.cardLarge
-            : styles.cardSmall
-        }
+        style={this.props.large ? styles.cardLarge : styles.cardSmall}
       >
         <CardHeader
-          avatar={
-            <Avatar
-              src={invite.invitable.image_url}
-            />
-          }
+          avatar={<Avatar src={invite.invitable.image_url} />}
           title={invite.invitable.name}
           subheader={this.renderCreatedAt(invite)}
         />
@@ -112,14 +104,14 @@ export default class Invites extends React.PureComponent {
           </Typography>
         </CardContent>
         <CardActions>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.props.handleFollowButtonClick(invite)}
-          disabled={invite.expired}
-        >
-          {I18n.t('follow')}
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.props.handleFollowButtonClick(invite)}
+            disabled={invite.expired}
+          >
+            {I18n.t('follow')}
+          </Button>
         </CardActions>
       </Card>
     ));

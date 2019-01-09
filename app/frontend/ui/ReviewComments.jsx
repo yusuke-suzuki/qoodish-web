@@ -25,7 +25,7 @@ const styles = {
   }
 };
 
-const fromNow = (comment) => {
+const fromNow = comment => {
   return moment(comment.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(window.currentLocale)
     .fromNow();
@@ -47,10 +47,7 @@ const Comments = props => {
       <ListItemText
         primary={
           <div style={styles.primaryTextContainer}>
-            <Typography
-              color="textPrimary"
-              noWrap
-            >
+            <Typography color="textPrimary" noWrap>
               {comment.author.name}
             </Typography>
             <Typography
@@ -80,7 +77,9 @@ const ReviewComments = props => {
     <List
       disablePadding
       subheader={
-        <ListSubheader>{`${props.comments.length} ${I18n.t('comment count')}`}</ListSubheader>
+        <ListSubheader>{`${props.comments.length} ${I18n.t(
+          'comment count'
+        )}`}</ListSubheader>
       }
     >
       <Comments {...props} />

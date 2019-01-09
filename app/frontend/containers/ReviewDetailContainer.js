@@ -44,4 +44,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewDetail));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewDetail)
+);

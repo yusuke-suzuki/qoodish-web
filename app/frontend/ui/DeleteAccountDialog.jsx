@@ -28,12 +28,15 @@ class DeleteAccountDialog extends React.PureComponent {
   }
 
   handleRequestDialogClose() {
-    this.setState({
-      check: false,
-      disabled: true
-    }, () => {
-      this.props.handleRequestDialogClose();
-    });
+    this.setState(
+      {
+        check: false,
+        disabled: true
+      },
+      () => {
+        this.props.handleRequestDialogClose();
+      }
+    );
   }
 
   handleCheckChange() {
@@ -50,9 +53,7 @@ class DeleteAccountDialog extends React.PureComponent {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-        <DialogTitle>
-          {I18n.t('sure to delete account')}
-        </DialogTitle>
+        <DialogTitle>{I18n.t('sure to delete account')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             {I18n.t('delete account detail')}
@@ -69,7 +70,9 @@ class DeleteAccountDialog extends React.PureComponent {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+          <Button onClick={this.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
           <Button
             variant="contained"
             onClick={() => {

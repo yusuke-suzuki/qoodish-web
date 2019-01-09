@@ -1,10 +1,18 @@
 import React from 'react';
 import loadable from '@loadable/component';
 
-const Routes = loadable(() => import(/* webpackChunkName: "shared_dialogs" */ './Routes'));
-const NavBarContainer = loadable(() => import(/* webpackChunkName: "nav_bar" */ '../containers/NavBarContainer'));
-const BottomNavContainer = loadable(() => import(/* webpackChunkName: "bottom_nav" */ '../containers/BottomNavContainer'));
-const SharedDialogs = loadable(() => import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs'));
+const Routes = loadable(() =>
+  import(/* webpackChunkName: "shared_dialogs" */ './Routes')
+);
+const NavBarContainer = loadable(() =>
+  import(/* webpackChunkName: "nav_bar" */ '../containers/NavBarContainer')
+);
+const BottomNavContainer = loadable(() =>
+  import(/* webpackChunkName: "bottom_nav" */ '../containers/BottomNavContainer')
+);
+const SharedDialogs = loadable(() =>
+  import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
+);
 
 import withWidth from '@material-ui/core/withWidth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -92,12 +100,14 @@ class App extends React.PureComponent {
     return (
       <Helmet
         title="Qoodish"
-        link={[
-          { rel: "canonical", href: process.env.ENDPOINT }
-        ]}
+        link={[{ rel: 'canonical', href: process.env.ENDPOINT }]}
         meta={[
           { name: 'title', content: 'Qoodish' },
-          { name: 'keywords', content: 'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'},
+          {
+            name: 'keywords',
+            content:
+              'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'
+          },
           { name: 'theme-color', content: '#ffc107' },
           {
             name: 'description',
@@ -130,39 +140,40 @@ class App extends React.PureComponent {
         script={[
           {
             type: 'application/ld+json',
-            innerHTML:(JSON.stringify({
+            innerHTML: JSON.stringify({
               '@context': 'http://schema.org',
               '@type': 'WebSite',
-              'name': 'Qoodish',
-              'mainEntityOfPage': {
+              name: 'Qoodish',
+              mainEntityOfPage: {
                 '@type': 'WebPage',
-                '@id':  process.env.ENDPOINT
+                '@id': process.env.ENDPOINT
               },
-              'headline': 'Qoodish | マップベースド SNS',
-              'image': {
+              headline: 'Qoodish | マップベースド SNS',
+              image: {
                 '@type': 'ImageObject',
-                'url': process.env.ICON_512,
-                'width': 512,
-                'height': 512
+                url: process.env.ICON_512,
+                width: 512,
+                height: 512
               },
-              'datePublished': '',
-              'dateModified': '',
-              'author': {
+              datePublished: '',
+              dateModified: '',
+              author: {
                 '@type': 'Person',
-                'name': ''
+                name: ''
               },
-              'publisher': {
+              publisher: {
                 '@type': 'Organization',
-                'name': 'Qoodish',
-                'logo': {
+                name: 'Qoodish',
+                logo: {
                   '@type': 'ImageObject',
-                  'url': process.env.ICON_512,
-                  'width': 512,
-                  'height': 512
+                  url: process.env.ICON_512,
+                  width: 512,
+                  height: 512
                 }
               },
-              'description': 'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
-            }))
+              description:
+                'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+            })
           }
         ]}
       />
@@ -187,7 +198,9 @@ class App extends React.PureComponent {
             <Routes />
           </Grid>
         </Grid>
-        {!this.props.large && this.props.showBottomNav && <BottomNavContainer />}
+        {!this.props.large && this.props.showBottomNav && (
+          <BottomNavContainer />
+        )}
       </div>
     );
   }

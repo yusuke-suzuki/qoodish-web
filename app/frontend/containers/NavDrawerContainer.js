@@ -9,7 +9,6 @@ const mapStateToProps = state => {
   return {
     large: state.shared.large,
     pageTitle: state.shared.pageTitle,
-    mapsTabActive: state.shared.mapsTabActive,
     drawerOpen: state.shared.drawerOpen,
     showSideNav: state.shared.showSideNav
   };
@@ -31,4 +30,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(NavDrawer));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NavDrawer)
+);

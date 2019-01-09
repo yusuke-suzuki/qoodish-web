@@ -12,9 +12,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    handleReviewClick: (review) => {
+    handleReviewClick: review => {
       dispatch(selectSpot(review.spot));
       dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
       dispatch(openReviewDialog(review));
@@ -22,4 +22,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapReviewsList));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapReviewsList)
+);

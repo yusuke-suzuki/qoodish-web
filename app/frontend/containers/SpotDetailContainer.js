@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    handleReviewClick: (review) => {
+    handleReviewClick: review => {
       dispatch(openReviewDialog(review));
     },
 
@@ -61,4 +61,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SpotDetail));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SpotDetail)
+);

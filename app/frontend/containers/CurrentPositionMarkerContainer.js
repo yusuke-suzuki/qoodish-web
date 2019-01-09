@@ -10,9 +10,13 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-  };
+const mapDispatchToProps = dispatch => {
+  return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(CurrentPositionMarker));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CurrentPositionMarker)
+);

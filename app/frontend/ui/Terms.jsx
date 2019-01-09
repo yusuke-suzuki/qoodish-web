@@ -28,8 +28,8 @@ const styles = {
 class Terms extends React.PureComponent {
   componentDidMount() {
     gtag('config', process.env.GA_TRACKING_ID, {
-      'page_path': '/terms',
-      'page_title': 'Terms | Qoodish'
+      page_path: '/terms',
+      page_title: 'Terms | Qoodish'
     });
   }
 
@@ -270,8 +270,8 @@ class Terms extends React.PureComponent {
             ⑧ 禁止行為について
           </Typography>
           <Typography component="p" gutterBottom>
-            (1)
-            お客さまが Qoodish を利用するにあたって、次の行為を行うことを禁止します。
+            (1) お客さまが Qoodish
+            を利用するにあたって、次の行為を行うことを禁止します。
             よりよいサービス提供のために定めておりますので、ご了承ください。
             <br />
             1. 法令や本規約にて特例で認められている場合を除き、Qoodish
@@ -304,8 +304,8 @@ class Terms extends React.PureComponent {
             <br />
             11. その他、当委員会が不適切と判断したもの
             <br />
-            (2)
-            お客さまによって (1) に該当する行為があった場合、もしくは Qoodish
+            (2) お客さまによって (1) に該当する行為があった場合、もしくは
+            Qoodish
             の趣旨・目的に照らして不適切であると当委員会が判断した場合には、当委員会は当該お客さまに対して、Qoodish
             の利用停止その他の当委員会が適切であると判断する処置
             (以下「利用停止措置」といいます) を取ることが可能であるとします。

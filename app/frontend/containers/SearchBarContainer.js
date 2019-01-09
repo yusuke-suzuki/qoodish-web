@@ -29,4 +29,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SearchBar));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SearchBar)
+);

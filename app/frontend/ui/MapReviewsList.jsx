@@ -23,23 +23,20 @@ const styles = {
   }
 };
 
-const fromNow = (review) => {
+const fromNow = review => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(window.currentLocale)
     .format('LL');
 };
 
-const Reviews = (props) => {
+const Reviews = props => {
   return props.mapReviews.map(review => (
     <ListItem
       button
       key={review.id}
       onClick={() => props.handleReviewClick(review)}
     >
-      <Avatar
-        src={review.author.profile_image_url}
-        alt={review.author.name}
-      />
+      <Avatar src={review.author.profile_image_url} alt={review.author.name} />
       <ListItemText
         primary={
           <div style={styles.activityText}>
@@ -50,7 +47,9 @@ const Reviews = (props) => {
         secondary={fromNow(review)}
       />
       {review.image && (
-        <ListItemSecondaryAction onClick={() => props.handleReviewClick(review)}>
+        <ListItemSecondaryAction
+          onClick={() => props.handleReviewClick(review)}
+        >
           <Avatar
             src={review.image.thumbnail_url}
             style={styles.secondaryAvatar}
@@ -62,11 +61,15 @@ const Reviews = (props) => {
   ));
 };
 
-const MapReviewsList = (props) => {
+const MapReviewsList = props => {
   return (
     <List
-      subheader={props.large &&
-        <ListSubheader style={styles.subheader}>{I18n.t('timeline')}</ListSubheader>
+      subheader={
+        props.large && (
+          <ListSubheader style={styles.subheader}>
+            {I18n.t('timeline')}
+          </ListSubheader>
+        )
       }
     >
       <Reviews {...props} />

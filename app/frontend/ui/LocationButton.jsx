@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 
 const styles = {
@@ -19,16 +19,15 @@ const styles = {
   }
 };
 
-const LocationButton = (props) => {
+const LocationButton = props => {
   return (
-    <Button
-      variant="fab"
+    <Fab
       style={props.large ? styles.buttonLarge : styles.buttonSmall}
       onClick={props.handleButtonClick}
     >
       <MyLocationIcon />
-    </Button>
+    </Fab>
   );
-}
+};
 
 export default LocationButton;

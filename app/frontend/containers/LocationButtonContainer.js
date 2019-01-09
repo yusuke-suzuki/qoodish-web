@@ -11,7 +11,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleButtonClick: async () => {
       const position = await fetchCurrentPosition();
@@ -23,4 +23,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(LocationButton));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LocationButton)
+);

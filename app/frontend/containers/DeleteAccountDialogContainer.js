@@ -50,4 +50,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(DeleteAccountDialog)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(DeleteAccountDialog)
+  )
+);

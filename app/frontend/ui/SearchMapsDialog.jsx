@@ -23,7 +23,7 @@ const styles = {
     marginTop: 56
   },
   dialogPaper: {
-    background: "#f1f1f1"
+    background: '#f1f1f1'
   },
   input: {
     padding: 0
@@ -42,7 +42,10 @@ const Maps = props => {
       <ListItemAvatar>
         <Avatar alt={map.name} src={map.thumbnail_url} />
       </ListItemAvatar>
-      <ListItemText primary={map.name} primaryTypographyProps={{ noWrap: true}} />
+      <ListItemText
+        primary={map.name}
+        primaryTypographyProps={{ noWrap: true }}
+      />
     </ListItem>
   ));
 };
@@ -57,11 +60,11 @@ const handleInputChange = (input, props) => {
 const SearchForm = props => {
   return (
     <TextField
-      onChange={(e) => handleInputChange(e.target.value, props)}
+      onChange={e => handleInputChange(e.target.value, props)}
       fullWidth
       autoFocus
       type="search"
-      placeholder={I18n.t("search map")}
+      placeholder={I18n.t('search map')}
       InputProps={{
         disableUnderline: true
       }}
@@ -76,10 +79,7 @@ const SearchAppBar = props => {
   return (
     <AppBar color="inherit">
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.handleRequestClose}
-        >
+        <IconButton color="inherit" onClick={props.handleRequestClose}>
           <ArrowBackIcon />
         </IconButton>
         <SearchForm {...props} />

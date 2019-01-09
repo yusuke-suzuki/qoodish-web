@@ -21,10 +21,7 @@ class LoginButtons extends React.PureComponent {
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         {
           provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-          scopes :[
-            'public_profile',
-            'email'
-          ]
+          scopes: ['public_profile', 'email']
         },
         firebase.auth.TwitterAuthProvider.PROVIDER_ID,
         firebase.auth.GithubAuthProvider.PROVIDER_ID,

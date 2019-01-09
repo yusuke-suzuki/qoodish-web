@@ -107,13 +107,15 @@ class NotificationMenu extends React.PureComponent {
         onEntered={() => this.props.readNotifications(this.props.notifications)}
         PaperProps={{ style: styles.notificationMenu }}
       >
-        {this.props.notifications.length > 0
-          ? <NotificationListContainer
-              notifications={this.props.notifications}
-              handleNotificationClick={this.handleRequestNotificationClose}
-              menu={true}
-            />
-          : this.renderNoNotifications()}
+        {this.props.notifications.length > 0 ? (
+          <NotificationListContainer
+            notifications={this.props.notifications}
+            handleNotificationClick={this.handleRequestNotificationClose}
+            menu={true}
+          />
+        ) : (
+          this.renderNoNotifications()
+        )}
       </Menu>
     );
   }

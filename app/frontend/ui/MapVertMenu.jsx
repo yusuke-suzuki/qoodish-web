@@ -34,7 +34,7 @@ class MapVertMenu extends React.PureComponent {
 
   isInvitable(map) {
     return map && map.private && (map.editable || map.invitable);
-  };
+  }
 
   handleVertButtonClick(event) {
     this.setState({
@@ -95,15 +95,16 @@ class MapVertMenu extends React.PureComponent {
           key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentUser, this.props.currentMap);
+            this.props.handleIssueButtonClick(
+              this.props.currentUser,
+              this.props.currentMap
+            );
           }}
         >
           <ListItemIcon>
             <ReportProblemIcon />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('report')}
-          />
+          <ListItemText primary={I18n.t('report')} />
         </MenuItem>
       </Menu>
     );
@@ -121,9 +122,7 @@ class MapVertMenu extends React.PureComponent {
         <ListItemIcon>
           <PersonAddIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('invite')}
-        />
+        <ListItemText primary={I18n.t('invite')} />
       </MenuItem>
     );
   }
@@ -140,9 +139,7 @@ class MapVertMenu extends React.PureComponent {
         <ListItemIcon>
           <EditIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('edit')}
-        />
+        <ListItemText primary={I18n.t('edit')} />
       </MenuItem>
     );
   }
@@ -159,9 +156,7 @@ class MapVertMenu extends React.PureComponent {
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('delete')}
-        />
+        <ListItemText primary={I18n.t('delete')} />
       </MenuItem>
     );
   }

@@ -6,7 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
@@ -15,7 +15,7 @@ import {
   FacebookShareButton,
   FacebookIcon,
   TwitterShareButton,
-  TwitterIcon,
+  TwitterIcon
 } from 'react-share';
 
 const styles = {
@@ -82,14 +82,9 @@ class MapShareMenu extends React.PureComponent {
           url={this.shareUrl(map)}
         >
           <ListItemIcon>
-            <FacebookIcon
-              round
-              size={24}
-            />
+            <FacebookIcon round size={24} />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('share with facebook')}
-          />
+          <ListItemText primary={I18n.t('share with facebook')} />
         </MenuItem>
         <MenuItem
           key="twitter"
@@ -99,26 +94,18 @@ class MapShareMenu extends React.PureComponent {
           title={map && map.name}
         >
           <ListItemIcon>
-            <TwitterIcon
-              round
-              size={24}
-            />
+            <TwitterIcon round size={24} />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('share with twitter')}
-          />
+          <ListItemText primary={I18n.t('share with twitter')} />
         </MenuItem>
         <CopyToClipboard
           text={`${process.env.ENDPOINT}/maps/${map && map.id}`}
           onCopy={this.props.handleUrlCopied}
           key="copy"
         >
-          <MenuItem
-            key="copy"
-            onClick={this.handleRequestShareMenuClose}
-          >
+          <MenuItem key="copy" onClick={this.handleRequestShareMenuClose}>
             <ListItemIcon>
-              <ContentCopyIcon />
+              <FileCopyIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('copy link')} />
           </MenuItem>

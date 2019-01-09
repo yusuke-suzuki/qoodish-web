@@ -19,7 +19,7 @@ const mapStateToProps = state => {
     currentSpot: state.spotCard.currentSpot,
     large: state.shared.large,
     spotReviews: state.mapSummary.spotReviews,
-    currentMap: state.mapDetail.currentMap,
+    currentMap: state.mapDetail.currentMap
   };
 };
 
@@ -33,16 +33,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(closeSpotCard());
     },
 
-    handleLocationButtonClick: (spot) => {
+    handleLocationButtonClick: spot => {
       dispatch(requestMapCenter(spot.lat, spot.lng));
       dispatch(switchMap());
     },
 
-    handleRouteButtonClick: async (spot) => {
+    handleRouteButtonClick: async spot => {
       dispatch(switchMap());
       const currentPosition = await fetchCurrentPosition();
       dispatch(
-        getCurrentPosition(currentPosition.coords.latitude, currentPosition.coords.longitude)
+        getCurrentPosition(
+          currentPosition.coords.latitude,
+          currentPosition.coords.longitude
+        )
       );
       if (currentPosition) {
         const DirectionsService = new google.maps.DirectionsService();
@@ -87,7 +90,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     handleReviewClick: review => {
       dispatch(openReviewDialog(review));
     }
-  }
+  };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SpotCard));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SpotCard)
+);

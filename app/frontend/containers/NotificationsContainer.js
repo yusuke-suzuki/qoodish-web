@@ -30,4 +30,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Notifications));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Notifications)
+);

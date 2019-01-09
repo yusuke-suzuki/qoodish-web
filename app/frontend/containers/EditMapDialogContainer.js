@@ -48,4 +48,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(EditMapDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EditMapDialog)
+);

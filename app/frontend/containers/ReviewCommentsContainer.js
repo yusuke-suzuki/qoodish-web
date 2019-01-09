@@ -4,16 +4,20 @@ import ReviewComments from '../ui/ReviewComments';
 import openDeleteCommentDialog from '../actions/openDeleteCommentDialog';
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleDeleteCommentButtonClick: async (comment) => {
+    handleDeleteCommentButtonClick: async comment => {
       dispatch(openDeleteCommentDialog(comment));
     }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(ReviewComments));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ReviewComments)
+);

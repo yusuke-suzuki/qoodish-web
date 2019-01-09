@@ -17,4 +17,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SignInRequiredDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SignInRequiredDialog)
+);

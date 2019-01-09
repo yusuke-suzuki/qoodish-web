@@ -102,21 +102,14 @@ class InviteTargetDialog extends React.PureComponent {
   }
 
   renderDialogTitle() {
-    return (
-      <DialogTitle>
-        {I18n.t('select invite target')}
-      </DialogTitle>
-    );
+    return <DialogTitle>{I18n.t('select invite target')}</DialogTitle>;
   }
 
   renderAppBar() {
     return (
       <AppBar style={styles.appbar} color="primary">
         <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.onClose}
-          >
+          <IconButton color="inherit" onClick={this.props.onClose}>
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" style={styles.flex}>
@@ -157,11 +150,7 @@ class InviteTargetDialog extends React.PureComponent {
 
   renderUsers() {
     return this.props.users.map(user => (
-      <ListItem
-        button
-        key={user.id}
-        onClick={() => this.handleUserClick(user)}
-      >
+      <ListItem button key={user.id} onClick={() => this.handleUserClick(user)}>
         <ListItemAvatar>
           <Avatar src={user.image_url} />
         </ListItemAvatar>

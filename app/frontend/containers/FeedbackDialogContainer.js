@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(closeFeedbackDialog());
     },
 
-    handleSendButtonClick: async (params) => {
+    handleSendButtonClick: async params => {
       dispatch(requestStart());
       const firebase = await getFirebase();
       await getFirestore();
@@ -43,4 +43,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(FeedbackDialog));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(FeedbackDialog)
+);

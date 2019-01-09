@@ -38,19 +38,19 @@ class SpotImageStepper extends React.PureComponent {
 
   handleNext() {
     this.setState(prevState => ({
-      activeStep: prevState.activeStep + 1,
+      activeStep: prevState.activeStep + 1
     }));
-  };
+  }
 
   handleBack() {
     this.setState(prevState => ({
-      activeStep: prevState.activeStep - 1,
+      activeStep: prevState.activeStep - 1
     }));
-  };
+  }
 
   handleStepChange(activeStep) {
     this.setState({ activeStep });
-  };
+  }
 
   renderStepper() {
     let maxSteps = this.props.spotReviews.length;
@@ -61,13 +61,21 @@ class SpotImageStepper extends React.PureComponent {
         position="static"
         activeStep={this.state.activeStep}
         nextButton={
-          <Button size="small" onClick={this.handleNext} disabled={this.state.activeStep === maxSteps - 1}>
+          <Button
+            size="small"
+            onClick={this.handleNext}
+            disabled={this.state.activeStep === maxSteps - 1}
+          >
             Next
             <KeyboardArrowRight />
           </Button>
         }
         backButton={
-          <Button size="small" onClick={this.handleBack} disabled={this.state.activeStep === 0}>
+          <Button
+            size="small"
+            onClick={this.handleBack}
+            disabled={this.state.activeStep === 0}
+          >
             <KeyboardArrowLeft />
             Back
           </Button>
@@ -96,6 +104,6 @@ class SpotImageStepper extends React.PureComponent {
       </CardMedia>
     );
   }
-};
+}
 
 export default SpotImageStepper;

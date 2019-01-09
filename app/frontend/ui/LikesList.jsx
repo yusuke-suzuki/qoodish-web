@@ -29,7 +29,10 @@ const PrimaryText = props => {
       return (
         <React.Fragment>
           <b>{props.like.voter.name}</b>
-          {` ${I18n.t("liked report of").replace('owner', props.like.votable.owner.name)}`}
+          {` ${I18n.t('liked report of').replace(
+            'owner',
+            props.like.votable.owner.name
+          )}`}
           <b>{props.like.votable.name}</b>
         </React.Fragment>
       );
@@ -37,7 +40,10 @@ const PrimaryText = props => {
       return (
         <React.Fragment>
           <b>{props.like.voter.name}</b>
-          {` ${I18n.t("liked map of").replace('owner', props.like.votable.owner.name)}`}
+          {` ${I18n.t('liked map of').replace(
+            'owner',
+            props.like.votable.owner.name
+          )}`}
           <b>{props.like.votable.name}</b>
         </React.Fragment>
       );
@@ -54,30 +60,17 @@ const fromNow = like => {
 
 const Likes = props => {
   return props.likes.map(like => (
-    <ListItem
-      key={like.id}
-      button
-      component={Link}
-      to={like.click_action}
-    >
-      <Avatar
-        src={like.voter.profile_image_url}
-        alt={like.voter.name}
-      />
+    <ListItem key={like.id} button component={Link} to={like.click_action}>
+      <Avatar src={like.voter.profile_image_url} alt={like.voter.name} />
       <ListItemText
         style={styles.listItemText}
         primary={
-          <Typography
-            variant="subtitle1"
-          >
+          <Typography variant="subtitle1">
             <PrimaryText like={like} />
           </Typography>
         }
         secondary={
-          <Typography
-            variant="subtitle1"
-            color="textSecondary"
-          >
+          <Typography variant="subtitle1" color="textSecondary">
             {fromNow(like)}
           </Typography>
         }
@@ -86,7 +79,10 @@ const Likes = props => {
       {like.votable.thumbnail_url && (
         <ListItemSecondaryAction>
           <ButtonBase component={Link} to={like.click_action}>
-            <Avatar src={like.votable.thumbnail_url} style={styles.secondaryAvatar} />
+            <Avatar
+              src={like.votable.thumbnail_url}
+              style={styles.secondaryAvatar}
+            />
           </ButtonBase>
         </ListItemSecondaryAction>
       )}

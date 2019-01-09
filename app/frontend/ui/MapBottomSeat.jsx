@@ -20,12 +20,9 @@ const styles = {
   }
 };
 
-const Header = (props) => {
+const Header = props => {
   return (
-    <ListItem
-      onClick={props.handleSummaryOpen}
-      button
-    >
+    <ListItem onClick={props.handleSummaryOpen} button>
       <Avatar
         src={props.map && props.map.thumbnail_url}
         alt={props.map && props.map.name}
@@ -38,42 +35,32 @@ const Header = (props) => {
           </Typography>
         }
         secondary={
-          <Typography
-            component="p"
-            noWrap
-            color="textSecondary"
-          >
+          <Typography component="p" noWrap color="textSecondary">
             {props.map && props.map.description}
           </Typography>
         }
       />
-      <ListItemSecondaryAction
-        onClick={props.handleSummaryOpen}
-      >
+      <ListItemSecondaryAction onClick={props.handleSummaryOpen}>
         <IconButton>
           <ListIcon />
         </IconButton>
       </ListItemSecondaryAction>
     </ListItem>
   );
-}
+};
 
-const MapBottomSeat = (props) => {
+const MapBottomSeat = props => {
   return (
-    <Drawer
-      variant="persistent"
-      anchor="bottom"
-      open={true}
-    >
+    <Drawer variant="persistent" anchor="bottom" open={true}>
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <List disablePadding>
-             <Header {...props} />
+            <Header {...props} />
           </List>
         </CardContent>
       </Card>
     </Drawer>
   );
-}
+};
 
 export default MapBottomSeat;

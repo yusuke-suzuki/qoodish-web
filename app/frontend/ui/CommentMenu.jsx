@@ -81,15 +81,16 @@ class CommentMenu extends React.PureComponent {
           key="issue"
           onClick={() => {
             this.handleRequestVertMenuClose();
-            this.props.handleIssueButtonClick(this.props.currentUser, this.props.comment);
+            this.props.handleIssueButtonClick(
+              this.props.currentUser,
+              this.props.comment
+            );
           }}
         >
           <ListItemIcon>
             <ReportProblemIcon />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('report')}
-          />
+          <ListItemText primary={I18n.t('report')} />
         </MenuItem>
       </Menu>
     );
@@ -107,9 +108,7 @@ class CommentMenu extends React.PureComponent {
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
-        <ListItemText
-          primary={I18n.t('delete')}
-        />
+        <ListItemText primary={I18n.t('delete')} />
       </MenuItem>
     );
   }

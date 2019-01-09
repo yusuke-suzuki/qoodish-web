@@ -28,12 +28,15 @@ class DeleteMapDialog extends React.PureComponent {
   }
 
   handleRequestDialogClose() {
-    this.setState({
-      check: false,
-      disabled: true
-    }, () => {
-      this.props.handleRequestDialogClose();
-    });
+    this.setState(
+      {
+        check: false,
+        disabled: true
+      },
+      () => {
+        this.props.handleRequestDialogClose();
+      }
+    );
   }
 
   render() {
@@ -45,9 +48,7 @@ class DeleteMapDialog extends React.PureComponent {
       >
         <DialogTitle>{I18n.t('sure to delete map')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {I18n.t('delete map detail')}
-          </DialogContentText>
+          <DialogContentText>{I18n.t('delete map detail')}</DialogContentText>
           <br />
           <FormControlLabel
             control={
@@ -60,7 +61,9 @@ class DeleteMapDialog extends React.PureComponent {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+          <Button onClick={this.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
           <Button
             variant="contained"
             onClick={() => {

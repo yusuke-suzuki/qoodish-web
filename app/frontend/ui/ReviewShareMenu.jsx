@@ -6,7 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
@@ -15,7 +15,7 @@ import {
   FacebookShareButton,
   FacebookIcon,
   TwitterShareButton,
-  TwitterIcon,
+  TwitterIcon
 } from 'react-share';
 
 class ReviewShareMenu extends React.PureComponent {
@@ -32,7 +32,9 @@ class ReviewShareMenu extends React.PureComponent {
   }
 
   shareUrl(review) {
-    return review ? `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${review.id}` : '';
+    return review
+      ? `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${review.id}`
+      : '';
   }
 
   handleShareButtonClick(event) {
@@ -76,14 +78,9 @@ class ReviewShareMenu extends React.PureComponent {
           url={this.shareUrl(review)}
         >
           <ListItemIcon>
-            <FacebookIcon
-              round
-              size={24}
-            />
+            <FacebookIcon round size={24} />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('share with facebook')}
-          />
+          <ListItemText primary={I18n.t('share with facebook')} />
         </MenuItem>
         <MenuItem
           key="twitter"
@@ -93,26 +90,20 @@ class ReviewShareMenu extends React.PureComponent {
           title={`${review.spot.name} - ${review.map.name}`}
         >
           <ListItemIcon>
-            <TwitterIcon
-              round
-              size={24}
-            />
+            <TwitterIcon round size={24} />
           </ListItemIcon>
-          <ListItemText
-            primary={I18n.t('share with twitter')}
-          />
+          <ListItemText primary={I18n.t('share with twitter')} />
         </MenuItem>
         <CopyToClipboard
-          text={`${process.env.ENDPOINT}/maps/${review.map.id}/reports/${review.id}`}
+          text={`${process.env.ENDPOINT}/maps/${review.map.id}/reports/${
+            review.id
+          }`}
           onCopy={this.props.handleUrlCopied}
           key="copy"
         >
-          <MenuItem
-            key="copy-link"
-            onClick={this.handleRequestShareMenuClose}
-          >
+          <MenuItem key="copy-link" onClick={this.handleRequestShareMenuClose}>
             <ListItemIcon>
-              <ContentCopyIcon />
+              <FileCopyIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('copy link')} />
           </MenuItem>

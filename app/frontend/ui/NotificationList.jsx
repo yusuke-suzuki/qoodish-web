@@ -56,17 +56,12 @@ export default class NotificationList extends React.PureComponent {
         <ListItemText
           style={styles.listItemText}
           primary={
-            <Typography
-              variant="subtitle1"
-            >
+            <Typography variant="subtitle1">
               {this.renderNotificationText(notification)}
             </Typography>
           }
           secondary={
-            <Typography
-              variant="subtitle1"
-              color="textSecondary"
-            >
+            <Typography variant="subtitle1" color="textSecondary">
               {this.fromNow(notification)}
             </Typography>
           }
@@ -75,7 +70,10 @@ export default class NotificationList extends React.PureComponent {
         {notification.notifiable.thumbnail_url && (
           <ListItemSecondaryAction onClick={this.props.handleNotificationClick}>
             <ButtonBase component={Link} to={notification.click_action}>
-              <Avatar src={notification.notifiable.thumbnail_url} style={styles.secondaryAvatar} />
+              <Avatar
+                src={notification.notifiable.thumbnail_url}
+                style={styles.secondaryAvatar}
+              />
             </ButtonBase>
           </ListItemSecondaryAction>
         )}
@@ -89,7 +87,9 @@ export default class NotificationList extends React.PureComponent {
         return (
           <React.Fragment>
             <b>{notification.notifier.name}</b>
-            {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
+            {` ${I18n.t(
+              `${notification.key} ${notification.notifiable.type}`
+            )}`}
           </React.Fragment>
         );
       case 'comment':

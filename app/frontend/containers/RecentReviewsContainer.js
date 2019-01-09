@@ -13,10 +13,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    handleReviewClick: (review) => {
+    handleReviewClick: review => {
       dispatch(openReviewDialog(review));
     }
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(RecentReviews));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(RecentReviews)
+);

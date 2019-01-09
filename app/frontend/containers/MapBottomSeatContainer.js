@@ -4,11 +4,10 @@ import MapBottomSeat from '../ui/MapBottomSeat';
 import switchSummary from '../actions/switchSummary';
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleSummaryOpen: () => {
       dispatch(switchSummary());
@@ -16,4 +15,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapBottomSeat));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapBottomSeat)
+);

@@ -44,8 +44,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(openToast(I18n.t('create map success')));
 
         gtag('event', 'create', {
-          'event_category': 'engagement',
-          'event_label': 'map'
+          event_category: 'engagement',
+          event_label: 'map'
         });
       } else if (response.status == 409) {
         dispatch(openToast(json.detail));
@@ -56,4 +56,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(withRouter(connect(mapStateToProps, mapDispatchToProps)(EditMapDialog)));
+export default React.memo(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(EditMapDialog)
+  )
+);

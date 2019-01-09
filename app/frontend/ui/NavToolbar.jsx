@@ -2,10 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import loadable from '@loadable/component';
 
-const SearchBarContainer = loadable(() => import(/* webpackChunkName: "search_bar" */ '../containers/SearchBarContainer'));
-const AppMenuButtonContainer = loadable(() => import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer'));
-const AvatarMenuContainer = loadable(() => import(/* webpackChunkName: "avatar_menu" */ '../containers/AvatarMenuContainer'));
-const NotificationMenuContainer = loadable(() => import(/* webpackChunkName: "notification_menu" */ '../containers/NotificationMenuContainer'));
+const SearchBarContainer = loadable(() =>
+  import(/* webpackChunkName: "search_bar" */ '../containers/SearchBarContainer')
+);
+const AppMenuButtonContainer = loadable(() =>
+  import(/* webpackChunkName: "app_menu" */ '../containers/AppMenuButtonContainer')
+);
+const AvatarMenuContainer = loadable(() =>
+  import(/* webpackChunkName: "avatar_menu" */ '../containers/AvatarMenuContainer')
+);
+const NotificationMenuContainer = loadable(() =>
+  import(/* webpackChunkName: "notification_menu" */ '../containers/NotificationMenuContainer')
+);
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -70,7 +78,7 @@ const handleTitleClick = () => {
   window.scrollTo(0, 0);
 };
 
-const BackButton = (props) => {
+const BackButton = props => {
   return (
     <IconButton
       color="inherit"
@@ -84,11 +92,7 @@ const BackButton = (props) => {
 
 const Logo = () => {
   return (
-    <Typography
-      variant="h5"
-      color="inherit"
-      style={styles.logo}
-    >
+    <Typography variant="h5" color="inherit" style={styles.logo}>
       <Link to="/" style={styles.link} title="Qoodish">
         Qoodish
       </Link>
@@ -96,7 +100,7 @@ const Logo = () => {
   );
 };
 
-const RightContentsForAnonymous = (props) => {
+const RightContentsForAnonymous = props => {
   return (
     <div>
       {!props.large && <SearchButton {...props} />}
@@ -112,18 +116,15 @@ const RightContentsForAnonymous = (props) => {
   );
 };
 
-const SearchButton = (props) => {
+const SearchButton = props => {
   return (
-    <IconButton
-      color="inherit"
-      onClick={props.handleSearchButtonClick}
-    >
+    <IconButton color="inherit" onClick={props.handleSearchButtonClick}>
       <SearchIcon />
     </IconButton>
   );
 };
 
-const RightContents = (props) => {
+const RightContents = props => {
   return (
     <div style={styles.rightContents}>
       {!props.large && <SearchButton {...props} />}
@@ -133,27 +134,42 @@ const RightContents = (props) => {
   );
 };
 
-const NavToolbar = (props) => {
+const NavToolbar = props => {
   return (
-    <Toolbar disableGutters style={props.large ? styles.toolbarLarge : styles.toolbarSmall}>
-      {!props.large && props.showBackButton
-        ? <BackButton {...props} />
-        : <AppMenuButtonContainer />}
+    <Toolbar
+      disableGutters
+      style={props.large ? styles.toolbarLarge : styles.toolbarSmall}
+    >
+      {!props.large && props.showBackButton ? (
+        <BackButton {...props} />
+      ) : (
+        <AppMenuButtonContainer />
+      )}
       {props.large ? <Logo /> : null}
       <Typography
-        variant={props.large ? "h5" : "h6"}
+        variant={props.large ? 'h5' : 'h6'}
         color="inherit"
         noWrap
-        style={
-          props.large ? styles.pageTitleLarge : styles.pageTitleSmall
-        }
+        style={props.large ? styles.pageTitleLarge : styles.pageTitleSmall}
         onClick={handleTitleClick}
       >
         {props.pageTitle}
       </Typography>
-      {props.large && <div style={styles.searchContainer}><SearchBarContainer /></div>}
-      <div style={props.large ? styles.rightContentsLarge : styles.rightContentsSmall}>
-        {props.currentUser && props.currentUser.isAnonymous ? <RightContentsForAnonymous {...props} /> : <RightContents {...props} />}
+      {props.large && (
+        <div style={styles.searchContainer}>
+          <SearchBarContainer />
+        </div>
+      )}
+      <div
+        style={
+          props.large ? styles.rightContentsLarge : styles.rightContentsSmall
+        }
+      >
+        {props.currentUser && props.currentUser.isAnonymous ? (
+          <RightContentsForAnonymous {...props} />
+        ) : (
+          <RightContents {...props} />
+        )}
       </div>
     </Toolbar>
   );

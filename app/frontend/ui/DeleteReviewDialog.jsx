@@ -21,12 +21,15 @@ class DeleteReviewDialog extends React.PureComponent {
   }
 
   handleRequestDialogClose() {
-    this.setState({
-      check: false,
-      disabled: true
-    }, () => {
-      this.props.handleRequestDialogClose();
-    });
+    this.setState(
+      {
+        check: false,
+        disabled: true
+      },
+      () => {
+        this.props.handleRequestDialogClose();
+      }
+    );
   }
 
   handleCheckChange() {
@@ -43,11 +46,11 @@ class DeleteReviewDialog extends React.PureComponent {
         onClose={this.handleRequestDialogClose}
         fullWidth
       >
-        <DialogTitle>
-          {I18n.t('sure to delete report')}
-        </DialogTitle>
+        <DialogTitle>{I18n.t('sure to delete report')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{I18n.t('this cannot be undone')}</DialogContentText>
+          <DialogContentText>
+            {I18n.t('this cannot be undone')}
+          </DialogContentText>
           <br />
           <FormControlLabel
             control={
@@ -60,7 +63,9 @@ class DeleteReviewDialog extends React.PureComponent {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+          <Button onClick={this.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
           <Button
             variant="contained"
             onClick={() => {

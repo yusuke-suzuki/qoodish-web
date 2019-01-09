@@ -53,7 +53,7 @@ const styles = {
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
-};
+}
 
 class EditMapDialog extends React.PureComponent {
   constructor(props) {
@@ -182,7 +182,9 @@ class EditMapDialog extends React.PureComponent {
       name: this.state.name,
       description: this.state.description,
       base_id: this.props.selectedBase ? this.props.selectedBase.placeId : '',
-      base_name: this.props.selectedBase ? this.props.selectedBase.description : '',
+      base_name: this.props.selectedBase
+        ? this.props.selectedBase.description
+        : '',
       private: this.state.private,
       invitable: this.state.invitable,
       shared: this.state.shared
@@ -236,15 +238,17 @@ class EditMapDialog extends React.PureComponent {
                 <PlaceIcon />
               </Avatar>
             }
-            label={this.props.selectedBase ? this.props.selectedBase.description : I18n.t('center of map')}
+            label={
+              this.props.selectedBase
+                ? this.props.selectedBase.description
+                : I18n.t('center of map')
+            }
             onClick={this.props.handleMapBaseClick}
             style={styles.mapCenterChip}
             clickable
           />
           <br />
-          <ListSubheader disableGutters>
-            {I18n.t('options')}
-          </ListSubheader>
+          <ListSubheader disableGutters>{I18n.t('options')}</ListSubheader>
           <div>
             <FormControlLabel
               control={
@@ -254,7 +258,11 @@ class EditMapDialog extends React.PureComponent {
                 />
               }
               label={
-                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                <Typography
+                  variant="subtitle2"
+                  color="inherit"
+                  style={styles.selectionLabel}
+                >
                   {I18n.t('allow followers to post')}
                   <GroupIcon style={styles.selectionIcon} />
                 </Typography>
@@ -271,7 +279,11 @@ class EditMapDialog extends React.PureComponent {
                 />
               }
               label={
-                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                <Typography
+                  variant="subtitle2"
+                  color="inherit"
+                  style={styles.selectionLabel}
+                >
                   {I18n.t('set this map to private')}
                   <LockIcon style={styles.selectionIcon} />
                 </Typography>
@@ -288,7 +300,11 @@ class EditMapDialog extends React.PureComponent {
                 />
               }
               label={
-                <Typography variant="subtitle2" color="inherit" style={styles.selectionLabel}>
+                <Typography
+                  variant="subtitle2"
+                  color="inherit"
+                  style={styles.selectionLabel}
+                >
                   {I18n.t('allow followers to invite')}
                   <PersonAddIcon style={styles.selectionIcon} />
                 </Typography>
@@ -321,7 +337,9 @@ class EditMapDialog extends React.PureComponent {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" style={styles.flex}>
-            {this.props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
+            {this.props.currentMap
+              ? I18n.t('edit map')
+              : I18n.t('create new map')}
           </Typography>
           <Button
             variant="contained"

@@ -12,7 +12,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     handleIssueButtonClick: (currentUser, map) => {
       if (currentUser.isAnonymous) {
@@ -24,4 +24,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(MapToolbar));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MapToolbar)
+);

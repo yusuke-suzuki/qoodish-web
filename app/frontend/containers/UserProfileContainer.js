@@ -49,7 +49,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchReviews: async () => {
       dispatch(loadUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchUserReviews(ownProps.match.params.userId);
+      let response = await client.fetchUserReviews(
+        ownProps.match.params.userId
+      );
       let reviews = await response.json();
       dispatch(loadUserReviewsEnd());
       dispatch(fetchUserReviews(reviews));
@@ -58,7 +60,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadMoreReviews: async timestamp => {
       dispatch(loadMoreUserReviewsStart());
       const client = new ApiClient();
-      let response = await client.fetchUserReviews(ownProps.match.params.userId, timestamp);
+      let response = await client.fetchUserReviews(
+        ownProps.match.params.userId,
+        timestamp
+      );
       let reviews = await response.json();
       dispatch(loadMoreUserReviewsEnd());
       dispatch(fetchMoreUserReviews(reviews));
@@ -76,7 +81,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchFollowingMaps: async () => {
       dispatch(loadFollowingMapsStart());
       const client = new ApiClient();
-      let response = await client.fetchFollowingMaps(ownProps.match.params.userId);
+      let response = await client.fetchFollowingMaps(
+        ownProps.match.params.userId
+      );
       let maps = await response.json();
       dispatch(fetchFollowingMaps(maps));
       dispatch(loadFollowingMapsEnd());
@@ -99,4 +106,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Profile));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Profile)
+);

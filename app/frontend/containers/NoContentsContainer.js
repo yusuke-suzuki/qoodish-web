@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleCreateMapButtonClick: (currentUser) => {
+    handleCreateMapButtonClick: currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -22,7 +22,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(openCreateMapDialog());
     },
 
-    handleCreateReviewButtonClick: (currentUser) => {
+    handleCreateReviewButtonClick: currentUser => {
       if (currentUser.isAnonymous) {
         dispatch(openSignInRequiredDialog());
         return;
@@ -32,4 +32,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(NoContents));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NoContents)
+);

@@ -58,13 +58,15 @@ const LinkedProvidersList = props => {
             onClick={() => {
               linked
                 ? props.handleUnlinkProviderButtonClick(provider.id)
-                : props.handleLinkProviderButtonClick(provider.id)
+                : props.handleLinkProviderButtonClick(provider.id);
             }}
-            disabled={props.currentUser.isAnonymous || (linked && reachedMinimum)}
+            disabled={
+              props.currentUser.isAnonymous || (linked && reachedMinimum)
+            }
             color="primary"
-            style={(linked && !reachedMinimum) ? styles.unlinkButton : {}}
+            style={linked && !reachedMinimum ? styles.unlinkButton : {}}
           >
-            {linked ? I18n.t("unlink") : I18n.t("link")}
+            {linked ? I18n.t('unlink') : I18n.t('link')}
           </Button>
         </ListItemSecondaryAction>
       </ListItem>
@@ -77,10 +79,10 @@ const ProviderLinkSettings = props => {
     <Card>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
-          {I18n.t("link providers")}
+          {I18n.t('link providers')}
         </Typography>
         <Typography component="p" gutterBottom>
-          {I18n.t("link providers detail")}
+          {I18n.t('link providers detail')}
         </Typography>
         <List>
           <LinkedProvidersList {...props} />

@@ -28,7 +28,7 @@ const styles = {
   }
 };
 
-const ContentsIcon = (props) => {
+const ContentsIcon = props => {
   switch (props.contentType) {
     case 'map':
       return <MapIcon style={styles.icon} />;
@@ -47,7 +47,7 @@ const ContentsIcon = (props) => {
   }
 };
 
-const PrimaryAction = (props) => {
+const PrimaryAction = props => {
   switch (props.action) {
     case 'create-map':
       return (
@@ -73,11 +73,7 @@ const PrimaryAction = (props) => {
       );
     case 'discover-reviews':
       return (
-        <Button
-          color="primary"
-          component={Link}
-          to="/discover"
-        >
+        <Button color="primary" component={Link} to="/discover">
           <SearchIcon style={styles.buttonIcon} />
           {I18n.t('discover reviews')}
         </Button>
@@ -87,26 +83,18 @@ const PrimaryAction = (props) => {
   }
 };
 
-const SecondaryAction = (props) => {
+const SecondaryAction = props => {
   switch (props.secondaryAction) {
     case 'discover-maps':
       return (
-        <Button
-          color="primary"
-          component={Link}
-          to="/discover"
-        >
+        <Button color="primary" component={Link} to="/discover">
           <SearchIcon style={styles.buttonIcon} />
           {I18n.t('discover maps')}
         </Button>
       );
     case 'discover-reviews':
       return (
-        <Button
-          color="primary"
-          component={Link}
-          to="/discover"
-        >
+        <Button color="primary" component={Link} to="/discover">
           <SearchIcon style={styles.buttonIcon} />
           {I18n.t('discover reviews')}
         </Button>
@@ -116,7 +104,7 @@ const SecondaryAction = (props) => {
   }
 };
 
-const NoContents = (props) => {
+const NoContents = props => {
   return (
     <div style={styles.container}>
       <ContentsIcon {...props} />

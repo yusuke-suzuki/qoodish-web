@@ -3,13 +3,16 @@ import { connect } from 'react-redux';
 import SpotImageStepper from '../ui/SpotImageStepper';
 
 const mapStateToProps = state => {
-  return {
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-  }
+  return {};
 };
 
-export default React.memo(connect(mapStateToProps, mapDispatchToProps)(SpotImageStepper));
+export default React.memo(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SpotImageStepper)
+);
