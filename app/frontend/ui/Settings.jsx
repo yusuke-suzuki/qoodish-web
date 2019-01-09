@@ -8,6 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteAccountDialogContainer from '../containers/DeleteAccountDialogContainer';
 import CreateResourceButtonContainer from '../containers/CreateResourceButtonContainer';
+import ProviderLinkSettingsContainer from '../containers/ProviderLinkSettingsContainer';
 
 import I18n from '../containers/I18n';
 
@@ -105,6 +106,9 @@ export default class Invites extends React.PureComponent {
     return (
       <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
         {this.renderPushNotificationCard()}
+        <div style={styles.card}>
+          <ProviderLinkSettingsContainer />
+        </div>
         {this.renderDeleteAccountCard()}
         <DeleteAccountDialogContainer />
         {this.props.large && <CreateResourceButtonContainer />}

@@ -2,12 +2,14 @@ import {
   SIGN_IN,
   SIGN_OUT,
   FETCH_REGISTRATION_TOKEN,
-  FETCH_MY_PROFILE
+  FETCH_MY_PROFILE,
+  UPDATE_LINKED_PROVIDERS
 } from '../actionTypes';
 
 const initialState = {
-  currentUser: null,
-  registrationToken: null
+  currentUser: {},
+  registrationToken: null,
+  linkedProviders: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -19,8 +21,8 @@ const reducer = (state = initialState, action) => {
       });
     case SIGN_OUT:
       return Object.assign({}, state, {
-        currentUser: null,
-        registrationToken: null
+        registrationToken: null,
+        linkedProviders: []
       });
     case FETCH_REGISTRATION_TOKEN:
       return Object.assign({}, state, {
@@ -29,6 +31,10 @@ const reducer = (state = initialState, action) => {
     case FETCH_MY_PROFILE:
       return Object.assign({}, state, {
         currentUser: action.payload.user
+      });
+    case UPDATE_LINKED_PROVIDERS:
+      return Object.assign({}, state, {
+        linkedProviders: action.payload.providerIds
       });
     default:
       return state;
