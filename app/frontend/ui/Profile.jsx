@@ -308,7 +308,7 @@ class Profile extends React.PureComponent {
           onChange={this.handleTabChange}
           indicatorColor="primary"
           textColor="primary"
-          fullWidth
+          variant="fullWidth"
           centered
         >
           <Tab

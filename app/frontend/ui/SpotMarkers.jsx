@@ -2,7 +2,7 @@ import React from 'react';
 import {
   OverlayView
 } from 'react-google-maps';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 
@@ -23,8 +23,7 @@ const SpotMarkers = (props) => {
     >
       {props.large ?
       <Tooltip title={spot.name}>
-        <Button
-          variant="fab"
+        <Fab
           style={styles.overlayButton}
           onClick={() => props.onSpotMarkerClick(spot)}
         >
@@ -32,11 +31,10 @@ const SpotMarkers = (props) => {
             src={spot.image_url}
             alt={spot.name}
           />
-        </Button>
+        </Fab>
       </Tooltip>
       :
-      <Button
-        variant="fab"
+      <Fab
         style={styles.overlayButton}
         onClick={() => props.onSpotMarkerClick(spot)}
       >
@@ -44,7 +42,7 @@ const SpotMarkers = (props) => {
           src={spot.image_url}
           alt={spot.name}
         />
-      </Button>
+      </Fab>
       }
     </OverlayView>
   ));

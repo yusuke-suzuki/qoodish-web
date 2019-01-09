@@ -33,13 +33,6 @@ const styles = {
     backgroundColor: 'initial',
     borderRight: 'initial',
     maxWidth: 230
-  },
-  drawerPaperWithTabs: {
-    marginTop: 144,
-    zIndex: 1000,
-    backgroundColor: 'initial',
-    borderRight: 'initial',
-    maxWidth: 230
   }
 };
 
@@ -154,7 +147,7 @@ const Permanent = (props) => {
     <Drawer
       variant="permanent"
       anchor="left"
-      PaperProps={{ style: props.mapsTabActive ? styles.drawerPaperWithTabs : styles.drawerPaper }}
+      PaperProps={{ style: styles.drawerPaper }}
       open={props.drawerOpen}
       onClose={props.handleCloseDrawer}
       onClick={props.handleCloseDrawer}

@@ -55,7 +55,8 @@ const styles = {
     height: 64,
     minHeight: 64,
     width: '20%',
-    minWidth: 'auto'
+    minWidth: 'auto',
+    paddingTop: 0
   },
   tabSmall: {
     height: 56
@@ -177,7 +178,7 @@ class MapSummary extends React.PureComponent {
         value={this.state.tabValue}
         onChange={this.handleTabChange}
         style={this.props.large ? styles.tabsLarge : styles.tabsSmall}
-        fullWidth={this.props.large}
+        variant={this.props.large ? "fullWidth" : "standard"}
         indicatorColor={this.props.large ? "primary" : "secondary"}
         textColor={this.props.large ? "primary" : "inherit"}
       >

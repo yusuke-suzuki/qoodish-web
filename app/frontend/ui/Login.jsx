@@ -8,7 +8,7 @@ import PlaceIcon from '@material-ui/icons/Place';
 import ExploreIcon from '@material-ui/icons/Explore';
 import amber from '@material-ui/core/colors/amber';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -208,13 +208,12 @@ class Login extends React.PureComponent {
               </Card>
             </Grid>
           </Grid>
-          <Button
-            variant="fab"
+          <Fab
             onClick={this.handleScrollTopClick}
             style={styles.scrollTopButton}
           >
             <ArrowUpwardIcon />
-          </Button>
+          </Fab>
         </div>
         <Card>
           <CardContent style={styles.bottomCardContent}>

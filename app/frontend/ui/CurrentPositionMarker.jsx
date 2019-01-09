@@ -3,7 +3,7 @@ import {
   OverlayView,
   Marker
 } from 'react-google-maps';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../containers/I18n';
@@ -42,26 +42,24 @@ const ProfileIcon = (props) => {
     >
       {props.large ?
       <Tooltip title={I18n.t("you are hear")}>
-        <Button
-          variant="fab"
+        <Fab
           style={styles.overlayButton}
         >
           <Avatar
             src={props.currentUser.thumbnail_url}
             alt={I18n.t("you are hear")}
           />
-        </Button>
+        </Fab>
       </Tooltip>
       :
-      <Button
-        variant="fab"
+      <Fab
         style={styles.overlayButton}
       >
         <Avatar
           src={props.currentUser.thumbnail_url}
           alt={I18n.t("you are hear")}
         />
-      </Button>
+      </Fab>
       }
     </OverlayView>
   );
