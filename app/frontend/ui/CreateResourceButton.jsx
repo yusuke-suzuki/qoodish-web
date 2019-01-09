@@ -59,6 +59,7 @@ const CreateResourceButton = (props) => {
       style={buttonStyle(props)}
       onClick={() => props.handleButtonClick(props.currentUser)}
       disabled={props.disabled}
+      data-test="create-resource-button"
     >
       <AddIcon />
     </Fab>

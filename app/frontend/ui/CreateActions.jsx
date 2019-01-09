@@ -16,13 +16,19 @@ const ActionsList = props => {
         button
         key="review"
         onClick={() => props.handleCreateReviewButtonClick(props.currentSpot)}
+        data-test="create-review-button"
       >
         <ListItemIcon>
           <EditIcon />
         </ListItemIcon>
         <ListItemText primary={I18n.t("create new report")} />
       </ListItem>
-      <ListItem button key="map" onClick={props.handleCreateMapButtonClick}>
+      <ListItem
+        button
+        key="map"
+        onClick={props.handleCreateMapButtonClick}
+        data-test="create-map-button"
+      >
         <ListItemIcon>
           <MapIcon />
         </ListItemIcon>

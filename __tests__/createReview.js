@@ -29,7 +29,8 @@ describe(
     })
 
     it('Create Review', async () => {
-      await page.waitForSelector(sel('create-review-button'))
+      await page.waitForSelector(sel('create-resource-button'))
+      await page.click(sel('create-resource-button'))
       await page.click(sel('create-review-button'))
       await page.type(sel('place-name-input'), '弘前 りんご公園')
       await page.waitFor(2000)
