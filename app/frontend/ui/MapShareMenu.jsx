@@ -6,7 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import CopyToClipboard from 'react-copy-to-clipboard';
 import I18n from '../containers/I18n';
@@ -118,7 +118,7 @@ class MapShareMenu extends React.PureComponent {
             onClick={this.handleRequestShareMenuClose}
           >
             <ListItemIcon>
-              <ContentCopyIcon />
+              <FileCopyIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('copy link')} />
           </MenuItem>
