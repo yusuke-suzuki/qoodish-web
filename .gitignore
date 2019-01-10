@@ -70,7 +70,6 @@ docker-compose.yml
 firebase-debug.log
 .firebase
 functions/node_modules/
-functions/*.js
 functions/.runtimeconfig.json
 
 .env.production

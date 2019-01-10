@@ -1,4 +1,4 @@
-const webpack =  require('webpack');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -6,15 +6,16 @@ require('dotenv').config();
 
 const serviceWorkerPlugins = [
   new CleanWebpackPlugin(['./functions/hosting/firebase-messaging-sw.js'], {}),
-  new webpack.EnvironmentPlugin([
-    'FIREBASE_MESSAGING_SENDER_ID'
-  ])
+  new webpack.EnvironmentPlugin(['FIREBASE_MESSAGING_SENDER_ID'])
 ];
 
 const plugins = [
-  new CleanWebpackPlugin(['./functions/hosting/*.*.js', './functions/hosting/index.html'], {}),
+  new CleanWebpackPlugin(
+    ['./functions/hosting/*.*.js', './functions/hosting/index.html'],
+    {}
+  ),
   new HtmlWebpackPlugin({
-    template: 'app/views/index.html',
+    template: 'src/views/index.html',
     hash: true,
     endpoint: process.env.ENDPOINT,
     icon36: process.env.ICON_36,
@@ -48,7 +49,7 @@ const plugins = [
 
 module.exports = [
   {
-    entry: ['./app/service_workers/firebase-messaging-sw.js'],
+    entry: ['./src/service_workers/firebase-messaging-sw.js'],
     output: {
       path: __dirname + '/functions/hosting',
       publicPath: '/',
@@ -71,7 +72,7 @@ module.exports = [
     plugins: serviceWorkerPlugins
   },
   {
-    entry: ['whatwg-fetch', './app/frontend/index.js'],
+    entry: ['whatwg-fetch', './src/frontend/index.js'],
     output: {
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].js',
@@ -92,10 +93,7 @@ module.exports = [
         },
         {
           test: /\.(jpe?g|png|gif|svg)$/i,
-          loaders: [
-            'file-loader',
-            'image-webpack-loader'
-          ]
+          loaders: ['file-loader', 'image-webpack-loader']
         },
         {
           test: /\.css/,

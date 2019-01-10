@@ -7,13 +7,16 @@ importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
 firebase.initializeApp({
-  'messagingSenderId': process.env.FIREBASE_MESSAGING_SENDER_ID
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
 });
 
 const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  console.log(
+    '[firebase-messaging-sw.js] Received background message ',
+    payload
+  );
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
@@ -21,5 +24,8 @@ messaging.setBackgroundMessageHandler(function(payload) {
     click_action: payload.notification.click_action
   };
 
-  return self.registration.showNotification(notificationTitle, notificationOptions);
+  return self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  );
 });
