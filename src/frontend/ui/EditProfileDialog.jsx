@@ -1,0 +1,269 @@
+import React from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Slide from '@material-ui/core/Slide';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import IconButton from '@material-ui/core/IconButton';
+import I18n from '../containers/I18n';
+
+const styles = {
+  avatarContainer: {
+    marginBottom: 20,
+    position: 'relative'
+  },
+  profileAvatar: {
+    width: 80,
+    height: 80
+  },
+  imageInput: {
+    display: 'none'
+  },
+  image: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+  },
+  editImageButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16
+  }
+};
+
+const Transition = props => {
+  return <Slide direction="up" {...props} />;
+};
+
+class EditProfileDialog extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      imageUrl: '',
+      editImage: false,
+      errorName: undefined,
+      errorBio: undefined,
+      disabled: true
+    };
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleBioChange = this.handleBioChange.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
+    this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
+    this.validate = this.validate.bind(this);
+    this.clearState = this.clearState.bind(this);
+    this.setCurrentProfile = this.setCurrentProfile.bind(this);
+  }
+
+  setCurrentProfile() {
+    if (this.props.currentUser) {
+      this.setState({
+        name: this.props.currentUser.name,
+        bio: this.props.currentUser.biography,
+        imageUrl: this.props.currentUser.thumbnail_url
+      });
+    }
+  }
+
+  clearState() {
+    this.setState({
+      name: '',
+      imageUrl: '',
+      bio: '',
+      errorName: undefined,
+      errorBio: undefined,
+      disabled: true
+    });
+  }
+
+  handleNameChange(e) {
+    let name = e.target.value;
+    let errorText;
+    if (name) {
+      if (name.length > 30) {
+        errorText = I18n.t('max characters 30');
+      } else {
+        errorText = null;
+      }
+    } else {
+      errorText = I18n.t('name is required');
+    }
+
+    this.setState(
+      {
+        name: name,
+        errorName: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
+  }
+
+  handleBioChange(e) {
+    let bio = e.target.value;
+    let errorText;
+    if (bio) {
+      if (bio.length > 160) {
+        errorText = I18n.t('max characters 160');
+      } else {
+        errorText = undefined;
+      }
+    } else {
+      errorText = undefined;
+    }
+
+    this.setState(
+      {
+        bio: bio,
+        errorBio: errorText
+      },
+      () => {
+        this.validate();
+      }
+    );
+  }
+
+  handleAddImageClick(e) {
+    document.getElementById('profile-image-input').click();
+  }
+
+  handleImageChange(e) {
+    let reader = new FileReader();
+    let file = e.target.files[0];
+    if (!file.type.match(/image\/*/)) {
+      return;
+    }
+
+    reader.onloadend = () => {
+      let dataUrl = reader.result;
+      this.setState(
+        {
+          imageUrl: dataUrl,
+          editImage: true
+        },
+        () => {
+          this.validate();
+        }
+      );
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  handleSaveButtonClick() {
+    let params = {
+      display_name: this.state.name,
+      biography: this.state.bio
+    };
+    if (this.state.editImage) {
+      params.image_url = this.state.imageUrl;
+    }
+    this.props.handleSaveButtonClick(params);
+  }
+
+  validate() {
+    let disabled;
+    if (this.state.name && !this.state.errorName && !this.state.errorBio) {
+      disabled = false;
+    } else {
+      disabled = true;
+    }
+    this.setState({
+      disabled: disabled
+    });
+  }
+
+  render() {
+    return (
+      <Dialog
+        open={this.props.dialogOpen}
+        onEnter={this.setCurrentProfile}
+        onClose={this.props.handleRequestDialogClose}
+        onExit={this.clearState}
+        disableBackdropClick
+        disableEscapeKeyDown
+        fullWidth
+        fullScreen={!this.props.large}
+        TransitionComponent={Transition}
+      >
+        <DialogTitle>{I18n.t('edit profile')}</DialogTitle>
+        <DialogContent>
+          <div style={styles.avatarContainer}>
+            <Avatar src={this.state.imageUrl} style={styles.profileAvatar}>
+              <img src={this.state.imageUrl} style={styles.image} />
+            </Avatar>
+            <IconButton
+              onClick={this.handleAddImageClick}
+              style={styles.editImageButton}
+            >
+              <PhotoCameraIcon />
+            </IconButton>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            id="profile-image-input"
+            onChange={this.handleImageChange}
+            style={styles.imageInput}
+          />
+          {this.renderNameText()}
+          {this.renderBioText()}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.props.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={this.handleSaveButtonClick}
+            color="primary"
+            disabled={this.state.disabled}
+          >
+            {I18n.t('save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  renderNameText() {
+    return (
+      <TextField
+        label={I18n.t('name')}
+        onChange={this.handleNameChange}
+        error={this.state.errorName ? true : false}
+        helperText={this.state.errorName}
+        fullWidth
+        autoFocus
+        required
+        value={this.state.name}
+        margin="normal"
+      />
+    );
+  }
+
+  renderBioText() {
+    return (
+      <TextField
+        label={I18n.t('biography')}
+        onChange={this.handleBioChange}
+        error={this.state.errorBio ? true : false}
+        helperText={this.state.errorBio}
+        fullWidth
+        multiline
+        rowsMax={this.props.large ? '3' : '2'}
+        rows={this.props.large ? '3' : '3'}
+        value={this.state.bio ? this.state.bio : ''}
+        margin="normal"
+      />
+    );
+  }
+}
+
+export default EditProfileDialog;
