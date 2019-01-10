@@ -5,7 +5,6 @@ Qoodish web application.
 `yarn`  
 `cp .env.sample .env`  
 `vim .env`  
-`yarn global add firebase-tools`
 
 ## Build
 `yarn build`
@@ -13,7 +12,7 @@ or
 `yarn watch:build`
 
 ## Start app
-`firebase serve`
+`yarn serve`
 
 ## Test
 `yarn jest`
