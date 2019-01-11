@@ -1,8 +1,10 @@
-const gcs = require('@google-cloud/storage')();
+const { Storage } = require('@google-cloud/storage');
 const spawn = require('child-process-promise').spawn;
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
+
+const gcs = new Storage();
 
 const generateThumbnail = object => {
   const fileBucket = object.bucket;
