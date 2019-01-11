@@ -32,7 +32,7 @@ import {
   LOCATION_CHANGE
 } from '../actionTypes';
 import { isWidthUp } from '@material-ui/core/withWidth';
-import I18n from '../containers/I18n';
+import I18n from '../utils/I18n';
 
 const initialState = {
   toastOpen: false,

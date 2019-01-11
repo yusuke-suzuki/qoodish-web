@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import App from '../ui/App';
+import App from '../components/App';
 import locationChange from '../actions/locationChange';
 import updateWindowSize from '../actions/updateWindowSize';
-import ApiClient from '../containers/ApiClient';
+import ApiClient from '../utils/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import updateLinkedProviders from '../actions/updateLinkedProviders';
 import getFirebase from '../utils/getFirebase';

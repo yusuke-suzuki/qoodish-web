@@ -1,0 +1,122 @@
+import React from 'react';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import moment from 'moment';
+import NoContents from '../../molecules/NoContents';
+import CreateResourceButton from '../../molecules/CreateResourceButton';
+
+import I18n from '../../../utils/I18n';
+
+const styles = {
+  rootLarge: {
+    margin: '94px auto 200px',
+    maxWidth: 700
+  },
+  rootSmall: {
+    padding: 20,
+    margin: '56px auto'
+  },
+  cardLarge: {
+    marginBottom: 20
+  },
+  cardSmall: {
+    marginBottom: 16
+  },
+  cardContent: {
+    paddingTop: 0
+  },
+  contentText: {
+    wordBreak: 'break-all'
+  },
+  progress: {
+    textAlign: 'center',
+    padding: 10,
+    marginTop: 20
+  }
+};
+
+export default class Invites extends React.PureComponent {
+  componentDidMount() {
+    if (!this.props.currentUser.isAnonymous) {
+      this.props.fetchInvites();
+    }
+
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: '/invites',
+      page_title: `${I18n.t('invites')} | Qoodish'`
+    });
+  }
+
+  render() {
+    return (
+      <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
+        <div>
+          {this.props.loadingInvites
+            ? this.renderProgress()
+            : this.renderInvitesContainer(this.props.invites)}
+        </div>
+        {this.props.large && <CreateResourceButton />}
+      </div>
+    );
+  }
+
+  renderProgress() {
+    return (
+      <div style={styles.progress}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  renderInvitesContainer(invites) {
+    if (invites.length > 0) {
+      return this.renderInviteCards(invites);
+    } else {
+      return (
+        <NoContents contentType="invite" message={I18n.t('no invites here')} />
+      );
+    }
+  }
+
+  renderInviteCards(invites) {
+    return invites.map(invite => (
+      <Card
+        key={invite.id}
+        style={this.props.large ? styles.cardLarge : styles.cardSmall}
+      >
+        <CardHeader
+          avatar={<Avatar src={invite.invitable.image_url} />}
+          title={invite.invitable.name}
+          subheader={this.renderCreatedAt(invite)}
+        />
+        <CardContent style={styles.cardContent}>
+          <Typography component="p" style={styles.contentText}>
+            {invite.invitable.description}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.props.handleFollowButtonClick(invite)}
+            disabled={invite.expired}
+          >
+            {I18n.t('follow')}
+          </Button>
+        </CardActions>
+      </Card>
+    ));
+  }
+
+  renderCreatedAt(invite) {
+    return moment(invite.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+      .locale(window.currentLocale)
+      .format('LL');
+  }
+}
