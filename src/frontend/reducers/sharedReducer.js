@@ -3,35 +3,28 @@ import {
   CLOSE_TOAST,
   REQUEST_START,
   REQUEST_FINISH,
-  UPDATE_WINDOW_SIZE,
   OPEN_ISSUE_DIALOG,
   CLOSE_ISSUE_DIALOG,
-  LOAD_PLACES_START,
-  LOAD_PLACES_END,
   SEARCH_PLACES,
-  LOAD_MAPS_START,
-  LOAD_MAPS_END,
   SEARCH_MAPS,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
   FETCH_LIKES,
   FETCH_NOTIFICATIONS,
   READ_NOTIFICATION,
-  LOAD_NOTIFICATIONS_START,
-  LOAD_NOTIFICATIONS_END,
   OPEN_SIGN_IN_REQUIRED_DIALOG,
   CLOSE_SIGN_IN_REQUIRED_DIALOG,
   OPEN_FEEDBACK_DIALOG,
   CLOSE_FEEDBACK_DIALOG,
   OPEN_DRAWER,
   CLOSE_DRAWER,
+  TOGGLE_DRAWER,
   OPEN_SEARCH_MAPS_DIALOG,
   CLOSE_SEARCH_MAPS_DIALOG,
   OPEN_CREATE_ACTIONS,
   CLOSE_CREATE_ACTIONS,
   LOCATION_CHANGE
 } from '../actionTypes';
-import { isWidthUp } from '@material-ui/core/withWidth';
 import I18n from '../utils/I18n';
 
 const initialState = {
@@ -39,19 +32,15 @@ const initialState = {
   toastMessage: '',
   toastDuration: 4000,
   blocking: false,
-  width: '',
-  large: true,
   pageTitle: '',
   issueDialogOpen: false,
   issueTargetId: null,
   issueTargetType: null,
   pickedPlaces: [],
-  loadingPlaces: false,
   likes: [],
   likesDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
-  loadingNotifications: false,
   showBackButton: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
@@ -62,7 +51,6 @@ const initialState = {
   isMapDetail: false,
   previousLocation: undefined,
   currentLocation: undefined,
-  loadingMaps: false,
   pickedMaps: [],
   searchMapsDialogOpen: false,
   createActionsOpen: false
@@ -176,11 +164,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         blocking: false
       });
-    case UPDATE_WINDOW_SIZE:
-      return Object.assign({}, state, {
-        width: action.payload.width,
-        large: isWidthUp('md', action.payload.width)
-      });
     case OPEN_ISSUE_DIALOG:
       return Object.assign({}, state, {
         issueDialogOpen: true,
@@ -193,25 +176,9 @@ const reducer = (state = initialState, action) => {
         issueTargetId: null,
         issueTargetType: null
       });
-    case LOAD_PLACES_START:
-      return Object.assign({}, state, {
-        loadingPlaces: true
-      });
-    case LOAD_PLACES_END:
-      return Object.assign({}, state, {
-        loadingPlaces: false
-      });
     case SEARCH_PLACES:
       return Object.assign({}, state, {
         pickedPlaces: action.payload.places
-      });
-    case LOAD_MAPS_START:
-      return Object.assign({}, state, {
-        loadingMaps: true
-      });
-    case LOAD_MAPS_END:
-      return Object.assign({}, state, {
-        loadingMaps: false
       });
     case SEARCH_MAPS:
       return Object.assign({}, state, {
@@ -258,14 +225,6 @@ const reducer = (state = initialState, action) => {
           unreadNotifications: []
         });
       }
-    case LOAD_NOTIFICATIONS_START:
-      return Object.assign({}, state, {
-        loadingNotifications: true
-      });
-    case LOAD_NOTIFICATIONS_END:
-      return Object.assign({}, state, {
-        loadingNotifications: false
-      });
     case OPEN_SIGN_IN_REQUIRED_DIALOG:
       return Object.assign({}, state, {
         signInRequiredDialogOpen: true
@@ -289,6 +248,10 @@ const reducer = (state = initialState, action) => {
     case CLOSE_DRAWER:
       return Object.assign({}, state, {
         drawerOpen: false
+      });
+    case TOGGLE_DRAWER:
+      return Object.assign({}, state, {
+        drawerOpen: !state.drawerOpen
       });
     case OPEN_SEARCH_MAPS_DIALOG:
       return Object.assign({}, state, {

@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,7 +20,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+
+import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
+
+import searchPlaces from '../../actions/searchPlaces';
 
 const styles = {
   appbar: {
@@ -48,79 +55,73 @@ const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const handleInputChange = (input, props) => {
-  if (props.loadingPlaces || !input) {
-    return;
-  }
-  props.handleInputChange(input);
-};
-
-const handlePlaceSelected = (place, props) => {
-  let params = {
-    placeId: place.place_id,
-    description: place.description
-  };
-  props.onClose();
-  props.onPlaceSelected(params);
-};
-
-const PlaceDialogTitle = () => {
-  return (
-    <DialogTitle>
-      <div style={styles.dialogTitle}>
-        <PlaceIcon style={styles.placeIcon} />
-        {I18n.t('select place')}
-      </div>
-    </DialogTitle>
-  );
-};
-
-const PlaceAppBar = props => {
-  return (
-    <AppBar style={styles.appbar} color="primary">
-      <Toolbar style={styles.toolbar}>
-        <IconButton color="inherit" onClick={props.onClose}>
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit" style={styles.flex}>
-          {I18n.t('select place')}
-        </Typography>
-      </Toolbar>
-    </AppBar>
-  );
-};
-
-const PlaceActions = props => {
-  return (
-    <DialogActions>
-      <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
-    </DialogActions>
-  );
-};
-
 const SharedPlaceSelectDialog = props => {
+  const large = useMediaQuery('(min-width: 600px)');
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+
+  const places = useMappedState(
+    useCallback(state => state.shared.pickedPlaces, [])
+  );
+
+  const handlePlaceSelected = useCallback(place => {
+    let params = {
+      placeId: place.place_id,
+      description: place.description
+    };
+    props.onClose();
+    props.onPlaceSelected(params);
+  });
+
+  const handleInputChange = useCallback(async input => {
+    if (loading || !input) {
+      return;
+    }
+    setLoading(true);
+    const client = new ApiClient();
+    let response = await client.searchPlaces(input);
+    let places = await response.json();
+    setLoading(false);
+    if (response.ok) {
+      dispatch(searchPlaces(places));
+    }
+  });
+
   return (
     <Dialog
       open={props.dialogOpen}
       onEnter={props.onEnter}
       onClose={props.onClose}
       fullWidth
-      fullScreen={!props.large}
+      fullScreen={!large}
       TransitionComponent={Transition}
     >
-      {props.large ? (
-        <PlaceDialogTitle {...props} />
+      {large ? (
+        <DialogTitle>
+          <div style={styles.dialogTitle}>
+            <PlaceIcon style={styles.placeIcon} />
+            {I18n.t('select place')}
+          </div>
+        </DialogTitle>
       ) : (
-        <PlaceAppBar {...props} />
+        <AppBar style={styles.appbar} color="primary">
+          <Toolbar style={styles.toolbar}>
+            <IconButton color="inherit" onClick={props.onClose}>
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" style={styles.flex}>
+              {I18n.t('select place')}
+            </Typography>
+          </Toolbar>
+        </AppBar>
       )}
       <DialogContent
-        style={
-          props.large ? styles.dialogContentLarge : styles.dialogContentSmall
-        }
+        style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
         <TextField
           label={I18n.t('search places')}
-          onChange={e => handleInputChange(e.target.value, props)}
+          onChange={e => handleInputChange(e.target.value)}
           fullWidth
           autoFocus
           placeholder={I18n.t('search places example')}
@@ -128,11 +129,11 @@ const SharedPlaceSelectDialog = props => {
           data-test="place-name-input"
         />
         <List>
-          {props.places.map(place => (
+          {places.map(place => (
             <ListItem
               button
               key={place.place_id}
-              onClick={() => handlePlaceSelected(place, props)}
+              onClick={() => handlePlaceSelected(place)}
               data-test="place-list-item"
             >
               <ListItemAvatar>
@@ -145,9 +146,13 @@ const SharedPlaceSelectDialog = props => {
           ))}
         </List>
       </DialogContent>
-      {props.large && <PlaceActions {...props} />}
+      {large && (
+        <DialogActions>
+          <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
+        </DialogActions>
+      )}
     </Dialog>
   );
 };
 
-export default SharedPlaceSelectDialog;
+export default React.memo(SharedPlaceSelectDialog);

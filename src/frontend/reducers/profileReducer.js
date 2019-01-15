@@ -1,15 +1,6 @@
 import {
-  LOAD_MY_MAPS_START,
-  LOAD_MY_MAPS_END,
-  LOAD_FOLLOWING_MAPS_START,
-  LOAD_FOLLOWING_MAPS_END,
   FETCH_MY_MAPS,
   FETCH_FOLLOWING_MAPS,
-  FETCH_USER_LIKES,
-  LOAD_USER_REVIEWS_START,
-  LOAD_USER_REVIEWS_END,
-  LOAD_MORE_USER_REVIEWS_START,
-  LOAD_MORE_USER_REVIEWS_END,
   FETCH_USER_REVIEWS,
   FETCH_MORE_USER_REVIEWS,
   EDIT_REVIEW,
@@ -26,16 +17,11 @@ import {
 
 const initialState = {
   currentUser: {},
-  loadingMyMaps: false,
-  loadingFollowingMaps: false,
   myMaps: [],
   followingMaps: [],
   currentReviews: [],
-  loadingReviews: false,
-  loadingMoreReviews: false,
   noMoreReviews: false,
   nextTimestamp: '',
-  likes: [],
   editProfileDialogOpen: false,
   followingMapsDialogOpen: false
 };
@@ -45,22 +31,6 @@ const reducer = (state = initialState, action) => {
     case FETCH_USER_PROFILE:
       return Object.assign({}, state, {
         currentUser: action.payload.user
-      });
-    case LOAD_MY_MAPS_START:
-      return Object.assign({}, state, {
-        loadingMyMaps: true
-      });
-    case LOAD_MY_MAPS_END:
-      return Object.assign({}, state, {
-        loadingMyMaps: false
-      });
-    case LOAD_FOLLOWING_MAPS_START:
-      return Object.assign({}, state, {
-        loadingFollowingMaps: true
-      });
-    case LOAD_FOLLOWING_MAPS_END:
-      return Object.assign({}, state, {
-        loadingFollowingMaps: false
       });
     case LEAVE_MAP:
       return Object.assign({}, state, {
@@ -84,22 +54,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         followingMapsDialogOpen: false
       });
-    case LOAD_USER_REVIEWS_START:
-      return Object.assign({}, state, {
-        loadingReviews: true
-      });
-    case LOAD_USER_REVIEWS_END:
-      return Object.assign({}, state, {
-        loadingReviews: false
-      });
-    case LOAD_MORE_USER_REVIEWS_START:
-      return Object.assign({}, state, {
-        loadingMoreReviews: true
-      });
-    case LOAD_MORE_USER_REVIEWS_END:
-      return Object.assign({}, state, {
-        loadingMoreReviews: false
-      });
     case FETCH_USER_REVIEWS:
       return Object.assign({}, state, {
         currentReviews: action.payload.reviews,
@@ -122,10 +76,6 @@ const reducer = (state = initialState, action) => {
             ? action.payload.reviews[action.payload.reviews.length - 1]
                 .created_at
             : ''
-      });
-    case FETCH_USER_LIKES:
-      return Object.assign({}, state, {
-        likes: action.payload.likes
       });
     case EDIT_REVIEW:
       let index = state.currentReviews.findIndex(review => {

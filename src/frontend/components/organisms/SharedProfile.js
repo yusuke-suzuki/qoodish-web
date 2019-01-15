@@ -1,5 +1,7 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -7,16 +9,23 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
-import PersonIcon from '@material-ui/icons/Person';
-import ReviewGridList from './ReviewGridList';
-import MapCollection from './MapCollection';
-import NoContents from '../molecules/NoContents';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
-import I18n from '../../utils/I18n';
 import SwipeableViews from 'react-swipeable-views';
 import LikesList from './LikesList';
 import ProfileGMap from './ProfileGMap';
+import ProfileReviews from './ProfileReviews';
+import ProfileMyMaps from './ProfileMyMaps';
+import EditProfileButton from '../molecules/EditProfileButton';
+import ProfileAvatar from '../molecules/ProfileAvatar';
+
+import I18n from '../../utils/I18n';
+import ApiClient from '../../utils/ApiClient';
+import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
+import fetchUserProfile from '../../actions/fetchUserProfile';
+import fetchMyProfile from '../../actions/fetchMyProfile';
+import clearProfileState from '../../actions/clearProfileState';
+import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 
 const styles = {
   rootLarge: {
@@ -41,31 +50,8 @@ const styles = {
     marginTop: 8,
     paddingBottom: 16
   },
-  reviewsLarge: {
-    marginTop: 20,
-    paddingBottom: 20
-  },
-  reviewsSmall: {
-    marginTop: 8,
-    paddingBottom: 16
-  },
   profile: {
     paddingTop: 39
-  },
-  profileAvatarLarge: {
-    marginTop: -64,
-    width: 80,
-    height: 80,
-    position: 'absolute'
-  },
-  profileAvatarSmall: {
-    marginTop: -54,
-    width: 80,
-    height: 80,
-    position: 'absolute'
-  },
-  personIcon: {
-    fontSize: 40
   },
   cardContentLarge: {
     padding: 24,
@@ -78,15 +64,6 @@ const styles = {
   tab: {
     minWidth: 'auto'
   },
-  buttonLarge: {
-    textAlign: 'center',
-    padding: 20
-  },
-  buttonSmall: {
-    textAlign: 'center',
-    marginTop: 16,
-    paddingBottom: 8
-  },
   progress: {
     textAlign: 'center',
     padding: 20,
@@ -97,13 +74,6 @@ const styles = {
     display: 'inline-flex',
     marginBottom: 15
   },
-  noReviewsLarge: {
-    paddingTop: 20
-  },
-  noReviewsSmall: {
-    paddingTop: 8
-  },
-  editProfileButton: {},
   profileActions: {
     width: 'max-content',
     marginLeft: 'auto'
@@ -130,260 +100,190 @@ const styles = {
   }
 };
 
-class SharedProfile extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tabValue: 0
-    };
-    this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleChangeIndex = this.handleChangeIndex.bind(this);
-    this.handleClickLoadMoreButton = this.handleClickLoadMoreButton.bind(this);
-  }
+const Summary = props => {
+  const dispatch = useDispatch();
 
-  componentWillUnmount() {
-    this.props.clearProfileState();
-  }
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
 
-  handleClickLoadMoreButton() {
-    this.props.loadMoreReviews(this.props.nextTimestamp);
-  }
+  const { currentUser } = useMappedState(mapState);
 
-  handleTabChange(e, value) {
-    this.setState({
-      tabValue: value
-    });
-  }
+  const handleFollowingClick = useCallback(() => {
+    dispatch(openFollowingMapsDialog());
+  });
 
-  handleChangeIndex(value) {
-    this.setState({
-      tabValue: value
-    });
-  }
-
-  render() {
-    return (
-      <div style={this.props.large ? styles.rootLarge : styles.rootSmall}>
-        {this.renderProfileCard(this.props.currentUser)}
-        <SwipeableViews
-          index={this.state.tabValue}
-          onChangeIndex={this.handleChangeIndex}
-        >
-          {this.renderReviews()}
-          {this.renderMyMaps()}
-          <div style={this.props.large ? styles.likesLarge : styles.likesSmall}>
-            <LikesList likes={this.props.likes} />
-          </div>
-        </SwipeableViews>
-        {this.props.large && <CreateResourceButton />}
-      </div>
-    );
-  }
-
-  renderEditProfileButton() {
-    return (
+  return (
+    <div style={styles.summary}>
       <Button
-        variant="outlined"
-        onClick={() =>
-          this.props.handleEditProfileButtonClick(this.props.currentUser)
-        }
-        color="primary"
-        style={styles.editProfileButton}
+        style={styles.summaryCountButton}
+        onClick={() => props.handleTabChange(undefined, 0)}
       >
-        {I18n.t('edit profile')}
+        <Typography variant="subtitle2" style={styles.summaryCount}>
+          {currentUser.reviews_count ? currentUser.reviews_count : 0}
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary">
+          {I18n.t('reviews count')}
+        </Typography>
       </Button>
-    );
-  }
+      <Button style={styles.summaryCountButton} onClick={handleFollowingClick}>
+        <Typography variant="subtitle2" style={styles.summaryCount}>
+          {currentUser.following_maps_count
+            ? currentUser.following_maps_count
+            : 0}
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary">
+          {I18n.t('following maps')}
+        </Typography>
+      </Button>
+    </div>
+  );
+};
 
-  renderProfileCard(currentUser) {
-    return (
-      <Card>
-        <div
-          style={this.props.large ? styles.cardMapLarge : styles.cardMapSmall}
-        >
-          <ProfileGMap />
-        </div>
-        <CardContent
-          style={
-            this.props.large ? styles.cardContentLarge : styles.cardContentSmall
-          }
-        >
-          {this.renderAvatar(currentUser)}
-          <div style={styles.profileActions}>
-            {this.props.pathname === '/profile' &&
-              this.renderEditProfileButton()}
-          </div>
-          <div style={this.props.pathname === '/profile' ? {} : styles.profile}>
-            <Typography variant="h5" gutterBottom>
-              {currentUser.isAnonymous
-                ? I18n.t('anonymous user')
-                : currentUser.name}
-            </Typography>
-          </div>
-          <Typography variant="body1" style={styles.biography} gutterBottom>
-            {currentUser.biography}
-          </Typography>
-          {this.renderSummary(currentUser)}
-        </CardContent>
-        <Tabs
-          value={this.state.tabValue}
-          onChange={this.handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          centered
-        >
-          <Tab label={I18n.t('reports')} style={styles.tab} />
-          <Tab label={I18n.t('maps')} style={styles.tab} />
-          <Tab label={I18n.t('like')} style={styles.tab} />
-        </Tabs>
-      </Card>
-    );
-  }
+const ProfileCard = props => {
+  const large = useMediaQuery('(min-width: 600px)');
 
-  renderAvatar(currentUser) {
-    if (currentUser.isAnonymous) {
-      return (
-        <Avatar
-          style={
-            this.props.large
-              ? styles.profileAvatarLarge
-              : styles.profileAvatarSmall
-          }
-        >
-          <PersonIcon style={styles.personIcon} />
-        </Avatar>
-      );
-    } else {
-      return (
-        <Avatar
-          src={currentUser.thumbnail_url}
-          style={
-            this.props.large
-              ? styles.profileAvatarLarge
-              : styles.profileAvatarSmall
-          }
-          alt={currentUser.name}
-        />
-      );
-    }
-  }
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      pathname: state.shared.currentLocation
+    }),
+    []
+  );
 
-  renderSummary(user) {
-    return (
-      <div style={styles.summary}>
-        <Button
-          style={styles.summaryCountButton}
-          onClick={() => this.handleTabChange(undefined, 0)}
-        >
-          <Typography variant="subtitle2" style={styles.summaryCount}>
-            {user.reviews_count ? user.reviews_count : 0}
-          </Typography>
-          <Typography variant="subtitle2" color="textSecondary">
-            {I18n.t('reviews count')}
-          </Typography>
-        </Button>
-        <Button
-          style={styles.summaryCountButton}
-          onClick={this.props.handleFollowingClick}
-        >
-          <Typography variant="subtitle2" style={styles.summaryCount}>
-            {user.following_maps_count ? user.following_maps_count : 0}
-          </Typography>
-          <Typography variant="subtitle2" color="textSecondary">
-            {I18n.t('following maps')}
-          </Typography>
-        </Button>
+  const { currentUser, pathname } = useMappedState(mapState);
+
+  return (
+    <Card>
+      <div style={large ? styles.cardMapLarge : styles.cardMapSmall}>
+        <ProfileGMap />
       </div>
-    );
-  }
-
-  renderReviews() {
-    return (
-      <div key="reviews">
-        {this.props.loadingReviews
-          ? this.renderProgress()
-          : this.renderReview(this.props.currentReviews)}
-      </div>
-    );
-  }
-
-  renderReview(reviews) {
-    if (reviews.length > 0) {
-      return (
-        <div
-          style={this.props.large ? styles.reviewsLarge : styles.reviewsSmall}
-        >
-          <ReviewGridList reviews={reviews} />
-          {this.props.loadingMoreReviews
-            ? this.renderProgress()
-            : this.renderLoadMoreButton()}
-        </div>
-      );
-    } else {
-      return (
-        <div
-          style={
-            this.props.large ? styles.noReviewsLarge : styles.noReviewsSmall
-          }
-        >
-          <NoContents
-            contentType="review"
-            action="create-review"
-            message={I18n.t('reports will see here')}
-          />
-        </div>
-      );
-    }
-  }
-
-  renderProgress() {
-    return (
-      <div style={styles.progress}>
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  renderLoadMoreButton() {
-    if (this.props.noMoreReviews) {
-      return null;
-    }
-    return (
-      <div style={this.props.large ? styles.buttonLarge : styles.buttonSmall}>
-        <Button variant="contained" onClick={this.handleClickLoadMoreButton}>
-          {I18n.t('load more')}
-        </Button>
-      </div>
-    );
-  }
-
-  renderMyMaps() {
-    return (
-      <div
-        style={this.props.large ? styles.userMapsLarge : styles.userMapsSmall}
+      <CardContent
+        style={large ? styles.cardContentLarge : styles.cardContentSmall}
       >
-        {this.props.loadingMyMaps
-          ? this.renderProgress()
-          : this.renderMap(this.props.myMaps)}
-      </div>
-    );
-  }
+        <ProfileAvatar />
+        <div style={styles.profileActions}>
+          {pathname === '/profile' && <EditProfileButton />}
+        </div>
+        <div style={pathname === '/profile' ? {} : styles.profile}>
+          <Typography variant="h5" gutterBottom>
+            {currentUser.isAnonymous
+              ? I18n.t('anonymous user')
+              : currentUser.name}
+          </Typography>
+        </div>
+        <Typography variant="body1" style={styles.biography} gutterBottom>
+          {currentUser.biography}
+        </Typography>
+        <Summary handleTabChange={props.handleTabChange} />
+      </CardContent>
+      <Tabs
+        value={props.tabValue}
+        onChange={props.handleTabChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="fullWidth"
+        centered
+      >
+        <Tab label={I18n.t('reports')} style={styles.tab} />
+        <Tab label={I18n.t('maps')} style={styles.tab} />
+        <Tab label={I18n.t('like')} style={styles.tab} />
+      </Tabs>
+    </Card>
+  );
+};
 
-  renderMap(maps) {
-    if (maps.length > 0) {
-      return <MapCollection maps={maps} />;
+const ProfileProgress = () => {
+  return (
+    <div style={styles.progress}>
+      <CircularProgress />
+    </div>
+  );
+};
+
+const SharedProfile = props => {
+  const large = useMediaQuery('(min-width: 600px)');
+  const dispatch = useDispatch();
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      loadingMyMaps: state.profile.loadingMyMaps,
+      loadingReviews: state.profile.loadingReviews,
+      pathname: state.shared.currentLocation
+    }),
+    []
+  );
+
+  const {
+    currentUser,
+    loadingMyMaps,
+    loadingReviews,
+    pathname
+  } = useMappedState(mapState);
+
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = useCallback((e, value) => {
+    setTabValue(value);
+  });
+
+  const handleChangeIndex = useCallback(value => {
+    setTabValue(value);
+  });
+
+  const initProfile = useCallback(async () => {
+    const client = new ApiClient();
+    if (pathname === '/profile') {
+      let response = await client.fetchUser();
+      let user = await response.json();
+      dispatch(fetchMyProfile(user));
     } else {
-      return (
-        <NoContents
-          contentType="map"
-          action="create-map"
-          message={I18n.t('maps will see here')}
-          secondaryAction="discover-maps"
-        />
-      );
+      let response = await client.fetchUser(props.match.params.userId);
+      let user = await response.json();
+      dispatch(fetchUserProfile(user));
     }
-  }
-}
+  });
 
-export default SharedProfile;
+  const initFollowingMaps = useCallback(async () => {
+    const client = new ApiClient();
+    let userId =
+      pathname === '/profile' ? undefined : props.match.params.userId;
+    let response = await client.fetchFollowingMaps(userId);
+    let maps = await response.json();
+    dispatch(fetchFollowingMaps(maps));
+  });
+
+  useEffect(() => {
+    if (currentUser && !currentUser.isAnonymous) {
+      initProfile();
+      initFollowingMaps();
+    }
+    return () => {
+      dispatch(clearProfileState());
+    };
+  }, []);
+
+  return (
+    <div style={large ? styles.rootLarge : styles.rootSmall}>
+      <ProfileCard tabValue={tabValue} handleTabChange={handleTabChange} />
+      <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
+        <div key="reviews">
+          {loadingReviews ? <ProfileProgress /> : <ProfileReviews {...props} />}
+        </div>
+        <div style={large ? styles.userMapsLarge : styles.userMapsSmall}>
+          {loadingMyMaps ? <ProfileProgress /> : <ProfileMyMaps {...props} />}
+        </div>
+        <div style={large ? styles.likesLarge : styles.likesSmall}>
+          <LikesList {...props} />
+        </div>
+      </SwipeableViews>
+      {large && <CreateResourceButton />}
+    </div>
+  );
+};
+
+export default React.memo(SharedProfile);

@@ -19,7 +19,7 @@ const LikeButton = props => {
       onClick={() => {
         props.target && props.target.liked
           ? props.handleUnlikeButtonClick()
-          : props.handleLikeButtonClick(props.currentUser);
+          : props.handleLikeButtonClick();
       }}
     >
       {props.target && props.target.liked ? (
@@ -54,4 +54,4 @@ const SharedLikeActions = props => {
   );
 };
 
-export default SharedLikeActions;
+export default React.memo(SharedLikeActions);

@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import { useDispatch } from 'redux-react-hook';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,6 +24,8 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import GroupIcon from '@material-ui/icons/Group';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import I18n from '../../utils/I18n';
+
+import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
 
 const styles = {
   flex: {
@@ -51,356 +56,273 @@ const styles = {
   }
 };
 
-function Transition(props) {
+const Transition = props => {
   return <Slide direction="up" {...props} />;
-}
+};
 
-class SharedEditMapDialog extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mapId: '',
-      name: '',
-      description: '',
-      private: false,
-      invitable: false,
-      shared: false,
-      errorMapName: null,
-      errorDescription: null,
-      disabled: true
-    };
-    this.handleMapNameChange = this.handleMapNameChange.bind(this);
-    this.handleMapDescriptionChange = this.handleMapDescriptionChange.bind(
-      this
-    );
-    this.handleSaveButtonClick = this.handleSaveButtonClick.bind(this);
-    this.handlePrivateFlugChange = this.handlePrivateFlugChange.bind(this);
-    this.handleInvitableFlugChange = this.handleInvitableFlugChange.bind(this);
-    this.handleSharedFlugChange = this.handleSharedFlugChange.bind(this);
-    this.validate = this.validate.bind(this);
-    this.clearState = this.clearState.bind(this);
-    this.setCurrentMap = this.setCurrentMap.bind(this);
-  }
+const SharedEditMapDialog = props => {
+  const [mapId, setMapId] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [privateMap, setPrivateMap] = useState(false);
+  const [invitable, setInvitable] = useState(false);
+  const [shared, setShared] = useState(false);
+  const [errorMapName, setErrorMapName] = useState(undefined);
+  const [errorDescription, setErrorDescription] = useState(undefined);
+  const [disabled, setDisabled] = useState(undefined);
 
-  setCurrentMap() {
-    if (this.props.currentMap) {
-      this.setState({
-        mapId: this.props.currentMap.id,
-        name: this.props.currentMap.name,
-        description: this.props.currentMap.description,
-        private: this.props.currentMap.private,
-        invitable: this.props.currentMap.invitable,
-        shared: this.props.currentMap.shared,
-        disabled: false
-      });
-    }
-  }
+  useEffect(
+    () => {
+      if (name && description && !errorMapName && !errorDescription) {
+        setDisabled(false);
+      } else {
+        setDisabled(true);
+      }
+    },
+    [name, description]
+  );
 
-  clearState() {
-    this.setState({
-      mapId: '',
-      name: '',
-      description: '',
-      private: false,
-      invitable: false,
-      shared: false,
-      errorMapName: null,
-      errorDescription: null,
-      disabled: true
-    });
-  }
+  const large = useMediaQuery('(min-width: 600px)');
 
-  handleMapNameChange(e) {
-    let name = e.target.value;
-    let errorText;
-    if (name) {
+  const dispatch = useDispatch();
+
+  const setCurrentMap = useCallback(
+    () => {
+      if (props.currentMap) {
+        setMapId(props.currentMap.id);
+        setName(props.currentMap.name);
+        setDescription(props.currentMap.description);
+        setPrivateMap(props.currentMap.private);
+        setInvitable(props.currentMap.invitable);
+        setShared(props.currentMap.shared);
+        setDisabled(true);
+      }
+    },
+    [props.currentMap]
+  );
+
+  const clearState = useCallback(() => {
+    setMapId('');
+    setName('');
+    setDescription('');
+    setPrivateMap(false);
+    setInvitable(false);
+    setShared(false);
+    setErrorMapName(undefined);
+    setErrorDescription(undefined);
+    setDisabled(true);
+  });
+
+  const handleMapNameChange = useCallback(input => {
+    if (input) {
       if (name.length > 30) {
-        errorText = I18n.t('max characters 30');
+        setErrorMapName(I18n.t('max characters 30'));
       } else {
-        errorText = null;
+        setErrorMapName(undefined);
       }
     } else {
-      errorText = I18n.t('map name is required');
+      setErrorMapName(I18n.t('map name is required'));
     }
+    setName(input);
+  });
 
-    this.setState(
-      {
-        name: name,
-        errorMapName: errorText
-      },
-      () => {
-        this.validate();
-      }
-    );
-  }
-
-  handleMapDescriptionChange(e) {
-    let description = e.target.value;
-    let errorText;
-    if (description) {
-      if (description.length > 200) {
-        errorText = I18n.t('max characters 200');
+  const handleMapDescriptionChange = useCallback(input => {
+    if (input) {
+      if (input.length > 200) {
+        setErrorDescription(I18n.t('max characters 200'));
       } else {
-        errorText = null;
+        setErrorDescription(undefined);
       }
     } else {
-      errorText = I18n.t('description is required');
+      setErrorDescription(I18n.t('description is required'));
     }
+    setDescription(input);
+  });
 
-    this.setState(
-      {
-        description: description,
-        errorDescription: errorText
-      },
-      () => {
-        this.validate();
-      }
-    );
-  }
+  const handlePrivateFlugChange = useCallback((e, checked) => {
+    setPrivateMap(checked);
+  });
 
-  handlePrivateFlugChange(e, checked) {
-    this.setState({
-      private: checked
-    });
-  }
+  const handleInvitableFlugChange = useCallback((e, checked) => {
+    setInvitable(checked);
+  });
 
-  handleInvitableFlugChange(e, checked) {
-    this.setState({
-      invitable: checked
-    });
-  }
+  const handleSharedFlugChange = useCallback((e, checked) => {
+    setShared(checked);
+  });
 
-  handleSharedFlugChange(e, checked) {
-    this.setState({
-      shared: checked
-    });
-  }
-
-  handleSaveButtonClick() {
+  const handleSaveButtonClick = useCallback(() => {
     let params = {
-      map_id: this.state.mapId,
-      name: this.state.name,
-      description: this.state.description,
-      base_id: this.props.selectedBase ? this.props.selectedBase.placeId : '',
-      base_name: this.props.selectedBase
-        ? this.props.selectedBase.description
-        : '',
-      private: this.state.private,
-      invitable: this.state.invitable,
-      shared: this.state.shared
+      map_id: mapId,
+      name: name,
+      description: description,
+      base_id: props.selectedBase ? props.selectedBase.placeId : '',
+      base_name: props.selectedBase ? props.selectedBase.description : '',
+      private: privateMap,
+      invitable: invitable,
+      shared: shared
     };
-    this.props.handleSaveButtonClick(params);
-  }
+    props.handleSaveButtonClick(params);
+  });
 
-  validate() {
-    let disabled;
-    if (
-      this.state.name &&
-      this.state.description &&
-      !this.state.errorMapName &&
-      !this.state.errorDescription
-    ) {
-      disabled = false;
-    } else {
-      disabled = true;
-    }
-    this.setState({
-      disabled: disabled
-    });
-  }
+  const handleMapBaseClick = useCallback(() => {
+    dispatch(openBaseSelectDialog());
+  });
 
-  render() {
-    return (
-      <Dialog
-        open={this.props.dialogOpen}
-        onClose={this.props.handleRequestDialogClose}
-        onEnter={this.setCurrentMap}
-        onExit={this.clearState}
-        disableBackdropClick
-        disableEscapeKeyDown
-        fullWidth
-        fullScreen={!this.props.large}
-        TransitionComponent={Transition}
+  return (
+    <Dialog
+      open={props.dialogOpen}
+      onClose={props.handleRequestDialogClose}
+      onEnter={setCurrentMap}
+      onExit={clearState}
+      disableBackdropClick
+      disableEscapeKeyDown
+      fullWidth
+      fullScreen={!large}
+      TransitionComponent={Transition}
+    >
+      {large ? (
+        <DialogTitle>
+          {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
+        </DialogTitle>
+      ) : (
+        <AppBar color="primary">
+          <Toolbar style={styles.toolbar}>
+            <IconButton
+              color="inherit"
+              onClick={props.handleRequestDialogClose}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" style={styles.flex}>
+              {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleSaveButtonClick}
+              color="secondary"
+              disabled={disabled}
+            >
+              {I18n.t('save')}
+            </Button>
+          </Toolbar>
+        </AppBar>
+      )}
+      <DialogContent
+        style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
-        {this.props.large ? this.renderDialogTitle() : this.renderAppBar()}
-        <DialogContent
-          style={
-            this.props.large
-              ? styles.dialogContentLarge
-              : styles.dialogContentSmall
+        <TextField
+          label={I18n.t('map name')}
+          onChange={e => handleMapNameChange(e.target.value)}
+          error={errorMapName ? true : false}
+          helperText={errorMapName}
+          fullWidth
+          autoFocus
+          required
+          value={name}
+        />
+        <TextField
+          label={I18n.t('description')}
+          onChange={e => handleMapDescriptionChange(e.target.value)}
+          error={errorDescription ? true : false}
+          helperText={errorDescription}
+          fullWidth
+          required
+          value={description}
+          margin="normal"
+        />
+        <Chip
+          avatar={
+            <Avatar>
+              <PlaceIcon />
+            </Avatar>
           }
-        >
-          {this.renderMapNameText()}
-          {this.renderDescriptionText()}
-          <Chip
-            avatar={
-              <Avatar>
-                <PlaceIcon />
-              </Avatar>
+          label={
+            props.selectedBase
+              ? props.selectedBase.description
+              : I18n.t('center of map')
+          }
+          onClick={handleMapBaseClick}
+          style={styles.mapCenterChip}
+          clickable
+        />
+        <br />
+        <ListSubheader disableGutters>{I18n.t('options')}</ListSubheader>
+        <div>
+          <FormControlLabel
+            control={
+              <Switch checked={shared} onChange={handleSharedFlugChange} />
             }
             label={
-              this.props.selectedBase
-                ? this.props.selectedBase.description
-                : I18n.t('center of map')
+              <Typography
+                variant="subtitle2"
+                color="inherit"
+                style={styles.selectionLabel}
+              >
+                {I18n.t('allow followers to post')}
+                <GroupIcon style={styles.selectionIcon} />
+              </Typography>
             }
-            onClick={this.props.handleMapBaseClick}
-            style={styles.mapCenterChip}
-            clickable
+            style={styles.controlLabel}
           />
-          <br />
-          <ListSubheader disableGutters>{I18n.t('options')}</ListSubheader>
-          <div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={this.state.shared}
-                  onChange={this.handleSharedFlugChange}
-                />
-              }
-              label={
-                <Typography
-                  variant="subtitle2"
-                  color="inherit"
-                  style={styles.selectionLabel}
-                >
-                  {I18n.t('allow followers to post')}
-                  <GroupIcon style={styles.selectionIcon} />
-                </Typography>
-              }
-              style={styles.controlLabel}
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={this.state.private}
-                  onChange={this.handlePrivateFlugChange}
-                />
-              }
-              label={
-                <Typography
-                  variant="subtitle2"
-                  color="inherit"
-                  style={styles.selectionLabel}
-                >
-                  {I18n.t('set this map to private')}
-                  <LockIcon style={styles.selectionIcon} />
-                </Typography>
-              }
-              style={styles.controlLabel}
-            />
-          </div>
-          <div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={this.state.invitable}
-                  onChange={this.handleInvitableFlugChange}
-                />
-              }
-              label={
-                <Typography
-                  variant="subtitle2"
-                  color="inherit"
-                  style={styles.selectionLabel}
-                >
-                  {I18n.t('allow followers to invite')}
-                  <PersonAddIcon style={styles.selectionIcon} />
-                </Typography>
-              }
-              style={styles.controlLabel}
-            />
-          </div>
-        </DialogContent>
-        {this.props.large && this.renderDialogActions()}
-      </Dialog>
-    );
-  }
-
-  renderDialogTitle() {
-    return (
-      <DialogTitle>
-        {this.props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
-      </DialogTitle>
-    );
-  }
-
-  renderAppBar() {
-    return (
-      <AppBar color="primary">
-        <Toolbar style={styles.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={this.props.handleRequestDialogClose}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" style={styles.flex}>
-            {this.props.currentMap
-              ? I18n.t('edit map')
-              : I18n.t('create new map')}
-          </Typography>
+        </div>
+        <div>
+          <FormControlLabel
+            control={
+              <Switch checked={privateMap} onChange={handlePrivateFlugChange} />
+            }
+            label={
+              <Typography
+                variant="subtitle2"
+                color="inherit"
+                style={styles.selectionLabel}
+              >
+                {I18n.t('set this map to private')}
+                <LockIcon style={styles.selectionIcon} />
+              </Typography>
+            }
+            style={styles.controlLabel}
+          />
+        </div>
+        <div>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={invitable}
+                onChange={handleInvitableFlugChange}
+              />
+            }
+            label={
+              <Typography
+                variant="subtitle2"
+                color="inherit"
+                style={styles.selectionLabel}
+              >
+                {I18n.t('allow followers to invite')}
+                <PersonAddIcon style={styles.selectionIcon} />
+              </Typography>
+            }
+            style={styles.controlLabel}
+          />
+        </div>
+      </DialogContent>
+      {large && (
+        <DialogActions>
+          <Button onClick={props.handleRequestDialogClose}>
+            {I18n.t('cancel')}
+          </Button>
           <Button
             variant="contained"
-            onClick={this.handleSaveButtonClick}
-            color="secondary"
-            disabled={this.state.disabled}
+            onClick={handleSaveButtonClick}
+            color="primary"
+            disabled={disabled}
           >
             {I18n.t('save')}
           </Button>
-        </Toolbar>
-      </AppBar>
-    );
-  }
+        </DialogActions>
+      )}
+    </Dialog>
+  );
+};
 
-  renderDialogActions() {
-    return (
-      <DialogActions>
-        <Button onClick={this.props.handleRequestDialogClose}>
-          {I18n.t('cancel')}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={this.handleSaveButtonClick}
-          color="primary"
-          disabled={this.state.disabled}
-        >
-          {I18n.t('save')}
-        </Button>
-      </DialogActions>
-    );
-  }
-
-  renderMapNameText() {
-    return (
-      <TextField
-        label={I18n.t('map name')}
-        onChange={this.handleMapNameChange}
-        error={this.state.errorMapName ? true : false}
-        helperText={this.state.errorMapName}
-        fullWidth
-        autoFocus
-        required
-        value={this.state.name}
-      />
-    );
-  }
-
-  renderDescriptionText() {
-    return (
-      <TextField
-        label={I18n.t('description')}
-        onChange={this.handleMapDescriptionChange}
-        error={this.state.errorDescription ? true : false}
-        helperText={this.state.errorDescription}
-        fullWidth
-        required
-        value={this.state.description}
-        margin="normal"
-      />
-    );
-  }
-}
-
-export default SharedEditMapDialog;
+export default React.memo(SharedEditMapDialog);

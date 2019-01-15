@@ -10,8 +10,6 @@ import {
   OPEN_INVITE_TARGET_DIALOG,
   CLOSE_INVITE_TARGET_DIALOG,
   FETCH_USERS,
-  LOAD_USERS_START,
-  LOAD_USERS_END,
   CLEAR_MAP_STATE,
   LOCATION_CHANGE
 } from '../actionTypes';
@@ -21,7 +19,6 @@ const initialState = {
   placeSelectDialogOpen: false,
   inviteTargetDialogOpen: false,
   pickedUsers: [],
-  loadingUsers: false,
   mapSummaryOpen: false
 };
 
@@ -46,14 +43,6 @@ const reducer = (state = initialState, action) => {
     case CLOSE_INVITE_TARGET_DIALOG:
       return Object.assign({}, state, {
         inviteTargetDialogOpen: false
-      });
-    case LOAD_USERS_START:
-      return Object.assign({}, state, {
-        loadingUsers: true
-      });
-    case LOAD_USERS_END:
-      return Object.assign({}, state, {
-        loadingUsers: false
       });
     case FETCH_USERS:
       return Object.assign({}, state, {
