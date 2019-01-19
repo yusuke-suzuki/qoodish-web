@@ -69,7 +69,7 @@ const LoginButtons = props => {
         isAnonymous: true
       };
       dispatch(signIn(user));
-      ownProps.history.push('');
+      props.history.push('');
       gtag('event', 'login', {
         method: 'anonymous'
       });

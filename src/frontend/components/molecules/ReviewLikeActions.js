@@ -22,7 +22,7 @@ const ReviewLikeActions = props => {
       return;
     }
     const client = new ApiClient();
-    let response = await client.likeReview(ownProps.target.id);
+    let response = await client.likeReview(props.target.id);
     if (response.ok) {
       let review = await response.json();
       dispatch(editReview(review));
@@ -39,7 +39,7 @@ const ReviewLikeActions = props => {
 
   const handleUnlikeButtonClick = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.unlikeReview(ownProps.target.id);
+    let response = await client.unlikeReview(props.target.id);
     if (response.ok) {
       let review = await response.json();
       dispatch(editReview(review));
@@ -56,7 +56,7 @@ const ReviewLikeActions = props => {
 
   const handleLikesClick = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchReviewLikes(ownProps.target.id);
+    let response = await client.fetchReviewLikes(props.target.id);
     if (response.ok) {
       let likes = await response.json();
       dispatch(fetchLikes(likes));

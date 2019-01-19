@@ -155,7 +155,7 @@ const MapDetail = props => {
     } else if (response.status == 401) {
       dispatch(openToast('Authenticate failed'));
     } else if (response.status == 404) {
-      ownProps.history.push('');
+      props.history.push('');
       dispatch(openToast(I18n.t('map not found')));
     } else {
       dispatch(openToast('Failed to fetch Map.'));
