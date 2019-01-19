@@ -1,6 +1,4 @@
 import {
-  LOAD_REVIEW_START,
-  LOAD_REVIEW_END,
   SELECT_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
@@ -8,20 +6,11 @@ import {
 } from '../actionTypes';
 
 const initialState = {
-  reviewLoading: false,
   currentReview: undefined
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOAD_REVIEW_START:
-      return Object.assign({}, state, {
-        reviewLoading: true
-      });
-    case LOAD_REVIEW_END:
-      return Object.assign({}, state, {
-        reviewLoading: false
-      });
     case SELECT_REVIEW:
       return Object.assign({}, state, {
         currentReview: action.payload.review
@@ -42,7 +31,6 @@ const reducer = (state = initialState, action) => {
       });
     case CLEAR_REVIEW_STATE:
       return Object.assign({}, state, {
-        reviewLoading: false,
         currentReview: undefined
       });
     default:

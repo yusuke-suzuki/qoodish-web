@@ -1,0 +1,289 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import CreateResourceButton from '../molecules/CreateResourceButton';
+
+import SwipeableViews from 'react-swipeable-views';
+import LikesList from './LikesList';
+import ProfileGMap from './ProfileGMap';
+import ProfileReviews from './ProfileReviews';
+import ProfileMyMaps from './ProfileMyMaps';
+import EditProfileButton from '../molecules/EditProfileButton';
+import ProfileAvatar from '../molecules/ProfileAvatar';
+
+import I18n from '../../utils/I18n';
+import ApiClient from '../../utils/ApiClient';
+import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
+import fetchUserProfile from '../../actions/fetchUserProfile';
+import fetchMyProfile from '../../actions/fetchMyProfile';
+import clearProfileState from '../../actions/clearProfileState';
+import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
+
+const styles = {
+  rootLarge: {
+    maxWidth: 900,
+    margin: '94px auto 20px'
+  },
+  rootSmall: {
+    marginTop: 56,
+    marginBottom: 56
+  },
+  cardMapLarge: {
+    minHeight: 200
+  },
+  cardMapSmall: {
+    minHeight: 150
+  },
+  userMapsLarge: {
+    marginTop: 20,
+    paddingBottom: 20
+  },
+  userMapsSmall: {
+    marginTop: 8,
+    paddingBottom: 16
+  },
+  profile: {
+    paddingTop: 39
+  },
+  cardContentLarge: {
+    padding: 24,
+    paddingBottom: 16
+  },
+  cardContentSmall: {
+    padding: 16,
+    paddingBottom: 8
+  },
+  tab: {
+    minWidth: 'auto'
+  },
+  progress: {
+    textAlign: 'center',
+    padding: 20,
+    marginTop: 20
+  },
+  gridHeader: {
+    width: '100%',
+    display: 'inline-flex',
+    marginBottom: 15
+  },
+  profileActions: {
+    width: 'max-content',
+    marginLeft: 'auto'
+  },
+  likesLarge: {
+    marginTop: 20
+  },
+  likesSmall: {
+    marginTop: 8
+  },
+  summary: {
+    display: 'flex'
+  },
+  summaryCount: {
+    marginRight: '0.5em'
+  },
+  summaryCountButton: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginRight: 20
+  },
+  biography: {
+    wordWrap: 'break-word'
+  }
+};
+
+const Summary = props => {
+  const dispatch = useDispatch();
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+
+  const { currentUser } = useMappedState(mapState);
+
+  const handleFollowingClick = useCallback(() => {
+    dispatch(openFollowingMapsDialog());
+  });
+
+  return (
+    <div style={styles.summary}>
+      <Button
+        style={styles.summaryCountButton}
+        onClick={() => props.handleTabChange(undefined, 0)}
+      >
+        <Typography variant="subtitle2" style={styles.summaryCount}>
+          {currentUser.reviews_count ? currentUser.reviews_count : 0}
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary">
+          {I18n.t('reviews count')}
+        </Typography>
+      </Button>
+      <Button style={styles.summaryCountButton} onClick={handleFollowingClick}>
+        <Typography variant="subtitle2" style={styles.summaryCount}>
+          {currentUser.following_maps_count
+            ? currentUser.following_maps_count
+            : 0}
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary">
+          {I18n.t('following maps')}
+        </Typography>
+      </Button>
+    </div>
+  );
+};
+
+const ProfileCard = props => {
+  const large = useMediaQuery('(min-width: 600px)');
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      pathname: state.shared.currentLocation
+    }),
+    []
+  );
+
+  const { currentUser, pathname } = useMappedState(mapState);
+
+  return (
+    <Card>
+      <div style={large ? styles.cardMapLarge : styles.cardMapSmall}>
+        <ProfileGMap />
+      </div>
+      <CardContent
+        style={large ? styles.cardContentLarge : styles.cardContentSmall}
+      >
+        <ProfileAvatar />
+        <div style={styles.profileActions}>
+          {pathname === '/profile' && <EditProfileButton />}
+        </div>
+        <div style={pathname === '/profile' ? {} : styles.profile}>
+          <Typography variant="h5" gutterBottom>
+            {currentUser.isAnonymous
+              ? I18n.t('anonymous user')
+              : currentUser.name}
+          </Typography>
+        </div>
+        <Typography variant="body1" style={styles.biography} gutterBottom>
+          {currentUser.biography}
+        </Typography>
+        <Summary handleTabChange={props.handleTabChange} />
+      </CardContent>
+      <Tabs
+        value={props.tabValue}
+        onChange={props.handleTabChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="fullWidth"
+        centered
+      >
+        <Tab label={I18n.t('reports')} style={styles.tab} />
+        <Tab label={I18n.t('maps')} style={styles.tab} />
+        <Tab label={I18n.t('like')} style={styles.tab} />
+      </Tabs>
+    </Card>
+  );
+};
+
+const ProfileProgress = () => {
+  return (
+    <div style={styles.progress}>
+      <CircularProgress />
+    </div>
+  );
+};
+
+const SharedProfile = props => {
+  const large = useMediaQuery('(min-width: 600px)');
+  const dispatch = useDispatch();
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      loadingMyMaps: state.profile.loadingMyMaps,
+      loadingReviews: state.profile.loadingReviews,
+      pathname: state.shared.currentLocation
+    }),
+    []
+  );
+
+  const {
+    currentUser,
+    loadingMyMaps,
+    loadingReviews,
+    pathname
+  } = useMappedState(mapState);
+
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = useCallback((e, value) => {
+    setTabValue(value);
+  });
+
+  const handleChangeIndex = useCallback(value => {
+    setTabValue(value);
+  });
+
+  const initProfile = useCallback(async () => {
+    const client = new ApiClient();
+    if (pathname === '/profile') {
+      let response = await client.fetchUser();
+      let user = await response.json();
+      dispatch(fetchMyProfile(user));
+    } else {
+      let response = await client.fetchUser(props.match.params.userId);
+      let user = await response.json();
+      dispatch(fetchUserProfile(user));
+    }
+  });
+
+  const initFollowingMaps = useCallback(async () => {
+    const client = new ApiClient();
+    let userId =
+      pathname === '/profile' ? undefined : props.match.params.userId;
+    let response = await client.fetchFollowingMaps(userId);
+    let maps = await response.json();
+    dispatch(fetchFollowingMaps(maps));
+  });
+
+  useEffect(() => {
+    if (currentUser && !currentUser.isAnonymous) {
+      initProfile();
+      initFollowingMaps();
+    }
+    return () => {
+      dispatch(clearProfileState());
+    };
+  }, []);
+
+  return (
+    <div style={large ? styles.rootLarge : styles.rootSmall}>
+      <ProfileCard tabValue={tabValue} handleTabChange={handleTabChange} />
+      <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
+        <div key="reviews">
+          {loadingReviews ? <ProfileProgress /> : <ProfileReviews {...props} />}
+        </div>
+        <div style={large ? styles.userMapsLarge : styles.userMapsSmall}>
+          {loadingMyMaps ? <ProfileProgress /> : <ProfileMyMaps {...props} />}
+        </div>
+        <div style={large ? styles.likesLarge : styles.likesSmall}>
+          <LikesList {...props} />
+        </div>
+      </SwipeableViews>
+      {large && <CreateResourceButton />}
+    </div>
+  );
+};
+
+export default React.memo(SharedProfile);

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import AppContainer from './containers/AppContainer';
+import App from './components/App';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
+import { StoreContext } from 'redux-react-hook';
 
 import { BrowserRouter, Route } from 'react-router-dom';
 
@@ -20,7 +20,6 @@ import mapSummaryReducer from './reducers/mapSummaryReducer';
 import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
-import invitesReducer from './reducers/invitesReducer';
 import profileReducer from './reducers/profileReducer';
 
 import persistState from 'redux-localstorage';
@@ -50,7 +49,6 @@ const reducer = combineReducers({
   reviews: reviewsReducer,
   gMap: gMapReducer,
   settings: settingsReducer,
-  invites: invitesReducer,
   profile: profileReducer
 });
 
@@ -61,11 +59,11 @@ const store = compose(
 
 window.addEventListener('DOMContentLoaded', () => {
   render(
-    <Provider store={store}>
+    <StoreContext.Provider value={store}>
       <BrowserRouter>
-        <Route component={AppContainer} />
+        <Route component={App} />
       </BrowserRouter>
-    </Provider>,
+    </StoreContext.Provider>,
     document.querySelector('#render-target')
   );
 });

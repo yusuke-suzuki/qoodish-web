@@ -1,8 +1,4 @@
 import {
-  LOAD_REVIEWS_START,
-  LOAD_REVIEWS_END,
-  LOAD_MORE_REVIEWS_START,
-  LOAD_MORE_REVIEWS_END,
   FETCH_REVIEWS,
   FETCH_MORE_REVIEWS,
   CREATE_REVIEW,
@@ -18,8 +14,6 @@ import {
   CLOSE_REVIEW_DIALOG,
   SELECT_PLACE_FOR_REVIEW,
   CLEAR_MAP_STATE,
-  SEND_COMMENT_START,
-  SEND_COMMENT_END,
   OPEN_DELETE_COMMENT_DIALOG,
   CLOSE_DELETE_COMMENT_DIALOG,
   LOCATION_CHANGE
@@ -30,37 +24,18 @@ const initialState = {
   targetReview: null,
   currentReviews: [],
   reviewDialogOpen: false,
-  loadingReviews: false,
-  loadingMoreReviews: false,
   noMoreReviews: false,
   nextTimestamp: '',
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
   selectedPlace: undefined,
-  sendingComment: false,
   deleteCommentDialogOpen: false,
   targetComment: undefined
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case LOAD_REVIEWS_START:
-      return Object.assign({}, state, {
-        loadingReviews: true
-      });
-    case LOAD_REVIEWS_END:
-      return Object.assign({}, state, {
-        loadingReviews: false
-      });
-    case LOAD_MORE_REVIEWS_START:
-      return Object.assign({}, state, {
-        loadingMoreReviews: true
-      });
-    case LOAD_MORE_REVIEWS_END:
-      return Object.assign({}, state, {
-        loadingMoreReviews: false
-      });
     case FETCH_REVIEWS:
       return Object.assign({}, state, {
         currentReviews: action.payload.reviews,
@@ -170,14 +145,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         reviewDialogOpen: false
       });
-    case SEND_COMMENT_START:
-      return Object.assign({}, state, {
-        sendingComment: true
-      });
-    case SEND_COMMENT_END:
-      return Object.assign({}, state, {
-        sendingComment: false
-      });
     case OPEN_DELETE_COMMENT_DIALOG:
       return Object.assign({}, state, {
         targetComment: action.payload.comment,
@@ -191,7 +158,6 @@ const reducer = (state = initialState, action) => {
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentReviews: [],
-        loadingReviews: false,
         noMoreReviews: false,
         nextTimestamp: '',
         targetReview: null
