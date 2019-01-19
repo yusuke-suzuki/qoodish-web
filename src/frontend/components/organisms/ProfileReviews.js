@@ -57,7 +57,7 @@ const ProfileReviews = props => {
   return currentReviews.length > 0 ? (
     <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
       <ReviewGridList reviews={currentReviews} />
-      <LoadMoreUserReviewsButton />
+      <LoadMoreUserReviewsButton {...props} />
     </div>
   ) : (
     <div style={large ? styles.noReviewsLarge : styles.noReviewsSmall}>

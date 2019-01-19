@@ -6,6 +6,7 @@ import {
   EDIT_REVIEW,
   DELETE_REVIEW,
   FETCH_USER_PROFILE,
+  FETCH_MY_PROFILE,
   CLEAR_PROFILE_STATE,
   OPEN_EDIT_PROFILE_DIALOG,
   CLOSE_EDIT_PROFILE_DIALOG,
@@ -29,6 +30,13 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_USER_PROFILE:
+      return Object.assign({}, state, {
+        currentUser: action.payload.user
+      });
+    case FETCH_MY_PROFILE:
+      if (action.payload.user.id !== state.currentUser.id) {
+        return state;
+      }
       return Object.assign({}, state, {
         currentUser: action.payload.user
       });
