@@ -23,7 +23,6 @@ import I18n from '../../utils/I18n';
 import ApiClient from '../../utils/ApiClient';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
 import fetchUserProfile from '../../actions/fetchUserProfile';
-import fetchMyProfile from '../../actions/fetchMyProfile';
 import clearProfileState from '../../actions/clearProfileState';
 import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 
@@ -105,7 +104,7 @@ const Summary = props => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser
+      currentUser: state.profile.currentUser
     }),
     []
   );
@@ -148,7 +147,7 @@ const ProfileCard = props => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
+      currentUser: state.profile.currentUser,
       pathname: state.shared.currentLocation
     }),
     []
@@ -210,7 +209,7 @@ const SharedProfile = props => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
+      currentUser: state.profile.currentUser,
       loadingMyMaps: state.profile.loadingMyMaps,
       loadingReviews: state.profile.loadingReviews,
       pathname: state.shared.currentLocation
@@ -237,15 +236,11 @@ const SharedProfile = props => {
 
   const initProfile = useCallback(async () => {
     const client = new ApiClient();
-    if (pathname === '/profile') {
-      let response = await client.fetchUser();
-      let user = await response.json();
-      dispatch(fetchMyProfile(user));
-    } else {
-      let response = await client.fetchUser(props.match.params.userId);
-      let user = await response.json();
-      dispatch(fetchUserProfile(user));
-    }
+    let userId =
+      pathname === '/profile' ? undefined : props.match.params.userId;
+    let response = await client.fetchUser(userId);
+    let user = await response.json();
+    dispatch(fetchUserProfile(user));
   });
 
   const initFollowingMaps = useCallback(async () => {

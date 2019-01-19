@@ -27,7 +27,7 @@ const ProfileAvatar = () => {
   const large = useMediaQuery('(min-width: 600px)');
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser
+      currentUser: state.profile.currentUser
     }),
     []
   );
