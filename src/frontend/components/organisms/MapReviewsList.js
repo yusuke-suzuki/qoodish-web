@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import List from '@material-ui/core/List';
@@ -37,6 +37,7 @@ const fromNow = review => {
 };
 
 const MapReviewsList = () => {
+  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
   const mapReviews = useMappedState(
     useCallback(state => state.mapSummary.mapReviews, [])
