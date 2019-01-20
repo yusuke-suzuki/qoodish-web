@@ -63,7 +63,7 @@ const Invites = props => {
     useCallback(state => state.app.currentUser, [])
   );
   const [invites, setInvites] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchInvites = useCallback(async () => {
     setLoading(true);

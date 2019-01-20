@@ -36,7 +36,7 @@ const styles = {
 
 const TrendingMaps = () => {
   const large = useMediaQuery('(min-width: 600px)');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [maps, setMaps] = useState([]);
 
   const initPopularMaps = useCallback(async () => {

@@ -107,7 +107,7 @@ const ReviewDetail = props => {
     []
   );
   const { currentReview } = useMappedState(mapState);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const initReview = useCallback(async () => {
     setLoading(true);

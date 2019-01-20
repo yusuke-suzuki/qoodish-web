@@ -248,7 +248,7 @@ const SpotDetail = props => {
   );
   const { currentSpot } = useMappedState(mapState);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const initSpot = useCallback(async () => {
     setLoading(true);

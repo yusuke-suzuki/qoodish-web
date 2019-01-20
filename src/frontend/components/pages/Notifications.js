@@ -68,7 +68,7 @@ const Notifications = () => {
     []
   );
   const { currentUser, notifications } = useMappedState(mapState);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleMount = useCallback(async () => {
     setLoading(true);

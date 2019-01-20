@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import LoadMoreUserReviewsButton from '../molecules/LoadMoreUserReviewsButton';
 import ReviewGridList from './ReviewGridList';
@@ -24,6 +26,11 @@ const styles = {
   },
   noReviewsSmall: {
     paddingTop: 8
+  },
+  progress: {
+    textAlign: 'center',
+    padding: 20,
+    marginTop: 20
   }
 };
 
@@ -43,15 +50,18 @@ const ProfileReviews = props => {
 
   const currentUser = props.currentUser;
 
+  const [loading, setLoading] = useState(true);
+
   const initReviews = useCallback(async () => {
     if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
       return;
     }
-
+    setLoading(true);
     const client = new ApiClient();
     let userId =
       pathname === '/profile' ? undefined : props.match.params.userId;
     let response = await client.fetchUserReviews(userId);
+    setLoading(false);
     let reviews = await response.json();
     dispatch(fetchUserReviews(reviews));
   });
@@ -60,20 +70,28 @@ const ProfileReviews = props => {
     initReviews();
   }, []);
 
-  return currentReviews.length > 0 ? (
-    <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
-      <ReviewGridList reviews={currentReviews} />
-      <LoadMoreUserReviewsButton {...props} />
-    </div>
-  ) : (
-    <div style={large ? styles.noReviewsLarge : styles.noReviewsSmall}>
-      <NoContents
-        contentType="review"
-        action="create-review"
-        message={I18n.t('reports will see here')}
-      />
-    </div>
-  );
+  if (loading) {
+    return (
+      <div style={styles.progress}>
+        <CircularProgress />
+      </div>
+    );
+  } else {
+    return currentReviews.length > 0 ? (
+      <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
+        <ReviewGridList reviews={currentReviews} />
+        <LoadMoreUserReviewsButton {...props} />
+      </div>
+    ) : (
+      <div style={large ? styles.noReviewsLarge : styles.noReviewsSmall}>
+        <NoContents
+          contentType="review"
+          action="create-review"
+          message={I18n.t('reports will see here')}
+        />
+      </div>
+    );
+  }
 };
 
 export default React.memo(ProfileReviews);
