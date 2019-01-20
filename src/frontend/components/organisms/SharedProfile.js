@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
@@ -20,11 +20,7 @@ import EditProfileButton from '../molecules/EditProfileButton';
 import ProfileAvatar from '../molecules/ProfileAvatar';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
-import fetchUserProfile from '../../actions/fetchUserProfile';
-import clearProfileState from '../../actions/clearProfileState';
-import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 
 const styles = {
   rootLarge: {
@@ -102,14 +98,7 @@ const styles = {
 const Summary = props => {
   const dispatch = useDispatch();
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.profile.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const currentUser = props.currentUser;
 
   const handleFollowingClick = useCallback(() => {
     dispatch(openFollowingMapsDialog());
@@ -147,13 +136,14 @@ const ProfileCard = props => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.profile.currentUser,
       pathname: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentUser, pathname } = useMappedState(mapState);
+  const { pathname } = useMappedState(mapState);
+
+  const currentUser = props.currentUser;
 
   return (
     <Card>
@@ -163,7 +153,7 @@ const ProfileCard = props => {
       <CardContent
         style={large ? styles.cardContentLarge : styles.cardContentSmall}
       >
-        <ProfileAvatar />
+        <ProfileAvatar currentUser={props.currentUser} />
         <div style={styles.profileActions}>
           {pathname === '/profile' && <EditProfileButton />}
         </div>
@@ -177,7 +167,10 @@ const ProfileCard = props => {
         <Typography variant="body1" style={styles.biography} gutterBottom>
           {currentUser.biography}
         </Typography>
-        <Summary handleTabChange={props.handleTabChange} />
+        <Summary
+          handleTabChange={props.handleTabChange}
+          currentUser={props.currentUser}
+        />
       </CardContent>
       <Tabs
         value={props.tabValue}
@@ -205,24 +198,16 @@ const ProfileProgress = () => {
 
 const SharedProfile = props => {
   const large = useMediaQuery('(min-width: 600px)');
-  const dispatch = useDispatch();
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.profile.currentUser,
       loadingMyMaps: state.profile.loadingMyMaps,
-      loadingReviews: state.profile.loadingReviews,
-      pathname: state.shared.currentLocation
+      loadingReviews: state.profile.loadingReviews
     }),
     []
   );
 
-  const {
-    currentUser,
-    loadingMyMaps,
-    loadingReviews,
-    pathname
-  } = useMappedState(mapState);
+  const { loadingMyMaps, loadingReviews } = useMappedState(mapState);
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -234,37 +219,13 @@ const SharedProfile = props => {
     setTabValue(value);
   });
 
-  const initProfile = useCallback(async () => {
-    const client = new ApiClient();
-    let userId =
-      pathname === '/profile' ? undefined : props.match.params.userId;
-    let response = await client.fetchUser(userId);
-    let user = await response.json();
-    dispatch(fetchUserProfile(user));
-  });
-
-  const initFollowingMaps = useCallback(async () => {
-    const client = new ApiClient();
-    let userId =
-      pathname === '/profile' ? undefined : props.match.params.userId;
-    let response = await client.fetchFollowingMaps(userId);
-    let maps = await response.json();
-    dispatch(fetchFollowingMaps(maps));
-  });
-
-  useEffect(() => {
-    if (currentUser && !currentUser.isAnonymous) {
-      initProfile();
-      initFollowingMaps();
-    }
-    return () => {
-      dispatch(clearProfileState());
-    };
-  }, []);
-
   return (
     <div style={large ? styles.rootLarge : styles.rootSmall}>
-      <ProfileCard tabValue={tabValue} handleTabChange={handleTabChange} />
+      <ProfileCard
+        tabValue={tabValue}
+        handleTabChange={handleTabChange}
+        currentUser={props.currentUser}
+      />
       <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
         <div key="reviews">
           {loadingReviews ? <ProfileProgress /> : <ProfileReviews {...props} />}

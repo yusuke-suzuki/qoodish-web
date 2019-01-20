@@ -41,7 +41,13 @@ const ProfileReviews = props => {
 
   const { currentReviews, pathname } = useMappedState(mapState);
 
+  const currentUser = props.currentUser;
+
   const initReviews = useCallback(async () => {
+    if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
+      return;
+    }
+
     const client = new ApiClient();
     let userId =
       pathname === '/profile' ? undefined : props.match.params.userId;

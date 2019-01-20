@@ -1,32 +1,15 @@
-import React, { useEffect, useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import React, { useEffect, useCallback, useState } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
-import { withRouter } from 'react-router-dom';
 import loadable from '@loadable/component';
 
-const Routes = loadable(() =>
-  import(/* webpackChunkName: "routes" */ './Routes')
+const Layout = loadable(() =>
+  import(/* webpackChunkName: "layout" */ './Layout')
 );
-const NavBar = loadable(() =>
-  import(/* webpackChunkName: "nav_bar" */ './organisms/NavBar')
-);
-const BottomNav = loadable(() =>
-  import(/* webpackChunkName: "bottom_nav" */ './molecules/BottomNav')
-);
-const SharedDialogs = loadable(() =>
-  import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
-);
-
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import amber from '@material-ui/core/colors/amber';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import Grid from '@material-ui/core/Grid';
 
 import Helmet from 'react-helmet';
 
 import getCurrentUser from '../utils/getCurrentUser';
-import locationChange from '../actions/locationChange';
 import ApiClient from '../utils/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import updateLinkedProviders from '../actions/updateLinkedProviders';
@@ -35,30 +18,6 @@ import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import fetchRegistrationToken from '../actions/fetchRegistrationToken';
 import signIn from '../actions/signIn';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: amber[300],
-      main: amber[500],
-      dark: amber[700],
-      contrastText: '#fff'
-    },
-    secondary: {
-      light: lightBlue[300],
-      main: lightBlue[500],
-      dark: lightBlue[700],
-      contrastText: '#fff'
-    }
-  },
-  typography: {
-    useNextVariants: true
-  }
-});
-
-const scrollTop = () => {
-  window.scrollTo(0, 0);
-};
 
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -153,74 +112,11 @@ const AppHelmet = () => {
   );
 };
 
-const Layout = () => {
-  const large = useMediaQuery('(min-width: 600px)');
-  const mapState = useCallback(
-    state => ({
-      showSideNav: state.shared.showSideNav,
-      showBottomNav: state.shared.showBottomNav
-    }),
-    []
-  );
-  const { showSideNav, showBottomNav } = useMappedState(mapState);
-
-  return (
-    <div>
-      <Grid container>
-        <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
-          <NavBar />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={!large || !showSideNav ? 12 : 6}
-          lg={!large || !showSideNav ? 12 : 8}
-          xl={!large || !showSideNav ? 12 : 8}
-        >
-          <Routes />
-        </Grid>
-      </Grid>
-      {!large && showBottomNav && <BottomNav />}
-    </div>
-  );
-};
-
-const App = props => {
+const App = () => {
   const dispatch = useDispatch();
 
-  const signInAnonymously = useCallback(async (firebaseUser = null) => {
-    if (!firebaseUser) {
-      const firebase = await getFirebase();
-      await getFirebaseAuth();
-
-      await firebase.auth().signInAnonymously();
-      firebaseUser = firebase.auth().currentUser;
-    }
-    const user = {
-      uid: firebaseUser.uid,
-      isAnonymous: true
-    };
-    dispatch(signIn(user));
-  });
-
-  const initMessaging = useCallback(async firebaseUser => {
-    const client = new ApiClient();
-    const response = await client.fetchUser();
-    if (response.ok) {
-      const user = await response.json();
-      dispatch(fetchMyProfile(user));
-      let linkedProviders = firebaseUser.providerData.map(provider => {
-        return provider.providerId;
-      });
-      dispatch(updateLinkedProviders(linkedProviders));
-
-      if (!user.push_enabled) {
-        console.log('Push notification is prohibited.');
-        return;
-      }
-    } else {
-      console.log('Fetch profile failed.');
+  const initMessaging = useCallback(async () => {
+    if (!pushApiAvailable()) {
       return;
     }
 
@@ -247,40 +143,61 @@ const App = props => {
     });
   });
 
-  const authenticateUser = useCallback(async () => {
-    let firebaseUser = await getCurrentUser();
-    if (firebaseUser) {
-      if (firebaseUser.isAnonymous) {
-        await signInAnonymously(firebaseUser);
-      } else if (pushApiAvailable()) {
-        initMessaging(firebaseUser);
+  const initProfile = useCallback(async () => {
+    const client = new ApiClient();
+    const response = await client.fetchUser();
+    if (response.ok) {
+      const user = await response.json();
+      dispatch(fetchMyProfile(user));
+      let firebaseUser = await getCurrentUser();
+      let linkedProviders = firebaseUser.providerData.map(provider => {
+        return provider.providerId;
+      });
+      dispatch(updateLinkedProviders(linkedProviders));
+
+      if (!user.push_enabled) {
+        console.log('Push notification is prohibited.');
+        return;
       }
     } else {
-      await signInAnonymously();
+      console.log('Fetch profile failed.');
+      return;
     }
   });
 
+  const initUser = useCallback(async () => {
+    let firebaseUser = await getCurrentUser();
+
+    if (firebaseUser && !firebaseUser.isAnonymous) {
+      await initProfile();
+      await initMessaging();
+      return;
+    }
+
+    if (!firebaseUser) {
+      const firebase = await getFirebase();
+      await getFirebaseAuth();
+      await firebase.auth().signInAnonymously();
+      firebaseUser = firebase.auth().currentUser;
+    }
+
+    const user = {
+      uid: firebaseUser.uid,
+      isAnonymous: true
+    };
+    dispatch(signIn(user));
+  });
+
   useEffect(() => {
-    authenticateUser();
-    scrollTop();
+    initUser();
   }, []);
 
-  useEffect(
-    () => {
-      dispatch(locationChange(props.location));
-    },
-    [props.location]
-  );
-
   return (
-    <MuiThemeProvider theme={theme}>
-      <div>
-        <AppHelmet />
-        <Layout />
-        <SharedDialogs />
-      </div>
-    </MuiThemeProvider>
+    <div>
+      <AppHelmet />
+      <Layout />
+    </div>
   );
 };
 
-export default React.memo(withRouter(App));
+export default React.memo(App);

@@ -25,7 +25,7 @@ const Transition = props => {
 const SignInRequiredDialog = () => {
   const dispatch = useDispatch();
   const dialogOpen = useMappedState(
-    useCallback(state => state.shared.signInRequiredDialogOpen)
+    useCallback(state => state.shared.signInRequiredDialogOpen, [])
   );
   const onClose = useCallback(() => {
     dispatch(closeSignInRequiredDialog());

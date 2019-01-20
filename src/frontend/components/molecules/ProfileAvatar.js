@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import React from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -23,16 +22,9 @@ const styles = {
   }
 };
 
-const ProfileAvatar = () => {
+const ProfileAvatar = props => {
   const large = useMediaQuery('(min-width: 600px)');
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.profile.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const currentUser = props.currentUser;
 
   if (!currentUser || currentUser.isAnonymous) {
     return (
