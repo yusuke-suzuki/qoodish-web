@@ -227,6 +227,11 @@ const Timeline = () => {
   const [loading, setLoading] = useState(false);
 
   const refreshReviews = useCallback(async () => {
+    if (!currentUser || currentUser.isAnonymous) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     const client = new ApiClient();
     let response = await client.fetchReviews();
@@ -242,9 +247,7 @@ const Timeline = () => {
   });
 
   useEffect(() => {
-    if (currentUser && !currentUser.isAnonymous) {
-      refreshReviews();
-    }
+    refreshReviews();
 
     gtag('config', process.env.GA_TRACKING_ID, {
       page_path: '/',

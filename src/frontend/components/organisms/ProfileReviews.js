@@ -54,6 +54,7 @@ const ProfileReviews = props => {
 
   const initReviews = useCallback(async () => {
     if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
+      setLoading(false);
       return;
     }
     setLoading(true);

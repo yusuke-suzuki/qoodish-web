@@ -66,6 +66,11 @@ const Invites = props => {
   const [loading, setLoading] = useState(true);
 
   const fetchInvites = useCallback(async () => {
+    if (!currentUser || currentUser.isAnonymous) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     const client = new ApiClient();
     const response = await client.fetchInvites();
@@ -96,9 +101,8 @@ const Invites = props => {
   });
 
   useEffect(() => {
-    if (currentUser && !currentUser.isAnonymous) {
-      fetchInvites();
-    }
+    fetchInvites();
+
     gtag('config', process.env.GA_TRACKING_ID, {
       page_path: '/invites',
       page_title: `${I18n.t('invites')} | Qoodish'`
