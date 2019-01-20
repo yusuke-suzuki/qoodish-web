@@ -71,6 +71,11 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
 
   const handleMount = useCallback(async () => {
+    if (!currentUser || currentUser.isAnonymous) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     const client = new ApiClient();
     let response = await client.fetchNotifications();
@@ -82,9 +87,8 @@ const Notifications = () => {
   });
 
   useEffect(() => {
-    if (currentUser && !currentUser.isAnonymous) {
-      handleMount();
-    }
+    handleMount();
+
     gtag('config', process.env.GA_TRACKING_ID, {
       page_path: '/notifications',
       page_title: `${I18n.t('notifications')} | Qoodish`
