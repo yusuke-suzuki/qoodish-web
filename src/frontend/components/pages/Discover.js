@@ -123,8 +123,8 @@ const Discover = () => {
   );
   const { activeMaps, recentMaps } = useMappedState(mapState);
 
-  const [loadingActiveMaps, setLoadingActiveMaps] = useState(false);
-  const [loadingRecentMaps, setLoadingRecentMaps] = useState(false);
+  const [loadingActiveMaps, setLoadingActiveMaps] = useState(true);
+  const [loadingRecentMaps, setLoadingRecentMaps] = useState(true);
 
   const initActiveMaps = useCallback(async () => {
     setLoadingActiveMaps(true);

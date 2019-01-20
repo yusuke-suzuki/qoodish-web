@@ -98,7 +98,7 @@ const RecentReviews = () => {
   );
   const { recentReviews } = useMappedState(mapState);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleReviewClick = useCallback(review => {
     dispatch(openReviewDialog(review));

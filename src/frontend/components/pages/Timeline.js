@@ -133,7 +133,7 @@ const LoadMoreButton = () => {
 
   const { noMoreReviews, nextTimestamp } = useMappedState(mapState);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const loadMoreReviews = useCallback(async () => {
     setLoading(true);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch } from 'redux-react-hook';
 
 import moment from 'moment';
@@ -76,7 +76,7 @@ const NotificationText = props => {
 const NotificationList = props => {
   const dispatch = useDispatch();
 
-  useEffect(async () => {
+  const handleReadNotification = useCallback(async () => {
     await sleep(5000);
     const client = new ApiClient();
     let unreadNotifications = props.notifications.filter(notification => {
@@ -90,6 +90,10 @@ const NotificationList = props => {
       }
       await sleep(3000);
     });
+  });
+
+  useEffect(() => {
+    handleReadNotification();
   });
 
   return props.notifications.map(notification => (

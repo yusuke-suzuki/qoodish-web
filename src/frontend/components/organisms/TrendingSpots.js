@@ -36,7 +36,7 @@ const styles = {
 
 const TrendingSpots = () => {
   const large = useMediaQuery('(min-width: 600px)');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [spots, setSpots] = useState([]);
 
   const initTrendingSpots = useCallback(async () => {
