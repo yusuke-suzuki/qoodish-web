@@ -19,9 +19,15 @@ const ProfileMyMaps = props => {
     []
   );
 
+  const currentUser = props.currentUser;
+
   const { myMaps, pathname } = useMappedState(mapState);
 
   const initMaps = useCallback(async () => {
+    if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
+      return;
+    }
+
     const client = new ApiClient();
     let userId =
       pathname === '/profile' ? undefined : props.match.params.userId;

@@ -1,5 +1,6 @@
-import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'redux-react-hook';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import loadable from '@loadable/component';
 
 const LoginContainer = loadable(() =>
@@ -42,7 +43,17 @@ const PrivacyContainer = loadable(() =>
   import(/* webpackChunkName: "privacy" */ './pages/Privacy')
 );
 
-const Routes = () => {
+import locationChange from '../actions/locationChange';
+
+const Routes = props => {
+  const dispatch = useDispatch();
+  useEffect(
+    () => {
+      dispatch(locationChange(props.location));
+    },
+    [props.location]
+  );
+
   return (
     <Switch>
       <Route exact path="/" component={TimelineContainer} />
@@ -67,4 +78,4 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+export default withRouter(Routes);
