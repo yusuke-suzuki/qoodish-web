@@ -9,15 +9,17 @@ const Layout = loadable(() =>
 
 import Helmet from 'react-helmet';
 
-import getCurrentUser from '../utils/getCurrentUser';
 import ApiClient from '../utils/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import updateLinkedProviders from '../actions/updateLinkedProviders';
+import fetchNotifications from '../actions/fetchNotifications';
+import fetchRegistrationToken from '../actions/fetchRegistrationToken';
+import signIn from '../actions/signIn';
+
+import getCurrentUser from '../utils/getCurrentUser';
 import getFirebase from '../utils/getFirebase';
 import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
-import fetchRegistrationToken from '../actions/fetchRegistrationToken';
-import signIn from '../actions/signIn';
 
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -165,12 +167,22 @@ const App = () => {
     }
   });
 
+  const refreshNotifications = useCallback(async () => {
+    const client = new ApiClient();
+    let response = await client.fetchNotifications();
+    if (response.ok) {
+      let notifications = await response.json();
+      dispatch(fetchNotifications(notifications));
+    }
+  });
+
   const initUser = useCallback(async () => {
     let firebaseUser = await getCurrentUser();
 
     if (firebaseUser && !firebaseUser.isAnonymous) {
-      await initProfile();
-      await initMessaging();
+      initProfile();
+      initMessaging();
+      refreshNotifications();
       return;
     }
 

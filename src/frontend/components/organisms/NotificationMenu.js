@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import NotificationList from './NotificationList';
 
 import ApiClient from '../../utils/ApiClient';
-import fetchNotifications from '../../actions/fetchNotifications';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import I18n from '../../utils/I18n';
@@ -44,15 +43,12 @@ const NotificationMenu = () => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       notifications: state.shared.notifications,
       unreadNotifications: state.shared.unreadNotifications
     }),
     []
   );
-  const { currentUser, notifications, unreadNotifications } = useMappedState(
-    mapState
-  );
+  const { notifications, unreadNotifications } = useMappedState(mapState);
 
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [notificationOpen, setNotificationOpen] = useState(false);
@@ -81,25 +77,6 @@ const NotificationMenu = () => {
       await sleep(3000);
     });
   });
-
-  const handleOnMount = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchNotifications();
-    if (response.ok) {
-      let notifications = await response.json();
-      dispatch(fetchNotifications(notifications));
-    }
-  });
-
-  useEffect(
-    () => {
-      if (!currentUser || currentUser.isAnonymous) {
-        return;
-      }
-      handleOnMount();
-    },
-    [currentUser]
-  );
 
   return (
     <div>
