@@ -1,4 +1,5 @@
 import {
+  GET_HISTORY,
   OPEN_TOAST,
   CLOSE_TOAST,
   REQUEST_START,
@@ -28,6 +29,7 @@ import {
 import I18n from '../utils/I18n';
 
 const initialState = {
+  history: undefined,
   toastOpen: false,
   toastMessage: '',
   toastDuration: 4000,
@@ -145,6 +147,10 @@ const switchBackButton = pathname => {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case GET_HISTORY:
+      return Object.assign({}, state, {
+        history: action.payload.history
+      });
     case OPEN_TOAST:
       return Object.assign({}, state, {
         toastOpen: true,

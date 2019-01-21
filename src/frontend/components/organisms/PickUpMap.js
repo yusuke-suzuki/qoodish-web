@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
@@ -10,7 +10,6 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import ApiClient from '../../utils/ApiClient';
-import selectMap from '../../actions/selectMap';
 
 const styles = {
   gridList: {
@@ -32,16 +31,8 @@ const styles = {
 };
 
 const PickUpMap = () => {
-  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
   const [map, setMap] = useState(undefined);
-
-  const handleClickMap = useCallback(() => {
-    if (!map) {
-      return;
-    }
-    dispatch(selectMap(map));
-  });
 
   const initPickUpMap = useCallback(async () => {
     const client = new ApiClient();
@@ -60,7 +51,6 @@ const PickUpMap = () => {
     <GridList cols={1} style={styles.gridList} spacing={20}>
       <GridListTile
         key={map && map.id}
-        onClick={handleClickMap}
         style={large ? styles.pickUpTileLarge : styles.pickUpTileSmall}
         component={Link}
         to={`/maps/${map && map.id}`}

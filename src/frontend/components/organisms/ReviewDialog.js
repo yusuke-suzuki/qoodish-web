@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -13,7 +13,6 @@ import IconButton from '@material-ui/core/IconButton';
 
 import ReviewCard from '../molecules/ReviewCard';
 import I18n from '../../utils/I18n';
-import closeReviewDialog from '../../actions/closeReviewDialog';
 
 const styles = {
   appbar: {
@@ -35,19 +34,19 @@ const Transition = props => {
 };
 
 const ReviewDialog = () => {
-  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
   const mapState = useCallback(
     state => ({
       dialogOpen: state.reviews.reviewDialogOpen,
-      currentReview: state.reviews.currentReview
+      currentReview: state.reviews.currentReview,
+      history: state.shared.history
     }),
     []
   );
-  const { dialogOpen, currentReview } = useMappedState(mapState);
+  const { dialogOpen, currentReview, history } = useMappedState(mapState);
 
   const handleRequestDialogClose = useCallback(() => {
-    dispatch(closeReviewDialog());
+    history.goBack();
   });
 
   return (

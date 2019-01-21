@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { Link, withRouter } from 'react-router-dom';
+import Link from './Link';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -22,12 +22,17 @@ const styles = {
   }
 };
 
-const AvatarMenu = props => {
+const AvatarMenu = () => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      history: state.shared.history
+    }),
+    []
   );
+  const { currentUser, history } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleSignOutClick = useCallback(async () => {
@@ -56,7 +61,7 @@ const AvatarMenu = props => {
     };
     dispatch(signIn(user));
 
-    props.history.push('/login');
+    history.push('/login');
     dispatch(requestFinish());
   });
 
@@ -107,4 +112,4 @@ const AvatarMenu = props => {
   );
 };
 
-export default React.memo(withRouter(AvatarMenu));
+export default React.memo(AvatarMenu);

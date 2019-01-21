@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import { Link, withRouter } from 'react-router-dom';
+import Link from '../molecules/Link';
 import loadable from '@loadable/component';
 
 const SearchBar = loadable(() =>
@@ -102,7 +102,8 @@ const NavToolbar = props => {
       currentUser: state.app.currentUser,
       pageTitle: state.shared.pageTitle,
       showBackButton: state.shared.showBackButton,
-      previousLocation: state.shared.previousLocation
+      previousLocation: state.shared.previousLocation,
+      history: state.shared.history
     }),
     []
   );
@@ -110,14 +111,15 @@ const NavToolbar = props => {
     currentUser,
     pageTitle,
     showBackButton,
-    previousLocation
+    previousLocation,
+    history
   } = useMappedState(mapState);
 
   const handleBackButtonClick = useCallback(() => {
     if (previousLocation) {
-      props.history.goBack();
+      history.goBack();
     } else {
-      props.history.push('/');
+      history.push('/');
     }
   });
 
@@ -185,4 +187,4 @@ const NavToolbar = props => {
   );
 };
 
-export default React.memo(withRouter(NavToolbar));
+export default React.memo(NavToolbar);

@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
-import { withRouter } from 'react-router-dom';
-
 import SharedEditMapDialog from './SharedEditMapDialog';
 
 import ApiClient from '../../utils/ApiClient';
@@ -20,11 +18,12 @@ const CreateMapDialog = props => {
   const mapState = useCallback(
     state => ({
       dialogOpen: state.maps.createMapDialogOpen,
-      selectedBase: state.maps.selectedBase
+      selectedBase: state.maps.selectedBase,
+      history: state.shared.history
     }),
     []
   );
-  const { dialogOpen, selectedBase } = useMappedState(mapState);
+  const { dialogOpen, selectedBase, history } = useMappedState(mapState);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeCreateMapDialog());
@@ -40,7 +39,7 @@ const CreateMapDialog = props => {
       dispatch(createMap(json));
       dispatch(closeCreateMapDialog());
       dispatch(selectMap(json));
-      props.history.push(`/maps/${json.id}`);
+      history.push(`/maps/${json.id}`);
       dispatch(openToast(I18n.t('create map success')));
 
       gtag('event', 'create', {
@@ -64,4 +63,4 @@ const CreateMapDialog = props => {
   );
 };
 
-export default React.memo(withRouter(CreateMapDialog));
+export default React.memo(CreateMapDialog);

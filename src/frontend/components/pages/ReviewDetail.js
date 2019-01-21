@@ -113,8 +113,8 @@ const ReviewDetail = props => {
     setLoading(true);
     const client = new ApiClient();
     let response = await client.fetchReview(
-      props.match.params.mapId,
-      props.match.params.reviewId
+      props.params.primaryId,
+      props.params.secondaryId
     );
     let json = await response.json();
     if (response.ok) {

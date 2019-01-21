@@ -10,7 +10,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 import I18n from '../../utils/I18n';
 
 const styles = {

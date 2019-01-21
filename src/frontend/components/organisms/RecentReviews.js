@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import Link from '../molecules/Link';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -17,7 +18,6 @@ import moment from 'moment';
 
 import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
-import openReviewDialog from '../../actions/openReviewDialog';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
 
@@ -31,7 +31,8 @@ const styles = {
     width: '100%'
   },
   gridTile: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    textDecoration: 'none'
   },
   reviewCard: {
     margin: 3
@@ -99,10 +100,6 @@ const RecentReviews = () => {
   const { recentReviews } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
-
-  const handleReviewClick = useCallback(review => {
-    dispatch(openReviewDialog(review));
-  });
 
   const initRecentReviews = useCallback(async () => {
     setLoading(true);
@@ -178,8 +175,12 @@ const RecentReviews = () => {
           : recentReviews.map(review => (
               <GridListTile
                 key={review.id}
-                onClick={() => handleReviewClick(review)}
                 style={styles.gridTile}
+                component={Link}
+                to={{
+                  pathname: `/maps/${review.map.id}/reports/${review.id}`,
+                  state: { modal: true, review: review }
+                }}
               >
                 <Card style={styles.reviewCard}>
                   <CardHeader

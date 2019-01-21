@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { withRouter } from 'react-router-dom';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,15 +18,16 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
-const DeleteMapDialog = props => {
+const DeleteMapDialog = () => {
   const mapState = useCallback(
     state => ({
       currentMap: state.maps.targetMap,
-      dialogOpen: state.maps.deleteMapDialogOpen
+      dialogOpen: state.maps.deleteMapDialogOpen,
+      history: state.shared.history
     }),
     []
   );
-  const { currentMap, dialogOpen } = useMappedState(mapState);
+  const { currentMap, dialogOpen, history } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const [check, setCheck] = useState(false);
@@ -51,7 +51,7 @@ const DeleteMapDialog = props => {
     dispatch(requestFinish());
     dispatch(deleteMap(currentMap.id));
     dispatch(closeDeleteMapDialog());
-    props.history.push('');
+    history.push('');
     dispatch(openToast(I18n.t('delete map success')));
   });
 
@@ -81,4 +81,4 @@ const DeleteMapDialog = props => {
   );
 };
 
-export default React.memo(withRouter(DeleteMapDialog));
+export default React.memo(DeleteMapDialog);

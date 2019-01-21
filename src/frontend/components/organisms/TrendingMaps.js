@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';

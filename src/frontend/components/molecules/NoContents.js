@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
-import { Link } from 'react-router-dom';
+import Link from './Link';
 import MapIcon from '@material-ui/icons/Map';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';

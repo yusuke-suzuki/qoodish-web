@@ -183,7 +183,7 @@ const SpotCard = props => {
 
   const initSpotReviews = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchSpotReviews(props.match.params.placeId);
+    let response = await client.fetchSpotReviews(props.params.primaryId);
     let json = await response.json();
     if (response.ok) {
       dispatch(fetchSpotReviews(json));
@@ -253,7 +253,7 @@ const SpotDetail = props => {
   const initSpot = useCallback(async () => {
     setLoading(true);
     const client = new ApiClient();
-    let response = await client.fetchSpot(props.match.params.placeId);
+    let response = await client.fetchSpot(props.params.primaryId);
     let json = await response.json();
     if (response.ok) {
       dispatch(fetchSpot(json));

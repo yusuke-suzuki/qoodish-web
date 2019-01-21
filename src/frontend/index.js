@@ -6,8 +6,6 @@ import App from './components/App';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { StoreContext } from 'redux-react-hook';
 
-import { BrowserRouter, Route } from 'react-router-dom';
-
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
 import discoverReducer from './reducers/discoverReducer';
@@ -60,9 +58,7 @@ const store = compose(
 window.addEventListener('DOMContentLoaded', () => {
   render(
     <StoreContext.Provider value={store}>
-      <BrowserRouter>
-        <Route component={App} />
-      </BrowserRouter>
+      <App />
     </StoreContext.Provider>,
     document.querySelector('#render-target')
   );

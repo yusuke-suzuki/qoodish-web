@@ -59,8 +59,7 @@ const ProfileReviews = props => {
     }
     setLoading(true);
     const client = new ApiClient();
-    let userId =
-      pathname === '/profile' ? undefined : props.match.params.userId;
+    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
     let response = await client.fetchUserReviews(userId);
     let reviews = await response.json();
     dispatch(fetchUserReviews(reviews));

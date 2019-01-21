@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import { Link } from 'react-router-dom';
+import Link from './Link';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Paper from '@material-ui/core/Paper';

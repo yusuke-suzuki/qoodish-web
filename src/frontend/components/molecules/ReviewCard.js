@@ -10,7 +10,7 @@ import moment from 'moment';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Divider from '@material-ui/core/Divider';
 import twitter from 'twitter-text';
-import { Link } from 'react-router-dom';
+import Link from './Link';
 import ReviewShareMenu from './ReviewShareMenu';
 import ReviewVertMenu from './ReviewVertMenu';
 import ReviewCardActions from './ReviewCardActions';
