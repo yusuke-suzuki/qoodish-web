@@ -117,7 +117,6 @@ const ReviewDetail = props => {
       props.match.params.reviewId
     );
     let json = await response.json();
-    setLoading(false);
     if (response.ok) {
       dispatch(selectReview(json));
     } else if (response.status == 401) {
@@ -127,6 +126,7 @@ const ReviewDetail = props => {
     } else {
       dispatch(openToast('Failed to fetch Report.'));
     }
+    setLoading(false);
   });
 
   useEffect(() => {

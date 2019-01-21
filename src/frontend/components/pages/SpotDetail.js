@@ -255,7 +255,6 @@ const SpotDetail = props => {
     const client = new ApiClient();
     let response = await client.fetchSpot(props.match.params.placeId);
     let json = await response.json();
-    setLoading(false);
     if (response.ok) {
       dispatch(fetchSpot(json));
     } else if (response.status == 401) {
@@ -265,6 +264,7 @@ const SpotDetail = props => {
     } else {
       dispatch(openToast('Failed to fetch Spot.'));
     }
+    setLoading(false);
   });
 
   useEffect(() => {

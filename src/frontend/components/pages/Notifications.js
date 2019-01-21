@@ -79,11 +79,11 @@ const Notifications = () => {
     setLoading(true);
     const client = new ApiClient();
     let response = await client.fetchNotifications();
-    setLoading(false);
     if (response.ok) {
       let json = await response.json();
       dispatch(fetchNotifications(json));
     }
+    setLoading(false);
   });
 
   useEffect(() => {

@@ -62,9 +62,9 @@ const ProfileReviews = props => {
     let userId =
       pathname === '/profile' ? undefined : props.match.params.userId;
     let response = await client.fetchUserReviews(userId);
-    setLoading(false);
     let reviews = await response.json();
     dispatch(fetchUserReviews(reviews));
+    setLoading(false);
   });
 
   useEffect(() => {
