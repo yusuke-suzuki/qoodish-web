@@ -109,7 +109,6 @@ const RecentReviews = () => {
     const client = new ApiClient();
     let response = await client.fetchRecentReviews();
     let reviews = await response.json();
-    setLoading(false);
     if (response.ok) {
       dispatch(fetchRecentReviews(reviews));
     } else if (response.status == 401) {
@@ -117,6 +116,7 @@ const RecentReviews = () => {
     } else {
       dispatch(openToast('Failed to fetch recent reviews.'));
     }
+    setLoading(false);
   });
 
   useEffect(() => {

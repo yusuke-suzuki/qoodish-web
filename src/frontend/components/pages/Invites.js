@@ -74,13 +74,13 @@ const Invites = props => {
     setLoading(true);
     const client = new ApiClient();
     const response = await client.fetchInvites();
-    setLoading(false);
     if (response.ok) {
       let json = await response.json();
       setInvites(json);
     } else {
       dispatch(openToast('Failed to fetch invites'));
     }
+    setLoading(false);
   });
 
   const handleFollowButtonClick = useCallback(async invite => {

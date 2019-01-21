@@ -44,10 +44,10 @@ const TrendingSpots = () => {
     const client = new ApiClient();
     let response = await client.fetchTrendingSpots();
     let json = await response.json();
-    setLoading(false);
     if (response.ok) {
       setSpots(json);
     }
+    setLoading(false);
   });
 
   useEffect(() => {

@@ -51,8 +51,8 @@ const LoadMoreUserReviewsButton = props => {
       pathname === '/profile' ? undefined : props.match.params.userId;
     let response = await client.fetchUserReviews(userId, nextTimestamp);
     let reviews = await response.json();
-    setLoading(false);
     dispatch(fetchMoreUserReviews(reviews));
+    setLoading(false);
   });
 
   if (loading) {

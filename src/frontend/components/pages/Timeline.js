@@ -236,7 +236,6 @@ const Timeline = () => {
     const client = new ApiClient();
     let response = await client.fetchReviews();
     let reviews = await response.json();
-    setLoading(false);
     if (response.ok) {
       dispatch(fetchReviews(reviews));
     } else if (response.status == 401) {
@@ -244,6 +243,7 @@ const Timeline = () => {
     } else {
       dispatch(openToast('Failed to fetch reports.'));
     }
+    setLoading(false);
   });
 
   useEffect(() => {
