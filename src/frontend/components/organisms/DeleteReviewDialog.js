@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { withRouter } from 'react-router-dom';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -26,11 +25,12 @@ const DeleteReviewDialog = props => {
   const mapState = useCallback(
     state => ({
       review: state.reviews.targetReview,
-      dialogOpen: state.reviews.deleteReviewDialogOpen
+      dialogOpen: state.reviews.deleteReviewDialogOpen,
+      history: state.shared.history
     }),
     []
   );
-  const { review, dialogOpen } = useMappedState(mapState);
+  const { review, dialogOpen, history } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const [check, setCheck] = useState(false);
@@ -64,7 +64,7 @@ const DeleteReviewDialog = props => {
           let spots = await spotResponse.json();
           dispatch(fetchSpots(spots));
         }
-        props.history.push(`/maps/${review.map.id}`);
+        history.push(`/maps/${review.map.id}`);
       }
       dispatch(deleteReview(review.id));
       dispatch(openToast(I18n.t('delete map success')));
@@ -100,4 +100,4 @@ const DeleteReviewDialog = props => {
   );
 };
 
-export default React.memo(withRouter(DeleteReviewDialog));
+export default React.memo(DeleteReviewDialog);

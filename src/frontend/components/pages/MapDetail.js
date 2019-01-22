@@ -3,7 +3,6 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import loadable from '@loadable/component';
-import { withRouter } from 'react-router-dom';
 
 import ApiClient from '../../utils/ApiClient';
 import selectMap from '../../actions/selectMap';
@@ -14,6 +13,8 @@ import fetchSpots from '../../actions/fetchSpots';
 import clearMapState from '../../actions/clearMapState';
 import fetchMapReviews from '../../actions/fetchMapReviews';
 import fetchCollaborators from '../../actions/fetchCollaborators';
+
+import I18n from '../../utils/I18n';
 
 const GMap = loadable(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
@@ -120,7 +121,7 @@ const MapSummaryDrawer = props => {
       }}
     >
       <MapSummary
-        mapId={props.match.params.mapId}
+        mapId={props.params.primaryId}
         dialogMode={large ? false : true}
       />
     </Drawer>
@@ -133,15 +134,17 @@ const MapDetail = props => {
 
   const mapState = useCallback(
     state => ({
-      currentMap: state.mapDetail.currentMap
+      currentMap: state.mapDetail.currentMap,
+      history: state.shared.history,
+      currentLocation: state.shared.currentLocation
     }),
     []
   );
-  const { currentMap } = useMappedState(mapState);
+  const { currentMap, history, currentLocation } = useMappedState(mapState);
 
   const initMap = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchMap(props.match.params.mapId);
+    let response = await client.fetchMap(props.params.primaryId);
     if (response.ok) {
       let map = await response.json();
       dispatch(selectMap(map));
@@ -155,7 +158,7 @@ const MapDetail = props => {
     } else if (response.status == 401) {
       dispatch(openToast('Authenticate failed'));
     } else if (response.status == 404) {
-      props.history.push('');
+      history.push('');
       dispatch(openToast(I18n.t('map not found')));
     } else {
       dispatch(openToast('Failed to fetch Map.'));
@@ -164,7 +167,7 @@ const MapDetail = props => {
 
   const initSpots = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchSpots(props.match.params.mapId);
+    let response = await client.fetchSpots(props.params.primaryId);
     if (response.ok) {
       let spots = await response.json();
       dispatch(fetchSpots(spots));
@@ -173,7 +176,7 @@ const MapDetail = props => {
 
   const initMapReviews = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchMapReviews(props.match.params.mapId);
+    let response = await client.fetchMapReviews(props.params.primaryId);
     if (response.ok) {
       let reviews = await response.json();
       dispatch(fetchMapReviews(reviews));
@@ -182,7 +185,7 @@ const MapDetail = props => {
 
   const initFollowers = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchCollaborators(props.match.params.mapId);
+    let response = await client.fetchCollaborators(props.params.primaryId);
     if (response.ok) {
       let followers = await response.json();
       dispatch(fetchCollaborators(followers));
@@ -203,7 +206,7 @@ const MapDetail = props => {
         dispatch(clearMapState());
       };
     },
-    [props.location.pathname]
+    [currentLocation.pathname]
   );
 
   return (
@@ -223,11 +226,11 @@ const MapDetail = props => {
           <MapSummaryDrawer {...props} />
         </div>
       )}
-      <DeleteMapDialog mapId={props.match.params.mapId} />
-      <InviteTargetDialog mapId={props.match.params.mapId} />
-      <SpotCard mapId={props.match.params.mapId} />
+      <DeleteMapDialog mapId={props.params.primaryId} />
+      <InviteTargetDialog mapId={props.params.primaryId} />
+      <SpotCard mapId={props.params.primaryId} />
     </div>
   );
 };
 
-export default React.memo(withRouter(MapDetail));
+export default React.memo(MapDetail);

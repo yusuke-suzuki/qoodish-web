@@ -17,7 +17,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
-import { Link } from 'react-router-dom';
+import Link from './Link';
 import I18n from '../../utils/I18n';
 
 import openFeedbackDialog from '../../actions/openFeedbackDialog';

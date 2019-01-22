@@ -68,14 +68,14 @@ const UserProfile = props => {
 
   const initProfile = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchUser(props.match.params.userId);
+    let response = await client.fetchUser(props.params.primaryId);
     let user = await response.json();
     dispatch(fetchUserProfile(user));
   });
 
   const initFollowingMaps = useCallback(async () => {
     const client = new ApiClient();
-    let response = await client.fetchFollowingMaps(props.match.params.userId);
+    let response = await client.fetchFollowingMaps(props.params.primaryId);
     let maps = await response.json();
     dispatch(fetchFollowingMaps(maps));
   });

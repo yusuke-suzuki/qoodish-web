@@ -13,7 +13,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import ApiClient from '../../utils/ApiClient';
 import searchMaps from '../../actions/searchMaps';

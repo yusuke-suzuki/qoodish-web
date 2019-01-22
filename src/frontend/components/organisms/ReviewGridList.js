@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'redux-react-hook';
+import React from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import GridList from '@material-ui/core/GridList';
@@ -7,7 +6,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import PlaceIcon from '@material-ui/icons/Place';
 
-import openReviewDialog from '../../actions/openReviewDialog';
+import Link from '../molecules/Link';
 
 const styles = {
   container: {
@@ -43,10 +42,6 @@ const reviewImage = (review, large) => {
 
 const ReviewGridList = props => {
   const large = useMediaQuery('(min-width: 600px)');
-  const dispatch = useDispatch();
-  const handleReviewClick = useCallback(review => {
-    dispatch(openReviewDialog(review));
-  });
 
   return (
     <div style={styles.container}>
@@ -59,8 +54,12 @@ const ReviewGridList = props => {
         {props.reviews.map(review => (
           <GridListTile
             key={review.id}
-            onClick={() => handleReviewClick(review)}
             style={styles.gridTile}
+            component={Link}
+            to={{
+              pathname: `/maps/${review.map.id}/reports/${review.id}`,
+              state: { modal: true, review: review }
+            }}
           >
             {review.image ? (
               <img

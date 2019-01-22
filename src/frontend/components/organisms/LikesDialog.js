@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';

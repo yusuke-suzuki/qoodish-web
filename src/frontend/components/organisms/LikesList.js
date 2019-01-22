@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
 
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import moment from 'moment';
 import List from '@material-ui/core/List';
@@ -78,8 +78,7 @@ const LikesList = props => {
 
   const initUserLikes = useCallback(async () => {
     const client = new ApiClient();
-    let userId =
-      pathname === '/profile' ? undefined : props.match.params.userId;
+    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
     let response = await client.fetchUserLikes(userId);
     let json = await response.json();
     setLikes(json);

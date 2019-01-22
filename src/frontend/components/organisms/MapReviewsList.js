@@ -12,8 +12,9 @@ import moment from 'moment';
 import I18n from '../../utils/I18n';
 
 import requestMapCenter from '../../actions/requestMapCenter';
-import openReviewDialog from '../../actions/openReviewDialog';
 import selectSpot from '../../actions/selectSpot';
+
+import Link from '../molecules/Link';
 
 const styles = {
   activityText: {
@@ -37,17 +38,10 @@ const fromNow = review => {
 };
 
 const MapReviewsList = () => {
-  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
   const mapReviews = useMappedState(
     useCallback(state => state.mapSummary.mapReviews, [])
   );
-
-  const handleReviewClick = useCallback(review => {
-    dispatch(selectSpot(review.spot));
-    dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-    dispatch(openReviewDialog(review));
-  });
 
   return (
     <List
@@ -63,7 +57,11 @@ const MapReviewsList = () => {
         <ListItem
           button
           key={review.id}
-          onClick={() => handleReviewClick(review)}
+          component={Link}
+          to={{
+            pathname: `/maps/${review.map.id}/reports/${review.id}`,
+            state: { modal: true, review: review }
+          }}
         >
           <Avatar
             src={review.author.profile_image_url}
@@ -79,7 +77,13 @@ const MapReviewsList = () => {
             secondary={fromNow(review)}
           />
           {review.image && (
-            <ListItemSecondaryAction onClick={() => handleReviewClick(review)}>
+            <ListItemSecondaryAction
+              component={Link}
+              to={{
+                pathname: `/maps/${review.map.id}/reports/${review.id}`,
+                state: { modal: true, review: review }
+              }}
+            >
               <Avatar
                 src={review.image.thumbnail_url}
                 style={styles.secondaryAvatar}

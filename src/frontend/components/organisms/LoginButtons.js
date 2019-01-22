@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'redux-react-hook';
-import { withRouter } from 'react-router-dom';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
@@ -20,11 +19,19 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
-const LoginButtons = props => {
+const LoginButtons = () => {
   const dispatch = useDispatch();
 
   const [firebaseAuth, setFirebaseAuth] = useState(undefined);
   const [uiConfig, setUiConfig] = useState(undefined);
+
+  const mapState = useCallback(
+    state => ({
+      history: state.shared.history
+    }),
+    []
+  );
+  const { history } = useMappedState(mapState);
 
   const initFirebase = useCallback(async () => {
     await getFirebaseAuth();
@@ -69,7 +76,7 @@ const LoginButtons = props => {
         isAnonymous: true
       };
       dispatch(signIn(user));
-      props.history.push('');
+      history.push('');
       gtag('event', 'login', {
         method: 'anonymous'
       });
@@ -107,7 +114,7 @@ const LoginButtons = props => {
     dispatch(requestFinish());
 
     if (response.ok) {
-      props.history.push('');
+      history.push('');
       dispatch(openToast(I18n.t('sign in success')));
       gtag('event', 'login', {
         method: authResult.additionalUserInfo.providerId
@@ -131,4 +138,4 @@ const LoginButtons = props => {
   ) : null;
 };
 
-export default React.memo(withRouter(LoginButtons));
+export default React.memo(LoginButtons);

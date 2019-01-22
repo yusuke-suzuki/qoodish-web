@@ -29,8 +29,7 @@ const ProfileMyMaps = props => {
     }
 
     const client = new ApiClient();
-    let userId =
-      pathname === '/profile' ? undefined : props.match.params.userId;
+    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
     let response = await client.fetchMyMaps(userId);
     let maps = await response.json();
     dispatch(fetchMyMaps(maps));

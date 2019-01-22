@@ -19,7 +19,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import PlaceIcon from '@material-ui/icons/Place';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -33,7 +33,6 @@ import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
 import openToast from '../../actions/openToast';
 import requestRoute from '../../actions/requestRoute';
-import openReviewDialog from '../../actions/openReviewDialog';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import fetchCurrentPosition from '../../utils/fetchCurrentPosition';
 import getCurrentPosition from '../../actions/getCurrentPosition';
@@ -229,10 +228,6 @@ const SpotCardSmall = () => {
     dispatch(selectPlaceForReview(place));
   });
 
-  const handleReviewClick = useCallback(review => {
-    dispatch(openReviewDialog(review));
-  });
-
   return (
     <div>
       <CardContent style={styles.cardContentSmall}>
@@ -254,7 +249,11 @@ const SpotCardSmall = () => {
           {spotReviews.map(review => (
             <GridListTile
               key={review.id}
-              onClick={() => handleReviewClick(review)}
+              component={Link}
+              to={{
+                pathname: `/maps/${review.map.id}/reports/${review.id}`,
+                state: { modal: true, review: review }
+              }}
             >
               <img
                 src={

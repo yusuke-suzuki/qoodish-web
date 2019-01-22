@@ -10,7 +10,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../../utils/I18n';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 import Slide from '@material-ui/core/Slide';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';

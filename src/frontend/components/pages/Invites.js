@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import { withRouter } from 'react-router-dom';
-
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -56,12 +54,18 @@ const createdAt = invite => {
     .format('LL');
 };
 
-const Invites = props => {
+const Invites = () => {
   const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      history: state.shared.history
+    }),
+    []
   );
+  const { currentUser, history } = useMappedState(mapState);
+
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,7 +94,7 @@ const Invites = props => {
     dispatch(requestFinish());
     if (response.ok) {
       dispatch(openToast(I18n.t('follow map success')));
-      props.history.push(`/maps/${invite.invitable.id}`);
+      history.push(`/maps/${invite.invitable.id}`);
       gtag('event', 'follow', {
         event_category: 'engagement',
         event_label: 'map'
@@ -156,4 +160,4 @@ const Invites = props => {
   );
 };
 
-export default React.memo(withRouter(Invites));
+export default React.memo(Invites);

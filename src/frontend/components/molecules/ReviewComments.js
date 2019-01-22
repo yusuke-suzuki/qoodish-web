@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import CommentMenu from './CommentMenu';
 import I18n from '../../utils/I18n';
-import { Link } from 'react-router-dom';
+import Link from './Link';
 
 import moment from 'moment';
 

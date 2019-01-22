@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';

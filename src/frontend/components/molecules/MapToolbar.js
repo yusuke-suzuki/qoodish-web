@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import { withRouter } from 'react-router-dom';
 
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -60,27 +59,30 @@ const MapToolbar = props => {
     state => ({
       previousLocation: state.shared.previousLocation,
       map: state.mapSummary.currentMap,
-      mapSummaryOpen: state.mapDetail.mapSummaryOpen
+      mapSummaryOpen: state.mapDetail.mapSummaryOpen,
+      history: state.shared.history
     }),
     []
   );
-  const { previousLocation, map, mapSummaryOpen } = useMappedState(mapState);
+  const { previousLocation, map, mapSummaryOpen, history } = useMappedState(
+    mapState
+  );
 
   const handleBackButtonClick = useCallback(() => {
     if (large) {
       if (previousLocation) {
-        props.history.goBack();
+        history.goBack();
       } else {
-        props.history.push('/');
+        history.push('/');
       }
     } else {
       if (mapSummaryOpen) {
         dispatch(switchMap());
       } else {
         if (previousLocation) {
-          props.history.goBack();
+          history.goBack();
         } else {
-          props.history.push('/');
+          history.push('/');
         }
       }
     }
@@ -123,4 +125,4 @@ const MapToolbar = props => {
   );
 };
 
-export default React.memo(withRouter(MapToolbar));
+export default React.memo(MapToolbar);

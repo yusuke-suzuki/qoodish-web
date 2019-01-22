@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'redux-react-hook';
+import React from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import LockIcon from '@material-ui/icons/Lock';
@@ -8,10 +7,9 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import Link from '../molecules/Link';
 
 import I18n from '../../utils/I18n';
-import selectMap from '../../actions/selectMap';
 
 const styles = {
   container: {
@@ -49,12 +47,7 @@ const styles = {
 };
 
 const MapCollection = props => {
-  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
-
-  const handleClickMap = useCallback(map => {
-    dispatch(selectMap(map));
-  });
 
   return (
     <div style={styles.container}>
@@ -67,7 +60,6 @@ const MapCollection = props => {
         {props.maps.map(map => (
           <GridListTile
             key={map.id}
-            onClick={() => handleClickMap(map)}
             component={Link}
             to={`/maps/${map.id}`}
             title={map.name}
