@@ -4,14 +4,15 @@ import loadable from '@loadable/component';
 import createHistory from 'history/createBrowserHistory';
 import pathToRegexp from 'path-to-regexp';
 
+import { OPEN_REVIEW_DIALOG, SWITCH_SUMMARY } from '../actionTypes';
+
 import locationChange from '../actions/locationChange';
 import getHistory from '../actions/getHistory';
-
 import openReviewDialog from '../actions/openReviewDialog';
+import closeReviewDialog from '../actions/closeReviewDialog';
 import selectSpot from '../actions/selectSpot';
 import requestMapCenter from '../actions/requestMapCenter';
-
-import { OPEN_REVIEW_DIALOG } from '../actionTypes';
+import switchSummary from '../actions/switchSummary';
 
 const Login = loadable(() =>
   import(/* webpackChunkName: "login" */ './pages/Login')
@@ -91,6 +92,11 @@ const modalRoutes = [
     path: '/maps/:mapId/reports/:reviewId',
     action: OPEN_REVIEW_DIALOG,
     modal: true
+  },
+  {
+    path: '/maps/:mapId',
+    action: SWITCH_SUMMARY,
+    modal: true
   }
 ];
 
@@ -120,6 +126,7 @@ const Routes = () => {
   const dispatch = useDispatch();
   const [currentLocation, setCurrentLocation] = useState(history.location);
   const [previousRoute, setPreviousRoute] = useState(root);
+  const [initialRoute, setInitialRoute] = useState(true);
 
   const execModalAction = useCallback(route => {
     switch (route.action) {
@@ -129,6 +136,10 @@ const Routes = () => {
         dispatch(selectSpot(review.spot));
         dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
         break;
+      case SWITCH_SUMMARY:
+        dispatch(switchSummary());
+        dispatch(closeReviewDialog());
+        break;
       default:
         return;
     }
@@ -136,6 +147,7 @@ const Routes = () => {
 
   useEffect(() => {
     dispatch(getHistory(history));
+    dispatch(locationChange(history.location));
 
     const unlisten = history.listen((location, action) => {
       setCurrentLocation(location);
@@ -152,13 +164,18 @@ const Routes = () => {
         return;
       }
       dispatch(locationChange(currentLocation));
+      if (initialRoute) {
+        setInitialRoute(false);
+      }
     },
     [currentLocation]
   );
 
   const matchedRoute = useMemo(
     () => {
-      if (currentLocation.state && currentLocation.state.modal) {
+      if (initialRoute) {
+        return findMatchedRoute(currentLocation, pageRoutes);
+      } else if (currentLocation.state && currentLocation.state.modal) {
         return findMatchedRoute(currentLocation, modalRoutes);
       } else {
         return findMatchedRoute(currentLocation, pageRoutes);

@@ -94,7 +94,7 @@ const styles = {
   }
 };
 
-const MapBottomNav = () => {
+const MapBottomNav = React.memo(() => {
   const large = useMediaQuery('(min-width: 600px)');
   const currentMap = useMappedState(
     useCallback(state => state.mapSummary.currentMap, [])
@@ -110,9 +110,9 @@ const MapBottomNav = () => {
       </Toolbar>
     </Paper>
   );
-};
+});
 
-const MapTabs = props => {
+const MapTabs = React.memo(props => {
   const large = useMediaQuery('(min-width: 600px)');
 
   return (
@@ -146,9 +146,9 @@ const MapTabs = props => {
       />
     </Tabs>
   );
-};
+});
 
-const TabContents = props => {
+const TabContents = React.memo(props => {
   const large = useMediaQuery('(min-width: 600px)');
 
   return (
@@ -163,7 +163,7 @@ const TabContents = props => {
       <MapFollowersList />
     </SwipeableViews>
   );
-};
+});
 
 const MapSummary = () => {
   const [tabValue, setTabValue] = useState(0);

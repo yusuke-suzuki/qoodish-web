@@ -201,6 +201,15 @@ const MapDetail = props => {
 
   useEffect(
     () => {
+      if (currentMap) {
+        history.push({ pathname: `/maps/${currentMap.id}`, state: undefined });
+      }
+    },
+    [currentMap]
+  );
+
+  useEffect(
+    () => {
       refreshMap();
       return () => {
         dispatch(clearMapState());
