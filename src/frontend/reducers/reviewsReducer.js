@@ -69,27 +69,30 @@ const reducer = (state = initialState, action) => {
         currentReviews: [action.payload.review, ...state.currentReviews]
       });
     case EDIT_REVIEW:
-      if (state.currentReviews.length === 0) {
-        return Object.assign({}, state, {
-          currentReview: action.payload.review
-        });
-      } else {
+      if (!state.currentReview && !(state.currentReviews.length > 0)) {
+        return state;
+      }
+
+      let nextState = {};
+      if (state.currentReview) {
+        Object.assign(nextState, { currentReview: action.payload.review });
+      }
+      if (state.currentReviews.length > 0) {
         let index = state.currentReviews.findIndex(review => {
           return review.id == action.payload.review.id;
         });
         let currentReview = state.currentReviews[index];
-        if (!currentReview) {
-          return state;
+        if (currentReview) {
+          Object.assign(nextState, {
+            currentReviews: [
+              ...state.currentReviews.slice(0, index),
+              action.payload.review,
+              ...state.currentReviews.slice(index + 1)
+            ]
+          });
         }
-
-        return Object.assign({}, state, {
-          currentReviews: [
-            ...state.currentReviews.slice(0, index),
-            action.payload.review,
-            ...state.currentReviews.slice(index + 1)
-          ]
-        });
       }
+      return Object.assign({}, state, nextState);
     case DELETE_REVIEW:
       if (state.currentReviews.length == 0) {
         return state;
