@@ -4,6 +4,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 
 import ReviewCard from '../molecules/ReviewCard';
+import ReviewCardActions from '../molecules/ReviewCardActions';
 import I18n from '../../utils/I18n';
 
 const styles = {
@@ -26,6 +28,9 @@ const styles = {
   },
   dialogContent: {
     padding: 0
+  },
+  dialogActions: {
+    paddingLeft: 20
   }
 };
 
@@ -72,9 +77,16 @@ const ReviewDialog = () => {
       )}
       <DialogContent style={styles.dialogContent}>
         <div>
-          <ReviewCard currentReview={currentReview} detail={!large} />
+          <ReviewCard
+            currentReview={currentReview}
+            detail={!large}
+            hideActions
+          />
         </div>
       </DialogContent>
+      <DialogActions disableActionSpacing style={styles.dialogActions}>
+        <ReviewCardActions review={currentReview} />
+      </DialogActions>
     </Dialog>
   );
 };
