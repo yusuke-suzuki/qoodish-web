@@ -156,9 +156,11 @@ const ReviewCard = props => {
       {props.currentReview.comments.length > 0 && (
         <ReviewComments comments={props.currentReview.comments} />
       )}
-      <CardActions disableActionSpacing style={styles.cardActions}>
-        <ReviewCardActions review={props.currentReview} />
-      </CardActions>
+      {props.hideActions ? null : (
+        <CardActions disableActionSpacing style={styles.cardActions}>
+          <ReviewCardActions review={props.currentReview} />
+        </CardActions>
+      )}
     </Card>
   );
 };
