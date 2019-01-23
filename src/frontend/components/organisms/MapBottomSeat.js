@@ -54,14 +54,14 @@ const MapBottomSeat = props => {
                   </Typography>
                 }
               />
-              <ListItemSecondaryAction
-                component={Link}
-                to={{
-                  pathname: `/maps/${props.map && props.map.id}`,
-                  state: { modal: true }
-                }}
-              >
-                <IconButton>
+              <ListItemSecondaryAction>
+                <IconButton
+                  component={Link}
+                  to={{
+                    pathname: `/maps/${props.map && props.map.id}`,
+                    state: { modal: true }
+                  }}
+                >
                   <ListIcon />
                 </IconButton>
               </ListItemSecondaryAction>

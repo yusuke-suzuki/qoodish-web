@@ -77,17 +77,16 @@ const MapReviewsList = () => {
             secondary={fromNow(review)}
           />
           {review.image && (
-            <ListItemSecondaryAction
-              component={Link}
-              to={{
-                pathname: `/maps/${review.map.id}/reports/${review.id}`,
-                state: { modal: true, review: review }
-              }}
-            >
+            <ListItemSecondaryAction>
               <Avatar
                 src={review.image.thumbnail_url}
                 style={styles.secondaryAvatar}
                 alt={review.spot.name}
+                component={Link}
+                to={{
+                  pathname: `/maps/${review.map.id}/reports/${review.id}`,
+                  state: { modal: true, review: review }
+                }}
               />
             </ListItemSecondaryAction>
           )}
