@@ -400,6 +400,38 @@ class ApiClient {
     return response;
   }
 
+  async likeComment(reviewId, commentId) {
+    const url = `${
+      process.env.API_ENDPOINT
+    }/reviews/${reviewId}/comments/${commentId}/like`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
+  async unlikeComment(reviewId, commentId) {
+    const url = `${
+      process.env.API_ENDPOINT
+    }/reviews/${reviewId}/comments/${commentId}/like`;
+    const token = await this.getCurrentToken();
+    let options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      }
+    };
+    const response = await fetch(url, options);
+    return response;
+  }
+
   async likeMap(mapId) {
     const url = `${process.env.API_ENDPOINT}/maps/${mapId}/like`;
     const token = await this.getCurrentToken();
