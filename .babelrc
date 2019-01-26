@@ -1,8 +1,11 @@
 {
   "presets": [
-    ["@babel/preset-env", {
-      "useBuiltIns": "usage"
-    }],
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage"
+      }
+    ],
     "@babel/preset-react"
   ],
   "plugins": [
@@ -11,9 +14,7 @@
   ],
   "env": {
     "production": {
-      "plugins": [
-        "react-remove-properties"
-      ]
+      "plugins": ["react-remove-properties"]
     }
   }
 }
