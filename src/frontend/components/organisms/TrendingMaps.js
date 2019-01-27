@@ -42,8 +42,10 @@ const TrendingMaps = () => {
     setLoading(true);
     const client = new ApiClient();
     let response = await client.fetchPopularMaps();
-    let json = await response.json();
-    setMaps(json);
+    if (response.ok) {
+      let json = await response.json();
+      setMaps(json);
+    }
     setLoading(false);
   });
 

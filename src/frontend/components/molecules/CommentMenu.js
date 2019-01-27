@@ -50,7 +50,7 @@ const CommentMenu = props => {
           setMenuOpen(true);
         }}
       >
-        <MoreVertIcon />
+        <MoreVertIcon fontSize="small" />
       </IconButton>
       <Menu
         id="comment-menu"

@@ -13,7 +13,7 @@ const styles = {
   }
 };
 
-const LikeButton = props => {
+const LikeButton = React.memo(props => {
   return (
     <IconButton
       onClick={() => {
@@ -29,9 +29,9 @@ const LikeButton = props => {
       )}
     </IconButton>
   );
-};
+});
 
-const LikesBadge = props => {
+const LikesBadge = React.memo(props => {
   return (
     <Button
       size="small"
@@ -41,7 +41,7 @@ const LikesBadge = props => {
       {props.target && props.target.likes_count}
     </Button>
   );
-};
+});
 
 const SharedLikeActions = props => {
   return (

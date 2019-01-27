@@ -40,11 +40,12 @@ const styles = {
     display: 'flex'
   },
   cardActions: {
-    paddingLeft: 24
+    paddingLeft: 24,
+    paddingRight: 16
   }
 };
 
-const ReviewCardHeader = props => {
+const ReviewCardHeader = React.memo(props => {
   return (
     <CardHeader
       avatar={
@@ -77,9 +78,9 @@ const ReviewCardHeader = props => {
       subheader={createdAt(props.currentReview)}
     />
   );
-};
+});
 
-const ReviewCardContent = props => {
+const ReviewCardContent = React.memo(props => {
   return (
     <CardContent style={styles.cardContent}>
       <ButtonBase
@@ -119,9 +120,9 @@ const ReviewCardContent = props => {
       />
     </CardContent>
   );
-};
+});
 
-const ReviewCardMedia = props => {
+const ReviewCardMedia = React.memo(props => {
   return (
     <CardMedia style={styles.cardMedia}>
       <img
@@ -131,7 +132,7 @@ const ReviewCardMedia = props => {
       />
     </CardMedia>
   );
-};
+});
 
 const createdAt = review => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')

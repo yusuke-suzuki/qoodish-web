@@ -10,6 +10,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
 import CommentMenu from './CommentMenu';
 import Link from './Link';
 
@@ -30,11 +34,6 @@ const styles = {
   },
   commentBody: {
     wordBreak: 'break-all'
-  },
-  likeButton: {
-    marginTop: 6,
-    padding: 0,
-    minWidth: 'auto'
   }
 };
 
@@ -44,13 +43,15 @@ const fromNow = comment => {
     .fromNow();
 };
 
-const Comments = props => {
+const LikeButton = React.memo(props => {
   const dispatch = useDispatch();
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
   );
 
-  const handleLikeCommentClick = useCallback(async comment => {
+  const comment = props.comment;
+
+  const handleLikeCommentClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
       return;
@@ -76,6 +77,18 @@ const Comments = props => {
     }
   });
 
+  return (
+    <IconButton onClick={handleLikeCommentClick}>
+      {comment.liked ? (
+        <FavoriteIcon color="error" fontSize="small" />
+      ) : (
+        <FavoriteBorderIcon fontSize="small" />
+      )}
+    </IconButton>
+  );
+});
+
+const Comments = React.memo(props => {
   return props.comments.map(comment => (
     <ListItem key={comment.id}>
       <ButtonBase
@@ -104,26 +117,21 @@ const Comments = props => {
           </div>
         }
         secondary={
-          <div>
-            <Typography color="textPrimary" style={styles.commentBody}>
-              {comment.body}
-            </Typography>
-            <Button
-              style={styles.likeButton}
-              color={comment.liked ? 'primary' : 'default'}
-              onClick={() => handleLikeCommentClick(comment)}
-            >
-              {I18n.t('like!')}
-            </Button>
-          </div>
+          <Typography color="textPrimary" style={styles.commentBody}>
+            {comment.body}
+          </Typography>
         }
       />
       <ListItemSecondaryAction>
-        <CommentMenu comment={comment} />
+        {comment.editable ? (
+          <CommentMenu comment={comment} />
+        ) : (
+          <LikeButton comment={comment} />
+        )}
       </ListItemSecondaryAction>
     </ListItem>
   ));
-};
+});
 
 const ReviewComments = props => {
   return (

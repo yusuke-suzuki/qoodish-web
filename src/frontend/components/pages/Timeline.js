@@ -63,7 +63,7 @@ const styles = {
   }
 };
 
-const FormAvatar = () => {
+const FormAvatar = React.memo(() => {
   const mapState = useCallback(
     state => ({
       currentUser: state.app.currentUser
@@ -81,9 +81,9 @@ const FormAvatar = () => {
   } else {
     return <Avatar src={currentUser.thumbnail_url} alt={currentUser.name} />;
   }
-};
+});
 
-const CreateReviewForm = () => {
+const CreateReviewForm = React.memo(() => {
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
   const mapState = useCallback(
@@ -117,9 +117,9 @@ const CreateReviewForm = () => {
       />
     </Card>
   );
-};
+});
 
-const LoadMoreButton = () => {
+const LoadMoreButton = React.memo(() => {
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -133,7 +133,7 @@ const LoadMoreButton = () => {
 
   const { noMoreReviews, nextTimestamp } = useMappedState(mapState);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const loadMoreReviews = useCallback(async () => {
     setLoading(true);
@@ -169,9 +169,9 @@ const LoadMoreButton = () => {
       </div>
     );
   }
-};
+});
 
-const ReviewsContainer = () => {
+const ReviewsContainer = React.memo(() => {
   const large = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
@@ -209,7 +209,7 @@ const ReviewsContainer = () => {
       />
     );
   }
-};
+});
 
 const Timeline = () => {
   const dispatch = useDispatch();
