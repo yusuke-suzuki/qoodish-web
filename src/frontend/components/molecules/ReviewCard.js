@@ -40,7 +40,8 @@ const styles = {
     display: 'flex'
   },
   cardActions: {
-    paddingLeft: 24
+    paddingLeft: 24,
+    paddingRight: 16
   }
 };
 

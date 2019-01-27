@@ -30,7 +30,8 @@ const styles = {
     padding: 0
   },
   dialogActions: {
-    paddingLeft: 20
+    paddingLeft: 20,
+    paddingRight: 12
   }
 };
 
