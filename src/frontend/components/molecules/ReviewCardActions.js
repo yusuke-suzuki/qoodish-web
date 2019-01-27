@@ -36,7 +36,7 @@ const styles = {
   }
 };
 
-const UserAvatar = () => {
+const UserAvatar = React.memo(() => {
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
   );
@@ -56,9 +56,9 @@ const UserAvatar = () => {
       />
     );
   }
-};
+});
 
-const ReviewCardActions = props => {
+const ReviewCardActions = React.memo(props => {
   const [commentFormActive, setCommentFormActive] = useState(false);
   const [comment, setComment] = useState(undefined);
   const [sending, setSending] = useState(false);
@@ -129,6 +129,6 @@ const ReviewCardActions = props => {
       )}
     </div>
   );
-};
+});
 
 export default React.memo(ReviewCardActions);
