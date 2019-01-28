@@ -67,7 +67,7 @@ const DeleteReviewDialog = props => {
         history.push(`/maps/${review.map.id}`);
       }
       dispatch(deleteReview(review.id));
-      dispatch(openToast(I18n.t('delete map success')));
+      dispatch(openToast(I18n.t('delete report success')));
     } else {
       let json = await response.json();
       dispatch(openToast(json.detail));

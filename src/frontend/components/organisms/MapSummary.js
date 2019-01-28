@@ -56,10 +56,12 @@ const styles = {
     width: '100%'
   },
   toolbarLarge: {
-    height: 64
+    height: 64,
+    paddingLeft: 10
   },
   toolbarSmall: {
-    height: 56
+    height: 56,
+    paddingLeft: 10
   },
   tabsLarge: {
     height: 64,
