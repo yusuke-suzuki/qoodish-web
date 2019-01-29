@@ -460,9 +460,10 @@ const EditReviewDialog = () => {
             input={<Input id="map-input" style={{ padding: 20 }} />}
             renderValue={value => renderSelectValue(value)}
             style={{ height: 'auto' }}
+            data-test="map-select"
           >
             {postableMaps.map(map => (
-              <MenuItem key={map.id} value={map.id}>
+              <MenuItem key={map.id} value={map.id} data-test="map-item">
                 <Avatar src={map.thumbnail_url} />
                 <ListItemText primary={map.name} />
               </MenuItem>
