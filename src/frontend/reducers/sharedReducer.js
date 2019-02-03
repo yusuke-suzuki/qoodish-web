@@ -276,10 +276,14 @@ const reducer = (state = initialState, action) => {
         createActionsOpen: false
       });
     case LOCATION_CHANGE:
+      if (
+        state.currentLocation &&
+        state.currentLocation.pathname === action.payload.location.pathname
+      ) {
+        return state;
+      }
       return Object.assign({}, state, {
-        previousLocation: state.currentLocation
-          ? state.currentLocation
-          : undefined,
+        previousLocation: state.currentLocation,
         currentLocation: action.payload.location.pathname,
         pageTitle: switchPageTitle(
           action.payload.location.pathname,
