@@ -41,25 +41,31 @@ const ProfileReviews = props => {
   const mapState = useCallback(
     state => ({
       currentReviews: state.profile.currentReviews,
-      pathname: state.shared.currentLocation
+      location: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentReviews, pathname } = useMappedState(mapState);
+  const { currentReviews, location } = useMappedState(mapState);
 
   const currentUser = props.currentUser;
 
   const [loading, setLoading] = useState(true);
 
   const initReviews = useCallback(async () => {
-    if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
+    if (
+      !currentUser ||
+      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+    ) {
       setLoading(false);
       return;
     }
     setLoading(true);
     const client = new ApiClient();
-    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
+    let userId =
+      location && location.pathname === '/profile'
+        ? undefined
+        : props.params.primaryId;
     let response = await client.fetchUserReviews(userId);
     let reviews = await response.json();
     dispatch(fetchUserReviews(reviews));

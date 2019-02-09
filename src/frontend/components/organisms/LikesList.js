@@ -69,16 +69,19 @@ const LikesList = props => {
 
   const mapState = useCallback(
     state => ({
-      pathname: state.shared.currentLocation
+      location: state.shared.currentLocation
     }),
     []
   );
 
-  const { pathname } = useMappedState(mapState);
+  const { location } = useMappedState(mapState);
 
   const initUserLikes = useCallback(async () => {
     const client = new ApiClient();
-    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
+    let userId =
+      location && location.pathname === '/profile'
+        ? undefined
+        : props.params.primaryId;
     let response = await client.fetchUserLikes(userId);
     let json = await response.json();
     setLikes(json);
