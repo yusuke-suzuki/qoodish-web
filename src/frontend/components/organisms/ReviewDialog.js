@@ -8,7 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -36,7 +36,8 @@ const styles = {
 };
 
 const Transition = props => {
-  return <Slide direction="up" {...props} />;
+  const large = useMediaQuery('(min-width: 600px)');
+  return <Slide direction={large ? 'up' : 'left'} {...props} />;
 };
 
 const ReviewDialog = () => {
@@ -68,7 +69,7 @@ const ReviewDialog = () => {
         <AppBar style={styles.appbar} color="primary">
           <Toolbar style={styles.toolbar}>
             <IconButton color="inherit" onClick={handleRequestDialogClose}>
-              <CloseIcon />
+              <ArrowBackIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" style={styles.flex}>
               {I18n.t('report')}
