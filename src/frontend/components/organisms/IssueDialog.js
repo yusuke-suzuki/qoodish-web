@@ -33,7 +33,7 @@ const IssueDialog = () => {
     mapState
   );
 
-  const [value, setValue] = useState(value);
+  const [value, setValue] = useState(undefined);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeIssueDialog());

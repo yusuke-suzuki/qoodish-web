@@ -151,7 +151,6 @@ const Routes = () => {
 
     const unlisten = history.listen((location, action) => {
       setCurrentLocation(location);
-      dispatch(locationChange(location));
     });
 
     return () => {
@@ -167,6 +166,7 @@ const Routes = () => {
       if (initialRoute) {
         setInitialRoute(false);
       }
+      dispatch(locationChange(currentLocation));
     },
     [currentLocation]
   );
