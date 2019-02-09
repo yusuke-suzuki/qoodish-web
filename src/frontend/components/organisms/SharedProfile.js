@@ -136,12 +136,12 @@ const ProfileCard = props => {
 
   const mapState = useCallback(
     state => ({
-      pathname: state.shared.currentLocation
+      location: state.shared.currentLocation
     }),
     []
   );
 
-  const { pathname } = useMappedState(mapState);
+  const { location } = useMappedState(mapState);
 
   const currentUser = props.currentUser;
 
@@ -155,9 +155,15 @@ const ProfileCard = props => {
       >
         <ProfileAvatar currentUser={props.currentUser} />
         <div style={styles.profileActions}>
-          {pathname === '/profile' && <EditProfileButton />}
+          {location && location.pathname === '/profile' && (
+            <EditProfileButton />
+          )}
         </div>
-        <div style={pathname === '/profile' ? {} : styles.profile}>
+        <div
+          style={
+            location && location.pathname === '/profile' ? {} : styles.profile
+          }
+        >
           <Typography variant="h5" gutterBottom>
             {currentUser.isAnonymous
               ? I18n.t('anonymous user')

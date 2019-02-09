@@ -282,15 +282,24 @@ const reducer = (state = initialState, action) => {
       ) {
         return state;
       }
+      let pageTitle =
+        action.payload.location.state &&
+        action.payload.location.state.modal &&
+        state.previousLocation
+          ? state.pageTitle
+          : switchPageTitle(action.payload.location.pathname, state.large);
+      let showBackButton =
+        action.payload.location.state &&
+        action.payload.location.state.modal &&
+        state.previousLocation
+          ? state.showBackButton
+          : switchBackButton(action.payload.location.pathname);
       return Object.assign({}, state, {
         previousLocation: state.currentLocation,
-        currentLocation: action.payload.location.pathname,
-        pageTitle: switchPageTitle(
-          action.payload.location.pathname,
-          state.large
-        ),
+        currentLocation: action.payload.location,
+        pageTitle: pageTitle,
         bottomNavValue: getBottomNavValue(action.payload.location.pathname),
-        showBackButton: switchBackButton(action.payload.location.pathname),
+        showBackButton: showBackButton,
         issueDialogOpen: false,
         likesDialogOpen: false,
         signInRequiredDialogOpen: false,

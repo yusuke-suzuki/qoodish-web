@@ -14,22 +14,28 @@ const ProfileMyMaps = props => {
   const mapState = useCallback(
     state => ({
       myMaps: state.profile.myMaps,
-      pathname: state.shared.currentLocation
+      location: state.shared.currentLocation
     }),
     []
   );
 
   const currentUser = props.currentUser;
 
-  const { myMaps, pathname } = useMappedState(mapState);
+  const { myMaps, location } = useMappedState(mapState);
 
   const initMaps = useCallback(async () => {
-    if (!currentUser || (pathname === '/profile' && currentUser.isAnonymous)) {
+    if (
+      !currentUser ||
+      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+    ) {
       return;
     }
 
     const client = new ApiClient();
-    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
+    let userId =
+      location && location.pathname === '/profile'
+        ? undefined
+        : props.params.primaryId;
     let response = await client.fetchMyMaps(userId);
     let maps = await response.json();
     dispatch(fetchMyMaps(maps));

@@ -4,9 +4,7 @@ const locationChange = location => {
   return {
     type: LOCATION_CHANGE,
     payload: {
-      location: {
-        pathname: location.pathname
-      }
+      location: location
     }
   };
 };

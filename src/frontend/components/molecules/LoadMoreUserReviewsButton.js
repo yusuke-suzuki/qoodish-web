@@ -35,19 +35,22 @@ const LoadMoreUserReviewsButton = props => {
     state => ({
       noMoreReviews: state.profile.noMoreReviews,
       nextTimestamp: state.profile.nextTimestamp,
-      pathname: state.shared.currentLocation
+      location: state.shared.currentLocation
     }),
     []
   );
 
-  const { noMoreReviews, nextTimestamp, pathname } = useMappedState(mapState);
+  const { noMoreReviews, nextTimestamp, location } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(false);
 
   const handleClickLoadMoreButton = useCallback(async () => {
     setLoading(true);
     const client = new ApiClient();
-    let userId = pathname === '/profile' ? undefined : props.params.primaryId;
+    let userId =
+      location && location.pathname === '/profile'
+        ? undefined
+        : props.params.primaryId;
     let response = await client.fetchUserReviews(userId, nextTimestamp);
     let reviews = await response.json();
     dispatch(fetchMoreUserReviews(reviews));
