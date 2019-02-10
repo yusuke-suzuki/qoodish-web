@@ -206,7 +206,7 @@ const MapDetail = props => {
         dispatch(clearMapState());
       };
     },
-    [currentLocation]
+    [props.params.primaryId]
   );
 
   return (
