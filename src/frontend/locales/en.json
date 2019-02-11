@@ -144,6 +144,7 @@
   "create review success": "Successfully created the report!",
   "edit review success": "Successfully updated the report!",
   "spot": "Spot",
+  "open in google maps": "Open in Google Maps",
   "unable to get permission": "Unable to get permission to notify.",
   "unable to get registration token": "Unable to get registration token.",
   "push successfully enabled": "Push notification was successfully enabled.",

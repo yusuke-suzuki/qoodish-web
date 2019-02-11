@@ -31,8 +31,8 @@ const DeleteMapDialog = loadable(() =>
 const InviteTargetDialog = loadable(() =>
   import(/* webpackChunkName: "invite_target_dialog" */ '../organisms/InviteTargetDialog')
 );
-const SpotCard = loadable(() =>
-  import(/* webpackChunkName: "spot_card" */ '../organisms/SpotCard')
+const MapSpotCard = loadable(() =>
+  import(/* webpackChunkName: "map_spot_card" */ '../organisms/MapSpotCard')
 );
 
 import Helmet from 'react-helmet';
@@ -228,7 +228,7 @@ const MapDetail = props => {
       )}
       <DeleteMapDialog mapId={props.params.primaryId} />
       <InviteTargetDialog mapId={props.params.primaryId} />
-      <SpotCard mapId={props.params.primaryId} />
+      <MapSpotCard mapId={props.params.primaryId} />
     </div>
   );
 };

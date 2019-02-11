@@ -25,6 +25,9 @@ const SignInRequiredDialog = loadable(() =>
 const ReviewDialog = loadable(() =>
   import(/* webpackChunkName: "review_dialog" */ './organisms/ReviewDialog')
 );
+const SpotDialog = loadable(() =>
+  import(/* webpackChunkName: "spot_dialog" */ './organisms/SpotDialog')
+);
 const DeleteReviewDialog = loadable(() =>
   import(/* webpackChunkName: "delete_review_dialog" */ './organisms/DeleteReviewDialog')
 );
@@ -78,6 +81,7 @@ const SharedDialogs = () => {
       <DeleteReviewDialog />
       <DeleteCommentDialog />
       <ReviewDialog />
+      <SpotDialog />
       <CreateMapDialog />
       <EditMapDialog />
       <EditProfileDialog />

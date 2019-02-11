@@ -64,7 +64,10 @@ const TrendingSpots = () => {
           button
           key={spot.place_id}
           component={Link}
-          to={`/spots/${spot.place_id}`}
+          to={{
+            pathname: `/spots/${spot.place_id}`,
+            state: { modal: true, spot: spot }
+          }}
           title={spot.name}
           style={large ? styles.listItemLarge : styles.listItemSmall}
         >
