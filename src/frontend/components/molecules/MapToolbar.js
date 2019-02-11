@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
+import switchMap from '../../actions/switchMap';
 
 import loadable from '@loadable/component';
 const MapShareMenu = loadable(() =>
@@ -50,6 +51,7 @@ const styles = {
 };
 
 const MapToolbar = props => {
+  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
@@ -74,7 +76,7 @@ const MapToolbar = props => {
       }
     } else {
       if (mapSummaryOpen) {
-        history.goBack();
+        dispatch(switchMap());
       } else {
         if (previousLocation) {
           history.goBack();

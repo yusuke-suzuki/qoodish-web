@@ -4,21 +4,14 @@ import loadable from '@loadable/component';
 import createHistory from 'history/createBrowserHistory';
 import pathToRegexp from 'path-to-regexp';
 
-import {
-  OPEN_REVIEW_DIALOG,
-  SWITCH_SUMMARY,
-  OPEN_SPOT_DIALOG
-} from '../actionTypes';
+import { OPEN_REVIEW_DIALOG, OPEN_SPOT_DIALOG } from '../actionTypes';
 
 import locationChange from '../actions/locationChange';
 import getHistory from '../actions/getHistory';
 import openReviewDialog from '../actions/openReviewDialog';
-import closeReviewDialog from '../actions/closeReviewDialog';
 import openSpotDialog from '../actions/openSpotDialog';
-import closeSpotDialog from '../actions/closeSpotDialog';
 import selectSpot from '../actions/selectSpot';
 import requestMapCenter from '../actions/requestMapCenter';
-import switchSummary from '../actions/switchSummary';
 
 const Login = loadable(() =>
   import(/* webpackChunkName: "login" */ './pages/Login')
@@ -100,11 +93,6 @@ const modalRoutes = [
     modal: true
   },
   {
-    path: '/maps/:mapId',
-    action: SWITCH_SUMMARY,
-    modal: true
-  },
-  {
     path: '/spots/:placeId',
     action: OPEN_SPOT_DIALOG,
     modal: true
@@ -147,10 +135,6 @@ const Routes = () => {
         dispatch(selectSpot(review.spot));
         dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
         break;
-      case SWITCH_SUMMARY:
-        dispatch(switchSummary());
-        dispatch(closeReviewDialog());
-        break;
       case OPEN_SPOT_DIALOG:
         const spot = currentLocation.state.spot;
         dispatch(openSpotDialog(spot));
@@ -176,9 +160,6 @@ const Routes = () => {
 
   useEffect(
     () => {
-      if (currentLocation.state && currentLocation.state.modal) {
-        return;
-      }
       if (initialRoute) {
         setInitialRoute(false);
       }

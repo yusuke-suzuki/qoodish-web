@@ -325,11 +325,17 @@ const MapSpotCard = () => {
     state => ({
       open: state.spotCard.spotCardOpen,
       currentSpot: state.spotCard.currentSpot,
-      reviewDialogOpen: state.reviews.reviewDialogOpen
+      reviewDialogOpen: state.reviews.reviewDialogOpen,
+      spotDialogOpen: state.spotDetail.spotDialogOpen
     }),
     []
   );
-  const { open, currentSpot, reviewDialogOpen } = useMappedState(mapState);
+  const {
+    open,
+    currentSpot,
+    reviewDialogOpen,
+    spotDialogOpen
+  } = useMappedState(mapState);
 
   const handleOpen = useCallback(() => {
     dispatch(openSpotCard());
@@ -339,11 +345,13 @@ const MapSpotCard = () => {
     dispatch(closeSpotCard());
   });
 
+  const dialogOpen = reviewDialogOpen || spotDialogOpen;
+
   return (
     <SwipeableDrawer
       variant={large ? 'persistent' : 'temporary'}
       anchor={large ? 'left' : 'bottom'}
-      open={open && (large || (!large && !reviewDialogOpen))}
+      open={open && (large || (!large && !dialogOpen))}
       PaperProps={{
         style: large ? styles.drawerPaperLarge : {},
         square: large ? true : false

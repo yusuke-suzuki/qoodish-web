@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 import Drawer from '@material-ui/core/Drawer';
 import Card from '@material-ui/core/Card';
@@ -12,7 +13,7 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import ListIcon from '@material-ui/icons/List';
 
-import Link from '../molecules/Link';
+import switchSummary from '../../actions/switchSummary';
 
 const styles = {
   card: {
@@ -24,19 +25,18 @@ const styles = {
 };
 
 const MapBottomSeat = props => {
+  const dispatch = useDispatch();
+
+  const handleSummaryClick = useCallback(() => {
+    dispatch(switchSummary());
+  });
+
   return (
     <Drawer variant="persistent" anchor="bottom" open={true}>
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <List disablePadding>
-            <ListItem
-              button
-              component={Link}
-              to={{
-                pathname: `/maps/${props.map && props.map.id}`,
-                state: { modal: true }
-              }}
-            >
+            <ListItem button onClick={handleSummaryClick}>
               <Avatar
                 src={props.map && props.map.thumbnail_url}
                 alt={props.map && props.map.name}
@@ -55,13 +55,7 @@ const MapBottomSeat = props => {
                 }
               />
               <ListItemSecondaryAction>
-                <IconButton
-                  component={Link}
-                  to={{
-                    pathname: `/maps/${props.map && props.map.id}`,
-                    state: { modal: true }
-                  }}
-                >
+                <IconButton onClick={handleSummaryClick}>
                   <ListIcon />
                 </IconButton>
               </ListItemSecondaryAction>

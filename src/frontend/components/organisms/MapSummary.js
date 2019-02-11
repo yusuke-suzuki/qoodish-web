@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 import loadable from '@loadable/component';
 
@@ -11,12 +11,6 @@ const MapSummaryCard = loadable(() =>
 );
 const MapReviewsList = loadable(() =>
   import(/* webpackChunkName: "map_reviews_list" */ './MapReviewsList')
-);
-const MapSpotsList = loadable(() =>
-  import(/* webpackChunkName: "map_spots_list" */ './MapSpotsList')
-);
-const MapFollowersList = loadable(() =>
-  import(/* webpackChunkName: "map_followers_list" */ './MapFollowersList')
 );
 const FollowMapButton = loadable(() =>
   import(/* webpackChunkName: "follow_map_button" */ '../molecules/FollowMapButton')
@@ -31,8 +25,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import TimelineIcon from '@material-ui/icons/Timeline';
-import PlaceIcon from '@material-ui/icons/Place';
-import GroupIcon from '@material-ui/icons/Group';
 import HomeIcon from '@material-ui/icons/Home';
 import SwipeableViews from 'react-swipeable-views';
 import I18n from '../../utils/I18n';
@@ -136,16 +128,6 @@ const MapTabs = React.memo(props => {
         label={large ? null : I18n.t('timeline')}
         style={large ? styles.tabLarge : styles.tabSmall}
       />
-      <Tab
-        icon={large ? <PlaceIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('spots')}
-        style={large ? styles.tabLarge : styles.tabSmall}
-      />
-      <Tab
-        icon={large ? <GroupIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('followers')}
-        style={large ? styles.tabLarge : styles.tabSmall}
-      />
     </Tabs>
   );
 });
@@ -161,13 +143,12 @@ const TabContents = React.memo(props => {
     >
       <MapSummaryCard />
       <MapReviewsList />
-      <MapSpotsList />
-      <MapFollowersList />
     </SwipeableViews>
   );
 });
 
 const MapSummary = () => {
+  const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(0);
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -188,7 +169,7 @@ const MapSummary = () => {
           showMenuButton={large ? true : false}
         />
         {!large && (
-          <Toolbar style={styles.toolbarSmall}>
+          <Toolbar>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>
         )}
@@ -196,7 +177,7 @@ const MapSummary = () => {
       <TabContents tabValue={tabValue} handleSwipeChange={handleSwipeChange} />
       {large && (
         <Paper style={styles.toolbarContainerLarge} square elevation={1}>
-          <Toolbar style={styles.toolbarLarge} disableGutters>
+          <Toolbar disableGutters>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>
         </Paper>
