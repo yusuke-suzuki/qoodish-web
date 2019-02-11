@@ -98,6 +98,9 @@ const GoogleMapContainer = withScriptjs(
 
 const OpeningHours = React.memo(props => {
   let openingHours = JSON.parse(props.openingHours);
+  if (!openingHours) {
+    return null;
+  }
   return (
     <div>
       <br />
@@ -181,9 +184,7 @@ const SpotCard = props => {
             {I18n.t('open in google maps')}
           </a>
         </div>
-        {currentSpot.opening_hours && (
-          <OpeningHours openingHours={currentSpot.opening_hours} />
-        )}
+        <OpeningHours openingHours={currentSpot.opening_hours} />
         <div style={styles.reviewTilesContainer}>
           <ReviewTiles
             reviews={spotReviews}
