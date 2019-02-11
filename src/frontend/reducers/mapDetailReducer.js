@@ -80,8 +80,7 @@ const reducer = (state = initialState, action) => {
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
         placeSelectDialogOpen: false,
-        inviteTargetDialogOpen: false,
-        mapSummaryOpen: false
+        inviteTargetDialogOpen: false
       });
     default:
       return state;

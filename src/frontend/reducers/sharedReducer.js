@@ -282,6 +282,7 @@ const reducer = (state = initialState, action) => {
       ) {
         return state;
       }
+
       let pageTitle =
         action.payload.location.state &&
         action.payload.location.state.modal &&
