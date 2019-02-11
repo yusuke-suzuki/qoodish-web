@@ -176,9 +176,6 @@ const Routes = () => {
 
   useEffect(
     () => {
-      if (currentLocation.state && currentLocation.state.modal) {
-        return;
-      }
       if (initialRoute) {
         setInitialRoute(false);
       }

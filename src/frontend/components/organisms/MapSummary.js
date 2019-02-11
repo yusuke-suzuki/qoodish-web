@@ -12,12 +12,6 @@ const MapSummaryCard = loadable(() =>
 const MapReviewsList = loadable(() =>
   import(/* webpackChunkName: "map_reviews_list" */ './MapReviewsList')
 );
-const MapSpotsList = loadable(() =>
-  import(/* webpackChunkName: "map_spots_list" */ './MapSpotsList')
-);
-const MapFollowersList = loadable(() =>
-  import(/* webpackChunkName: "map_followers_list" */ './MapFollowersList')
-);
 const FollowMapButton = loadable(() =>
   import(/* webpackChunkName: "follow_map_button" */ '../molecules/FollowMapButton')
 );
@@ -136,16 +130,6 @@ const MapTabs = React.memo(props => {
         label={large ? null : I18n.t('timeline')}
         style={large ? styles.tabLarge : styles.tabSmall}
       />
-      <Tab
-        icon={large ? <PlaceIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('spots')}
-        style={large ? styles.tabLarge : styles.tabSmall}
-      />
-      <Tab
-        icon={large ? <GroupIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('followers')}
-        style={large ? styles.tabLarge : styles.tabSmall}
-      />
     </Tabs>
   );
 });
@@ -161,8 +145,6 @@ const TabContents = React.memo(props => {
     >
       <MapSummaryCard />
       <MapReviewsList />
-      <MapSpotsList />
-      <MapFollowersList />
     </SwipeableViews>
   );
 });
