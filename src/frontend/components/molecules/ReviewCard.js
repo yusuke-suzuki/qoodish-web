@@ -100,7 +100,10 @@ const ReviewCardContent = React.memo(props => {
       <br />
       <ButtonBase
         component={Link}
-        to={`/spots/${props.currentReview.spot.place_id}`}
+        to={{
+          pathname: `/spots/${props.currentReview.spot.place_id}`,
+          state: { modal: true, spot: props.currentReview.spot }
+        }}
         title={props.currentReview.spot.name}
       >
         <Typography
