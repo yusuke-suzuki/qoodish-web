@@ -6,6 +6,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+
 import {
   withScriptjs,
   withGoogleMap,
@@ -43,9 +49,6 @@ const styles = {
   },
   reviewTilesContainer: {
     marginTop: 16
-  },
-  urlContainer: {
-    marginBottom: '0.35em'
   }
 };
 
@@ -92,6 +95,31 @@ const GoogleMapContainer = withScriptjs(
     );
   })
 );
+
+const OpeningHours = React.memo(props => {
+  let openingHours = JSON.parse(props.openingHours);
+  return (
+    <div>
+      <br />
+      <Typography variant="subtitle2" color="textSecondary">
+        {I18n.t('opening hours')}
+      </Typography>
+      <Table>
+        <TableBody>
+          {openingHours.weekday_text.map(weekday => {
+            let [key, text] = weekday.split(': ');
+            return (
+              <TableRow>
+                <TableCell>{key}</TableCell>
+                <TableCell align="right">{text}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
+  );
+});
 
 const SpotCard = props => {
   const large = useMediaQuery('(min-width: 600px)');
@@ -148,11 +176,14 @@ const SpotCard = props => {
         <Typography variant="subtitle1" color="textSecondary">
           {currentSpot.formatted_address}
         </Typography>
-        <div style={styles.urlContainer}>
+        <div>
           <a href={currentSpot.url} target="_blank">
             {I18n.t('open in google maps')}
           </a>
         </div>
+        {currentSpot.opening_hours && (
+          <OpeningHours openingHours={currentSpot.opening_hours} />
+        )}
         <div style={styles.reviewTilesContainer}>
           <ReviewTiles
             reviews={spotReviews}

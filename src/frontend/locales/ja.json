@@ -145,6 +145,7 @@
   "edit review success": "レポートを更新しました！",
   "spot": "スポット",
   "open in google maps": "Google マップで開く",
+  "opening hours": "営業時間",
   "unable to get permission": "プッシュ通知の許可が確認できませんでした。",
   "unable to get registration token": "プッシュ通知が有効化できませんでした。",
   "push successfully enabled": "プッシュ通知が有効化されました。",
