@@ -7,8 +7,17 @@ const eventToBuild = data => {
 
 // createSlackMessage creates a message from a build object.
 const createSlackMessage = build => {
+  console.log(build);
+
+  let statusEmoji = '';
+  if (build.status === 'SUCCESS') {
+    statusEmoji = ':yo-soro-2:';
+  } else if (build.status === 'FAILURE') {
+    statusEmoji = ':you:';
+  }
+
   let message = {
-    text: `Build ${build.id} :cocoa5:`,
+    text: `Build ${build.id}`,
     mrkdwn: true,
     attachments: [
       {
@@ -17,7 +26,19 @@ const createSlackMessage = build => {
         fields: [
           {
             title: 'Status',
-            value: build.status
+            value: `${build.status} ${statusEmoji}`
+          },
+          {
+            title: 'Repository',
+            value: build.substitutions.REPO_NAME
+          },
+          {
+            title: 'Branch',
+            value: build.substitutions.BRANCH_NAME
+          },
+          {
+            title: 'Commit',
+            value: build.substitutions.SHORT_SHA
           }
         ]
       }
