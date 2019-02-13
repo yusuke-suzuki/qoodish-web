@@ -56,6 +56,8 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.development
+.env.production
 
 functions/hosting/index.html
 functions/hosting/bundle.js
@@ -65,11 +67,7 @@ functions/hosting/*.hot-update.*
 
 .vscode
 
-docker-compose.yml
-
 firebase-debug.log
 .firebase
 functions/node_modules/
 functions/.runtimeconfig.json
-
-.env.production

@@ -9,8 +9,7 @@
     "serve": "node functions/server/index.js",
     "build": "webpack --colors --progress --mode development",
     "watch:build": "webpack --watch --colors --progress --mode development",
-    "build:prod": "webpack --colors --mode production",
-    "prettier": "prettier ./app/frontend/**/* --write --single-quote"
+    "build:prod": "webpack --colors --mode production"
   },
   "dependencies": {
     "@loadable/component": "^4.0.2",
