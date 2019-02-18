@@ -10,10 +10,13 @@ const createSlackMessage = build => {
   console.log(build);
 
   let statusEmoji = '';
+  let color = '';
   if (build.status === 'SUCCESS') {
     statusEmoji = ':yo-soro-2:';
+    color = 'good';
   } else if (build.status === 'FAILURE') {
     statusEmoji = ':you:';
+    color = 'danger';
   }
 
   let message = {
@@ -23,22 +26,27 @@ const createSlackMessage = build => {
       {
         title: 'Build logs',
         title_link: build.logUrl,
+        color: color,
         fields: [
           {
             title: 'Status',
-            value: `${build.status} ${statusEmoji}`
+            value: `${build.status} ${statusEmoji}`,
+            short: true
           },
           {
             title: 'Repository',
-            value: build.substitutions.REPO_NAME
+            value: build.substitutions.REPO_NAME,
+            short: true
           },
           {
             title: 'Branch',
-            value: build.substitutions.BRANCH_NAME
+            value: build.substitutions.BRANCH_NAME,
+            short: true
           },
           {
             title: 'Commit',
-            value: build.substitutions.SHORT_SHA
+            value: build.substitutions.SHORT_SHA,
+            short: true
           }
         ]
       }
