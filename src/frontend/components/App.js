@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import loadable from '@loadable/component';
 
@@ -117,6 +117,38 @@ const AppHelmet = () => {
 const App = () => {
   const dispatch = useDispatch();
 
+  const mapState = useCallback(
+    state => ({
+      registrationToken: state.app.registrationToken
+    }),
+    []
+  );
+
+  const { registrationToken } = useMappedState(mapState);
+
+  const refreshRegistrationToken = useCallback(async () => {
+    const firebase = await getFirebase();
+    await getFirebaseMessaging();
+    const messaging = firebase.messaging();
+
+    const refreshedToken = await messaging.getToken();
+
+    if (!refreshedToken) {
+      console.log('Unable to get registration token.');
+      return;
+    }
+
+    const client = new ApiClient();
+    const response = await client.sendRegistrationToken(refreshedToken);
+
+    if (response.ok) {
+      console.log('Successfully sent registration token.');
+      dispatch(fetchRegistrationToken(refreshedToken));
+    } else {
+      console.log('Failed to send registration token.');
+    }
+  });
+
   const initMessaging = useCallback(async () => {
     if (!pushApiAvailable()) {
       return;
@@ -132,16 +164,7 @@ const App = () => {
 
     messaging.onTokenRefresh(async () => {
       console.log('Registration token was refreshed.');
-      const refreshedToken = await messaging.getToken();
-      if (!refreshedToken) {
-        console.log('Unable to get registration token.');
-        return;
-      }
-      dispatch(fetchRegistrationToken(refreshedToken));
-      const response = await client.sendRegistrationToken(refreshedToken);
-      if (!response.ok) {
-        console.log('Failed to send registration token.');
-      }
+      refreshRegistrationToken();
     });
   });
 
@@ -157,13 +180,15 @@ const App = () => {
       });
       dispatch(updateLinkedProviders(linkedProviders));
 
-      if (!user.push_enabled) {
+      if (user.push_enabled) {
+        if (!registrationToken) {
+          refreshRegistrationToken();
+        }
+      } else {
         console.log('Push notification is prohibited.');
-        return;
       }
     } else {
       console.log('Fetch profile failed.');
-      return;
     }
   });
 
