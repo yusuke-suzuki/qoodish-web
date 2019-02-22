@@ -29,7 +29,7 @@ import fetchRecentMaps from '../../actions/fetchRecentMaps';
 const styles = {
   rootLarge: {
     maxWidth: 900,
-    margin: '94px auto 200px'
+    margin: '94px auto 20px'
   },
   rootSmall: {
     margin: '76px auto 64px'
