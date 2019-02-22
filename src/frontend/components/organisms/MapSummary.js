@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 import loadable from '@loadable/component';
 
@@ -26,7 +26,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import HomeIcon from '@material-ui/icons/Home';
-import SwipeableViews from 'react-swipeable-views';
 import I18n from '../../utils/I18n';
 
 const styles = {
@@ -73,11 +72,13 @@ const styles = {
   tabContentsLarge: {
     marginTop: 128,
     marginBottom: 64,
+    overflowY: 'scroll',
     height: 'calc(100% - 192px)'
   },
   tabContentsSmall: {
     marginTop: 112,
     marginBottom: 56,
+    overflowY: 'scroll',
     height: 'calc(100% - 168px)'
   },
   tabIcon: {
@@ -132,29 +133,9 @@ const MapTabs = React.memo(props => {
   );
 });
 
-const TabContents = React.memo(props => {
-  const large = useMediaQuery('(min-width: 600px)');
-
-  return (
-    <SwipeableViews
-      index={props.tabValue}
-      onChangeIndex={props.handleSwipeChange}
-      style={large ? styles.tabContentsLarge : styles.tabContentsSmall}
-    >
-      <MapSummaryCard />
-      <MapReviewsList />
-    </SwipeableViews>
-  );
-});
-
 const MapSummary = () => {
-  const dispatch = useDispatch();
   const [tabValue, setTabValue] = useState(0);
   const large = useMediaQuery('(min-width: 600px)');
-
-  const handleSwipeChange = useCallback(value => {
-    setTabValue(value);
-  });
 
   const handleTabChange = useCallback((e, value) => {
     setTabValue(value);
@@ -174,7 +155,10 @@ const MapSummary = () => {
           </Toolbar>
         )}
       </AppBar>
-      <TabContents tabValue={tabValue} handleSwipeChange={handleSwipeChange} />
+      <div style={large ? styles.tabContentsLarge : styles.tabContentsSmall}>
+        {tabValue === 0 && <MapSummaryCard />}
+        {tabValue === 1 && <MapReviewsList />}
+      </div>
       {large && (
         <Paper style={styles.toolbarContainerLarge} square elevation={1}>
           <Toolbar disableGutters>
