@@ -22,9 +22,11 @@ import I18n from '../../utils/I18n';
 
 import Helmet from 'react-helmet';
 
-import ApiClient from '../../utils/ApiClient';
 import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
+
+import { MapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   rootLarge: {
@@ -127,21 +129,45 @@ const Discover = () => {
   const [loadingRecentMaps, setLoadingRecentMaps] = useState(true);
 
   const initActiveMaps = useCallback(async () => {
+    await initializeApiClient();
     setLoadingActiveMaps(true);
-    const client = new ApiClient();
-    let response = await client.fetchActiveMaps();
-    let maps = await response.json();
-    dispatch(fetchActiveMaps(maps));
-    setLoadingActiveMaps(false);
+
+    const apiInstance = new MapsApi();
+    const opts = {
+      active: true
+    };
+
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      setLoadingActiveMaps(false);
+
+      if (response.ok) {
+        const maps = response.body;
+        dispatch(fetchActiveMaps(maps));
+      } else {
+        console.log(error);
+      }
+    });
   });
 
   const initRecentMaps = useCallback(async () => {
+    await initializeApiClient();
     setLoadingRecentMaps(true);
-    const client = new ApiClient();
-    let response = await client.fetchRecentMaps();
-    let maps = await response.json();
-    dispatch(fetchRecentMaps(maps));
-    setLoadingRecentMaps(false);
+
+    const apiInstance = new MapsApi();
+    const opts = {
+      recent: true
+    };
+
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      setLoadingRecentMaps(false);
+
+      if (response.ok) {
+        const maps = response.body;
+        dispatch(fetchRecentMaps(maps));
+      } else {
+        console.log(error);
+      }
+    });
   });
 
   useEffect(() => {

@@ -22,6 +22,9 @@ import uploadToStorage from '../../utils/uploadToStorage';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import downloadImage from '../../utils/downloadImage';
 
+import { MapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
+
 const CopyReviewDialog = () => {
   const mapState = useCallback(
     state => ({
@@ -37,14 +40,25 @@ const CopyReviewDialog = () => {
   const handleRequestClose = useCallback(() => {
     dispatch(closeCopyReviewDialog());
   });
+
   const handleOnEnter = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchPostableMaps();
-    if (response.ok) {
-      let maps = await response.json();
-      dispatch(fetchPostableMaps(maps));
-    }
+    await initializeApiClient();
+
+    const apiInstance = new MapsApi();
+    const opts = {
+      postable: true
+    };
+
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      if (response.ok) {
+        const maps = response.body;
+        dispatch(fetchPostableMaps(maps));
+      } else {
+        console.log(error);
+      }
+    });
   });
+
   const handleMapSelected = useCallback(async map => {
     dispatch(requestStart());
     const params = {

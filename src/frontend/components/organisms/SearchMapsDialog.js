@@ -15,10 +15,12 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Link from '../molecules/Link';
 
-import ApiClient from '../../utils/ApiClient';
 import searchMaps from '../../actions/searchMaps';
 import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
 import I18n from '../../utils/I18n';
+
+import { MapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   toolbar: {
@@ -57,14 +59,24 @@ const SearchMapsDialog = () => {
     if (loading || !input) {
       return;
     }
+
+    await initializeApiClient();
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.searchMaps(input);
-    let maps = await response.json();
-    setLoading(false);
-    if (response.ok) {
-      dispatch(searchMaps(maps));
-    }
+
+    const apiInstance = new MapsApi();
+    const opts = {
+      input: input
+    };
+
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        const maps = response.body;
+        dispatch(searchMaps(maps));
+      } else {
+        console.log(error);
+      }
+    });
   });
 
   return (
