@@ -14,7 +14,6 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import IconButton from '@material-ui/core/IconButton';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import closeEditProfileDialog from '../../actions/closeEditProfileDialog';
 import openToast from '../../actions/openToast';
@@ -22,6 +21,8 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import uploadToStorage from '../../utils/uploadToStorage';
 import sleep from '../../utils/sleep';
+
+import { UsersApi, NewUser } from 'qoodish_api';
 
 const styles = {
   avatarContainer: {
@@ -172,21 +173,27 @@ const EditProfileDialog = () => {
       params.image_url = uploadResponse.imageUrl;
     }
 
-    const client = new ApiClient();
-    let response = await client.editProfile(params);
-    let json = await response.json();
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(closeEditProfileDialog());
-      dispatch(openToast(I18n.t('edit profile success')));
-      // wait until thumbnail created on cloud function
-      await sleep(5000);
-      dispatch(fetchMyProfile(json));
-    } else if (response.status == 409) {
-      dispatch(openToast(json.detail));
-    } else {
-      dispatch(openToast('Failed to update profile.'));
-    }
+    const apiInstance = new UsersApi();
+    const newUser = NewUser.constructFromObject(params);
+    apiInstance.usersUserIdPut(
+      currentUser.uid,
+      newUser,
+      async (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          dispatch(closeEditProfileDialog());
+          dispatch(openToast(I18n.t('edit profile success')));
+          // wait until thumbnail created on cloud function
+          await sleep(5000);
+          dispatch(fetchMyProfile(response.body));
+        } else if (response.status == 409) {
+          dispatch(openToast(response.body.detail));
+        } else {
+          dispatch(openToast('Failed to update profile.'));
+        }
+      }
+    );
   });
 
   return (

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Link from '../molecules/Link';
@@ -8,8 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-
-import ApiClient from '../../utils/ApiClient';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { MapsApi } from 'qoodish_api';
 
 const styles = {
   gridList: {
@@ -35,12 +34,18 @@ const PickUpMap = () => {
   const [map, setMap] = useState(undefined);
 
   const initPickUpMap = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchMap(process.env.PICKED_UP_MAP_ID);
-    let json = await response.json();
-    if (response.ok) {
-      setMap(json);
-    }
+    await initializeApiClient();
+
+    const apiInstance = new MapsApi();
+
+    apiInstance.mapsMapIdGet(
+      process.env.PICKED_UP_MAP_ID,
+      (error, data, response) => {
+        if (response.ok) {
+          setMap(response.body);
+        }
+      }
+    );
   });
 
   useEffect(() => {

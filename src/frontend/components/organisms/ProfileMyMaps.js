@@ -6,7 +6,9 @@ import NoContents from '../molecules/NoContents';
 
 import fetchMyMaps from '../../actions/fetchMyMaps';
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
+
+import { UserMapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const ProfileMyMaps = props => {
   const dispatch = useDispatch();
@@ -31,14 +33,22 @@ const ProfileMyMaps = props => {
       return;
     }
 
-    const client = new ApiClient();
-    let userId =
+    const userId =
       location && location.pathname === '/profile'
-        ? undefined
+        ? currentUser.uid
         : props.params.primaryId;
-    let response = await client.fetchMyMaps(userId);
-    let maps = await response.json();
-    dispatch(fetchMyMaps(maps));
+
+    await initializeApiClient();
+
+    const apiInstance = new UserMapsApi();
+
+    apiInstance.usersUserIdMapsGet(userId, {}, (error, data, response) => {
+      if (response.ok) {
+        dispatch(fetchMyMaps(response.body));
+      } else {
+        console.log('API called successfully. Returned data: ' + data);
+      }
+    });
   });
 
   useEffect(() => {
