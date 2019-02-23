@@ -4,12 +4,14 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import SharedProfile from '../organisms/SharedProfile';
 import Helmet from 'react-helmet';
 
-import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
 
 import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 import fetchUserProfile from '../../actions/fetchUserProfile';
 import clearProfileState from '../../actions/clearProfileState';
+
+import { UserMapsApi, UsersApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const ProfileHelmet = () => {
   const mapState = useCallback(
@@ -67,17 +69,39 @@ const UserProfile = props => {
   const { currentUser } = useMappedState(mapState);
 
   const initProfile = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchUser(props.params.primaryId);
-    let user = await response.json();
-    dispatch(fetchUserProfile(user));
+    await initializeApiClient();
+
+    const apiInstance = new UsersApi();
+
+    apiInstance.usersUserIdGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchUserProfile(response.body));
+        }
+      }
+    );
   });
 
   const initFollowingMaps = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchFollowingMaps(props.params.primaryId);
-    let maps = await response.json();
-    dispatch(fetchFollowingMaps(maps));
+    await initializeApiClient();
+
+    const apiInstance = new UserMapsApi();
+    const opts = {
+      following: true
+    };
+
+    apiInstance.usersUserIdMapsGet(
+      props.params.primaryId,
+      opts,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchFollowingMaps(response.body));
+        } else {
+          console.log('API called successfully. Returned data: ' + data);
+        }
+      }
+    );
   });
 
   useEffect(() => {

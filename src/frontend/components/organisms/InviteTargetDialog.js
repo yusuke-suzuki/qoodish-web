@@ -30,6 +30,8 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import openToast from '../../actions/openToast';
 
+import { UsersApi } from 'qoodish_api';
+
 const styles = {
   appbar: {
     position: 'relative'
@@ -81,13 +83,17 @@ const InviteTargetDialog = props => {
       return;
     }
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchUsers(input);
-    let users = await response.json();
-    setLoading(false);
-    if (response.ok) {
-      dispatch(fetchUsers(users));
-    }
+
+    const apiInstance = new UsersApi();
+    const opts = {
+      input: input
+    };
+    apiInstance.usersGet(opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(fetchUsers(users));
+      }
+    });
   });
 
   const handleUserClick = useCallback(user => {

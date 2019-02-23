@@ -17,7 +17,6 @@ import ProviderLinkSettings from '../organisms/ProviderLinkSettings';
 import I18n from '../../utils/I18n';
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
-import ApiClient from '../../utils/ApiClient';
 
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
@@ -25,6 +24,8 @@ import requestFinish from '../../actions/requestFinish';
 import openDeleteAccountDialog from '../../actions/openDeleteAccountDialog';
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import fetchRegistrationToken from '../../actions/fetchRegistrationToken';
+
+import { PushNotificationApi, InlineObject } from 'qoodish_api';
 
 const styles = {
   rootLarge: {
@@ -103,7 +104,6 @@ const PushNotificationCard = () => {
     const firebase = await getFirebase();
     await getFirebaseMessaging();
     const messaging = firebase.messaging();
-    const client = new ApiClient();
 
     try {
       await messaging.requestPermission();
@@ -121,32 +121,43 @@ const PushNotificationCard = () => {
       return;
     }
 
-    const response = await client.enablePushNotification(registrationToken);
-    if (response.ok) {
-      const user = await response.json();
-      dispatch(fetchMyProfile(user));
-      dispatch(fetchRegistrationToken(registrationToken));
-      dispatch(requestFinish());
-      dispatch(openToast(I18n.t('push successfully enabled')));
-    } else {
-      dispatch(requestFinish());
-      dispatch(openToast(I18n.t('an error occured')));
-    }
+    const apiInstance = new PushNotificationApi();
+    const inlineObject = InlineObject.constructFromObject({
+      registration_token: registrationToken
+    });
+
+    apiInstance.usersUserIdPushNotificaionPost(
+      currentUser.uid,
+      inlineObject,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(fetchMyProfile(response.body));
+          dispatch(fetchRegistrationToken(registrationToken));
+          dispatch(openToast(I18n.t('push successfully enabled')));
+        } else {
+          dispatch(openToast(I18n.t('an error occured')));
+        }
+      }
+    );
   });
 
   const handleDisableNotification = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    const response = await client.disablePushNotification();
-    if (response.ok) {
-      const user = await response.json();
-      dispatch(fetchMyProfile(user));
-      dispatch(requestFinish());
-      dispatch(openToast(I18n.t('push successfully disabled')));
-    } else {
-      dispatch(requestFinish());
-      dispatch(openToast(I18n.t('an error occured')));
-    }
+    const apiInstance = new PushNotificationApi();
+
+    apiInstance.usersUserIdPushNotificaionDelete(
+      currentUser.uid,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(fetchMyProfile(response.body));
+          dispatch(openToast(I18n.t('push successfully disabled')));
+        } else {
+          dispatch(openToast(I18n.t('an error occured')));
+        }
+      }
+    );
   });
 
   const handlePushChange = useCallback((e, checked) => {

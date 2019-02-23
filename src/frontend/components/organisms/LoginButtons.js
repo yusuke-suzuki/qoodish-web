@@ -14,10 +14,12 @@ import I18n from '../../utils/I18n';
 
 import signIn from '../../actions/signIn';
 import updateLinkedProviders from '../../actions/updateLinkedProviders';
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+
+import { UsersApi, NewUser } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const LoginButtons = () => {
   const dispatch = useDispatch();
@@ -88,49 +90,47 @@ const LoginButtons = () => {
     const accessToken = await currentUser.getIdToken();
     const credential = authResult.credential;
 
-    let currentProvider = currentUser.providerData.find(data => {
+    const currentProvider = currentUser.providerData.find(data => {
       return data.providerId == credential.providerId;
     });
 
-    let params = {
-      user: {
-        uid: currentUser.uid,
-        token: accessToken
-      }
-    };
-
     const blob = await downloadImage(currentProvider.photoURL);
     const uploadResponse = await uploadToStorage(blob, 'profile');
-    let paramsForNewUser = {
+
+    const params = {
+      uid: currentUser.uid,
+      token: accessToken,
       photo_url: uploadResponse.imageUrl,
       display_name: currentProvider.displayName
     };
-    Object.assign(params.user, paramsForNewUser);
 
-    const client = new ApiClient();
-    let response = await client.signIn(params);
-    let json = await response.json();
+    await initializeApiClient();
 
-    dispatch(requestFinish());
+    const apiInstance = new UsersApi();
+    const newUser = NewUser.constructFromObject(params);
 
-    if (response.ok) {
-      history.push('');
-      dispatch(openToast(I18n.t('sign in success')));
-      gtag('event', 'login', {
-        method: authResult.additionalUserInfo.providerId
-      });
+    apiInstance.usersPost(newUser, async (error, data, response) => {
+      dispatch(requestFinish());
 
-      // wait until thumbnail created on cloud function
-      await sleep(5000);
-      dispatch(signIn(json));
+      if (response.ok) {
+        history.push('');
+        dispatch(openToast(I18n.t('sign in success')));
+        gtag('event', 'login', {
+          method: authResult.additionalUserInfo.providerId
+        });
 
-      let linkedProviders = currentUser.providerData.map(provider => {
-        return provider.providerId;
-      });
-      dispatch(updateLinkedProviders(linkedProviders));
-    } else {
-      dispatch(openToast(json.detail));
-    }
+        // wait until thumbnail created on cloud function
+        await sleep(5000);
+        dispatch(signIn(response.body));
+
+        let linkedProviders = currentUser.providerData.map(provider => {
+          return provider.providerId;
+        });
+        dispatch(updateLinkedProviders(linkedProviders));
+      } else {
+        dispatch(openToast(response.body.detail));
+      }
+    });
   });
 
   return uiConfig && firebaseAuth ? (

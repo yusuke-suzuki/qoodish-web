@@ -16,6 +16,8 @@ import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import I18n from '../../utils/I18n';
 
+import { MapsApi } from 'qoodish_api';
+
 const GMap = loadable(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
 );
@@ -37,6 +39,7 @@ const MapSpotCard = loadable(() =>
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   containerLarge: {},
@@ -135,34 +138,40 @@ const MapDetail = props => {
   const mapState = useCallback(
     state => ({
       currentMap: state.mapDetail.currentMap,
-      history: state.shared.history,
-      currentLocation: state.shared.currentLocation
+      history: state.shared.history
     }),
     []
   );
-  const { currentMap, history, currentLocation } = useMappedState(mapState);
+  const { currentMap, history } = useMappedState(mapState);
 
   const initMap = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchMap(props.params.primaryId);
-    if (response.ok) {
-      let map = await response.json();
-      dispatch(selectMap(map));
-      dispatchGtag(map);
+    await initializeApiClient();
 
-      if (map.base.place_id) {
-        dispatch(requestMapCenter(map.base.lat, map.base.lng));
-      } else {
-        dispatch(requestCurrentPosition());
+    const apiInstance = new MapsApi();
+
+    apiInstance.mapsMapIdGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          const map = response.body;
+          dispatch(selectMap(map));
+          dispatchGtag(map);
+
+          if (map.base.place_id) {
+            dispatch(requestMapCenter(map.base.lat, map.base.lng));
+          } else {
+            dispatch(requestCurrentPosition());
+          }
+        } else if (response.status == 401) {
+          dispatch(openToast('Authenticate failed'));
+        } else if (response.status == 404) {
+          history.push('');
+          dispatch(openToast(I18n.t('map not found')));
+        } else {
+          dispatch(openToast('Failed to fetch Map.'));
+        }
       }
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else if (response.status == 404) {
-      history.push('');
-      dispatch(openToast(I18n.t('map not found')));
-    } else {
-      dispatch(openToast('Failed to fetch Map.'));
-    }
+    );
   });
 
   const initSpots = useCallback(async () => {

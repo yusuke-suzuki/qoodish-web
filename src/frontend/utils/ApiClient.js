@@ -12,51 +12,6 @@ class ApiClient {
     return currentUser.uid;
   }
 
-  async signIn(params) {
-    const url = `${process.env.API_ENDPOINT}/users`;
-    let options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params)
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async enablePushNotification(registrationToken) {
-    const userId = await this.getCurrentUid();
-    const params = {
-      registration_token: registrationToken
-    };
-    const url = `${process.env.API_ENDPOINT}/users/${userId}/push_notification`;
-    const token = await this.getCurrentToken();
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async disablePushNotification() {
-    const userId = await this.getCurrentUid();
-    const url = `${process.env.API_ENDPOINT}/users/${userId}/push_notification`;
-    const token = await this.getCurrentToken();
-    const options = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
   async sendRegistrationToken(registrationToken) {
     let params = {
       registration_token: registrationToken
@@ -84,75 +39,6 @@ class ApiClient {
         'Content-Type': 'application/json',
         Authorization: token
       }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchUser(id) {
-    if (!id) {
-      id = await this.getCurrentUid();
-    }
-    const url = `${process.env.API_ENDPOINT}/users/${id}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchFollowingMaps(userId = undefined) {
-    if (!userId) {
-      userId = await this.getCurrentUid();
-    }
-    const url = `${
-      process.env.API_ENDPOINT
-    }/users/${userId}/maps?following=true`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchMyMaps(userId = undefined) {
-    if (!userId) {
-      userId = await this.getCurrentUid();
-    }
-    const url = `${process.env.API_ENDPOINT}/users/${userId}/maps`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async editProfile(params) {
-    const uid = await this.getCurrentUid();
-    const url = `${process.env.API_ENDPOINT}/users/${uid}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      },
-      body: JSON.stringify(params)
     };
     const response = await fetch(url, options);
     return response;
@@ -188,20 +74,6 @@ class ApiClient {
 
   async fetchSpot(placeId) {
     const url = `${process.env.API_ENDPOINT}/spots/${placeId}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchMap(mapId) {
-    const url = `${process.env.API_ENDPOINT}/maps/${mapId}`;
     const token = await this.getCurrentToken();
     let options = {
       method: 'GET',
@@ -529,20 +401,6 @@ class ApiClient {
     return response;
   }
 
-  async deleteAccount(userId) {
-    const url = `${process.env.API_ENDPOINT}/users/${userId}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
   async issueContent(params) {
     const url = `${process.env.API_ENDPOINT}/inappropriate_contents`;
     const token = await this.getCurrentToken();
@@ -610,23 +468,6 @@ class ApiClient {
         Authorization: token
       },
       body: JSON.stringify({ read: true })
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchUsers(input = undefined) {
-    let url = `${process.env.API_ENDPOINT}/users`;
-    if (input) {
-      url += `?input=${input}`;
-    }
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
     };
     const response = await fetch(url, options);
     return response;

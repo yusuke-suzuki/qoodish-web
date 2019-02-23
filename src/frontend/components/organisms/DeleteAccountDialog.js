@@ -12,7 +12,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../../utils/I18n';
 
 import closeDeleteAccountDialog from '../../actions/closeDeleteAccountDialog';
-import ApiClient from '../../utils/ApiClient';
 import signOut from '../../actions/signOut';
 import signIn from '../../actions/signIn';
 import openToast from '../../actions/openToast';
@@ -20,6 +19,8 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
+
+import { UsersApi } from 'qoodish_api';
 
 const styles = {
   deleteButton: {
@@ -56,25 +57,30 @@ const DeleteAccountDialog = props => {
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    await client.deleteAccount(currentUser.uid);
-    const firebase = await getFirebase();
-    await getFirebaseAuth();
-    await firebase.auth().signOut();
-    dispatch(signOut());
+    const apiInstance = new UsersApi();
 
-    await firebase.auth().signInAnonymously();
-    const firebaseUser = firebase.auth().currentUser;
-    dispatch(
-      signIn({
-        uid: firebaseUser.uid,
-        isAnonymous: true
-      })
+    apiInstance.usersUserIdDelete(
+      currentUser.uid,
+      async (error, data, response) => {
+        const firebase = await getFirebase();
+        await getFirebaseAuth();
+        await firebase.auth().signOut();
+        dispatch(signOut());
+
+        await firebase.auth().signInAnonymously();
+        const firebaseUser = firebase.auth().currentUser;
+        dispatch(
+          signIn({
+            uid: firebaseUser.uid,
+            isAnonymous: true
+          })
+        );
+        dispatch(closeDeleteAccountDialog());
+        dispatch(requestFinish());
+        history.push('/login');
+        dispatch(openToast('Delete account successfully'));
+      }
     );
-    dispatch(closeDeleteAccountDialog());
-    dispatch(requestFinish());
-    history.push('/login');
-    dispatch(openToast('Delete account successfully'));
   });
 
   return (

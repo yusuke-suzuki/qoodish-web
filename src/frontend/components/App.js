@@ -22,6 +22,8 @@ import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import initializeApiClient from '../utils/initializeApiClient';
 
+import { UsersApi } from 'qoodish_api';
+
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
     return true;
@@ -170,27 +172,34 @@ const App = () => {
   });
 
   const initProfile = useCallback(async () => {
-    const client = new ApiClient();
-    const response = await client.fetchUser();
-    if (response.ok) {
-      const user = await response.json();
-      dispatch(fetchMyProfile(user));
-      let firebaseUser = await getCurrentUser();
-      let linkedProviders = firebaseUser.providerData.map(provider => {
-        return provider.providerId;
-      });
-      dispatch(updateLinkedProviders(linkedProviders));
+    await initializeApiClient();
+    const apiInstance = new UsersApi();
+    const currentUser = await getCurrentUser();
 
-      if (user.push_enabled) {
-        if (!registrationToken) {
-          refreshRegistrationToken();
+    apiInstance.usersUserIdGet(
+      currentUser.uid,
+      async (error, data, response) => {
+        if (response.ok) {
+          const user = response.body;
+          dispatch(fetchMyProfile(user));
+          let firebaseUser = await getCurrentUser();
+          let linkedProviders = firebaseUser.providerData.map(provider => {
+            return provider.providerId;
+          });
+          dispatch(updateLinkedProviders(linkedProviders));
+
+          if (user.push_enabled) {
+            if (!registrationToken) {
+              refreshRegistrationToken();
+            }
+          } else {
+            console.log('Push notification is prohibited.');
+          }
+        } else {
+          console.log('Fetch profile failed.');
         }
-      } else {
-        console.log('Push notification is prohibited.');
       }
-    } else {
-      console.log('Fetch profile failed.');
-    }
+    );
   });
 
   const refreshNotifications = useCallback(async () => {
