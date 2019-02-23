@@ -11,7 +11,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
 
-import ApiClient from '../../utils/ApiClient';
+import { MapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
+
 import I18n from '../../utils/I18n';
 
 const styles = {
@@ -39,14 +41,23 @@ const TrendingMaps = () => {
   const [maps, setMaps] = useState([]);
 
   const initPopularMaps = useCallback(async () => {
+    await initializeApiClient();
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchPopularMaps();
-    if (response.ok) {
-      let json = await response.json();
-      setMaps(json);
-    }
-    setLoading(false);
+
+    const apiInstance = new MapsApi();
+    const opts = {
+      popular: true
+    };
+
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        const maps = response.body;
+        setMaps(maps);
+      } else {
+        console.log(error);
+      }
+    });
   });
 
   useEffect(() => {

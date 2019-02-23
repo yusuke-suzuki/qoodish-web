@@ -142,106 +142,6 @@ class ApiClient {
     return response;
   }
 
-  async fetchActiveMaps() {
-    const url = `${process.env.API_ENDPOINT}/maps?active=true`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchRecentMaps() {
-    const url = `${process.env.API_ENDPOINT}/maps?recent=true`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchPopularMaps() {
-    const url = `${process.env.API_ENDPOINT}/maps?popular=true`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async fetchPostableMaps() {
-    const url = `${process.env.API_ENDPOINT}/maps?postable=true`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async createMap(params) {
-    const url = `${process.env.API_ENDPOINT}/maps`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async editMap(params) {
-    const url = `${process.env.API_ENDPOINT}/maps/${params.map_id}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      },
-      body: JSON.stringify(params)
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async deleteMap(mapId) {
-    const url = `${process.env.API_ENDPOINT}/maps/${mapId}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
   async editProfile(params) {
     const uid = await this.getCurrentUid();
     const url = `${process.env.API_ENDPOINT}/users/${uid}`;
@@ -653,20 +553,6 @@ class ApiClient {
         Authorization: token
       },
       body: JSON.stringify(params)
-    };
-    const response = await fetch(url, options);
-    return response;
-  }
-
-  async searchMaps(input) {
-    const url = `${process.env.API_ENDPOINT}/maps?input=${input}`;
-    const token = await this.getCurrentToken();
-    let options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token
-      }
     };
     const response = await fetch(url, options);
     return response;

@@ -20,6 +20,7 @@ import getCurrentUser from '../utils/getCurrentUser';
 import getFirebase from '../utils/getFirebase';
 import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
+import initializeApiClient from '../utils/initializeApiClient';
 
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -202,6 +203,7 @@ const App = () => {
   });
 
   const initUser = useCallback(async () => {
+    await initializeApiClient();
     let firebaseUser = await getCurrentUser();
 
     if (firebaseUser && !firebaseUser.isAnonymous) {

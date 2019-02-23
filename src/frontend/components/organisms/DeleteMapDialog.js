@@ -11,12 +11,13 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import deleteMap from '../../actions/deleteMap';
 import closeDeleteMapDialog from '../../actions/closeDeleteMapDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+
+import { MapsApi } from 'qoodish_api';
 
 const DeleteMapDialog = () => {
   const mapState = useCallback(
@@ -44,15 +45,22 @@ const DeleteMapDialog = () => {
     setDisabled(true);
   });
 
-  const handleDeleteButtonClick = useCallback(async () => {
+  const handleDeleteButtonClick = useCallback(() => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    await client.deleteMap(currentMap.id);
-    dispatch(requestFinish());
-    dispatch(deleteMap(currentMap.id));
-    dispatch(closeDeleteMapDialog());
-    history.push('');
-    dispatch(openToast(I18n.t('delete map success')));
+    const apiInstance = new MapsApi();
+
+    apiInstance.mapsMapIdDelete(currentMap.id, (error, data, response) => {
+      dispatch(requestFinish());
+
+      if (response.ok) {
+        dispatch(closeDeleteMapDialog());
+        dispatch(deleteMap(currentMap.id));
+        history.push('');
+        dispatch(openToast(I18n.t('delete map success')));
+      } else {
+        dispatch(openToast('Failed to delete map.'));
+      }
+    });
   });
 
   return (

@@ -3,7 +3,6 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import SharedEditMapDialog from './SharedEditMapDialog';
 
-import ApiClient from '../../utils/ApiClient';
 import editMap from '../../actions/editMap';
 import closeEditMapDialog from '../../actions/closeEditMapDialog';
 import openToast from '../../actions/openToast';
@@ -11,6 +10,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import I18n from '../../utils/I18n';
+import { MapsApi, NewMap } from 'qoodish_api';
 
 const EditMapDialog = () => {
   const dispatch = useDispatch();
@@ -28,21 +28,25 @@ const EditMapDialog = () => {
     dispatch(closeEditMapDialog());
   });
 
-  const handleSaveButtonClick = useCallback(async params => {
+  const handleSaveButtonClick = useCallback(async (params, mapId) => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    let response = await client.editMap(params);
-    let json = await response.json();
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(editMap(json));
-      dispatch(closeEditMapDialog());
-      dispatch(openToast(I18n.t('edit map success')));
-    } else if (response.status == 409) {
-      dispatch(openToast(json.detail));
-    } else {
-      dispatch(openToast('Failed to update map.'));
-    }
+    const apiInstance = new MapsApi();
+    const newMap = NewMap.constructFromObject(params);
+
+    apiInstance.mapsMapIdPut(mapId, newMap, (error, data, response) => {
+      dispatch(requestFinish());
+
+      if (response.ok) {
+        const map = response.body;
+        dispatch(editMap(map));
+        dispatch(closeEditMapDialog());
+        dispatch(openToast(I18n.t('edit map success')));
+      } else if (response.status === 409) {
+        dispatch(openToast(response.body.detail));
+      } else {
+        dispatch(openToast('Failed to update map.'));
+      }
+    });
   });
 
   return (

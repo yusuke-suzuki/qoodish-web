@@ -23,7 +23,7 @@ import requestFinish from '../../actions/requestFinish';
 
 const styles = {
   rootLarge: {
-    margin: '94px auto 200px',
+    margin: '94px auto 20px',
     maxWidth: 700
   },
   rootSmall: {

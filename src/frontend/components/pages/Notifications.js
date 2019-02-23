@@ -16,7 +16,7 @@ import fetchNotifications from '../../actions/fetchNotifications';
 
 const styles = {
   containerLarge: {
-    margin: '94px auto 200px',
+    margin: '94px auto 20px',
     maxWidth: 700
   },
   containerSmall: {

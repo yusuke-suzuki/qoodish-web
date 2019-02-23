@@ -46,6 +46,9 @@ import sleep from '../../utils/sleep';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
+import { MapsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
+
 const styles = {
   appbar: {
     position: 'relative'
@@ -278,17 +281,24 @@ const EditReviewDialog = () => {
 
   const initForm = useCallback(async () => {
     setCurrentReview();
+    await initializeApiClient();
 
-    const client = new ApiClient();
-    let response = await client.fetchPostableMaps();
-    if (response.ok) {
-      let maps = await response.json();
-      dispatch(fetchPostableMaps(maps));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    }
+    const apiInstance = new MapsApi();
+    const opts = {
+      postable: true
+    };
 
-    setCurrentMap();
+    apiInstance.mapsGet(opts, (error, data, response) => {
+      if (response.ok) {
+        const maps = response.body;
+        dispatch(fetchPostableMaps(maps));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else {
+        console.log(error);
+      }
+      setCurrentMap();
+    });
   });
 
   const imageNotChanged = useCallback(() => {

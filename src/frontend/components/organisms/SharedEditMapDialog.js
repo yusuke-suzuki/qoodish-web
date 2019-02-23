@@ -153,7 +153,6 @@ const SharedEditMapDialog = props => {
 
   const handleSaveButtonClick = useCallback(() => {
     let params = {
-      map_id: mapId,
       name: name,
       description: description,
       base_id: props.selectedBase ? props.selectedBase.placeId : '',
@@ -162,7 +161,7 @@ const SharedEditMapDialog = props => {
       invitable: invitable,
       shared: shared
     };
-    props.handleSaveButtonClick(params);
+    props.handleSaveButtonClick(params, mapId);
   });
 
   const handleMapBaseClick = useCallback(() => {
