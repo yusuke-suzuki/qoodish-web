@@ -22,7 +22,7 @@
     "history": "^4.7.2",
     "moment": "^2.20.1",
     "path-to-regexp": "^3.0.0",
-    "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#a9a9890",
+    "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#reviews-api",
     "react": "^16.8.0-alpha.0",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^16.8.0-alpha.0",

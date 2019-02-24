@@ -20,6 +20,8 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import fetchSpots from '../../actions/fetchSpots';
 import deleteFromStorage from '../../utils/deleteFromStorage';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { SpotsApi } from 'qoodish_api';
 
 const DeleteReviewDialog = props => {
   const mapState = useCallback(
@@ -59,12 +61,14 @@ const DeleteReviewDialog = props => {
       dispatch(closeReviewDialog());
       dispatch(closeDeleteReviewDialog());
       if (props.mapId) {
-        let spotResponse = await client.fetchSpots(review.map.id);
-        if (spotResponse.ok) {
-          let spots = await spotResponse.json();
-          dispatch(fetchSpots(spots));
-        }
-        history.push(`/maps/${review.map.id}`);
+        await initializeApiClient();
+        const apiInstance = new SpotsApi();
+        apiInstance.mapsMapIdSpotsGet(props.mapId, (error, data, response) => {
+          if (response.ok) {
+            dispatch(fetchSpots(response.body));
+            history.push(`/maps/${review.map.id}`);
+          }
+        });
       }
       dispatch(deleteReview(review.id));
       dispatch(openToast(I18n.t('delete report success')));

@@ -16,7 +16,7 @@ import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import I18n from '../../utils/I18n';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi, SpotsApi, CollaboratorsApi } from 'qoodish_api';
 
 const GMap = loadable(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
@@ -175,12 +175,16 @@ const MapDetail = props => {
   });
 
   const initSpots = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchSpots(props.params.primaryId);
-    if (response.ok) {
-      let spots = await response.json();
-      dispatch(fetchSpots(spots));
-    }
+    await initializeApiClient();
+    const apiInstance = new SpotsApi();
+    apiInstance.mapsMapIdSpotsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchSpots(response.body));
+        }
+      }
+    );
   });
 
   const initMapReviews = useCallback(async () => {
@@ -193,12 +197,19 @@ const MapDetail = props => {
   });
 
   const initFollowers = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchCollaborators(props.params.primaryId);
-    if (response.ok) {
-      let followers = await response.json();
-      dispatch(fetchCollaborators(followers));
-    }
+    await initializeApiClient();
+    const apiInstance = new CollaboratorsApi();
+
+    apiInstance.mapsMapIdCollaboratorsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchCollaborators(response.body));
+        } else {
+          console.log('API called successfully. Returned data: ' + data);
+        }
+      }
+    );
   });
 
   const refreshMap = useCallback(() => {

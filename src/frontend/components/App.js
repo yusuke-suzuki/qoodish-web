@@ -22,7 +22,7 @@ import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import initializeApiClient from '../utils/initializeApiClient';
 
-import { UsersApi } from 'qoodish_api';
+import { UsersApi, DevicesApi, InlineObject1 } from 'qoodish_api';
 
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -141,15 +141,21 @@ const App = () => {
       return;
     }
 
-    const client = new ApiClient();
-    const response = await client.sendRegistrationToken(refreshedToken);
+    await initializeApiClient();
 
-    if (response.ok) {
-      console.log('Successfully sent registration token.');
-      dispatch(fetchRegistrationToken(refreshedToken));
-    } else {
-      console.log('Failed to send registration token.');
-    }
+    const apiInstance = new DevicesApi();
+    const inlineObject1 = InlineObject1.constructFromObject({
+      registration_token: refreshedToken
+    });
+
+    apiInstance.devicesPost(inlineObject1, (error, data, response) => {
+      if (response.ok) {
+        console.log('Successfully sent registration token.');
+        dispatch(fetchRegistrationToken(refreshedToken));
+      } else {
+        console.log('Failed to send registration token.');
+      }
+    });
   });
 
   const initMessaging = useCallback(async () => {

@@ -10,10 +10,11 @@ import I18n from '../../utils/I18n';
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
-import ApiClient from '../../utils/ApiClient';
 import signIn from '../../actions/signIn';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import { DevicesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   profileAvatar: {
@@ -46,9 +47,22 @@ const AvatarMenu = () => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       const messaging = firebase.messaging();
       const registrationToken = await messaging.getToken();
+
       if (registrationToken) {
-        const client = new ApiClient();
-        await client.deleteRegistrationToken(registrationToken);
+        await initializeApiClient();
+        const apiInstance = new DevicesApi();
+
+        apiInstance.devicesRegistrationTokenDelete(
+          registrationToken,
+          (error, data, response) => {
+            if (response.ok) {
+              console.log('Successfully sent registration token.');
+              dispatch(fetchRegistrationToken(refreshedToken));
+            } else {
+              console.log('Failed to send registration token.');
+            }
+          }
+        );
       }
     }
 

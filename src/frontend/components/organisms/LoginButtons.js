@@ -100,7 +100,7 @@ const LoginButtons = () => {
     const params = {
       uid: currentUser.uid,
       token: accessToken,
-      photo_url: uploadResponse.imageUrl,
+      image_url: uploadResponse.imageUrl,
       display_name: currentProvider.displayName
     };
 

@@ -10,10 +10,11 @@ import NoContents from '../molecules/NoContents';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import fetchSpot from '../../actions/fetchSpot';
 import clearSpotState from '../../actions/clearSpotState';
+import { SpotsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   rootLarge: {
@@ -106,19 +107,24 @@ const SpotDetail = props => {
 
   const initSpot = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchSpot(props.params.primaryId);
-    let json = await response.json();
-    if (response.ok) {
-      dispatch(fetchSpot(json));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else if (response.status == 404) {
-      dispatch(openToast('Spot not found.'));
-    } else {
-      dispatch(openToast('Failed to fetch Spot.'));
-    }
-    setLoading(false);
+    await initializeApiClient();
+    const apiInstance = new SpotsApi();
+
+    apiInstance.spotsPlaceIdGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        setLoading(false);
+        if (response.ok) {
+          dispatch(fetchSpot(response.body));
+        } else if (response.status == 401) {
+          dispatch(openToast('Authenticate failed'));
+        } else if (response.status == 404) {
+          dispatch(openToast('Spot not found.'));
+        } else {
+          dispatch(openToast('Failed to fetch Spot.'));
+        }
+      }
+    );
   });
 
   useEffect(() => {
