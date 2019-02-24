@@ -13,11 +13,12 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import closeIssueDialog from '../../actions/closeIssueDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import { IssueContentsApi, InappropreateContent } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const IssueDialog = () => {
   const dispatch = useDispatch();
@@ -40,22 +41,30 @@ const IssueDialog = () => {
   });
 
   const handleSendButtonClick = useCallback(async () => {
-    let params = {
+    dispatch(requestStart());
+    await initializeApiClient();
+    const apiInstance = new IssueContentsApi();
+
+    const params = {
       content_id: issueTargetId,
       content_type: issueTargetType,
       reason_id: value
     };
 
-    dispatch(requestStart());
-    const client = new ApiClient();
-    const response = await client.issueContent(params);
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(closeIssueDialog());
-      dispatch(openToast('Successfully sent. Thank you!'));
-    } else {
-      dispatch(openToast('Failed to issue content.'));
-    }
+    let inappropreateContent = InappropreateContent.constructFromObject(params);
+
+    apiInstance.inappropriateContentsPost(
+      inappropreateContent,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(closeIssueDialog());
+          dispatch(openToast('Successfully sent. Thank you!'));
+        } else {
+          dispatch(openToast('Failed to issue content.'));
+        }
+      }
+    );
   });
 
   const handleReasonChange = useCallback((e, value) => {

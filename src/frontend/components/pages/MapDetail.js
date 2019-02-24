@@ -4,7 +4,6 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import loadable from '@loadable/component';
 
-import ApiClient from '../../utils/ApiClient';
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
@@ -16,7 +15,7 @@ import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import I18n from '../../utils/I18n';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi, SpotsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
 
 const GMap = loadable(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
@@ -175,30 +174,47 @@ const MapDetail = props => {
   });
 
   const initSpots = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchSpots(props.params.primaryId);
-    if (response.ok) {
-      let spots = await response.json();
-      dispatch(fetchSpots(spots));
-    }
+    await initializeApiClient();
+    const apiInstance = new SpotsApi();
+
+    apiInstance.mapsMapIdSpotsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchSpots(response.body));
+        }
+      }
+    );
   });
 
   const initMapReviews = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchMapReviews(props.params.primaryId);
-    if (response.ok) {
-      let reviews = await response.json();
-      dispatch(fetchMapReviews(reviews));
-    }
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdReviewsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMapReviews(response.body));
+        }
+      }
+    );
   });
 
   const initFollowers = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchCollaborators(props.params.primaryId);
-    if (response.ok) {
-      let followers = await response.json();
-      dispatch(fetchCollaborators(followers));
-    }
+    await initializeApiClient();
+    const apiInstance = new CollaboratorsApi();
+
+    apiInstance.mapsMapIdCollaboratorsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchCollaborators(response.body));
+        } else {
+          console.log('API called successfully. Returned data: ' + data);
+        }
+      }
+    );
   });
 
   const refreshMap = useCallback(() => {

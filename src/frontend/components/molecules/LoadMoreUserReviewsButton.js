@@ -5,10 +5,11 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 import fetchMoreUserReviews from '../../actions/fetchMoreUserReviews';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { ReviewsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   buttonLarge: {
@@ -46,15 +47,22 @@ const LoadMoreUserReviewsButton = props => {
 
   const handleClickLoadMoreButton = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
     let userId =
       location && location.pathname === '/profile'
-        ? undefined
+        ? props.currentUser.uid
         : props.params.primaryId;
-    let response = await client.fetchUserReviews(userId, nextTimestamp);
-    let reviews = await response.json();
-    dispatch(fetchMoreUserReviews(reviews));
-    setLoading(false);
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+    const opts = {
+      nextTimestamp: nextTimestamp
+    };
+    apiInstance.usersUserIdReviewsGet(userId, opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(fetchMoreUserReviews(response.body));
+      }
+    });
   });
 
   if (loading) {

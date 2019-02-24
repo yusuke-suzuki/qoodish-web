@@ -2,12 +2,13 @@ import React, { useCallback } from 'react';
 import SharedPlaceSelectDialog from './SharedPlaceSelectDialog';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
-import ApiClient from '../../utils/ApiClient';
 import closePlaceSelectDialog from '../../actions/closePlaceSelectDialog';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import searchPlaces from '../../actions/searchPlaces';
 import fetchCurrentPosition from '../../utils/fetchCurrentPosition';
 import getCurrentPosition from '../../actions/getCurrentPosition';
+import { PlacesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const PlaceSelectDialog = () => {
   const dispatch = useDispatch();
@@ -29,15 +30,21 @@ const PlaceSelectDialog = () => {
     dispatch(
       getCurrentPosition(position.coords.latitude, position.coords.longitude)
     );
-    const client = new ApiClient();
-    let response = await client.searchNearPlaces(
-      position.coords.latitude,
-      position.coords.longitude
-    );
-    let places = await response.json();
-    if (response.ok) {
-      dispatch(searchPlaces(places));
-    }
+
+    await initializeApiClient();
+
+    const apiInstance = new PlacesApi();
+    const opts = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+    apiInstance.placesGet(opts, (error, data, response) => {
+      if (response.ok) {
+        dispatch(searchPlaces(response.body));
+      } else {
+        console.log('API called successfully. Returned data: ' + data);
+      }
+    });
   });
 
   return (

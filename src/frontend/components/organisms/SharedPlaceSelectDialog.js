@@ -21,10 +21,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 
-import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
 
 import searchPlaces from '../../actions/searchPlaces';
+import { PlacesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   appbar: {
@@ -79,13 +80,20 @@ const SharedPlaceSelectDialog = props => {
       return;
     }
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.searchPlaces(input);
-    let places = await response.json();
-    setLoading(false);
-    if (response.ok) {
-      dispatch(searchPlaces(places));
-    }
+    await initializeApiClient();
+
+    const apiInstance = new PlacesApi();
+    const opts = {
+      input: input
+    };
+    apiInstance.placesGet(opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(searchPlaces(response.body));
+      } else {
+        console.log('API called successfully. Returned data: ' + data);
+      }
+    });
   });
 
   return (

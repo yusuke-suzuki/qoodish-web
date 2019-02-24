@@ -46,7 +46,7 @@ import sleep from '../../utils/sleep';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi, SpotsApi, ReviewsApi, NewReview } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
@@ -199,36 +199,50 @@ const EditReviewDialog = () => {
       params.image_url = response.imageUrl;
       fileName = response.fileName;
     }
-    const client = new ApiClient();
-    let response = await client.createReview(mapId, params);
-    let json = await response.json();
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(closeEditReviewDialog());
-      dispatch(openToast(I18n.t('create review success')));
 
-      gtag('event', 'create', {
-        event_category: 'engagement',
-        event_label: 'review'
-      });
+    await initializeApiClient();
 
-      if (canvas) {
-        // wait until thumbnail created on cloud function
-        await sleep(5000);
+    const apiInstance = new ReviewsApi();
+    const newReview = NewReview.constructFromObject(params);
+    apiInstance.mapsMapIdReviewsPost(
+      mapId,
+      newReview,
+      async (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(closeEditReviewDialog());
+          dispatch(openToast(I18n.t('create review success')));
+
+          gtag('event', 'create', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+
+          if (canvas) {
+            // wait until thumbnail created on cloud function
+            await sleep(5000);
+          }
+          const review = response.body;
+          dispatch(createReview(review));
+
+          await initializeApiClient();
+          const apiInstance = new SpotsApi();
+          apiInstance.mapsMapIdSpotsGet(mapId, (error, data, response) => {
+            if (response.ok) {
+              dispatch(fetchSpots(response.body));
+
+              dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+              dispatch(selectSpot(review.spot));
+            }
+          });
+        } else {
+          dispatch(openToast(response.body.detail));
+          if (fileName) {
+            deleteFromStorage(fileName);
+          }
+        }
       }
-      dispatch(createReview(json));
-      let spotsResponse = await client.fetchSpots(json.map.id);
-      let spots = await spotsResponse.json();
-      dispatch(fetchSpots(spots));
-
-      dispatch(requestMapCenter(json.spot.lat, json.spot.lng));
-      dispatch(selectSpot(json.spot));
-    } else {
-      dispatch(openToast(json.detail));
-      if (fileName) {
-        deleteFromStorage(fileName);
-      }
-    }
+    );
   });
 
   const handleClickEditButton = useCallback(
@@ -243,31 +257,51 @@ const EditReviewDialog = () => {
       } else if (isImageDeleteRequest) {
         params.image_url = '';
       }
-      const client = new ApiClient();
-      let response = await client.editReview(params);
-      let json = await response.json();
-      dispatch(requestFinish());
-      if (response.ok) {
-        if (oldReview.image && canvas) {
-          deleteFromStorage(oldReview.image.file_name);
-        }
-        dispatch(closeEditReviewDialog());
-        dispatch(openToast(I18n.t('edit review success')));
 
-        if (canvas) {
-          // wait until thumbnail created on cloud function
-          await sleep(5000);
+      await initializeApiClient();
+
+      const apiInstance = new ReviewsApi();
+      const newReview = NewReview.constructFromObject(params);
+      apiInstance.reviewsReviewIdPut(
+        oldReview.id,
+        newReview,
+        async (error, data, response) => {
+          dispatch(requestFinish());
+          if (response.ok) {
+            if (oldReview.image && canvas) {
+              deleteFromStorage(oldReview.image.file_name);
+            }
+            dispatch(closeEditReviewDialog());
+            dispatch(openToast(I18n.t('edit review success')));
+
+            if (canvas) {
+              // wait until thumbnail created on cloud function
+              await sleep(5000);
+            }
+            const review = response.body;
+            dispatch(editReview(review));
+
+            await initializeApiClient();
+            const apiInstance = new SpotsApi();
+            apiInstance.mapsMapIdSpotsGet(
+              review.map.id,
+              (error, data, response) => {
+                if (response.ok) {
+                  dispatch(fetchSpots(response.body));
+
+                  dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+                  dispatch(selectSpot(review.spot));
+                }
+              }
+            );
+          } else {
+            dispatch(openToast(response.body.detail));
+            if (fileName) {
+              deleteFromStorage(fileName);
+            }
+          }
         }
-        dispatch(editReview(json));
-        let spotsResponse = await client.fetchSpots(json.map.id);
-        let spots = await spotsResponse.json();
-        dispatch(fetchSpots(spots));
-      } else {
-        dispatch(openToast(json.detail));
-        if (fileName) {
-          deleteFromStorage(fileName);
-        }
-      }
+      );
     }
   );
 

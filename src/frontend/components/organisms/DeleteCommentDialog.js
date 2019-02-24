@@ -9,12 +9,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import editReview from '../../actions/editReview';
 import closeDeleteCommentDialog from '../../actions/closeDeleteCommentDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import { CommentsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const DeleteCommentDialog = () => {
   const mapState = useCallback(
@@ -33,18 +34,24 @@ const DeleteCommentDialog = () => {
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    let response = await client.deleteComment(comment.review_id, comment.id);
-    dispatch(requestFinish());
+    await initializeApiClient();
+    const apiInstance = new CommentsApi();
 
-    if (response.ok) {
-      dispatch(closeDeleteCommentDialog());
-      dispatch(openToast(I18n.t('deleted comment')));
-      let review = await response.json();
-      dispatch(editReview(review));
-    } else {
-      dispatch(openToast(I18n.t('delete comment failed')));
-    }
+    apiInstance.reviewsReviewIdCommentsCommentIdDelete(
+      comment.review_id,
+      comment.id,
+      (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          dispatch(closeDeleteCommentDialog());
+          dispatch(openToast(I18n.t('deleted comment')));
+          dispatch(editReview(response.body));
+        } else {
+          dispatch(openToast(I18n.t('delete comment failed')));
+        }
+      }
+    );
   });
 
   return (

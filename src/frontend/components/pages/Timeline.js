@@ -14,13 +14,14 @@ import ReviewCard from '../molecules/ReviewCard';
 import NoContents from '../molecules/NoContents';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import fetchReviews from '../../actions/fetchReviews';
 import fetchMoreReviews from '../../actions/fetchMoreReviews';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
+import { ReviewsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   rootLarge: {
@@ -137,17 +138,24 @@ const LoadMoreButton = React.memo(() => {
 
   const loadMoreReviews = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchReviews(nextTimestamp);
-    let reviews = await response.json();
-    setLoading(false);
-    if (response.ok) {
-      dispatch(fetchMoreReviews(reviews));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else {
-      dispatch(openToast('Failed to fetch reports.'));
-    }
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    const opts = {
+      nextTimestamp: nextTimestamp
+    };
+    apiInstance.reviewsGet(opts, (error, data, response) => {
+      setLoading(false);
+
+      if (response.ok) {
+        dispatch(fetchMoreReviews(response.body));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else {
+        dispatch(openToast('Failed to fetch reports.'));
+      }
+    });
   });
 
   if (loading) {
@@ -231,19 +239,22 @@ const Timeline = () => {
       setLoading(false);
       return;
     }
-
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchReviews();
-    let reviews = await response.json();
-    if (response.ok) {
-      dispatch(fetchReviews(reviews));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else {
-      dispatch(openToast('Failed to fetch reports.'));
-    }
-    setLoading(false);
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.reviewsGet({}, (error, data, response) => {
+      setLoading(false);
+
+      if (response.ok) {
+        dispatch(fetchReviews(response.body));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else {
+        dispatch(openToast('Failed to fetch reports.'));
+      }
+    });
   });
 
   useEffect(() => {

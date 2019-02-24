@@ -11,8 +11,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
 
-import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
+import { SpotsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   progress: {
@@ -40,13 +41,17 @@ const TrendingSpots = () => {
 
   const initTrendingSpots = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchTrendingSpots();
-    let json = await response.json();
-    if (response.ok) {
-      setSpots(json);
-    }
-    setLoading(false);
+    await initializeApiClient();
+    const apiInstance = new SpotsApi();
+    const opts = {
+      popular: true
+    };
+    apiInstance.spotsGet(opts, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        setSpots(response.body);
+      }
+    });
   });
 
   useEffect(() => {

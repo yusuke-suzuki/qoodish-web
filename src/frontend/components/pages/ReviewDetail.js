@@ -8,10 +8,11 @@ import NoContents from '../molecules/NoContents';
 import Helmet from 'react-helmet';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import selectReview from '../../actions/selectReview';
 import clearReviewState from '../../actions/clearReviewState';
+import { ReviewsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   containerLarge: {
@@ -111,22 +112,26 @@ const ReviewDetail = props => {
 
   const initReview = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchReview(
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdReviewsReviewIdGet(
       props.params.primaryId,
-      props.params.secondaryId
+      props.params.secondaryId,
+      (error, data, response) => {
+        setLoading(false);
+
+        if (response.ok) {
+          dispatch(selectReview(response.body));
+        } else if (response.status == 401) {
+          dispatch(openToast('Authenticate failed'));
+        } else if (response.status == 404) {
+          dispatch(openToast('Report not found.'));
+        } else {
+          dispatch(openToast('Failed to fetch Report.'));
+        }
+      }
     );
-    let json = await response.json();
-    if (response.ok) {
-      dispatch(selectReview(json));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else if (response.status == 404) {
-      dispatch(openToast('Report not found.'));
-    } else {
-      dispatch(openToast('Failed to fetch Report.'));
-    }
-    setLoading(false);
   });
 
   useEffect(() => {

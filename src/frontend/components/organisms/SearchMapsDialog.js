@@ -71,8 +71,7 @@ const SearchMapsDialog = () => {
     apiInstance.mapsGet(opts, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
-        const maps = response.body;
-        dispatch(searchMaps(maps));
+        dispatch(searchMaps(response.body));
       } else {
         console.log(error);
       }

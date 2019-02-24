@@ -10,13 +10,15 @@ import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import leaveMap from '../../actions/leaveMap';
 import closeLeaveMapDialog from '../../actions/closeLeaveMapDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import fetchCollaborators from '../../actions/fetchCollaborators';
+
+import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -39,25 +41,40 @@ const LeaveMapDialog = () => {
 
   const handleLeaveButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    let response = await client.unfollowMap(currentMap.id);
-    dispatch(requestFinish());
-    if (response.ok) {
-      let map = await response.json();
-      dispatch(leaveMap(map));
-      dispatch(openToast(I18n.t('unfollow map success')));
+    await initializeApiClient();
+    const apiInstance = new FollowsApi();
 
-      gtag('event', 'unfollow', {
-        event_category: 'engagement',
-        event_label: 'map'
-      });
+    apiInstance.mapsMapIdFollowDelete(
+      currentMap.id,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(leaveMap(response.body));
+          dispatch(openToast(I18n.t('unfollow map success')));
 
-      let colloboratorsResponse = await client.fetchCollaborators(map.id);
-      let collaborators = await colloboratorsResponse.json();
-      dispatch(fetchCollaborators(collaborators));
-    } else {
-      dispatch(openToast('Failed to unfollow map'));
-    }
+          gtag('event', 'unfollow', {
+            event_category: 'engagement',
+            event_label: 'map'
+          });
+
+          const apiInstance = new CollaboratorsApi();
+
+          apiInstance.mapsMapIdCollaboratorsGet(
+            currentMap.id,
+            (error, data, response) => {
+              if (response.ok) {
+                dispatch(fetchCollaborators(response.body));
+              } else {
+                console.log('API called successfully. Returned data: ' + data);
+              }
+            }
+          );
+        } else {
+          dispatch(openToast('Failed to unfollow map'));
+          console.log('API called successfully. Returned data: ' + data);
+        }
+      }
+    );
   });
 
   return (

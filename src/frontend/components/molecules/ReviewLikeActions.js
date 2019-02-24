@@ -9,6 +9,8 @@ import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
+import { LikesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const ReviewLikeActions = props => {
   const dispatch = useDispatch();
@@ -21,37 +23,48 @@ const ReviewLikeActions = props => {
       dispatch(openSignInRequiredDialog());
       return;
     }
-    const client = new ApiClient();
-    let response = await client.likeReview(props.target.id);
-    if (response.ok) {
-      let review = await response.json();
-      dispatch(editReview(review));
-      dispatch(openToast(I18n.t('liked!')));
 
-      gtag('event', 'like', {
-        event_category: 'engagement',
-        event_label: 'review'
-      });
-    } else {
-      dispatch(openToast('Request failed.'));
-    }
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.reviewsReviewIdLikePost(
+      props.target.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(editReview(response.body));
+          dispatch(openToast(I18n.t('liked!')));
+
+          gtag('event', 'like', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+        } else {
+          dispatch(openToast('Request failed.'));
+        }
+      }
+    );
   });
 
   const handleUnlikeButtonClick = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.unlikeReview(props.target.id);
-    if (response.ok) {
-      let review = await response.json();
-      dispatch(editReview(review));
-      dispatch(openToast(I18n.t('unliked')));
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
 
-      gtag('event', 'unlike', {
-        event_category: 'engagement',
-        event_label: 'review'
-      });
-    } else {
-      dispatch(openToast('Request failed.'));
-    }
+    apiInstance.reviewsReviewIdLikeDelete(
+      props.target.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(editReview(response.body));
+          dispatch(openToast(I18n.t('unliked')));
+
+          gtag('event', 'unlike', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+        } else {
+          dispatch(openToast('Request failed.'));
+        }
+      }
+    );
   });
 
   const handleLikesClick = useCallback(async () => {

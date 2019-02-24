@@ -77,11 +77,13 @@ const SpotDialog = () => {
       )}
       <DialogContent style={styles.dialogContent}>
         <div>
-          <SpotCard
-            currentSpot={currentSpot}
-            placeId={currentSpot && currentSpot.place_id}
-            dialog={true}
-          />
+          {currentSpot && (
+            <SpotCard
+              currentSpot={currentSpot}
+              placeId={currentSpot && currentSpot.place_id}
+              dialog={true}
+            />
+          )}
         </div>
       </DialogContent>
     </Dialog>

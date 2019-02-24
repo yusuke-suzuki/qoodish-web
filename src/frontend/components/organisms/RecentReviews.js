@@ -16,10 +16,11 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import NoContents from '../molecules/NoContents';
 import moment from 'moment';
 
-import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { ReviewsApi } from 'qoodish_api';
 
 const styles = {
   gridListLarge: {
@@ -103,17 +104,24 @@ const RecentReviews = () => {
 
   const initRecentReviews = useCallback(async () => {
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchRecentReviews();
-    let reviews = await response.json();
-    if (response.ok) {
-      dispatch(fetchRecentReviews(reviews));
-    } else if (response.status == 401) {
-      dispatch(openToast('Authenticate failed'));
-    } else {
-      dispatch(openToast('Failed to fetch recent reviews.'));
-    }
-    setLoading(false);
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    const opts = {
+      recent: true
+    };
+    apiInstance.reviewsGet(opts, (error, data, response) => {
+      setLoading(false);
+
+      if (response.ok) {
+        dispatch(fetchRecentReviews(response.body));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else {
+        dispatch(openToast('Failed to fetch reports.'));
+      }
+    });
   });
 
   useEffect(() => {

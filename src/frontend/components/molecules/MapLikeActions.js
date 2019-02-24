@@ -9,6 +9,8 @@ import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
+import { LikesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const MapLikeActions = props => {
   const dispatch = useDispatch();
@@ -21,37 +23,45 @@ const MapLikeActions = props => {
       dispatch(openSignInRequiredDialog());
       return;
     }
-    const client = new ApiClient();
-    let response = await client.likeMap(props.target.id);
-    if (response.ok) {
-      let map = await response.json();
-      dispatch(editMap(map));
-      dispatch(openToast(I18n.t('liked!')));
 
-      gtag('event', 'like', {
-        event_category: 'engagement',
-        event_label: 'map'
-      });
-    } else {
-      dispatch(openToast('Request failed.'));
-    }
+    await initializeApiClient();
+
+    const apiInstance = new LikesApi();
+    apiInstance.mapsMapIdLikePost(props.target.id, (error, data, response) => {
+      if (response.ok) {
+        dispatch(editMap(response.body));
+        dispatch(openToast(I18n.t('liked!')));
+
+        gtag('event', 'like', {
+          event_category: 'engagement',
+          event_label: 'map'
+        });
+      } else {
+        dispatch(openToast('Request failed.'));
+      }
+    });
   });
 
   const handleUnlikeButtonClick = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.unlikeMap(props.target.id);
-    if (response.ok) {
-      let map = await response.json();
-      dispatch(editMap(map));
-      dispatch(openToast(I18n.t('unliked')));
+    await initializeApiClient();
 
-      gtag('event', 'unlike', {
-        event_category: 'engagement',
-        event_label: 'map'
-      });
-    } else {
-      dispatch(openToast('Request failed.'));
-    }
+    const apiInstance = new LikesApi();
+    apiInstance.mapsMapIdLikeDelete(
+      props.target.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(editMap(response.body));
+          dispatch(openToast(I18n.t('unliked')));
+
+          gtag('event', 'unlike', {
+            event_category: 'engagement',
+            event_label: 'map'
+          });
+        } else {
+          dispatch(openToast('Request failed.'));
+        }
+      }
+    );
   });
 
   const handleLikesClick = useCallback(async () => {

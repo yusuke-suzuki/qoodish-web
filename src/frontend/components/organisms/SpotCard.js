@@ -21,8 +21,9 @@ import {
 
 import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import fetchSpotReviews from '../../actions/fetchSpotReviews';
+import { ReviewsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   cardMapContainerLarge: {
@@ -138,12 +139,17 @@ const SpotCard = props => {
   const { currentSpot, spotReviews } = useMappedState(mapState);
 
   const initSpotReviews = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchSpotReviews(props.placeId);
-    let json = await response.json();
-    if (response.ok) {
-      dispatch(fetchSpotReviews(json));
-    }
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.spotsPlaceIdReviewsGet(
+      props.placeId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchSpotReviews(response.body));
+        }
+      }
+    );
   });
 
   useEffect(

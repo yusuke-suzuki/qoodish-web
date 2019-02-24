@@ -9,9 +9,10 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import fetchCollaborators from '../../actions/fetchCollaborators';
-import ApiClient from '../../utils/ApiClient';
 import joinMap from '../../actions/joinMap';
 import openToast from '../../actions/openToast';
+import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const RoleButton = props => {
   const currentUser = useMappedState(
@@ -30,25 +31,38 @@ const RoleButton = props => {
       return;
     }
     dispatch(requestStart());
-    const client = new ApiClient();
-    let followResponse = await client.followMap(map.id);
-    dispatch(requestFinish());
-    if (followResponse.ok) {
-      let json = await followResponse.json();
-      dispatch(joinMap(json));
-      dispatch(openToast(I18n.t('follow map success')));
+    await initializeApiClient();
+    const apiInstance = new FollowsApi();
 
-      gtag('event', 'follow', {
-        event_category: 'engagement',
-        event_label: 'map'
-      });
+    apiInstance.mapsMapIdFollowPost(map.id, {}, (error, data, response) => {
+      dispatch(requestFinish());
 
-      let colloboratorsResponse = await client.fetchCollaborators(map.id);
-      let collaborators = await colloboratorsResponse.json();
-      dispatch(fetchCollaborators(collaborators));
-    } else {
-      dispatch(openToast('Failed to follow map'));
-    }
+      if (response.ok) {
+        dispatch(joinMap(response.body));
+        dispatch(openToast(I18n.t('follow map success')));
+
+        gtag('event', 'follow', {
+          event_category: 'engagement',
+          event_label: 'map'
+        });
+
+        const apiInstance = new CollaboratorsApi();
+
+        apiInstance.mapsMapIdCollaboratorsGet(
+          map.id,
+          (error, data, response) => {
+            if (response.ok) {
+              dispatch(fetchCollaborators(response.body));
+            } else {
+              console.log('API called successfully. Returned data: ' + data);
+            }
+          }
+        );
+      } else {
+        dispatch(openToast('Failed to follow map'));
+        console.log('API called successfully. Returned data: ' + data);
+      }
+    });
   });
 
   if (map.editable) {

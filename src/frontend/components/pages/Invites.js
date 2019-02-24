@@ -20,6 +20,8 @@ import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import { FollowsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   rootLarge: {
@@ -89,19 +91,30 @@ const Invites = () => {
 
   const handleFollowButtonClick = useCallback(async invite => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    const response = await client.followMap(invite.invitable.id, invite.id);
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(openToast(I18n.t('follow map success')));
-      history.push(`/maps/${invite.invitable.id}`);
-      gtag('event', 'follow', {
-        event_category: 'engagement',
-        event_label: 'map'
-      });
-    } else {
-      dispatch(openToast('Failed to follow map'));
-    }
+    await initializeApiClient();
+
+    const apiInstance = new FollowsApi();
+    const opts = {
+      inviteId: invite.id
+    };
+
+    apiInstance.mapsMapIdFollowPost(
+      invite.invitable.id,
+      opts,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(openToast(I18n.t('follow map success')));
+          history.push(`/maps/${invite.invitable.id}`);
+          gtag('event', 'follow', {
+            event_category: 'engagement',
+            event_label: 'map'
+          });
+        } else {
+          dispatch(openToast('Failed to follow map'));
+        }
+      }
+    );
   });
 
   useEffect(() => {

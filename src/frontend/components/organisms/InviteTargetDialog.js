@@ -91,7 +91,7 @@ const InviteTargetDialog = props => {
     apiInstance.usersGet(opts, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
-        dispatch(fetchUsers(users));
+        dispatch(fetchUsers(response.body));
       }
     });
   });
