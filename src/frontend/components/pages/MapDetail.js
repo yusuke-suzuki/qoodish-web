@@ -4,7 +4,6 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import loadable from '@loadable/component';
 
-import ApiClient from '../../utils/ApiClient';
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
@@ -16,7 +15,7 @@ import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import I18n from '../../utils/I18n';
 
-import { MapsApi, SpotsApi, CollaboratorsApi } from 'qoodish_api';
+import { MapsApi, SpotsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
 
 const GMap = loadable(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
@@ -177,6 +176,7 @@ const MapDetail = props => {
   const initSpots = useCallback(async () => {
     await initializeApiClient();
     const apiInstance = new SpotsApi();
+
     apiInstance.mapsMapIdSpotsGet(
       props.params.primaryId,
       (error, data, response) => {
@@ -188,12 +188,17 @@ const MapDetail = props => {
   });
 
   const initMapReviews = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchMapReviews(props.params.primaryId);
-    if (response.ok) {
-      let reviews = await response.json();
-      dispatch(fetchMapReviews(reviews));
-    }
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdReviewsGet(
+      props.params.primaryId,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMapReviews(response.body));
+        }
+      }
+    );
   });
 
   const initFollowers = useCallback(async () => {

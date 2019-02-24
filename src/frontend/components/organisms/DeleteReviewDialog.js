@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import deleteReview from '../../actions/deleteReview';
 import closeDeleteReviewDialog from '../../actions/closeDeleteReviewDialog';
 import closeReviewDialog from '../../actions/closeReviewDialog';
@@ -21,7 +20,7 @@ import requestFinish from '../../actions/requestFinish';
 import fetchSpots from '../../actions/fetchSpots';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import initializeApiClient from '../../utils/initializeApiClient';
-import { SpotsApi } from 'qoodish_api';
+import { SpotsApi, ReviewsApi } from 'qoodish_api';
 
 const DeleteReviewDialog = props => {
   const mapState = useCallback(
@@ -51,31 +50,39 @@ const DeleteReviewDialog = props => {
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    const response = await client.deleteReview(review.id);
-    dispatch(requestFinish());
-    if (response.ok) {
-      if (review.image) {
-        deleteFromStorage(review.image.file_name);
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.reviewsReviewIdDelete(review.id, (error, data, response) => {
+      dispatch(requestFinish());
+
+      if (response.ok) {
+        if (review.image) {
+          deleteFromStorage(review.image.file_name);
+        }
+        dispatch(closeReviewDialog());
+        dispatch(closeDeleteReviewDialog());
+
+        if (props.mapId) {
+          const apiInstance = new SpotsApi();
+
+          apiInstance.mapsMapIdSpotsGet(
+            props.mapId,
+            (error, data, response) => {
+              if (response.ok) {
+                dispatch(fetchSpots(response.body));
+                history.push(`/maps/${review.map.id}`);
+              }
+            }
+          );
+        }
+        dispatch(deleteReview(review.id));
+        dispatch(openToast(I18n.t('delete report success')));
+      } else {
+        dispatch(openToast(response.body.detail));
       }
-      dispatch(closeReviewDialog());
-      dispatch(closeDeleteReviewDialog());
-      if (props.mapId) {
-        await initializeApiClient();
-        const apiInstance = new SpotsApi();
-        apiInstance.mapsMapIdSpotsGet(props.mapId, (error, data, response) => {
-          if (response.ok) {
-            dispatch(fetchSpots(response.body));
-            history.push(`/maps/${review.map.id}`);
-          }
-        });
-      }
-      dispatch(deleteReview(review.id));
-      dispatch(openToast(I18n.t('delete report success')));
-    } else {
-      let json = await response.json();
-      dispatch(openToast(json.detail));
-    }
+    });
   });
 
   return (

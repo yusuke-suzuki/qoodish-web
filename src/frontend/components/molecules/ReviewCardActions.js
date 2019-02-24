@@ -7,11 +7,12 @@ import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
 import ReviewLikeActions from './ReviewLikeActions';
 
-import ApiClient from '../../utils/ApiClient';
 import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
+import { CommentsApi, InlineObject2 } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   root: {
@@ -76,18 +77,28 @@ const ReviewCardActions = React.memo(props => {
     }
 
     setSending(true);
-    const client = new ApiClient();
-    let response = await client.sendComment(props.review.id, comment);
-    if (response.ok) {
-      dispatch(openToast(I18n.t('added comment')));
-      let review = await response.json();
-      dispatch(editReview(review));
-    } else {
-      dispatch(openToast(I18n.t('comment failed')));
-    }
-    setCommentFormActive(false);
-    setComment(undefined);
-    setSending(false);
+    await initializeApiClient();
+    const apiInstance = new CommentsApi();
+    const inlineObject2 = InlineObject2.constructFromObject({
+      comment: comment
+    });
+
+    apiInstance.reviewsReviewIdCommentsPost(
+      props.review.id,
+      inlineObject2,
+      (error, data, response) => {
+        setCommentFormActive(false);
+        setComment(undefined);
+        setSending(false);
+
+        if (response.ok) {
+          dispatch(openToast(I18n.t('added comment')));
+          dispatch(editReview(response.body));
+        } else {
+          dispatch(openToast(I18n.t('comment failed')));
+        }
+      }
+    );
   });
 
   return (

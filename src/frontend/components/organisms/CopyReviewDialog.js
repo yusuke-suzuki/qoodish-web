@@ -11,7 +11,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import closeCopyReviewDialog from '../../actions/closeCopyReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
@@ -22,7 +21,7 @@ import uploadToStorage from '../../utils/uploadToStorage';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import downloadImage from '../../utils/downloadImage';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi, NewReview, ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const CopyReviewDialog = () => {
@@ -72,24 +71,32 @@ const CopyReviewDialog = () => {
       params.image_url = uploadResponse.imageUrl;
       fileName = uploadResponse.fileName;
     }
-    const client = new ApiClient();
-    let response = await client.createReview(map.id, params);
-    let json = await response.json();
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(closeCopyReviewDialog());
-      dispatch(createReview(json));
-      dispatch(openToast(I18n.t('copy report success')));
-      gtag('event', 'create', {
-        event_category: 'engagement',
-        event_label: 'review'
-      });
-    } else {
-      dispatch(openToast(json.detail));
-      if (fileName) {
-        deleteFromStorage(fileName);
+
+    await initializeApiClient();
+
+    const apiInstance = new ReviewsApi();
+    const newReview = NewReview.constructFromObject(params);
+    apiInstance.mapsMapIdReviewsPost(
+      map.id,
+      newReview,
+      async (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(closeCopyReviewDialog());
+          dispatch(createReview(response.body));
+          dispatch(openToast(I18n.t('copy report success')));
+          gtag('event', 'create', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+        } else {
+          dispatch(openToast(response.body.detail));
+          if (fileName) {
+            deleteFromStorage(fileName);
+          }
+        }
       }
-    }
+    );
   });
 
   return (

@@ -10,7 +10,8 @@ import NoContents from '../molecules/NoContents';
 
 import fetchUserReviews from '../../actions/fetchUserReviews';
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
+import { ReviewsApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   reviewsLarge: {
@@ -61,15 +62,21 @@ const ProfileReviews = props => {
       return;
     }
     setLoading(true);
-    const client = new ApiClient();
+
     let userId =
       location && location.pathname === '/profile'
-        ? undefined
+        ? currentUser.uid
         : props.params.primaryId;
-    let response = await client.fetchUserReviews(userId);
-    let reviews = await response.json();
-    dispatch(fetchUserReviews(reviews));
-    setLoading(false);
+
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.usersUserIdReviewsGet(userId, {}, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(fetchUserReviews(response.body));
+      }
+    });
   });
 
   useEffect(() => {

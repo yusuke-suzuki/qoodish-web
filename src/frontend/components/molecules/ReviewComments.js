@@ -17,12 +17,13 @@ import CommentMenu from './CommentMenu';
 import Link from './Link';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 
 import moment from 'moment';
+import { LikesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   primaryText: {
@@ -50,30 +51,58 @@ const LikeButton = React.memo(props => {
 
   const comment = props.comment;
 
+  const likeComment = useCallback(async comment => {
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.reviewsReviewIdCommentsCommentIdlikePost(
+      comment.review_id,
+      comment.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(editReview(response.body));
+          dispatch(openToast(I18n.t('liked!')));
+
+          gtag('event', 'like', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+        } else {
+          dispatch(openToast('Request failed.'));
+        }
+      }
+    );
+  });
+
+  const unlikeComment = useCallback(async comment => {
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.reviewsReviewIdCommentsCommentIdlikeDelete(
+      comment.review_id,
+      comment.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(editReview(response.body));
+          dispatch(openToast(I18n.t('unliked')));
+
+          gtag('event', 'unlike', {
+            event_category: 'engagement',
+            event_label: 'review'
+          });
+        } else {
+          dispatch(openToast('Request failed.'));
+        }
+      }
+    );
+  });
+
   const handleLikeCommentClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
       return;
     }
-    const client = new ApiClient();
-    let response;
-    if (comment.liked) {
-      response = await client.unlikeComment(comment.review_id, comment.id);
-    } else {
-      response = await client.likeComment(comment.review_id, comment.id);
-    }
-    if (response.ok) {
-      let review = await response.json();
-      dispatch(editReview(review));
-      dispatch(openToast(I18n.t(comment.liked ? 'unliked' : 'liked!')));
-
-      gtag('event', comment.liked ? 'unlike' : 'like', {
-        event_category: 'engagement',
-        event_label: 'review'
-      });
-    } else {
-      dispatch(openToast('Request failed.'));
-    }
+    comment.liked ? unlikeComment(comment) : likeComment(comment);
   });
 
   return (
