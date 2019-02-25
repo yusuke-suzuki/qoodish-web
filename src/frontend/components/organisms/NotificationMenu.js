@@ -11,10 +11,11 @@ import Typography from '@material-ui/core/Typography';
 
 import NotificationList from './NotificationList';
 
-import ApiClient from '../../utils/ApiClient';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import I18n from '../../utils/I18n';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { NotificationsApi, InlineObject3 } from 'qoodish_api';
 
 const styles = {
   notificationMenu: {
@@ -64,17 +65,25 @@ const NotificationMenu = () => {
 
   const onEntered = useCallback(async () => {
     await sleep(5000);
-    const client = new ApiClient();
     let unreadNotifications = notifications.filter(notification => {
       return notification.read === false;
     });
     unreadNotifications.forEach(async notification => {
-      let response = await client.readNotification(notification.id);
-      if (response.ok) {
-        let notification = await response.json();
-        dispatch(readNotification(notification));
-      }
-      await sleep(3000);
+      await initializeApiClient();
+      const apiInstance = new NotificationsApi();
+      const opts = {
+        inlineObject3: InlineObject3.constructFromObject({ read: true })
+      };
+      apiInstance.notificationsNotificationIdPut(
+        notification.id,
+        opts,
+        async (error, data, response) => {
+          if (response.ok) {
+            dispatch(readNotification(response.body));
+            await sleep(3000);
+          }
+        }
+      );
     });
   });
 

@@ -28,7 +28,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import * as loadImage from 'blueimp-load-image';
 
-import ApiClient from '../../utils/ApiClient';
 import createReview from '../../actions/createReview';
 import editReview from '../../actions/editReview';
 import closeEditReviewDialog from '../../actions/closeEditReviewDialog';
