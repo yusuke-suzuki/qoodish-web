@@ -11,8 +11,9 @@ import NotificationList from '../organisms/NotificationList';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import fetchNotifications from '../../actions/fetchNotifications';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { NotificationsApi } from 'qoodish_api';
 
 const styles = {
   containerLarge: {
@@ -77,13 +78,16 @@ const Notifications = () => {
     }
 
     setLoading(true);
-    const client = new ApiClient();
-    let response = await client.fetchNotifications();
-    if (response.ok) {
-      let json = await response.json();
-      dispatch(fetchNotifications(json));
-    }
-    setLoading(false);
+
+    await initializeApiClient();
+    const apiInstance = new NotificationsApi();
+
+    apiInstance.notificationsGet((error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(fetchNotifications(response.body));
+      }
+    });
   });
 
   useEffect(() => {

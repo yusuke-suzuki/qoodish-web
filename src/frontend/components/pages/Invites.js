@@ -16,11 +16,10 @@ import NoContents from '../molecules/NoContents';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import I18n from '../../utils/I18n';
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { FollowsApi } from 'qoodish_api';
+import { FollowsApi, InvitesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
@@ -78,15 +77,17 @@ const Invites = () => {
     }
 
     setLoading(true);
-    const client = new ApiClient();
-    const response = await client.fetchInvites();
-    if (response.ok) {
-      let json = await response.json();
-      setInvites(json);
-    } else {
-      dispatch(openToast('Failed to fetch invites'));
-    }
-    setLoading(false);
+    await initializeApiClient();
+    const apiInstance = new InvitesApi();
+
+    apiInstance.invitesGet((error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        setInvites(response.body);
+      } else {
+        dispatch(openToast('Failed to fetch invites'));
+      }
+    });
   });
 
   const handleFollowButtonClick = useCallback(async invite => {

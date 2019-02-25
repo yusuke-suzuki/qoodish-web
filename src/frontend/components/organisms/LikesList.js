@@ -15,8 +15,9 @@ import Paper from '@material-ui/core/Paper';
 
 import NoContents from '../molecules/NoContents';
 
-import ApiClient from '../../utils/ApiClient';
 import I18n from '../../utils/I18n';
+import { LikesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   listItemText: {
@@ -69,22 +70,28 @@ const LikesList = props => {
 
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const { location } = useMappedState(mapState);
+  const { currentUser, location } = useMappedState(mapState);
 
   const initUserLikes = useCallback(async () => {
-    const client = new ApiClient();
     let userId =
       location && location.pathname === '/profile'
-        ? undefined
+        ? currentUser.uid
         : props.params.primaryId;
-    let response = await client.fetchUserLikes(userId);
-    let json = await response.json();
-    setLikes(json);
+
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.usersUserIdLikesGet(userId, (error, data, response) => {
+      if (response.ok) {
+        setLikes(response.body);
+      }
+    });
   });
 
   useEffect(() => {

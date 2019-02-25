@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import SharedLikeActions from './SharedLikeActions';
 
-import ApiClient from '../../utils/ApiClient';
 import openToast from '../../actions/openToast';
 import editMap from '../../actions/editMap';
 import fetchLikes from '../../actions/fetchLikes';
@@ -65,13 +64,15 @@ const MapLikeActions = props => {
   });
 
   const handleLikesClick = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchMapLikes(props.target.id);
-    if (response.ok) {
-      let likes = await response.json();
-      dispatch(fetchLikes(likes));
-      dispatch(openLikesDialog());
-    }
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.mapsMapIdLikesGet(props.target.id, (error, data, response) => {
+      if (response.ok) {
+        dispatch(fetchLikes(response.body));
+        dispatch(openLikesDialog());
+      }
+    });
   });
 
   return (

@@ -23,14 +23,14 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import I18n from '../../utils/I18n';
 
-import ApiClient from '../../utils/ApiClient';
 import closeInviteTargetDialog from '../../actions/closeInviteTargetDialog';
 import fetchUsers from '../../actions/fetchUsers';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import openToast from '../../actions/openToast';
 
-import { UsersApi } from 'qoodish_api';
+import { UsersApi, InvitesApi, NewInvite } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   appbar: {
@@ -102,15 +102,26 @@ const InviteTargetDialog = props => {
 
   const handleSendButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    const client = new ApiClient();
-    const response = await client.sendInvite(props.mapId, selectedUserId);
-    dispatch(requestFinish());
-    if (response.ok) {
-      dispatch(closeInviteTargetDialog());
-      dispatch(openToast(I18n.t('send invitation success')));
-    } else {
-      dispatch(openToast('Failed to send invites'));
-    }
+
+    await initializeApiClient();
+    const apiInstance = new InvitesApi();
+    const newInvite = NewInvite.constructFromObject({
+      user_id: selectedUserId
+    });
+
+    apiInstance.mapsMapIdInvitesPost(
+      props.mapId,
+      newInvite,
+      (error, data, response) => {
+        dispatch(requestFinish());
+        if (response.ok) {
+          dispatch(closeInviteTargetDialog());
+          dispatch(openToast(I18n.t('send invitation success')));
+        } else {
+          dispatch(openToast('Failed to send invites'));
+        }
+      }
+    );
   });
 
   return (

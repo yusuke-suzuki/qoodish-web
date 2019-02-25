@@ -9,7 +9,6 @@ const Layout = loadable(() =>
 
 import Helmet from 'react-helmet';
 
-import ApiClient from '../utils/ApiClient';
 import fetchMyProfile from '../actions/fetchMyProfile';
 import updateLinkedProviders from '../actions/updateLinkedProviders';
 import fetchNotifications from '../actions/fetchNotifications';
@@ -22,7 +21,12 @@ import getFirebaseAuth from '../utils/getFirebaseAuth';
 import getFirebaseMessaging from '../utils/getFirebaseMessaging';
 import initializeApiClient from '../utils/initializeApiClient';
 
-import { UsersApi, DevicesApi, InlineObject1 } from 'qoodish_api';
+import {
+  UsersApi,
+  DevicesApi,
+  InlineObject1,
+  NotificationsApi
+} from 'qoodish_api';
 
 const pushApiAvailable = () => {
   if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -209,12 +213,14 @@ const App = () => {
   });
 
   const refreshNotifications = useCallback(async () => {
-    const client = new ApiClient();
-    let response = await client.fetchNotifications();
-    if (response.ok) {
-      let notifications = await response.json();
-      dispatch(fetchNotifications(notifications));
-    }
+    await initializeApiClient();
+    const apiInstance = new NotificationsApi();
+
+    apiInstance.notificationsGet((error, data, response) => {
+      if (response.ok) {
+        dispatch(fetchNotifications(response.body));
+      }
+    });
   });
 
   const initUser = useCallback(async () => {
