@@ -6,13 +6,13 @@ import PersonIcon from '@material-ui/icons/Person';
 
 const styles = {
   profileAvatarLarge: {
-    marginTop: -64,
+    marginTop: -70,
     width: 80,
     height: 80,
     position: 'absolute'
   },
   profileAvatarSmall: {
-    marginTop: -54,
+    marginTop: -64,
     width: 80,
     height: 80,
     position: 'absolute'

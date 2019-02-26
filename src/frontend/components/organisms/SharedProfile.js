@@ -3,6 +3,7 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
@@ -13,7 +14,6 @@ import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import SwipeableViews from 'react-swipeable-views';
 import LikesList from './LikesList';
-import ProfileGMap from './ProfileGMap';
 import ProfileReviews from './ProfileReviews';
 import ProfileMyMaps from './ProfileMyMaps';
 import EditProfileButton from '../molecules/EditProfileButton';
@@ -31,12 +31,6 @@ const styles = {
     marginTop: 56,
     marginBottom: 56
   },
-  cardMapLarge: {
-    minHeight: 200
-  },
-  cardMapSmall: {
-    minHeight: 150
-  },
   userMapsLarge: {
     marginTop: 20,
     paddingBottom: 20
@@ -46,7 +40,7 @@ const styles = {
     paddingBottom: 16
   },
   profile: {
-    paddingTop: 39
+    paddingTop: 20
   },
   cardContentLarge: {
     padding: 24,
@@ -92,6 +86,10 @@ const styles = {
   },
   biography: {
     wordWrap: 'break-word'
+  },
+  staticMapImage: {
+    width: '100%',
+    height: '100%'
   }
 };
 
@@ -147,9 +145,14 @@ const ProfileCard = props => {
 
   return (
     <Card>
-      <div style={large ? styles.cardMapLarge : styles.cardMapSmall}>
-        <ProfileGMap />
-      </div>
+      <CardMedia>
+        <img
+          src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
+            large ? 900 : 400
+          }x${200}&scale=${2}&center=${35.710063},${139.8107}`}
+          style={styles.staticMapImage}
+        />
+      </CardMedia>
       <CardContent
         style={large ? styles.cardContentLarge : styles.cardContentSmall}
       >

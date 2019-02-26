@@ -3,6 +3,7 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
@@ -12,13 +13,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker
-} from 'react-google-maps';
-
 import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
 import fetchSpotReviews from '../../actions/fetchSpotReviews';
@@ -26,21 +20,6 @@ import { ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  cardMapContainerLarge: {
-    minHeight: 250
-  },
-  cardMapContainerSmall: {
-    minHeight: 200
-  },
-  mapWrapperLarge: {
-    height: 250
-  },
-  mapWrapperSmall: {
-    height: 200
-  },
-  mapContainer: {
-    height: '100%'
-  },
   cardLarge: {},
   cardSmall: {
     minHeight: 'calc(100vh - 56px)'
@@ -50,52 +29,12 @@ const styles = {
   },
   reviewTilesContainer: {
     marginTop: 16
+  },
+  staticMapImage: {
+    width: '100%',
+    height: '100%'
   }
 };
-
-const GoogleMapContainer = withScriptjs(
-  withGoogleMap(() => {
-    const mapState = useCallback(
-      state => ({
-        currentSpot: state.spotDetail.currentSpot,
-        defaultZoom: state.gMap.defaultZoom
-      }),
-      []
-    );
-    const { currentSpot, defaultZoom } = useMappedState(mapState);
-
-    return (
-      <GoogleMap
-        defaultZoom={defaultZoom}
-        options={{
-          zoomControl: false,
-          streetViewControl: false,
-          scaleControl: false,
-          mapTypeControl: false,
-          gestureHandling: 'greedy'
-        }}
-        center={
-          currentSpot &&
-          new google.maps.LatLng(
-            parseFloat(currentSpot.lat),
-            parseFloat(currentSpot.lng)
-          )
-        }
-      >
-        <Marker
-          position={
-            currentSpot &&
-            new google.maps.LatLng(
-              parseFloat(currentSpot.lat),
-              parseFloat(currentSpot.lng)
-            )
-          }
-          defaultAnimation={2}
-        />
-      </GoogleMap>
-    );
-  })
-);
 
 const OpeningHours = React.memo(props => {
   let openingHours = JSON.parse(props.openingHours);
@@ -113,7 +52,7 @@ const OpeningHours = React.memo(props => {
           {openingHours.weekday_text.map(weekday => {
             let [key, text] = weekday.split(': ');
             return (
-              <TableRow>
+              <TableRow key={key}>
                 <TableCell>{key}</TableCell>
                 <TableCell align="right">{text}</TableCell>
               </TableRow>
@@ -163,22 +102,18 @@ const SpotCard = props => {
 
   return (
     <Card style={large ? styles.cardLarge : styles.cardSmall}>
-      <div
-        style={
-          large ? styles.cardMapContainerLarge : styles.cardMapContainerSmall
-        }
-      >
-        <GoogleMapContainer
-          googleMapURL={process.env.GOOGLE_MAP_URL}
-          containerElement={
-            <div
-              style={large ? styles.mapWrapperLarge : styles.mapWrapperSmall}
-            />
-          }
-          mapElement={<div style={styles.mapContainer} />}
-          loadingElement={<div style={{ height: '100%' }} />}
+      <CardMedia>
+        <img
+          src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
+            large ? 700 : 400
+          }x${large ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
+            currentSpot.lng
+          }&markers=size:mid%7Ccolor:red%7C${currentSpot.lat},${
+            currentSpot.lng
+          }`}
+          style={styles.staticMapImage}
         />
-      </div>
+      </CardMedia>
       <CardContent style={styles.cardContent}>
         <PlaceIcon />
         <Typography variant="h5">{currentSpot.name}</Typography>
