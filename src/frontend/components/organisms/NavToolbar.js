@@ -3,18 +3,17 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Link from '../molecules/Link';
-import loadable from '@loadable/component';
 
-const SearchBar = loadable(() =>
+const SearchBar = React.lazy(() =>
   import(/* webpackChunkName: "search_bar" */ '../molecules/SearchBar')
 );
-const AppMenuButton = loadable(() =>
+const AppMenuButton = React.lazy(() =>
   import(/* webpackChunkName: "app_menu" */ '../molecules/AppMenuButton')
 );
-const AvatarMenu = loadable(() =>
+const AvatarMenu = React.lazy(() =>
   import(/* webpackChunkName: "avatar_menu" */ '../molecules/AvatarMenu')
 );
-const NotificationMenu = loadable(() =>
+const NotificationMenu = React.lazy(() =>
   import(/* webpackChunkName: "notification_menu" */ './NotificationMenu')
 );
 
@@ -157,7 +156,9 @@ const NavToolbar = props => {
       </Typography>
       {large && (
         <div style={styles.search}>
-          <SearchBar />
+          <React.Suspense fallback={null}>
+            <SearchBar />
+          </React.Suspense>
         </div>
       )}
       <div
@@ -165,7 +166,11 @@ const NavToolbar = props => {
       >
         {currentUser && currentUser.isAnonymous ? (
           <div>
-            {!large && <SearchButton />}
+            {!large && (
+              <React.Suspense fallback={null}>
+                <SearchButton />
+              </React.Suspense>
+            )}
             <Button
               color="inherit"
               component={Link}
@@ -177,8 +182,16 @@ const NavToolbar = props => {
           </div>
         ) : (
           <div style={styles.rightContents}>
-            {!large && <SearchButton {...props} />}
-            {large && <NotificationMenu />}
+            {!large && (
+              <React.Suspense fallback={null}>
+                <SearchButton {...props} />
+              </React.Suspense>
+            )}
+            {large && (
+              <React.Suspense fallback={null}>
+                <NotificationMenu />
+              </React.Suspense>
+            )}
             <AvatarMenu />
           </div>
         )}

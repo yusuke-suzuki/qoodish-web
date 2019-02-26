@@ -11,14 +11,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
 
-import loadable from '@loadable/component';
-const MapShareMenu = loadable(() =>
+const MapShareMenu = React.lazy(() =>
   import(/* webpackChunkName: "map_share_menu" */ './MapShareMenu')
 );
-const MapVertMenu = loadable(() =>
+const MapVertMenu = React.lazy(() =>
   import(/* webpackChunkName: "map_vert_menu" */ './MapVertMenu')
 );
-const AppMenuButton = loadable(() =>
+const AppMenuButton = React.lazy(() =>
   import(/* webpackChunkName: "app_menu" */ './AppMenuButton')
 );
 
@@ -101,7 +100,11 @@ const MapToolbar = props => {
           <ArrowBackIcon />
         </IconButton>
       )}
-      {props.showMenuButton && <AppMenuButton />}
+      {props.showMenuButton && (
+        <React.Suspense fallback={null}>
+          <AppMenuButton />
+        </React.Suspense>
+      )}
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon
@@ -117,8 +120,10 @@ const MapToolbar = props => {
         </Typography>
       )}
       <div style={styles.toolbarActions}>
-        <MapShareMenu />
-        <MapVertMenu />
+        <React.Suspense fallback={null}>
+          <MapShareMenu />
+          <MapVertMenu />
+        </React.Suspense>
       </div>
     </Toolbar>
   );
