@@ -8,11 +8,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
-import SwipeableViews from 'react-swipeable-views';
 import LikesList from './LikesList';
 import ProfileReviews from './ProfileReviews';
 import ProfileMyMaps from './ProfileMyMaps';
@@ -52,11 +50,6 @@ const styles = {
   },
   tab: {
     minWidth: 'auto'
-  },
-  progress: {
-    textAlign: 'center',
-    padding: 20,
-    marginTop: 20
   },
   gridHeader: {
     width: '100%',
@@ -197,34 +190,12 @@ const ProfileCard = props => {
   );
 };
 
-const ProfileProgress = () => {
-  return (
-    <div style={styles.progress}>
-      <CircularProgress />
-    </div>
-  );
-};
-
 const SharedProfile = props => {
   const large = useMediaQuery('(min-width: 600px)');
-
-  const mapState = useCallback(
-    state => ({
-      loadingMyMaps: state.profile.loadingMyMaps,
-      loadingReviews: state.profile.loadingReviews
-    }),
-    []
-  );
-
-  const { loadingMyMaps, loadingReviews } = useMappedState(mapState);
 
   const [tabValue, setTabValue] = useState(0);
 
   const handleTabChange = useCallback((e, value) => {
-    setTabValue(value);
-  });
-
-  const handleChangeIndex = useCallback(value => {
     setTabValue(value);
   });
 
@@ -235,17 +206,19 @@ const SharedProfile = props => {
         handleTabChange={handleTabChange}
         currentUser={props.currentUser}
       />
-      <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
-        <div key="reviews">
-          {loadingReviews ? <ProfileProgress /> : <ProfileReviews {...props} />}
-        </div>
-        <div style={large ? styles.userMapsLarge : styles.userMapsSmall}>
-          {loadingMyMaps ? <ProfileProgress /> : <ProfileMyMaps {...props} />}
-        </div>
-        <div style={large ? styles.likesLarge : styles.likesSmall}>
-          <LikesList {...props} />
-        </div>
-      </SwipeableViews>
+      <div>
+        {tabValue === 0 && <ProfileReviews {...props} />}
+        {tabValue === 1 && (
+          <div style={large ? styles.userMapsLarge : styles.userMapsSmall}>
+            <ProfileMyMaps {...props} />
+          </div>
+        )}
+        {tabValue === 2 && (
+          <div style={large ? styles.likesLarge : styles.likesSmall}>
+            <LikesList {...props} />
+          </div>
+        )}
+      </div>
       {large && <CreateResourceButton />}
     </div>
   );
