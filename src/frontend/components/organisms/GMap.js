@@ -9,21 +9,20 @@ import {
   DirectionsRenderer
 } from 'react-google-maps';
 import { compose } from 'recompose';
-import loadable from '@loadable/component';
 
 import gMapMounted from '../../actions/gMapMounted';
 import mapZoomChanged from '../../actions/mapZoomChanged';
 
-const CreateResourceButton = loadable(() =>
+const CreateResourceButton = React.lazy(() =>
   import(/* webpackChunkName: "create_resource_button" */ '../molecules/CreateResourceButton')
 );
-const LocationButton = loadable(() =>
+const LocationButton = React.lazy(() =>
   import(/* webpackChunkName: "location_button" */ '../molecules/LocationButton')
 );
-const SpotMarkers = loadable(() =>
+const SpotMarkers = React.lazy(() =>
   import(/* webpackChunkName: "spot_markers" */ './SpotMarkers')
 );
-const CurrentPositionMarker = loadable(() =>
+const CurrentPositionMarker = React.lazy(() =>
   import(/* webpackChunkName: "current_position_marker" */ '../molecules/CurrentPositionMarker')
 );
 
@@ -111,17 +110,21 @@ const MapWithAnOverlayView = compose(
       zoom={zoom}
       onZoomChanged={() => onZoomChanged(gMap.getZoom())}
     >
-      <SpotMarkers />
-      <CurrentPositionMarker />
+      <React.Suspense fallback={null}>
+        <SpotMarkers />
+        <CurrentPositionMarker />
+      </React.Suspense>
       <DirectionsRenderer directions={directions} />
       <div style={styles.button}>
-        <CreateResourceButton
-          buttonForMap
-          disabled={
-            !(currentMap && currentMap.postable && currentMap.following)
-          }
-        />
-        <LocationButton />
+        <React.Suspense fallback={null}>
+          <CreateResourceButton
+            buttonForMap
+            disabled={
+              !(currentMap && currentMap.postable && currentMap.following)
+            }
+          />
+          <LocationButton />
+        </React.Suspense>
       </div>
     </GoogleMap>
   );

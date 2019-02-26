@@ -1,9 +1,7 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
-import loadable from '@loadable/component';
-
-const Layout = loadable(() =>
+const Layout = React.lazy(() =>
   import(/* webpackChunkName: "layout" */ './Layout')
 );
 
@@ -255,7 +253,9 @@ const App = () => {
   return (
     <div>
       <AppHelmet />
-      <Layout />
+      <React.Suspense fallback={null}>
+        <Layout />
+      </React.Suspense>
     </div>
   );
 };

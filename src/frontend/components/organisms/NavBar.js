@@ -2,15 +2,13 @@ import React, { useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import loadable from '@loadable/component';
-
-const NavDrawer = loadable(() =>
+const NavDrawer = React.lazy(() =>
   import(/* webpackChunkName: "nav_drawer" */ '../molecules/NavDrawer')
 );
-const MapToolbar = loadable(() =>
+const MapToolbar = React.lazy(() =>
   import(/* webpackChunkName: "map_toolbar" */ '../molecules/MapToolbar')
 );
-const NavToolbar = loadable(() =>
+const NavToolbar = React.lazy(() =>
   import(/* webpackChunkName: "nav_toolbar" */ './NavToolbar')
 );
 
@@ -25,13 +23,17 @@ const NavBar = () => {
   return (
     <div>
       <AppBar position="fixed">
-        {isMapDetail && !large ? (
-          <MapToolbar showMapName showBackButton />
-        ) : (
-          <NavToolbar />
-        )}
+        <React.Suspense fallback={null}>
+          {isMapDetail && !large ? (
+            <MapToolbar showMapName showBackButton />
+          ) : (
+            <NavToolbar />
+          )}
+        </React.Suspense>
       </AppBar>
-      <NavDrawer />
+      <React.Suspense fallback={null}>
+        <NavDrawer />
+      </React.Suspense>
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'redux-react-hook';
-import loadable from '@loadable/component';
 import createHistory from 'history/createBrowserHistory';
 import pathToRegexp from 'path-to-regexp';
 
@@ -13,45 +12,54 @@ import openSpotDialog from '../actions/openSpotDialog';
 import selectSpot from '../actions/selectSpot';
 import requestMapCenter from '../actions/requestMapCenter';
 
-const Login = loadable(() =>
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+const Login = React.lazy(() =>
   import(/* webpackChunkName: "login" */ './pages/Login')
 );
-const Discover = loadable(() =>
+const Discover = React.lazy(() =>
   import(/* webpackChunkName: "discover" */ './pages/Discover')
 );
-const Timeline = loadable(() =>
+const Timeline = React.lazy(() =>
   import(/* webpackChunkName: "timeline" */ './pages/Timeline')
 );
-const Profile = loadable(() =>
+const Profile = React.lazy(() =>
   import(/* webpackChunkName: "profile" */ './pages/Profile')
 );
-const UserProfile = loadable(() =>
+const UserProfile = React.lazy(() =>
   import(/* webpackChunkName: "user_profile" */ './pages/UserProfile')
 );
-const Notifications = loadable(() =>
+const Notifications = React.lazy(() =>
   import(/* webpackChunkName: "notification" */ './pages/Notifications')
 );
-const MapDetail = loadable(() =>
+const MapDetail = React.lazy(() =>
   import(/* webpackChunkName: "map_detail" */ './pages/MapDetail')
 );
-const ReviewDetail = loadable(() =>
+const ReviewDetail = React.lazy(() =>
   import(/* webpackChunkName: "review_detail" */ './pages/ReviewDetail')
 );
-const SpotDetail = loadable(() =>
+const SpotDetail = React.lazy(() =>
   import(/* webpackChunkName: "spot_detail" */ './pages/SpotDetail')
 );
-const Settings = loadable(() =>
+const Settings = React.lazy(() =>
   import(/* webpackChunkName: "settings" */ './pages/Settings')
 );
-const Invites = loadable(() =>
+const Invites = React.lazy(() =>
   import(/* webpackChunkName: "invites" */ './pages/Invites')
 );
-const Terms = loadable(() =>
+const Terms = React.lazy(() =>
   import(/* webpackChunkName: "terms" */ './pages/Terms')
 );
-const Privacy = loadable(() =>
+const Privacy = React.lazy(() =>
   import(/* webpackChunkName: "privacy" */ './pages/Privacy')
 );
+
+const styles = {
+  progress: {
+    width: '50%',
+    margin: '50vh auto'
+  }
+};
 
 const root = { path: '/', component: Timeline };
 
@@ -194,11 +202,23 @@ const Routes = () => {
   );
 
   if (currentLocation.state && currentLocation.state.modal) {
-    return <previousRoute.component params={previousRoute.params} />;
+    return (
+      <React.Suspense fallback={<div />}>
+        <previousRoute.component params={previousRoute.params} />
+      </React.Suspense>
+    );
   }
 
   return matchedRoute ? (
-    <matchedRoute.component params={matchedRoute.params} />
+    <React.Suspense
+      fallback={
+        <div style={styles.progress}>
+          <LinearProgress />
+        </div>
+      }
+    >
+      <matchedRoute.component params={matchedRoute.params} />
+    </React.Suspense>
   ) : (
     <div>Not Found</div>
   );

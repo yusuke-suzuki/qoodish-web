@@ -1,23 +1,22 @@
 import React, { useCallback, useEffect } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import loadable from '@loadable/component';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import Grid from '@material-ui/core/Grid';
 
-const Routes = loadable(() =>
+const Routes = React.lazy(() =>
   import(/* webpackChunkName: "routes" */ './Routes')
 );
-const NavBar = loadable(() =>
+const NavBar = React.lazy(() =>
   import(/* webpackChunkName: "nav_bar" */ './organisms/NavBar')
 );
-const BottomNav = loadable(() =>
+const BottomNav = React.lazy(() =>
   import(/* webpackChunkName: "bottom_nav" */ './molecules/BottomNav')
 );
-const SharedDialogs = loadable(() =>
+const SharedDialogs = React.lazy(() =>
   import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
 );
 
@@ -64,7 +63,9 @@ const Layout = () => {
     <MuiThemeProvider theme={theme}>
       <Grid container>
         <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
-          <NavBar />
+          <React.Suspense fallback={null}>
+            <NavBar />
+          </React.Suspense>
         </Grid>
         <Grid
           item
@@ -74,11 +75,19 @@ const Layout = () => {
           lg={!large || !showSideNav ? 12 : 8}
           xl={!large || !showSideNav ? 12 : 8}
         >
-          <Routes />
+          <React.Suspense fallback={null}>
+            <Routes />
+          </React.Suspense>
         </Grid>
       </Grid>
-      {!large && showBottomNav && <BottomNav />}
-      <SharedDialogs />
+      {!large && showBottomNav && (
+        <React.Suspense fallback={null}>
+          <BottomNav />
+        </React.Suspense>
+      )}
+      <React.Suspense fallback={null}>
+        <SharedDialogs />
+      </React.Suspense>
     </MuiThemeProvider>
   );
 };

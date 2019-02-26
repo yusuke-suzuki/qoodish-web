@@ -895,13 +895,6 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.11.tgz#32a853fad9974cbbc9fc766ec5699a18b22ccee6"
   integrity sha512-WyMXDxk/WZ+f2lOCeEvDWUce2f5Kk2sNfvArK8f+PlUnzFdy/MBzLXrmbMgyZXP7GP4ooUxYV8Sdmoh1hGk1Uw==
 
-"@loadable/component@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@loadable/component/-/component-4.0.2.tgz#9e3f08e7c8ecf9a4733cc4ae760ae19596fad57d"
-  integrity sha512-iGEXMC3dwGdWJiHGbPnU6R3by5nI3HnVOm/46Mw5SEKLi2z1wWsBEqAhhb9TUF4kn41NzwNipCyiKSln2FkKDw==
-  dependencies:
-    hoist-non-react-statics "^3.1.0"
-
 "@material-ui/core@^3.8.2":
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.8.2.tgz#24d78fb6093f5435c25a7cb76f17a6289215d805"
@@ -4377,13 +4370,6 @@ hoist-non-react-statics@^2.3.1:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
-
-hoist-non-react-statics@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.2.0.tgz#d21b9fc72b50fdc38c5d88f6e2c52f2c2dbe5ee2"
-  integrity sha512-3IascCRfaEkbmHjJnUxWSspIUE1okLPjGTMVXW8zraUo1t3yg1BadKAxAGILHwgoBzmMnzrgeeaDGBvpuPz6dA==
-  dependencies:
-    react-is "^16.3.2"
 
 hoist-non-react-statics@^3.2.1:
   version "3.2.1"

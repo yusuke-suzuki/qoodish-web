@@ -2,8 +2,6 @@ import React, { useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import loadable from '@loadable/component';
-
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
@@ -17,22 +15,22 @@ import I18n from '../../utils/I18n';
 
 import { MapsApi, SpotsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
 
-const GMap = loadable(() =>
+const GMap = React.lazy(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
 );
-const MapSummary = loadable(() =>
+const MapSummary = React.lazy(() =>
   import(/* webpackChunkName: "map_summary" */ '../organisms/MapSummary')
 );
-const MapBottomSeat = loadable(() =>
+const MapBottomSeat = React.lazy(() =>
   import(/* webpackChunkName: "map_bottom_seat" */ '../organisms/MapBottomSeat')
 );
-const DeleteMapDialog = loadable(() =>
+const DeleteMapDialog = React.lazy(() =>
   import(/* webpackChunkName: "delete_map_dialog" */ '../organisms/DeleteMapDialog')
 );
-const InviteTargetDialog = loadable(() =>
+const InviteTargetDialog = React.lazy(() =>
   import(/* webpackChunkName: "invite_target_dialog" */ '../organisms/InviteTargetDialog')
 );
-const MapSpotCard = loadable(() =>
+const MapSpotCard = React.lazy(() =>
   import(/* webpackChunkName: "map_spot_card" */ '../organisms/MapSpotCard')
 );
 
@@ -122,10 +120,12 @@ const MapSummaryDrawer = props => {
         style: large ? styles.drawerPaperLarge : styles.drawerPaperSmall
       }}
     >
-      <MapSummary
-        mapId={props.params.primaryId}
-        dialogMode={large ? false : true}
-      />
+      <React.Suspense fallback={null}>
+        <MapSummary
+          mapId={props.params.primaryId}
+          dialogMode={large ? false : true}
+        />
+      </React.Suspense>
     </Drawer>
   );
 };
@@ -240,20 +240,28 @@ const MapDetail = props => {
       {large ? (
         <div>
           <MapSummaryDrawer {...props} />
-          <GMap />
+          <React.Suspense fallback={null}>
+            <GMap />
+          </React.Suspense>
         </div>
       ) : (
         <div>
           <div style={large ? styles.containerLarge : styles.containerSmall}>
-            <GMap />
+            <React.Suspense fallback={null}>
+              <GMap />
+            </React.Suspense>
           </div>
-          <MapBottomSeat map={currentMap} />
+          <React.Suspense fallback={null}>
+            <MapBottomSeat map={currentMap} />
+          </React.Suspense>
           <MapSummaryDrawer {...props} />
         </div>
       )}
-      <DeleteMapDialog mapId={props.params.primaryId} />
-      <InviteTargetDialog mapId={props.params.primaryId} />
-      <MapSpotCard mapId={props.params.primaryId} />
+      <React.Suspense fallback={null}>
+        <DeleteMapDialog mapId={props.params.primaryId} />
+        <InviteTargetDialog mapId={props.params.primaryId} />
+        <MapSpotCard mapId={props.params.primaryId} />
+      </React.Suspense>
     </div>
   );
 };
