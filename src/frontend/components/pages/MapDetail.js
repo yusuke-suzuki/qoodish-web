@@ -33,6 +33,12 @@ const InviteTargetDialog = React.lazy(() =>
 const MapSpotCard = React.lazy(() =>
   import(/* webpackChunkName: "map_spot_card" */ '../organisms/MapSpotCard')
 );
+const CreateResourceButton = React.lazy(() =>
+  import(/* webpackChunkName: "create_resource_button" */ '../molecules/CreateResourceButton')
+);
+const LocationButton = React.lazy(() =>
+  import(/* webpackChunkName: "location_button" */ '../molecules/LocationButton')
+);
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
@@ -52,6 +58,15 @@ const styles = {
   drawerPaperLarge: {},
   drawerPaperSmall: {
     height: '100%'
+  },
+  mapButtonsLarge: {
+    right: 0,
+    bottom: 0
+  },
+  mapButtonsSmall: {
+    position: 'relative',
+    right: 0,
+    bottom: 0
   }
 };
 
@@ -129,6 +144,25 @@ const MapSummaryDrawer = props => {
     </Drawer>
   );
 };
+
+const MapButtons = React.memo(props => {
+  const large = useMediaQuery('(min-width: 600px)');
+  const currentMap = props.currentMap;
+
+  return (
+    <div style={large ? styles.mapButtonsLarge : styles.mapButtonsSmall}>
+      <React.Suspense fallback={null}>
+        <CreateResourceButton
+          buttonForMap
+          disabled={
+            !(currentMap && currentMap.postable && currentMap.following)
+          }
+        />
+        <LocationButton />
+      </React.Suspense>
+    </div>
+  );
+});
 
 const MapDetail = props => {
   const large = useMediaQuery('(min-width: 600px)');
@@ -243,6 +277,7 @@ const MapDetail = props => {
           <React.Suspense fallback={null}>
             <GMap />
           </React.Suspense>
+          <MapButtons currentMap={currentMap} />
         </div>
       ) : (
         <div>
@@ -250,6 +285,7 @@ const MapDetail = props => {
             <React.Suspense fallback={null}>
               <GMap />
             </React.Suspense>
+            <MapButtons currentMap={currentMap} />
           </div>
           <React.Suspense fallback={null}>
             <MapBottomSeat map={currentMap} />

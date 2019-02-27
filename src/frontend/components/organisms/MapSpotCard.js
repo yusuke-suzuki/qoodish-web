@@ -6,7 +6,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import DirectionsIcon from '@material-ui/icons/Directions';
 import InfoIcon from '@material-ui/icons/Info';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
@@ -31,11 +30,7 @@ import SpotImageStepper from '../molecules/SpotImageStepper';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
-import openToast from '../../actions/openToast';
-import requestRoute from '../../actions/requestRoute';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
-import fetchCurrentPosition from '../../utils/fetchCurrentPosition';
-import getCurrentPosition from '../../actions/getCurrentPosition';
 import requestMapCenter from '../../actions/requestMapCenter';
 import switchMap from '../../actions/switchMap';
 import I18n from '../../utils/I18n';
@@ -120,45 +115,6 @@ const SpotBottomNavigation = props => {
     dispatch(switchMap());
   });
 
-  const handleRouteButtonClick = useCallback(async () => {
-    dispatch(switchMap());
-    const currentPosition = await fetchCurrentPosition();
-    dispatch(
-      getCurrentPosition(
-        currentPosition.coords.latitude,
-        currentPosition.coords.longitude
-      )
-    );
-    if (currentPosition) {
-      const DirectionsService = new google.maps.DirectionsService();
-      let origin = new google.maps.LatLng(
-        parseFloat(currentPosition.coords.latitude),
-        parseFloat(currentPosition.coords.longitude)
-      );
-      let destination = new google.maps.LatLng(
-        parseFloat(currentSpot.lat),
-        parseFloat(currentSpot.lng)
-      );
-      DirectionsService.route(
-        {
-          origin: origin,
-          destination: destination,
-          travelMode: google.maps.TravelMode.WALKING
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            dispatch(requestRoute(result));
-          } else {
-            dispatch(openToast('Error fetching direction'));
-          }
-        }
-      );
-    } else {
-      dispatch(openToast('Current position is not available. Please activate'));
-      return;
-    }
-  });
-
   return (
     <Paper style={large ? styles.bottomNavLarge : {}} elevation={2}>
       <BottomNavigation showLabels>
@@ -166,12 +122,6 @@ const SpotBottomNavigation = props => {
           label={I18n.t('location')}
           icon={<PlaceIcon />}
           onClick={handleLocationButtonClick}
-          style={styles.bottomAction}
-        />
-        <BottomNavigationAction
-          label={I18n.t('routes')}
-          icon={<DirectionsIcon />}
-          onClick={handleRouteButtonClick}
           style={styles.bottomAction}
         />
         <BottomNavigationAction

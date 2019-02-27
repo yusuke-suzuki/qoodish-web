@@ -3,27 +3,17 @@ import {
   REQUEST_CURRENT_POSITION,
   REQUEST_MAP_CENTER,
   FETCH_SPOTS,
-  REQUEST_ROUTE,
-  CLEAR_MAP_STATE,
-  G_MAP_MOUNTED,
-  MAP_ZOOM_CHANGED
+  CLEAR_MAP_STATE
 } from '../actionTypes';
 
 const initialState = {
-  gMap: null,
-  defaultCenter: {
-    lat: 35.710063,
-    lng: 139.8107
-  },
-  defaultZoom: 17,
   currentPosition: {},
   center: {
     lat: 35.710063,
     lng: 139.8107
   },
   zoom: 17,
-  spots: [],
-  directions: []
+  spots: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,24 +48,10 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spots: action.payload.spots
       });
-    case REQUEST_ROUTE:
-      return Object.assign({}, state, {
-        directions: action.payload.directions
-      });
-    case G_MAP_MOUNTED:
-      return Object.assign({}, state, {
-        gMap: action.payload.map
-      });
-    case MAP_ZOOM_CHANGED:
-      return Object.assign({}, state, {
-        zoom: action.payload.zoom
-      });
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
-        gMap: null,
         zoom: 17,
-        spots: [],
-        directions: []
+        spots: []
       });
     default:
       return state;
