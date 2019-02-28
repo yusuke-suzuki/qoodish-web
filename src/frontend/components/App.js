@@ -222,7 +222,6 @@ const App = () => {
   });
 
   const initUser = useCallback(async () => {
-    await initializeApiClient();
     let firebaseUser = await getCurrentUser();
 
     if (firebaseUser && !firebaseUser.isAnonymous) {
