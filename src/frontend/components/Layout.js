@@ -59,15 +59,27 @@ const Layout = () => {
   const mapState = useCallback(
     state => ({
       showSideNav: state.shared.showSideNav,
-      showBottomNav: state.shared.showBottomNav
+      showBottomNav: state.shared.showBottomNav,
+      currentLocation: state.shared.currentLocation
     }),
     []
   );
-  const { showSideNav, showBottomNav } = useMappedState(mapState);
+  const { showSideNav, showBottomNav, currentLocation } = useMappedState(
+    mapState
+  );
 
-  useEffect(() => {
-    scrollTop();
-  }, []);
+  useEffect(
+    () => {
+      if (
+        !currentLocation ||
+        (currentLocation.state && currentLocation.state.modal)
+      ) {
+        return;
+      }
+      scrollTop();
+    },
+    [currentLocation]
+  );
 
   return (
     <MuiThemeProvider theme={theme}>
