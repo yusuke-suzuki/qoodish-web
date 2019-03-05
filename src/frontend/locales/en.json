@@ -180,5 +180,6 @@
   "follow map success": "Followed map successfully!",
   "unfollow map success": "Unfollowed map successfully",
   "sign in success": "Signed in successfully!",
-  "copied": "Copied!"
+  "copied": "Copied!",
+  "recommend": "Recommend"
 }
