@@ -59,6 +59,12 @@ const styles = {
     right: 0,
     display: 'flex'
   },
+  loginButtonLarge: {
+    marginRight: 12
+  },
+  loginButtonSmall: {
+    marginRight: 8
+  },
   leftButton: {
     marginLeft: 8,
     position: 'absolute'
@@ -165,7 +171,9 @@ const NavToolbar = props => {
         style={large ? styles.rightContentsLarge : styles.rightContentsSmall}
       >
         {currentUser && currentUser.isAnonymous ? (
-          <div>
+          <div
+            style={large ? styles.loginButtonLarge : styles.loginButtonSmall}
+          >
             {!large && (
               <React.Suspense fallback={null}>
                 <SearchButton />
