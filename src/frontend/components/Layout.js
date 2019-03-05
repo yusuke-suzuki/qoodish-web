@@ -19,6 +19,9 @@ const BottomNav = React.lazy(() =>
 const SharedDialogs = React.lazy(() =>
   import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
 );
+const RecommendMaps = React.lazy(() =>
+  import(/* webpackChunkName: "recommend_maps" */ './organisms/RecommendMaps')
+);
 
 const theme = createMuiTheme({
   palette: {
@@ -39,6 +42,13 @@ const theme = createMuiTheme({
     useNextVariants: true
   }
 });
+
+const styles = {
+  rightGrid: {
+    marginTop: 78,
+    paddingRight: 16
+  }
+};
 
 const scrollTop = () => {
   window.scrollTo(0, 0);
@@ -79,6 +89,13 @@ const Layout = () => {
             <Routes />
           </React.Suspense>
         </Grid>
+        {large && (
+          <Grid item md={3} lg={2} xl={2} style={styles.rightGrid}>
+            <React.Suspense fallback={null}>
+              <RecommendMaps />
+            </React.Suspense>
+          </Grid>
+        )}
       </Grid>
       {!large && showBottomNav && (
         <React.Suspense fallback={null}>
