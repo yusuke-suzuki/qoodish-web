@@ -101,9 +101,11 @@ const switchPageTitle = (pathname, large) => {
   }
 };
 
-const showSideNav = pathname => {
+const switchSideNav = pathname => {
+  let isMapDetail =
+    pathname.includes('/maps/') && !pathname.includes('/reports');
   if (
-    (pathname.includes('/maps/') && !pathname.includes('/reports')) ||
+    isMapDetail ||
     pathname.includes('/login') ||
     pathname.includes('/terms') ||
     pathname.includes('/privacy')
@@ -114,7 +116,7 @@ const showSideNav = pathname => {
   }
 };
 
-const showBottomNav = pathname => {
+const switchBottomNav = pathname => {
   if (
     pathname.includes('/maps/') ||
     pathname.includes('/spots') ||
@@ -283,18 +285,24 @@ const reducer = (state = initialState, action) => {
         return state;
       }
 
-      let pageTitle =
+      let isModal =
         action.payload.location.state &&
         action.payload.location.state.modal &&
-        state.previousLocation
-          ? state.pageTitle
-          : switchPageTitle(action.payload.location.pathname, state.large);
-      let showBackButton =
-        action.payload.location.state &&
-        action.payload.location.state.modal &&
-        state.previousLocation
-          ? state.showBackButton
-          : switchBackButton(action.payload.location.pathname);
+        state.previousLocation;
+
+      let pageTitle = isModal
+        ? state.pageTitle
+        : switchPageTitle(action.payload.location.pathname, state.large);
+      let showBackButton = isModal
+        ? state.showBackButton
+        : switchBackButton(action.payload.location.pathname);
+      let showSideNav = isModal
+        ? state.showSideNav
+        : switchSideNav(action.payload.location.pathname);
+      let showBottomNav = isModal
+        ? state.showBottomNav
+        : switchBottomNav(action.payload.location.pathname);
+
       return Object.assign({}, state, {
         previousLocation: state.currentLocation,
         currentLocation: action.payload.location,
@@ -307,8 +315,8 @@ const reducer = (state = initialState, action) => {
         feedbackDialogOpen: false,
         drawerOpen: false,
         searchMapsDialogOpen: false,
-        showSideNav: showSideNav(action.payload.location.pathname),
-        showBottomNav: showBottomNav(action.payload.location.pathname),
+        showSideNav: showSideNav,
+        showBottomNav: showBottomNav,
         isMapDetail: detectMapDetail(action.payload.location.pathname)
       });
     default:

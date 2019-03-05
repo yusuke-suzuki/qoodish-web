@@ -15,7 +15,8 @@ import I18n from '../../utils/I18n';
 
 const styles = {
   container: {
-    padding: 16
+    padding: 16,
+    paddingBottom: 120
   },
   recommendTitle: {
     marginBottom: 15
@@ -61,7 +62,7 @@ const RecommendMaps = () => {
     apiInstance.mapsGet({ recommend: true }, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
-        setMaps(response.body);
+        setMaps(response.body.slice(0, 2));
       }
     });
   });
@@ -83,8 +84,8 @@ const RecommendMaps = () => {
         <Loading />
       ) : (
         maps.map(map => (
-          <div>
-            <CardContent style={styles.cardContent} key={map.id}>
+          <div key={map.id}>
+            <CardContent style={styles.cardContent}>
               <ButtonBase
                 component={Link}
                 to={`/maps/${map.id}`}
@@ -128,9 +129,9 @@ const RecommendMaps = () => {
 const Loading = React.memo(() => {
   return (
     <div>
-      {Array.from(new Array(5)).map((v, i) => (
-        <div>
-          <CardContent style={styles.cardContent} key={i}>
+      {Array.from(new Array(2)).map((v, i) => (
+        <div key={i}>
+          <CardContent style={styles.cardContent}>
             <CardMedia
               style={Object.assign({}, styles.mapImage, styles.loadingImage)}
             />
