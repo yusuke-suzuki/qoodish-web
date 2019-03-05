@@ -1,17 +1,16 @@
 import React, { useEffect, useCallback, useState } from 'react';
-import CardContent from '@material-ui/core/CardContent';
+
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 
 import initializeApiClient from '../../utils/initializeApiClient';
 import { MapsApi } from 'qoodish_api';
-import Link from '../molecules/Link';
-import CardMedia from '@material-ui/core/CardMedia';
-import FollowMapButton from '../molecules/FollowMapButton';
-import Divider from '@material-ui/core/Divider';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import I18n from '../../utils/I18n';
+
+import Link from '../molecules/Link';
+import MapCard from '../molecules/MapCard';
+import SkeltonMapCard from '../molecules/SkeltonMapCard';
 
 const styles = {
   container: {
@@ -21,32 +20,8 @@ const styles = {
   recommendTitle: {
     marginBottom: 15
   },
-  gridList: {},
-  mapImage: {
-    width: '100%',
-    height: 120,
-    objectFit: 'cover'
-  },
-  cardContent: {
-    padding: 0,
-    marginBottom: 24
-  },
   divider: {
     marginBottom: 24
-  },
-  skeltonTextPrimary: {
-    width: '100%',
-    height: '1rem'
-  },
-  skeltonTextSecondary: {
-    width: '50%',
-    height: '0.875rem'
-  },
-  loadingButton: {
-    color: 'rgba(0, 0, 0, 0)'
-  },
-  loadingImage: {
-    background: 'rgba(0, 0, 0, 0.1)'
   }
 };
 
@@ -85,36 +60,7 @@ const RecommendMaps = () => {
       ) : (
         maps.map(map => (
           <div key={map.id}>
-            <CardContent style={styles.cardContent}>
-              <ButtonBase
-                component={Link}
-                to={`/maps/${map.id}`}
-                title={map.name}
-              >
-                <CardMedia>
-                  <img
-                    src={map.image_url}
-                    alt={map.name}
-                    style={styles.mapImage}
-                  />
-                </CardMedia>
-              </ButtonBase>
-              <Typography variant="subtitle1" noWrap>
-                {map.name}
-              </Typography>
-              <Typography variant="subtitle2" color="textSecondary" noWrap>
-                {map.owner_name}
-              </Typography>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                gutterBottom
-                noWrap
-              >
-                {map.description}
-              </Typography>
-              <FollowMapButton currentMap={map} />
-            </CardContent>
+            <MapCard map={map} />
             <Divider style={styles.divider} />
           </div>
         ))
@@ -131,28 +77,7 @@ const Loading = React.memo(() => {
     <div>
       {Array.from(new Array(2)).map((v, i) => (
         <div key={i}>
-          <CardContent style={styles.cardContent}>
-            <CardMedia
-              style={Object.assign({}, styles.mapImage, styles.loadingImage)}
-            />
-            <Typography variant="subtitle1">
-              <Chip style={styles.skeltonTextPrimary} />
-            </Typography>
-            <Typography variant="subtitle2">
-              <Chip style={styles.skeltonTextSecondary} />
-            </Typography>
-            <Typography variant="subtitle2" gutterBottom>
-              <Chip style={styles.skeltonTextSecondary} />
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              disabled
-              style={styles.loadingButton}
-            >
-              Loading
-            </Button>
-          </CardContent>
+          <SkeltonMapCard />
           <Divider style={styles.divider} />
         </div>
       ))}
