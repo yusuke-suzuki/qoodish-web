@@ -89,7 +89,7 @@ const Layout = () => {
             <Routes />
           </React.Suspense>
         </Grid>
-        {large && (
+        {large && showSideNav && (
           <Grid item md={3} lg={2} xl={2} style={styles.rightGrid}>
             <React.Suspense fallback={null}>
               <RecommendMaps />
