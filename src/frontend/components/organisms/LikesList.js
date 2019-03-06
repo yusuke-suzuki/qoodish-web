@@ -12,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import NoContents from '../molecules/NoContents';
 
@@ -27,6 +28,11 @@ const styles = {
     borderRadius: 0,
     marginRight: 12,
     cursor: 'pointer'
+  },
+  progress: {
+    textAlign: 'center',
+    padding: 20,
+    marginTop: 20
   }
 };
 
@@ -67,6 +73,7 @@ const fromNow = like => {
 
 const LikesList = props => {
   const [likes, setLikes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const mapState = useCallback(
     state => ({
@@ -88,6 +95,7 @@ const LikesList = props => {
     const apiInstance = new LikesApi();
 
     apiInstance.usersUserIdLikesGet(userId, (error, data, response) => {
+      setLoading(false);
       if (response.ok) {
         setLikes(response.body);
       }
@@ -98,8 +106,56 @@ const LikesList = props => {
     initUserLikes();
   }, []);
 
-  if (likes.length < 1) {
+  if (loading) {
     return (
+      <div style={styles.progress}>
+        <CircularProgress />
+      </div>
+    );
+  } else {
+    return likes.length > 0 ? (
+      <Paper>
+        <List>
+          {likes.map(like => (
+            <ListItem
+              key={like.id}
+              button
+              component={Link}
+              to={like.click_action}
+            >
+              <Avatar
+                src={like.voter.profile_image_url}
+                alt={like.voter.name}
+              />
+              <ListItemText
+                style={styles.listItemText}
+                primary={
+                  <Typography variant="subtitle1">
+                    <PrimaryText like={like} />
+                  </Typography>
+                }
+                secondary={
+                  <Typography variant="subtitle1" color="textSecondary">
+                    {fromNow(like)}
+                  </Typography>
+                }
+                disableTypography
+              />
+              {like.votable.thumbnail_url && (
+                <ListItemSecondaryAction>
+                  <ButtonBase component={Link} to={like.click_action}>
+                    <Avatar
+                      src={like.votable.thumbnail_url}
+                      style={styles.secondaryAvatar}
+                    />
+                  </ButtonBase>
+                </ListItemSecondaryAction>
+              )}
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    ) : (
       <NoContents
         contentType="like"
         action="discover-reviews"
@@ -107,46 +163,6 @@ const LikesList = props => {
       />
     );
   }
-  return (
-    <Paper>
-      <List>
-        {likes.map(like => (
-          <ListItem
-            key={like.id}
-            button
-            component={Link}
-            to={like.click_action}
-          >
-            <Avatar src={like.voter.profile_image_url} alt={like.voter.name} />
-            <ListItemText
-              style={styles.listItemText}
-              primary={
-                <Typography variant="subtitle1">
-                  <PrimaryText like={like} />
-                </Typography>
-              }
-              secondary={
-                <Typography variant="subtitle1" color="textSecondary">
-                  {fromNow(like)}
-                </Typography>
-              }
-              disableTypography
-            />
-            {like.votable.thumbnail_url && (
-              <ListItemSecondaryAction>
-                <ButtonBase component={Link} to={like.click_action}>
-                  <Avatar
-                    src={like.votable.thumbnail_url}
-                    style={styles.secondaryAvatar}
-                  />
-                </ButtonBase>
-              </ListItemSecondaryAction>
-            )}
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
-  );
 };
 
 export default React.memo(LikesList);
