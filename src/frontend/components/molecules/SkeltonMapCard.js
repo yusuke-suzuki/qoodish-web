@@ -4,11 +4,12 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
 
 const styles = {
   cardContent: {
-    padding: 0,
-    marginBottom: 24
+    paddingBottom: 16,
+    paddingTop: 8
   },
   skeltonTextPrimary: {
     width: '100%',
@@ -30,26 +31,31 @@ const styles = {
 
 const SkeltonMapCard = () => {
   return (
-    <CardContent style={styles.cardContent}>
+    <Card elevation={0}>
       <CardMedia style={styles.loadingImage} />
-      <Typography variant="subtitle1">
-        <Chip style={styles.skeltonTextPrimary} />
-      </Typography>
-      <Typography variant="subtitle2">
-        <Chip style={styles.skeltonTextSecondary} />
-      </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        <Chip style={styles.skeltonTextSecondary} />
-      </Typography>
-      <Button
-        variant="contained"
-        color="secondary"
-        disabled
-        style={styles.loadingButton}
-      >
-        Loading
-      </Button>
-    </CardContent>
+      <CardContent style={styles.cardContent}>
+        <Typography variant="subtitle1">
+          <Chip style={styles.skeltonTextPrimary} />
+        </Typography>
+        <Typography variant="subtitle2">
+          <Chip style={styles.skeltonTextSecondary} />
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          <Chip style={styles.skeltonTextSecondary} />
+        </Typography>
+        <Typography variant="subtitle2" gutterBottom>
+          <Chip style={styles.skeltonTextSecondary} />
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled
+          style={styles.loadingButton}
+        >
+          Loading
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 

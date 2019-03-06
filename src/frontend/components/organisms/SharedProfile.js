@@ -21,13 +21,8 @@ import I18n from '../../utils/I18n';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
 
 const styles = {
-  rootLarge: {
-    maxWidth: 900,
-    margin: '94px auto 20px'
-  },
-  rootSmall: {
-    marginTop: 56,
-    marginBottom: 56
+  cardMedia: {
+    height: 200
   },
   userMapsLarge: {
     marginTop: 20,
@@ -137,8 +132,8 @@ const ProfileCard = props => {
   const currentUser = props.currentUser;
 
   return (
-    <Card>
-      <CardMedia>
+    <Card elevation={0}>
+      <CardMedia style={styles.cardMedia}>
         <img
           src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
             large ? 900 : 400
@@ -200,7 +195,7 @@ const SharedProfile = props => {
   });
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       <ProfileCard
         tabValue={tabValue}
         handleTabChange={handleTabChange}

@@ -86,6 +86,14 @@ const LikesList = props => {
   const { currentUser, location } = useMappedState(mapState);
 
   const initUserLikes = useCallback(async () => {
+    if (
+      !currentUser ||
+      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+    ) {
+      setLoading(false);
+      return;
+    }
+
     let userId =
       location && location.pathname === '/profile'
         ? currentUser.uid
@@ -114,7 +122,7 @@ const LikesList = props => {
     );
   } else {
     return likes.length > 0 ? (
-      <Paper>
+      <Paper elevation={0}>
         <List>
           {likes.map(like => (
             <ListItem

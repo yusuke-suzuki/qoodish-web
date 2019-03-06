@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -39,11 +38,12 @@ const styles = {
     zIndex: 1000,
     backgroundColor: 'initial',
     borderRight: 'initial',
-    maxWidth: 230
+    maxWidth: 230,
+    width: '100%'
   }
 };
 
-const Title = () => {
+const Title = React.memo(() => {
   const large = useMediaQuery('(min-width: 600px)');
 
   return (
@@ -63,18 +63,16 @@ const Title = () => {
       />
     </ListItem>
   );
-};
+});
 
-const DrawerContents = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+const DrawerContents = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      showSideNav: state.shared.showSideNav,
       currentLocation: state.shared.currentLocation
     }),
     []
   );
-  const { showSideNav, currentLocation } = useMappedState(mapState);
+  const { currentLocation } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleFeedbackClick = useCallback(() => {
@@ -88,7 +86,7 @@ const DrawerContents = () => {
   return (
     <div>
       <List disablePadding component="nav">
-        {!large || !showSideNav ? <Title /> : null}
+        <Title />
         <ListItem button component={Link} to="/" title={I18n.t('home')}>
           <ListItemIcon>
             <HomeIcon color={isSelected('/') ? 'primary' : 'inherit'} />
@@ -218,9 +216,9 @@ const DrawerContents = () => {
       </List>
     </div>
   );
-};
+});
 
-const Swipeable = () => {
+const NavDrawer = () => {
   const dispatch = useDispatch();
   const drawerOpen = useMappedState(
     useCallback(state => state.shared.drawerOpen, [])
@@ -242,62 +240,6 @@ const Swipeable = () => {
       <DrawerContents />
     </SwipeableDrawer>
   );
-};
-
-const Temporary = () => {
-  const dispatch = useDispatch();
-  const drawerOpen = useMappedState(
-    useCallback(state => state.shared.drawerOpen, [])
-  );
-  const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  });
-
-  return (
-    <Drawer
-      open={drawerOpen}
-      onClose={handleCloseDrawer}
-      onClick={handleCloseDrawer}
-    >
-      <DrawerContents />
-    </Drawer>
-  );
-};
-
-const Permanent = () => {
-  const dispatch = useDispatch();
-  const drawerOpen = useMappedState(
-    useCallback(state => state.shared.drawerOpen, [])
-  );
-  const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  });
-
-  return (
-    <Drawer
-      variant="permanent"
-      anchor="left"
-      PaperProps={{ style: styles.drawerPaper }}
-      open={drawerOpen}
-      onClose={handleCloseDrawer}
-      onClick={handleCloseDrawer}
-    >
-      <DrawerContents />
-    </Drawer>
-  );
-};
-
-const DrawerLarge = () => {
-  const showSideNav = useMappedState(
-    useCallback(state => state.shared.showSideNav, [])
-  );
-
-  return showSideNav ? <Permanent /> : <Temporary />;
-};
-
-const NavDrawer = () => {
-  const large = useMediaQuery('(min-width: 600px)');
-  return large ? <DrawerLarge /> : <Swipeable />;
 };
 
 export default React.memo(NavDrawer);

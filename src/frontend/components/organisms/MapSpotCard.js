@@ -39,7 +39,8 @@ const styles = {
   drawerPaperLarge: {
     height: 'calc(100vh - 64px)',
     width: 380,
-    marginTop: 64
+    marginTop: 64,
+    zIndex: 1001
   },
   cardLarge: {
     height: '100%',

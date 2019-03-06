@@ -48,9 +48,9 @@ const initialState = {
   feedbackDialogOpen: false,
   drawerOpen: false,
   bottomNavValue: undefined,
-  showSideNav: true,
   showBottomNav: true,
   isMapDetail: false,
+  fullWidth: false,
   previousLocation: undefined,
   currentLocation: undefined,
   pickedMaps: [],
@@ -101,21 +101,6 @@ const switchPageTitle = (pathname, large) => {
   }
 };
 
-const switchSideNav = pathname => {
-  let isMapDetail =
-    pathname.includes('/maps/') && !pathname.includes('/reports');
-  if (
-    isMapDetail ||
-    pathname.includes('/login') ||
-    pathname.includes('/terms') ||
-    pathname.includes('/privacy')
-  ) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
 const switchBottomNav = pathname => {
   if (
     pathname.includes('/maps/') ||
@@ -141,6 +126,16 @@ const switchBackButton = pathname => {
     pathname.includes('/spots/') ||
     pathname.includes('/users/')
   ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const switchFullWidth = pathname => {
+  let isMapDetail =
+    pathname.includes('/maps/') && !pathname.includes('/reports');
+  if (isMapDetail || pathname.includes('/login')) {
     return true;
   } else {
     return false;
@@ -296,12 +291,15 @@ const reducer = (state = initialState, action) => {
       let showBackButton = isModal
         ? state.showBackButton
         : switchBackButton(action.payload.location.pathname);
-      let showSideNav = isModal
-        ? state.showSideNav
-        : switchSideNav(action.payload.location.pathname);
       let showBottomNav = isModal
         ? state.showBottomNav
         : switchBottomNav(action.payload.location.pathname);
+      let fullWidth = isModal
+        ? state.fullWidth
+        : switchFullWidth(action.payload.location.pathname);
+      let isMapDetail = isModal
+        ? state.isMapDetail
+        : detectMapDetail(action.payload.location.pathname);
 
       return Object.assign({}, state, {
         previousLocation: state.currentLocation,
@@ -315,9 +313,9 @@ const reducer = (state = initialState, action) => {
         feedbackDialogOpen: false,
         drawerOpen: false,
         searchMapsDialogOpen: false,
-        showSideNav: showSideNav,
         showBottomNav: showBottomNav,
-        isMapDetail: detectMapDetail(action.payload.location.pathname)
+        isMapDetail: isMapDetail,
+        fullWidth: fullWidth
       });
     default:
       return state;

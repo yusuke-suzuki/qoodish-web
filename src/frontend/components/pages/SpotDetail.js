@@ -17,13 +17,6 @@ import { SpotsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  rootLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  rootSmall: {
-    marginTop: 56
-  },
   progress: {
     textAlign: 'center',
     paddingTop: 20
@@ -150,7 +143,7 @@ const SpotDetail = props => {
   );
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       {currentSpot && <SpotDetailHelmet spot={currentSpot} />}
       <div>
         {loading ? (

@@ -6,10 +6,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import CardContent from '@material-ui/core/CardContent';
+import GradeIcon from '@material-ui/icons/Grade';
 
 import { MapsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
@@ -32,6 +36,17 @@ const styles = {
   },
   listItemSecondaryAction: {
     right: 10
+  },
+  gridHeader: {
+    width: '100%',
+    display: 'inline-flex'
+  },
+  headerIcon: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+  cardContainer: {
+    paddingBottom: 16
   }
 };
 
@@ -69,44 +84,62 @@ const TrendingMaps = () => {
       <CircularProgress />
     </div>
   ) : (
-    <List disablePadding>
-      {maps.map((map, i) => (
-        <ListItem
-          button
-          key={map.id}
-          component={Link}
-          to={`/maps/${map.id}`}
-          title={map.name}
-          style={large ? styles.listItemLarge : styles.listItemSmall}
+    <Paper elevation={0}>
+      <CardContent style={styles.cardContainer}>
+        <List
+          disablePadding
+          subheader={
+            <ListSubheader disableGutters>
+              <Typography
+                variant="subtitle1"
+                color="textSecondary"
+                style={styles.gridHeader}
+              >
+                <GradeIcon style={styles.headerIcon} />{' '}
+                {I18n.t('trending maps')}
+              </Typography>
+            </ListSubheader>
+          }
         >
-          <Avatar src={map.thumbnail_url} alt={map.name} />
-          <ListItemText
-            disableTypography={true}
-            primary={
-              <Typography variant="subtitle1" noWrap>
-                {i + 1}. {map.name}
-              </Typography>
-            }
-            secondary={
-              <Typography component="p" noWrap color="textSecondary">
-                {map.description}
-              </Typography>
-            }
-          />
-          <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
-            <Button
-              size="small"
+          {maps.map((map, i) => (
+            <ListItem
+              button
+              key={map.id}
               component={Link}
               to={`/maps/${map.id}`}
               title={map.name}
-              variant="outlined"
+              style={large ? styles.listItemLarge : styles.listItemSmall}
             >
-              {I18n.t('detail')}
-            </Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-      ))}
-    </List>
+              <Avatar src={map.thumbnail_url} alt={map.name} />
+              <ListItemText
+                disableTypography={true}
+                primary={
+                  <Typography variant="subtitle1" noWrap>
+                    {i + 1}. {map.name}
+                  </Typography>
+                }
+                secondary={
+                  <Typography component="p" noWrap color="textSecondary">
+                    {map.description}
+                  </Typography>
+                }
+              />
+              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
+                <Button
+                  size="small"
+                  component={Link}
+                  to={`/maps/${map.id}`}
+                  title={map.name}
+                  variant="outlined"
+                >
+                  {I18n.t('detail')}
+                </Button>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
+    </Paper>
   );
 };
 

@@ -2,21 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-const MapToolbar = React.lazy(() =>
-  import(/* webpackChunkName: "map_toolbar" */ '../molecules/MapToolbar')
-);
-const MapSummaryCard = React.lazy(() =>
-  import(/* webpackChunkName: "map_summary_card" */ './MapSummaryCard')
-);
-const MapReviewsList = React.lazy(() =>
-  import(/* webpackChunkName: "map_reviews_list" */ './MapReviewsList')
-);
-const FollowMapButton = React.lazy(() =>
-  import(/* webpackChunkName: "follow_map_button" */ '../molecules/FollowMapButton')
-);
-const MapLikeActions = React.lazy(() =>
-  import(/* webpackChunkName: "map_like_actions" */ '../molecules/MapLikeActions')
-);
+import MapToolbar from '../molecules/MapToolbar';
+import MapSummaryCard from './MapSummaryCard';
+import MapReviewsList from './MapReviewsList';
+import FollowMapButton from '../molecules/FollowMapButton';
+import MapLikeActions from '../molecules/MapLikeActions';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -43,7 +33,8 @@ const styles = {
   toolbarContainerLarge: {
     position: 'absolute',
     top: 64,
-    width: '100%'
+    width: '100%',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
   },
   toolbarLarge: {
     height: 64,
@@ -70,7 +61,6 @@ const styles = {
   },
   tabContentsLarge: {
     marginTop: 128,
-    marginBottom: 64,
     overflowY: 'scroll',
     height: 'calc(100% - 192px)'
   },
@@ -97,13 +87,9 @@ const MapBottomNav = React.memo(() => {
   return (
     <Paper style={styles.bottomNav} square elevation={1}>
       <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
-        <React.Suspense fallback={null}>
-          <MapLikeActions target={currentMap} />
-        </React.Suspense>
+        <MapLikeActions target={currentMap} />
         <div style={styles.followMapButton}>
-          <React.Suspense fallback={null}>
-            <FollowMapButton currentMap={currentMap} />
-          </React.Suspense>
+          <FollowMapButton currentMap={currentMap} />
         </div>
       </Toolbar>
     </Paper>
@@ -146,34 +132,20 @@ const MapSummary = () => {
 
   return (
     <div style={large ? styles.containerLarge : styles.containerSmall}>
-      <AppBar position="absolute">
-        <React.Suspense fallback={null}>
-          <MapToolbar
-            showBackButton={large ? false : true}
-            showMapName
-            showMenuButton={large ? true : false}
-          />
-        </React.Suspense>
-        {!large && (
+      {!large && (
+        <AppBar position="absolute">
+          <MapToolbar showBackButton showMapName />
           <Toolbar>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>
-        )}
-      </AppBar>
+        </AppBar>
+      )}
       <div style={large ? styles.tabContentsLarge : styles.tabContentsSmall}>
-        {tabValue === 0 && (
-          <React.Suspense fallback={null}>
-            <MapSummaryCard />
-          </React.Suspense>
-        )}
-        {tabValue === 1 && (
-          <React.Suspense fallback={null}>
-            <MapReviewsList />
-          </React.Suspense>
-        )}
+        {tabValue === 0 && <MapSummaryCard />}
+        {tabValue === 1 && <MapReviewsList />}
       </div>
       {large && (
-        <Paper style={styles.toolbarContainerLarge} square elevation={1}>
+        <Paper style={styles.toolbarContainerLarge} square elevation={0}>
           <Toolbar disableGutters>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>

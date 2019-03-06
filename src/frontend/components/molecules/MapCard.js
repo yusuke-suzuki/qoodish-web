@@ -1,6 +1,7 @@
 import React from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
+import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -18,8 +19,8 @@ const styles = {
     objectFit: 'cover'
   },
   cardContent: {
-    padding: 0,
-    marginBottom: 24
+    paddingBottom: 16,
+    paddingTop: 8
   },
   privateIcon: {
     fontSize: '1rem'
@@ -34,10 +35,10 @@ const styles = {
 
 const MapCard = props => {
   const large = useMediaQuery('(min-width: 600px)');
-  const map = props.map;
+  const { map } = props;
 
   return (
-    <CardContent style={styles.cardContent}>
+    <Card elevation={0}>
       <ButtonBase
         component={Link}
         to={`/maps/${map.id}`}
@@ -52,21 +53,35 @@ const MapCard = props => {
           />
         </CardMedia>
       </ButtonBase>
-      <Typography variant="subtitle1" noWrap>
-        {map.private && <LockIcon style={styles.privateIcon} color="inherit" />}{' '}
-        {map.name}
-      </Typography>
-      <Typography variant="subtitle2" color="textSecondary" noWrap>
-        {map.owner_name}
-      </Typography>
-      <Typography variant="subtitle2" color="textSecondary" gutterBottom noWrap>
-        {map.description}
-      </Typography>
-      <Typography variant="subtitle2" color="textSecondary" gutterBottom noWrap>
-        {map.followers_count} {I18n.t('followers')}
-      </Typography>
-      <FollowMapButton currentMap={map} />
-    </CardContent>
+      <CardContent style={styles.cardContent}>
+        <Typography variant="subtitle1" noWrap>
+          {map.private && (
+            <LockIcon style={styles.privateIcon} color="inherit" />
+          )}{' '}
+          {map.name}
+        </Typography>
+        <Typography variant="subtitle2" color="textSecondary" noWrap>
+          {map.owner_name}
+        </Typography>
+        <Typography
+          variant="subtitle2"
+          color="textSecondary"
+          gutterBottom
+          noWrap
+        >
+          {map.description}
+        </Typography>
+        <Typography
+          variant="subtitle2"
+          color="textSecondary"
+          gutterBottom
+          noWrap
+        >
+          {map.followers_count} {I18n.t('followers')}
+        </Typography>
+        <FollowMapButton currentMap={map} />
+      </CardContent>
+    </Card>
   );
 };
 

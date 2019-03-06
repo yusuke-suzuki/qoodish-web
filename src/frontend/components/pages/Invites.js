@@ -23,14 +23,6 @@ import { FollowsApi, InvitesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  rootLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  rootSmall: {
-    padding: 20,
-    margin: '56px auto'
-  },
   cardLarge: {
     marginBottom: 20
   },
@@ -128,7 +120,7 @@ const Invites = () => {
   }, []);
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       <div>
         {loading ? (
           <div style={styles.progress}>
@@ -139,6 +131,7 @@ const Invites = () => {
             <Card
               key={invite.id}
               style={large ? styles.cardLarge : styles.cardSmall}
+              elevation={0}
             >
               <CardHeader
                 avatar={<Avatar src={invite.invitable.image_url} />}

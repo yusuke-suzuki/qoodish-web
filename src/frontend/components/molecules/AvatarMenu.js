@@ -6,6 +6,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import I18n from '../../utils/I18n';
+import PersonIcon from '@material-ui/icons/Person';
 
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
@@ -57,10 +58,9 @@ const AvatarMenu = () => {
           registrationToken,
           (error, data, response) => {
             if (response.ok) {
-              console.log('Successfully sent registration token.');
-              dispatch(fetchRegistrationToken(refreshedToken));
+              console.log('Successfully deleted registration token.');
             } else {
-              console.log('Failed to send registration token.');
+              console.log('Failed to delete registration token.');
             }
           }
         );
@@ -92,37 +92,59 @@ const AvatarMenu = () => {
         }}
       >
         <Avatar
-          src={currentUser ? currentUser.thumbnail_url : ''}
+          src={currentUser.isAnonymous ? '' : currentUser.thumbnail_url}
           style={styles.profileAvatar}
-        />
+        >
+          {currentUser.isAnonymous && (
+            <PersonIcon style={styles.profileAvatar} />
+          )}
+        </Avatar>
       </IconButton>
-
-      <Menu
-        id="account-menu"
-        anchorEl={anchorEl}
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-      >
-        <MenuItem
-          onClick={() => setMenuOpen(false)}
-          selected={false}
-          component={Link}
-          to="/profile"
-          title={I18n.t('account')}
+      {currentUser.isAnonymous ? (
+        <Menu
+          id="account-menu"
+          anchorEl={anchorEl}
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
         >
-          {I18n.t('account')}
-        </MenuItem>
-        <MenuItem
-          onClick={() => setMenuOpen(false)}
-          selected={false}
-          component={Link}
-          to="/settings"
-          title={I18n.t('settings')}
+          <MenuItem
+            onClick={() => setMenuOpen(false)}
+            selected={false}
+            component={Link}
+            to="/login"
+            title={I18n.t('login')}
+          >
+            {I18n.t('login')}
+          </MenuItem>
+        </Menu>
+      ) : (
+        <Menu
+          id="account-menu"
+          anchorEl={anchorEl}
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
         >
-          {I18n.t('settings')}
-        </MenuItem>
-        <MenuItem onClick={handleSignOutClick}>{I18n.t('logout')}</MenuItem>
-      </Menu>
+          <MenuItem
+            onClick={() => setMenuOpen(false)}
+            selected={false}
+            component={Link}
+            to="/profile"
+            title={I18n.t('account')}
+          >
+            {I18n.t('account')}
+          </MenuItem>
+          <MenuItem
+            onClick={() => setMenuOpen(false)}
+            selected={false}
+            component={Link}
+            to="/settings"
+            title={I18n.t('settings')}
+          >
+            {I18n.t('settings')}
+          </MenuItem>
+          <MenuItem onClick={handleSignOutClick}>{I18n.t('logout')}</MenuItem>
+        </Menu>
+      )}
     </div>
   );
 };

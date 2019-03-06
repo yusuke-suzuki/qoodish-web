@@ -24,20 +24,7 @@ import { ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  rootLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  rootSmall: {
-    margin: '56px auto 56px',
-    width: '100%'
-  },
-  formCardLarge: {
-    marginTop: 84,
-    cursor: 'pointer'
-  },
-  formCardSmall: {
-    marginTop: 72,
+  formCard: {
     cursor: 'pointer'
   },
   container: {
@@ -86,7 +73,6 @@ const FormAvatar = React.memo(() => {
 
 const CreateReviewForm = React.memo(() => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
   const mapState = useCallback(
     state => ({
       currentUser: state.app.currentUser
@@ -105,8 +91,9 @@ const CreateReviewForm = React.memo(() => {
 
   return (
     <Card
-      style={large ? styles.formCardLarge : styles.formCardSmall}
+      style={styles.formCard}
       onClick={handleCreateReviewClick}
+      elevation={0}
     >
       <CardHeader
         avatar={<FormAvatar />}
@@ -168,9 +155,9 @@ const LoadMoreButton = React.memo(() => {
     return noMoreReviews ? null : (
       <div style={styles.buttonContainer}>
         <Button
-          variant="contained"
           onClick={loadMoreReviews}
           style={large ? styles.raisedButtonLarge : styles.raisedButtonSmall}
+          color="primary"
         >
           {I18n.t('load more')}
         </Button>
@@ -267,7 +254,7 @@ const Timeline = () => {
   }, []);
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       <CreateReviewForm />
       <div style={styles.container}>
         {loading ? (

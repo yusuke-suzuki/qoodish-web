@@ -15,13 +15,6 @@ import { ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  containerLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  containerSmall: {
-    margin: '56px auto 0'
-  },
   progress: {
     textAlign: 'center',
     paddingTop: 20
@@ -86,10 +79,8 @@ const ReviewHelmet = props => {
 };
 
 const ReviewCardContainer = props => {
-  const large = useMediaQuery('(min-width: 600px)');
-
   if (props.review) {
-    return <ReviewCard currentReview={props.review} detail={!large} />;
+    return <ReviewCard currentReview={props.review} />;
   } else {
     return (
       <NoContents
@@ -160,7 +151,7 @@ const ReviewDetail = props => {
   );
 
   return (
-    <div style={large ? styles.containerLarge : styles.containerSmall}>
+    <div>
       {currentReview && <ReviewHelmet review={currentReview} />}
       {loading ? (
         <div style={styles.progress}>

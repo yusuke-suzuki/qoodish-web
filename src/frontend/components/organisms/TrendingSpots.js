@@ -6,10 +6,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import CardContent from '@material-ui/core/CardContent';
+import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
 import { SpotsApi } from 'qoodish_api';
@@ -31,6 +35,17 @@ const styles = {
   },
   listItemSecondaryAction: {
     right: 10
+  },
+  gridHeader: {
+    width: '100%',
+    display: 'inline-flex'
+  },
+  headerIcon: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+  cardContainer: {
+    paddingBottom: 16
   }
 };
 
@@ -63,47 +78,65 @@ const TrendingSpots = () => {
       <CircularProgress />
     </div>
   ) : (
-    <List disablePadding style={styles.trendingList}>
-      {spots.map((spot, i) => (
-        <ListItem
-          button
-          key={spot.place_id}
-          component={Link}
-          to={{
-            pathname: `/spots/${spot.place_id}`,
-            state: { modal: true, spot: spot }
-          }}
-          title={spot.name}
-          style={large ? styles.listItemLarge : styles.listItemSmall}
+    <Paper elevation={0}>
+      <CardContent style={styles.cardContainer}>
+        <List
+          disablePadding
+          subheader={
+            <ListSubheader disableGutters>
+              <Typography
+                variant="subtitle1"
+                color="textSecondary"
+                style={styles.gridHeader}
+              >
+                <PlaceIcon style={styles.headerIcon} />{' '}
+                {I18n.t('trending spots')}
+              </Typography>
+            </ListSubheader>
+          }
         >
-          <Avatar src={spot.image_url} alt={spot.name} />
-          <ListItemText
-            disableTypography={true}
-            primary={
-              <Typography variant="subtitle1" noWrap>
-                {i + 1}. {spot.name}
-              </Typography>
-            }
-            secondary={
-              <Typography component="p" noWrap color="textSecondary">
-                {spot.formatted_address}
-              </Typography>
-            }
-          />
-          <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
-            <Button
-              size="small"
+          {spots.map((spot, i) => (
+            <ListItem
+              button
+              key={spot.place_id}
               component={Link}
-              to={`/spots/${spot.place_id}`}
+              to={{
+                pathname: `/spots/${spot.place_id}`,
+                state: { modal: true, spot: spot }
+              }}
               title={spot.name}
-              variant="outlined"
+              style={large ? styles.listItemLarge : styles.listItemSmall}
             >
-              {I18n.t('detail')}
-            </Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-      ))}
-    </List>
+              <Avatar src={spot.image_url} alt={spot.name} />
+              <ListItemText
+                disableTypography={true}
+                primary={
+                  <Typography variant="subtitle1" noWrap>
+                    {i + 1}. {spot.name}
+                  </Typography>
+                }
+                secondary={
+                  <Typography component="p" noWrap color="textSecondary">
+                    {spot.formatted_address}
+                  </Typography>
+                }
+              />
+              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
+                <Button
+                  size="small"
+                  component={Link}
+                  to={`/spots/${spot.place_id}`}
+                  title={spot.name}
+                  variant="outlined"
+                >
+                  {I18n.t('detail')}
+                </Button>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </CardContent>
+    </Paper>
   );
 };
 

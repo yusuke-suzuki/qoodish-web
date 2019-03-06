@@ -55,7 +55,9 @@ const styles = {
     display: 'block',
     width: '100%'
   },
-  drawerPaperLarge: {},
+  drawerPaperLarge: {
+    zIndex: 1000
+  },
   drawerPaperSmall: {
     height: '100%'
   },

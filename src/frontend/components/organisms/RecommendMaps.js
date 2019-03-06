@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 
 import initializeApiClient from '../../utils/initializeApiClient';
@@ -13,15 +12,17 @@ import MapCard from '../molecules/MapCard';
 import SkeltonMapCard from '../molecules/SkeltonMapCard';
 
 const styles = {
-  container: {
-    padding: 16,
-    paddingBottom: 120
+  titleContainer: {
+    display: 'inline-flex',
+    alignItems: 'baseline',
+    marginBottom: 15,
+    width: '100%'
   },
-  recommendTitle: {
-    marginBottom: 15
+  mapCard: {
+    marginBottom: 20
   },
-  divider: {
-    marginBottom: 24
+  discoverButton: {
+    marginLeft: 'auto'
   }
 };
 
@@ -47,27 +48,32 @@ const RecommendMaps = () => {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <Typography
-        variant="subtitle1"
-        style={styles.recommendTitle}
-        color="textSecondary"
-      >
-        {I18n.t('recommend')}
-      </Typography>
-      {loading ? (
-        <Loading />
-      ) : (
-        maps.map(map => (
-          <div key={map.id}>
-            <MapCard map={map} />
-            <Divider style={styles.divider} />
-          </div>
-        ))
-      )}
-      <Button component={Link} to="/discover" size="small">
-        {I18n.t('discover maps')} →
-      </Button>
+    <div>
+      <div>
+        <div style={styles.titleContainer}>
+          <Typography variant="subtitle1" color="textSecondary">
+            {I18n.t('recommend')}
+          </Typography>
+          <Button
+            component={Link}
+            to="/discover"
+            size="small"
+            color="primary"
+            style={styles.discoverButton}
+          >
+            {I18n.t('discover more')}
+          </Button>
+        </div>
+        {loading ? (
+          <Loading />
+        ) : (
+          maps.map(map => (
+            <div key={map.id} style={styles.mapCard}>
+              <MapCard map={map} />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
@@ -76,9 +82,8 @@ const Loading = React.memo(() => {
   return (
     <div>
       {Array.from(new Array(2)).map((v, i) => (
-        <div key={i}>
-          <SkeltonMapCard />
-          <Divider style={styles.divider} />
+        <div key={i} style={styles.mapCard}>
+          <SkeltonMapCard elevation={0} />
         </div>
       ))}
     </div>

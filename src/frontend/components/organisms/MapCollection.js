@@ -32,10 +32,10 @@ const MapCollection = props => {
   return (
     <div style={styles.container}>
       <GridList
-        cols={large ? 4 : props.horizontal ? 1.5 : 2}
+        cols={large ? 3 : props.horizontal ? 1.5 : 2}
         style={props.horizontal ? styles.gridListHorizontal : styles.gridList}
         spacing={large || props.horizontal ? 20 : 10}
-        cellHeight={270}
+        cellHeight={290}
       >
         {props.maps.map(map => (
           <GridListTile
