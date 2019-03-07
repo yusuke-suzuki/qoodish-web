@@ -53,7 +53,7 @@ const PickUpMap = () => {
   }, []);
 
   return (
-    <GridList cols={1} style={styles.gridList} spacing={20}>
+    <GridList cols={1} style={styles.gridList} spacing={0}>
       <GridListTile
         key={map && map.id}
         style={large ? styles.pickUpTileLarge : styles.pickUpTileSmall}

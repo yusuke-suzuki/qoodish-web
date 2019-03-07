@@ -17,9 +17,6 @@ import ReviewCardActions from './ReviewCardActions';
 import ReviewComments from './ReviewComments';
 
 const styles = {
-  cardDetail: {
-    minHeight: 'calc(100vh - 56px)'
-  },
   cardTitle: {
     width: 'fit-content',
     wordBreak: 'break-all'
@@ -153,7 +150,7 @@ const commentHtml = review => {
 
 const ReviewCard = props => {
   return (
-    <Card style={props.detail ? styles.cardDetail : styles.card}>
+    <Card style={styles.card} elevation={0}>
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
       {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}

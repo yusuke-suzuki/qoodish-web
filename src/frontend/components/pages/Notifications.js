@@ -16,13 +16,6 @@ import initializeApiClient from '../../utils/initializeApiClient';
 import { NotificationsApi } from 'qoodish_api';
 
 const styles = {
-  containerLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  containerSmall: {
-    margin: '56px auto 56px'
-  },
   progressLarge: {
     textAlign: 'center',
     paddingTop: 20
@@ -36,7 +29,7 @@ const styles = {
 const NotificationsContainer = props => {
   if (props.notifications.length > 0) {
     return (
-      <Paper>
+      <Paper elevation={0}>
         <List>
           <NotificationList
             notifications={props.notifications}
@@ -100,7 +93,7 @@ const Notifications = () => {
   }, []);
 
   return (
-    <div style={large ? styles.containerLarge : styles.containerSmall}>
+    <div>
       {loading ? (
         <div style={large ? styles.progressLarge : styles.progressSmall}>
           <CircularProgress />

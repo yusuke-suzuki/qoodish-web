@@ -28,14 +28,6 @@ import fetchRegistrationToken from '../../actions/fetchRegistrationToken';
 import { PushNotificationApi, InlineObject } from 'qoodish_api';
 
 const styles = {
-  rootLarge: {
-    margin: '94px auto 20px',
-    maxWidth: 700
-  },
-  rootSmall: {
-    padding: 20,
-    margin: '56px auto'
-  },
   card: {
     marginBottom: 20
   },
@@ -61,7 +53,7 @@ const DeleteAccountCard = () => {
   });
 
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} elevation={0}>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           {I18n.t('delete account')}
@@ -169,7 +161,7 @@ const PushNotificationCard = () => {
   });
 
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} elevation={0}>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           {I18n.t('account settings')}
@@ -202,7 +194,7 @@ const Settings = () => {
   }, []);
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       <PushNotificationCard />
       <div style={styles.card}>
         <ProviderLinkSettings />

@@ -49,7 +49,7 @@ const ReviewGridList = props => {
         cols={large ? 4 : 3}
         style={styles.gridList}
         spacing={large ? 20 : 4}
-        cellHeight={large ? 220 : 120}
+        cellHeight={large ? 165 : 120}
       >
         {props.reviews.map(review => (
           <GridListTile

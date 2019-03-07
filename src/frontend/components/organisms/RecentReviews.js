@@ -140,13 +140,13 @@ const RecentReviews = () => {
       <GridList
         cols={large ? 2 : 1.2}
         style={large ? styles.gridListLarge : styles.gridListSmall}
-        spacing={20}
+        spacing={large ? 20 : 10}
         cellHeight={240}
       >
         {loading
           ? Array.from(new Array(8)).map((v, i) => (
               <GridListTile key={i}>
-                <Card style={styles.reviewCard}>
+                <Card style={styles.reviewCard} elevation={0}>
                   <CardHeader
                     avatar={
                       <Avatar style={styles.skeltonAvatar}>
@@ -190,7 +190,7 @@ const RecentReviews = () => {
                   state: { modal: true, review: review }
                 }}
               >
-                <Card style={styles.reviewCard}>
+                <Card style={styles.reviewCard} elevation={0}>
                   <CardHeader
                     avatar={
                       <Avatar

@@ -74,7 +74,7 @@ const LoadMoreUserReviewsButton = props => {
   } else {
     return noMoreReviews ? null : (
       <div style={large ? styles.buttonLarge : styles.buttonSmall}>
-        <Button variant="contained" onClick={handleClickLoadMoreButton}>
+        <Button color="primary" onClick={handleClickLoadMoreButton}>
           {I18n.t('load more')}
         </Button>
       </div>

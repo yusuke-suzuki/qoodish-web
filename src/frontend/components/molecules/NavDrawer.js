@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -39,11 +38,12 @@ const styles = {
     zIndex: 1000,
     backgroundColor: 'initial',
     borderRight: 'initial',
-    maxWidth: 230
+    maxWidth: 230,
+    width: '100%'
   }
 };
 
-const Title = () => {
+const Title = React.memo(() => {
   const large = useMediaQuery('(min-width: 600px)');
 
   return (
@@ -63,28 +63,38 @@ const Title = () => {
       />
     </ListItem>
   );
-};
+});
 
-const DrawerContents = () => {
-  const large = useMediaQuery('(min-width: 600px)');
-  const showSideNav = useMappedState(
-    useCallback(state => state.shared.showSideNav, [])
+const DrawerContents = React.memo(() => {
+  const mapState = useCallback(
+    state => ({
+      currentLocation: state.shared.currentLocation
+    }),
+    []
   );
+  const { currentLocation } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleFeedbackClick = useCallback(() => {
     dispatch(openFeedbackDialog());
   });
 
+  const isSelected = useCallback(pathname => {
+    return currentLocation && currentLocation.pathname === pathname;
+  });
+
   return (
     <div>
       <List disablePadding component="nav">
-        {!large || !showSideNav ? <Title /> : null}
+        <Title />
         <ListItem button component={Link} to="/" title={I18n.t('home')}>
           <ListItemIcon>
-            <HomeIcon />
+            <HomeIcon color={isSelected('/') ? 'primary' : 'inherit'} />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('home')} />
+          <ListItemText
+            primary={I18n.t('home')}
+            primaryTypographyProps={isSelected('/') ? { color: 'primary' } : {}}
+          />
         </ListItem>
         <ListItem
           button
@@ -93,9 +103,16 @@ const DrawerContents = () => {
           title={I18n.t('discover')}
         >
           <ListItemIcon>
-            <ExploreIcon />
+            <ExploreIcon
+              color={isSelected('/discover') ? 'primary' : 'inherit'}
+            />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('discover')} />
+          <ListItemText
+            primary={I18n.t('discover')}
+            primaryTypographyProps={
+              isSelected('/discover') ? { color: 'primary' } : {}
+            }
+          />
         </ListItem>
         <ListItem
           button
@@ -104,9 +121,16 @@ const DrawerContents = () => {
           title={I18n.t('account')}
         >
           <ListItemIcon>
-            <AccountCircleIcon />
+            <AccountCircleIcon
+              color={isSelected('/profile') ? 'primary' : 'inherit'}
+            />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('account')} />
+          <ListItemText
+            primary={I18n.t('account')}
+            primaryTypographyProps={
+              isSelected('/profile') ? { color: 'primary' } : {}
+            }
+          />
         </ListItem>
         <ListItem
           button
@@ -115,11 +139,17 @@ const DrawerContents = () => {
           title={I18n.t('notifications')}
         >
           <ListItemIcon>
-            <NotificationsIcon />
+            <NotificationsIcon
+              color={isSelected('/notifications') ? 'primary' : 'inherit'}
+            />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('notifications')} />
+          <ListItemText
+            primary={I18n.t('notifications')}
+            primaryTypographyProps={
+              isSelected('/notifications') ? { color: 'primary' } : {}
+            }
+          />
         </ListItem>
-        <Divider />
         <ListItem
           button
           component={Link}
@@ -127,9 +157,16 @@ const DrawerContents = () => {
           title={I18n.t('settings')}
         >
           <ListItemIcon>
-            <SettingsIcon />
+            <SettingsIcon
+              color={isSelected('/settings') ? 'primary' : 'inherit'}
+            />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('settings')} />
+          <ListItemText
+            primary={I18n.t('settings')}
+            primaryTypographyProps={
+              isSelected('/settings') ? { color: 'primary' } : {}
+            }
+          />
         </ListItem>
         <ListItem
           button
@@ -138,13 +175,21 @@ const DrawerContents = () => {
           title={I18n.t('invites')}
         >
           <ListItemIcon>
-            <MailIcon />
+            <MailIcon color={isSelected('/invites') ? 'primary' : 'inherit'} />
           </ListItemIcon>
-          <ListItemText primary={I18n.t('invites')} />
+          <ListItemText
+            primary={I18n.t('invites')}
+            primaryTypographyProps={
+              isSelected('/invites') ? { color: 'primary' } : {}
+            }
+          />
         </ListItem>
         <Divider />
         <ListItem button onClick={handleFeedbackClick}>
-          <ListItemText primary={I18n.t('send feedback')} />
+          <ListItemText
+            primary={I18n.t('send feedback')}
+            primaryTypographyProps={{ color: 'textSecondary' }}
+          />
         </ListItem>
         <ListItem
           button
@@ -152,7 +197,10 @@ const DrawerContents = () => {
           to="/terms"
           title={I18n.t('terms of service')}
         >
-          <ListItemText primary={I18n.t('terms of service')} />
+          <ListItemText
+            primary={I18n.t('terms of service')}
+            primaryTypographyProps={{ color: 'textSecondary' }}
+          />
         </ListItem>
         <ListItem
           button
@@ -160,14 +208,17 @@ const DrawerContents = () => {
           to="/privacy"
           title={I18n.t('privacy policy')}
         >
-          <ListItemText primary={I18n.t('privacy policy')} />
+          <ListItemText
+            primary={I18n.t('privacy policy')}
+            primaryTypographyProps={{ color: 'textSecondary' }}
+          />
         </ListItem>
       </List>
     </div>
   );
-};
+});
 
-const Swipeable = () => {
+const NavDrawer = () => {
   const dispatch = useDispatch();
   const drawerOpen = useMappedState(
     useCallback(state => state.shared.drawerOpen, [])
@@ -189,62 +240,6 @@ const Swipeable = () => {
       <DrawerContents />
     </SwipeableDrawer>
   );
-};
-
-const Temporary = () => {
-  const dispatch = useDispatch();
-  const drawerOpen = useMappedState(
-    useCallback(state => state.shared.drawerOpen, [])
-  );
-  const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  });
-
-  return (
-    <Drawer
-      open={drawerOpen}
-      onClose={handleCloseDrawer}
-      onClick={handleCloseDrawer}
-    >
-      <DrawerContents />
-    </Drawer>
-  );
-};
-
-const Permanent = () => {
-  const dispatch = useDispatch();
-  const drawerOpen = useMappedState(
-    useCallback(state => state.shared.drawerOpen, [])
-  );
-  const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  });
-
-  return (
-    <Drawer
-      variant="permanent"
-      anchor="left"
-      PaperProps={{ style: styles.drawerPaper }}
-      open={drawerOpen}
-      onClose={handleCloseDrawer}
-      onClick={handleCloseDrawer}
-    >
-      <DrawerContents />
-    </Drawer>
-  );
-};
-
-const DrawerLarge = () => {
-  const showSideNav = useMappedState(
-    useCallback(state => state.shared.showSideNav, [])
-  );
-
-  return showSideNav ? <Permanent /> : <Temporary />;
-};
-
-const NavDrawer = () => {
-  const large = useMediaQuery('(min-width: 600px)');
-  return large ? <DrawerLarge /> : <Swipeable />;
 };
 
 export default React.memo(NavDrawer);

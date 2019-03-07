@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import Link from '../molecules/Link';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -17,9 +16,9 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import I18n from '../../utils/I18n';
-import FacebookProvider, { Page } from 'react-facebook';
 import LoginButtons from '../organisms/LoginButtons';
 import Helmet from 'react-helmet';
+import Footer from '../molecules/Footer';
 
 const styles = {
   loginContainerLarge: {
@@ -110,14 +109,6 @@ const LoginHelmet = () => {
         }
       ]}
     />
-  );
-};
-
-const FbPage = () => {
-  return (
-    <FacebookProvider appId={process.env.FB_APP_ID}>
-      <Page href="https://www.facebook.com/qoodish" />
-    </FacebookProvider>
   );
 };
 
@@ -217,40 +208,7 @@ const Login = () => {
           <ArrowUpwardIcon />
         </Fab>
       </div>
-      <Card>
-        <CardContent style={styles.bottomCardContent}>
-          <div style={large ? styles.containerLarge : styles.containerSmall}>
-            <Grid container style={styles.gridContainer} spacing={24}>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <FbPage />
-              </Grid>
-              <Grid item xs={12} sm={12} md={6} lg={6}>
-                <div>
-                  <Link to="/terms">{I18n.t('terms of service')}</Link>
-                </div>
-                <div>
-                  <Link to="/privacy">{I18n.t('privacy policy')}</Link>
-                </div>
-                <div>
-                  <a
-                    href="https://github.com/yusuke-suzuki/qoodish-web"
-                    target="_blank"
-                  >
-                    GitHub
-                  </a>
-                </div>
-              </Grid>
-            </Grid>
-          </div>
-        </CardContent>
-        <CardContent style={styles.bottomCardLicense}>
-          <div style={large ? styles.containerLarge : styles.containerSmall}>
-            <Typography variant="caption">
-              © 2019 Qoodish, All rights reserved.
-            </Typography>
-          </div>
-        </CardContent>
-      </Card>
+      <Footer />
     </div>
   );
 };

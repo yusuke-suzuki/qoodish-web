@@ -24,6 +24,14 @@ const styles = {
   cardSmall: {
     minHeight: 'calc(100vh - 56px)'
   },
+  cardMediaLarge: {
+    cursor: 'pointer',
+    height: 250
+  },
+  cardMediaSmall: {
+    cursor: 'pointer',
+    height: 200
+  },
   cardContent: {
     textAlign: 'center'
   },
@@ -101,18 +109,20 @@ const SpotCard = props => {
   );
 
   return (
-    <Card style={large ? styles.cardLarge : styles.cardSmall}>
-      <CardMedia>
-        <img
-          src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
-            large ? 700 : 400
-          }x${large ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
-            currentSpot.lng
-          }&markers=size:mid%7Ccolor:red%7C${currentSpot.lat},${
-            currentSpot.lng
-          }`}
-          style={styles.staticMapImage}
-        />
+    <Card style={large ? styles.cardLarge : styles.cardSmall} elevation={0}>
+      <CardMedia style={large ? styles.cardMediaLarge : styles.cardMediaSmall}>
+        <a href={currentSpot.url} target="_blank">
+          <img
+            src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
+              large ? 700 : 400
+            }x${large ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
+              currentSpot.lng
+            }&markers=size:mid%7Ccolor:red%7C${currentSpot.lat},${
+              currentSpot.lng
+            }`}
+            style={styles.staticMapImage}
+          />
+        </a>
       </CardMedia>
       <CardContent style={styles.cardContent}>
         <PlaceIcon />
@@ -120,11 +130,11 @@ const SpotCard = props => {
         <Typography variant="subtitle1" color="textSecondary">
           {currentSpot.formatted_address}
         </Typography>
-        <div>
+        <Typography variant="subtitle1" color="textSecondary">
           <a href={currentSpot.url} target="_blank">
             {I18n.t('open in google maps')}
           </a>
-        </div>
+        </Typography>
         <OpeningHours openingHours={currentSpot.opening_hours} />
         <div style={styles.reviewTilesContainer}>
           <ReviewTiles

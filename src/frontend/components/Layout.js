@@ -10,6 +10,9 @@ import Grid from '@material-ui/core/Grid';
 const Routes = React.lazy(() =>
   import(/* webpackChunkName: "routes" */ './Routes')
 );
+const RightItems = React.lazy(() =>
+  import(/* webpackChunkName: "right_items" */ './organisms/RightItems')
+);
 const NavBar = React.lazy(() =>
   import(/* webpackChunkName: "nav_bar" */ './organisms/NavBar')
 );
@@ -18,9 +21,6 @@ const BottomNav = React.lazy(() =>
 );
 const SharedDialogs = React.lazy(() =>
   import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
-);
-const RecommendMaps = React.lazy(() =>
-  import(/* webpackChunkName: "recommend_maps" */ './organisms/RecommendMaps')
 );
 
 const theme = createMuiTheme({
@@ -44,9 +44,24 @@ const theme = createMuiTheme({
 });
 
 const styles = {
-  rightGrid: {
-    marginTop: 78,
-    paddingRight: 16
+  containerLarge: {
+    maxWidth: 1176,
+    margin: 'auto',
+    paddingTop: 64
+  },
+  containerSmall: {
+    margin: 'auto',
+    paddingTop: 56,
+    paddingBottom: 56
+  },
+  mainLarge: {
+    padding: 20
+  },
+  mainSmall: {
+    padding: 16
+  },
+  right: {
+    padding: 20
   }
 };
 
@@ -55,49 +70,69 @@ const scrollTop = () => {
 };
 
 const Layout = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
+  const mdUp = useMediaQuery('(min-width: 960px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const xlUp = useMediaQuery('(min-width: 1920px)');
+
   const mapState = useCallback(
     state => ({
-      showSideNav: state.shared.showSideNav,
-      showBottomNav: state.shared.showBottomNav
+      showBottomNav: state.shared.showBottomNav,
+      currentLocation: state.shared.currentLocation,
+      fullWidth: state.shared.fullWidth
     }),
     []
   );
-  const { showSideNav, showBottomNav } = useMappedState(mapState);
+  const { showBottomNav, currentLocation, fullWidth } = useMappedState(
+    mapState
+  );
 
-  useEffect(() => {
-    scrollTop();
-  }, []);
+  useEffect(
+    () => {
+      if (
+        !currentLocation ||
+        (currentLocation.state && currentLocation.state.modal)
+      ) {
+        return;
+      }
+      scrollTop();
+    },
+    [currentLocation]
+  );
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Grid container>
-        <Grid item xs={12} sm={12} md={3} lg={2} xl={2}>
-          <React.Suspense fallback={null}>
-            <NavBar />
-          </React.Suspense>
-        </Grid>
+      <React.Suspense fallback={null}>
+        <NavBar />
+      </React.Suspense>
+      <Grid
+        container
+        style={
+          fullWidth ? {} : smUp ? styles.containerLarge : styles.containerSmall
+        }
+      >
         <Grid
           item
           xs={12}
           sm={12}
-          md={!large || !showSideNav ? 12 : 6}
-          lg={!large || !showSideNav ? 12 : 8}
-          xl={!large || !showSideNav ? 12 : 8}
+          md={fullWidth ? 12 : 8}
+          lg={fullWidth ? 12 : 8}
+          xl={fullWidth ? 12 : 8}
+          style={fullWidth ? {} : smUp ? styles.mainLarge : styles.mainSmall}
         >
           <React.Suspense fallback={null}>
             <Routes />
           </React.Suspense>
         </Grid>
-        {large && showSideNav && (
-          <Grid item md={3} lg={2} xl={2} style={styles.rightGrid}>
+        {mdUp && !fullWidth && (
+          <Grid item md={4} lg={4} xl={4} style={styles.right}>
             <React.Suspense fallback={null}>
-              <RecommendMaps />
+              <RightItems />
             </React.Suspense>
           </Grid>
         )}
       </Grid>
-      {!large && showBottomNav && (
+      {!smUp && showBottomNav && (
         <React.Suspense fallback={null}>
           <BottomNav />
         </React.Suspense>

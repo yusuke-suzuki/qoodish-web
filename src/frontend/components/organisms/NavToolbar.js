@@ -4,27 +4,18 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import Link from '../molecules/Link';
 
-const SearchBar = React.lazy(() =>
-  import(/* webpackChunkName: "search_bar" */ '../molecules/SearchBar')
-);
-const AppMenuButton = React.lazy(() =>
-  import(/* webpackChunkName: "app_menu" */ '../molecules/AppMenuButton')
-);
-const AvatarMenu = React.lazy(() =>
-  import(/* webpackChunkName: "avatar_menu" */ '../molecules/AvatarMenu')
-);
-const NotificationMenu = React.lazy(() =>
-  import(/* webpackChunkName: "notification_menu" */ './NotificationMenu')
-);
+import SearchBar from '../molecules/SearchBar';
+import AppMenuButton from '../molecules/AppMenuButton';
+import AvatarMenu from '../molecules/AvatarMenu';
+import NotificationMenu from './NotificationMenu';
+import NavTabs from '../molecules/NavTabs';
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SearchIcon from '@material-ui/icons/Search';
 
-import I18n from '../../utils/I18n';
 import openSearchMapsDialog from '../../actions/openSearchMapsDialog';
 
 const styles = {
@@ -39,20 +30,14 @@ const styles = {
     cursor: 'pointer',
     paddingLeft: 8
   },
-  pageTitleLarge: {
-    cursor: 'pointer',
-    borderLeft: '1px solid rgba(255,255,255,0.2)',
-    paddingLeft: 24,
-    marginLeft: 24
-  },
   pageTitleSmall: {
     cursor: 'pointer',
     paddingLeft: 64
   },
   rightContentsLarge: {
-    position: 'absolute',
-    right: 10,
-    display: 'flex'
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'flex-end'
   },
   rightContentsSmall: {
     position: 'absolute',
@@ -68,8 +53,7 @@ const styles = {
     color: 'inherit'
   },
   search: {
-    marginLeft: 'auto',
-    marginRight: 150
+    alignSelf: 'center'
   },
   rightContents: {
     display: 'inline-flex',
@@ -81,7 +65,7 @@ const handleTitleClick = () => {
   window.scrollTo(0, 0);
 };
 
-const SearchButton = () => {
+const SearchButton = React.memo(() => {
   const dispatch = useDispatch();
   const handleSearchButtonClick = useCallback(() => {
     dispatch(openSearchMapsDialog());
@@ -92,13 +76,11 @@ const SearchButton = () => {
       <SearchIcon />
     </IconButton>
   );
-};
+});
 
-const NavToolbar = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+const ToolbarSmall = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       pageTitle: state.shared.pageTitle,
       showBackButton: state.shared.showBackButton,
       previousLocation: state.shared.previousLocation,
@@ -107,7 +89,6 @@ const NavToolbar = props => {
     []
   );
   const {
-    currentUser,
     pageTitle,
     showBackButton,
     previousLocation,
@@ -123,81 +104,65 @@ const NavToolbar = props => {
   });
 
   return (
-    <Toolbar
-      disableGutters
-      style={large ? styles.toolbarLarge : styles.toolbarSmall}
-    >
-      {!large && showBackButton ? (
+    <Toolbar disableGutters style={styles.toolbarSmall}>
+      {showBackButton ? (
         <IconButton
           color="inherit"
           onClick={handleBackButtonClick}
-          style={large ? {} : styles.leftButton}
+          style={styles.leftButton}
         >
           <ArrowBackIcon />
         </IconButton>
       ) : (
         <AppMenuButton />
       )}
-      {large ? (
-        <Typography variant="h5" color="inherit" style={styles.logo}>
-          <Link to="/" style={styles.link} title="Qoodish">
-            Qoodish
-          </Link>
-        </Typography>
-      ) : null}
       <Typography
-        variant={large ? 'h5' : 'h6'}
+        variant={'h6'}
         color="inherit"
         noWrap
-        style={large ? styles.pageTitleLarge : styles.pageTitleSmall}
+        style={styles.pageTitleSmall}
         onClick={handleTitleClick}
       >
         {pageTitle}
       </Typography>
-      {large && (
-        <div style={styles.search}>
-          <React.Suspense fallback={null}>
-            <SearchBar />
-          </React.Suspense>
+      <div style={styles.rightContentsSmall}>
+        <div style={styles.rightContents}>
+          <SearchButton />
+          <AvatarMenu />
         </div>
-      )}
-      <div
-        style={large ? styles.rightContentsLarge : styles.rightContentsSmall}
-      >
-        {currentUser && currentUser.isAnonymous ? (
-          <div>
-            {!large && (
-              <React.Suspense fallback={null}>
-                <SearchButton />
-              </React.Suspense>
-            )}
-            <Button
-              color="inherit"
-              component={Link}
-              to="/login"
-              title={I18n.t('login')}
-            >
-              {I18n.t('login')}
-            </Button>
-          </div>
-        ) : (
-          <div style={styles.rightContents}>
-            {!large && (
-              <React.Suspense fallback={null}>
-                <SearchButton {...props} />
-              </React.Suspense>
-            )}
-            {large && (
-              <React.Suspense fallback={null}>
-                <NotificationMenu />
-              </React.Suspense>
-            )}
-            <AvatarMenu />
-          </div>
-        )}
       </div>
     </Toolbar>
   );
+});
+
+const ToolbarLarge = React.memo(() => {
+  return (
+    <Toolbar disableGutters style={styles.toolbarLarge}>
+      <AppMenuButton />
+      <Typography variant="h5" color="inherit" style={styles.logo}>
+        <Link to="/" style={styles.link} title="Qoodish">
+          Qoodish
+        </Link>
+      </Typography>
+      <div style={styles.rightContentsLarge}>
+        <NavTabs />
+
+        <div style={styles.search}>
+          <SearchBar />
+        </div>
+        <div style={styles.rightContents}>
+          <NotificationMenu />
+          <AvatarMenu />
+        </div>
+      </div>
+    </Toolbar>
+  );
+});
+
+const NavToolbar = () => {
+  const large = useMediaQuery('(min-width: 600px)');
+
+  return large ? <ToolbarLarge /> : <ToolbarSmall />;
 };
 
 export default React.memo(NavToolbar);

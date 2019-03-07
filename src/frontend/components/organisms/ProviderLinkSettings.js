@@ -156,7 +156,7 @@ const LinkedProvidersList = () => {
 
 const ProviderLinkSettings = () => {
   return (
-    <Card>
+    <Card elevation={0}>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           {I18n.t('link providers')}

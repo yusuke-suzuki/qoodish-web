@@ -4,9 +4,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
-import PlaceIcon from '@material-ui/icons/Place';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
-import GradeIcon from '@material-ui/icons/Grade';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Typography from '@material-ui/core/Typography';
 
@@ -29,30 +27,13 @@ import { MapsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  rootLarge: {
-    maxWidth: 900,
-    margin: '94px auto 20px'
-  },
-  rootSmall: {
-    margin: '76px auto 64px'
-  },
   container: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    marginTop: 40,
-    marginBottom: 20
+    marginBottom: 40
   },
-  listContainerLarge: {
-    display: 'flex'
-  },
-  listContainerSmall: {},
-  rankingContainerLarge: {
-    marginTop: 40,
-    marginBottom: 20,
-    width: '50%'
-  },
-  rankingContainerSmall: {
+  rankingContainer: {
     marginTop: 40,
     marginBottom: 20
   },
@@ -71,7 +52,6 @@ const styles = {
     marginBottom: 15
   },
   headerIcon: {
-    marginLeft: 10,
     marginRight: 10
   }
 };
@@ -115,6 +95,7 @@ const MapContainer = props => {
 
 const Discover = () => {
   const large = useMediaQuery('(min-width: 600px)');
+  const mdUp = useMediaQuery('(min-width: 960px)');
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -181,7 +162,7 @@ const Discover = () => {
   }, []);
 
   return (
-    <div style={large ? styles.rootLarge : styles.rootSmall}>
+    <div>
       <DiscoverHelmet />
 
       <div style={styles.container}>
@@ -242,43 +223,18 @@ const Discover = () => {
         )}
       </div>
 
-      <div
-        style={large ? styles.listContainerLarge : styles.listContainerSmall}
-      >
-        <div
-          style={
-            large ? styles.rankingContainerLarge : styles.rankingContainerSmall
-          }
-        >
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            color="textSecondary"
-            style={styles.gridHeader}
-          >
-            <GradeIcon style={styles.headerIcon} /> {I18n.t('trending maps')}
-          </Typography>
-          <br />
-          <TrendingMaps />
-        </div>
+      {!mdUp && (
+        <div>
+          <div style={styles.rankingContainer}>
+            <TrendingMaps />
+          </div>
 
-        <div
-          style={
-            large ? styles.rankingContainerLarge : styles.rankingContainerSmall
-          }
-        >
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            color="textSecondary"
-            style={styles.gridHeader}
-          >
-            <PlaceIcon style={styles.headerIcon} /> {I18n.t('trending spots')}
-          </Typography>
-          <br />
-          <TrendingSpots />
+          <div style={styles.rankingContainer}>
+            <TrendingSpots />
+          </div>
         </div>
-      </div>
+      )}
+
       {large && <CreateResourceButton />}
     </div>
   );
