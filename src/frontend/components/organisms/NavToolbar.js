@@ -14,16 +14,13 @@ import NavTabs from './NavTabs';
 import Link from '../molecules/Link';
 
 const styles = {
-  toolbarSmall: {
-    height: 56
-  },
   logo: {
     cursor: 'pointer',
     marginLeft: 12
   },
   pageTitleSmall: {
     cursor: 'pointer',
-    marginLeft: 12
+    marginLeft: 8
   },
   rightContentsLarge: {
     display: 'flex',
@@ -77,7 +74,7 @@ const ToolbarSmall = React.memo(() => {
   });
 
   return (
-    <Toolbar style={styles.toolbarSmall}>
+    <Toolbar>
       {showBackButton ? (
         <IconButton color="inherit" onClick={handleBackButtonClick}>
           <ArrowBackIcon />

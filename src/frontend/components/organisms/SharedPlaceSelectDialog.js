@@ -15,22 +15,15 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 
 import I18n from '../../utils/I18n';
 
 import searchPlaces from '../../actions/searchPlaces';
 import { PlacesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
-  appbar: {
-    position: 'relative'
-  },
   placeIcon: {
     marginRight: 10
   },
@@ -39,9 +32,6 @@ const styles = {
   },
   dialogContentSmall: {
     paddingTop: 24
-  },
-  toolbar: {
-    height: 56
   },
   dialogTitle: {
     display: 'flex'
@@ -109,16 +99,10 @@ const SharedPlaceSelectDialog = props => {
           </div>
         </DialogTitle>
       ) : (
-        <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton color="inherit" onClick={props.onClose}>
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit">
-              {I18n.t('select place')}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <DialogAppBar
+          title={I18n.t('select place')}
+          handleRequestDialogClose={props.onClose}
+        />
       )}
       <DialogContent
         style={large ? styles.dialogContentLarge : styles.dialogContentSmall}

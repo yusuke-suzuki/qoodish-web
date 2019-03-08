@@ -3,6 +3,7 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,14 +13,10 @@ import Avatar from '@material-ui/core/Avatar';
 import I18n from '../../utils/I18n';
 import Link from '../molecules/Link';
 import Slide from '@material-ui/core/Slide';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 import FollowMapButton from '../molecules/FollowMapButton';
 
 import closeFollowingMapsDialog from '../../actions/closeFollowingMapsDialog';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -61,15 +58,15 @@ const FollowingMapsDialog = () => {
       fullScreen={!large}
       TransitionComponent={Transition}
     >
-      <Toolbar style={styles.toolbar}>
-        <IconButton color="inherit" onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit" noWrap>
-          {I18n.t('following')}
-        </Typography>
-      </Toolbar>
-      <Divider />
+      {large ? (
+        <DialogTitle>{I18n.t('following')}</DialogTitle>
+      ) : (
+        <DialogAppBar
+          title={I18n.t('following')}
+          handleRequestDialogClose={onClose}
+          color="inherit"
+        />
+      )}
       <List>
         {maps.map(map => (
           <ListItem

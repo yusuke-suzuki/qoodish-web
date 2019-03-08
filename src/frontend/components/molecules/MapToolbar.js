@@ -15,8 +15,11 @@ import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 
 const styles = {
-  leftButton: {
-    color: 'white'
+  backButtonLarge: {
+    marginRight: 12
+  },
+  backButtonSmall: {
+    marginRight: 8
   },
   toolbarActions: {
     marginLeft: 'auto',
@@ -33,7 +36,7 @@ const styles = {
   }
 };
 
-const MapToolbar = props => {
+const MapToolbar = () => {
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -72,15 +75,13 @@ const MapToolbar = props => {
 
   return (
     <Toolbar>
-      {props.showBackButton && (
-        <IconButton
-          color="inherit"
-          onClick={handleBackButtonClick}
-          style={large ? {} : styles.leftButton}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-      )}
+      <IconButton
+        color="inherit"
+        onClick={handleBackButtonClick}
+        style={large ? styles.backButtonLarge : styles.backButtonSmall}
+      >
+        <ArrowBackIcon />
+      </IconButton>
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon
@@ -90,7 +91,7 @@ const MapToolbar = props => {
           />
         </Tooltip>
       )}
-      {props.showMapName && map && (
+      {map && (
         <Typography variant="h6" color="inherit" noWrap style={styles.mapName}>
           {map.name}
         </Typography>

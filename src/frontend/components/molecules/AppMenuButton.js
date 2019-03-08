@@ -8,7 +8,12 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 import toggleDrawer from '../../actions/toggleDrawer';
 
 const styles = {
+  iconButton: {
+    width: 48,
+    height: 48
+  },
   profileAvatar: {
+    position: 'absolute',
     width: 35,
     height: 35
   }
@@ -28,7 +33,7 @@ const AppMenuButton = () => {
   const handleButtonClick = useCallback(() => dispatch(toggleDrawer()));
 
   return (
-    <IconButton onClick={handleButtonClick}>
+    <IconButton onClick={handleButtonClick} style={styles.iconButton}>
       <Avatar
         src={currentUser.isAnonymous ? '' : currentUser.thumbnail_url}
         style={styles.profileAvatar}

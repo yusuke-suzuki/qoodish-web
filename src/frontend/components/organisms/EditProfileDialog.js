@@ -23,8 +23,12 @@ import uploadToStorage from '../../utils/uploadToStorage';
 import sleep from '../../utils/sleep';
 
 import { UsersApi, NewUser } from 'qoodish_api';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
+  dialogContentSmall: {
+    paddingTop: 24
+  },
   avatarContainer: {
     marginBottom: 20,
     position: 'relative'
@@ -208,8 +212,26 @@ const EditProfileDialog = () => {
       fullScreen={!large}
       TransitionComponent={Transition}
     >
-      <DialogTitle>{I18n.t('edit profile')}</DialogTitle>
-      <DialogContent>
+      {large ? (
+        <DialogTitle>{I18n.t('edit profile')}</DialogTitle>
+      ) : (
+        <DialogAppBar
+          title={I18n.t('edit profile')}
+          handleRequestDialogClose={handleRequestDialogClose}
+          color="inherit"
+          action={
+            <Button
+              variant="contained"
+              onClick={handleSaveButtonClick}
+              color="primary"
+              disabled={disabled}
+            >
+              {I18n.t('save')}
+            </Button>
+          }
+        />
+      )}
+      <DialogContent style={large ? {} : styles.dialogContentSmall}>
         <div style={styles.avatarContainer}>
           <Avatar src={imageUrl} style={styles.profileAvatar}>
             <img src={imageUrl} style={styles.image} />
@@ -252,17 +274,19 @@ const EditProfileDialog = () => {
           margin="normal"
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleRequestDialogClose}>{I18n.t('cancel')}</Button>
-        <Button
-          variant="contained"
-          onClick={handleSaveButtonClick}
-          color="primary"
-          disabled={disabled}
-        >
-          {I18n.t('save')}
-        </Button>
-      </DialogActions>
+      {large && (
+        <DialogActions>
+          <Button onClick={handleRequestDialogClose}>{I18n.t('cancel')}</Button>
+          <Button
+            variant="contained"
+            onClick={handleSaveButtonClick}
+            color="primary"
+            disabled={disabled}
+          >
+            {I18n.t('save')}
+          </Button>
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

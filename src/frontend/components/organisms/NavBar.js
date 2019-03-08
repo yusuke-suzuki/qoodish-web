@@ -15,11 +15,7 @@ const NavBar = () => {
   return (
     <div>
       <AppBar position="fixed">
-        {isMapDetail ? (
-          <MapToolbar showBackButton showMapName />
-        ) : (
-          <NavToolbar />
-        )}
+        {isMapDetail ? <MapToolbar /> : <NavToolbar />}
       </AppBar>
       <NavDrawer />
     </div>

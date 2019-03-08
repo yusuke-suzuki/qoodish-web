@@ -134,7 +134,7 @@ const MapSummary = () => {
     <div style={large ? styles.containerLarge : styles.containerSmall}>
       {!large && (
         <AppBar position="absolute">
-          <MapToolbar showBackButton showMapName />
+          <MapToolbar />
           <Toolbar>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>
