@@ -16,7 +16,6 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { DevicesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
-import fetchRegistrationToken from '../../actions/fetchRegistrationToken';
 
 const styles = {
   profileAvatar: {

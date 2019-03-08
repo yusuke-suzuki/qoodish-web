@@ -10,7 +10,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import SearchButton from '../molecules/SearchButton';
 import SearchBar from '../molecules/SearchBar';
 import AppMenuButton from '../molecules/AppMenuButton';
-import AvatarMenu from '../molecules/AvatarMenu';
 import NavTabs from './NavTabs';
 import Link from '../molecules/Link';
 
@@ -23,7 +22,8 @@ const styles = {
     marginLeft: 12
   },
   pageTitleSmall: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    marginLeft: 12
   },
   rightContentsLarge: {
     display: 'flex',
@@ -43,8 +43,7 @@ const styles = {
     color: 'inherit'
   },
   search: {
-    alignSelf: 'center',
-    marginLeft: 64
+    marginRight: 24
   }
 };
 
@@ -97,7 +96,6 @@ const ToolbarSmall = React.memo(() => {
       </Typography>
       <div style={styles.rightContentsSmall}>
         <SearchButton />
-        <AvatarMenu />
       </div>
     </Toolbar>
   );
@@ -112,12 +110,11 @@ const ToolbarLarge = React.memo(() => {
           Qoodish
         </Link>
       </Typography>
-      <div style={styles.search}>
-        <SearchBar />
-      </div>
       <div style={styles.rightContentsLarge}>
+        <div style={styles.search}>
+          <SearchBar />
+        </div>
         <NavTabs />
-        <AvatarMenu />
       </div>
     </Toolbar>
   );
