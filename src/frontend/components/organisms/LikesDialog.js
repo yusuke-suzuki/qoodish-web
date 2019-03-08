@@ -1,34 +1,27 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 import Link from '../molecules/Link';
 
 import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const styles = {
-  toolbar: {
-    paddingLeft: 8
-  }
-};
-
 const LikesDialog = () => {
+  const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
 
   const mapState = useCallback(
@@ -51,15 +44,15 @@ const LikesDialog = () => {
       fullWidth
       TransitionComponent={Transition}
     >
-      <Toolbar style={styles.toolbar}>
-        <IconButton color="inherit" onClick={handleRequestDialogClose}>
-          <CloseIcon />
-        </IconButton>
-        <Typography variant="h6" color="inherit" noWrap>
-          {I18n.t('likes')}
-        </Typography>
-      </Toolbar>
-      <Divider />
+      {large ? (
+        <DialogTitle>{I18n.t('likes')}</DialogTitle>
+      ) : (
+        <DialogAppBar
+          title={I18n.t('likes')}
+          handleRequestDialogClose={handleRequestDialogClose}
+          color="inherit"
+        />
+      )}
       <List>
         {likes.map(like => (
           <ListItem

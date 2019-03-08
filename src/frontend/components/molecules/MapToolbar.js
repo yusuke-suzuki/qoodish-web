@@ -11,27 +11,15 @@ import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
 
-const MapShareMenu = React.lazy(() =>
-  import(/* webpackChunkName: "map_share_menu" */ './MapShareMenu')
-);
-const MapVertMenu = React.lazy(() =>
-  import(/* webpackChunkName: "map_vert_menu" */ './MapVertMenu')
-);
-const AppMenuButton = React.lazy(() =>
-  import(/* webpackChunkName: "app_menu" */ './AppMenuButton')
-);
+import MapShareMenu from './MapShareMenu';
+import MapVertMenu from './MapVertMenu';
 
 const styles = {
-  leftButton: {
-    color: 'white'
+  backButtonLarge: {
+    marginRight: 12
   },
-  mapToolbarLarge: {
-    paddingLeft: 10,
-    paddingRight: 10
-  },
-  mapToolbarSmall: {
-    paddingLeft: 8,
-    paddingRight: 8
+  backButtonSmall: {
+    marginRight: 8
   },
   toolbarActions: {
     marginLeft: 'auto',
@@ -41,15 +29,14 @@ const styles = {
     color: 'white'
   },
   mapName: {
-    cursor: 'pointer',
-    marginLeft: 4
+    cursor: 'pointer'
   },
   mapTypeIcon: {
     marginRight: 6
   }
 };
 
-const MapToolbar = props => {
+const MapToolbar = () => {
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -87,24 +74,14 @@ const MapToolbar = props => {
   });
 
   return (
-    <Toolbar
-      style={large ? styles.mapToolbarLarge : styles.mapToolbarSmall}
-      disableGutters
-    >
-      {props.showBackButton && (
-        <IconButton
-          color="inherit"
-          onClick={handleBackButtonClick}
-          style={large ? {} : styles.leftButton}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-      )}
-      {props.showMenuButton && (
-        <React.Suspense fallback={null}>
-          <AppMenuButton />
-        </React.Suspense>
-      )}
+    <Toolbar>
+      <IconButton
+        color="inherit"
+        onClick={handleBackButtonClick}
+        style={large ? styles.backButtonLarge : styles.backButtonSmall}
+      >
+        <ArrowBackIcon />
+      </IconButton>
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon
@@ -114,16 +91,14 @@ const MapToolbar = props => {
           />
         </Tooltip>
       )}
-      {props.showMapName && map && (
+      {map && (
         <Typography variant="h6" color="inherit" noWrap style={styles.mapName}>
           {map.name}
         </Typography>
       )}
       <div style={styles.toolbarActions}>
-        <React.Suspense fallback={null}>
-          <MapShareMenu />
-          <MapVertMenu />
-        </React.Suspense>
+        <MapShareMenu />
+        <MapVertMenu />
       </div>
     </Toolbar>
   );

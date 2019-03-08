@@ -22,10 +22,6 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import ListItemText from '@material-ui/core/ListItemText';
 import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
 import * as loadImage from 'blueimp-load-image';
 
 import createReview from '../../actions/createReview';
@@ -47,21 +43,12 @@ import I18n from '../../utils/I18n';
 
 import { MapsApi, SpotsApi, ReviewsApi, NewReview } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
-  appbar: {
-    position: 'relative'
-  },
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {},
   dialogContentSmall: {
     paddingTop: 24
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
   },
   imagePreviewContainer: {
     position: 'relative'
@@ -75,9 +62,6 @@ const styles = {
   },
   imageInput: {
     display: 'none'
-  },
-  buttonIcon: {
-    marginRight: 8
   },
   placeChipLabel: {
     overflow: 'hidden',
@@ -450,27 +434,24 @@ const EditReviewDialog = () => {
           {currentReview ? I18n.t('edit report') : I18n.t('create new report')}
         </DialogTitle>
       ) : (
-        <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton color="inherit" onClick={handleRequestClose}>
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
-              {currentReview
-                ? I18n.t('edit report')
-                : I18n.t('create new report')}
-            </Typography>
+        <DialogAppBar
+          title={
+            currentReview ? I18n.t('edit report') : I18n.t('create new report')
+          }
+          action={
             <Button
               variant="contained"
               onClick={handleSaveButtonClick}
               color="secondary"
               disabled={disabled}
               data-test="save-review-button"
+              style={styles.saveButton}
             >
               {I18n.t('save')}
             </Button>
-          </Toolbar>
-        </AppBar>
+          }
+          handleRequestDialogClose={handleRequestClose}
+        />
       )}
       <DialogContent
         style={large ? styles.dialogContentLarge : styles.dialogContentSmall}

@@ -15,6 +15,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import Link from './Link';
 import I18n from '../../utils/I18n';
@@ -22,6 +23,15 @@ import I18n from '../../utils/I18n';
 import openFeedbackDialog from '../../actions/openFeedbackDialog';
 import openDrawer from '../../actions/openDrawer';
 import closeDrawer from '../../actions/closeDrawer';
+
+import getFirebase from '../../utils/getFirebase';
+import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
+import getFirebaseAuth from '../../utils/getFirebaseAuth';
+import signIn from '../../actions/signIn';
+import requestStart from '../../actions/requestStart';
+import requestFinish from '../../actions/requestFinish';
+import { DevicesApi } from 'qoodish_api';
+import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   title: {
@@ -68,12 +78,54 @@ const Title = React.memo(() => {
 const DrawerContents = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      currentLocation: state.shared.currentLocation
+      currentLocation: state.shared.currentLocation,
+      currentUser: state.app.currentUser,
+      history: state.shared.history
     }),
     []
   );
-  const { currentLocation } = useMappedState(mapState);
+  const { currentLocation, currentUser, history } = useMappedState(mapState);
   const dispatch = useDispatch();
+
+  const handleSignOutClick = useCallback(async () => {
+    dispatch(requestStart());
+    const firebase = await getFirebase();
+    await getFirebaseMessaging();
+    await getFirebaseAuth();
+
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      const messaging = firebase.messaging();
+      const registrationToken = await messaging.getToken();
+
+      if (registrationToken) {
+        await initializeApiClient();
+        const apiInstance = new DevicesApi();
+
+        apiInstance.devicesRegistrationTokenDelete(
+          registrationToken,
+          (error, data, response) => {
+            if (response.ok) {
+              console.log('Successfully deleted registration token.');
+            } else {
+              console.log('Failed to delete registration token.');
+            }
+          }
+        );
+      }
+    }
+
+    await firebase.auth().signOut();
+    await firebase.auth().signInAnonymously();
+    const currentUser = firebase.auth().currentUser;
+    const user = {
+      uid: currentUser.uid,
+      isAnonymous: true
+    };
+    dispatch(signIn(user));
+
+    history.push('/login');
+    dispatch(requestFinish());
+  });
 
   const handleFeedbackClick = useCallback(() => {
     dispatch(openFeedbackDialog());
@@ -185,6 +237,24 @@ const DrawerContents = React.memo(() => {
           />
         </ListItem>
         <Divider />
+        {currentUser.isAnonymous ? (
+          <ListItem button component={Link} to="/login" title={I18n.t('login')}>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={I18n.t('login')}
+              primaryTypographyProps={{ color: 'textSecondary' }}
+            />
+          </ListItem>
+        ) : (
+          <ListItem button onClick={handleSignOutClick}>
+            <ListItemText
+              primary={I18n.t('logout')}
+              primaryTypographyProps={{ color: 'textSecondary' }}
+            />
+          </ListItem>
+        )}
         <ListItem button onClick={handleFeedbackClick}>
           <ListItemText
             primary={I18n.t('send feedback')}

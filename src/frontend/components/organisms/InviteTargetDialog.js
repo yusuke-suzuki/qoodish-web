@@ -14,11 +14,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import I18n from '../../utils/I18n';
@@ -31,23 +26,14 @@ import openToast from '../../actions/openToast';
 
 import { UsersApi, InvitesApi, NewInvite } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
-  appbar: {
-    position: 'relative'
-  },
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {
     paddingBottom: 0
   },
   dialogContentSmall: {
     paddingTop: 24
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
   },
   dialogTitle: {
     display: 'flex'
@@ -135,14 +121,10 @@ const InviteTargetDialog = props => {
       {large ? (
         <DialogTitle>{I18n.t('select invite target')}</DialogTitle>
       ) : (
-        <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton color="inherit" onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
-              {I18n.t('select invite target')}
-            </Typography>
+        <DialogAppBar
+          title={I18n.t('select invite target')}
+          handleRequestDialogClose={onClose}
+          action={
             <Button
               variant="contained"
               onClick={() => {
@@ -150,11 +132,12 @@ const InviteTargetDialog = props => {
               }}
               color="secondary"
               disabled={!selectedUserId}
+              style={styles.sendButton}
             >
               {I18n.t('invite')}
             </Button>
-          </Toolbar>
-        </AppBar>
+          }
+        />
       )}
       <DialogContent
         style={large ? styles.dialogContentLarge : styles.dialogContentSmall}

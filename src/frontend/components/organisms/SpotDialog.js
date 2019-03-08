@@ -5,25 +5,12 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 
 import SpotCard from '../organisms/SpotCard';
 import I18n from '../../utils/I18n';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
-  appbar: {
-    position: 'relative'
-  },
-  toolbar: {
-    paddingLeft: 8
-  },
-  flex: {
-    flex: 1
-  },
   dialogContent: {
     padding: 0
   },
@@ -64,16 +51,11 @@ const SpotDialog = () => {
       scroll={large ? 'body' : 'paper'}
     >
       {!large && (
-        <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton color="inherit" onClick={handleRequestDialogClose}>
-              <ArrowBackIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
-              {I18n.t('spot')}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <DialogAppBar
+          title={I18n.t('spot')}
+          iconType="back"
+          handleRequestDialogClose={handleRequestDialogClose}
+        />
       )}
       <DialogContent style={styles.dialogContent}>
         <div>

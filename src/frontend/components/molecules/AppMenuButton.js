@@ -1,32 +1,45 @@
 import React, { useCallback } from 'react';
-import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
 
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import toggleDrawer from '../../actions/toggleDrawer';
 
 const styles = {
-  leftButton: {
+  iconButton: {
+    width: 48,
+    height: 48
+  },
+  profileAvatar: {
     position: 'absolute',
-    marginLeft: 8,
-    color: 'white'
+    width: 35,
+    height: 35
   }
 };
 
 const AppMenuButton = () => {
-  const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+  const { currentUser } = useMappedState(mapState);
+
   const handleButtonClick = useCallback(() => dispatch(toggleDrawer()));
 
   return (
-    <IconButton
-      color="inherit"
-      onClick={handleButtonClick}
-      style={large ? {} : styles.leftButton}
-    >
-      <MenuIcon />
+    <IconButton onClick={handleButtonClick} style={styles.iconButton}>
+      <Avatar
+        src={currentUser.isAnonymous ? '' : currentUser.thumbnail_url}
+        style={styles.profileAvatar}
+      >
+        {currentUser.isAnonymous && <PersonIcon style={styles.profileAvatar} />}
+      </Avatar>
     </IconButton>
   );
 };

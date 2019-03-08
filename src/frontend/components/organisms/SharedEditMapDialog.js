@@ -12,10 +12,6 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 import PlaceIcon from '@material-ui/icons/Place';
 import Avatar from '@material-ui/core/Avatar';
@@ -26,18 +22,12 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import I18n from '../../utils/I18n';
 
 import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
+import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {},
   dialogContentSmall: {
-    paddingTop: 80
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
+    paddingTop: 24
   },
   mapCenterChip: {
     marginTop: 16,
@@ -185,27 +175,23 @@ const SharedEditMapDialog = props => {
           {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
         </DialogTitle>
       ) : (
-        <AppBar color="primary">
-          <Toolbar style={styles.toolbar}>
-            <IconButton
-              color="inherit"
-              onClick={props.handleRequestDialogClose}
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
-              {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
-            </Typography>
+        <DialogAppBar
+          title={
+            props.currentMap ? I18n.t('edit map') : I18n.t('create new map')
+          }
+          action={
             <Button
               variant="contained"
               onClick={handleSaveButtonClick}
               color="secondary"
               disabled={disabled}
+              style={styles.saveButton}
             >
               {I18n.t('save')}
             </Button>
-          </Toolbar>
-        </AppBar>
+          }
+          handleRequestDialogClose={props.handleRequestDialogClose}
+        />
       )}
       <DialogContent
         style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
