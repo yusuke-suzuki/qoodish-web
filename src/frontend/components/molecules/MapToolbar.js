@@ -15,6 +15,11 @@ import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 
 const styles = {
+  toolbarSmall: {
+    height: 56,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
   backButtonLarge: {
     marginRight: 12
   },
@@ -74,7 +79,7 @@ const MapToolbar = () => {
   });
 
   return (
-    <Toolbar>
+    <Toolbar style={large ? {} : styles.toolbarSmall}>
       <IconButton
         color="inherit"
         onClick={handleBackButtonClick}

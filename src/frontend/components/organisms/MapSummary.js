@@ -37,12 +37,10 @@ const styles = {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
   },
   toolbarLarge: {
-    height: 64,
-    paddingLeft: 10
+    height: 64
   },
   toolbarSmall: {
-    height: 56,
-    paddingLeft: 10
+    height: 56
   },
   tabsLarge: {
     height: 64,

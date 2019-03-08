@@ -23,6 +23,11 @@ import { MapsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
+  toolbar: {
+    height: 56,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
   paper: {
     marginTop: 56
   },
@@ -31,6 +36,9 @@ const styles = {
   },
   input: {
     padding: 0
+  },
+  backButton: {
+    marginRight: 8
   }
 };
 
@@ -84,8 +92,12 @@ const SearchMapsDialog = () => {
       }}
     >
       <AppBar color="inherit">
-        <Toolbar>
-          <IconButton color="inherit" onClick={handleRequestClose}>
+        <Toolbar style={styles.toolbar}>
+          <IconButton
+            color="inherit"
+            onClick={handleRequestClose}
+            style={styles.backButton}
+          >
             <ArrowBackIcon />
           </IconButton>
           <TextField
