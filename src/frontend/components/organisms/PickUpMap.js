@@ -12,7 +12,8 @@ import { MapsApi } from 'qoodish_api';
 
 const styles = {
   gridList: {
-    width: '100%'
+    width: '100%',
+    borderRadius: 4
   },
   pickUpTileLarge: {
     height: 330
@@ -21,8 +22,7 @@ const styles = {
     height: 280
   },
   pickUpTileBar: {
-    height: '100%',
-    borderRadius: 4
+    height: '100%'
   },
   pickUpText: {
     whiteSpace: 'normal',

@@ -10,6 +10,11 @@ const styles = {
   appbar: {
     position: 'relative'
   },
+  toolbar: {
+    height: 56,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
   actionButton: {
     marginLeft: 'auto'
   },
@@ -32,9 +37,9 @@ const DialogAppBar = props => {
     <AppBar
       style={styles.appbar}
       color={props.color ? props.color : 'primary'}
-      elevation={1}
+      elevation={2}
     >
-      <Toolbar>
+      <Toolbar style={styles.toolbar}>
         <IconButton
           color="inherit"
           onClick={props.handleRequestDialogClose}
