@@ -11,27 +11,13 @@ import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
 
-const MapShareMenu = React.lazy(() =>
-  import(/* webpackChunkName: "map_share_menu" */ './MapShareMenu')
-);
-const MapVertMenu = React.lazy(() =>
-  import(/* webpackChunkName: "map_vert_menu" */ './MapVertMenu')
-);
-const AppMenuButton = React.lazy(() =>
-  import(/* webpackChunkName: "app_menu" */ './AppMenuButton')
-);
+import MapShareMenu from './MapShareMenu';
+import MapVertMenu from './MapVertMenu';
+import AppMenuButton from './AppMenuButton';
 
 const styles = {
   leftButton: {
     color: 'white'
-  },
-  mapToolbarLarge: {
-    paddingLeft: 10,
-    paddingRight: 10
-  },
-  mapToolbarSmall: {
-    paddingLeft: 8,
-    paddingRight: 8
   },
   toolbarActions: {
     marginLeft: 'auto',
@@ -42,7 +28,7 @@ const styles = {
   },
   mapName: {
     cursor: 'pointer',
-    marginLeft: 4
+    marginLeft: 8
   },
   mapTypeIcon: {
     marginRight: 6
@@ -87,10 +73,7 @@ const MapToolbar = props => {
   });
 
   return (
-    <Toolbar
-      style={large ? styles.mapToolbarLarge : styles.mapToolbarSmall}
-      disableGutters
-    >
+    <Toolbar>
       {props.showBackButton && (
         <IconButton
           color="inherit"
@@ -100,11 +83,7 @@ const MapToolbar = props => {
           <ArrowBackIcon />
         </IconButton>
       )}
-      {props.showMenuButton && (
-        <React.Suspense fallback={null}>
-          <AppMenuButton />
-        </React.Suspense>
-      )}
+      {props.showMenuButton && <AppMenuButton />}
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon
@@ -120,10 +99,8 @@ const MapToolbar = props => {
         </Typography>
       )}
       <div style={styles.toolbarActions}>
-        <React.Suspense fallback={null}>
-          <MapShareMenu />
-          <MapVertMenu />
-        </React.Suspense>
+        <MapShareMenu />
+        <MapVertMenu />
       </div>
     </Toolbar>
   );

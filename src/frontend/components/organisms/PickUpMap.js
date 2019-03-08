@@ -21,7 +21,8 @@ const styles = {
     height: 280
   },
   pickUpTileBar: {
-    height: '100%'
+    height: '100%',
+    borderRadius: 4
   },
   pickUpText: {
     whiteSpace: 'normal',

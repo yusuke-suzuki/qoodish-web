@@ -9,8 +9,6 @@ import toggleDrawer from '../../actions/toggleDrawer';
 
 const styles = {
   leftButton: {
-    position: 'absolute',
-    marginLeft: 8,
     color: 'white'
   }
 };

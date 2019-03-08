@@ -19,20 +19,16 @@ import SearchIcon from '@material-ui/icons/Search';
 import openSearchMapsDialog from '../../actions/openSearchMapsDialog';
 
 const styles = {
-  toolbarLarge: {
-    paddingLeft: 10,
-    paddingRight: 10
-  },
   toolbarSmall: {
     height: 56
   },
   logo: {
     cursor: 'pointer',
-    paddingLeft: 8
+    marginLeft: 8
   },
   pageTitleSmall: {
     cursor: 'pointer',
-    paddingLeft: 64
+    marginLeft: 8
   },
   rightContentsLarge: {
     display: 'flex',
@@ -40,12 +36,10 @@ const styles = {
     justifyContent: 'flex-end'
   },
   rightContentsSmall: {
-    position: 'absolute',
-    right: 0,
-    display: 'flex'
+    display: 'flex',
+    marginLeft: 'auto'
   },
   leftButton: {
-    marginLeft: 8,
     position: 'absolute'
   },
   link: {
@@ -104,7 +98,7 @@ const ToolbarSmall = React.memo(() => {
   });
 
   return (
-    <Toolbar disableGutters style={styles.toolbarSmall}>
+    <Toolbar style={styles.toolbarSmall}>
       {showBackButton ? (
         <IconButton
           color="inherit"
@@ -137,7 +131,7 @@ const ToolbarSmall = React.memo(() => {
 
 const ToolbarLarge = React.memo(() => {
   return (
-    <Toolbar disableGutters style={styles.toolbarLarge}>
+    <Toolbar>
       <AppMenuButton />
       <Typography variant="h5" color="inherit" style={styles.logo}>
         <Link to="/" style={styles.link} title="Qoodish">

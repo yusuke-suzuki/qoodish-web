@@ -11,7 +11,6 @@ import Link from './Link';
 import I18n from '../../utils/I18n';
 
 const styles = {
-  tabs: {},
   tab: {
     height: 64,
     minHeight: 64,
@@ -57,12 +56,7 @@ const NavTabs = () => {
   );
 
   return (
-    <Tabs
-      value={selectedValue}
-      indicatorColor="secondary"
-      textColor="inherit"
-      style={styles.tabs}
-    >
+    <Tabs value={selectedValue} indicatorColor="secondary" textColor="inherit">
       <Tab
         icon={<HomeIcon />}
         selected={true}

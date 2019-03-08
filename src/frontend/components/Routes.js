@@ -12,8 +12,6 @@ import openSpotDialog from '../actions/openSpotDialog';
 import selectSpot from '../actions/selectSpot';
 import requestMapCenter from '../actions/requestMapCenter';
 
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 const Login = React.lazy(() =>
   import(/* webpackChunkName: "login" */ './pages/Login')
 );
@@ -53,13 +51,6 @@ const Terms = React.lazy(() =>
 const Privacy = React.lazy(() =>
   import(/* webpackChunkName: "privacy" */ './pages/Privacy')
 );
-
-const styles = {
-  progress: {
-    width: '50%',
-    margin: '50vh auto'
-  }
-};
 
 const root = { path: '/', component: Timeline };
 
@@ -203,20 +194,14 @@ const Routes = () => {
 
   if (currentLocation.state && currentLocation.state.modal) {
     return (
-      <React.Suspense fallback={<div />}>
+      <React.Suspense fallback={null}>
         <previousRoute.component params={previousRoute.params} />
       </React.Suspense>
     );
   }
 
   return matchedRoute ? (
-    <React.Suspense
-      fallback={
-        <div style={styles.progress}>
-          <LinearProgress />
-        </div>
-      }
-    >
+    <React.Suspense fallback={null}>
       <matchedRoute.component params={matchedRoute.params} />
     </React.Suspense>
   ) : (
