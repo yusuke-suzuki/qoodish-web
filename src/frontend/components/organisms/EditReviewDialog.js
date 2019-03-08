@@ -52,16 +52,9 @@ const styles = {
   appbar: {
     position: 'relative'
   },
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {},
   dialogContentSmall: {
     paddingTop: 24
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
   },
   imagePreviewContainer: {
     position: 'relative'
@@ -76,13 +69,13 @@ const styles = {
   imageInput: {
     display: 'none'
   },
-  buttonIcon: {
-    marginRight: 8
-  },
   placeChipLabel: {
     overflow: 'hidden',
     maxWidth: 'calc(100vw - 100px)',
     textOverflow: 'ellipsis'
+  },
+  saveButton: {
+    marginLeft: 'auto'
   }
 };
 
@@ -451,11 +444,11 @@ const EditReviewDialog = () => {
         </DialogTitle>
       ) : (
         <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
+          <Toolbar>
             <IconButton color="inherit" onClick={handleRequestClose}>
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
+            <Typography variant="h6" color="inherit">
               {currentReview
                 ? I18n.t('edit report')
                 : I18n.t('create new report')}
@@ -466,6 +459,7 @@ const EditReviewDialog = () => {
               color="secondary"
               disabled={disabled}
               data-test="save-review-button"
+              style={styles.saveButton}
             >
               {I18n.t('save')}
             </Button>

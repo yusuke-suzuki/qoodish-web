@@ -31,9 +31,6 @@ const styles = {
   appbar: {
     position: 'relative'
   },
-  flex: {
-    flex: 1
-  },
   placeIcon: {
     marginRight: 10
   },
@@ -44,7 +41,6 @@ const styles = {
     paddingTop: 24
   },
   toolbar: {
-    paddingLeft: 8,
     height: 56
   },
   dialogTitle: {
@@ -118,7 +114,7 @@ const SharedPlaceSelectDialog = props => {
             <IconButton color="inherit" onClick={props.onClose}>
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
+            <Typography variant="h6" color="inherit">
               {I18n.t('select place')}
             </Typography>
           </Toolbar>

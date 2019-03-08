@@ -13,7 +13,6 @@ import switchMap from '../../actions/switchMap';
 
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
-import AppMenuButton from './AppMenuButton';
 
 const styles = {
   leftButton: {
@@ -27,8 +26,7 @@ const styles = {
     color: 'white'
   },
   mapName: {
-    cursor: 'pointer',
-    marginLeft: 8
+    cursor: 'pointer'
   },
   mapTypeIcon: {
     marginRight: 6
@@ -83,7 +81,6 @@ const MapToolbar = props => {
           <ArrowBackIcon />
         </IconButton>
       )}
-      {props.showMenuButton && <AppMenuButton />}
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon

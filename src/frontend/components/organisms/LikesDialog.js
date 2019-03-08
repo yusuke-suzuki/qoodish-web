@@ -22,12 +22,6 @@ const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const styles = {
-  toolbar: {
-    paddingLeft: 8
-  }
-};
-
 const LikesDialog = () => {
   const dispatch = useDispatch();
 
@@ -51,7 +45,7 @@ const LikesDialog = () => {
       fullWidth
       TransitionComponent={Transition}
     >
-      <Toolbar style={styles.toolbar}>
+      <Toolbar>
         <IconButton color="inherit" onClick={handleRequestDialogClose}>
           <CloseIcon />
         </IconButton>

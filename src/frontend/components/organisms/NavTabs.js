@@ -1,11 +1,15 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import HomeIcon from '@material-ui/icons/Home';
+import ExploreIcon from '@material-ui/icons/Explore';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import Typography from '@material-ui/core/Typography';
 
@@ -13,17 +17,20 @@ import NotificationList from './NotificationList';
 
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
-import I18n from '../../utils/I18n';
 import initializeApiClient from '../../utils/initializeApiClient';
 import { NotificationsApi, InlineObject3 } from 'qoodish_api';
 
+import Link from '../molecules/Link';
+import I18n from '../../utils/I18n';
+
 const styles = {
+  tab: {
+    height: 64,
+    minHeight: 64,
+    minWidth: 90
+  },
   notificationMenu: {
     maxHeight: '50vh'
-  },
-  notificationButton: {
-    marginLeft: 10,
-    marginRight: 10
   },
   noContents: {
     textAlign: 'center',
@@ -37,22 +44,30 @@ const styles = {
   }
 };
 
-const NotificationMenu = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+const NavTabs = () => {
+  const [selectedValue, setSelectedValue] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(undefined);
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const dispatch = useDispatch();
 
   const mapState = useCallback(
     state => ({
+      currentLocation: state.shared.currentLocation,
       notifications: state.shared.notifications,
       unreadNotifications: state.shared.unreadNotifications
     }),
     []
   );
-  const { notifications, unreadNotifications } = useMappedState(mapState);
+  const {
+    currentLocation,
+    notifications,
+    unreadNotifications
+  } = useMappedState(mapState);
 
-  const [anchorEl, setAnchorEl] = useState(undefined);
-  const [notificationOpen, setNotificationOpen] = useState(false);
+  const isSelected = pathname => {
+    return currentLocation && currentLocation.pathname === pathname;
+  };
 
   const handleNotificationButtonClick = useCallback(e => {
     setNotificationOpen(true);
@@ -87,24 +102,80 @@ const NotificationMenu = () => {
     });
   });
 
+  useEffect(
+    () => {
+      if (!currentLocation) {
+        return;
+      }
+      switch (currentLocation.pathname) {
+        case '/':
+          setSelectedValue(0);
+          break;
+        case '/discover':
+          setSelectedValue(1);
+          break;
+        case '/profile':
+          setSelectedValue(2);
+          break;
+        default:
+          setSelectedValue(false);
+      }
+    },
+    [currentLocation]
+  );
+
   return (
     <div>
-      <IconButton
-        aria-label="Notification"
-        aria-owns={notificationOpen ? 'notification-menu' : null}
-        aria-haspopup="true"
-        onClick={handleNotificationButtonClick}
-        style={large ? styles.notificationButton : {}}
-        color="inherit"
+      <Tabs
+        value={selectedValue}
+        indicatorColor="secondary"
+        textColor="inherit"
       >
-        {unreadNotifications.length > 0 ? (
-          <Badge badgeContent={unreadNotifications.length} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        ) : (
-          <NotificationsIcon />
-        )}
-      </IconButton>
+        <Tab
+          icon={<HomeIcon />}
+          selected={true}
+          style={styles.tab}
+          component={Link}
+          to="/"
+          title={I18n.t('home')}
+        />
+        <Tab
+          icon={<ExploreIcon />}
+          selected={isSelected('/discover')}
+          style={styles.tab}
+          component={Link}
+          to="/discover"
+          title={I18n.t('discover')}
+        />
+        <Tab
+          icon={<AccountCircleIcon />}
+          selected={isSelected('/profile')}
+          style={styles.tab}
+          component={Link}
+          to="/profile"
+          title={I18n.t('account')}
+        />
+        <Tab
+          icon={
+            unreadNotifications.length > 0 ? (
+              <Badge
+                badgeContent={unreadNotifications.length}
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
+            ) : (
+              <NotificationsIcon />
+            )
+          }
+          style={styles.tab}
+          title={I18n.t('notifications')}
+          aria-label="Notification"
+          aria-owns={notificationOpen ? 'notification-menu' : null}
+          aria-haspopup="true"
+          onClick={handleNotificationButtonClick}
+        />
+      </Tabs>
       <Menu
         id="notification-menu"
         anchorEl={anchorEl}
@@ -132,4 +203,4 @@ const NotificationMenu = () => {
   );
 };
 
-export default React.memo(NotificationMenu);
+export default React.memo(NavTabs);

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Helmet from 'react-helmet';
@@ -85,7 +84,6 @@ const SpotDetailContainer = props => {
 };
 
 const SpotDetail = props => {
-  const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
 
   const mapState = useCallback(

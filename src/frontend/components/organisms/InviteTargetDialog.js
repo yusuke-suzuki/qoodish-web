@@ -36,21 +36,17 @@ const styles = {
   appbar: {
     position: 'relative'
   },
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {
     paddingBottom: 0
   },
   dialogContentSmall: {
     paddingTop: 24
   },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
-  },
   dialogTitle: {
     display: 'flex'
+  },
+  sendButton: {
+    marginLeft: 'auto'
   }
 };
 
@@ -136,11 +132,11 @@ const InviteTargetDialog = props => {
         <DialogTitle>{I18n.t('select invite target')}</DialogTitle>
       ) : (
         <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
+          <Toolbar>
             <IconButton color="inherit" onClick={onClose}>
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
+            <Typography variant="h6" color="inherit">
               {I18n.t('select invite target')}
             </Typography>
             <Button
@@ -150,6 +146,7 @@ const InviteTargetDialog = props => {
               }}
               color="secondary"
               disabled={!selectedUserId}
+              style={styles.sendButton}
             >
               {I18n.t('invite')}
             </Button>

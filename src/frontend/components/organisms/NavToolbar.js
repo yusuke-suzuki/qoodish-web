@@ -1,22 +1,18 @@
 import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
-
-import Link from '../molecules/Link';
-
-import SearchBar from '../molecules/SearchBar';
-import AppMenuButton from '../molecules/AppMenuButton';
-import AvatarMenu from '../molecules/AvatarMenu';
-import NotificationMenu from './NotificationMenu';
-import NavTabs from '../molecules/NavTabs';
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import SearchIcon from '@material-ui/icons/Search';
 
-import openSearchMapsDialog from '../../actions/openSearchMapsDialog';
+import SearchButton from '../molecules/SearchButton';
+import SearchBar from '../molecules/SearchBar';
+import AppMenuButton from '../molecules/AppMenuButton';
+import AvatarMenu from '../molecules/AvatarMenu';
+import NavTabs from './NavTabs';
+import Link from '../molecules/Link';
 
 const styles = {
   toolbarSmall: {
@@ -24,53 +20,37 @@ const styles = {
   },
   logo: {
     cursor: 'pointer',
-    marginLeft: 8
+    marginLeft: 12
   },
   pageTitleSmall: {
-    cursor: 'pointer',
-    marginLeft: 8
+    cursor: 'pointer'
   },
   rightContentsLarge: {
     display: 'flex',
     width: '100%',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    display: 'inline-flex',
+    alignItems: 'center'
   },
   rightContentsSmall: {
     display: 'flex',
-    marginLeft: 'auto'
-  },
-  leftButton: {
-    position: 'absolute'
+    marginLeft: 'auto',
+    display: 'inline-flex',
+    alignItems: 'center'
   },
   link: {
     textDecoration: 'none',
     color: 'inherit'
   },
   search: {
-    alignSelf: 'center'
-  },
-  rightContents: {
-    display: 'inline-flex',
-    alignItems: 'center'
+    alignSelf: 'center',
+    marginLeft: 64
   }
 };
 
 const handleTitleClick = () => {
   window.scrollTo(0, 0);
 };
-
-const SearchButton = React.memo(() => {
-  const dispatch = useDispatch();
-  const handleSearchButtonClick = useCallback(() => {
-    dispatch(openSearchMapsDialog());
-  });
-
-  return (
-    <IconButton color="inherit" onClick={handleSearchButtonClick}>
-      <SearchIcon />
-    </IconButton>
-  );
-});
 
 const ToolbarSmall = React.memo(() => {
   const mapState = useCallback(
@@ -100,11 +80,7 @@ const ToolbarSmall = React.memo(() => {
   return (
     <Toolbar style={styles.toolbarSmall}>
       {showBackButton ? (
-        <IconButton
-          color="inherit"
-          onClick={handleBackButtonClick}
-          style={styles.leftButton}
-        >
+        <IconButton color="inherit" onClick={handleBackButtonClick}>
           <ArrowBackIcon />
         </IconButton>
       ) : (
@@ -120,10 +96,8 @@ const ToolbarSmall = React.memo(() => {
         {pageTitle}
       </Typography>
       <div style={styles.rightContentsSmall}>
-        <div style={styles.rightContents}>
-          <SearchButton />
-          <AvatarMenu />
-        </div>
+        <SearchButton />
+        <AvatarMenu />
       </div>
     </Toolbar>
   );
@@ -138,25 +112,21 @@ const ToolbarLarge = React.memo(() => {
           Qoodish
         </Link>
       </Typography>
+      <div style={styles.search}>
+        <SearchBar />
+      </div>
       <div style={styles.rightContentsLarge}>
         <NavTabs />
-
-        <div style={styles.search}>
-          <SearchBar />
-        </div>
-        <div style={styles.rightContents}>
-          <NotificationMenu />
-          <AvatarMenu />
-        </div>
+        <AvatarMenu />
       </div>
     </Toolbar>
   );
 });
 
 const NavToolbar = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const mdUp = useMediaQuery('(min-width: 960px)');
 
-  return large ? <ToolbarLarge /> : <ToolbarSmall />;
+  return mdUp ? <ToolbarLarge /> : <ToolbarSmall />;
 };
 
 export default React.memo(NavToolbar);

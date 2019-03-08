@@ -20,12 +20,6 @@ const styles = {
   appbar: {
     position: 'relative'
   },
-  toolbar: {
-    paddingLeft: 8
-  },
-  flex: {
-    flex: 1
-  },
   dialogContent: {
     padding: 0
   },
@@ -67,11 +61,11 @@ const ReviewDialog = () => {
     >
       {!large && (
         <AppBar style={styles.appbar} color="primary">
-          <Toolbar style={styles.toolbar}>
+          <Toolbar>
             <IconButton color="inherit" onClick={handleRequestDialogClose}>
               <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
+            <Typography variant="h6" color="inherit">
               {I18n.t('report')}
             </Typography>
           </Toolbar>

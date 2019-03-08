@@ -20,10 +20,6 @@ import { ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
-  cardLarge: {},
-  cardSmall: {
-    minHeight: 'calc(100vh - 56px)'
-  },
   cardMediaLarge: {
     cursor: 'pointer',
     height: 250
@@ -109,7 +105,7 @@ const SpotCard = props => {
   );
 
   return (
-    <Card style={large ? styles.cardLarge : styles.cardSmall} elevation={0}>
+    <Card elevation={0}>
       <CardMedia style={large ? styles.cardMediaLarge : styles.cardMediaSmall}>
         <a href={currentSpot.url} target="_blank">
           <img

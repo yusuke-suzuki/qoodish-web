@@ -28,16 +28,9 @@ import I18n from '../../utils/I18n';
 import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
 
 const styles = {
-  flex: {
-    flex: 1
-  },
   dialogContentLarge: {},
   dialogContentSmall: {
     paddingTop: 80
-  },
-  toolbar: {
-    paddingLeft: 8,
-    height: 56
   },
   mapCenterChip: {
     marginTop: 16,
@@ -53,6 +46,9 @@ const styles = {
   },
   controlLabel: {
     width: '100%'
+  },
+  saveButton: {
+    marginLeft: 'auto'
   }
 };
 
@@ -186,14 +182,14 @@ const SharedEditMapDialog = props => {
         </DialogTitle>
       ) : (
         <AppBar color="primary">
-          <Toolbar style={styles.toolbar}>
+          <Toolbar>
             <IconButton
               color="inherit"
               onClick={props.handleRequestDialogClose}
             >
               <CloseIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" style={styles.flex}>
+            <Typography variant="h6" color="inherit">
               {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
             </Typography>
             <Button
@@ -201,6 +197,7 @@ const SharedEditMapDialog = props => {
               onClick={handleSaveButtonClick}
               color="secondary"
               disabled={disabled}
+              style={styles.saveButton}
             >
               {I18n.t('save')}
             </Button>
