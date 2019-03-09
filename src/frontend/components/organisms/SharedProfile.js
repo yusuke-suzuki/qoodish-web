@@ -78,10 +78,18 @@ const styles = {
   staticMapImage: {
     width: '100%',
     height: '100%'
+  },
+  avatarContainerLarge: {
+    marginTop: -75,
+    position: 'absolute'
+  },
+  avatarContainerSmall: {
+    marginTop: -56,
+    position: 'absolute'
   }
 };
 
-const Summary = props => {
+const Summary = React.memo(props => {
   const dispatch = useDispatch();
 
   const currentUser = props.currentUser;
@@ -115,9 +123,9 @@ const Summary = props => {
       </Button>
     </div>
   );
-};
+});
 
-const ProfileCard = props => {
+const ProfileCard = React.memo(props => {
   const large = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
@@ -144,7 +152,13 @@ const ProfileCard = props => {
       <CardContent
         style={large ? styles.cardContentLarge : styles.cardContentSmall}
       >
-        <ProfileAvatar currentUser={props.currentUser} />
+        <div
+          style={
+            large ? styles.avatarContainerLarge : styles.avatarContainerSmall
+          }
+        >
+          <ProfileAvatar size={large ? 100 : 80} />
+        </div>
         <div style={styles.profileActions}>
           {location && location.pathname === '/profile' && (
             <EditProfileButton />
@@ -183,7 +197,7 @@ const ProfileCard = props => {
       </Tabs>
     </Card>
   );
-};
+});
 
 const SharedProfile = props => {
   const large = useMediaQuery('(min-width: 600px)');
