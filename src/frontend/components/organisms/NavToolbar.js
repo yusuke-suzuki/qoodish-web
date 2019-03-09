@@ -25,7 +25,7 @@ const styles = {
   },
   pageTitleSmall: {
     cursor: 'pointer',
-    marginLeft: 8
+    margin: 'auto'
   },
   rightContentsLarge: {
     display: 'flex',
@@ -36,7 +36,6 @@ const styles = {
   },
   rightContentsSmall: {
     display: 'flex',
-    marginLeft: 'auto',
     display: 'inline-flex',
     alignItems: 'center'
   },
