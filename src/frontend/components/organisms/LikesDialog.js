@@ -4,6 +4,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -15,6 +16,12 @@ import Link from '../molecules/Link';
 import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
+
+const styles = {
+  dialogContent: {
+    padding: 0
+  }
+};
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -53,25 +60,27 @@ const LikesDialog = () => {
           color="inherit"
         />
       )}
-      <List>
-        {likes.map(like => (
-          <ListItem
-            button
-            key={like.id}
-            component={Link}
-            to={`/users/${like.voter.id}`}
-            title={like.voter.name}
-          >
-            <ListItemAvatar>
-              <Avatar
-                src={like.voter.profile_image_url}
-                alt={like.voter.name}
-              />
-            </ListItemAvatar>
-            <ListItemText primary={like.voter.name} />
-          </ListItem>
-        ))}
-      </List>
+      <DialogContent style={styles.dialogContent}>
+        <List>
+          {likes.map(like => (
+            <ListItem
+              button
+              key={like.id}
+              component={Link}
+              to={`/users/${like.voter.id}`}
+              title={like.voter.name}
+            >
+              <ListItemAvatar>
+                <Avatar
+                  src={like.voter.profile_image_url}
+                  alt={like.voter.name}
+                />
+              </ListItemAvatar>
+              <ListItemText primary={like.voter.name} />
+            </ListItem>
+          ))}
+        </List>
+      </DialogContent>
     </Dialog>
   );
 };
