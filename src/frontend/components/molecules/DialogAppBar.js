@@ -12,8 +12,8 @@ const styles = {
   },
   toolbar: {
     height: 56,
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingLeft: 8,
+    paddingRight: 8
   },
   actionButton: {
     marginLeft: 'auto'

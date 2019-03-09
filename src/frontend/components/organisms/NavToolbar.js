@@ -16,8 +16,8 @@ import Link from '../molecules/Link';
 const styles = {
   toolbarSmall: {
     height: 56,
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingLeft: 8,
+    paddingRight: 8
   },
   logo: {
     cursor: 'pointer',
@@ -25,7 +25,7 @@ const styles = {
   },
   pageTitleSmall: {
     cursor: 'pointer',
-    marginLeft: 8
+    margin: 'auto'
   },
   rightContentsLarge: {
     display: 'flex',
@@ -36,7 +36,6 @@ const styles = {
   },
   rightContentsSmall: {
     display: 'flex',
-    marginLeft: 'auto',
     display: 'inline-flex',
     alignItems: 'center'
   },

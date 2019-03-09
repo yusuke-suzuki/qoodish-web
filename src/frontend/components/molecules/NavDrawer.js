@@ -8,7 +8,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Typography from '@material-ui/core/Typography';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
+
 import HomeIcon from '@material-ui/icons/Home';
 import ExploreIcon from '@material-ui/icons/Explore';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -16,6 +19,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import Link from './Link';
 import I18n from '../../utils/I18n';
@@ -32,6 +36,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { DevicesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import ProfileCard from './ProfileCard';
 
 const styles = {
   title: {
@@ -44,17 +49,17 @@ const styles = {
     height: 56
   },
   drawerPaper: {
-    marginTop: 84,
-    zIndex: 1000,
-    backgroundColor: 'initial',
-    borderRight: 'initial',
-    maxWidth: 230,
-    width: '100%'
+    width: 280
   }
 };
 
 const Title = React.memo(() => {
   const large = useMediaQuery('(min-width: 600px)');
+  const dispatch = useDispatch();
+
+  const handleCloseDrawer = useCallback(() => {
+    dispatch(closeDrawer());
+  });
 
   return (
     <ListItem
@@ -71,6 +76,11 @@ const Title = React.memo(() => {
           </Typography>
         }
       />
+      <ListItemSecondaryAction>
+        <IconButton onClick={handleCloseDrawer}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 });
@@ -139,6 +149,7 @@ const DrawerContents = React.memo(() => {
     <div>
       <List disablePadding component="nav">
         <Title />
+        <ProfileCard />
         <ListItem button component={Link} to="/" title={I18n.t('home')}>
           <ListItemIcon>
             <HomeIcon color={isSelected('/') ? 'primary' : 'inherit'} />
@@ -306,6 +317,7 @@ const NavDrawer = () => {
       onOpen={handleOpenDrawer}
       onClose={handleCloseDrawer}
       onClick={handleCloseDrawer}
+      PaperProps={{ style: styles.drawerPaper }}
     >
       <DrawerContents />
     </SwipeableDrawer>

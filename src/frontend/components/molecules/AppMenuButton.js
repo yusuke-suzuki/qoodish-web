@@ -1,45 +1,30 @@
 import React, { useCallback } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
-import PersonIcon from '@material-ui/icons/Person';
 
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch } from 'redux-react-hook';
 
 import toggleDrawer from '../../actions/toggleDrawer';
+import ProfileAvatar from './ProfileAvatar';
 
 const styles = {
   iconButton: {
     width: 48,
     height: 48
   },
-  profileAvatar: {
-    position: 'absolute',
-    width: 35,
-    height: 35
+  avatarContainer: {
+    position: 'absolute'
   }
 };
 
 const AppMenuButton = () => {
   const dispatch = useDispatch();
-
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-  const { currentUser } = useMappedState(mapState);
-
   const handleButtonClick = useCallback(() => dispatch(toggleDrawer()));
 
   return (
     <IconButton onClick={handleButtonClick} style={styles.iconButton}>
-      <Avatar
-        src={currentUser.isAnonymous ? '' : currentUser.thumbnail_url}
-        style={styles.profileAvatar}
-      >
-        {currentUser.isAnonymous && <PersonIcon style={styles.profileAvatar} />}
-      </Avatar>
+      <div style={styles.avatarContainer}>
+        <ProfileAvatar size={35} />
+      </div>
     </IconButton>
   );
 };
