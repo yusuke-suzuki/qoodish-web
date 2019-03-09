@@ -157,7 +157,7 @@ const ProfileCard = React.memo(props => {
             large ? styles.avatarContainerLarge : styles.avatarContainerSmall
           }
         >
-          <ProfileAvatar size={large ? 100 : 80} />
+          <ProfileAvatar size={large ? 100 : 80} currentUser={currentUser} />
         </div>
         <div style={styles.profileActions}>
           {location && location.pathname === '/profile' && (
