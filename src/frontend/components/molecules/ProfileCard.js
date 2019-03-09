@@ -30,7 +30,7 @@ const ProfileCard = () => {
   return (
     <ButtonBase component={Link} to="/profile">
       <CardContent style={styles.cardContent}>
-        <ProfileAvatar size={48} />
+        <ProfileAvatar size={48} currentUser={currentUser} />
         <Typography variant="h6" gutterBottom style={styles.name} inline>
           {currentUser.isAnonymous
             ? I18n.t('anonymous user')

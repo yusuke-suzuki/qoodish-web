@@ -1,16 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
-import { useMappedState } from 'redux-react-hook';
 
 const ProfileAvatar = props => {
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = props;
 
   const avatarStyle = props.size
     ? { width: props.size, height: props.size }

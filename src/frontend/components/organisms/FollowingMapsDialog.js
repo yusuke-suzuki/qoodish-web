@@ -4,6 +4,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -25,6 +26,9 @@ const Transition = props => {
 const styles = {
   toolbar: {
     paddingLeft: 8
+  },
+  dialogContent: {
+    padding: 0
   },
   listItem: {
     paddingRight: 100
@@ -67,29 +71,31 @@ const FollowingMapsDialog = () => {
           color="inherit"
         />
       )}
-      <List>
-        {maps.map(map => (
-          <ListItem
-            button
-            component={Link}
-            to={`/maps/${map.id}`}
-            key={map.id}
-            onClick={onClose}
-            style={styles.listItem}
-          >
-            <ListItemAvatar>
-              <Avatar alt={map.name} src={map.thumbnail_url} />
-            </ListItemAvatar>
-            <ListItemText
-              primary={map.name}
-              primaryTypographyProps={{ noWrap: true }}
-            />
-            <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
-              <FollowMapButton currentMap={map} />
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
+      <DialogContent style={styles.dialogContent}>
+        <List>
+          {maps.map(map => (
+            <ListItem
+              button
+              component={Link}
+              to={`/maps/${map.id}`}
+              key={map.id}
+              onClick={onClose}
+              style={styles.listItem}
+            >
+              <ListItemAvatar>
+                <Avatar alt={map.name} src={map.thumbnail_url} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={map.name}
+                primaryTypographyProps={{ noWrap: true }}
+              />
+              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
+                <FollowMapButton currentMap={map} />
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </DialogContent>
     </Dialog>
   );
 };

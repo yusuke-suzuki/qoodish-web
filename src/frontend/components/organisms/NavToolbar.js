@@ -55,19 +55,15 @@ const handleTitleClick = () => {
 const ToolbarSmall = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      pageTitle: state.shared.pageTitle,
       showBackButton: state.shared.showBackButton,
       previousLocation: state.shared.previousLocation,
       history: state.shared.history
     }),
     []
   );
-  const {
-    pageTitle,
-    showBackButton,
-    previousLocation,
-    history
-  } = useMappedState(mapState);
+  const { showBackButton, previousLocation, history } = useMappedState(
+    mapState
+  );
 
   const handleBackButtonClick = useCallback(() => {
     if (previousLocation) {
@@ -87,13 +83,15 @@ const ToolbarSmall = React.memo(() => {
         <AppMenuButton />
       )}
       <Typography
-        variant={'h6'}
+        variant="h5"
         color="inherit"
         noWrap
         style={styles.pageTitleSmall}
         onClick={handleTitleClick}
       >
-        {pageTitle}
+        <Link to="/" style={styles.link} title="Qoodish">
+          Qoodish
+        </Link>
       </Typography>
       <div style={styles.rightContentsSmall}>
         <SearchButton />

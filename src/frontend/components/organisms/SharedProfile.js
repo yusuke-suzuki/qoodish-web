@@ -32,9 +32,6 @@ const styles = {
     marginTop: 8,
     paddingBottom: 16
   },
-  profile: {
-    paddingTop: 20
-  },
   cardContentLarge: {
     padding: 24,
     paddingBottom: 16
@@ -86,6 +83,9 @@ const styles = {
   avatarContainerSmall: {
     marginTop: -56,
     position: 'absolute'
+  },
+  dummyButton: {
+    height: 36
   }
 };
 
@@ -157,24 +157,20 @@ const ProfileCard = React.memo(props => {
             large ? styles.avatarContainerLarge : styles.avatarContainerSmall
           }
         >
-          <ProfileAvatar size={large ? 100 : 80} />
+          <ProfileAvatar size={large ? 100 : 80} currentUser={currentUser} />
         </div>
         <div style={styles.profileActions}>
-          {location && location.pathname === '/profile' && (
+          {location && location.pathname === '/profile' ? (
             <EditProfileButton />
+          ) : (
+            <div style={styles.dummyButton} />
           )}
         </div>
-        <div
-          style={
-            location && location.pathname === '/profile' ? {} : styles.profile
-          }
-        >
-          <Typography variant="h5" gutterBottom>
-            {currentUser.isAnonymous
-              ? I18n.t('anonymous user')
-              : currentUser.name}
-          </Typography>
-        </div>
+        <Typography variant="h5" gutterBottom>
+          {currentUser.isAnonymous
+            ? I18n.t('anonymous user')
+            : currentUser.name}
+        </Typography>
         <Typography variant="body1" style={styles.biography} gutterBottom>
           {currentUser.biography}
         </Typography>
