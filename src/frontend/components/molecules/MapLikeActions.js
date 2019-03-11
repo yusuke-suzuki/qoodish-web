@@ -4,8 +4,6 @@ import SharedLikeActions from './SharedLikeActions';
 
 import openToast from '../../actions/openToast';
 import editMap from '../../actions/editMap';
-import fetchLikes from '../../actions/fetchLikes';
-import openLikesDialog from '../../actions/openLikesDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from 'qoodish_api';
@@ -63,23 +61,10 @@ const MapLikeActions = props => {
     );
   });
 
-  const handleLikesClick = useCallback(async () => {
-    await initializeApiClient();
-    const apiInstance = new LikesApi();
-
-    apiInstance.mapsMapIdLikesGet(props.target.id, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchLikes(response.body));
-        dispatch(openLikesDialog());
-      }
-    });
-  });
-
   return (
     <SharedLikeActions
       handleLikeButtonClick={handleLikeButtonClick}
       handleUnlikeButtonClick={handleUnlikeButtonClick}
-      handleLikesClick={handleLikesClick}
       target={props.target}
     />
   );

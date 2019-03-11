@@ -15,6 +15,7 @@ import ReviewShareMenu from './ReviewShareMenu';
 import ReviewVertMenu from './ReviewVertMenu';
 import ReviewCardActions from './ReviewCardActions';
 import ReviewComments from './ReviewComments';
+import ReactionsCount from './ReactionsCount';
 
 const styles = {
   cardTitle: {
@@ -154,6 +155,7 @@ const ReviewCard = props => {
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
       {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
+      <ReactionsCount review={props.currentReview} />
       {props.currentReview.comments.length > 0 && (
         <ReviewComments comments={props.currentReview.comments} />
       )}
