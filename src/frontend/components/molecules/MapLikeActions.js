@@ -9,6 +9,12 @@ import I18n from '../../utils/I18n';
 import { LikesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
+const styles = {
+  likeButton: {
+    color: 'white'
+  }
+};
+
 const MapLikeActions = props => {
   const dispatch = useDispatch();
   const currentUser = useMappedState(
@@ -66,6 +72,7 @@ const MapLikeActions = props => {
       handleLikeButtonClick={handleLikeButtonClick}
       handleUnlikeButtonClick={handleUnlikeButtonClick}
       target={props.target}
+      style={styles.likeButton}
     />
   );
 };

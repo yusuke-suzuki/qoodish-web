@@ -9,7 +9,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import I18n from '../../utils/I18n';
@@ -89,37 +88,28 @@ const MapVertMenu = () => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        {map && map.editable ? (
-          [
-            <MenuItem key="edit" onClick={handleEditMapButtonClick}>
-              <ListItemIcon>
-                <EditIcon />
-              </ListItemIcon>
-              <ListItemText primary={I18n.t('edit')} />
-            </MenuItem>,
-            <MenuItem key="delete" onClick={handleDeleteMapButtonClick}>
-              <ListItemIcon>
-                <DeleteIcon />
-              </ListItemIcon>
-              <ListItemText primary={I18n.t('delete')} />
-            </MenuItem>,
-            isInvitable(map) && (
-              <MenuItem key="invite" onClick={handleInviteButtonClick}>
-                <ListItemIcon>
-                  <PersonAddIcon />
-                </ListItemIcon>
-                <ListItemText primary={I18n.t('invite')} />
-              </MenuItem>
-            )
-          ]
-        ) : (
-          <MenuItem key="issue" onClick={handleIssueButtonClick}>
+        {map && [
+          <MenuItem key="edit" onClick={handleEditMapButtonClick}>
             <ListItemIcon>
-              <ReportProblemIcon />
+              <EditIcon />
             </ListItemIcon>
-            <ListItemText primary={I18n.t('report')} />
-          </MenuItem>
-        )}
+            <ListItemText primary={I18n.t('edit')} />
+          </MenuItem>,
+          <MenuItem key="delete" onClick={handleDeleteMapButtonClick}>
+            <ListItemIcon>
+              <DeleteIcon />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('delete')} />
+          </MenuItem>,
+          isInvitable(map) && (
+            <MenuItem key="invite" onClick={handleInviteButtonClick}>
+              <ListItemIcon>
+                <PersonAddIcon />
+              </ListItemIcon>
+              <ListItemText primary={I18n.t('invite')} />
+            </MenuItem>
+          )
+        ]}
       </Menu>
     </div>
   );

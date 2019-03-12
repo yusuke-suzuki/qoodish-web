@@ -73,7 +73,11 @@ const RoleButton = props => {
     );
   } else if (map.following) {
     return (
-      <Button variant="contained" onClick={handleUnfollowButtonClick}>
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={handleUnfollowButtonClick}
+      >
         {I18n.t('following')}
       </Button>
     );

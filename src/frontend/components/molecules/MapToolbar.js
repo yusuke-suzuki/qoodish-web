@@ -7,12 +7,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
 
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
+import MapLikeActions from './MapLikeActions';
 
 const styles = {
   toolbarSmall: {
@@ -103,7 +105,15 @@ const MapToolbar = () => {
       )}
       <div style={styles.toolbarActions}>
         <MapShareMenu />
-        <MapVertMenu />
+        {!map ? (
+          <IconButton color="primary">
+            <RefreshIcon />
+          </IconButton>
+        ) : map.editable ? (
+          <MapVertMenu />
+        ) : (
+          <MapLikeActions target={map} />
+        )}
       </div>
     </Toolbar>
   );
