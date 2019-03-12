@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import CardContent from '@material-ui/core/CardContent';
@@ -17,6 +17,10 @@ import GroupIcon from '@material-ui/icons/Group';
 import ReviewTiles from './ReviewTiles';
 
 import requestMapCenter from '../../actions/requestMapCenter';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { LikesApi } from 'qoodish_api';
+import fetchLikes from '../../actions/fetchLikes';
+import openLikesDialog from '../../actions/openLikesDialog';
 
 const styles = {
   text: {
@@ -57,7 +61,44 @@ const styles = {
   }
 };
 
-const Followers = () => {
+const MapLikes = React.memo(props => {
+  const { map } = props;
+  const [likes, setLikes] = useState([]);
+  const dispatch = useDispatch();
+
+  const refreshLikes = useCallback(async () => {
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.mapsMapIdLikesGet(map.id, (error, data, response) => {
+      if (response.ok) {
+        setLikes(response.body);
+        dispatch(fetchLikes(response.body));
+      }
+    });
+  });
+
+  const handleLikesClick = useCallback(() => {
+    dispatch(openLikesDialog());
+  });
+
+  useEffect(() => {
+    refreshLikes();
+  }, []);
+
+  return likes
+    .slice(0, 9)
+    .map(like => (
+      <Avatar
+        src={like.voter.profile_image_url}
+        alt={like.voter.name}
+        style={styles.followerAvatar}
+        onClick={handleLikesClick}
+      />
+    ));
+});
+
+const Followers = React.memo(() => {
   const followers = useMappedState(
     useCallback(state => state.mapSummary.followers, [])
   );
@@ -76,7 +117,7 @@ const Followers = () => {
       />
     </ButtonBase>
   ));
-};
+});
 
 const createdAt = map => {
   return moment(map.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
@@ -84,7 +125,7 @@ const createdAt = map => {
     .format('LL');
 };
 
-const MapTypes = () => {
+const MapTypes = React.memo(() => {
   const map = useMappedState(
     useCallback(state => state.mapSummary.currentMap, [])
   );
@@ -145,7 +186,7 @@ const MapTypes = () => {
     );
   }
   return mapTypes;
-};
+});
 
 const MapSummaryCard = () => {
   const map = useMappedState(
@@ -253,6 +294,17 @@ const MapSummaryCard = () => {
             </Avatar>
           )}
         </div>
+
+        {map && map.likes_count > 0 && (
+          <React.Fragment>
+            <Typography variant="subtitle2" gutterBottom color="textSecondary">
+              {`${map.likes_count} ${I18n.t('like users')}`}
+            </Typography>
+            <div style={styles.followersContainer}>
+              <MapLikes map={map} />
+            </div>
+          </React.Fragment>
+        )}
 
         <ReviewTiles reviews={mapReviews} showSubheader />
       </CardContent>

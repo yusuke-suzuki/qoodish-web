@@ -18,9 +18,7 @@ const styles = {
   actionButton: {
     marginLeft: 'auto'
   },
-  closeButton: {
-    marginRight: 8
-  }
+  closeButton: {}
 };
 
 const ExitIcon = React.memo(props => {

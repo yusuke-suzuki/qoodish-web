@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -24,6 +23,8 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import moment from 'moment';
 import { LikesApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import openLikesDialog from '../../actions/openLikesDialog';
+import fetchLikes from '../../actions/fetchLikes';
 
 const styles = {
   primaryText: {
@@ -34,6 +35,13 @@ const styles = {
   },
   commentBody: {
     wordBreak: 'break-all'
+  },
+  commentLikes: {
+    display: 'flex',
+    cursor: 'pointer'
+  },
+  commentLikesIcon: {
+    marginRight: 8
   }
 };
 
@@ -55,7 +63,7 @@ const LikeButton = React.memo(props => {
     await initializeApiClient();
     const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdCommentsCommentIdlikePost(
+    apiInstance.reviewsReviewIdCommentsCommentIdLikePost(
       comment.review_id,
       comment.id,
       (error, data, response) => {
@@ -78,7 +86,7 @@ const LikeButton = React.memo(props => {
     await initializeApiClient();
     const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdCommentsCommentIdlikeDelete(
+    apiInstance.reviewsReviewIdCommentsCommentIdLikeDelete(
       comment.review_id,
       comment.id,
       (error, data, response) => {
@@ -117,6 +125,24 @@ const LikeButton = React.memo(props => {
 });
 
 const Comments = React.memo(props => {
+  const dispatch = useDispatch();
+
+  const handleLikesClick = useCallback(async comment => {
+    dispatch(openLikesDialog());
+    await initializeApiClient();
+    const apiInstance = new LikesApi();
+
+    apiInstance.reviewsReviewIdCommentsCommentIdLikesGet(
+      comment.review_id,
+      comment.id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchLikes(response.body));
+        }
+      }
+    );
+  });
+
   return props.comments.map(comment => (
     <ListItem key={comment.id}>
       <ButtonBase
@@ -145,9 +171,28 @@ const Comments = React.memo(props => {
           </div>
         }
         secondary={
-          <Typography color="textPrimary" style={styles.commentBody}>
-            {comment.body}
-          </Typography>
+          <React.Fragment>
+            <Typography
+              color="textPrimary"
+              style={styles.commentBody}
+              gutterBottom
+            >
+              {comment.body}
+            </Typography>
+            {comment.likes_count > 0 && (
+              <Typography
+                color="textSecondary"
+                style={styles.commentLikes}
+                onClick={() => handleLikesClick(comment)}
+              >
+                <FavoriteIcon
+                  fontSize="small"
+                  style={styles.commentLikesIcon}
+                />{' '}
+                {comment.likes_count}
+              </Typography>
+            )}
+          </React.Fragment>
         }
       />
       <ListItemSecondaryAction>
@@ -163,14 +208,7 @@ const Comments = React.memo(props => {
 
 const ReviewComments = props => {
   return (
-    <List
-      disablePadding
-      subheader={
-        <ListSubheader>{`${props.comments.length} ${I18n.t(
-          'comment count'
-        )}`}</ListSubheader>
-      }
-    >
+    <List disablePadding>
       <Comments {...props} />
     </List>
   );

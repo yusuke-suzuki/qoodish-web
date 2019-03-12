@@ -14,6 +14,10 @@ import NavTabs from './NavTabs';
 import Link from '../molecules/Link';
 
 const styles = {
+  toolbarLarge: {
+    paddingLeft: 12,
+    paddingRight: 12
+  },
   toolbarSmall: {
     height: 56,
     paddingLeft: 8,
@@ -102,7 +106,7 @@ const ToolbarSmall = React.memo(() => {
 
 const ToolbarLarge = React.memo(() => {
   return (
-    <Toolbar>
+    <Toolbar style={styles.toolbarLarge}>
       <AppMenuButton />
       <Typography variant="h5" color="inherit" style={styles.logo}>
         <Link to="/" style={styles.link} title="Qoodish">

@@ -6,7 +6,6 @@ import MapToolbar from '../molecules/MapToolbar';
 import MapSummaryCard from './MapSummaryCard';
 import MapReviewsList from './MapReviewsList';
 import FollowMapButton from '../molecules/FollowMapButton';
-import MapLikeActions from '../molecules/MapLikeActions';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -37,7 +36,9 @@ const styles = {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
   },
   toolbarLarge: {
-    height: 64
+    height: 64,
+    paddingLeft: 16,
+    paddingRight: 16
   },
   toolbarSmall: {
     height: 56
@@ -85,7 +86,6 @@ const MapBottomNav = React.memo(() => {
   return (
     <Paper style={styles.bottomNav} square elevation={1}>
       <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
-        <MapLikeActions target={currentMap} />
         <div style={styles.followMapButton}>
           <FollowMapButton currentMap={currentMap} />
         </div>

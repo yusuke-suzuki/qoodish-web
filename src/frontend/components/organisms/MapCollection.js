@@ -3,7 +3,6 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import Link from '../molecules/Link';
 
 import MapCard from '../molecules/MapCard';
 
@@ -38,13 +37,7 @@ const MapCollection = props => {
         cellHeight={290}
       >
         {props.maps.map(map => (
-          <GridListTile
-            key={map.id}
-            component={Link}
-            to={`/maps/${map.id}`}
-            title={map.name}
-            style={styles.gridTile}
-          >
+          <GridListTile key={map.id} style={styles.gridTile}>
             <MapCard map={map} />
           </GridListTile>
         ))}
