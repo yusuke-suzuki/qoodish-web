@@ -11,7 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import ListIcon from '@material-ui/icons/List';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 import switchSummary from '../../actions/switchSummary';
 
@@ -21,6 +21,9 @@ const styles = {
   },
   cardContent: {
     padding: 0
+  },
+  listItem: {
+    height: 71
   }
 };
 
@@ -36,7 +39,11 @@ const MapBottomSeat = props => {
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <List disablePadding>
-            <ListItem button onClick={handleSummaryClick}>
+            <ListItem
+              button
+              onClick={handleSummaryClick}
+              style={styles.listItem}
+            >
               <Avatar
                 src={props.map && props.map.thumbnail_url}
                 alt={props.map && props.map.name}
@@ -56,7 +63,7 @@ const MapBottomSeat = props => {
               />
               <ListItemSecondaryAction>
                 <IconButton onClick={handleSummaryClick}>
-                  <ListIcon />
+                  <ExpandLessIcon />
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>

@@ -63,10 +63,10 @@ const ProfileReviews = props => {
     }
     setLoading(true);
 
-    let userId =
-      location && location.pathname === '/profile'
-        ? currentUser.uid
-        : props.params.primaryId;
+    const userId =
+      props.params && props.params.primaryId
+        ? props.params.primaryId
+        : currentUser.uid;
 
     await initializeApiClient();
     const apiInstance = new ReviewsApi();

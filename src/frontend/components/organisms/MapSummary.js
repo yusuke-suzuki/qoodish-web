@@ -36,7 +36,9 @@ const styles = {
     borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
   },
   toolbarLarge: {
-    height: 64
+    height: 64,
+    paddingLeft: 16,
+    paddingRight: 16
   },
   toolbarSmall: {
     height: 56

@@ -14,6 +14,12 @@ import openToast from '../../actions/openToast';
 import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
+const styles = {
+  skelton: {
+    height: 36
+  }
+};
+
 const RoleButton = props => {
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
@@ -100,7 +106,12 @@ const FollowMapButton = props => {
       {props.currentMap ? (
         <RoleButton {...props} />
       ) : (
-        <Button variant="contained" color="secondary" disabled>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled
+          style={styles.skelton}
+        >
           {''}
         </Button>
       )}

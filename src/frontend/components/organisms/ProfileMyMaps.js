@@ -48,9 +48,9 @@ const ProfileMyMaps = props => {
     setLoading(true);
 
     const userId =
-      location && location.pathname === '/profile'
-        ? currentUser.uid
-        : props.params.primaryId;
+      props.params && props.params.primaryId
+        ? props.params.primaryId
+        : currentUser.uid;
 
     await initializeApiClient();
 

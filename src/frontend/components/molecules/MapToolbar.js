@@ -17,6 +17,10 @@ import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
 
 const styles = {
+  toolbarLarge: {
+    paddingLeft: 12,
+    paddingRight: 12
+  },
   toolbarSmall: {
     height: 56,
     paddingLeft: 8,
@@ -25,9 +29,7 @@ const styles = {
   backButtonLarge: {
     marginRight: 12
   },
-  backButtonSmall: {
-    marginRight: 8
-  },
+  backButtonSmall: {},
   toolbarActions: {
     marginLeft: 'auto',
     display: 'flex'
@@ -81,7 +83,7 @@ const MapToolbar = () => {
   });
 
   return (
-    <Toolbar style={large ? {} : styles.toolbarSmall}>
+    <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
       <IconButton
         color="inherit"
         onClick={handleBackButtonClick}
