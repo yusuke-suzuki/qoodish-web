@@ -49,29 +49,12 @@ const Item = props => {
 const NotificationText = props => {
   let notification = props.notification;
 
-  switch (notification.key) {
-    case 'liked':
-      return (
-        <React.Fragment>
-          <b>{notification.notifier.name}</b>
-          {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
-        </React.Fragment>
-      );
-    case 'comment':
-      return (
-        <React.Fragment>
-          <b>{notification.notifier.name}</b>
-          {` ${I18n.t('posted comment')}`}
-        </React.Fragment>
-      );
-    default:
-      return (
-        <React.Fragment>
-          <b>{notification.notifier.name}</b>
-          {` ${I18n.t(notification.key)}`}
-        </React.Fragment>
-      );
-  }
+  return (
+    <React.Fragment>
+      <b>{notification.notifier.name}</b>
+      {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
+    </React.Fragment>
+  );
 };
 
 const NotificationList = props => {
