@@ -4,28 +4,42 @@
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-// Initialize the Firebase app in the service worker by passing in the
-// messagingSenderId.
+import I18n from './I18n';
+
 firebase.initializeApp({
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
 });
 
 const messaging = firebase.messaging();
 
-messaging.setBackgroundMessageHandler(function(payload) {
+messaging.setBackgroundMessageHandler(payload => {
   console.log(
     '[firebase-messaging-sw.js] Received background message ',
     payload
   );
-  const notificationTitle = payload.notification.title;
+
+  const currentLocale =
+    self.navigator.language ||
+    self.navigator.userLanguage ||
+    self.navigator.browserLanguage;
+
   const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.icon,
-    click_action: payload.notification.click_action
+    body: notificationBody(payload.data, currentLocale),
+    icon: payload.data.icon,
+    click_action: payload.data.click_action
   };
 
   return self.registration.showNotification(
-    notificationTitle,
+    notificationTitle(payload.data),
     notificationOptions
   );
 });
+
+const notificationTitle = data => {
+  return 'Qoodish';
+};
+
+const notificationBody = (data, currentLocale) => {
+  const message = I18n.t(`${data.key} ${data.notifiable_type}`, currentLocale);
+  return `${data.notifier_name} ${message}`;
+};

@@ -117,8 +117,7 @@ const PushNotificationCard = () => {
     const inlineObject = InlineObject.constructFromObject({
       registration_token: registrationToken
     });
-
-    apiInstance.usersUserIdPushNotificaionPost(
+    apiInstance.usersUserIdPushNotificationPost(
       currentUser.uid,
       inlineObject,
       (error, data, response) => {
@@ -138,7 +137,7 @@ const PushNotificationCard = () => {
     dispatch(requestStart());
     const apiInstance = new PushNotificationApi();
 
-    apiInstance.usersUserIdPushNotificaionDelete(
+    apiInstance.usersUserIdPushNotificationDelete(
       currentUser.uid,
       (error, data, response) => {
         dispatch(requestFinish());
