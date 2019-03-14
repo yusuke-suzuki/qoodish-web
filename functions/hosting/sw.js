@@ -1,9 +1,11 @@
-self.addEventListener('install', (e) => {
+self.addEventListener('install', e => {
   console.log('[ServiceWorker] Install');
 });
- self.addEventListener('activate', (e) => {
+
+self.addEventListener('activate', e => {
   console.log('[ServiceWorker] Activate');
 });
-self.addEventListener('fetch', (e) => {
+
+self.addEventListener('fetch', e => {
   //console.log(e.request.url);
 });

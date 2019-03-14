@@ -169,10 +169,6 @@ const App = () => {
     await getFirebaseMessaging();
     const messaging = firebase.messaging();
 
-    messaging.onMessage(payload => {
-      console.log('Message received. ', payload);
-    });
-
     messaging.onTokenRefresh(async () => {
       console.log('Registration token was refreshed.');
       refreshRegistrationToken();
