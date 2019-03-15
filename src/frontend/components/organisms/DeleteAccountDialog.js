@@ -67,6 +67,8 @@ const DeleteAccountDialog = props => {
         await firebase.auth().signOut();
         dispatch(signOut());
 
+        localStorage.removeItem('registrationToken');
+
         await firebase.auth().signInAnonymously();
         const firebaseUser = firebase.auth().currentUser;
         dispatch(

@@ -1,4 +1,6 @@
 import getFirebase from './getFirebase';
+import getFirebaseMessaging from './getFirebaseMessaging';
+import createRegistrationToken from './createRegistrationToken';
 
 const initializeFirebaseApp = async () => {
   const firebase = await getFirebase();
@@ -13,17 +15,26 @@ const initializeFirebaseApp = async () => {
   };
   firebase.initializeApp(config);
 
-  if ('serviceWorker' in navigator) {
-    initializeServiceWorker();
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    initializeServiceWorker(firebase);
   }
 };
 
-const initializeServiceWorker = async () => {
+const initializeServiceWorker = async firebase => {
   const registration = await navigator.serviceWorker.register('/sw.js');
   console.log(
     'ServiceWorker registration successful with scope: ',
     registration.scope
   );
+
+  await getFirebaseMessaging();
+  const messaging = firebase.messaging();
+  messaging.useServiceWorker(registration);
+
+  messaging.onTokenRefresh(async () => {
+    console.log('Registration token was refreshed.');
+    createRegistrationToken();
+  });
 };
 
 export default initializeFirebaseApp;

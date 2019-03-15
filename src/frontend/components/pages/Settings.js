@@ -23,7 +23,6 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import openDeleteAccountDialog from '../../actions/openDeleteAccountDialog';
 import fetchMyProfile from '../../actions/fetchMyProfile';
-import fetchRegistrationToken from '../../actions/fetchRegistrationToken';
 
 import { PushNotificationApi, InlineObject } from 'qoodish_api';
 
@@ -124,7 +123,9 @@ const PushNotificationCard = () => {
         dispatch(requestFinish());
         if (response.ok) {
           dispatch(fetchMyProfile(response.body));
-          dispatch(fetchRegistrationToken(registrationToken));
+
+          localStorage.registrationToken = registrationToken;
+
           dispatch(openToast(I18n.t('push successfully enabled')));
         } else {
           dispatch(openToast(I18n.t('an error occured')));

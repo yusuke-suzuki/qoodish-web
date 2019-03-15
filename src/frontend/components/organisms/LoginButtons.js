@@ -13,7 +13,6 @@ import sleep from '../../utils/sleep';
 import I18n from '../../utils/I18n';
 
 import signIn from '../../actions/signIn';
-import updateLinkedProviders from '../../actions/updateLinkedProviders';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
@@ -122,11 +121,6 @@ const LoginButtons = () => {
         // wait until thumbnail created on cloud function
         await sleep(5000);
         dispatch(signIn(response.body));
-
-        let linkedProviders = currentUser.providerData.map(provider => {
-          return provider.providerId;
-        });
-        dispatch(updateLinkedProviders(linkedProviders));
       } else {
         dispatch(openToast(response.body.detail));
       }

@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
 
 const serviceWorkerPlugins = [
-  new CleanWebpackPlugin(['./functions/hosting/firebase-messaging-sw.js'], {}),
+  new CleanWebpackPlugin(['./functions/hosting/sw.js'], {}),
   new webpack.EnvironmentPlugin(['FIREBASE_MESSAGING_SENDER_ID'])
 ];
 
@@ -50,11 +50,11 @@ const plugins = [
 
 module.exports = [
   {
-    entry: ['./src/service_workers/firebase-messaging-sw.js'],
+    entry: ['./src/service_workers/sw.js'],
     output: {
       path: __dirname + '/functions/hosting',
       publicPath: '/',
-      filename: 'firebase-messaging-sw.js'
+      filename: 'sw.js'
     },
     resolve: {
       extensions: ['.js']

@@ -244,14 +244,21 @@ const Timeline = () => {
     });
   });
 
-  useEffect(() => {
-    refreshReviews();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+        return;
+      }
 
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/',
-      page_title: `${I18n.t('home')} | Qoodish`
-    });
-  }, []);
+      refreshReviews();
+
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: '/',
+        page_title: `${I18n.t('home')} | Qoodish`
+      });
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>
