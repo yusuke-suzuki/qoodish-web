@@ -29,14 +29,12 @@ import openDrawer from '../../actions/openDrawer';
 import closeDrawer from '../../actions/closeDrawer';
 
 import getFirebase from '../../utils/getFirebase';
-import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
 import signIn from '../../actions/signIn';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { DevicesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import ProfileCard from './ProfileCard';
+import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 
 const styles = {
   title: {
@@ -99,33 +97,15 @@ const DrawerContents = React.memo(() => {
 
   const handleSignOutClick = useCallback(async () => {
     dispatch(requestStart());
+
+    deleteRegistrationToken();
+
     const firebase = await getFirebase();
-    await getFirebaseMessaging();
     await getFirebaseAuth();
-
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      const messaging = firebase.messaging();
-      const registrationToken = await messaging.getToken();
-
-      if (registrationToken) {
-        await initializeApiClient();
-        const apiInstance = new DevicesApi();
-
-        apiInstance.devicesRegistrationTokenDelete(
-          registrationToken,
-          (error, data, response) => {
-            if (response.ok) {
-              console.log('Successfully deleted registration token.');
-            } else {
-              console.log('Failed to delete registration token.');
-            }
-          }
-        );
-      }
-    }
 
     await firebase.auth().signOut();
     await firebase.auth().signInAnonymously();
+
     const currentUser = firebase.auth().currentUser;
     const user = {
       uid: currentUser.uid,
