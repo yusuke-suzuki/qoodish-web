@@ -1,28 +1,29 @@
-// Give the service worker access to Firebase Messaging.
-// Note that you can only use Firebase Messaging here, other Firebase libraries
-// are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/5.8.6/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/5.8.6/firebase-messaging.js');
-
 import I18n from './I18n';
 
-firebase.initializeApp({
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
-});
+self.addEventListener('push', e => {
+  const payload = eventToPayload(e);
 
-const messaging = firebase.messaging();
-
-messaging.setBackgroundMessageHandler(payload => {
-  console.log(
-    '[firebase-messaging-sw.js] Received background message ',
-    payload
-  );
-
-  return self.registration.showNotification(
+  self.registration.showNotification(
     notificationTitle(payload.data),
     notificationOptions(payload.data)
   );
 });
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const clickAction = e.notification.data.click_action;
+  if (clickAction) {
+    e.waitUntil(clients.openWindow(clickAction));
+  }
+});
+
+const eventToPayload = e => {
+  if (!e.data) {
+    return null;
+  } else {
+    return e.data.json();
+  }
+};
 
 const notificationTitle = data => {
   return 'Qoodish';
@@ -32,9 +33,10 @@ const notificationOptions = data => {
   return {
     body: notificationBody(data),
     icon: data.icon,
-    click_action: data.click_action,
     color: '#ffc107',
-    badge: data.badge
+    data: {
+      click_action: data.click_action
+    }
   };
 };
 
