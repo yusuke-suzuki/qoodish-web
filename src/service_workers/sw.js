@@ -1,3 +1,28 @@
+import * as core from 'workbox-core';
+import * as precaching from 'workbox-precaching';
+import * as googleAnalytics from 'workbox-google-analytics';
+import * as routing from 'workbox-routing';
+import * as strategies from 'workbox-strategies';
+import * as expiration from 'workbox-expiration';
+
+core.skipWaiting();
+core.clientsClaim();
+precaching.precacheAndRoute(self.__precacheManifest || []);
+googleAnalytics.initialize();
+
+routing.registerRoute(
+  new RegExp('https://storage.cloud.google.com'),
+  new strategies.CacheFirst({
+    cacheName: 'storage-cloud-google-images',
+    plugins: [
+      new expiration.Plugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
+      })
+    ]
+  })
+);
+
 import I18n from './I18n';
 
 self.addEventListener('install', e => {

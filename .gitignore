@@ -62,6 +62,7 @@ typings/
 functions/hosting/index.html
 functions/hosting/bundle.js
 functions/hosting/*.*.js
+functions/hosting/sw-proto.js
 functions/hosting/sw.js
 functions/hosting/*.hot-update.*
 

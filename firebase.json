@@ -5,7 +5,8 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "*.hot-update.*"
+      "*.hot-update.*",
+      "sw-proto.js"
     ],
     "rewrites": [
       {
