@@ -36,7 +36,9 @@
     "redux-logger": "^3.0.6",
     "redux-react-hook": "^3.2.0",
     "twitter-text": "^2.0.4",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "workbox-sw": "^4.1.0",
+    "workbox-webpack-plugin": "^4.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

@@ -1,22 +1,25 @@
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
 
 require('dotenv').config();
 
-const serviceWorkerPlugins = [
-  new CleanWebpackPlugin(['./functions/hosting/sw.js'], {}),
-  new webpack.EnvironmentPlugin(['FIREBASE_MESSAGING_SENDER_ID'])
+const swPlugins = [
+  new CleanWebpackPlugin(['./functions/hosting/sw-proto.js'], {})
 ];
 
 const plugins = [
   new CleanWebpackPlugin(
-    ['./functions/hosting/*.*.js', './functions/hosting/index.html'],
+    [
+      './functions/hosting/*.*.js',
+      './functions/hosting/index.html',
+      './functions/hosting/sw.js'
+    ],
     {}
   ),
   new HtmlWebpackPlugin({
     template: 'src/views/index.html',
-    hash: true,
     endpoint: process.env.ENDPOINT,
     icon36: process.env.ICON_36,
     icon512: process.env.ICON_512,
@@ -45,7 +48,11 @@ const plugins = [
     'GOOGLE_STATIC_MAP_URL',
     'CLOUD_STORAGE_ENDPOINT',
     'CLOUD_STORAGE_BUCKET_NAME'
-  ])
+  ]),
+  new InjectManifest({
+    swSrc: './functions/hosting/sw-proto.js',
+    swDest: 'sw.js'
+  })
 ];
 
 module.exports = [
@@ -54,7 +61,7 @@ module.exports = [
     output: {
       path: __dirname + '/functions/hosting',
       publicPath: '/',
-      filename: 'sw.js'
+      filename: 'sw-proto.js'
     },
     resolve: {
       extensions: ['.js']
@@ -70,7 +77,7 @@ module.exports = [
         }
       ]
     },
-    plugins: serviceWorkerPlugins
+    plugins: swPlugins
   },
   {
     entry: ['whatwg-fetch', './src/frontend/index.js'],
