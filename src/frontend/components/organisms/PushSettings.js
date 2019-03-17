@@ -36,7 +36,7 @@ const PushSettings = () => {
   const { currentUser } = useMappedState(mapState);
 
   const initPushStatus = useCallback(() => {
-    if (localStorage.pushEnabled && localStorage.pushEnabled === 'true') {
+    if (localStorage.registrationToken) {
       setPushEnabled(true);
     } else {
       setPushEnabled(false);
@@ -56,14 +56,12 @@ const PushSettings = () => {
       return;
     }
     await createRegistrationToken();
-    localStorage.pushEnabled = true;
     setPushEnabled(true);
     dispatch(openToast(I18n.t('push enabled')));
   });
 
   const handleDisablePush = useCallback(async () => {
     await deleteRegistrationToken();
-    localStorage.pushEnabled = false;
     setPushEnabled(false);
     dispatch(openToast(I18n.t('push disabled')));
   });

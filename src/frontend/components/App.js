@@ -17,7 +17,6 @@ import getFirebaseAuth from '../utils/getFirebaseAuth';
 import initializeApiClient from '../utils/initializeApiClient';
 
 import { UsersApi, NotificationsApi } from 'qoodish_api';
-import createRegistrationToken from '../utils/createRegistrationToken';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,9 +38,6 @@ const App = () => {
     () => {
       if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
         return;
-      }
-      if (localStorage.pushEnabled) {
-        createRegistrationToken();
       }
       refreshNotifications();
       refreshProviders();
