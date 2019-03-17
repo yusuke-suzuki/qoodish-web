@@ -40,7 +40,9 @@ const App = () => {
       if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
         return;
       }
-      createRegistrationToken();
+      if (localStorage.pushEnabled) {
+        createRegistrationToken();
+      }
       refreshNotifications();
       refreshProviders();
     },

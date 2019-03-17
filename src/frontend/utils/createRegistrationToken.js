@@ -1,7 +1,7 @@
 import getFirebase from './getFirebase';
 import getFirebaseMessaging from './getFirebaseMessaging';
 import initializeApiClient from './initializeApiClient';
-import { DevicesApi, InlineObject1 } from 'qoodish_api';
+import { DevicesApi, InlineObject } from 'qoodish_api';
 
 const pushAvailable = () => {
   return 'serviceWorker' in navigator && 'PushManager' in window;
@@ -26,11 +26,11 @@ const createRegistrationToken = async () => {
   await initializeApiClient();
 
   const apiInstance = new DevicesApi();
-  const inlineObject1 = InlineObject1.constructFromObject({
+  const inlineObject = InlineObject.constructFromObject({
     registration_token: registrationToken
   });
 
-  apiInstance.devicesPost(inlineObject1, (error, data, response) => {
+  apiInstance.devicesPost(inlineObject, (error, data, response) => {
     if (response.ok) {
       console.log('Successfully sent registration token.');
       localStorage.registrationToken = registrationToken;

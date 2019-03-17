@@ -1,6 +1,7 @@
 import getFirebase from './getFirebase';
 import getFirebaseMessaging from './getFirebaseMessaging';
 import createRegistrationToken from './createRegistrationToken';
+import deleteRegistrationToken from './deleteRegistrationToken';
 
 const initializeFirebaseApp = async () => {
   const firebase = await getFirebase();
@@ -33,6 +34,7 @@ const initializeServiceWorker = async firebase => {
 
   messaging.onTokenRefresh(async () => {
     console.log('Registration token was refreshed.');
+    deleteRegistrationToken();
     createRegistrationToken();
   });
 };
