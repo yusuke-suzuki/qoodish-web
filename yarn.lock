@@ -7485,9 +7485,9 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
-"qoodish_api@https://github.com/yusuke-suzuki/qoodish-api-js-client#2b28d9f":
+"qoodish_api@https://github.com/yusuke-suzuki/qoodish-api-js-client#3c4b303":
   version "0.0.1"
-  resolved "https://github.com/yusuke-suzuki/qoodish-api-js-client#2b28d9fcaf70a1b6af5b725714a88ecc4928ce06"
+  resolved "https://github.com/yusuke-suzuki/qoodish-api-js-client#3c4b3035c56b0ccf9fadf1899e5657a410d53f8d"
   dependencies:
     babel "^6.23.0"
     babel-cli "^6.26.0"

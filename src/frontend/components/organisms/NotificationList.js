@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
-import { NotificationsApi, InlineObject3 } from 'qoodish_api';
+import { NotificationsApi, InlineObject2 } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
@@ -69,7 +69,7 @@ const NotificationList = props => {
       await initializeApiClient();
       const apiInstance = new NotificationsApi();
       const opts = {
-        inlineObject3: InlineObject3.constructFromObject({ read: true })
+        inlineObject2: InlineObject2.constructFromObject({ read: true })
       };
       apiInstance.notificationsNotificationIdPut(
         notification.id,
