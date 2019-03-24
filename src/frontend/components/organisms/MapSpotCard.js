@@ -144,6 +144,8 @@ const SpotBottomNavigation = props => {
 };
 
 const SpotCardHeader = props => {
+  const { currentSpot } = props;
+
   return (
     <List disablePadding>
       <ListItem disableGutters style={styles.listItem}>

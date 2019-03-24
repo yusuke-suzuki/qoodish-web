@@ -81,7 +81,7 @@ const reducer = (state = initialState, action) => {
     case CLEAR_SPOT_STATE:
       return Object.assign({}, state, {
         spotCardOpen: false,
-        currentSpot: {},
+        currentSpot: undefined,
         spotReviews: []
       });
     default:
