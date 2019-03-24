@@ -4,6 +4,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import LockIcon from '@material-ui/icons/Lock';
@@ -19,7 +20,7 @@ const styles = {
     objectFit: 'cover'
   },
   cardContent: {
-    paddingBottom: 16,
+    paddingBottom: 8,
     paddingTop: 8
   },
   privateIcon: {
@@ -27,6 +28,10 @@ const styles = {
   },
   cardMedia: {
     width: '100%'
+  },
+  cardActions: {
+    padding: 16,
+    paddingTop: 0
   },
   buttonBase: {
     width: '100%'
@@ -38,13 +43,13 @@ const MapCard = props => {
   const { map } = props;
 
   return (
-    <Card elevation={0}>
-      <ButtonBase
-        component={Link}
-        to={`/maps/${map.id}`}
-        title={map.name}
-        style={styles.buttonBase}
-      >
+    <ButtonBase
+      component={Link}
+      to={`/maps/${map.id}`}
+      title={map.name}
+      style={styles.buttonBase}
+    >
+      <Card elevation={0}>
         <CardMedia style={styles.cardMedia}>
           <img
             src={large ? map.image_url : map.thumbnail_url}
@@ -52,36 +57,38 @@ const MapCard = props => {
             style={styles.mapImage}
           />
         </CardMedia>
-      </ButtonBase>
-      <CardContent style={styles.cardContent}>
-        <Typography variant="subtitle1" noWrap>
-          {map.private && (
-            <LockIcon style={styles.privateIcon} color="inherit" />
-          )}{' '}
-          {map.name}
-        </Typography>
-        <Typography variant="subtitle2" color="textSecondary" noWrap>
-          {map.owner_name}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-          noWrap
-        >
-          {map.description}
-        </Typography>
-        <Typography
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-          noWrap
-        >
-          {map.followers_count} {I18n.t('followers')}
-        </Typography>
-        <FollowMapButton currentMap={map} />
-      </CardContent>
-    </Card>
+        <CardContent style={styles.cardContent}>
+          <Typography variant="subtitle1" noWrap>
+            {map.private && (
+              <LockIcon style={styles.privateIcon} color="inherit" />
+            )}{' '}
+            {map.name}
+          </Typography>
+          <Typography variant="subtitle2" color="textSecondary" noWrap>
+            {map.owner_name}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            gutterBottom
+            noWrap
+          >
+            {map.description}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            gutterBottom
+            noWrap
+          >
+            {map.followers_count} {I18n.t('followers')}
+          </Typography>
+        </CardContent>
+        <CardActions style={styles.cardActions}>
+          <FollowMapButton currentMap={map} />
+        </CardActions>
+      </Card>
+    </ButtonBase>
   );
 };
 
