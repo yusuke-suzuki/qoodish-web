@@ -8,6 +8,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
+  swipeable: {
+    height: 250
+  },
   stepper: {
     background: '#ffffff'
   },
@@ -34,6 +37,7 @@ const SpotImageStepper = props => {
       <SwipeableViews
         index={activeStep}
         onChangeIndex={step => setActiveStep(step)}
+        style={styles.swipeable}
       >
         {props.spotReviews.map(review => (
           <img

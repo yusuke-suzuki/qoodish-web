@@ -17,21 +17,21 @@ import closeReviewDialog from '../../actions/closeReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import fetchSpots from '../../actions/fetchSpots';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import initializeApiClient from '../../utils/initializeApiClient';
-import { SpotsApi, ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from 'qoodish_api';
 
 const DeleteReviewDialog = props => {
   const mapState = useCallback(
     state => ({
       review: state.reviews.targetReview,
       dialogOpen: state.reviews.deleteReviewDialogOpen,
-      history: state.shared.history
+      history: state.shared.history,
+      isMapDetail: state.shared.isMapDetail
     }),
     []
   );
-  const { review, dialogOpen, history } = useMappedState(mapState);
+  const { review, dialogOpen, history, isMapDetail } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const [check, setCheck] = useState(false);
@@ -64,18 +64,8 @@ const DeleteReviewDialog = props => {
         dispatch(closeReviewDialog());
         dispatch(closeDeleteReviewDialog());
 
-        if (props.mapId) {
-          const apiInstance = new SpotsApi();
-
-          apiInstance.mapsMapIdSpotsGet(
-            props.mapId,
-            (error, data, response) => {
-              if (response.ok) {
-                dispatch(fetchSpots(response.body));
-                history.push(`/maps/${review.map.id}`);
-              }
-            }
-          );
+        if (isMapDetail) {
+          history.push(`/maps/${review.map.id}`);
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast(I18n.t('delete report success')));

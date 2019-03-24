@@ -22,7 +22,7 @@
     "load-google-maps-api": "^1.3.2",
     "moment": "^2.20.1",
     "path-to-regexp": "^3.0.0",
-    "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#3c4b303",
+    "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#d638272",
     "react": "^16.8.3",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^16.8.3",

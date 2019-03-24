@@ -41,7 +41,7 @@ import sleep from '../../utils/sleep';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
-import { MapsApi, SpotsApi, ReviewsApi, NewReview } from 'qoodish_api';
+import { MapsApi, ReviewsApi, NewReview } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 import DialogAppBar from '../molecules/DialogAppBar';
 
@@ -118,7 +118,8 @@ const EditReviewDialog = () => {
       selectedPlace: state.reviews.selectedPlace,
       currentReview: state.reviews.targetReview,
       currentMap: state.mapDetail.currentMap,
-      postableMaps: state.maps.postableMaps
+      postableMaps: state.maps.postableMaps,
+      isMapDetail: state.shared.isMapDetail
     }),
     []
   );
@@ -128,7 +129,8 @@ const EditReviewDialog = () => {
     selectedPlace,
     currentReview,
     currentMap,
-    postableMaps
+    postableMaps,
+    isMapDetail
   } = useMappedState(mapState);
 
   const handleMapChange = useCallback(selectedMapId => {
@@ -207,17 +209,8 @@ const EditReviewDialog = () => {
           }
           const review = response.body;
           dispatch(createReview(review));
-
-          await initializeApiClient();
-          const apiInstance = new SpotsApi();
-          apiInstance.mapsMapIdSpotsGet(mapId, (error, data, response) => {
-            if (response.ok) {
-              dispatch(fetchSpots(response.body));
-
-              dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-              dispatch(selectSpot(review.spot));
-            }
-          });
+          dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+          dispatch(selectSpot(review.spot));
         } else {
           dispatch(openToast(response.body.detail));
           if (fileName) {
@@ -263,20 +256,8 @@ const EditReviewDialog = () => {
             }
             const review = response.body;
             dispatch(editReview(review));
-
-            await initializeApiClient();
-            const apiInstance = new SpotsApi();
-            apiInstance.mapsMapIdSpotsGet(
-              review.map.id,
-              (error, data, response) => {
-                if (response.ok) {
-                  dispatch(fetchSpots(response.body));
-
-                  dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-                  dispatch(selectSpot(review.spot));
-                }
-              }
-            );
+            dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+            dispatch(selectSpot(review.spot));
           } else {
             dispatch(openToast(response.body.detail));
             if (fileName) {

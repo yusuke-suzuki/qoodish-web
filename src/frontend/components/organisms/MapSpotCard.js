@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
@@ -33,7 +33,10 @@ import closeSpotCard from '../../actions/closeSpotCard';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import requestMapCenter from '../../actions/requestMapCenter';
 import switchMap from '../../actions/switchMap';
+import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 import I18n from '../../utils/I18n';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { ReviewsApi } from 'qoodish_api';
 
 const styles = {
   drawerPaperLarge: {
@@ -130,7 +133,7 @@ const SpotBottomNavigation = props => {
           icon={<InfoIcon />}
           component={Link}
           to={{
-            pathname: `/spots/${currentSpot.place_id}`,
+            pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
             state: { modal: true, spot: currentSpot }
           }}
           style={styles.bottomAction}
@@ -148,12 +151,12 @@ const SpotCardHeader = props => {
           disableTypography
           primary={
             <Typography variant="h6" noWrap>
-              {props.currentSpot.name}
+              {currentSpot && props.currentSpot.name}
             </Typography>
           }
           secondary={
             <Typography component="p" noWrap color="textSecondary">
-              {props.currentSpot.formatted_address}
+              {currentSpot && props.currentSpot.formatted_address}
             </Typography>
           }
         />
@@ -167,7 +170,7 @@ const SpotCardSmall = () => {
   const mapState = useCallback(
     state => ({
       currentSpot: state.spotCard.currentSpot,
-      spotReviews: state.mapSummary.spotReviews,
+      spotReviews: state.spotCard.spotReviews,
       currentMap: state.mapDetail.currentMap
     }),
     []
@@ -242,7 +245,7 @@ const SpotCardLarge = () => {
   const mapState = useCallback(
     state => ({
       currentSpot: state.spotCard.currentSpot,
-      spotReviews: state.mapSummary.spotReviews
+      spotReviews: state.spotCard.spotReviews
     }),
     []
   );
@@ -253,10 +256,10 @@ const SpotCardLarge = () => {
       <SpotImageStepper spotReviews={spotReviews} currentSpot={currentSpot} />
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          {currentSpot.name}
+          {currentSpot && currentSpot.name}
         </Typography>
         <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          {currentSpot.formatted_address}
+          {currentSpot && currentSpot.formatted_address}
         </Typography>
         {spotReviews.length > 0 && (
           <div style={styles.reviewTiles}>
@@ -277,7 +280,9 @@ const MapSpotCard = () => {
       open: state.spotCard.spotCardOpen,
       currentSpot: state.spotCard.currentSpot,
       reviewDialogOpen: state.reviews.reviewDialogOpen,
-      spotDialogOpen: state.spotDetail.spotDialogOpen
+      spotDialogOpen: state.spotDetail.spotDialogOpen,
+      currentMap: state.mapDetail.currentMap,
+      spotReviews: state.spotCard.spotReviews
     }),
     []
   );
@@ -285,7 +290,9 @@ const MapSpotCard = () => {
     open,
     currentSpot,
     reviewDialogOpen,
-    spotDialogOpen
+    spotDialogOpen,
+    currentMap,
+    spotReviews
   } = useMappedState(mapState);
 
   const handleOpen = useCallback(() => {
@@ -296,13 +303,46 @@ const MapSpotCard = () => {
     dispatch(closeSpotCard());
   });
 
+  useEffect(
+    () => {
+      if (spotReviews.length < 1) {
+        handleClose();
+      }
+    },
+    [spotReviews]
+  );
+
   const dialogOpen = reviewDialogOpen || spotDialogOpen;
+
+  const refreshReviews = useCallback(async () => {
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdReviewsGet(
+      currentMap.id,
+      { placeId: currentSpot.place_id },
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMapSpotReviews(response.body));
+        }
+      }
+    );
+  });
+
+  useEffect(
+    () => {
+      if (currentMap && currentSpot) {
+        refreshReviews();
+      }
+    },
+    [currentMap, currentSpot]
+  );
 
   return (
     <SwipeableDrawer
       variant={large ? 'persistent' : 'temporary'}
       anchor={large ? 'left' : 'bottom'}
-      open={open && (large || (!large && !dialogOpen))}
+      open={large ? open : open && !dialogOpen}
       PaperProps={{
         style: large ? styles.drawerPaperLarge : {},
         square: large ? true : false

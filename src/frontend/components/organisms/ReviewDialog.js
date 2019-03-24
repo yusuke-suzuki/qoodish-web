@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
@@ -64,11 +64,13 @@ const ReviewDialog = () => {
       )}
       <DialogContent style={styles.dialogContent}>
         <div>
-          <ReviewCard
-            currentReview={currentReview}
-            detail={!large}
-            hideActions
-          />
+          {currentReview && (
+            <ReviewCard
+              currentReview={currentReview}
+              detail={!large}
+              hideActions
+            />
+          )}
         </div>
       </DialogContent>
       <DialogActions disableActionSpacing style={styles.dialogActions}>

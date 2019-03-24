@@ -6,14 +6,13 @@ import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
 import requestMapCenter from '../../actions/requestMapCenter';
-import fetchSpots from '../../actions/fetchSpots';
 import clearMapState from '../../actions/clearMapState';
 import fetchMapReviews from '../../actions/fetchMapReviews';
 import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import I18n from '../../utils/I18n';
 
-import { MapsApi, SpotsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
+import { MapsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
 
 const GMap = React.lazy(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')
@@ -209,26 +208,13 @@ const MapDetail = props => {
     );
   });
 
-  const initSpots = useCallback(async () => {
-    await initializeApiClient();
-    const apiInstance = new SpotsApi();
-
-    apiInstance.mapsMapIdSpotsGet(
-      props.params.primaryId,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchSpots(response.body));
-        }
-      }
-    );
-  });
-
   const initMapReviews = useCallback(async () => {
     await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsGet(
       props.params.primaryId,
+      {},
       (error, data, response) => {
         if (response.ok) {
           dispatch(fetchMapReviews(response.body));
@@ -255,7 +241,6 @@ const MapDetail = props => {
 
   const refreshMap = useCallback(() => {
     initMap();
-    initSpots();
     initMapReviews();
     initFollowers();
   });

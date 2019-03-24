@@ -8,6 +8,7 @@ import { StoreContext } from 'redux-react-hook';
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
+import timelineReducer from './reducers/timelineReducer';
 import discoverReducer from './reducers/discoverReducer';
 import mapsReducer from './reducers/mapsReducer';
 import mapDetailReducer from './reducers/mapDetailReducer';
@@ -37,6 +38,7 @@ if (process.env.NODE_ENV !== 'production') {
 const reducer = combineReducers({
   app: appReducer,
   shared: sharedReducer,
+  timeline: timelineReducer,
   discover: discoverReducer,
   maps: mapsReducer,
   mapDetail: mapDetailReducer,
