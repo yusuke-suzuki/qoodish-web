@@ -1,7 +1,4 @@
 import {
-  FETCH_REVIEWS,
-  FETCH_MORE_REVIEWS,
-  CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
   OPEN_EDIT_REVIEW_DIALOG,
@@ -13,19 +10,15 @@ import {
   OPEN_REVIEW_DIALOG,
   CLOSE_REVIEW_DIALOG,
   SELECT_PLACE_FOR_REVIEW,
-  CLEAR_MAP_STATE,
   OPEN_DELETE_COMMENT_DIALOG,
   CLOSE_DELETE_COMMENT_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
-  currentReview: null,
-  targetReview: null,
-  currentReviews: [],
+  currentReview: undefined,
+  targetReview: undefined,
   reviewDialogOpen: false,
-  noMoreReviews: false,
-  nextTimestamp: '',
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
@@ -36,73 +29,25 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_REVIEWS:
-      return Object.assign({}, state, {
-        currentReviews: action.payload.reviews,
-        noMoreReviews: !(action.payload.reviews.length > 0),
-        nextTimestamp:
-          action.payload.reviews.length > 0
-            ? action.payload.reviews[action.payload.reviews.length - 1]
-                .created_at
-            : ''
-      });
-    case FETCH_MORE_REVIEWS:
-      return Object.assign({}, state, {
-        currentReviews:
-          action.payload.reviews.length > 0
-            ? [...state.currentReviews, ...action.payload.reviews]
-            : state.currentReviews,
-        noMoreReviews: !(action.payload.reviews.length > 0),
-        nextTimestamp:
-          action.payload.reviews.length > 0
-            ? action.payload.reviews[action.payload.reviews.length - 1]
-                .created_at
-            : ''
-      });
     case SELECT_PLACE_FOR_REVIEW:
       return Object.assign({}, state, {
         selectedPlace: action.payload.place,
         editReviewDialogOpen: true
       });
-    case CREATE_REVIEW:
-      return Object.assign({}, state, {
-        currentReviews: [action.payload.review, ...state.currentReviews]
-      });
     case EDIT_REVIEW:
-      if (!state.currentReview && !(state.currentReviews.length > 0)) {
+      if (
+        !state.currentReview ||
+        state.currentReview.id !== action.payload.review.id
+      ) {
         return state;
       }
 
-      let nextState = {};
-      if (state.currentReview) {
-        Object.assign(nextState, { currentReview: action.payload.review });
-      }
-      if (state.currentReviews.length > 0) {
-        let index = state.currentReviews.findIndex(review => {
-          return review.id == action.payload.review.id;
-        });
-        let currentReview = state.currentReviews[index];
-        if (currentReview) {
-          Object.assign(nextState, {
-            currentReviews: [
-              ...state.currentReviews.slice(0, index),
-              action.payload.review,
-              ...state.currentReviews.slice(index + 1)
-            ]
-          });
-        }
-      }
-      return Object.assign({}, state, nextState);
-    case DELETE_REVIEW:
-      if (state.currentReviews.length == 0) {
-        return state;
-      }
-
-      let rejected = state.currentReviews.filter(review => {
-        return review.id != action.payload.id;
-      });
       return Object.assign({}, state, {
-        currentReviews: rejected
+        currentReview: action.payload.review
+      });
+    case DELETE_REVIEW:
+      return Object.assign({}, state, {
+        currentReview: undefined
       });
     case OPEN_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
@@ -157,13 +102,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         targetComment: undefined,
         deleteCommentDialogOpen: false
-      });
-    case CLEAR_MAP_STATE:
-      return Object.assign({}, state, {
-        currentReviews: [],
-        noMoreReviews: false,
-        nextTimestamp: '',
-        targetReview: null
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {

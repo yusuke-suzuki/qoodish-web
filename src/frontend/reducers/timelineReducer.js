@@ -1,77 +1,38 @@
 import {
-  FETCH_MY_MAPS,
-  FETCH_FOLLOWING_MAPS,
-  FETCH_USER_REVIEWS,
-  FETCH_MORE_USER_REVIEWS,
+  FETCH_REVIEWS,
+  FETCH_MORE_REVIEWS,
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
-  FETCH_USER_PROFILE,
-  CLEAR_PROFILE_STATE,
-  OPEN_EDIT_PROFILE_DIALOG,
-  CLOSE_EDIT_PROFILE_DIALOG,
-  OPEN_FOLLOWING_MAPS_DIALOG,
-  CLOSE_FOLLOWING_MAPS_DIALOG,
-  LEAVE_MAP,
   LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
-  currentUser: {},
-  myMaps: [],
-  followingMaps: [],
   currentReviews: [],
+  reviewDialogOpen: false,
   noMoreReviews: false,
-  nextTimestamp: '',
-  editProfileDialogOpen: false,
-  followingMapsDialogOpen: false
+  nextTimestamp: ''
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_USER_PROFILE:
-      return Object.assign({}, state, {
-        currentUser: action.payload.user
-      });
-    case LEAVE_MAP:
-      return Object.assign({}, state, {
-        followingMaps: state.followingMaps.filter(map => {
-          return map.id != action.payload.currentMap.id;
-        })
-      });
-    case FETCH_MY_MAPS:
-      return Object.assign({}, state, {
-        myMaps: action.payload.maps
-      });
-    case FETCH_FOLLOWING_MAPS:
-      return Object.assign({}, state, {
-        followingMaps: action.payload.maps
-      });
-    case OPEN_FOLLOWING_MAPS_DIALOG:
-      return Object.assign({}, state, {
-        followingMapsDialogOpen: true
-      });
-    case CLOSE_FOLLOWING_MAPS_DIALOG:
-      return Object.assign({}, state, {
-        followingMapsDialogOpen: false
-      });
-    case FETCH_USER_REVIEWS:
+    case FETCH_REVIEWS:
       return Object.assign({}, state, {
         currentReviews: action.payload.reviews,
-        noMoreReviews: !(action.payload.reviews.length > 0),
+        noMoreReviews: action.payload.reviews.length < 1,
         nextTimestamp:
           action.payload.reviews.length > 0
             ? action.payload.reviews[action.payload.reviews.length - 1]
                 .created_at
             : ''
       });
-    case FETCH_MORE_USER_REVIEWS:
+    case FETCH_MORE_REVIEWS:
       return Object.assign({}, state, {
         currentReviews:
           action.payload.reviews.length > 0
             ? [...state.currentReviews, ...action.payload.reviews]
             : state.currentReviews,
-        noMoreReviews: !(action.payload.reviews.length > 0),
+        noMoreReviews: action.payload.reviews.length < 1,
         nextTimestamp:
           action.payload.reviews.length > 0
             ? action.payload.reviews[action.payload.reviews.length - 1]
@@ -83,13 +44,19 @@ const reducer = (state = initialState, action) => {
         currentReviews: [action.payload.review, ...state.currentReviews]
       });
     case EDIT_REVIEW:
+      if (state.currentReviews.length < 1) {
+        return state;
+      }
+
       let index = state.currentReviews.findIndex(review => {
-        return review.id == action.payload.review.id;
+        return review.id === action.payload.review.id;
       });
       let currentReview = state.currentReviews[index];
+
       if (!currentReview) {
         return state;
       }
+
       return Object.assign({}, state, {
         currentReviews: [
           ...state.currentReviews.slice(0, index),
@@ -106,19 +73,11 @@ const reducer = (state = initialState, action) => {
           return review.id !== action.payload.id;
         })
       });
-    case OPEN_EDIT_PROFILE_DIALOG:
-      return Object.assign({}, state, {
-        editProfileDialogOpen: true
-      });
-    case CLOSE_EDIT_PROFILE_DIALOG:
-      return Object.assign({}, state, {
-        editProfileDialogOpen: false
-      });
-    case CLEAR_PROFILE_STATE:
-      return Object.assign({}, state, initialState);
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
-        editProfileDialogOpen: false
+        currentReviews: [],
+        noMoreReviews: false,
+        nextTimestamp: ''
       });
     default:
       return state;

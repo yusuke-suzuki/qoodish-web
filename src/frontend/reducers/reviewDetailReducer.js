@@ -16,9 +16,13 @@ const reducer = (state = initialState, action) => {
         currentReview: action.payload.review
       });
     case EDIT_REVIEW:
-      if (!state.currentReview) {
+      if (
+        !state.currentReview ||
+        state.currentReview.id !== action.payload.review.id
+      ) {
         return state;
       }
+
       return Object.assign({}, state, {
         currentReview: action.payload.review
       });

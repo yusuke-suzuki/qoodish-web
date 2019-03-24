@@ -281,19 +281,20 @@ const reducer = (state = initialState, action) => {
       }
 
       let isModal =
-        action.payload.location.state &&
-        action.payload.location.state.modal &&
-        state.previousLocation;
+        action.payload.location.state && action.payload.location.state.modal;
 
-      let pageTitle = isModal
-        ? state.pageTitle
-        : switchPageTitle(action.payload.location.pathname, state.large);
-      let showBackButton = isModal
-        ? state.showBackButton
-        : switchBackButton(action.payload.location.pathname);
-      let showBottomNav = isModal
-        ? state.showBottomNav
-        : switchBottomNav(action.payload.location.pathname);
+      let pageTitle =
+        isModal && state.previousLocation
+          ? state.pageTitle
+          : switchPageTitle(action.payload.location.pathname, state.large);
+      let showBackButton =
+        isModal && state.previousLocation
+          ? state.showBackButton
+          : switchBackButton(action.payload.location.pathname);
+      let showBottomNav =
+        isModal && state.previousLocation
+          ? state.showBottomNav
+          : switchBottomNav(action.payload.location.pathname);
       let fullWidth = isModal
         ? state.fullWidth
         : switchFullWidth(action.payload.location.pathname);

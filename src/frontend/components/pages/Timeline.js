@@ -113,8 +113,8 @@ const LoadMoreButton = React.memo(() => {
 
   const mapState = useCallback(
     state => ({
-      noMoreReviews: state.reviews.noMoreReviews,
-      nextTimestamp: state.reviews.nextTimestamp
+      noMoreReviews: state.timeline.noMoreReviews,
+      nextTimestamp: state.timeline.nextTimestamp
     }),
     []
   );
@@ -171,7 +171,7 @@ const ReviewsContainer = React.memo(() => {
 
   const mapState = useCallback(
     state => ({
-      currentReviews: state.reviews.currentReviews
+      currentReviews: state.timeline.currentReviews
     }),
     []
   );

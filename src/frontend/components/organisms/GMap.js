@@ -16,6 +16,9 @@ const SpotMarker = React.lazy(() =>
 
 import OverlayView from '../molecules/OverlayView';
 import I18n from '../../utils/I18n';
+import initializeApiClient from '../../utils/initializeApiClient';
+import { SpotsApi } from 'qoodish_api';
+import fetchSpots from '../../actions/fetchSpots';
 
 const styles = {
   mapWrapperLarge: {
@@ -54,13 +57,32 @@ const GMap = () => {
       zoom: state.gMap.zoom,
       spots: state.gMap.spots,
       currentPosition: state.gMap.currentPosition,
-      currentUser: state.app.currentUser
+      currentUser: state.app.currentUser,
+      mapReviews: state.mapSummary.mapReviews,
+      currentMap: state.mapSummary.currentMap
     }),
     []
   );
-  const { center, zoom, spots, currentPosition, currentUser } = useMappedState(
-    mapState
-  );
+  const {
+    center,
+    zoom,
+    spots,
+    currentPosition,
+    currentUser,
+    mapReviews,
+    currentMap
+  } = useMappedState(mapState);
+
+  const refreshSpots = useCallback(async () => {
+    await initializeApiClient();
+    const apiInstance = new SpotsApi();
+
+    apiInstance.mapsMapIdSpotsGet(currentMap.id, (error, data, response) => {
+      if (response.ok) {
+        dispatch(fetchSpots(response.body));
+      }
+    });
+  });
 
   useEffect(
     () => {
@@ -74,6 +96,15 @@ const GMap = () => {
       gMap.setZoom(zoom);
     },
     [center, zoom]
+  );
+
+  useEffect(
+    () => {
+      if (currentMap) {
+        refreshSpots();
+      }
+    },
+    [mapReviews, currentMap]
   );
 
   const initGoogleMaps = useCallback(async () => {
