@@ -63,7 +63,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spotReviews: [
           ...state.spotReviews.slice(0, index),
-          Object.assign(currentReview, action.payload.review),
+          action.payload.review,
           ...state.spotReviews.slice(index + 1)
         ]
       });
