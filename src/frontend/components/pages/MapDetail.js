@@ -20,9 +20,6 @@ const GMap = React.lazy(() =>
 const MapSummary = React.lazy(() =>
   import(/* webpackChunkName: "map_summary" */ '../organisms/MapSummary')
 );
-const MapBottomSeat = React.lazy(() =>
-  import(/* webpackChunkName: "map_bottom_seat" */ '../organisms/MapBottomSeat')
-);
 const DeleteMapDialog = React.lazy(() =>
   import(/* webpackChunkName: "delete_map_dialog" */ '../organisms/DeleteMapDialog')
 );
@@ -38,6 +35,9 @@ const CreateResourceButton = React.lazy(() =>
 const LocationButton = React.lazy(() =>
   import(/* webpackChunkName: "location_button" */ '../molecules/LocationButton')
 );
+const SpotHorizontalList = React.lazy(() =>
+  import(/* webpackChunkName: "spot_horizontal_list" */ '../organisms/SpotHorizontalList')
+);
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
@@ -49,7 +49,7 @@ const styles = {
     position: 'fixed',
     top: 56,
     left: 0,
-    bottom: 71,
+    bottom: 0,
     right: 0,
     display: 'block',
     width: '100%'
@@ -67,7 +67,7 @@ const styles = {
   mapButtonsSmall: {
     position: 'relative',
     right: 0,
-    bottom: 0
+    bottom: 124
   }
 };
 
@@ -275,7 +275,7 @@ const MapDetail = props => {
             <MapButtons currentMap={currentMap} />
           </div>
           <React.Suspense fallback={null}>
-            <MapBottomSeat map={currentMap} />
+            <SpotHorizontalList />
           </React.Suspense>
           <MapSummaryDrawer {...props} />
         </div>

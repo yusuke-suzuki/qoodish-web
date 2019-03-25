@@ -11,9 +11,6 @@ import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import I18n from '../../utils/I18n';
 
-import requestMapCenter from '../../actions/requestMapCenter';
-import selectSpot from '../../actions/selectSpot';
-
 import Link from '../molecules/Link';
 
 const styles = {

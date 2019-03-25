@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,8 +17,6 @@ import I18n from '../../utils/I18n';
 import openEditMapDialog from '../../actions/openEditMapDialog';
 import openDeleteMapDialog from '../../actions/openDeleteMapDialog';
 import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
-import openIssueDialog from '../../actions/openIssueDialog';
-import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 
 const styles = {
   mapMenuIcon: {
@@ -35,12 +34,11 @@ const MapVertMenu = () => {
 
   const mapState = useCallback(
     state => ({
-      map: state.mapSummary.currentMap,
-      currentUser: state.app.currentUser
+      map: state.mapSummary.currentMap
     }),
     []
   );
-  const { map, currentUser } = useMappedState(mapState);
+  const { map } = useMappedState(mapState);
 
   const dispatch = useDispatch();
 
@@ -57,15 +55,6 @@ const MapVertMenu = () => {
   const handleInviteButtonClick = useCallback(() => {
     setMenuOpen(false);
     dispatch(openInviteTargetDialog());
-  });
-
-  const handleIssueButtonClick = useCallback(() => {
-    setMenuOpen(false);
-    if (currentUser.isAnonymous) {
-      dispatch(openSignInRequiredDialog());
-    } else {
-      dispatch(openIssueDialog(map.id, 'map'));
-    }
   });
 
   return (
