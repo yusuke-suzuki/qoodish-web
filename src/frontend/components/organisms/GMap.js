@@ -19,6 +19,8 @@ import I18n from '../../utils/I18n';
 import initializeApiClient from '../../utils/initializeApiClient';
 import { SpotsApi } from 'qoodish_api';
 import fetchSpots from '../../actions/fetchSpots';
+import Popover from '@material-ui/core/Popover';
+import SpotInfoWindow from '../molecules/SpotInfoWindow';
 
 const styles = {
   mapWrapperLarge: {
@@ -141,6 +143,9 @@ const GMap = () => {
     initGoogleMaps();
   }, []);
 
+  const [anchorEl, setAnchorEl] = useState(undefined);
+  const [windowOpen, setWindowOpen] = useState(false);
+
   useEffect(
     () => {
       if (!googleMapsApi || !currentPosition.lat || !gMap) {
@@ -177,14 +182,36 @@ const GMap = () => {
     [gMap, googleMapsApi]
   );
 
-  const onSpotMarkerClick = useCallback(async spot => {
+  const onSpotMarkerClick = useCallback(async (e, spot) => {
     dispatch(selectSpot(spot));
-    dispatch(openSpotCard());
+
+    if (large) {
+      setAnchorEl(e.currentTarget);
+      setWindowOpen(true);
+    } else {
+      dispatch(openSpotCard());
+    }
   });
 
   return (
     <div style={large ? styles.mapWrapperLarge : styles.mapWrapperSmall}>
       <div id="map" style={large ? styles.mapLarge : styles.mapSmall} />
+      <Popover
+        id="spot-info-window"
+        anchorEl={anchorEl}
+        open={windowOpen}
+        onClose={() => setWindowOpen(false)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left'
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+      >
+        <SpotInfoWindow />
+      </Popover>
       {isGoogleMapsApiReady &&
         spots.map(spot => (
           <OverlayView
@@ -201,8 +228,11 @@ const GMap = () => {
             <React.Suspense fallback={null}>
               <SpotMarker
                 spot={spot}
-                onClick={() => onSpotMarkerClick(spot)}
+                onClick={e => onSpotMarkerClick(e, spot)}
                 large={large}
+                aria-label="Info window"
+                aria-owns={windowOpen ? 'spot-info-window' : null}
+                aria-haspopup="true"
               />
             </React.Suspense>
           </OverlayView>

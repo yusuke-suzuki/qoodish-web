@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
-import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import InfoIcon from '@material-ui/icons/Info';
@@ -14,7 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Toolbar from '@material-ui/core/Toolbar';
+
 import PlaceIcon from '@material-ui/icons/Place';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
@@ -23,20 +20,13 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Paper from '@material-ui/core/Paper';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-
-import ReviewTiles from './ReviewTiles';
-import SpotImageStepper from '../molecules/SpotImageStepper';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import requestMapCenter from '../../actions/requestMapCenter';
 import switchMap from '../../actions/switchMap';
-import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 import I18n from '../../utils/I18n';
-import initializeApiClient from '../../utils/initializeApiClient';
-import { ReviewsApi } from 'qoodish_api';
 
 const styles = {
   drawerPaperLarge: {
@@ -103,15 +93,11 @@ const styles = {
     position: 'absolute',
     bottom: 0,
     width: '100%'
-  },
-  reviewTiles: {
-    marginTop: 16
   }
 };
 
 const SpotBottomNavigation = props => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
   const currentSpot = props.currentSpot;
 
   const handleLocationButtonClick = useCallback(() => {
@@ -120,7 +106,7 @@ const SpotBottomNavigation = props => {
   });
 
   return (
-    <Paper style={large ? styles.bottomNavLarge : {}} elevation={2}>
+    <Paper elevation={2}>
       <BottomNavigation showLabels>
         <BottomNavigationAction
           label={I18n.t('location')}
@@ -167,7 +153,7 @@ const SpotCardHeader = props => {
   );
 };
 
-const SpotCardSmall = () => {
+const SpotCardContent = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -243,47 +229,15 @@ const SpotCardSmall = () => {
   );
 };
 
-const SpotCardLarge = () => {
-  const mapState = useCallback(
-    state => ({
-      currentSpot: state.spotCard.currentSpot,
-      spotReviews: state.spotCard.spotReviews
-    }),
-    []
-  );
-  const { currentSpot, spotReviews } = useMappedState(mapState);
-
-  return (
-    <Card style={styles.cardLarge}>
-      <SpotImageStepper spotReviews={spotReviews} currentSpot={currentSpot} />
-      <CardContent>
-        <Typography variant="h5" gutterBottom>
-          {currentSpot && currentSpot.name}
-        </Typography>
-        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-          {currentSpot && currentSpot.formatted_address}
-        </Typography>
-        {spotReviews.length > 0 && (
-          <div style={styles.reviewTiles}>
-            <ReviewTiles reviews={spotReviews} showSubheader />
-          </div>
-        )}
-      </CardContent>
-      <SpotBottomNavigation currentSpot={currentSpot} />
-    </Card>
-  );
-};
-
-const MapSpotCard = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+const MapSpotDrawer = () => {
   const dispatch = useDispatch();
+
   const mapState = useCallback(
     state => ({
       open: state.spotCard.spotCardOpen,
       currentSpot: state.spotCard.currentSpot,
       reviewDialogOpen: state.reviews.reviewDialogOpen,
       spotDialogOpen: state.spotDetail.spotDialogOpen,
-      currentMap: state.mapDetail.currentMap,
       spotReviews: state.spotCard.spotReviews
     }),
     []
@@ -293,7 +247,6 @@ const MapSpotCard = () => {
     currentSpot,
     reviewDialogOpen,
     spotDialogOpen,
-    currentMap,
     spotReviews
   } = useMappedState(mapState);
 
@@ -316,38 +269,13 @@ const MapSpotCard = () => {
 
   const dialogOpen = reviewDialogOpen || spotDialogOpen;
 
-  const refreshReviews = useCallback(async () => {
-    await initializeApiClient();
-    const apiInstance = new ReviewsApi();
-
-    apiInstance.mapsMapIdReviewsGet(
-      currentMap.id,
-      { placeId: currentSpot.place_id },
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchMapSpotReviews(response.body));
-        }
-      }
-    );
-  });
-
-  useEffect(
-    () => {
-      if (currentMap && currentSpot) {
-        refreshReviews();
-      }
-    },
-    [currentMap, currentSpot]
-  );
-
   return (
     <SwipeableDrawer
-      variant={large ? 'persistent' : 'temporary'}
-      anchor={large ? 'left' : 'bottom'}
-      open={large ? open : open && !dialogOpen}
+      variant="temporary"
+      anchor="bottom"
+      open={open && !dialogOpen}
       PaperProps={{
-        style: large ? styles.drawerPaperLarge : {},
-        square: large ? true : false
+        square: false
       }}
       onOpen={handleOpen}
       onClose={handleClose}
@@ -355,23 +283,12 @@ const MapSpotCard = () => {
       disableBackdropTransition
       ModalProps={{
         hideBackdrop: true,
-        style: large ? {} : styles.modal
+        style: styles.modal
       }}
     >
-      {large && (
-        <Toolbar style={styles.toolbar} disableGutters>
-          <IconButton
-            color="inherit"
-            onClick={handleClose}
-            style={styles.backButton}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        </Toolbar>
-      )}
-      {currentSpot && (large ? <SpotCardLarge /> : <SpotCardSmall />)}
+      {currentSpot && <SpotCardContent />}
     </SwipeableDrawer>
   );
 };
 
-export default React.memo(MapSpotCard);
+export default React.memo(MapSpotDrawer);
