@@ -8,7 +8,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import ViewListIcon from '@material-ui/icons/ViewList';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
@@ -114,7 +114,7 @@ const MapToolbar = () => {
       <div style={styles.toolbarActions}>
         {!large && (
           <IconButton color="inherit" onClick={handleSummaryButtonClick}>
-            <ViewListIcon />
+            <InfoOutlinedIcon />
           </IconButton>
         )}
         <MapShareMenu />

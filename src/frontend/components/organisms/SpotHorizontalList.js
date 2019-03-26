@@ -14,8 +14,12 @@ const styles = {
   root: {
     position: 'absolute',
     bottom: 0,
-    padding: 12,
+    width: '100%',
+    height: 124,
     background: 'rgba(0, 0, 0, 0.1)'
+  },
+  container: {
+    padding: 12
   },
   gridList: {
     flexWrap: 'nowrap',
@@ -43,23 +47,30 @@ const SpotHorizontalList = () => {
 
   return (
     <div style={styles.root}>
-      <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
-        {spots.map(spot => (
-          <GridListTile
-            key={spot.place_id}
-            onClick={() => handleSpotClick(spot)}
-          >
-            <img src={spot.image_url} alt={spot.name} />
-            <GridListTileBar
-              title={
-                <Typography variant="subtitle2" color="inherit" noWrap>
-                  {spot.name}
-                </Typography>
-              }
-            />
-          </GridListTile>
-        ))}
-      </GridList>
+      <div style={styles.container}>
+        <GridList
+          spacing={12}
+          cols={2.5}
+          cellHeight={100}
+          style={styles.gridList}
+        >
+          {spots.map(spot => (
+            <GridListTile
+              key={spot.place_id}
+              onClick={() => handleSpotClick(spot)}
+            >
+              <img src={spot.image_url} alt={spot.name} />
+              <GridListTileBar
+                title={
+                  <Typography variant="subtitle2" color="inherit" noWrap>
+                    {spot.name}
+                  </Typography>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+      </div>
     </div>
   );
 };

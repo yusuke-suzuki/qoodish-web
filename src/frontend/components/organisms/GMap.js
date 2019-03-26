@@ -128,10 +128,13 @@ const GMap = () => {
       },
       streetViewControl: true,
       streetViewControlOptions: {
-        position: googleMapsApi.ControlPosition.RIGHT_TOP
+        position: large
+          ? googleMapsApi.ControlPosition.RIGHT_TOP
+          : googleMapsApi.ControlPosition.LEFT_TOP
       },
-      scaleControl: true,
+      scaleControl: false,
       mapTypeControl: false,
+      fullscreenControl: false,
       gestureHandling: 'greedy'
     });
 
