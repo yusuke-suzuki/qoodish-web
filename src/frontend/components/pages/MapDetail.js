@@ -26,8 +26,8 @@ const DeleteMapDialog = React.lazy(() =>
 const InviteTargetDialog = React.lazy(() =>
   import(/* webpackChunkName: "invite_target_dialog" */ '../organisms/InviteTargetDialog')
 );
-const MapSpotCard = React.lazy(() =>
-  import(/* webpackChunkName: "map_spot_card" */ '../organisms/MapSpotCard')
+const MapSpotDrawer = React.lazy(() =>
+  import(/* webpackChunkName: "map_spot_drawer" */ '../organisms/MapSpotDrawer')
 );
 const CreateResourceButton = React.lazy(() =>
   import(/* webpackChunkName: "create_resource_button" */ '../molecules/CreateResourceButton')
@@ -42,6 +42,7 @@ const SpotHorizontalList = React.lazy(() =>
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
 import initializeApiClient from '../../utils/initializeApiClient';
+import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 
 const styles = {
   containerLarge: {},
@@ -172,11 +173,12 @@ const MapDetail = props => {
   const mapState = useCallback(
     state => ({
       currentMap: state.mapDetail.currentMap,
+      currentSpot: state.spotCard.currentSpot,
       history: state.shared.history
     }),
     []
   );
-  const { currentMap, history } = useMappedState(mapState);
+  const { currentMap, currentSpot, history } = useMappedState(mapState);
 
   const initMap = useCallback(async () => {
     await initializeApiClient();
@@ -255,6 +257,30 @@ const MapDetail = props => {
     [props.params.primaryId]
   );
 
+  const refreshSpotReviews = useCallback(async () => {
+    await initializeApiClient();
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdReviewsGet(
+      currentMap.id,
+      { placeId: currentSpot.place_id },
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMapSpotReviews(response.body));
+        }
+      }
+    );
+  });
+
+  useEffect(
+    () => {
+      if (currentMap && currentSpot) {
+        refreshSpotReviews();
+      }
+    },
+    [currentMap, currentSpot]
+  );
+
   return (
     <div>
       {currentMap && <MapDetailHelmet map={currentMap} />}
@@ -283,7 +309,7 @@ const MapDetail = props => {
       <React.Suspense fallback={null}>
         <DeleteMapDialog mapId={props.params.primaryId} />
         <InviteTargetDialog mapId={props.params.primaryId} />
-        <MapSpotCard mapId={props.params.primaryId} />
+        {!large && <MapSpotDrawer mapId={props.params.primaryId} />}
       </React.Suspense>
     </div>
   );
