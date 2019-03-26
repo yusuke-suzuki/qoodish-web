@@ -181,7 +181,7 @@ const SpotCardContent = () => {
         </div>
         <SpotCardHeader currentSpot={currentSpot} />
         <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
-          {currentMap.postable && currentMap.following && (
+          {currentMap.postable && (
             <GridListTile key="add-review" onClick={handleCreateReviewClick}>
               <img src={process.env.SUBSTITUTE_URL} />
               <GridListTileBar

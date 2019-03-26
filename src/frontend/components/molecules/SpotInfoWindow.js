@@ -1,9 +1,17 @@
-import React, { useCallback } from 'react';
-import { CardContent, Typography, ButtonBase, Avatar } from '@material-ui/core';
+import React, { useCallback, useMemo } from 'react';
+import {
+  CardContent,
+  Typography,
+  ButtonBase,
+  Avatar,
+  Button,
+  CardActions
+} from '@material-ui/core';
 import SpotImageStepper from './SpotImageStepper';
-import { useMappedState } from 'redux-react-hook';
+import { useMappedState, useDispatch } from 'redux-react-hook';
 import I18n from '../../utils/I18n';
 import Link from './Link';
+import selectPlaceForReview from '../../actions/selectPlaceForReview';
 
 const styles = {
   root: {
@@ -26,18 +34,42 @@ const styles = {
     borderWidth: 1,
     width: 32,
     height: 32
+  },
+  cardActions: {
+    padding: 12,
+    paddingTop: 0
   }
 };
 
 const SpotInfoWindow = () => {
+  const dispatch = useDispatch();
+
   const mapState = useCallback(
     state => ({
       currentSpot: state.spotCard.currentSpot,
-      spotReviews: state.spotCard.spotReviews
+      spotReviews: state.spotCard.spotReviews,
+      currentMap: state.mapDetail.currentMap
     }),
     []
   );
-  const { currentSpot, spotReviews } = useMappedState(mapState);
+  const { currentSpot, spotReviews, currentMap } = useMappedState(mapState);
+
+  const handleCreateReviewClick = useCallback(() => {
+    const place = {
+      description: currentSpot.name,
+      placeId: currentSpot.place_id
+    };
+    dispatch(selectPlaceForReview(place));
+  });
+
+  const reviewAlreadyExists = useMemo(
+    () => {
+      return spotReviews.some(review => {
+        return review.place_id === currentSpot.place_id && review.editable;
+      });
+    },
+    [spotReviews]
+  );
 
   return (
     <div style={styles.root}>
@@ -86,6 +118,19 @@ const SpotInfoWindow = () => {
           </a>
         </Typography>
       </CardContent>
+      {currentMap.postable && (
+        <CardActions style={styles.cardActions}>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={handleCreateReviewClick}
+            disabled={reviewAlreadyExists}
+          >
+            {I18n.t('create new report')}
+          </Button>
+        </CardActions>
+      )}
     </div>
   );
 };
