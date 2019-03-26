@@ -3,8 +3,7 @@ import {
   FETCH_MORE_REVIEWS,
   CREATE_REVIEW,
   EDIT_REVIEW,
-  DELETE_REVIEW,
-  LOCATION_CHANGE
+  DELETE_REVIEW
 } from '../actionTypes';
 
 const initialState = {
@@ -72,12 +71,6 @@ const reducer = (state = initialState, action) => {
         currentReviews: state.currentReviews.filter(review => {
           return review.id !== action.payload.id;
         })
-      });
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        currentReviews: [],
-        noMoreReviews: false,
-        nextTimestamp: ''
       });
     default:
       return state;

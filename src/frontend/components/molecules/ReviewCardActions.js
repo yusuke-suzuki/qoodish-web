@@ -11,7 +11,7 @@ import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
-import { CommentsApi, InlineObject1 } from 'qoodish_api';
+import { CommentsApi, InlineObject } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
@@ -79,13 +79,13 @@ const ReviewCardActions = React.memo(props => {
     setSending(true);
     await initializeApiClient();
     const apiInstance = new CommentsApi();
-    const inlineObject1 = InlineObject1.constructFromObject({
+    const inlineObject = InlineObject.constructFromObject({
       comment: comment
     });
 
     apiInstance.reviewsReviewIdCommentsPost(
       props.review.id,
-      inlineObject1,
+      inlineObject,
       (error, data, response) => {
         setCommentFormActive(false);
         setComment(undefined);

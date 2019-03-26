@@ -18,7 +18,7 @@ import NotificationList from './NotificationList';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import initializeApiClient from '../../utils/initializeApiClient';
-import { NotificationsApi, InlineObject2 } from 'qoodish_api';
+import { NotificationsApi, InlineObject1 } from 'qoodish_api';
 
 import Link from '../molecules/Link';
 import I18n from '../../utils/I18n';
@@ -87,7 +87,7 @@ const NavTabs = () => {
       await initializeApiClient();
       const apiInstance = new NotificationsApi();
       const opts = {
-        inlineObject2: InlineObject2.constructFromObject({ read: true })
+        inlineObject1: InlineObject1.constructFromObject({ read: true })
       };
       apiInstance.notificationsNotificationIdPut(
         notification.id,
