@@ -49,7 +49,7 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         recentReviews: [
           ...state.recentReviews.slice(0, index),
-          Object.assign(currentReview, action.payload.review),
+          action.payload.review,
           ...state.recentReviews.slice(index + 1)
         ]
       });
