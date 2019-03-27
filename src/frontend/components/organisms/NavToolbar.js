@@ -3,7 +3,6 @@ import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -11,7 +10,7 @@ import SearchButton from '../molecules/SearchButton';
 import SearchBar from '../molecules/SearchBar';
 import AppMenuButton from '../molecules/AppMenuButton';
 import NavTabs from './NavTabs';
-import Link from '../molecules/Link';
+import Logo from '../molecules/Logo';
 
 const styles = {
   toolbarLarge: {
@@ -23,12 +22,10 @@ const styles = {
     paddingLeft: 8,
     paddingRight: 8
   },
-  logo: {
-    cursor: 'pointer',
+  logoContainerLarge: {
     marginLeft: 12
   },
-  pageTitleSmall: {
-    cursor: 'pointer',
+  logoContainerSmall: {
     margin: 'auto'
   },
   rightContentsLarge: {
@@ -43,17 +40,9 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center'
   },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit'
-  },
   search: {
     marginRight: 24
   }
-};
-
-const handleTitleClick = () => {
-  window.scrollTo(0, 0);
 };
 
 const ToolbarSmall = React.memo(() => {
@@ -86,17 +75,9 @@ const ToolbarSmall = React.memo(() => {
       ) : (
         <AppMenuButton />
       )}
-      <Typography
-        variant="h5"
-        color="inherit"
-        noWrap
-        style={styles.pageTitleSmall}
-        onClick={handleTitleClick}
-      >
-        <Link to="/" style={styles.link} title="Qoodish">
-          Qoodish
-        </Link>
-      </Typography>
+      <div style={styles.logoContainerSmall}>
+        <Logo color="inherit" />
+      </div>
       <div style={styles.rightContentsSmall}>
         <SearchButton />
       </div>
@@ -108,11 +89,9 @@ const ToolbarLarge = React.memo(() => {
   return (
     <Toolbar style={styles.toolbarLarge}>
       <AppMenuButton />
-      <Typography variant="h5" color="inherit" style={styles.logo}>
-        <Link to="/" style={styles.link} title="Qoodish">
-          Qoodish
-        </Link>
-      </Typography>
+      <div style={styles.logoContainerLarge}>
+        <Logo color="inherit" />
+      </div>
       <div style={styles.rightContentsLarge}>
         <div style={styles.search}>
           <SearchBar />

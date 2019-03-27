@@ -6,7 +6,6 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Typography from '@material-ui/core/Typography';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
@@ -35,11 +34,9 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import ProfileCard from './ProfileCard';
 import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
+import Logo from './Logo';
 
 const styles = {
-  title: {
-    cursor: 'pointer'
-  },
   titleLarge: {
     height: 64
   },
@@ -66,14 +63,7 @@ const Title = React.memo(() => {
       to="/"
       style={large ? styles.titleLarge : styles.titleSmall}
     >
-      <ListItemText
-        disableTypography
-        primary={
-          <Typography variant="h5" color="textSecondary" style={styles.title}>
-            Qoodish
-          </Typography>
-        }
-      />
+      <ListItemText disableTypography primary={<Logo />} />
       <ListItemSecondaryAction>
         <IconButton onClick={handleCloseDrawer}>
           <ChevronLeftIcon />
