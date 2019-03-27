@@ -11,6 +11,13 @@ precaching.precacheAndRoute(self.__precacheManifest || []);
 googleAnalytics.initialize();
 
 routing.registerRoute(
+  new RegExp('https://fonts.googleapis.com'),
+  new strategies.StaleWhileRevalidate({
+    cacheName: 'google-fonts-stylesheets'
+  })
+);
+
+routing.registerRoute(
   new RegExp('https://storage.cloud.google.com'),
   new strategies.CacheFirst({
     cacheName: 'storage-cloud-google-images',
