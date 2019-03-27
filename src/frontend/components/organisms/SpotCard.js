@@ -18,6 +18,7 @@ import I18n from '../../utils/I18n';
 import fetchSpotReviews from '../../actions/fetchSpotReviews';
 import { ReviewsApi } from 'qoodish_api';
 import initializeApiClient from '../../utils/initializeApiClient';
+import GoogleMapsLink from '../molecules/GoogleMapsLink';
 
 const styles = {
   cardMediaLarge: {
@@ -126,11 +127,7 @@ const SpotCard = props => {
         <Typography variant="subtitle1" color="textSecondary">
           {currentSpot.formatted_address}
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary">
-          <a href={currentSpot.url} target="_blank">
-            {I18n.t('open in google maps')}
-          </a>
-        </Typography>
+        <GoogleMapsLink currentSpot={currentSpot} />
         <OpeningHours openingHours={currentSpot.opening_hours} />
         <div style={styles.reviewTilesContainer}>
           <ReviewTiles

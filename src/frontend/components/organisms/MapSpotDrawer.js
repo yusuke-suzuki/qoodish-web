@@ -3,29 +3,23 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import InfoIcon from '@material-ui/icons/Info';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
-import PlaceIcon from '@material-ui/icons/Place';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
 import Link from '../molecules/Link';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import Paper from '@material-ui/core/Paper';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
-import requestMapCenter from '../../actions/requestMapCenter';
-import switchMap from '../../actions/switchMap';
 import I18n from '../../utils/I18n';
 
 const styles = {
@@ -81,52 +75,9 @@ const styles = {
     height: '100%',
     textAlign: 'center'
   },
-  bottomAction: {
-    width: '33.3333333333%',
-    minWidth: 'auto',
-    paddingTop: 8
-  },
   tileBar: {
     height: 50
-  },
-  bottomNavLarge: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%'
   }
-};
-
-const SpotBottomNavigation = props => {
-  const dispatch = useDispatch();
-  const currentSpot = props.currentSpot;
-
-  const handleLocationButtonClick = useCallback(() => {
-    dispatch(requestMapCenter(currentSpot.lat, currentSpot.lng));
-    dispatch(switchMap());
-  });
-
-  return (
-    <Paper elevation={2}>
-      <BottomNavigation showLabels>
-        <BottomNavigationAction
-          label={I18n.t('location')}
-          icon={<PlaceIcon />}
-          onClick={handleLocationButtonClick}
-          style={styles.bottomAction}
-        />
-        <BottomNavigationAction
-          label={I18n.t('detail')}
-          icon={<InfoIcon />}
-          component={Link}
-          to={{
-            pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
-            state: { modal: true, spot: currentSpot }
-          }}
-          style={styles.bottomAction}
-        />
-      </BottomNavigation>
-    </Paper>
-  );
 };
 
 const SpotCardHeader = props => {
@@ -134,12 +85,27 @@ const SpotCardHeader = props => {
 
   return (
     <List disablePadding>
-      <ListItem disableGutters style={styles.listItem}>
+      <ListItem
+        disableGutters
+        style={styles.listItem}
+        button
+        component={Link}
+        to={{
+          pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+          state: { modal: true, spot: currentSpot }
+        }}
+      >
+        <ListItemAvatar>
+          <Avatar
+            alt={currentSpot && currentSpot.name}
+            src={currentSpot ? currentSpot.image_url : ''}
+          />
+        </ListItemAvatar>
         <ListItemText
           disableTypography
           primary={
             <Typography variant="h6" noWrap>
-              {currentSpot && props.currentSpot.name}
+              {currentSpot && currentSpot.name}
             </Typography>
           }
           secondary={
@@ -180,6 +146,9 @@ const SpotCardContent = () => {
           <DragHandleIcon color="disabled" />
         </div>
         <SpotCardHeader currentSpot={currentSpot} />
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
+          {`${spotReviews.length} ${I18n.t('reviews count')}`}
+        </Typography>
         <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
           {currentMap.postable && (
             <GridListTile key="add-review" onClick={handleCreateReviewClick}>
@@ -224,7 +193,6 @@ const SpotCardContent = () => {
           ))}
         </GridList>
       </CardContent>
-      <SpotBottomNavigation currentSpot={currentSpot} />
     </div>
   );
 };
@@ -238,6 +206,7 @@ const MapSpotDrawer = () => {
       currentSpot: state.spotCard.currentSpot,
       reviewDialogOpen: state.reviews.reviewDialogOpen,
       spotDialogOpen: state.spotDetail.spotDialogOpen,
+      mapSummaryOpen: state.mapDetail.mapSummaryOpen,
       spotReviews: state.spotCard.spotReviews
     }),
     []
@@ -247,6 +216,7 @@ const MapSpotDrawer = () => {
     currentSpot,
     reviewDialogOpen,
     spotDialogOpen,
+    mapSummaryOpen,
     spotReviews
   } = useMappedState(mapState);
 
@@ -267,7 +237,7 @@ const MapSpotDrawer = () => {
     [spotReviews]
   );
 
-  const dialogOpen = reviewDialogOpen || spotDialogOpen;
+  const dialogOpen = reviewDialogOpen || spotDialogOpen || mapSummaryOpen;
 
   return (
     <SwipeableDrawer

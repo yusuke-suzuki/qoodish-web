@@ -12,6 +12,7 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import I18n from '../../utils/I18n';
 import Link from './Link';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
+import GoogleMapsLink from './GoogleMapsLink';
 
 const styles = {
   root: {
@@ -19,9 +20,6 @@ const styles = {
   },
   cardContent: {
     paddingBottom: 16
-  },
-  gmapLink: {
-    textDecoration: 'none'
   },
   reviewerAvatar: {
     marginBottom: '0.35em',
@@ -108,15 +106,7 @@ const SpotInfoWindow = () => {
             />
           </ButtonBase>
         ))}
-        <Typography variant="subtitle2" color="textSecondary">
-          <a
-            href={currentSpot && currentSpot.url}
-            target="_blank"
-            style={styles.gmapLink}
-          >
-            {I18n.t('open in google maps')}
-          </a>
-        </Typography>
+        <GoogleMapsLink currentSpot={currentSpot} />
       </CardContent>
       {currentMap.postable && (
         <CardActions style={styles.cardActions}>
