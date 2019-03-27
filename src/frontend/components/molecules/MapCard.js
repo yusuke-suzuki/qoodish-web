@@ -14,6 +14,9 @@ import FollowMapButton from '../molecules/FollowMapButton';
 import I18n from '../../utils/I18n';
 
 const styles = {
+  card: {
+    width: '100%'
+  },
   mapImage: {
     width: '100%',
     height: 120,
@@ -49,7 +52,7 @@ const MapCard = props => {
       title={map.name}
       style={styles.buttonBase}
     >
-      <Card elevation={0}>
+      <Card style={styles.card} elevation={0}>
         <CardMedia style={styles.cardMedia}>
           <img
             src={large ? map.image_url : map.thumbnail_url}

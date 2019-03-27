@@ -151,7 +151,7 @@ const commentHtml = review => {
 
 const ReviewCard = props => {
   return (
-    <Card style={styles.card} elevation={0}>
+    <Card elevation={0}>
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
       {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}

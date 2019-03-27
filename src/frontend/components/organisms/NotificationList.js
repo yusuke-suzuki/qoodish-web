@@ -97,6 +97,7 @@ const NotificationList = props => {
       to={notification.click_action}
       item={props.item}
       style={props.menu ? styles.notificationMenuItem : {}}
+      selected={!notification.read}
     >
       <Avatar
         src={notification.notifier.profile_image_url}

@@ -131,7 +131,7 @@ const MapSummaryDrawer = props => {
   return (
     <Drawer
       variant={large ? 'persistent' : 'temporary'}
-      anchor={large ? 'left' : 'bottom'}
+      anchor={large ? 'left' : 'right'}
       open={large ? true : mapSummaryOpen}
       PaperProps={{
         style: large ? styles.drawerPaperLarge : styles.drawerPaperSmall
