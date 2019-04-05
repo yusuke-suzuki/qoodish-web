@@ -4,10 +4,10 @@ const defaultMetadata = {
   title: 'Qoodish',
   description:
     'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。',
-  image: process.env.SUBSTITUTE_URL,
+  image: process.env.OGP_IMAGE_URL,
   type: 'website',
   url: process.env.ENDPOINT,
-  twitterCard: 'summary'
+  twitterCard: 'summary_large_image'
 };
 
 const generateMetadata = async req => {
@@ -16,11 +16,11 @@ const generateMetadata = async req => {
 
   if (resourceMetadata) {
     Object.assign(metadata, {
-      title: `${metadata.title} | Qoodish`,
-      description: metadata.description,
-      image: metadata.image_url,
+      title: `${resourceMetadata.title} | Qoodish`,
+      description: resourceMetadata.description,
+      image: resourceMetadata.image_url,
       type: 'article',
-      url: req.originalUrl,
+      url: `${process.env.ENDPOINT}${req.originalUrl}`,
       twitterCard: 'summary_large_image'
     });
   }
@@ -32,11 +32,11 @@ const generateMetadata = async req => {
       description: metadata.description,
       type: metadata.type,
       url: metadata.url,
-      image: metadata.imageUrl
+      image: metadata.image
     },
     twitter: {
       title: metadata.title,
-      image: metadata.imageUrl,
+      image: metadata.image,
       description: metadata.description,
       card: metadata.twitterCard
     }

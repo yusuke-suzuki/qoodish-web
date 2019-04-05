@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const fetchMetadata = async req => {
   let url;
   if (req.params.reviewId) {
@@ -5,7 +7,7 @@ const fetchMetadata = async req => {
   } else if (req.params.mapId) {
     url = `${process.env.API_ENDPOINT}/maps/${req.params.mapId}/metadata`;
   } else if (req.params.placeId) {
-    url = `${process.env.API_ENDPOINT}/spots/${placeId}/metadata`;
+    url = `${process.env.API_ENDPOINT}/spots/${req.params.placeId}/metadata`;
   } else {
     return;
   }
