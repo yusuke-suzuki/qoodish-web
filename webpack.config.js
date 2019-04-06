@@ -21,7 +21,7 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: 'src/views/index.html',
     endpoint: process.env.ENDPOINT,
-    icon36: process.env.ICON_36,
+    icon512: process.env.ICON_512,
     ogpImage: process.env.OGP_IMAGE_URL,
     fbAppId: process.env.FB_APP_ID,
     gaTrackingId: process.env.GA_TRACKING_ID

@@ -26,6 +26,7 @@ const generateMetadata = async req => {
   }
 
   return {
+    icon: process.env.ICON_512,
     description: metadata.description,
     og: {
       title: metadata.title,
