@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -24,6 +25,7 @@ const Transition = props => {
 
 const SignInRequiredDialog = () => {
   const dispatch = useDispatch();
+  const large = useMediaQuery('(min-width: 600px)');
   const dialogOpen = useMappedState(
     useCallback(state => state.shared.signInRequiredDialogOpen, [])
   );
@@ -36,6 +38,7 @@ const SignInRequiredDialog = () => {
       open={dialogOpen}
       onClose={onClose}
       fullWidth
+      fullScreen={!large}
       TransitionComponent={Transition}
     >
       <DialogTitle>{I18n.t('this action requires sign in')}</DialogTitle>
