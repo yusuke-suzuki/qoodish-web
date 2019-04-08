@@ -9,7 +9,6 @@ import locationChange from '../actions/locationChange';
 import getHistory from '../actions/getHistory';
 import openReviewDialog from '../actions/openReviewDialog';
 import openSpotDialog from '../actions/openSpotDialog';
-import selectSpot from '../actions/selectSpot';
 import requestMapCenter from '../actions/requestMapCenter';
 
 const Login = React.lazy(() =>
@@ -131,7 +130,6 @@ const Routes = () => {
       case OPEN_REVIEW_DIALOG:
         const review = currentLocation.state.review;
         dispatch(openReviewDialog(review));
-        dispatch(selectSpot(review.spot));
         dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
         break;
       case OPEN_SPOT_DIALOG:

@@ -42,7 +42,6 @@ const SpotHorizontalList = React.lazy(() =>
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
 import initializeApiClient from '../../utils/initializeApiClient';
-import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 
 const styles = {
   containerLarge: {},
@@ -256,30 +255,6 @@ const MapDetail = props => {
       };
     },
     [props.params.primaryId]
-  );
-
-  const refreshSpotReviews = useCallback(async () => {
-    await initializeApiClient();
-    const apiInstance = new ReviewsApi();
-
-    apiInstance.mapsMapIdReviewsGet(
-      currentMap.id,
-      { placeId: currentSpot.place_id },
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchMapSpotReviews(response.body));
-        }
-      }
-    );
-  });
-
-  useEffect(
-    () => {
-      if (currentMap && currentSpot) {
-        refreshSpotReviews();
-      }
-    },
-    [currentMap, currentSpot]
   );
 
   return (
