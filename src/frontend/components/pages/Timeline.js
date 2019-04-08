@@ -21,6 +21,7 @@ import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from 'qoodish_api';
+import Link from '../molecules/Link';
 
 const styles = {
   formCard: {
@@ -46,6 +47,9 @@ const styles = {
     marginTop: 16
   },
   cardContainerLarge: {
+    marginTop: 20
+  },
+  trendingReviews: {
     marginTop: 20
   }
 };
@@ -164,48 +168,7 @@ const LoadMoreButton = React.memo(() => {
   }
 });
 
-const ReviewsContainer = React.memo(() => {
-  const large = useMediaQuery('(min-width: 600px)');
-
-  const mapState = useCallback(
-    state => ({
-      currentReviews: state.timeline.currentReviews
-    }),
-    []
-  );
-
-  const { currentReviews } = useMappedState(mapState);
-
-  if (currentReviews.length > 0) {
-    return (
-      <div>
-        {currentReviews.map(review => (
-          <div
-            key={review.id}
-            style={
-              large ? styles.cardContainerLarge : styles.cardContainerSmall
-            }
-          >
-            <ReviewCard currentReview={review} />
-          </div>
-        ))}
-        <LoadMoreButton />
-      </div>
-    );
-  } else {
-    return (
-      <NoContents
-        contentType="review"
-        action="create-review"
-        secondaryAction="discover-reviews"
-        message={I18n.t('reports will see here')}
-      />
-    );
-  }
-});
-
-const Timeline = () => {
-  const dispatch = useDispatch();
+const ReviewsContainer = React.memo(props => {
   const large = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
@@ -217,7 +180,55 @@ const Timeline = () => {
 
   const { currentUser } = useMappedState(mapState);
 
-  const [loading, setLoading] = useState(false);
+  const { currentReviews } = props;
+
+  return (
+    <div>
+      {currentUser.isAnonymous && (
+        <Typography
+          variant="h6"
+          color="textSecondary"
+          style={styles.trendingReviews}
+        >
+          {I18n.t('trending reviews')}
+        </Typography>
+      )}
+      {currentReviews.map(review => (
+        <div
+          key={review.id}
+          style={large ? styles.cardContainerLarge : styles.cardContainerSmall}
+        >
+          <ReviewCard currentReview={review} />
+        </div>
+      ))}
+      {currentUser.isAnonymous ? (
+        <div style={styles.buttonContainer}>
+          <Button component={Link} to="/discover" color="primary">
+            {I18n.t('discover more')}
+          </Button>
+        </div>
+      ) : (
+        <LoadMoreButton />
+      )}
+    </div>
+  );
+});
+
+const Timeline = () => {
+  const dispatch = useDispatch();
+  const large = useMediaQuery('(min-width: 600px)');
+
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      currentReviews: state.timeline.currentReviews
+    }),
+    []
+  );
+
+  const { currentUser, currentReviews } = useMappedState(mapState);
+
+  const [loading, setLoading] = useState(true);
 
   const refreshReviews = useCallback(async () => {
     setLoading(true);
@@ -239,8 +250,7 @@ const Timeline = () => {
 
   useEffect(
     () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        setLoading(false);
+      if (!currentUser || !currentUser.uid) {
         return;
       }
 
@@ -262,8 +272,15 @@ const Timeline = () => {
           <div style={styles.progress}>
             <CircularProgress />
           </div>
+        ) : currentReviews.length > 0 ? (
+          <ReviewsContainer currentReviews={currentReviews} />
         ) : (
-          <ReviewsContainer />
+          <NoContents
+            contentType="review"
+            action="create-review"
+            secondaryAction="discover-reviews"
+            message={I18n.t('reports will see here')}
+          />
         )}
       </div>
       {large && <CreateResourceButton />}

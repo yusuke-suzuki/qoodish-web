@@ -66,7 +66,6 @@ const ProfileMyMaps = props => {
   useEffect(
     () => {
       if (!currentUser || !currentUser.uid) {
-        setLoading(false);
         return;
       }
       initMaps();

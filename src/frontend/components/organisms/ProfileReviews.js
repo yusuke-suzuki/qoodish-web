@@ -80,7 +80,6 @@ const ProfileReviews = props => {
   useEffect(
     () => {
       if (!currentUser || !currentUser.uid) {
-        setLoading(false);
         return;
       }
       initReviews();
