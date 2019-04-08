@@ -3,6 +3,7 @@ import React from 'react';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
 
 const styles = {
   overlayButton: {
@@ -17,14 +18,18 @@ const SpotMarker = React.memo(props => {
     return (
       <Tooltip title={spot.name}>
         <Fab style={styles.overlayButton} onClick={props.onClick}>
-          <Avatar src={spot.image_url} alt={spot.name} />
+          <Badge badgeContent={spot.reviews.length} color="primary">
+            <Avatar src={spot.image_url} alt={spot.name} />
+          </Badge>
         </Fab>
       </Tooltip>
     );
   } else {
     return (
       <Fab style={styles.overlayButton} onClick={props.onClick}>
-        <Avatar src={spot.image_url} alt={spot.name} />
+        <Badge badgeContent={spot.reviews.length} color="primary">
+          <Avatar src={spot.image_url} alt={spot.name} />
+        </Badge>
       </Fab>
     );
   }

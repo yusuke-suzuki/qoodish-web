@@ -4,7 +4,6 @@ import {
   CLOSE_SPOT_CARD,
   CLEAR_MAP_STATE,
   CLEAR_SPOT_STATE,
-  FETCH_MAP_SPOT_REVIEWS,
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW
@@ -19,8 +18,13 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case SELECT_SPOT:
+      let reviews = [];
+      if (action.payload.spot.reviews) {
+        reviews = action.payload.spot.reviews;
+      }
       return Object.assign({}, state, {
-        currentSpot: action.payload.spot
+        currentSpot: action.payload.spot,
+        spotReviews: [...reviews]
       });
     case OPEN_SPOT_CARD:
       return Object.assign({}, state, {
@@ -29,10 +33,6 @@ const reducer = (state = initialState, action) => {
     case CLOSE_SPOT_CARD:
       return Object.assign({}, state, {
         spotCardOpen: false
-      });
-    case FETCH_MAP_SPOT_REVIEWS:
-      return Object.assign({}, state, {
-        spotReviews: [...action.payload.reviews]
       });
     case CREATE_REVIEW:
       if (
