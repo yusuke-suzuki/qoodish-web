@@ -56,13 +56,10 @@ const App = () => {
         } else {
           initProfile(user);
         }
+      } else {
+        await firebase.auth().signInAnonymously();
       }
     });
-
-    const firebaseUser = firebase.auth().currentUser;
-    if (!firebaseUser) {
-      await firebase.auth().signInAnonymously();
-    }
   });
 
   const signInAnonymously = useCallback(firebaseUser => {
