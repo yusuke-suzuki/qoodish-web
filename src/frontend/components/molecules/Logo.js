@@ -16,11 +16,11 @@ const styles = {
 };
 
 const Logo = props => {
-  const mdUp = useMediaQuery('(min-width: 960px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
 
   return (
     <Typography
-      variant={mdUp ? 'h4' : 'h5'}
+      variant={smUp ? 'h4' : 'h5'}
       color={props.color ? props.color : 'default'}
       style={styles.logo}
     >

@@ -6,13 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import IconButton from '@material-ui/core/IconButton';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import AddIcon from '@material-ui/icons/Add';
-import Link from '../molecules/Link';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -21,6 +21,7 @@ import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import I18n from '../../utils/I18n';
+import Link from '../molecules/Link';
 
 const styles = {
   drawerPaperLarge: {
@@ -77,6 +78,9 @@ const styles = {
   },
   tileBar: {
     height: 50
+  },
+  infoButton: {
+    padding: 0
   }
 };
 
@@ -85,22 +89,7 @@ const SpotCardHeader = props => {
 
   return (
     <List disablePadding>
-      <ListItem
-        disableGutters
-        style={styles.listItem}
-        button
-        component={Link}
-        to={{
-          pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
-          state: { modal: true, spot: currentSpot }
-        }}
-      >
-        <ListItemAvatar>
-          <Avatar
-            alt={currentSpot && currentSpot.name}
-            src={currentSpot ? currentSpot.image_url : ''}
-          />
-        </ListItemAvatar>
+      <ListItem disableGutters style={styles.listItem}>
         <ListItemText
           disableTypography
           primary={
@@ -114,6 +103,18 @@ const SpotCardHeader = props => {
             </Typography>
           }
         />
+        <ListItemSecondaryAction>
+          <IconButton
+            component={Link}
+            to={{
+              pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+              state: { modal: true, spot: currentSpot }
+            }}
+            style={styles.infoButton}
+          >
+            <InfoOutlinedIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
     </List>
   );
@@ -146,9 +147,6 @@ const SpotCardContent = () => {
           <DragHandleIcon color="disabled" />
         </div>
         <SpotCardHeader currentSpot={currentSpot} />
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {`${spotReviews.length} ${I18n.t('reviews count')}`}
-        </Typography>
         <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
           {currentMap.postable && (
             <GridListTile key="add-review" onClick={handleCreateReviewClick}>

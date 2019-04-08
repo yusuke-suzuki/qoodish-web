@@ -1,73 +1,47 @@
-const QoodishClient = require('./QoodishClient');
+const fetchMetadata = require(__dirname + '/fetchMetadata');
+
+const defaultMetadata = {
+  title: 'Qoodish',
+  description:
+    'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。',
+  image: process.env.OGP_IMAGE_URL,
+  type: 'website',
+  url: process.env.ENDPOINT,
+  twitterCard: 'summary_large_image'
+};
 
 const generateMetadata = async req => {
-  let title = 'Qoodish';
-  let description =
-    'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。';
-  let pageUrl = process.env.ENDPOINT;
-  let imageUrl = process.env.SUBSTITUTE_URL;
-  let twitterCard = 'summary';
+  const metadata = Object.assign({}, defaultMetadata);
+  const resourceMetadata = await fetchMetadata(req);
 
-  const client = new QoodishClient();
-  let response;
-  let json;
-  if (req.params.reviewId) {
-    response = await client.fetchReviewMetadata(
-      req.params.reviewId,
-      req.headers['accept-language']
-    );
-    if (response.ok) {
-      json = await response.json();
-      title = `${json.title} | Qoodish`;
-      description = json.description;
-      imageUrl = json.image_url;
-      pageUrl = req.originalUrl;
-      twitterCard = 'summary_large_image';
-    }
-  } else if (req.params.mapId) {
-    response = await client.fetchMapMetadata(
-      req.params.mapId,
-      req.headers['accept-language']
-    );
-    if (response.ok) {
-      json = await response.json();
-      title = `${json.title} | Qoodish`;
-      description = json.description;
-      imageUrl = json.image_url;
-      pageUrl = req.originalUrl;
-      twitterCard = 'summary_large_image';
-    }
-  } else if (req.params.placeId) {
-    response = await client.fetchSpotMetadata(
-      req.params.placeId,
-      req.headers['accept-language']
-    );
-    if (response.ok) {
-      json = await response.json();
-      title = `${json.title} | Qoodish`;
-      description = json.description;
-      imageUrl = json.image_url;
-      pageUrl = req.originalUrl;
-      twitterCard = 'summary_large_image';
-    }
+  if (resourceMetadata) {
+    Object.assign(metadata, {
+      title: `${resourceMetadata.title} | Qoodish`,
+      description: resourceMetadata.description,
+      image: resourceMetadata.image_url,
+      type: 'article',
+      url: `${process.env.ENDPOINT}${req.originalUrl}`,
+      twitterCard: 'summary_large_image'
+    });
   }
 
-  const metadata = {
-    description: description,
+  return {
+    icon: process.env.ICON_512,
+    description: metadata.description,
     og: {
-      title: title,
-      description: description,
-      url: pageUrl,
-      image: imageUrl
+      title: metadata.title,
+      description: metadata.description,
+      type: metadata.type,
+      url: metadata.url,
+      image: metadata.image
     },
     twitter: {
-      title: title,
-      image: imageUrl,
-      description: description,
-      card: twitterCard
+      title: metadata.title,
+      image: metadata.image,
+      description: metadata.description,
+      card: metadata.twitterCard
     }
   };
-  return metadata;
 };
 
 module.exports = generateMetadata;

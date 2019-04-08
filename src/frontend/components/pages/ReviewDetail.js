@@ -54,7 +54,7 @@ const ReviewHelmet = props => {
         { name: 'twitter:description', content: review.comment },
         {
           name: 'twitter:image',
-          content: review.image ? review.image.url : process.env.SUBSTITUTE_URL
+          content: review.image ? review.image.url : process.env.OGP_IMAGE_URL
         },
         {
           property: 'og:title',
@@ -67,7 +67,7 @@ const ReviewHelmet = props => {
         },
         {
           property: 'og:image',
-          content: review.image ? review.image.url : process.env.SUBSTITUTE_URL
+          content: review.image ? review.image.url : process.env.OGP_IMAGE_URL
         },
         {
           property: 'og:description',

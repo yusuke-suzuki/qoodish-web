@@ -21,8 +21,8 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: 'src/views/index.html',
     endpoint: process.env.ENDPOINT,
-    icon36: process.env.ICON_36,
     icon512: process.env.ICON_512,
+    ogpImage: process.env.OGP_IMAGE_URL,
     fbAppId: process.env.FB_APP_ID,
     gaTrackingId: process.env.GA_TRACKING_ID
   }),
@@ -31,6 +31,7 @@ const plugins = [
     'API_ENDPOINT',
     'npm_package_version',
     'SUBSTITUTE_URL',
+    'OGP_IMAGE_URL',
     'FIREBASE_PROJECT_ID',
     'FIREBASE_API_KEY',
     'FIREBASE_AUTH_DOMAIN',
