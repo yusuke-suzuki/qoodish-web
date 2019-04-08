@@ -3,13 +3,13 @@ import React, { useEffect, useCallback, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import initializeApiClient from '../../utils/initializeApiClient';
 import { MapsApi } from 'qoodish_api';
 import I18n from '../../utils/I18n';
 
 import Link from '../molecules/Link';
 import MapCard from '../molecules/MapCard';
 import SkeltonMapCard from '../molecules/SkeltonMapCard';
+import { useMappedState } from 'redux-react-hook';
 
 const styles = {
   titleContainer: {
@@ -30,9 +30,17 @@ const RecommendMaps = () => {
   const [maps, setMaps] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+
+  const { currentUser } = useMappedState(mapState);
+
   const refreshMaps = useCallback(async () => {
     setLoading(true);
-    await initializeApiClient();
     const apiInstance = new MapsApi();
 
     apiInstance.mapsGet({ recommend: true }, (error, data, response) => {
@@ -43,9 +51,15 @@ const RecommendMaps = () => {
     });
   });
 
-  useEffect(() => {
-    refreshMaps();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+      refreshMaps();
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>

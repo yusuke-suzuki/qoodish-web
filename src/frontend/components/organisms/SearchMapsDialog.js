@@ -20,7 +20,6 @@ import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
 import I18n from '../../utils/I18n';
 
 import { MapsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   toolbar: {
@@ -64,7 +63,6 @@ const SearchMapsDialog = () => {
       return;
     }
 
-    await initializeApiClient();
     setLoading(true);
 
     const apiInstance = new MapsApi();

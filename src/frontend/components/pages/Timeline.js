@@ -21,7 +21,6 @@ import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   formCard: {
@@ -126,7 +125,6 @@ const LoadMoreButton = React.memo(() => {
   const loadMoreReviews = useCallback(async () => {
     setLoading(true);
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     const opts = {
@@ -222,13 +220,8 @@ const Timeline = () => {
   const [loading, setLoading] = useState(false);
 
   const refreshReviews = useCallback(async () => {
-    if (!currentUser || currentUser.isAnonymous) {
-      setLoading(false);
-      return;
-    }
     setLoading(true);
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.reviewsGet({}, (error, data, response) => {
@@ -246,7 +239,8 @@ const Timeline = () => {
 
   useEffect(
     () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      if (!currentUser || !currentUser.uid || !currentUser.isAnonymous) {
+        setLoading(false);
         return;
       }
 

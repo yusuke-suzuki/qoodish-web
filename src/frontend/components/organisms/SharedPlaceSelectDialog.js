@@ -20,7 +20,6 @@ import I18n from '../../utils/I18n';
 
 import searchPlaces from '../../actions/searchPlaces';
 import { PlacesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
@@ -66,7 +65,6 @@ const SharedPlaceSelectDialog = props => {
       return;
     }
     setLoading(true);
-    await initializeApiClient();
 
     const apiInstance = new PlacesApi();
     const opts = {

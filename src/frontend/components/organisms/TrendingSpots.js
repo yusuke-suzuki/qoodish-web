@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import { useMappedState } from 'redux-react-hook';
 import Link from '../molecules/Link';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -17,7 +18,6 @@ import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
 import { SpotsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   progress: {
@@ -54,9 +54,17 @@ const TrendingSpots = () => {
   const [loading, setLoading] = useState(true);
   const [spots, setSpots] = useState([]);
 
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+
+  const { currentUser } = useMappedState(mapState);
+
   const initTrendingSpots = useCallback(async () => {
     setLoading(true);
-    await initializeApiClient();
     const apiInstance = new SpotsApi();
     const opts = {
       popular: true
@@ -69,9 +77,16 @@ const TrendingSpots = () => {
     });
   });
 
-  useEffect(() => {
-    initTrendingSpots();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        setLoading(false);
+        return;
+      }
+      initTrendingSpots();
+    },
+    [currentUser.uid]
+  );
 
   return loading ? (
     <div style={styles.progress}>

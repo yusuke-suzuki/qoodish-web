@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { MapsApi } from 'qoodish_api';
+import { useMappedState } from 'redux-react-hook';
 
 const styles = {
   gridList: {
@@ -34,9 +34,15 @@ const PickUpMap = () => {
   const large = useMediaQuery('(min-width: 600px)');
   const [map, setMap] = useState(undefined);
 
-  const initPickUpMap = useCallback(async () => {
-    await initializeApiClient();
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+  const { currentUser } = useMappedState(mapState);
 
+  const initPickUpMap = useCallback(async () => {
     const apiInstance = new MapsApi();
 
     apiInstance.mapsMapIdGet(
@@ -49,9 +55,15 @@ const PickUpMap = () => {
     );
   });
 
-  useEffect(() => {
-    initPickUpMap();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+      initPickUpMap();
+    },
+    [currentUser.uid]
+  );
 
   return (
     <GridList cols={1} style={styles.gridList} spacing={0}>

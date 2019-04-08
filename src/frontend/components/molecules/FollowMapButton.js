@@ -12,7 +12,6 @@ import fetchCollaborators from '../../actions/fetchCollaborators';
 import joinMap from '../../actions/joinMap';
 import openToast from '../../actions/openToast';
 import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   skelton: {
@@ -37,7 +36,6 @@ const RoleButton = props => {
       return;
     }
     dispatch(requestStart());
-    await initializeApiClient();
     const apiInstance = new FollowsApi();
 
     apiInstance.mapsMapIdFollowPost(map.id, {}, (error, data, response) => {

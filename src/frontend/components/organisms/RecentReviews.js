@@ -19,7 +19,6 @@ import moment from 'moment';
 import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { ReviewsApi } from 'qoodish_api';
 
 const styles = {
@@ -94,18 +93,18 @@ const RecentReviews = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       recentReviews: state.discover.recentReviews
     }),
     []
   );
-  const { recentReviews } = useMappedState(mapState);
+  const { currentUser, recentReviews } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
   const initRecentReviews = useCallback(async () => {
     setLoading(true);
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     const opts = {
@@ -124,9 +123,15 @@ const RecentReviews = () => {
     });
   });
 
-  useEffect(() => {
-    initRecentReviews();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+      initRecentReviews();
+    },
+    [currentUser.uid]
+  );
 
   if (!loading && recentReviews.length < 1) {
     return (

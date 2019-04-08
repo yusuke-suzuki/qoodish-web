@@ -8,7 +8,6 @@ import searchPlaces from '../../actions/searchPlaces';
 import fetchCurrentPosition from '../../utils/fetchCurrentPosition';
 import getCurrentPosition from '../../actions/getCurrentPosition';
 import { PlacesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const PlaceSelectDialog = () => {
   const dispatch = useDispatch();
@@ -30,8 +29,6 @@ const PlaceSelectDialog = () => {
     dispatch(
       getCurrentPosition(position.coords.latitude, position.coords.longitude)
     );
-
-    await initializeApiClient();
 
     const apiInstance = new PlacesApi();
     const opts = {

@@ -13,7 +13,6 @@ import openToast from '../../actions/openToast';
 import fetchSpot from '../../actions/fetchSpot';
 import clearSpotState from '../../actions/clearSpotState';
 import { SpotsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   progress: {
@@ -88,17 +87,17 @@ const SpotDetail = props => {
 
   const mapState = useCallback(
     state => ({
-      currentSpot: state.spotDetail.currentSpot
+      currentSpot: state.spotDetail.currentSpot,
+      currentUser: state.app.currentUser
     }),
     []
   );
-  const { currentSpot } = useMappedState(mapState);
+  const { currentSpot, currentUser } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
   const initSpot = useCallback(async () => {
     setLoading(true);
-    await initializeApiClient();
     const apiInstance = new SpotsApi();
 
     apiInstance.spotsPlaceIdGet(
@@ -127,6 +126,23 @@ const SpotDetail = props => {
       dispatch(clearSpotState());
     };
   }, []);
+
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+
+      if (!currentSpot) {
+        initSpot();
+      }
+
+      return () => {
+        dispatch(clearSpotState());
+      };
+    },
+    [currentUser.uid]
+  );
 
   useEffect(
     () => {

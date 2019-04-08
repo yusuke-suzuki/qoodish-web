@@ -22,7 +22,6 @@ import deleteFromStorage from '../../utils/deleteFromStorage';
 import downloadImage from '../../utils/downloadImage';
 
 import { MapsApi, NewReview, ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const CopyReviewDialog = () => {
   const mapState = useCallback(
@@ -41,8 +40,6 @@ const CopyReviewDialog = () => {
   });
 
   const handleOnEnter = useCallback(async () => {
-    await initializeApiClient();
-
     const apiInstance = new MapsApi();
     const opts = {
       postable: true
@@ -71,8 +68,6 @@ const CopyReviewDialog = () => {
       params.image_url = uploadResponse.imageUrl;
       fileName = uploadResponse.fileName;
     }
-
-    await initializeApiClient();
 
     const apiInstance = new ReviewsApi();
     const newReview = NewReview.constructFromObject(params);

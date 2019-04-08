@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import moment from 'moment';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,7 +15,6 @@ import I18n from '../../utils/I18n';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import { NotificationsApi, InlineObject1 } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   listItemText: {
@@ -60,13 +59,21 @@ const NotificationText = props => {
 const NotificationList = props => {
   const dispatch = useDispatch();
 
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+
+  const { currentUser } = useMappedState(mapState);
+
   const handleReadNotification = useCallback(async () => {
     await sleep(5000);
     let unreadNotifications = props.notifications.filter(notification => {
       return notification.read === false;
     });
     unreadNotifications.forEach(async notification => {
-      await initializeApiClient();
       const apiInstance = new NotificationsApi();
       const opts = {
         inlineObject1: InlineObject1.constructFromObject({ read: true })
@@ -84,9 +91,15 @@ const NotificationList = props => {
     });
   });
 
-  useEffect(() => {
-    handleReadNotification();
-  });
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+        return;
+      }
+      handleReadNotification();
+    },
+    [currentUser.uid]
+  );
 
   return props.notifications.map(notification => (
     <Item

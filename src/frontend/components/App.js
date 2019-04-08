@@ -11,12 +11,10 @@ import updateLinkedProviders from '../actions/updateLinkedProviders';
 import fetchNotifications from '../actions/fetchNotifications';
 import signIn from '../actions/signIn';
 
-import getCurrentUser from '../utils/getCurrentUser';
 import getFirebase from '../utils/getFirebase';
 import getFirebaseAuth from '../utils/getFirebaseAuth';
-import initializeApiClient from '../utils/initializeApiClient';
 
-import { UsersApi, NotificationsApi } from 'qoodish_api';
+import { ApiClient, UsersApi, NotificationsApi } from 'qoodish_api';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,20 +44,28 @@ const App = () => {
   );
 
   const initUser = useCallback(async () => {
-    let firebaseUser = await getCurrentUser();
+    const firebase = await getFirebase();
+    await getFirebaseAuth();
 
-    if (firebaseUser && !firebaseUser.isAnonymous) {
-      initProfile(firebaseUser);
-      return;
-    }
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        await initializeApiClient(user);
 
+        if (user.isAnonymous) {
+          signInAnonymously(user);
+        } else {
+          initProfile(user);
+        }
+      }
+    });
+
+    const firebaseUser = firebase.auth().currentUser;
     if (!firebaseUser) {
-      const firebase = await getFirebase();
-      await getFirebaseAuth();
       await firebase.auth().signInAnonymously();
-      firebaseUser = firebase.auth().currentUser;
     }
+  });
 
+  const signInAnonymously = useCallback(firebaseUser => {
     const user = {
       uid: firebaseUser.uid,
       isAnonymous: true
@@ -68,7 +74,6 @@ const App = () => {
   });
 
   const initProfile = useCallback(async firebaseUser => {
-    await initializeApiClient();
     const apiInstance = new UsersApi();
 
     apiInstance.usersUserIdGet(firebaseUser.uid, (error, data, response) => {
@@ -80,8 +85,22 @@ const App = () => {
     });
   });
 
+  const initializeApiClient = useCallback(async firebaseUser => {
+    const defaultClient = ApiClient.instance;
+    defaultClient.basePath = process.env.API_ENDPOINT;
+
+    const token = await firebaseUser.getIdToken();
+
+    const firebaseAuth = defaultClient.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = token;
+    firebaseAuth.apiKeyPrefix = 'Bearer';
+  });
+
   const refreshProviders = useCallback(async () => {
-    const firebaseUser = await getCurrentUser();
+    const firebase = await getFirebase();
+    await getFirebaseAuth();
+    const firebaseUser = firebase.auth().currentUser;
+
     const linkedProviders = firebaseUser.providerData.map(provider => {
       return provider.providerId;
     });
@@ -89,7 +108,6 @@ const App = () => {
   });
 
   const refreshNotifications = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new NotificationsApi();
 
     apiInstance.notificationsGet((error, data, response) => {

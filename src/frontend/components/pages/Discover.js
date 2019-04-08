@@ -24,7 +24,6 @@ import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
 
 import { MapsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   container: {
@@ -99,18 +98,18 @@ const Discover = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       activeMaps: state.discover.activeMaps,
       recentMaps: state.discover.recentMaps
     }),
     []
   );
-  const { activeMaps, recentMaps } = useMappedState(mapState);
+  const { currentUser, activeMaps, recentMaps } = useMappedState(mapState);
 
   const [loadingActiveMaps, setLoadingActiveMaps] = useState(true);
   const [loadingRecentMaps, setLoadingRecentMaps] = useState(true);
 
   const initActiveMaps = useCallback(async () => {
-    await initializeApiClient();
     setLoadingActiveMaps(true);
 
     const apiInstance = new MapsApi();
@@ -131,7 +130,6 @@ const Discover = () => {
   });
 
   const initRecentMaps = useCallback(async () => {
-    await initializeApiClient();
     setLoadingRecentMaps(true);
 
     const apiInstance = new MapsApi();
@@ -151,15 +149,22 @@ const Discover = () => {
     });
   });
 
-  useEffect(() => {
-    initActiveMaps();
-    initRecentMaps();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
 
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/discover',
-      page_title: `${I18n.t('discover')} | Qoodish`
-    });
-  }, []);
+      initActiveMaps();
+      initRecentMaps();
+
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: '/discover',
+        page_title: `${I18n.t('discover')} | Qoodish`
+      });
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>

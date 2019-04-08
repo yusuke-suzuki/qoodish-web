@@ -18,7 +18,6 @@ import NoContents from '../molecules/NoContents';
 
 import I18n from '../../utils/I18n';
 import { LikesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   listItemText: {
@@ -87,19 +86,20 @@ const LikesList = props => {
 
   const initUserLikes = useCallback(async () => {
     if (
-      !currentUser ||
-      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+      location &&
+      location.pathname === '/profile' &&
+      currentUser.isAnonymous
     ) {
       setLoading(false);
       return;
     }
+    setLoading(true);
 
-    let userId =
-      location && location.pathname === '/profile'
-        ? currentUser.uid
-        : props.params.primaryId;
+    const userId =
+      props.params && props.params.primaryId
+        ? props.params.primaryId
+        : currentUser.uid;
 
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.usersUserIdLikesGet(userId, (error, data, response) => {

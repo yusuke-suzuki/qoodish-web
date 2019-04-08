@@ -22,7 +22,6 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 
 import moment from 'moment';
 import { LikesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import openLikesDialog from '../../actions/openLikesDialog';
 import fetchLikes from '../../actions/fetchLikes';
 
@@ -60,7 +59,6 @@ const LikeButton = React.memo(props => {
   const comment = props.comment;
 
   const likeComment = useCallback(async comment => {
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdCommentsCommentIdLikePost(
@@ -83,7 +81,6 @@ const LikeButton = React.memo(props => {
   });
 
   const unlikeComment = useCallback(async comment => {
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdCommentsCommentIdLikeDelete(
@@ -129,7 +126,6 @@ const Comments = React.memo(props => {
 
   const handleLikesClick = useCallback(async comment => {
     dispatch(openLikesDialog());
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdCommentsCommentIdLikesGet(

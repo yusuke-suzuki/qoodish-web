@@ -17,7 +17,6 @@ import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
 import fetchSpotReviews from '../../actions/fetchSpotReviews';
 import { ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 
 const styles = {
@@ -83,7 +82,6 @@ const SpotCard = props => {
   const { currentSpot, spotReviews } = useMappedState(mapState);
 
   const initSpotReviews = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.spotsPlaceIdReviewsGet(

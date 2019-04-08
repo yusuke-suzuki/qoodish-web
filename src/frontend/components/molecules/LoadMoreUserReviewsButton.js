@@ -9,7 +9,6 @@ import I18n from '../../utils/I18n';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   buttonLarge: {
@@ -52,7 +51,6 @@ const LoadMoreUserReviewsButton = props => {
         ? props.currentUser.uid
         : props.params.primaryId;
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
     const opts = {
       nextTimestamp: nextTimestamp

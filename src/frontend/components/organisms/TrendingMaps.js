@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import { useMappedState } from 'redux-react-hook';
 import Link from '../molecules/Link';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,7 +17,6 @@ import CardContent from '@material-ui/core/CardContent';
 import GradeIcon from '@material-ui/icons/Grade';
 
 import { MapsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 import I18n from '../../utils/I18n';
 
@@ -55,8 +55,16 @@ const TrendingMaps = () => {
   const [loading, setLoading] = useState(true);
   const [maps, setMaps] = useState([]);
 
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser
+    }),
+    []
+  );
+
+  const { currentUser } = useMappedState(mapState);
+
   const initPopularMaps = useCallback(async () => {
-    await initializeApiClient();
     setLoading(true);
 
     const apiInstance = new MapsApi();
@@ -75,9 +83,16 @@ const TrendingMaps = () => {
     });
   });
 
-  useEffect(() => {
-    initPopularMaps();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        setLoading(false);
+        return;
+      }
+      initPopularMaps();
+    },
+    [currentUser.uid]
+  );
 
   return loading ? (
     <div style={styles.progress}>

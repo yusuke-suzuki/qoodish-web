@@ -7,7 +7,6 @@ import editMap from '../../actions/editMap';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   likeButton: {
@@ -27,8 +26,6 @@ const MapLikeActions = props => {
       return;
     }
 
-    await initializeApiClient();
-
     const apiInstance = new LikesApi();
     apiInstance.mapsMapIdLikePost(props.target.id, (error, data, response) => {
       if (response.ok) {
@@ -46,8 +43,6 @@ const MapLikeActions = props => {
   });
 
   const handleUnlikeButtonClick = useCallback(async () => {
-    await initializeApiClient();
-
     const apiInstance = new LikesApi();
     apiInstance.mapsMapIdLikeDelete(
       props.target.id,

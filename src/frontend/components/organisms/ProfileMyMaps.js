@@ -10,7 +10,6 @@ import fetchMyMaps from '../../actions/fetchMyMaps';
 import I18n from '../../utils/I18n';
 
 import { UserMapsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   progress: {
@@ -25,22 +24,22 @@ const ProfileMyMaps = props => {
 
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       myMaps: state.profile.myMaps,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const currentUser = props.currentUser;
-
-  const { myMaps, location } = useMappedState(mapState);
+  const { currentUser, myMaps, location } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
   const initMaps = useCallback(async () => {
     if (
-      !currentUser ||
-      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+      location &&
+      location.pathname === '/profile' &&
+      currentUser.isAnonymous
     ) {
       setLoading(false);
       return;
@@ -51,8 +50,6 @@ const ProfileMyMaps = props => {
       props.params && props.params.primaryId
         ? props.params.primaryId
         : currentUser.uid;
-
-    await initializeApiClient();
 
     const apiInstance = new UserMapsApi();
 
@@ -66,9 +63,16 @@ const ProfileMyMaps = props => {
     });
   });
 
-  useEffect(() => {
-    initMaps();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        setLoading(false);
+        return;
+      }
+      initMaps();
+    },
+    [currentUser.uid]
+  );
 
   if (loading) {
     return (

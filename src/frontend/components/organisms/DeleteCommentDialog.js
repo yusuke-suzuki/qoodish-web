@@ -15,7 +15,6 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { CommentsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const DeleteCommentDialog = () => {
   const mapState = useCallback(
@@ -34,7 +33,6 @@ const DeleteCommentDialog = () => {
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    await initializeApiClient();
     const apiInstance = new CommentsApi();
 
     apiInstance.reviewsReviewIdCommentsCommentIdDelete(

@@ -18,7 +18,6 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { IssueContentsApi, InappropreateContent } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const IssueDialog = () => {
   const dispatch = useDispatch();
@@ -42,7 +41,6 @@ const IssueDialog = () => {
 
   const handleSendButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    await initializeApiClient();
     const apiInstance = new IssueContentsApi();
 
     const params = {

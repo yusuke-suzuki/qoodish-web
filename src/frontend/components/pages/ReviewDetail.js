@@ -12,7 +12,6 @@ import openToast from '../../actions/openToast';
 import selectReview from '../../actions/selectReview';
 import clearReviewState from '../../actions/clearReviewState';
 import { ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   progress: {
@@ -92,18 +91,19 @@ const ReviewCardContainer = props => {
 };
 
 const ReviewDetail = props => {
-  const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
   const mapState = useCallback(
-    state => ({ currentReview: state.reviewDetail.currentReview }),
+    state => ({
+      currentReview: state.reviewDetail.currentReview,
+      currentUser: state.app.currentUser
+    }),
     []
   );
-  const { currentReview } = useMappedState(mapState);
+  const { currentReview, currentUser } = useMappedState(mapState);
   const [loading, setLoading] = useState(true);
 
   const initReview = useCallback(async () => {
     setLoading(true);
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsReviewIdGet(
@@ -125,14 +125,22 @@ const ReviewDetail = props => {
     );
   });
 
-  useEffect(() => {
-    if (!currentReview) {
-      initReview();
-    }
-    return () => {
-      dispatch(clearReviewState());
-    };
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+
+      if (!currentReview) {
+        initReview();
+      }
+
+      return () => {
+        dispatch(clearReviewState());
+      };
+    },
+    [currentUser.uid]
+  );
 
   useEffect(
     () => {

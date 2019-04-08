@@ -16,7 +16,6 @@ const SpotMarker = React.lazy(() =>
 
 import OverlayView from '../molecules/OverlayView';
 import I18n from '../../utils/I18n';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { SpotsApi } from 'qoodish_api';
 import fetchSpots from '../../actions/fetchSpots';
 import Popover from '@material-ui/core/Popover';
@@ -76,7 +75,6 @@ const GMap = () => {
   } = useMappedState(mapState);
 
   const refreshSpots = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new SpotsApi();
 
     apiInstance.mapsMapIdSpotsGet(currentMap.id, (error, data, response) => {

@@ -17,7 +17,6 @@ import GroupIcon from '@material-ui/icons/Group';
 import ReviewTiles from './ReviewTiles';
 
 import requestMapCenter from '../../actions/requestMapCenter';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { LikesApi } from 'qoodish_api';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
@@ -61,16 +60,23 @@ const styles = {
   }
 };
 
-const MapLikes = React.memo(props => {
-  const { map } = props;
+const MapLikes = React.memo(() => {
   const [likes, setLikes] = useState([]);
   const dispatch = useDispatch();
 
+  const mapState = useCallback(
+    state => ({
+      currentUser: state.app.currentUser,
+      currentMap: state.mapSummary.currentMap
+    }),
+    []
+  );
+  const { currentUser, currentMap } = useMappedState(mapState);
+
   const refreshLikes = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
-    apiInstance.mapsMapIdLikesGet(map.id, (error, data, response) => {
+    apiInstance.mapsMapIdLikesGet(currentMap.id, (error, data, response) => {
       if (response.ok) {
         setLikes(response.body);
         dispatch(fetchLikes(response.body));
@@ -82,9 +88,17 @@ const MapLikes = React.memo(props => {
     dispatch(openLikesDialog());
   });
 
-  useEffect(() => {
-    refreshLikes();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
+      if (currentMap) {
+        refreshLikes();
+      }
+    },
+    [currentMap, currentUser.uid]
+  );
 
   return likes
     .slice(0, 9)
@@ -189,16 +203,18 @@ const MapTypes = React.memo(() => {
 });
 
 const MapSummaryCard = () => {
-  const map = useMappedState(
-    useCallback(state => state.mapSummary.currentMap, [])
+  const mapState = useCallback(
+    state => ({
+      currentMap: state.mapSummary.currentMap,
+      mapReviews: state.mapSummary.mapReviews
+    }),
+    []
   );
-  const mapReviews = useMappedState(
-    useCallback(state => state.mapSummary.mapReviews, [])
-  );
+  const { currentMap, mapReviews } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleBaseClick = useCallback(() => {
-    dispatch(requestMapCenter(map.base.lat, map.base.lng));
+    dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
   });
 
   return (
@@ -207,9 +223,9 @@ const MapSummaryCard = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('map name')}
         </Typography>
-        {map ? (
+        {currentMap ? (
           <Typography variant="h5" gutterBottom style={styles.text}>
-            {map.name}
+            {currentMap.name}
           </Typography>
         ) : (
           <Chip style={styles.skeltonTextPrimary} />
@@ -220,17 +236,17 @@ const MapSummaryCard = () => {
         </Typography>
         <ButtonBase
           component={Link}
-          to={map ? `/users/${map.owner_id}` : '/'}
-          title={map && map.owner_name}
+          to={currentMap ? `/users/${currentMap.owner_id}` : '/'}
+          title={currentMap && currentMap.owner_name}
         >
           <Chip
             avatar={
               <Avatar
-                src={map && map.owner_image_url}
-                alt={map && map.owner_name}
+                src={currentMap && currentMap.owner_image_url}
+                alt={currentMap && currentMap.owner_name}
               />
             }
-            label={map && map.owner_name}
+            label={currentMap && currentMap.owner_name}
             style={styles.chip}
             clickable
           />
@@ -239,9 +255,9 @@ const MapSummaryCard = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('description')}
         </Typography>
-        {map ? (
+        {currentMap ? (
           <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {map.description}
+            {currentMap.description}
           </Typography>
         ) : (
           <Chip style={styles.skeltonTextSecondary} />
@@ -256,7 +272,10 @@ const MapSummaryCard = () => {
               <PlaceIcon />
             </Avatar>
           }
-          label={map && (map.base.name ? map.base.name : I18n.t('not set'))}
+          label={
+            currentMap &&
+            (currentMap.base.name ? currentMap.base.name : I18n.t('not set'))
+          }
           style={styles.chip}
           clickable
           onClick={handleBaseClick}
@@ -265,9 +284,9 @@ const MapSummaryCard = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('created date')}
         </Typography>
-        {map ? (
+        {currentMap ? (
           <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {createdAt(map)}
+            {createdAt(currentMap)}
           </Typography>
         ) : (
           <Chip style={styles.skeltonTextSecondary} />
@@ -276,17 +295,19 @@ const MapSummaryCard = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('map type')}
         </Typography>
-        {map ? (
+        {currentMap ? (
           <MapTypes />
         ) : (
           <Chip avatar={<Avatar src="" alt="" />} style={styles.chip} />
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {`${map ? map.followers_count : 0} ${I18n.t('followers count')}`}
+          {`${currentMap ? currentMap.followers_count : 0} ${I18n.t(
+            'followers count'
+          )}`}
         </Typography>
         <div style={styles.followersContainer}>
-          {map ? (
+          {currentMap ? (
             <Followers />
           ) : (
             <Avatar style={styles.skeltonAvatar}>
@@ -295,13 +316,13 @@ const MapSummaryCard = () => {
           )}
         </div>
 
-        {map && map.likes_count > 0 && (
+        {currentMap && currentMap.likes_count > 0 && (
           <React.Fragment>
             <Typography variant="subtitle2" gutterBottom color="textSecondary">
-              {`${map.likes_count} ${I18n.t('like users')}`}
+              {`${currentMap.likes_count} ${I18n.t('like users')}`}
             </Typography>
             <div style={styles.followersContainer}>
-              <MapLikes map={map} />
+              <MapLikes currentMap={currentMap} />
             </div>
           </React.Fragment>
         )}

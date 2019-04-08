@@ -17,7 +17,6 @@ import NotificationList from './NotificationList';
 
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { NotificationsApi, InlineObject1 } from 'qoodish_api';
 
 import Link from '../molecules/Link';
@@ -84,7 +83,6 @@ const NavTabs = () => {
       return notification.read === false;
     });
     unreadNotifications.forEach(async notification => {
-      await initializeApiClient();
       const apiInstance = new NotificationsApi();
       const opts = {
         inlineObject1: InlineObject1.constructFromObject({ read: true })
