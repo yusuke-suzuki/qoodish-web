@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import { useMappedState, useDispatch } from 'redux-react-hook';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
@@ -17,9 +19,7 @@ import requestFinish from '../../actions/requestFinish';
 import updateLinkedProviders from '../../actions/updateLinkedProviders';
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
-import getCurrentUser from '../../utils/getCurrentUser';
 import I18n from '../../utils/I18n';
-import { useMappedState, useDispatch } from 'redux-react-hook';
 
 const providers = [
   {
@@ -60,9 +60,10 @@ const LinkedProvidersList = () => {
 
   const handleLinkProviderButtonClick = useCallback(async providerId => {
     dispatch(requestStart());
-    const firebaseUser = await getCurrentUser();
+
     const firebase = await getFirebase();
     await getFirebaseAuth();
+    const firebaseUser = firebase.auth().currentUser;
 
     let provider;
     switch (providerId) {
@@ -89,8 +90,8 @@ const LinkedProvidersList = () => {
       return;
     }
 
-    const currentFirebaseUser = await getCurrentUser();
-    let linkedProviders = currentFirebaseUser.providerData.map(provider => {
+    const currentFirebaseUser = firebase.auth().currentUser;
+    const linkedProviders = currentFirebaseUser.providerData.map(provider => {
       return provider.providerId;
     });
     dispatch(updateLinkedProviders(linkedProviders));
@@ -100,8 +101,9 @@ const LinkedProvidersList = () => {
 
   const handleUnlinkProviderButtonClick = useCallback(async providerId => {
     dispatch(requestStart());
-    const firebaseUser = await getCurrentUser();
+    const firebase = await getFirebase();
     await getFirebaseAuth();
+    const firebaseUser = firebase.auth().currentUser;
 
     try {
       await firebaseUser.unlink(providerId);
@@ -112,8 +114,8 @@ const LinkedProvidersList = () => {
       return;
     }
 
-    const currentFirebaseUser = await getCurrentUser();
-    let linkedProviders = currentFirebaseUser.providerData.map(provider => {
+    const currentFirebaseUser = firebase.auth().currentUser;
+    const linkedProviders = currentFirebaseUser.providerData.map(provider => {
       return provider.providerId;
     });
     dispatch(updateLinkedProviders(linkedProviders));

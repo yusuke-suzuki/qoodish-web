@@ -20,7 +20,6 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { FollowsApi, InvitesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   cardLarge: {
@@ -63,13 +62,7 @@ const Invites = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchInvites = useCallback(async () => {
-    if (!currentUser || currentUser.isAnonymous) {
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
-    await initializeApiClient();
     const apiInstance = new InvitesApi();
 
     apiInstance.invitesGet((error, data, response) => {
@@ -84,7 +77,6 @@ const Invites = () => {
 
   const handleFollowButtonClick = useCallback(async invite => {
     dispatch(requestStart());
-    await initializeApiClient();
 
     const apiInstance = new FollowsApi();
     const opts = {
@@ -110,14 +102,21 @@ const Invites = () => {
     );
   });
 
-  useEffect(() => {
-    fetchInvites();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+        setLoading(false);
+        return;
+      }
+      fetchInvites();
 
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/invites',
-      page_title: `${I18n.t('invites')} | Qoodish'`
-    });
-  }, []);
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: '/invites',
+        page_title: `${I18n.t('invites')} | Qoodish'`
+      });
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>

@@ -25,7 +25,6 @@ import requestFinish from '../../actions/requestFinish';
 import openToast from '../../actions/openToast';
 
 import { UsersApi, InvitesApi, NewInvite } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
@@ -89,7 +88,6 @@ const InviteTargetDialog = props => {
   const handleSendButtonClick = useCallback(async () => {
     dispatch(requestStart());
 
-    await initializeApiClient();
     const apiInstance = new InvitesApi();
     const newInvite = NewInvite.constructFromObject({
       user_id: selectedUserId

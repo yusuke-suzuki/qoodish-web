@@ -11,7 +11,6 @@ import fetchUserProfile from '../../actions/fetchUserProfile';
 import clearProfileState from '../../actions/clearProfileState';
 
 import { UserMapsApi, UsersApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const ProfileHelmet = () => {
   const mapState = useCallback(
@@ -61,16 +60,15 @@ const UserProfile = props => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
-      currentUser: state.profile.currentUser
+      currentUser: state.app.currentUser,
+      profile: state.profile.currentUser
     }),
     []
   );
 
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser, profile } = useMappedState(mapState);
 
   const initProfile = useCallback(async () => {
-    await initializeApiClient();
-
     const apiInstance = new UsersApi();
 
     apiInstance.usersUserIdGet(
@@ -84,8 +82,6 @@ const UserProfile = props => {
   });
 
   const initFollowingMaps = useCallback(async () => {
-    await initializeApiClient();
-
     const apiInstance = new UserMapsApi();
     const opts = {
       following: true
@@ -104,26 +100,33 @@ const UserProfile = props => {
     );
   });
 
-  useEffect(() => {
-    initProfile();
-    initFollowingMaps();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
 
-    if (currentUser.name) {
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: `/users/${currentUser.id}`,
-        page_title: `${currentUser.name} | Qoodish`
-      });
-    }
+      initProfile();
+      initFollowingMaps();
 
-    return () => {
-      dispatch(clearProfileState());
-    };
-  }, []);
+      if (profile.name) {
+        gtag('config', process.env.GA_TRACKING_ID, {
+          page_path: `/users/${profile.id}`,
+          page_title: `${profile.name} | Qoodish`
+        });
+      }
+
+      return () => {
+        dispatch(clearProfileState());
+      };
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>
       {currentUser.name && <ProfileHelmet />}
-      <SharedProfile {...props} currentUser={currentUser} />
+      <SharedProfile {...props} currentUser={profile} />
     </div>
   );
 };

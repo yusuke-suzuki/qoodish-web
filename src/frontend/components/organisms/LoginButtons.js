@@ -18,7 +18,6 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import { UsersApi, NewUser } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const LoginButtons = () => {
   const dispatch = useDispatch();
@@ -102,8 +101,6 @@ const LoginButtons = () => {
       image_url: uploadResponse.imageUrl,
       display_name: currentProvider.displayName
     };
-
-    await initializeApiClient();
 
     const apiInstance = new UsersApi();
     const newUser = NewUser.constructFromObject(params);

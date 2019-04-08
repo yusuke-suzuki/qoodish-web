@@ -7,8 +7,6 @@ import editReview from '../../actions/editReview';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
-
 const ReviewLikeActions = props => {
   const dispatch = useDispatch();
   const currentUser = useMappedState(
@@ -21,7 +19,6 @@ const ReviewLikeActions = props => {
       return;
     }
 
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdLikePost(
@@ -43,7 +40,6 @@ const ReviewLikeActions = props => {
   });
 
   const handleUnlikeButtonClick = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdLikeDelete(

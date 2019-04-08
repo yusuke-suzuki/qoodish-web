@@ -42,7 +42,6 @@ import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
 import { MapsApi, ReviewsApi, NewReview } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
@@ -185,8 +184,6 @@ const EditReviewDialog = () => {
       fileName = response.fileName;
     }
 
-    await initializeApiClient();
-
     const apiInstance = new ReviewsApi();
     const newReview = NewReview.constructFromObject(params);
     apiInstance.mapsMapIdReviewsPost(
@@ -234,8 +231,6 @@ const EditReviewDialog = () => {
         params.image_url = '';
       }
 
-      await initializeApiClient();
-
       const apiInstance = new ReviewsApi();
       const newReview = NewReview.constructFromObject(params);
       apiInstance.reviewsReviewIdPut(
@@ -279,7 +274,6 @@ const EditReviewDialog = () => {
 
   const initForm = useCallback(async () => {
     setCurrentReview();
-    await initializeApiClient();
 
     const apiInstance = new MapsApi();
     const opts = {

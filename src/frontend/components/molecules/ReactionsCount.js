@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { LikesApi } from 'qoodish_api';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
@@ -27,7 +26,6 @@ const ReactionsCount = props => {
 
   const handleLikesClick = useCallback(async () => {
     dispatch(openLikesDialog());
-    await initializeApiClient();
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdLikesGet(review.id, (error, data, response) => {

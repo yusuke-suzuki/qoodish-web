@@ -18,7 +18,6 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import deleteFromStorage from '../../utils/deleteFromStorage';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { ReviewsApi } from 'qoodish_api';
 
 const DeleteReviewDialog = props => {
@@ -51,7 +50,6 @@ const DeleteReviewDialog = props => {
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.reviewsReviewIdDelete(review.id, (error, data, response) => {

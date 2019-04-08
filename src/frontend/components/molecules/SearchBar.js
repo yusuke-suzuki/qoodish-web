@@ -15,7 +15,6 @@ import I18n from '../../utils/I18n';
 import Link from './Link';
 
 import { MapsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 import searchMaps from '../../actions/searchMaps';
 
@@ -84,7 +83,6 @@ const SearchBar = props => {
       return;
     }
 
-    await initializeApiClient();
     setLoading(true);
 
     const apiInstance = new MapsApi();

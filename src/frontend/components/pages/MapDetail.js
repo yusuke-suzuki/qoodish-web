@@ -41,7 +41,6 @@ const SpotHorizontalList = React.lazy(() =>
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   containerLarge: {},
@@ -172,17 +171,15 @@ const MapDetail = props => {
 
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       currentMap: state.mapDetail.currentMap,
-      currentSpot: state.spotCard.currentSpot,
       history: state.shared.history
     }),
     []
   );
-  const { currentMap, currentSpot, history } = useMappedState(mapState);
+  const { currentUser, currentMap, history } = useMappedState(mapState);
 
   const initMap = useCallback(async () => {
-    await initializeApiClient();
-
     const apiInstance = new MapsApi();
 
     apiInstance.mapsMapIdGet(
@@ -211,7 +208,6 @@ const MapDetail = props => {
   });
 
   const initMapReviews = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsGet(
@@ -226,7 +222,6 @@ const MapDetail = props => {
   });
 
   const initFollowers = useCallback(async () => {
-    await initializeApiClient();
     const apiInstance = new CollaboratorsApi();
 
     apiInstance.mapsMapIdCollaboratorsGet(
@@ -249,12 +244,16 @@ const MapDetail = props => {
 
   useEffect(
     () => {
+      if (!currentUser || !currentUser.uid) {
+        return;
+      }
       refreshMap();
+
       return () => {
         dispatch(clearMapState());
       };
     },
-    [props.params.primaryId]
+    [currentUser.uid, props.params.primaryId]
   );
 
   return (

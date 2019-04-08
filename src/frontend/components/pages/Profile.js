@@ -9,7 +9,6 @@ import fetchMyProfile from '../../actions/fetchMyProfile';
 import clearProfileState from '../../actions/clearProfileState';
 
 import { UserMapsApi, UsersApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const ProfileHelmet = () => {
   const mapState = useCallback(
@@ -67,10 +66,6 @@ const Profile = () => {
   const { currentUser } = useMappedState(mapState);
 
   const initProfile = useCallback(async () => {
-    if (currentUser.isAnonymous) {
-      return;
-    }
-    await initializeApiClient();
     const apiInstance = new UsersApi();
 
     apiInstance.usersUserIdGet(currentUser.uid, (error, data, response) => {
@@ -81,11 +76,6 @@ const Profile = () => {
   });
 
   const initFollowingMaps = useCallback(async () => {
-    if (currentUser.isAnonymous) {
-      return;
-    }
-    await initializeApiClient();
-
     const apiInstance = new UserMapsApi();
     const opts = {
       following: true
@@ -104,19 +94,26 @@ const Profile = () => {
     );
   });
 
-  useEffect(() => {
-    initProfile();
-    initFollowingMaps();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+        return;
+      }
 
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/profile',
-      page_title: `${I18n.t('account')} | Qoodish`
-    });
+      initProfile();
+      initFollowingMaps();
 
-    return () => {
-      dispatch(clearProfileState());
-    };
-  }, []);
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: '/profile',
+        page_title: `${I18n.t('account')} | Qoodish`
+      });
+
+      return () => {
+        dispatch(clearProfileState());
+      };
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>

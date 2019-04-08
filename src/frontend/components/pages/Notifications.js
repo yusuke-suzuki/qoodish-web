@@ -12,7 +12,6 @@ import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import I18n from '../../utils/I18n';
 import fetchNotifications from '../../actions/fetchNotifications';
-import initializeApiClient from '../../utils/initializeApiClient';
 import { NotificationsApi } from 'qoodish_api';
 
 const styles = {
@@ -65,14 +64,8 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
 
   const handleMount = useCallback(async () => {
-    if (!currentUser || currentUser.isAnonymous) {
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
 
-    await initializeApiClient();
     const apiInstance = new NotificationsApi();
 
     apiInstance.notificationsGet((error, data, response) => {
@@ -83,14 +76,21 @@ const Notifications = () => {
     });
   });
 
-  useEffect(() => {
-    handleMount();
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+        setLoading(false);
+        return;
+      }
+      handleMount();
 
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/notifications',
-      page_title: `${I18n.t('notifications')} | Qoodish`
-    });
-  }, []);
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: '/notifications',
+        page_title: `${I18n.t('notifications')} | Qoodish`
+      });
+    },
+    [currentUser.uid]
+  );
 
   return (
     <div>

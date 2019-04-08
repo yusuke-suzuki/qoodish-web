@@ -32,7 +32,6 @@
     "react-share": "^2.3.1",
     "react-swipeable-views": "^0.13.0",
     "redux": "^4.0.1",
-    "redux-localstorage": "^0.4.1",
     "redux-logger": "^3.0.6",
     "redux-react-hook": "^3.2.0",
     "twitter-text": "^2.0.4",

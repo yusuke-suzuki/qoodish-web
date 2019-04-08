@@ -18,7 +18,6 @@ import requestFinish from '../../actions/requestFinish';
 import fetchCollaborators from '../../actions/fetchCollaborators';
 
 import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -41,7 +40,6 @@ const LeaveMapDialog = () => {
 
   const handleLeaveButtonClick = useCallback(async () => {
     dispatch(requestStart());
-    await initializeApiClient();
     const apiInstance = new FollowsApi();
 
     apiInstance.mapsMapIdFollowDelete(

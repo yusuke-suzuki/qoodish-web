@@ -1,6 +1,5 @@
 import getFirebase from './getFirebase';
 import getFirebaseMessaging from './getFirebaseMessaging';
-import initializeApiClient from './initializeApiClient';
 import { DevicesApi } from 'qoodish_api';
 
 const pushAvailable = () => {
@@ -22,8 +21,6 @@ const createRegistrationToken = async () => {
     console.log('Unable to get registration token.');
     return;
   }
-
-  await initializeApiClient();
 
   const apiInstance = new DevicesApi();
 

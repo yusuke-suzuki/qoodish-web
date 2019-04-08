@@ -21,8 +21,6 @@ import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
 import profileReducer from './reducers/profileReducer';
 
-import persistState from 'redux-localstorage';
-
 import { createLogger } from 'redux-logger';
 import initializeFirebaseApp from './utils/initializeFirebaseApp';
 
@@ -52,10 +50,7 @@ const reducer = combineReducers({
   profile: profileReducer
 });
 
-const store = compose(
-  persistState('app'),
-  applyMiddleware(...middlewares)
-)(createStore)(reducer);
+const store = compose(applyMiddleware(...middlewares))(createStore)(reducer);
 
 window.addEventListener('DOMContentLoaded', () => {
   render(

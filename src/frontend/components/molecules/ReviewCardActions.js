@@ -12,7 +12,6 @@ import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { CommentsApi, InlineObject } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   root: {
@@ -77,7 +76,6 @@ const ReviewCardActions = React.memo(props => {
     }
 
     setSending(true);
-    await initializeApiClient();
     const apiInstance = new CommentsApi();
     const inlineObject = InlineObject.constructFromObject({
       comment: comment

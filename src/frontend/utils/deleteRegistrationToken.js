@@ -1,4 +1,3 @@
-import initializeApiClient from './initializeApiClient';
 import { DevicesApi } from 'qoodish_api';
 
 const deleteRegistrationToken = async () => {
@@ -7,7 +6,6 @@ const deleteRegistrationToken = async () => {
     return;
   }
 
-  await initializeApiClient();
   const apiInstance = new DevicesApi();
 
   apiInstance.devicesRegistrationTokenDelete(

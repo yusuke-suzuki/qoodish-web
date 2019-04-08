@@ -11,7 +11,6 @@ import NoContents from '../molecules/NoContents';
 import fetchUserReviews from '../../actions/fetchUserReviews';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from 'qoodish_api';
-import initializeApiClient from '../../utils/initializeApiClient';
 
 const styles = {
   reviewsLarge: {
@@ -41,22 +40,22 @@ const ProfileReviews = props => {
 
   const mapState = useCallback(
     state => ({
+      currentUser: state.app.currentUser,
       currentReviews: state.profile.currentReviews,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentReviews, location } = useMappedState(mapState);
-
-  const currentUser = props.currentUser;
+  const { currentUser, currentReviews, location } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
   const initReviews = useCallback(async () => {
     if (
-      !currentUser ||
-      (location && location.pathname === '/profile' && currentUser.isAnonymous)
+      location &&
+      location.pathname === '/profile' &&
+      currentUser.isAnonymous
     ) {
       setLoading(false);
       return;
@@ -68,7 +67,6 @@ const ProfileReviews = props => {
         ? props.params.primaryId
         : currentUser.uid;
 
-    await initializeApiClient();
     const apiInstance = new ReviewsApi();
 
     apiInstance.usersUserIdReviewsGet(userId, {}, (error, data, response) => {
@@ -79,9 +77,16 @@ const ProfileReviews = props => {
     });
   });
 
-  useEffect(() => {
-    initReviews();
-  }, []);
+  useEffect(
+    () => {
+      if (!currentUser || !currentUser.uid) {
+        setLoading(false);
+        return;
+      }
+      initReviews();
+    },
+    [currentUser.uid]
+  );
 
   if (loading) {
     return (
