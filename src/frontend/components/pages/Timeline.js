@@ -239,7 +239,7 @@ const Timeline = () => {
 
   useEffect(
     () => {
-      if (!currentUser || !currentUser.uid || !currentUser.isAnonymous) {
+      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
         setLoading(false);
         return;
       }
