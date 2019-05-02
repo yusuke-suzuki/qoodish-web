@@ -5,6 +5,7 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 
 import SpotCard from '../organisms/SpotCard';
 import I18n from '../../utils/I18n';
@@ -45,7 +46,7 @@ const SpotDialog = () => {
     <Dialog
       open={dialogOpen}
       onClose={handleRequestDialogClose}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
       fullWidth
       fullScreen={large ? false : true}
       scroll={large ? 'body' : 'paper'}

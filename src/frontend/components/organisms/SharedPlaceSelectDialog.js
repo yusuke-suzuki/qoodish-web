@@ -15,6 +15,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 
 import I18n from '../../utils/I18n';
 
@@ -90,7 +91,7 @@ const SharedPlaceSelectDialog = props => {
       onClose={props.onClose}
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
       PaperProps={{ style: large ? styles.dialogPaper : {} }}
     >
       {large ? (

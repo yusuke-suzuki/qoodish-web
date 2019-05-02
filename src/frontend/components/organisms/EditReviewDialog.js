@@ -22,6 +22,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import ListItemText from '@material-ui/core/ListItemText';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import * as loadImage from 'blueimp-load-image';
 
 import createReview from '../../actions/createReview';
@@ -400,7 +401,7 @@ const EditReviewDialog = () => {
       disableEscapeKeyDown
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>

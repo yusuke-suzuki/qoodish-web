@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 
 import LoginButtons from './LoginButtons';
 import I18n from '../../utils/I18n';
@@ -39,7 +40,7 @@ const SignInRequiredDialog = () => {
       onClose={onClose}
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       <DialogTitle>{I18n.t('this action requires sign in')}</DialogTitle>
       <DialogContent style={styles.dialogContent}>

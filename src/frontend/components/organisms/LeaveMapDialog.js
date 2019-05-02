@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
+import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,6 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import I18n from '../../utils/I18n';
 
 import leaveMap from '../../actions/leaveMap';
@@ -24,6 +26,7 @@ const Transition = props => {
 };
 
 const LeaveMapDialog = () => {
+  const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -80,7 +83,7 @@ const LeaveMapDialog = () => {
       open={dialogOpen}
       onClose={handleRequestClose}
       fullWidth
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       <DialogTitle>{I18n.t('sure to unfollow map')}</DialogTitle>
       <DialogContent>
