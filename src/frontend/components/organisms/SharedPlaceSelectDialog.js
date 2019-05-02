@@ -26,6 +26,9 @@ const styles = {
   placeIcon: {
     marginRight: 10
   },
+  dialogPaper: {
+    height: 'calc(100% - 96px)'
+  },
   dialogContentLarge: {
     paddingBottom: 0
   },
@@ -88,6 +91,7 @@ const SharedPlaceSelectDialog = props => {
       fullWidth
       fullScreen={!large}
       TransitionComponent={Transition}
+      PaperProps={{ style: large ? styles.dialogPaper : {} }}
     >
       {large ? (
         <DialogTitle>
