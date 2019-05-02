@@ -18,6 +18,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import { UsersApi, NewUser } from 'qoodish_api';
+import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
 
 const LoginButtons = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const LoginButtons = () => {
   }, []);
 
   const handleSignIn = useCallback(async (authResult, redirectUrl) => {
+    dispatch(closeSignInRequiredDialog());
     const currentUser = authResult.user;
 
     if (currentUser.isAnonymous) {
