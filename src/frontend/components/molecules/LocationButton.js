@@ -26,7 +26,7 @@ const styles = {
   }
 };
 
-const LocationButton = props => {
+const LocationButton = () => {
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 

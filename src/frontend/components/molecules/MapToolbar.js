@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
 import switchMap from '../../actions/switchMap';
@@ -17,6 +18,7 @@ import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
 import switchSummary from '../../actions/switchSummary';
+import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
 
 const styles = {
   toolbarLarge: {
@@ -45,6 +47,10 @@ const styles = {
   mapTypeIcon: {
     marginRight: 6
   }
+};
+
+const isInvitable = map => {
+  return map && (map.editable || (map.following && map.invitable));
 };
 
 const MapToolbar = () => {
@@ -88,6 +94,10 @@ const MapToolbar = () => {
     dispatch(switchSummary());
   });
 
+  const handleInviteButtonClick = useCallback(() => {
+    dispatch(openInviteTargetDialog());
+  });
+
   return (
     <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
       <IconButton
@@ -115,6 +125,11 @@ const MapToolbar = () => {
         {!large && (
           <IconButton color="inherit" onClick={handleSummaryButtonClick}>
             <InfoOutlinedIcon />
+          </IconButton>
+        )}
+        {isInvitable(map) && (
+          <IconButton color="inherit" onClick={handleInviteButtonClick}>
+            <PersonAddIcon />
           </IconButton>
         )}
         <MapShareMenu />
