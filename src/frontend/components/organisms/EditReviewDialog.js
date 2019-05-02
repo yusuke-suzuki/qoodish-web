@@ -30,7 +30,6 @@ import closeEditReviewDialog from '../../actions/closeEditReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import fetchSpots from '../../actions/fetchSpots';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import requestMapCenter from '../../actions/requestMapCenter';
 import selectSpot from '../../actions/selectSpot';
@@ -252,7 +251,6 @@ const EditReviewDialog = () => {
             const review = response.body;
             dispatch(editReview(review));
             dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-            dispatch(selectSpot(review.spot));
           } else {
             dispatch(openToast(response.body.detail));
             if (fileName) {
