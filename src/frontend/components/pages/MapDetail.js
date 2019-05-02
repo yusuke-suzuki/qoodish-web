@@ -186,15 +186,7 @@ const MapDetail = props => {
       props.params.primaryId,
       (error, data, response) => {
         if (response.ok) {
-          const map = response.body;
-          dispatch(selectMap(map));
-          dispatchGtag(map);
-
-          if (map.base.place_id) {
-            dispatch(requestMapCenter(map.base.lat, map.base.lng));
-          } else {
-            dispatch(requestCurrentPosition());
-          }
+          dispatch(selectMap(response.body));
         } else if (response.status == 401) {
           dispatch(openToast('Authenticate failed'));
         } else if (response.status == 404) {
@@ -241,6 +233,22 @@ const MapDetail = props => {
     initMapReviews();
     initFollowers();
   });
+
+  useEffect(
+    () => {
+      if (!currentMap) {
+        return;
+      }
+
+      if (currentMap.base.place_id) {
+        dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
+      } else {
+        dispatch(requestCurrentPosition());
+      }
+      dispatchGtag(currentMap);
+    },
+    [currentMap]
+  );
 
   useEffect(
     () => {
