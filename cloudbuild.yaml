@@ -12,20 +12,20 @@ steps:
       - --location=global
       - --keyring=qoodish
       - --key=qoodish
-  - name: 'gcr.io/cloud-builders/yarn'
-    entrypoint: 'bash'
+  - name: "gcr.io/cloud-builders/yarn"
+    entrypoint: "bash"
     args:
-      - '-c'
+      - "-c"
       - |
         yarn
-        cd ./functions && yarn && cd ../
+        cd ./functions && yarn --ignore-engines && cd ../
         yarn build:prod
     env:
-      - 'PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}'
-      - 'API_ENDPOINT=${_API_ENDPOINT}'
-  - name: 'gcr.io/$PROJECT_ID/firebase'
+      - "PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}"
+      - "API_ENDPOINT=${_API_ENDPOINT}"
+  - name: "gcr.io/$PROJECT_ID/firebase"
     args:
-      - 'deploy'
-      - '--project'
-      - 'prod'
-    secretEnv: ['FIREBASE_TOKEN']
+      - "deploy"
+      - "--project"
+      - "prod"
+    secretEnv: ["FIREBASE_TOKEN"]
