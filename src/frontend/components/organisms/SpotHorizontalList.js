@@ -10,6 +10,7 @@ import {
 import selectSpot from '../../actions/selectSpot';
 import openSpotCard from '../../actions/openSpotCard';
 import requestMapCenter from '../../actions/requestMapCenter';
+import I18n from '../../utils/I18n';
 
 const styles = {
   root: {
@@ -26,11 +27,14 @@ const styles = {
     flexWrap: 'nowrap',
     transform: 'translateZ(0)'
   },
+  tileBar: {
+    height: '50%'
+  },
   reviewerContainer: {
     display: 'flex',
     position: 'absolute',
     zIndex: 1,
-    right: 16,
+    right: 18,
     top: 8
   },
   reviewerAvatar: {
@@ -96,9 +100,15 @@ const SpotHorizontalList = () => {
               </div>
               <img src={spot.image_url} alt={spot.name} />
               <GridListTileBar
+                style={styles.tileBar}
                 title={
                   <Typography variant="subtitle2" color="inherit" noWrap>
                     {spot.name}
+                  </Typography>
+                }
+                subtitle={
+                  <Typography variant="caption" color="inherit" noWrap>
+                    {`${spot.reviews.length} ${I18n.t('reviews count')}`}
                   </Typography>
                 }
               />
