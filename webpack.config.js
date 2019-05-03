@@ -5,19 +5,17 @@ const { InjectManifest } = require('workbox-webpack-plugin');
 
 require('dotenv').config();
 
-const swPlugins = [
-  new CleanWebpackPlugin(['./functions/hosting/sw-proto.js'], {})
-];
-
 const plugins = [
-  new CleanWebpackPlugin(
-    [
-      './functions/hosting/*.*.js',
-      './functions/hosting/index.html',
-      './functions/hosting/sw.js'
-    ],
-    {}
-  ),
+  new CleanWebpackPlugin({
+    cleanOnceBeforeBuildPatterns: [
+      '**/*',
+      '!sitemap.xml',
+      '!robots.txt',
+      '!manifest.json',
+      '!favicon.ico',
+      '!apple-touch-icon.png'
+    ]
+  }),
   new HtmlWebpackPlugin({
     template: 'src/views/index.html',
     endpoint: process.env.ENDPOINT,
@@ -78,7 +76,7 @@ module.exports = [
         }
       ]
     },
-    plugins: swPlugins
+    plugins: []
   },
   {
     entry: ['whatwg-fetch', './src/frontend/index.js'],
