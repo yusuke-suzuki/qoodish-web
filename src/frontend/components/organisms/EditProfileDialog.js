@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import IconButton from '@material-ui/core/IconButton';
 import I18n from '../../utils/I18n';
@@ -210,7 +211,7 @@ const EditProfileDialog = () => {
       disableEscapeKeyDown
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>{I18n.t('edit profile')}</DialogTitle>

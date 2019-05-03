@@ -22,6 +22,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import ListItemText from '@material-ui/core/ListItemText';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import * as loadImage from 'blueimp-load-image';
 
 import createReview from '../../actions/createReview';
@@ -30,7 +31,6 @@ import closeEditReviewDialog from '../../actions/closeEditReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import fetchSpots from '../../actions/fetchSpots';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import requestMapCenter from '../../actions/requestMapCenter';
 import selectSpot from '../../actions/selectSpot';
@@ -252,7 +252,6 @@ const EditReviewDialog = () => {
             const review = response.body;
             dispatch(editReview(review));
             dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-            dispatch(selectSpot(review.spot));
           } else {
             dispatch(openToast(response.body.detail));
             if (fileName) {
@@ -402,7 +401,7 @@ const EditReviewDialog = () => {
       disableEscapeKeyDown
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>

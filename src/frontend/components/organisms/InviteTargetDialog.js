@@ -14,6 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import I18n from '../../utils/I18n';
@@ -114,7 +115,7 @@ const InviteTargetDialog = props => {
       onClose={onClose}
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>{I18n.t('select invite target')}</DialogTitle>

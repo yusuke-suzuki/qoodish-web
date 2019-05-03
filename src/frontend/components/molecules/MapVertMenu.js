@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,22 +9,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import I18n from '../../utils/I18n';
 
 import openEditMapDialog from '../../actions/openEditMapDialog';
 import openDeleteMapDialog from '../../actions/openDeleteMapDialog';
-import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
 
 const styles = {
   mapMenuIcon: {
     color: 'white'
   }
-};
-
-const isInvitable = map => {
-  return map && map.private && (map.editable || map.invitable);
 };
 
 const MapVertMenu = () => {
@@ -50,11 +43,6 @@ const MapVertMenu = () => {
   const handleDeleteMapButtonClick = useCallback(() => {
     setMenuOpen(false);
     dispatch(openDeleteMapDialog(map));
-  });
-
-  const handleInviteButtonClick = useCallback(() => {
-    setMenuOpen(false);
-    dispatch(openInviteTargetDialog());
   });
 
   return (
@@ -89,15 +77,7 @@ const MapVertMenu = () => {
               <DeleteIcon />
             </ListItemIcon>
             <ListItemText primary={I18n.t('delete')} />
-          </MenuItem>,
-          isInvitable(map) && (
-            <MenuItem key="invite" onClick={handleInviteButtonClick}>
-              <ListItemIcon>
-                <PersonAddIcon />
-              </ListItemIcon>
-              <ListItemText primary={I18n.t('invite')} />
-            </MenuItem>
-          )
+          </MenuItem>
         ]}
       </Menu>
     </div>

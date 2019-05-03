@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
@@ -6,6 +6,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 
 import ReviewCard from '../molecules/ReviewCard';
 import ReviewCardActions from '../molecules/ReviewCardActions';
@@ -50,7 +51,7 @@ const ReviewDialog = () => {
     <Dialog
       open={dialogOpen}
       onClose={handleRequestDialogClose}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
       fullWidth
       fullScreen={large ? false : true}
       scroll={large ? 'body' : 'paper'}

@@ -12,6 +12,7 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import Chip from '@material-ui/core/Chip';
 import PlaceIcon from '@material-ui/icons/Place';
 import Avatar from '@material-ui/core/Avatar';
@@ -168,7 +169,7 @@ const SharedEditMapDialog = props => {
       disableEscapeKeyDown
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>

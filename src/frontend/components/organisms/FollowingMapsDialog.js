@@ -14,6 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import I18n from '../../utils/I18n';
 import Link from '../molecules/Link';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import FollowMapButton from '../molecules/FollowMapButton';
 
 import closeFollowingMapsDialog from '../../actions/closeFollowingMapsDialog';
@@ -60,7 +61,7 @@ const FollowingMapsDialog = () => {
       onClose={onClose}
       fullWidth
       fullScreen={!large}
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>{I18n.t('following')}</DialogTitle>

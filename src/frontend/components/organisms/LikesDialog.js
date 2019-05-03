@@ -11,6 +11,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
+import Fade from '@material-ui/core/Fade';
 import Link from '../molecules/Link';
 
 import I18n from '../../utils/I18n';
@@ -49,7 +50,7 @@ const LikesDialog = () => {
       open={dialogOpen}
       onClose={handleRequestDialogClose}
       fullWidth
-      TransitionComponent={Transition}
+      TransitionComponent={large ? Fade : Transition}
     >
       {large ? (
         <DialogTitle>{I18n.t('likes')}</DialogTitle>
