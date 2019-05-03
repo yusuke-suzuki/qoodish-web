@@ -117,16 +117,6 @@ const SpotDetail = props => {
     );
   });
 
-  useEffect(() => {
-    if (!currentSpot) {
-      initSpot();
-    }
-
-    return () => {
-      dispatch(clearSpotState());
-    };
-  }, []);
-
   useEffect(
     () => {
       if (!currentUser || !currentUser.uid) {
