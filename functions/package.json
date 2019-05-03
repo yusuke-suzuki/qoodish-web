@@ -15,6 +15,7 @@
     "@google-cloud/storage": "^2.5.0",
     "@slack/client": "^5.0.1",
     "child-process-promise": "^2.2.1",
+    "dotenv": "^8.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "firebase-admin": "^7.3.0",
