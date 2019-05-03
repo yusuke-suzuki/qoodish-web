@@ -4,8 +4,6 @@ import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMe
 
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
-import requestCurrentPosition from '../../actions/requestCurrentPosition';
-import requestMapCenter from '../../actions/requestMapCenter';
 import clearMapState from '../../actions/clearMapState';
 import fetchMapReviews from '../../actions/fetchMapReviews';
 import fetchCollaborators from '../../actions/fetchCollaborators';
@@ -228,27 +226,21 @@ const MapDetail = props => {
     );
   });
 
-  const refreshMap = useCallback(() => {
-    initMap();
-    initMapReviews();
-    initFollowers();
-  });
-
   useEffect(
     () => {
       if (!currentMap) {
         return;
       }
-
-      if (currentMap.base.place_id) {
-        dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
-      } else {
-        dispatch(requestCurrentPosition());
-      }
       dispatchGtag(currentMap);
     },
     [currentMap]
   );
+
+  const refreshMap = useCallback(() => {
+    initMap();
+    initMapReviews();
+    initFollowers();
+  });
 
   useEffect(
     () => {
