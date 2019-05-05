@@ -12,7 +12,6 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "@slack/client": "^5.0.1",
     "dotenv": "^8.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",

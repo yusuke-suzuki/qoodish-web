@@ -104,10 +104,6 @@ const FeedbackDialog = () => {
     await getFirestore();
 
     const firestore = firebase.firestore();
-    const settings = {
-      timestampsInSnapshots: true
-    };
-    firestore.settings(settings);
     await firestore.collection('feedbacks').add({
       negative: params.feedbackNegative,
       positive: params.feedbackPositive
