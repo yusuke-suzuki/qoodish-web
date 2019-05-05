@@ -4,13 +4,6 @@
   "engines": {
     "node": "10"
   },
-  "scripts": {
-    "serve": "firebase serve --only functions",
-    "shell": "firebase experimental:functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
   "dependencies": {
     "dotenv": "^8.0.0",
     "ejs": "^2.6.1",
@@ -19,6 +12,5 @@
     "firebase-functions": "^2.3.0",
     "node-fetch": "^2.5.0"
   },
-  "private": true,
-  "devDependencies": {}
+  "private": true
 }
