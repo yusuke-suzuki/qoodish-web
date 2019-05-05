@@ -4,17 +4,7 @@
   "engines": {
     "node": "10"
   },
-  "scripts": {
-    "serve": "firebase serve --only functions",
-    "shell": "firebase experimental:functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
-  },
   "dependencies": {
-    "@google-cloud/storage": "^2.5.0",
-    "@slack/client": "^5.0.1",
-    "child-process-promise": "^2.2.1",
     "dotenv": "^8.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
@@ -22,6 +12,5 @@
     "firebase-functions": "^2.3.0",
     "node-fetch": "^2.5.0"
   },
-  "private": true,
-  "devDependencies": {}
+  "private": true
 }

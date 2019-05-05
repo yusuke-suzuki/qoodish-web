@@ -10,23 +10,7 @@ const generateMetadata = require(__dirname + '/utils/generateMetadata');
 const app = express();
 app.use(express.static(__dirname + '/../hosting'));
 
-const pageRoutes = [
-  '/',
-  '/discover',
-  '/login',
-  '/maps/:mapId',
-  '/maps/:mapId/reports/:reviewId',
-  '/profile',
-  '/users/:userId',
-  '/spots/:placeId',
-  '/notifications',
-  '/settings',
-  '/invites',
-  '/terms',
-  '/privacy'
-];
-
-app.get(pageRoutes, async (req, res) => {
+app.get('/*', async (req, res) => {
   if (isBot(req)) {
     console.log(`Bot access: ${req.headers['user-agent']}`);
     const metadata = await generateMetadata(req);

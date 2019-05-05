@@ -6,6 +6,8 @@ import loadGoogleMapsApi from 'load-google-maps-api';
 
 import openSpotCard from '../../actions/openSpotCard';
 import selectSpot from '../../actions/selectSpot';
+import requestCurrentPosition from '../../actions/requestCurrentPosition';
+import requestMapCenter from '../../actions/requestMapCenter';
 
 const CurrentPositionIcon = React.lazy(() =>
   import(/* webpackChunkName: "current_position_icon" */ '../molecules/CurrentPositionIcon')
@@ -181,6 +183,21 @@ const GMap = () => {
       }
     },
     [gMap, googleMapsApi]
+  );
+
+  useEffect(
+    () => {
+      if (!currentMap || !isGoogleMapsApiReady) {
+        return;
+      }
+
+      if (currentMap.base.place_id) {
+        dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
+      } else {
+        dispatch(requestCurrentPosition());
+      }
+    },
+    [currentMap]
   );
 
   const onSpotMarkerClick = useCallback(async (e, spot) => {
