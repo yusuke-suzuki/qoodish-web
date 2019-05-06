@@ -24,7 +24,10 @@ import {
   CLOSE_SEARCH_MAPS_DIALOG,
   OPEN_CREATE_ACTIONS,
   CLOSE_CREATE_ACTIONS,
-  LOCATION_CHANGE
+  LOCATION_CHANGE,
+  OPEN_ANNOUNCEMENT_DIALOG,
+  CLOSE_ANNOUNCEMENT_DIALOG,
+  UPDATE_ANNOUNCEMENT_IS_NEW
 } from '../actionTypes';
 import I18n from '../utils/I18n';
 
@@ -55,7 +58,9 @@ const initialState = {
   currentLocation: undefined,
   pickedMaps: [],
   searchMapsDialogOpen: false,
-  createActionsOpen: false
+  createActionsOpen: false,
+  announcementDialogOpen: false,
+  announcementIsNew: false
 };
 
 const getBottomNavValue = pathname => {
@@ -244,6 +249,18 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         feedbackDialogOpen: false
       });
+    case OPEN_ANNOUNCEMENT_DIALOG:
+      return Object.assign({}, state, {
+        announcementDialogOpen: true
+      });
+    case CLOSE_ANNOUNCEMENT_DIALOG:
+      return Object.assign({}, state, {
+        announcementDialogOpen: false
+      });
+    case UPDATE_ANNOUNCEMENT_IS_NEW:
+      return Object.assign({}, state, {
+        announcementIsNew: action.payload.isNew
+      });
     case OPEN_DRAWER:
       return Object.assign({}, state, {
         drawerOpen: true
@@ -312,6 +329,7 @@ const reducer = (state = initialState, action) => {
         likesDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
+        announcementDialogOpen: false,
         drawerOpen: false,
         searchMapsDialogOpen: false,
         showBottomNav: showBottomNav,

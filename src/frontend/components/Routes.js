@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch } from 'redux-react-hook';
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import pathToRegexp from 'path-to-regexp';
 
 import { OPEN_REVIEW_DIALOG, OPEN_SPOT_DIALOG } from '../actionTypes';
@@ -97,7 +97,7 @@ const modalRoutes = [
   }
 ];
 
-const history = createHistory();
+const history = createBrowserHistory();
 
 const findMatchedRoute = (currentLocation, routes) => {
   let params = {

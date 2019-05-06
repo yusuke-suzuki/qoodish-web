@@ -10,6 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 
 import HomeIcon from '@material-ui/icons/Home';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -35,6 +36,7 @@ import requestFinish from '../../actions/requestFinish';
 import ProfileCard from './ProfileCard';
 import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 import Logo from './Logo';
+import openAnnouncementDialog from '../../actions/openAnnouncementDialog';
 
 const styles = {
   titleLarge: {
@@ -78,11 +80,17 @@ const DrawerContents = React.memo(() => {
     state => ({
       currentLocation: state.shared.currentLocation,
       currentUser: state.app.currentUser,
-      history: state.shared.history
+      history: state.shared.history,
+      announcementIsNew: state.shared.announcementIsNew
     }),
     []
   );
-  const { currentLocation, currentUser, history } = useMappedState(mapState);
+  const {
+    currentLocation,
+    currentUser,
+    history,
+    announcementIsNew
+  } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleSignOutClick = useCallback(async () => {
@@ -105,6 +113,10 @@ const DrawerContents = React.memo(() => {
 
     history.push('/login');
     dispatch(requestFinish());
+  });
+
+  const handleAnnouncementClick = useCallback(() => {
+    dispatch(openAnnouncementDialog());
   });
 
   const handleFeedbackClick = useCallback(() => {
@@ -236,6 +248,17 @@ const DrawerContents = React.memo(() => {
             />
           </ListItem>
         )}
+        <ListItem button onClick={handleAnnouncementClick}>
+          <ListItemText
+            primary={I18n.t('announcement')}
+            primaryTypographyProps={{ color: 'textSecondary' }}
+          />
+          {announcementIsNew && (
+            <ListItemSecondaryAction onClick={handleAnnouncementClick}>
+              <Button color="primary">NEW</Button>
+            </ListItemSecondaryAction>
+          )}
+        </ListItem>
         <ListItem button onClick={handleFeedbackClick}>
           <ListItemText
             primary={I18n.t('send feedback')}
