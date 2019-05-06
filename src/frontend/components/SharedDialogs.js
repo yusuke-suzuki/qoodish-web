@@ -18,6 +18,9 @@ const CopyReviewDialog = React.lazy(() =>
 const FeedbackDialog = React.lazy(() =>
   import(/* webpackChunkName: "feedback_dialog" */ './organisms/FeedbackDialog')
 );
+const AnnouncementDialog = React.lazy(() =>
+  import(/* webpackChunkName: "announcement_dialog" */ './organisms/AnnouncementDialog')
+);
 const SignInRequiredDialog = React.lazy(() =>
   import(/* webpackChunkName: "sign_in_required_dialog" */ './organisms/SignInRequiredDialog')
 );
@@ -70,6 +73,7 @@ const SharedDialogs = () => {
       <Toast />
       <BlockUi />
       <FeedbackDialog />
+      <AnnouncementDialog />
       <SignInRequiredDialog />
       <IssueDialog />
       <LikesDialog />
