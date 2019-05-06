@@ -23,9 +23,10 @@ steps:
     env:
       - "PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}"
       - "API_ENDPOINT=${_API_ENDPOINT}"
+      - "ENDPOINT=${_ENDPOINT}"
   - name: "gcr.io/$PROJECT_ID/firebase"
     args:
       - "deploy"
       - "--project"
-      - "prod"
+      - ${_FIREBASE_DEPLOY_TARGET_PROJECT}
     secretEnv: ["FIREBASE_TOKEN"]
