@@ -26,6 +26,9 @@ const styles = {
   title: {
     wordBreak: 'break-all'
   },
+  titleLink: {
+    textDecoration: 'none'
+  },
   body: {
     wordBreak: 'break-all'
   }
@@ -63,6 +66,7 @@ const AnnouncementDialog = () => {
       items.push({
         id: doc.id,
         title: doc.data().title,
+        link: doc.data().link,
         body: doc.data().body,
         date: doc.data().date.toDate()
       });
@@ -113,13 +117,15 @@ const AnnouncementDialog = () => {
                       <Typography variant="subtitle2" color="textSecondary">
                         {issuedAt(announcement.date)}
                       </Typography>
-                      <Typography
-                        variant="h6"
-                        color="primary"
-                        style={styles.title}
+                      <a
+                        href={announcement.link}
+                        target="_blank"
+                        style={styles.titleLink}
                       >
-                        {announcement.title}
-                      </Typography>
+                        <Typography variant="h6" color="primary">
+                          {announcement.title}
+                        </Typography>
+                      </a>
                     </React.Fragment>
                   }
                   secondary={
