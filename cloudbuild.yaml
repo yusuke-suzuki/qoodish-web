@@ -26,7 +26,7 @@ steps:
       - "ENDPOINT=${_ENDPOINT}"
   - name: "gcr.io/$PROJECT_ID/firebase"
     args:
-      - "deploy"
-      - "--project"
+      - deploy
+      - --project
       - ${_FIREBASE_DEPLOY_TARGET_PROJECT}
     secretEnv: ["FIREBASE_TOKEN"]
