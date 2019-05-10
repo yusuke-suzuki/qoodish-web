@@ -13,7 +13,8 @@ const BOTS = [
   'telegrambot',
   'applebot',
   'pingdom',
-  'tumblr '
+  'tumblr ',
+  'googlebot'
 ];
 
 const IS_BOT_REGEXP = new RegExp('^.*(' + BOTS.join('|') + ').*$');
