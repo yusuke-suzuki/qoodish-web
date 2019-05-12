@@ -70,7 +70,7 @@ const MapToolbar = () => {
 
   const handleBackButtonClick = useCallback(() => {
     if (large) {
-      if (previousLocation) {
+      if (previousLocation && !previousLocation.state) {
         history.goBack();
       } else {
         history.push('/');

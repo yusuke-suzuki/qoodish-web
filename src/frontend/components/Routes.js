@@ -155,40 +155,31 @@ const Routes = () => {
     };
   }, []);
 
-  useEffect(
-    () => {
-      if (initialRoute) {
-        setInitialRoute(false);
-      }
-    },
-    [currentLocation]
-  );
+  useEffect(() => {
+    if (initialRoute) {
+      setInitialRoute(false);
+    }
+  }, [currentLocation]);
 
-  const matchedRoute = useMemo(
-    () => {
-      if (initialRoute) {
-        return findMatchedRoute(currentLocation, pageRoutes);
-      } else if (currentLocation.state && currentLocation.state.modal) {
-        return findMatchedRoute(currentLocation, modalRoutes);
+  const matchedRoute = useMemo(() => {
+    if (initialRoute) {
+      return findMatchedRoute(currentLocation, pageRoutes);
+    } else if (currentLocation.state && currentLocation.state.modal) {
+      return findMatchedRoute(currentLocation, modalRoutes);
+    } else {
+      return findMatchedRoute(currentLocation, pageRoutes);
+    }
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (matchedRoute) {
+      if (matchedRoute.modal) {
+        execModalAction(matchedRoute);
       } else {
-        return findMatchedRoute(currentLocation, pageRoutes);
+        setPreviousRoute(matchedRoute);
       }
-    },
-    [currentLocation]
-  );
-
-  useEffect(
-    () => {
-      if (matchedRoute) {
-        if (matchedRoute.modal) {
-          execModalAction(matchedRoute);
-        } else {
-          setPreviousRoute(matchedRoute);
-        }
-      }
-    },
-    [matchedRoute]
-  );
+    }
+  }, [matchedRoute]);
 
   if (currentLocation.state && currentLocation.state.modal) {
     return (
