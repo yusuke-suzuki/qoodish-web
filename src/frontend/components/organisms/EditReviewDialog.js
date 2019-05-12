@@ -91,23 +91,19 @@ const EditReviewDialog = () => {
   const [id, setId] = useState(undefined);
   const [mapId, setMapId] = useState(undefined);
   const [comment, setComment] = useState('');
-  const [image, setImage] = useState(undefined);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [errorComment, setErrorComment] = useState(undefined);
   const [errorMap, setErrorMap] = useState(undefined);
   const [disabled, setDisabled] = useState(true);
   const [imageDeleteRequest, setImageDeleteRequest] = useState(false);
 
-  useEffect(
-    () => {
-      if (mapId && comment && !errorComment && !errorMap) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
-    },
-    [id, mapId, comment]
-  );
+  useEffect(() => {
+    if (mapId && comment && !errorComment && !errorMap) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [id, mapId, comment]);
 
   const dispatch = useDispatch();
 
@@ -162,17 +158,14 @@ const EditReviewDialog = () => {
     }
   });
 
-  const setCurrentReview = useCallback(
-    () => {
-      if (currentReview) {
-        setId(currentReview.id);
-        setComment(currentReview.comment);
-        setImagePreviewUrl(currentReview.image ? currentReview.image.url : '');
-        setDisabled(false);
-      }
-    },
-    [currentReview]
-  );
+  const setCurrentReview = useCallback(() => {
+    if (currentReview) {
+      setId(currentReview.id);
+      setComment(currentReview.comment);
+      setImagePreviewUrl(currentReview.image ? currentReview.image.url : '');
+      setDisabled(false);
+    }
+  }, [currentReview]);
 
   const handleClickCreateButton = useCallback(async (mapId, params, canvas) => {
     dispatch(requestStart());
@@ -337,7 +330,6 @@ const EditReviewDialog = () => {
         file,
         canvas => {
           let dataUrl = canvas.toDataURL('image/jpeg');
-          setImage(file);
           setImagePreviewUrl(dataUrl);
           setImageDeleteRequest(false);
         },
@@ -347,7 +339,6 @@ const EditReviewDialog = () => {
   });
 
   const handleClearImageClick = useCallback(() => {
-    setImage(undefined);
     setImagePreviewUrl('');
     setImageDeleteRequest(true);
   });
@@ -356,7 +347,6 @@ const EditReviewDialog = () => {
     setId(undefined);
     setMapId(undefined);
     setComment('');
-    setImage(undefined);
     setImagePreviewUrl('');
     setErrorComment(undefined);
     setErrorComment(undefined);
@@ -371,25 +361,22 @@ const EditReviewDialog = () => {
     return map ? map.name : '';
   });
 
-  useEffect(
-    () => {
-      let canvas = document.getElementById('canvas');
-      if (!canvas) {
-        return;
-      }
-      if (canvas.getContext) {
-        let context = canvas.getContext('2d');
-        let image = new Image();
-        image.src = imagePreviewUrl;
-        image.onload = () => {
-          canvas.width = image.width;
-          canvas.height = image.height;
-          context.drawImage(image, 0, 0);
-        };
-      }
-    },
-    [imagePreviewUrl]
-  );
+  useEffect(() => {
+    let canvas = document.getElementById('canvas');
+    if (!canvas) {
+      return;
+    }
+    if (canvas.getContext) {
+      let context = canvas.getContext('2d');
+      let image = new Image();
+      image.src = imagePreviewUrl;
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+      };
+    }
+  }, [imagePreviewUrl]);
 
   return (
     <Dialog
@@ -479,8 +466,7 @@ const EditReviewDialog = () => {
           multiline
           required
           autoFocus
-          rowsMax={large ? '5' : '4'}
-          rows={large ? '5' : '4'}
+          rows="7"
           margin="normal"
           data-test="review-comment-input"
         />

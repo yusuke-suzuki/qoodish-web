@@ -19,26 +19,39 @@ const MapSummary = React.lazy(() =>
   import(/* webpackChunkName: "map_summary" */ '../organisms/MapSummary')
 );
 const DeleteMapDialog = React.lazy(() =>
-  import(/* webpackChunkName: "delete_map_dialog" */ '../organisms/DeleteMapDialog')
+  import(
+    /* webpackChunkName: "delete_map_dialog" */ '../organisms/DeleteMapDialog'
+  )
 );
 const InviteTargetDialog = React.lazy(() =>
-  import(/* webpackChunkName: "invite_target_dialog" */ '../organisms/InviteTargetDialog')
+  import(
+    /* webpackChunkName: "invite_target_dialog" */ '../organisms/InviteTargetDialog'
+  )
 );
 const MapSpotDrawer = React.lazy(() =>
   import(/* webpackChunkName: "map_spot_drawer" */ '../organisms/MapSpotDrawer')
 );
 const CreateResourceButton = React.lazy(() =>
-  import(/* webpackChunkName: "create_resource_button" */ '../molecules/CreateResourceButton')
+  import(
+    /* webpackChunkName: "create_resource_button" */ '../molecules/CreateResourceButton'
+  )
 );
 const LocationButton = React.lazy(() =>
-  import(/* webpackChunkName: "location_button" */ '../molecules/LocationButton')
+  import(
+    /* webpackChunkName: "location_button" */ '../molecules/LocationButton'
+  )
 );
 const SpotHorizontalList = React.lazy(() =>
-  import(/* webpackChunkName: "spot_horizontal_list" */ '../organisms/SpotHorizontalList')
+  import(
+    /* webpackChunkName: "spot_horizontal_list" */ '../organisms/SpotHorizontalList'
+  )
 );
 
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Fab from '@material-ui/core/Fab';
+import switchSummary from '../../actions/switchSummary';
 
 const styles = {
   containerLarge: {},
@@ -66,6 +79,16 @@ const styles = {
     position: 'relative',
     right: 0,
     bottom: 124
+  },
+  switchSummaryContainer: {
+    textAlign: 'center',
+    width: '100%',
+    position: 'absolute',
+    zIndex: 1,
+    top: 70
+  },
+  infoIcon: {
+    marginRight: 6
   }
 };
 
@@ -163,6 +186,28 @@ const MapButtons = React.memo(props => {
   );
 });
 
+const SwitchSummaryButton = React.memo(() => {
+  const dispatch = useDispatch();
+
+  const handleSummaryButtonClick = useCallback(() => {
+    dispatch(switchSummary());
+  });
+
+  return (
+    <div style={styles.switchSummaryContainer}>
+      <Fab
+        variant="extended"
+        size="small"
+        color="primary"
+        onClick={handleSummaryButtonClick}
+      >
+        <InfoOutlinedIcon style={styles.infoIcon} />
+        {I18n.t('summary')}
+      </Fab>
+    </div>
+  );
+});
+
 const MapDetail = props => {
   const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
@@ -226,15 +271,12 @@ const MapDetail = props => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentMap) {
-        return;
-      }
-      dispatchGtag(currentMap);
-    },
-    [currentMap]
-  );
+  useEffect(() => {
+    if (!currentMap) {
+      return;
+    }
+    dispatchGtag(currentMap);
+  }, [currentMap]);
 
   const refreshMap = useCallback(() => {
     initMap();
@@ -242,19 +284,16 @@ const MapDetail = props => {
     initFollowers();
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      refreshMap();
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    refreshMap();
 
-      return () => {
-        dispatch(clearMapState());
-      };
-    },
-    [currentUser.uid, props.params.primaryId]
-  );
+    return () => {
+      dispatch(clearMapState());
+    };
+  }, [currentUser.uid, props.params.primaryId]);
 
   return (
     <div>
@@ -269,6 +308,7 @@ const MapDetail = props => {
         </div>
       ) : (
         <div>
+          <SwitchSummaryButton />
           <div style={large ? styles.containerLarge : styles.containerSmall}>
             <React.Suspense fallback={null}>
               <GMap />

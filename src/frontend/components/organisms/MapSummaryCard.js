@@ -25,6 +25,10 @@ const styles = {
   text: {
     wordBreak: 'break-all'
   },
+  description: {
+    wordBreak: 'break-all',
+    whiteSpace: 'pre-wrap'
+  },
   chip: {
     marginBottom: 16,
     marginRight: 12
@@ -88,17 +92,14 @@ const MapLikes = React.memo(() => {
     dispatch(openLikesDialog());
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      if (currentMap) {
-        refreshLikes();
-      }
-    },
-    [currentMap, currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    if (currentMap) {
+      refreshLikes();
+    }
+  }, [currentMap, currentUser.uid]);
 
   return likes
     .slice(0, 9)
@@ -256,7 +257,11 @@ const MapSummaryCard = () => {
           {I18n.t('description')}
         </Typography>
         {currentMap ? (
-          <Typography variant="subtitle1" gutterBottom style={styles.text}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            style={styles.description}
+          >
             {currentMap.description}
           </Typography>
         ) : (
