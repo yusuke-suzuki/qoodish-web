@@ -23,7 +23,8 @@ const styles = {
     wordBreak: 'break-all'
   },
   reviewComment: {
-    wordBreak: 'break-all'
+    wordBreak: 'break-all',
+    whiteSpace: 'pre-wrap'
   },
   cardContent: {
     paddingTop: 0
