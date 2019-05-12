@@ -8,7 +8,6 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Tooltip from '@material-ui/core/Tooltip';
 import I18n from '../../utils/I18n';
@@ -17,7 +16,6 @@ import switchMap from '../../actions/switchMap';
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
-import switchSummary from '../../actions/switchSummary';
 import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
 
 const styles = {
@@ -90,10 +88,6 @@ const MapToolbar = () => {
     }
   });
 
-  const handleSummaryButtonClick = useCallback(() => {
-    dispatch(switchSummary());
-  });
-
   const handleInviteButtonClick = useCallback(() => {
     dispatch(openInviteTargetDialog());
   });
@@ -117,16 +111,16 @@ const MapToolbar = () => {
         </Tooltip>
       )}
       {map && (
-        <Typography variant="h6" color="inherit" noWrap style={styles.mapName}>
+        <Typography
+          variant={large ? 'h6' : 'subtitle1'}
+          color="inherit"
+          noWrap
+          style={styles.mapName}
+        >
           {map.name}
         </Typography>
       )}
       <div style={styles.toolbarActions}>
-        {!large && (
-          <IconButton color="inherit" onClick={handleSummaryButtonClick}>
-            <InfoOutlinedIcon />
-          </IconButton>
-        )}
         {isInvitable(map) && (
           <IconButton color="inherit" onClick={handleInviteButtonClick}>
             <PersonAddIcon />
