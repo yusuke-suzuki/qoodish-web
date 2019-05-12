@@ -62,35 +62,29 @@ const SharedEditMapDialog = props => {
   const [errorDescription, setErrorDescription] = useState(undefined);
   const [disabled, setDisabled] = useState(undefined);
 
-  useEffect(
-    () => {
-      if (name && description && !errorMapName && !errorDescription) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
-    },
-    [name, description]
-  );
+  useEffect(() => {
+    if (name && description && !errorMapName && !errorDescription) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [name, description]);
 
   const large = useMediaQuery('(min-width: 600px)');
 
   const dispatch = useDispatch();
 
-  const setCurrentMap = useCallback(
-    () => {
-      if (props.currentMap) {
-        setMapId(props.currentMap.id);
-        setName(props.currentMap.name);
-        setDescription(props.currentMap.description);
-        setPrivateMap(props.currentMap.private);
-        setInvitable(props.currentMap.invitable);
-        setShared(props.currentMap.shared);
-        setDisabled(true);
-      }
-    },
-    [props.currentMap]
-  );
+  const setCurrentMap = useCallback(() => {
+    if (props.currentMap) {
+      setMapId(props.currentMap.id);
+      setName(props.currentMap.name);
+      setDescription(props.currentMap.description);
+      setPrivateMap(props.currentMap.private);
+      setInvitable(props.currentMap.invitable);
+      setShared(props.currentMap.shared);
+      setDisabled(true);
+    }
+  }, [props.currentMap]);
 
   const clearState = useCallback(() => {
     setMapId('');
@@ -216,6 +210,8 @@ const SharedEditMapDialog = props => {
           required
           value={description}
           margin="normal"
+          multiline
+          rows="7"
         />
         <Chip
           avatar={

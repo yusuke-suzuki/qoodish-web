@@ -466,8 +466,7 @@ const EditReviewDialog = () => {
           multiline
           required
           autoFocus
-          rowsMax={large ? '5' : '4'}
-          rows={large ? '5' : '4'}
+          rows="7"
           margin="normal"
           data-test="review-comment-input"
         />
