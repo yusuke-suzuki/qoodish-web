@@ -60,7 +60,6 @@ const ToolbarSmall = React.memo(() => {
 
   const handleBackButtonClick = useCallback(() => {
     if (previousLocation && !previousLocation.state) {
-      console.log(previousLocation);
       history.goBack();
     } else {
       history.push('/');
