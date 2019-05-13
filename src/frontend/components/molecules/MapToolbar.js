@@ -79,7 +79,7 @@ const MapToolbar = () => {
       if (mapSummaryOpen) {
         dispatch(switchMap());
       } else {
-        if (previousLocation) {
+        if (previousLocation && !previousLocation.state) {
           history.goBack();
         } else {
           history.push('/');
