@@ -23,6 +23,15 @@
             "value": "max-age=2592000"
           }
         ]
+      },
+      {
+        "source": "manifest.json",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "https://rendertron.qoodish.com"
+          }
+        ]
       }
     ]
   },
