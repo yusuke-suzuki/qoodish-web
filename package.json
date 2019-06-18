@@ -47,7 +47,7 @@
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "babel-jest": "^24.7.1",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.0.6",
     "babel-plugin-react-remove-properties": "^0.3.0",
     "clean-webpack-plugin": "^2.0.1",
     "core-js": "^3.0.1",
