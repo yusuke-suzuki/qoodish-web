@@ -1,12 +1,19 @@
 require('dotenv').config();
 
-const express = require('express');
 const fs = require('fs');
 const http = require('http');
-const fetch = require('node-fetch');
 const url = require('url');
 
 const isBot = require(__dirname + '/utils/isBot');
+const prerender = require(__dirname + '/utils/prerender');
+
+const express = require('express');
+const morgan = require('morgan');
+
+const app = express();
+
+app.use(express.static(__dirname + '/../hosting'));
+app.use(morgan('tiny'));
 
 const generateUrl = req => {
   return url.format({
@@ -16,22 +23,14 @@ const generateUrl = req => {
   });
 };
 
-const app = express();
-
-app.use(express.static(__dirname + '/../hosting'));
-
 app.get('*', async (req, res) => {
-  res.set('Vary', 'User-Agent');
-
   if (isBot(req)) {
     console.log(`Bot access: ${req.headers['user-agent']}`);
+    const serialized = await prerender(generateUrl(req));
 
-    const response = await fetch(
-      `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(req)}`
-    );
-    const body = await response.text();
     //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-    res.send(body.toString());
+    res.set('Vary', 'User-Agent');
+    res.status(serialized.status).send(serialized.content);
   } else {
     res
       .status(200)
