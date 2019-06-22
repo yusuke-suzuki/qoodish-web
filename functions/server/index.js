@@ -21,7 +21,11 @@ const generateUrl = req => {
 const app = express();
 
 app.use(express.static(__dirname + '/../hosting'));
-app.use(morgan('short'));
+app.use(
+  morgan(
+    ':user-agent - :method :url :status :res[content-length] - :response-time ms'
+  )
+);
 
 app.get('*', async (req, res) => {
   if (isBot(req)) {
