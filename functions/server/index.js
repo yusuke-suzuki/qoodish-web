@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
+const morgan = require('morgan');
+
 const fs = require('fs');
 const http = require('http');
 const fetch = require('node-fetch');
@@ -19,10 +21,9 @@ const generateUrl = req => {
 const app = express();
 
 app.use(express.static(__dirname + '/../hosting'));
+app.use(morgan('short'));
 
 app.get('*', async (req, res) => {
-  res.set('Vary', 'User-Agent');
-
   if (isBot(req)) {
     console.log(`Bot access: ${req.headers['user-agent']}`);
 
@@ -30,7 +31,9 @@ app.get('*', async (req, res) => {
       `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(req)}`
     );
     const body = await response.text();
+
     //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+    res.set('Vary', 'User-Agent');
     res.send(body.toString());
   } else {
     res
