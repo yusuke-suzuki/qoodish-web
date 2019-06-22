@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const fs = require('fs');
 const http = require('http');
@@ -16,25 +17,12 @@ const generateUrl = req => {
 };
 
 const app = express();
+
 app.use(express.static(__dirname + '/../hosting'));
 
-const pageRoutes = [
-  '/',
-  '/discover',
-  '/login',
-  '/maps/:mapId',
-  '/maps/:mapId/reports/:reviewId',
-  '/profile',
-  '/users/:userId',
-  '/spots/:placeId',
-  '/notifications',
-  '/settings',
-  '/invites',
-  '/terms',
-  '/privacy'
-];
+app.get('*', async (req, res) => {
+  res.set('Vary', 'User-Agent');
 
-app.get(pageRoutes, async (req, res) => {
   if (isBot(req)) {
     console.log(`Bot access: ${req.headers['user-agent']}`);
 
@@ -43,11 +31,8 @@ app.get(pageRoutes, async (req, res) => {
     );
     const body = await response.text();
     //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-    res.set('Vary', 'User-Agent');
     res.send(body.toString());
   } else {
-    //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-    res.set('Vary', 'User-Agent');
     res
       .status(200)
       .send(fs.readFileSync(__dirname + '/../hosting/index.html').toString());
