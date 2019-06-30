@@ -59,16 +59,14 @@ typings/
 .env.development
 .env.production
 
-functions/hosting/index.html
-functions/hosting/bundle.js
-functions/hosting/*.*.js
-functions/hosting/sw-proto.js
-functions/hosting/sw.js
-functions/hosting/*.hot-update.*
+public/index.html
+public/bundle.js
+public/*.*.js
+public/sw-proto.js
+public/sw.js
+public/*.hot-update.*
 
 .vscode
 
 firebase-debug.log
 .firebase
-functions/node_modules/
-functions/.runtimeconfig.json

@@ -1,40 +1,4 @@
 {
-  "hosting": {
-    "public": "functions/hosting",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "*.hot-update.*",
-      "sw-proto.js"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "function": "host"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.*.@(js)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=2592000"
-          }
-        ]
-      },
-      {
-        "source": "manifest.json",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "https://rendertron.qoodish.com"
-          }
-        ]
-      }
-    ]
-  },
   "storage": {
     "rules": "storage.rules"
   },

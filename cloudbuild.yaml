@@ -1,7 +1,3 @@
-secrets:
-  - kmsKeyName: projects/api-project-411341268038/locations/global/keyRings/qoodish/cryptoKeys/qoodish
-    secretEnv:
-      FIREBASE_TOKEN: CiQAVBSmKWUA7WqWw7syWUzhb7wrtZvZCgQsj3wCpc/zHpoyBzISVgDAy7Gw6hSCWBiW3LXOm9CmEB8xYBsN9sgI8S/xruXvqcv9vI2g+rFPcmDZLiA7japB1vnA4zgvHqcfjvSkOCrupgGQRZe06/W/PJyvtCYl65ilPM8e
 steps:
   - name: gcr.io/cloud-builders/gcloud
     args:
@@ -18,15 +14,16 @@ steps:
       - "-c"
       - |
         yarn
-        cd ./functions && yarn --ignore-engines && cd ../
         yarn build:prod
     env:
       - "PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}"
       - "API_ENDPOINT=${_API_ENDPOINT}"
       - "ENDPOINT=${_ENDPOINT}"
-  - name: "gcr.io/$PROJECT_ID/firebase"
+  - name: "gcr.io/kaniko-project/executor"
     args:
-      - deploy
-      - --project
-      - ${_FIREBASE_DEPLOY_TARGET_PROJECT}
-    secretEnv: ["FIREBASE_TOKEN"]
+      - --cache=true
+      - --cache-ttl=6h
+      - --destination
+      - gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA
+      - --destination
+      - gcr.io/$PROJECT_ID/$REPO_NAME:latest

@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require('express');
 const morgan = require('morgan');
 
@@ -20,7 +18,7 @@ const generateUrl = req => {
 
 const app = express();
 
-app.use(express.static(__dirname + '/../hosting'));
+app.use(express.static(__dirname + '/public'));
 app.use(
   morgan(
     ':user-agent - :method :url :status :res[content-length] - :response-time ms'
@@ -42,12 +40,8 @@ app.get('*', async (req, res) => {
   } else {
     res
       .status(200)
-      .send(fs.readFileSync(__dirname + '/../hosting/index.html').toString());
+      .send(fs.readFileSync(__dirname + '/public/index.html').toString());
   }
 });
 
-if (process.env.NODE_ENV === 'development') {
-  http.createServer(app).listen(5000);
-}
-
-module.exports = app;
+http.createServer(app).listen(process.env.PORT || 5000);
