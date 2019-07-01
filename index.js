@@ -23,7 +23,16 @@ app.use(
   })
 );
 
-app.get('*.*', express.static(DIST_FOLDER, { index: false }));
+app.use(
+  express.static(DIST_FOLDER, {
+    index: false,
+    maxAge: 2592000
+  })
+);
+
+app.get('/healthcheck', (req, res) => {
+  res.status(200).end();
+});
 
 app.get('*', (req, res) => {
   res.sendFile(DIST_FOLDER + '/index.html');
