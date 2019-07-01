@@ -1,47 +1,36 @@
 const express = require('express');
 const morgan = require('morgan');
+const rendertron = require('rendertron-middleware');
 
-const fs = require('fs');
-const http = require('http');
-const fetch = require('node-fetch');
-const url = require('url');
+const BOTS = rendertron.botUserAgents.concat(['googlebot', 'notebot']);
+const BOT_UA_PATTERN = new RegExp(BOTS.join('|'), 'i');
 
-const isBot = require(__dirname + '/utils/isBot');
-
-const generateUrl = req => {
-  return url.format({
-    protocol: 'https',
-    host: process.env.SITE_DOMAIN,
-    pathname: req.originalUrl
-  });
-};
+const DIST_FOLDER = __dirname + '/public';
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
-app.use(express.static(__dirname + '/public'));
 app.use(
   morgan(
     ':user-agent - :method :url :status :res[content-length] - :response-time ms'
   )
 );
 
-app.get('*', async (req, res) => {
-  if (isBot(req)) {
-    console.log(`Bot access: ${req.headers['user-agent']}`);
+app.use(
+  rendertron.makeMiddleware({
+    proxyUrl: `${process.env.RENDERTRON_ENDPOINT}/render`,
+    userAgentPattern: BOT_UA_PATTERN
+  })
+);
 
-    const response = await fetch(
-      `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(req)}`
-    );
-    const body = await response.text();
+app.get('*.*', express.static(DIST_FOLDER, { index: false }));
 
-    //res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-    res.set('Vary', 'User-Agent');
-    res.send(body.toString());
-  } else {
-    res
-      .status(200)
-      .send(fs.readFileSync(__dirname + '/public/index.html').toString());
-  }
+app.get('*', (req, res) => {
+  res.sendFile(DIST_FOLDER + '/index.html');
 });
 
-http.createServer(app).listen(process.env.PORT || 5000);
+app.listen(PORT, () => {
+  console.log(
+    `Node Express server listening on http://localhost:${PORT} from ${DIST_FOLDER}`
+  );
+});
