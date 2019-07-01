@@ -49,7 +49,7 @@ const plugins = [
     'CLOUD_STORAGE_BUCKET_NAME'
   ]),
   new InjectManifest({
-    swSrc: './functions/hosting/sw-proto.js',
+    swSrc: './public/sw-proto.js',
     swDest: 'sw.js'
   })
 ];
@@ -58,7 +58,7 @@ module.exports = [
   {
     entry: ['./src/service_workers/sw.js'],
     output: {
-      path: __dirname + '/functions/hosting',
+      path: __dirname + '/public',
       publicPath: '/',
       filename: 'sw-proto.js'
     },
@@ -83,7 +83,7 @@ module.exports = [
     output: {
       filename: '[name].[contenthash].js',
       chunkFilename: '[name].[contenthash].js',
-      path: __dirname + '/functions/hosting',
+      path: __dirname + '/public',
       publicPath: '/'
     },
     resolve: {
