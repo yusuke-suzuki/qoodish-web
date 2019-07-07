@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
@@ -13,7 +13,8 @@ const plugins = [
       '!robots.txt',
       '!manifest.json',
       '!favicon.ico',
-      '!apple-touch-icon.png'
+      '!apple-touch-icon.png',
+      '!sw-proto.js'
     ]
   }),
   new HtmlWebpackPlugin({

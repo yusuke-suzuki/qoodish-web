@@ -135,6 +135,7 @@ const PushSettings = () => {
               checked={
                 currentUser &&
                 !currentUser.isAnonymous &&
+                currentUser.push_notification &&
                 currentUser.push_notification.liked
               }
               onChange={(e, checked) => handleChange('liked', checked)}
@@ -150,6 +151,7 @@ const PushSettings = () => {
               checked={
                 currentUser &&
                 !currentUser.isAnonymous &&
+                currentUser.push_notification &&
                 currentUser.push_notification.followed
               }
               onChange={(e, checked) => handleChange('followed', checked)}
@@ -165,6 +167,7 @@ const PushSettings = () => {
               checked={
                 currentUser &&
                 !currentUser.isAnonymous &&
+                currentUser.push_notification &&
                 currentUser.push_notification.invited
               }
               onChange={(e, checked) => handleChange('invited', checked)}
@@ -180,6 +183,7 @@ const PushSettings = () => {
               checked={
                 currentUser &&
                 !currentUser.isAnonymous &&
+                currentUser.push_notification &&
                 currentUser.push_notification.comment
               }
               onChange={(e, checked) => handleChange('comment', checked)}
