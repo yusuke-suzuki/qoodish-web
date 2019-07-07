@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';

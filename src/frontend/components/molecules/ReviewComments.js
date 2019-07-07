@@ -3,6 +3,7 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
@@ -146,10 +147,12 @@ const Comments = React.memo(props => {
         to={`/users/${comment.author.id}`}
         title={comment.author.name}
       >
-        <Avatar
-          src={comment.author.profile_image_url}
-          alt={comment.author.name}
-        />
+        <ListItemAvatar>
+          <Avatar
+            src={comment.author.profile_image_url}
+            alt={comment.author.name}
+          />
+        </ListItemAvatar>
       </ButtonBase>
       <ListItemText
         primary={

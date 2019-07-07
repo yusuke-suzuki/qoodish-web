@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -77,15 +77,12 @@ const ProfileReviews = props => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      initReviews();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    initReviews();
+  }, [currentUser.uid]);
 
   if (loading) {
     return (

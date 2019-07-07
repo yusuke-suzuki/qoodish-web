@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
@@ -76,21 +76,18 @@ const Notifications = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        setLoading(false);
-        return;
-      }
-      handleMount();
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      setLoading(false);
+      return;
+    }
+    handleMount();
 
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: '/notifications',
-        page_title: `${I18n.t('notifications')} | Qoodish`
-      });
-    },
-    [currentUser.uid]
-  );
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: '/notifications',
+      page_title: `${I18n.t('notifications')} | Qoodish`
+    });
+  }, [currentUser.uid]);
 
   return (
     <div>

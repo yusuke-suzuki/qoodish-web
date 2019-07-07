@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -149,22 +149,19 @@ const Discover = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
 
-      initActiveMaps();
-      initRecentMaps();
+    initActiveMaps();
+    initRecentMaps();
 
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: '/discover',
-        page_title: `${I18n.t('discover')} | Qoodish`
-      });
-    },
-    [currentUser.uid]
-  );
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: '/discover',
+      page_title: `${I18n.t('discover')} | Qoodish`
+    });
+  }, [currentUser.uid]);
 
   return (
     <div>

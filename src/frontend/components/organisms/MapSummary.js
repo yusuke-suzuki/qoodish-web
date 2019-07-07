@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import MapToolbar from '../molecules/MapToolbar';
 import MapSummaryCard from './MapSummaryCard';

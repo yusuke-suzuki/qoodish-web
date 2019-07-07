@@ -3,6 +3,7 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import moment from 'moment';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -91,15 +92,12 @@ const NotificationList = props => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        return;
-      }
-      handleReadNotification();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      return;
+    }
+    handleReadNotification();
+  }, [currentUser.uid]);
 
   return props.notifications.map(notification => (
     <Item
@@ -112,10 +110,12 @@ const NotificationList = props => {
       style={props.menu ? styles.notificationMenuItem : {}}
       selected={!notification.read}
     >
-      <Avatar
-        src={notification.notifier.profile_image_url}
-        alt={notification.notifier.name}
-      />
+      <ListItemAvatar>
+        <Avatar
+          src={notification.notifier.profile_image_url}
+          alt={notification.notifier.name}
+        />
+      </ListItemAvatar>
       <ListItemText
         style={styles.listItemText}
         primary={

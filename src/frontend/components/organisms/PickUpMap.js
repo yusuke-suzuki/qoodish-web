@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Link from '../molecules/Link';
 
@@ -55,15 +55,12 @@ const PickUpMap = () => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      initPickUpMap();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    initPickUpMap();
+  }, [currentUser.uid]);
 
   return (
     <GridList cols={1} style={styles.gridList} spacing={0}>

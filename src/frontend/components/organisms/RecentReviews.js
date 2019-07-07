@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Link from '../molecules/Link';
 
 import GridList from '@material-ui/core/GridList';
@@ -123,15 +123,12 @@ const RecentReviews = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      initRecentReviews();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    initRecentReviews();
+  }, [currentUser.uid]);
 
   if (!loading && recentReviews.length < 1) {
     return (

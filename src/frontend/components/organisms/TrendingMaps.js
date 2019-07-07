@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useMappedState } from 'redux-react-hook';
 import Link from '../molecules/Link';
 
@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
@@ -83,16 +84,13 @@ const TrendingMaps = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        setLoading(false);
-        return;
-      }
-      initPopularMaps();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      setLoading(false);
+      return;
+    }
+    initPopularMaps();
+  }, [currentUser.uid]);
 
   return loading ? (
     <div style={styles.progress}>
@@ -125,7 +123,9 @@ const TrendingMaps = () => {
               title={map.name}
               style={large ? styles.listItemLarge : styles.listItemSmall}
             >
-              <Avatar src={map.thumbnail_url} alt={map.name} />
+              <ListItemAvatar>
+                <Avatar src={map.thumbnail_url} alt={map.name} />
+              </ListItemAvatar>
               <ListItemText
                 disableTypography={true}
                 primary={

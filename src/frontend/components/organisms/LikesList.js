@@ -6,6 +6,7 @@ import Link from '../molecules/Link';
 import moment from 'moment';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
@@ -131,10 +132,12 @@ const LikesList = props => {
               component={Link}
               to={like.click_action}
             >
-              <Avatar
-                src={like.voter.profile_image_url}
-                alt={like.voter.name}
-              />
+              <ListItemAvatar>
+                <Avatar
+                  src={like.voter.profile_image_url}
+                  alt={like.voter.name}
+                />
+              </ListItemAvatar>
               <ListItemText
                 style={styles.listItemText}
                 primary={

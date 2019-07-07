@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
+import { fade, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -18,7 +17,10 @@ import { MapsApi } from 'qoodish_api';
 
 import searchMaps from '../../actions/searchMaps';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -29,12 +31,12 @@ const styles = theme => ({
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
+      marginLeft: theme.spacing(1),
       width: 'auto'
     }
   },
   searchIcon: {
-    width: theme.spacing.unit * 9,
+    width: theme.spacing(7),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -47,10 +49,7 @@ const styles = theme => ({
     width: '100%'
   },
   inputInput: {
-    paddingTop: theme.spacing.unit,
-    paddingRight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
+    padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
@@ -63,9 +62,9 @@ const styles = theme => ({
   paper: {
     position: 'absolute'
   }
-});
+}));
 
-const SearchBar = props => {
+const SearchBar = () => {
   const pickedMaps = useMappedState(
     useCallback(state => state.shared.pickedMaps, [])
   );
@@ -100,7 +99,7 @@ const SearchBar = props => {
     });
   });
 
-  const { classes } = props;
+  const classes = useStyles();
 
   return (
     <div className={classes.search}>
@@ -143,4 +142,4 @@ const SearchBar = props => {
   );
 };
 
-export default React.memo(withStyles(styles)(SearchBar));
+export default React.memo(SearchBar);

@@ -1,19 +1,8 @@
 import React, { useEffect } from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import Typography from '@material-ui/core/Typography';
 
-const styles = {
-  backButton: {
-    zIndex: 1
-  },
-  backIcon: {
-    color: 'white'
-  }
-};
-
 const Terms = () => {
-  const large = useMediaQuery('(min-width: 600px)');
   useEffect(() => {
     gtag('config', process.env.GA_TRACKING_ID, {
       page_path: '/terms',

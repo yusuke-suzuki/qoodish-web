@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
