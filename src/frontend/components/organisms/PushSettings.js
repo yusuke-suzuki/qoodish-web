@@ -10,8 +10,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import I18n from '../../utils/I18n';
 import createRegistrationToken from '../../utils/createRegistrationToken';
-import getFirebaseMessaging from '../../utils/getFirebaseMessaging';
-import getFirebase from '../../utils/getFirebase';
 import openToast from '../../actions/openToast';
 import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 import { PushNotification, PushNotificationApi } from 'qoodish_api';
@@ -44,20 +42,15 @@ const PushSettings = () => {
   });
 
   const handleEnablePush = useCallback(async () => {
-    const firebase = await getFirebase();
-    await getFirebaseMessaging();
-    const messaging = firebase.messaging();
-
-    try {
-      await messaging.requestPermission();
-    } catch (e) {
-      console.log(e);
-      dispatch(openToast(I18n.t('unable to get permission')));
-      return;
-    }
-    await createRegistrationToken();
-    setPushEnabled(true);
-    dispatch(openToast(I18n.t('push enabled')));
+    Notification.requestPermission(async permission => {
+      if (permission === 'granted') {
+        await createRegistrationToken();
+        setPushEnabled(true);
+        dispatch(openToast(I18n.t('push enabled')));
+      } else {
+        dispatch(openToast(I18n.t('push disabled')));
+      }
+    });
   });
 
   const handleDisablePush = useCallback(async () => {

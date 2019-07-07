@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useDispatch } from 'redux-react-hook';
 
 import Dialog from '@material-ui/core/Dialog';

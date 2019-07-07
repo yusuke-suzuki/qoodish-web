@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -102,21 +102,18 @@ const Invites = () => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        setLoading(false);
-        return;
-      }
-      fetchInvites();
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      setLoading(false);
+      return;
+    }
+    fetchInvites();
 
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: '/invites',
-        page_title: `${I18n.t('invites')} | Qoodish'`
-      });
-    },
-    [currentUser.uid]
-  );
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: '/invites',
+      page_title: `${I18n.t('invites')} | Qoodish'`
+    });
+  }, [currentUser.uid]);
 
   return (
     <div>

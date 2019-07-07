@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
@@ -113,9 +113,7 @@ const MapDetailHelmet = props => {
         { name: 'title', content: `${map.name} | Qoodish` },
         {
           name: 'keywords',
-          content: `${
-            map.name
-          }, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
+          content: `${map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
         },
         { name: 'description', content: map.description },
         { name: 'twitter:card', content: 'summary_large_image' },

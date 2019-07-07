@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
@@ -248,21 +248,18 @@ const Timeline = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
 
-      refreshReviews();
+    refreshReviews();
 
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: '/',
-        page_title: `${I18n.t('home')} | Qoodish`
-      });
-    },
-    [currentUser.uid]
-  );
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: '/',
+      page_title: `${I18n.t('home')} | Qoodish`
+    });
+  }, [currentUser.uid]);
 
   return (
     <div>

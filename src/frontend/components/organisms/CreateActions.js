@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';

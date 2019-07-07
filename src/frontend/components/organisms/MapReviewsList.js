@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import { useMappedState } from 'redux-react-hook';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '@material-ui/core/Avatar';
@@ -60,10 +61,12 @@ const MapReviewsList = () => {
             state: { modal: true, review: review }
           }}
         >
-          <Avatar
-            src={review.author.profile_image_url}
-            alt={review.author.name}
-          />
+          <ListItemAvatar>
+            <Avatar
+              src={review.author.profile_image_url}
+              alt={review.author.name}
+            />
+          </ListItemAvatar>
           <ListItemText
             primary={
               <div style={styles.activityText}>

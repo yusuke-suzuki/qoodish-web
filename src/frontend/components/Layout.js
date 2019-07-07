@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import Grid from '@material-ui/core/Grid';
@@ -37,9 +38,6 @@ const theme = createMuiTheme({
       dark: lightBlue[700],
       contrastText: '#fff'
     }
-  },
-  typography: {
-    useNextVariants: true
   }
 });
 
@@ -87,21 +85,18 @@ const Layout = () => {
     mapState
   );
 
-  useEffect(
-    () => {
-      if (
-        !currentLocation ||
-        (currentLocation.state && currentLocation.state.modal)
-      ) {
-        return;
-      }
-      scrollTop();
-    },
-    [currentLocation]
-  );
+  useEffect(() => {
+    if (
+      !currentLocation ||
+      (currentLocation.state && currentLocation.state.modal)
+    ) {
+      return;
+    }
+    scrollTop();
+  }, [currentLocation]);
 
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <React.Suspense fallback={null}>
         <NavBar />
       </React.Suspense>
@@ -140,7 +135,7 @@ const Layout = () => {
       <React.Suspense fallback={null}>
         <SharedDialogs />
       </React.Suspense>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 };
 

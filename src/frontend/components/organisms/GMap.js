@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import loadGoogleMapsApi from 'load-google-maps-api';
 
@@ -10,7 +10,9 @@ import requestCurrentPosition from '../../actions/requestCurrentPosition';
 import requestMapCenter from '../../actions/requestMapCenter';
 
 const CurrentPositionIcon = React.lazy(() =>
-  import(/* webpackChunkName: "current_position_icon" */ '../molecules/CurrentPositionIcon')
+  import(
+    /* webpackChunkName: "current_position_icon" */ '../molecules/CurrentPositionIcon'
+  )
 );
 const SpotMarker = React.lazy(() =>
   import(/* webpackChunkName: "spot_marker" */ '../molecules/SpotMarker')
@@ -22,6 +24,9 @@ import { SpotsApi } from 'qoodish_api';
 import fetchSpots from '../../actions/fetchSpots';
 import Popover from '@material-ui/core/Popover';
 import SpotInfoWindow from '../molecules/SpotInfoWindow';
+
+import { ThemeProvider } from '@material-ui/styles';
+import useTheme from '@material-ui/styles/useTheme';
 
 const styles = {
   mapWrapperLarge: {
@@ -48,6 +53,7 @@ const styles = {
 };
 
 const GMap = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -86,28 +92,22 @@ const GMap = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!gMap) {
-        return;
-      }
-      gMap.setCenter({
-        lat: parseFloat(center.lat),
-        lng: parseFloat(center.lng)
-      });
-      gMap.setZoom(zoom);
-    },
-    [center, zoom]
-  );
+  useEffect(() => {
+    if (!gMap) {
+      return;
+    }
+    gMap.setCenter({
+      lat: parseFloat(center.lat),
+      lng: parseFloat(center.lng)
+    });
+    gMap.setZoom(zoom);
+  }, [center, zoom]);
 
-  useEffect(
-    () => {
-      if (currentMap) {
-        refreshSpots();
-      }
-    },
-    [mapReviews, currentMap]
-  );
+  useEffect(() => {
+    if (currentMap) {
+      refreshSpots();
+    }
+  }, [mapReviews, currentMap]);
 
   const initGoogleMaps = useCallback(async () => {
     const options = {
@@ -149,56 +149,47 @@ const GMap = () => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [windowOpen, setWindowOpen] = useState(false);
 
-  useEffect(
-    () => {
-      if (!googleMapsApi || !currentPosition.lat || !gMap) {
-        return;
-      }
-      new googleMapsApi.Marker({
-        position: {
-          lat: parseFloat(currentPosition.lat),
-          lng: parseFloat(currentPosition.lng)
-        },
-        icon: {
-          path: googleMapsApi.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: '#0088ff',
-          fillOpacity: 0.8,
-          strokeColor: '#0088ff',
-          strokeOpacity: 0.2
-        },
-        map: gMap,
-        title: I18n.t('you are hear')
-      });
-    },
-    [currentPosition]
-  );
+  useEffect(() => {
+    if (!googleMapsApi || !currentPosition.lat || !gMap) {
+      return;
+    }
+    new googleMapsApi.Marker({
+      position: {
+        lat: parseFloat(currentPosition.lat),
+        lng: parseFloat(currentPosition.lng)
+      },
+      icon: {
+        path: googleMapsApi.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: '#0088ff',
+        fillOpacity: 0.8,
+        strokeColor: '#0088ff',
+        strokeOpacity: 0.2
+      },
+      map: gMap,
+      title: I18n.t('you are hear')
+    });
+  }, [currentPosition]);
 
-  const isGoogleMapsApiReady = useMemo(
-    () => {
-      if (gMap && googleMapsApi) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    [gMap, googleMapsApi]
-  );
+  const isGoogleMapsApiReady = useMemo(() => {
+    if (gMap && googleMapsApi) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [gMap, googleMapsApi]);
 
-  useEffect(
-    () => {
-      if (!currentMap || !isGoogleMapsApiReady) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentMap || !isGoogleMapsApiReady) {
+      return;
+    }
 
-      if (currentMap.base.place_id) {
-        dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
-      } else {
-        dispatch(requestCurrentPosition());
-      }
-    },
-    [currentMap]
-  );
+    if (currentMap.base.place_id) {
+      dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
+    } else {
+      dispatch(requestCurrentPosition());
+    }
+  }, [currentMap]);
 
   const onSpotMarkerClick = useCallback(async (e, spot) => {
     dispatch(selectSpot(spot));
@@ -243,18 +234,21 @@ const GMap = () => {
             googleMapsApi={googleMapsApi}
             gMap={gMap}
           >
-            <React.Suspense fallback={null}>
-              <SpotMarker
-                spot={spot}
-                onClick={e => onSpotMarkerClick(e, spot)}
-                large={large}
-                aria-label="Info window"
-                aria-owns={windowOpen ? 'spot-info-window' : null}
-                aria-haspopup="true"
-              />
-            </React.Suspense>
+            <ThemeProvider theme={theme}>
+              <React.Suspense fallback={null}>
+                <SpotMarker
+                  spot={spot}
+                  onClick={e => onSpotMarkerClick(e, spot)}
+                  large={large}
+                  aria-label="Info window"
+                  aria-owns={windowOpen ? 'spot-info-window' : null}
+                  aria-haspopup="true"
+                />
+              </React.Suspense>
+            </ThemeProvider>
           </OverlayView>
         ))}
+
       {isGoogleMapsApiReady && currentPosition.lat && (
         <OverlayView
           position={

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -79,29 +79,23 @@ const EditProfileDialog = () => {
   const [errorBio, setErrorBio] = useState(undefined);
   const [disabled, setDisabled] = useState(true);
 
-  useEffect(
-    () => {
-      if (name && !errorName && !errorBio) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
-    },
-    [name, bio]
-  );
+  useEffect(() => {
+    if (name && !errorName && !errorBio) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [name, bio]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeEditProfileDialog());
   });
 
-  const setCurrentProfile = useCallback(
-    () => {
-      setName(currentUser.name);
-      setBio(currentUser.biography);
-      setImageUrl(currentUser.thumbnail_url);
-    },
-    [currentUser]
-  );
+  const setCurrentProfile = useCallback(() => {
+    setName(currentUser.name);
+    setBio(currentUser.biography);
+    setImageUrl(currentUser.thumbnail_url);
+  }, [currentUser]);
 
   const clearState = useCallback(() => {
     setName('');

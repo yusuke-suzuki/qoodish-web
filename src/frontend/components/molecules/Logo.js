@@ -1,5 +1,5 @@
 import React from 'react';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Typography from '@material-ui/core/Typography';
 import Link from './Link';
@@ -21,7 +21,7 @@ const Logo = props => {
   return (
     <Typography
       variant={smUp ? 'h4' : 'h5'}
-      color={props.color ? props.color : 'default'}
+      color={props.color ? props.color : 'primary'}
       style={styles.logo}
     >
       <Link to="/" style={styles.link} title="Qoodish">

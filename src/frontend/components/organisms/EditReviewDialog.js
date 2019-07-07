@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -20,6 +20,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
@@ -449,7 +450,9 @@ const EditReviewDialog = () => {
           >
             {postableMaps.map(map => (
               <MenuItem key={map.id} value={map.id} data-test="map-item">
-                <Avatar src={map.thumbnail_url} />
+                <ListItemAvatar>
+                  <Avatar src={map.thumbnail_url} />
+                </ListItemAvatar>
                 <ListItemText primary={map.name} />
               </MenuItem>
             ))}

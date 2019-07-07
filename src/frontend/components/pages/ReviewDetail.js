@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ReviewCard from '../molecules/ReviewCard';
@@ -40,9 +39,7 @@ const ReviewHelmet = props => {
         },
         {
           name: 'keywords',
-          content: `${
-            review.map.name
-          }, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
+          content: `${review.map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
         },
         { name: 'description', content: review.comment },
         { name: 'twitter:card', content: 'summary_large_image' },
@@ -125,38 +122,28 @@ const ReviewDetail = props => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
 
-      if (!currentReview) {
-        initReview();
-      }
+    if (!currentReview) {
+      initReview();
+    }
 
-      return () => {
-        dispatch(clearReviewState());
-      };
-    },
-    [currentUser.uid]
-  );
+    return () => {
+      dispatch(clearReviewState());
+    };
+  }, [currentUser.uid]);
 
-  useEffect(
-    () => {
-      if (currentReview) {
-        gtag('config', process.env.GA_TRACKING_ID, {
-          page_path: `/maps/${currentReview.map.id}/reports/${
-            currentReview.id
-          }`,
-          page_title: `${currentReview.spot.name} - ${
-            currentReview.map.name
-          } | Qoodish`
-        });
-      }
-    },
-    [currentReview]
-  );
+  useEffect(() => {
+    if (currentReview) {
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: `/maps/${currentReview.map.id}/reports/${currentReview.id}`,
+        page_title: `${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`
+      });
+    }
+  }, [currentReview]);
 
   return (
     <div>
