@@ -9,10 +9,7 @@
     ],
     "@babel/preset-react"
   ],
-  "plugins": [
-    "@babel/plugin-transform-async-to-generator",
-    "@babel/plugin-syntax-dynamic-import"
-  ],
+  "plugins": ["@babel/plugin-transform-async-to-generator"],
   "env": {
     "production": {
       "plugins": ["react-remove-properties"]
