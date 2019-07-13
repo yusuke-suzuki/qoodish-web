@@ -47,6 +47,9 @@ const SpotHorizontalList = React.lazy(() =>
   )
 );
 
+import { ThemeProvider } from '@material-ui/styles';
+import useTheme from '@material-ui/styles/useTheme';
+
 import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -55,6 +58,15 @@ import switchSummary from '../../actions/switchSummary';
 
 const styles = {
   containerLarge: {},
+  containerMd: {
+    position: 'fixed',
+    top: 64,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    display: 'block',
+    width: '100%'
+  },
   containerSmall: {
     position: 'fixed',
     top: 56,
@@ -80,7 +92,14 @@ const styles = {
     right: 0,
     bottom: 124
   },
-  switchSummaryContainer: {
+  switchSummaryContainerLarge: {
+    textAlign: 'center',
+    width: '100%',
+    position: 'absolute',
+    zIndex: 1,
+    top: 78
+  },
+  switchSummaryContainerSmall: {
     textAlign: 'center',
     width: '100%',
     position: 'absolute',
@@ -137,7 +156,7 @@ const MapDetailHelmet = props => {
 };
 
 const MapSummaryDrawer = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
   const mapState = useCallback(
     state => ({
       mapSummaryOpen: state.mapDetail.mapSummaryOpen
@@ -148,17 +167,17 @@ const MapSummaryDrawer = props => {
 
   return (
     <Drawer
-      variant={large ? 'persistent' : 'temporary'}
-      anchor={large ? 'left' : 'right'}
-      open={large ? true : mapSummaryOpen}
+      variant={lgUp ? 'persistent' : 'temporary'}
+      anchor={lgUp ? 'left' : 'right'}
+      open={lgUp ? true : mapSummaryOpen}
       PaperProps={{
-        style: large ? styles.drawerPaperLarge : styles.drawerPaperSmall
+        style: lgUp ? styles.drawerPaperLarge : styles.drawerPaperSmall
       }}
     >
       <React.Suspense fallback={null}>
         <MapSummary
           mapId={props.params.primaryId}
-          dialogMode={large ? false : true}
+          dialogMode={lgUp ? false : true}
         />
       </React.Suspense>
     </Drawer>
@@ -166,11 +185,11 @@ const MapSummaryDrawer = props => {
 };
 
 const MapButtons = React.memo(props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
   const currentMap = props.currentMap;
 
   return (
-    <div style={large ? styles.mapButtonsLarge : styles.mapButtonsSmall}>
+    <div style={lgUp ? styles.mapButtonsLarge : styles.mapButtonsSmall}>
       <React.Suspense fallback={null}>
         <CreateResourceButton
           buttonForMap
@@ -185,29 +204,41 @@ const MapButtons = React.memo(props => {
 });
 
 const SwitchSummaryButton = React.memo(() => {
+  const smUp = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleSummaryButtonClick = useCallback(() => {
     dispatch(switchSummary());
   });
 
   return (
-    <div style={styles.switchSummaryContainer}>
-      <Fab
-        variant="extended"
-        size="small"
-        color="primary"
-        onClick={handleSummaryButtonClick}
+    <ThemeProvider theme={theme}>
+      <div
+        style={
+          smUp
+            ? styles.switchSummaryContainerLarge
+            : styles.switchSummaryContainerSmall
+        }
       >
-        <InfoOutlinedIcon style={styles.infoIcon} />
-        {I18n.t('summary')}
-      </Fab>
-    </div>
+        <Fab
+          variant="extended"
+          size="small"
+          color="primary"
+          onClick={handleSummaryButtonClick}
+        >
+          <InfoOutlinedIcon style={styles.infoIcon} />
+          {I18n.t('summary')}
+        </Fab>
+      </div>
+    </ThemeProvider>
   );
 });
 
 const MapDetail = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
+
   const dispatch = useDispatch();
 
   const mapState = useCallback(
@@ -296,7 +327,7 @@ const MapDetail = props => {
   return (
     <div>
       {currentMap && <MapDetailHelmet map={currentMap} />}
-      {large ? (
+      {lgUp ? (
         <div>
           <MapSummaryDrawer {...props} />
           <React.Suspense fallback={null}>
@@ -307,7 +338,7 @@ const MapDetail = props => {
       ) : (
         <div>
           <SwitchSummaryButton />
-          <div style={large ? styles.containerLarge : styles.containerSmall}>
+          <div style={smUp ? styles.containerMd : styles.containerSmall}>
             <React.Suspense fallback={null}>
               <GMap />
             </React.Suspense>
@@ -322,7 +353,7 @@ const MapDetail = props => {
       <React.Suspense fallback={null}>
         <DeleteMapDialog mapId={props.params.primaryId} />
         <InviteTargetDialog mapId={props.params.primaryId} />
-        {!large && <MapSpotDrawer mapId={props.params.primaryId} />}
+        {!lgUp && <MapSpotDrawer mapId={props.params.primaryId} />}
       </React.Suspense>
     </div>
   );

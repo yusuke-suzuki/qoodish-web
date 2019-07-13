@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -89,7 +90,16 @@ const SpotCardHeader = props => {
 
   return (
     <List disablePadding>
-      <ListItem disableGutters style={styles.listItem}>
+      <ListItem
+        button
+        disableGutters
+        style={styles.listItem}
+        component={Link}
+        to={{
+          pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+          state: { modal: true, spot: currentSpot }
+        }}
+      >
         <ListItemText
           disableTypography
           primary={
@@ -121,6 +131,7 @@ const SpotCardHeader = props => {
 };
 
 const SpotCardContent = () => {
+  const smUp = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -147,7 +158,11 @@ const SpotCardContent = () => {
           <DragHandleIcon color="disabled" />
         </div>
         <SpotCardHeader currentSpot={currentSpot} />
-        <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
+        <GridList
+          cols={smUp ? 4.5 : 2.5}
+          cellHeight={100}
+          style={styles.gridList}
+        >
           {currentMap.postable && (
             <GridListTile key="add-review" onClick={handleCreateReviewClick}>
               <img src={process.env.SUBSTITUTE_URL} />
@@ -226,14 +241,11 @@ const MapSpotDrawer = () => {
     dispatch(closeSpotCard());
   });
 
-  useEffect(
-    () => {
-      if (spotReviews.length < 1) {
-        handleClose();
-      }
-    },
-    [spotReviews]
-  );
+  useEffect(() => {
+    if (spotReviews.length < 1) {
+      handleClose();
+    }
+  }, [spotReviews]);
 
   const dialogOpen = reviewDialogOpen || spotDialogOpen || mapSummaryOpen;
 

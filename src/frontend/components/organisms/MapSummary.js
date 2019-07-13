@@ -78,14 +78,14 @@ const styles = {
 };
 
 const MapBottomNav = React.memo(() => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
   const currentMap = useMappedState(
     useCallback(state => state.mapSummary.currentMap, [])
   );
 
   return (
     <Paper style={styles.bottomNav} square elevation={1}>
-      <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
+      <Toolbar style={smUp ? styles.toolbarLarge : styles.toolbarSmall}>
         <div style={styles.followMapButton}>
           <FollowMapButton currentMap={currentMap} />
         </div>
@@ -95,26 +95,27 @@ const MapBottomNav = React.memo(() => {
 });
 
 const MapTabs = React.memo(props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
 
   return (
     <Tabs
       value={props.tabValue}
       onChange={props.handleTabChange}
-      style={large ? styles.tabsLarge : styles.tabsSmall}
-      variant={large ? 'fullWidth' : 'standard'}
-      indicatorColor={large ? 'primary' : 'secondary'}
-      textColor={large ? 'primary' : 'inherit'}
+      style={smUp ? styles.tabsLarge : styles.tabsSmall}
+      variant={lgUp ? 'fullWidth' : 'standard'}
+      indicatorColor={lgUp ? 'primary' : 'secondary'}
+      textColor={lgUp ? 'primary' : 'inherit'}
     >
       <Tab
-        icon={large ? <HomeIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('basic info')}
-        style={large ? styles.tabLarge : styles.tabSmall}
+        icon={lgUp ? <HomeIcon style={styles.tabIcon} /> : null}
+        label={lgUp ? null : I18n.t('basic info')}
+        style={smUp ? styles.tabLarge : styles.tabSmall}
       />
       <Tab
-        icon={large ? <TimelineIcon style={styles.tabIcon} /> : null}
-        label={large ? null : I18n.t('timeline')}
-        style={large ? styles.tabLarge : styles.tabSmall}
+        icon={lgUp ? <TimelineIcon style={styles.tabIcon} /> : null}
+        label={lgUp ? null : I18n.t('timeline')}
+        style={smUp ? styles.tabLarge : styles.tabSmall}
       />
     </Tabs>
   );
@@ -122,15 +123,16 @@ const MapTabs = React.memo(props => {
 
 const MapSummary = () => {
   const [tabValue, setTabValue] = useState(0);
-  const large = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
 
   const handleTabChange = useCallback((e, value) => {
     setTabValue(value);
   });
 
   return (
-    <div style={large ? styles.containerLarge : styles.containerSmall}>
-      {!large && (
+    <div style={lgUp ? styles.containerLarge : styles.containerSmall}>
+      {lgUp ? null : (
         <AppBar position="absolute">
           <MapToolbar />
           <Toolbar>
@@ -138,11 +140,11 @@ const MapSummary = () => {
           </Toolbar>
         </AppBar>
       )}
-      <div style={large ? styles.tabContentsLarge : styles.tabContentsSmall}>
+      <div style={smUp ? styles.tabContentsLarge : styles.tabContentsSmall}>
         {tabValue === 0 && <MapSummaryCard />}
         {tabValue === 1 && <MapReviewsList />}
       </div>
-      {large && (
+      {smUp && (
         <Paper style={styles.toolbarContainerLarge} square elevation={0}>
           <Toolbar disableGutters>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />

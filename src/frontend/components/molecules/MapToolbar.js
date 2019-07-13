@@ -53,7 +53,8 @@ const isInvitable = map => {
 
 const MapToolbar = () => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
     state => ({
@@ -69,7 +70,7 @@ const MapToolbar = () => {
   );
 
   const handleBackButtonClick = useCallback(() => {
-    if (large) {
+    if (lgUp) {
       if (previousLocation && !previousLocation.state) {
         history.goBack();
       } else {
@@ -93,11 +94,11 @@ const MapToolbar = () => {
   });
 
   return (
-    <Toolbar style={large ? styles.toolbarLarge : styles.toolbarSmall}>
+    <Toolbar style={lgUp ? styles.toolbarLarge : styles.toolbarSmall}>
       <IconButton
         color="inherit"
         onClick={handleBackButtonClick}
-        style={large ? styles.backButtonLarge : styles.backButtonSmall}
+        style={lgUp ? styles.backButtonLarge : styles.backButtonSmall}
       >
         <ArrowBackIcon />
       </IconButton>
@@ -112,7 +113,7 @@ const MapToolbar = () => {
       )}
       {map && (
         <Typography
-          variant={large ? 'h6' : 'subtitle1'}
+          variant={smUp ? 'h6' : 'subtitle1'}
           color="inherit"
           noWrap
           style={styles.mapName}

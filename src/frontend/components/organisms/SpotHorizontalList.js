@@ -5,7 +5,8 @@ import {
   GridListTile,
   GridListTileBar,
   Typography,
-  Avatar
+  Avatar,
+  useMediaQuery
 } from '@material-ui/core';
 import selectSpot from '../../actions/selectSpot';
 import openSpotCard from '../../actions/openSpotCard';
@@ -14,7 +15,7 @@ import I18n from '../../utils/I18n';
 
 const styles = {
   root: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: 0,
     width: '100%',
     height: 124,
@@ -65,6 +66,7 @@ const Reviewers = props => {
 
 const SpotHorizontalList = () => {
   const dispatch = useDispatch();
+  const smUp = useMediaQuery('(min-width: 600px)');
 
   const mapState = useCallback(
     state => ({
@@ -86,7 +88,7 @@ const SpotHorizontalList = () => {
       <div style={styles.container}>
         <GridList
           spacing={12}
-          cols={2.5}
+          cols={smUp ? 4.5 : 2.5}
           cellHeight={100}
           style={styles.gridList}
         >
