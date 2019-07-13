@@ -52,8 +52,7 @@ const styles = {
     height: 64,
     minHeight: 64,
     width: '20%',
-    minWidth: 'auto',
-    paddingTop: 0
+    minWidth: 'auto'
   },
   tabSmall: {
     height: 56

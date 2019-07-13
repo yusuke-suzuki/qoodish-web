@@ -196,5 +196,10 @@
   "sign in success": "Signed in successfully!",
   "copied": "Copied!",
   "recommend": "Recommend",
-  "discover more": "Discover"
+  "discover more": "Discover",
+  "button share": "Share this map",
+  "button like": "Like",
+  "button unlike": "Unlike",
+  "button invite": "Invite friends",
+  "button current location": "Move to current location"
 }

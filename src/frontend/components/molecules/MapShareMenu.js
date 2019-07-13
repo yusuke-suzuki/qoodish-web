@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
+import Tooltip from '@material-ui/core/Tooltip';
 import ShareIcon from '@material-ui/icons/Share';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -44,17 +45,19 @@ const MapShareMenu = () => {
 
   return (
     <div>
-      <IconButton
-        aria-label="More share"
-        aria-owns={menuOpen ? 'share-menu' : null}
-        aria-haspopup="true"
-        onClick={e => {
-          setAnchorEl(e.currentTarget);
-          setMenuOpen(true);
-        }}
-      >
-        <ShareIcon style={styles.mapMenuIcon} />
-      </IconButton>
+      <Tooltip title={I18n.t('button share')}>
+        <IconButton
+          aria-label="More share"
+          aria-owns={menuOpen ? 'share-menu' : null}
+          aria-haspopup="true"
+          onClick={e => {
+            setAnchorEl(e.currentTarget);
+            setMenuOpen(true);
+          }}
+        >
+          <ShareIcon style={styles.mapMenuIcon} />
+        </IconButton>
+      </Tooltip>
 
       <Menu
         id="share-menu"

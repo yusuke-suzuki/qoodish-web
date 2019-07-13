@@ -196,5 +196,10 @@
   "sign in success": "ログインしました！",
   "copied": "コピーしました！",
   "recommend": "おすすめ",
-  "discover more": "もっと見る"
+  "discover more": "もっと見る",
+  "button share": "マップをシェアする",
+  "button like": "いいね！",
+  "button unlike": "いいね！を取り消す",
+  "button invite": "他のユーザーを招待する",
+  "button current location": "現在地へ移動"
 }
