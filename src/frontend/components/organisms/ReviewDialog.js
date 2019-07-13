@@ -43,6 +43,13 @@ const ReviewDialog = () => {
   );
   const { dialogOpen, currentReview, history } = useMappedState(mapState);
 
+  if (dialogOpen && currentReview) {
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: `/maps/${currentReview.map.id}/reports/${currentReview.id}`,
+      page_title: `${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`
+    });
+  }
+
   const handleRequestDialogClose = useCallback(() => {
     history.goBack();
   });
