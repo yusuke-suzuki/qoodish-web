@@ -60,6 +60,7 @@ const ReviewTiles = props => {
                 pathname: `/maps/${review.map.id}/reports/${review.id}`,
                 state: { modal: true, review: review }
               }}
+              title={review.spot.name}
             >
               {review.image ? (
                 <img src={review.image.thumbnail_url} alt={review.spot.name} />
