@@ -13,16 +13,14 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import AddIcon from '@material-ui/icons/Add';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
-import selectPlaceForReview from '../../actions/selectPlaceForReview';
-import I18n from '../../utils/I18n';
 import Link from '../molecules/Link';
+import CreateReviewTile from '../molecules/CreateReviewTile';
 
 const styles = {
   drawerPaperLarge: {
@@ -72,10 +70,6 @@ const styles = {
     height: 30,
     marginLeft: 8,
     marginRight: 8
-  },
-  createReviewTile: {
-    height: '100%',
-    textAlign: 'center'
   },
   tileBar: {
     height: 50
@@ -143,14 +137,6 @@ const SpotCardContent = () => {
   );
   const { currentSpot, spotReviews, currentMap } = useMappedState(mapState);
 
-  const handleCreateReviewClick = useCallback(() => {
-    let place = {
-      description: currentSpot.name,
-      placeId: currentSpot.place_id
-    };
-    dispatch(selectPlaceForReview(place));
-  });
-
   return (
     <div>
       <CardContent style={styles.cardContentSmall}>
@@ -164,13 +150,8 @@ const SpotCardContent = () => {
           style={styles.gridList}
         >
           {currentMap.postable && (
-            <GridListTile key="add-review" onClick={handleCreateReviewClick}>
-              <img src={process.env.SUBSTITUTE_URL} />
-              <GridListTileBar
-                style={styles.createReviewTile}
-                title={<AddIcon fontSize="large" />}
-                subtitle={I18n.t('create new report')}
-              />
+            <GridListTile key="add-review">
+              <CreateReviewTile currentSpot={currentSpot} />
             </GridListTile>
           )}
           {spotReviews.map(review => (

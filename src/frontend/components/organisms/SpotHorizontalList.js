@@ -12,6 +12,7 @@ import selectSpot from '../../actions/selectSpot';
 import openSpotCard from '../../actions/openSpotCard';
 import requestMapCenter from '../../actions/requestMapCenter';
 import I18n from '../../utils/I18n';
+import CreateReviewTile from '../molecules/CreateReviewTile';
 
 const styles = {
   root: {
@@ -92,30 +93,36 @@ const SpotHorizontalList = () => {
           cellHeight={100}
           style={styles.gridList}
         >
-          {spots.map(spot => (
-            <GridListTile
-              key={spot.place_id}
-              onClick={() => handleSpotClick(spot)}
-            >
-              <div style={styles.reviewerContainer}>
-                <Reviewers spot={spot} />
-              </div>
-              <img src={spot.image_url} alt={spot.name} />
-              <GridListTileBar
-                style={styles.tileBar}
-                title={
-                  <Typography variant="subtitle2" color="inherit" noWrap>
-                    {spot.name}
-                  </Typography>
-                }
-                subtitle={
-                  <Typography variant="caption" color="inherit" noWrap>
-                    {`${spot.reviews.length} ${I18n.t('reviews count')}`}
-                  </Typography>
-                }
-              />
+          {spots.length > 0 ? (
+            spots.map(spot => (
+              <GridListTile
+                key={spot.place_id}
+                onClick={() => handleSpotClick(spot)}
+              >
+                <div style={styles.reviewerContainer}>
+                  <Reviewers spot={spot} />
+                </div>
+                <img src={spot.image_url} alt={spot.name} />
+                <GridListTileBar
+                  style={styles.tileBar}
+                  title={
+                    <Typography variant="subtitle2" color="inherit" noWrap>
+                      {spot.name}
+                    </Typography>
+                  }
+                  subtitle={
+                    <Typography variant="caption" color="inherit" noWrap>
+                      {`${spot.reviews.length} ${I18n.t('reviews count')}`}
+                    </Typography>
+                  }
+                />
+              </GridListTile>
+            ))
+          ) : (
+            <GridListTile key="add-review">
+              <CreateReviewTile />
             </GridListTile>
-          ))}
+          )}
         </GridList>
       </div>
     </div>
