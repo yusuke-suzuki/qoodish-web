@@ -8,20 +8,29 @@ import openLikesDialog from '../../actions/openLikesDialog';
 import { useDispatch } from 'redux-react-hook';
 
 const styles = {
-  reactionsCount: {
+  disablePadding: {
     paddingBottom: 0,
     display: 'flex'
   },
+  reactionsCount: {
+    paddingBottom: 16,
+    display: 'flex'
+  },
   comment: {
-    marginRight: 16
+    marginRight: 16,
+    height: '0.875rem'
   },
   like: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    height: '0.875rem'
+  },
+  empty: {
+    height: '0.875rem'
   }
 };
 
 const ReactionsCount = props => {
-  const { review } = props;
+  const { review, disablePadding } = props;
   const dispatch = useDispatch();
 
   const handleLikesClick = useCallback(async () => {
@@ -35,32 +44,40 @@ const ReactionsCount = props => {
     });
   });
 
-  if (review.comments.length < 1 && review.likes_count < 1) {
-    return null;
-  }
-
   return (
-    <CardContent style={styles.reactionsCount}>
-      {review.comments.length > 0 && (
+    <CardContent
+      style={disablePadding ? styles.disablePadding : styles.reactionsCount}
+    >
+      {!review || (review.comments.length < 1 && review.likes_count < 1) ? (
         <Typography
           variant="subtitle2"
           color="textSecondary"
           gutterBottom
-          style={styles.comment}
+          style={styles.empty}
         >
-          {`${review.comments.length} ${I18n.t('comment count')}`}
+          {``}
         </Typography>
-      )}
-      {review.likes_count > 0 && (
-        <Typography
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-          style={styles.like}
-          onClick={handleLikesClick}
-        >
-          {`${review.likes_count} ${I18n.t('likes count')}`}
-        </Typography>
+      ) : (
+        <React.Fragment>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            gutterBottom
+            style={styles.comment}
+          >
+            {`${review.comments.length} ${I18n.t('comment count')}`}
+          </Typography>
+
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            gutterBottom
+            style={styles.like}
+            onClick={handleLikesClick}
+          >
+            {`${review.likes_count} ${I18n.t('likes count')}`}
+          </Typography>
+        </React.Fragment>
       )}
     </CardContent>
   );
