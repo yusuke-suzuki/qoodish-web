@@ -3,6 +3,7 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Link from '../molecules/Link';
 
+import CardMedia from '@material-ui/core/CardMedia';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Card from '@material-ui/core/Card';
@@ -12,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
 import Chip from '@material-ui/core/Chip';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import NoContents from '../molecules/NoContents';
 import moment from 'moment';
 
@@ -20,12 +20,10 @@ import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
 import { ReviewsApi } from 'qoodish_api';
+import ReactionsCount from '../molecules/ReactionsCount';
 
 const styles = {
-  gridListLarge: {
-    width: '100%'
-  },
-  gridListSmall: {
+  gridList: {
     flexWrap: 'nowrap',
     transform: 'translateZ(0)',
     width: '100%'
@@ -36,14 +34,6 @@ const styles = {
   },
   reviewCard: {
     margin: 3
-  },
-  cardContentLarge: {
-    paddingTop: 0,
-    paddingRight: 120
-  },
-  cardContentSmall: {
-    paddingTop: 0,
-    paddingRight: 112
   },
   reviewImage: {
     width: '100%'
@@ -84,6 +74,20 @@ const styles = {
   skeltonAvatar: {
     width: 40,
     height: 40
+  },
+  cardMedia: {
+    marginBottom: -5
+  },
+  cardContent: {
+    paddingBottom: 0
+  },
+  reviewImage: {
+    width: '100%',
+    height: 180,
+    objectFit: 'cover'
+  },
+  author: {
+    width: '90%'
   }
 };
 
@@ -140,10 +144,10 @@ const RecentReviews = () => {
   } else {
     return (
       <GridList
-        cols={large ? 2 : 1.2}
-        style={large ? styles.gridListLarge : styles.gridListSmall}
+        cols={large ? 2.5 : 1.2}
+        style={styles.gridList}
         spacing={large ? 20 : 10}
-        cellHeight={240}
+        cellHeight={475}
       >
         {loading
           ? Array.from(new Array(8)).map((v, i) => (
@@ -158,11 +162,10 @@ const RecentReviews = () => {
                     title={<Chip style={styles.skeltonTextSecondary} />}
                     subheader={<Chip style={styles.skeltonTextSecondary} />}
                   />
-                  <CardContent
-                    style={
-                      large ? styles.cardContentLarge : styles.cardContentSmall
-                    }
-                  >
+                  <CardMedia style={styles.cardMedia}>
+                    <div style={styles.reviewImage} />
+                  </CardMedia>
+                  <CardContent style={styles.cardContent}>
                     <Typography
                       variant="subtitle1"
                       color="primary"
@@ -179,6 +182,7 @@ const RecentReviews = () => {
                       <Chip style={styles.skeltonTextComment} />
                     </Typography>
                   </CardContent>
+                  <ReactionsCount />
                 </Card>
               </GridListTile>
             ))
@@ -200,7 +204,16 @@ const RecentReviews = () => {
                         alt={review.author.name}
                       />
                     }
-                    title={review.author.name}
+                    title={
+                      <Typography
+                        variant="subtitle2"
+                        color="textPrimary"
+                        noWrap
+                        style={styles.author}
+                      >
+                        {review.author.name}
+                      </Typography>
+                    }
                     subheader={moment(
                       review.created_at,
                       'YYYY-MM-DDThh:mm:ss.SSSZ'
@@ -208,11 +221,18 @@ const RecentReviews = () => {
                       .locale(window.currentLocale)
                       .fromNow()}
                   />
-                  <CardContent
-                    style={
-                      large ? styles.cardContentLarge : styles.cardContentSmall
-                    }
-                  >
+                  <CardMedia style={styles.cardMedia}>
+                    <img
+                      src={
+                        review.image
+                          ? review.image.url
+                          : process.env.SUBSTITUTE_URL
+                      }
+                      alt={review.image && review.spot.name}
+                      style={styles.reviewImage}
+                    />
+                  </CardMedia>
+                  <CardContent style={styles.cardContent}>
                     <Typography
                       variant="subtitle1"
                       color="primary"
@@ -228,20 +248,8 @@ const RecentReviews = () => {
                       {review.comment}
                     </Typography>
                   </CardContent>
+                  <ReactionsCount review={review} />
                 </Card>
-                {review.image && (
-                  <ListItemSecondaryAction>
-                    <Avatar
-                      src={review.image.thumbnail_url}
-                      alt={review.spot.name}
-                      style={
-                        large
-                          ? styles.secondaryAvatarLarge
-                          : styles.secondaryAvatarSmall
-                      }
-                    />
-                  </ListItemSecondaryAction>
-                )}
               </GridListTile>
             ))}
       </GridList>

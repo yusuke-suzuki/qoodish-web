@@ -74,11 +74,13 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_SPOT_DIALOG:
       return Object.assign({}, state, {
-        spotDialogOpen: false
+        spotDialogOpen: false,
+        currentSpot: undefined
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
-        spotDialogOpen: false
+        spotDialogOpen: false,
+        currentSpot: undefined
       });
     default:
       return state;

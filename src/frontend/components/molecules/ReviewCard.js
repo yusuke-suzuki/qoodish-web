@@ -156,7 +156,7 @@ const ReviewCard = props => {
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
       {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
-      <ReactionsCount review={props.currentReview} />
+      <ReactionsCount review={props.currentReview} disablePadding />
       {props.currentReview.comments.length > 0 && (
         <ReviewComments comments={props.currentReview.comments} />
       )}

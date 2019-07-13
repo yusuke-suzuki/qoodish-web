@@ -38,6 +38,13 @@ const SpotDialog = () => {
   );
   const { dialogOpen, currentSpot, history } = useMappedState(mapState);
 
+  if (dialogOpen && currentSpot) {
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_path: `/spots/${currentSpot.place_id}`,
+      page_title: `${currentSpot.name} | Qoodish`
+    });
+  }
+
   const handleRequestDialogClose = useCallback(() => {
     history.goBack();
   });

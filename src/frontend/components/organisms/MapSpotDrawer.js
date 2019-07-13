@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -12,16 +13,14 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
-import AddIcon from '@material-ui/icons/Add';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
-import selectPlaceForReview from '../../actions/selectPlaceForReview';
-import I18n from '../../utils/I18n';
 import Link from '../molecules/Link';
+import CreateReviewTile from '../molecules/CreateReviewTile';
 
 const styles = {
   drawerPaperLarge: {
@@ -72,10 +71,6 @@ const styles = {
     marginLeft: 8,
     marginRight: 8
   },
-  createReviewTile: {
-    height: '100%',
-    textAlign: 'center'
-  },
   tileBar: {
     height: 50
   },
@@ -89,7 +84,16 @@ const SpotCardHeader = props => {
 
   return (
     <List disablePadding>
-      <ListItem disableGutters style={styles.listItem}>
+      <ListItem
+        button
+        disableGutters
+        style={styles.listItem}
+        component={Link}
+        to={{
+          pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+          state: { modal: true, spot: currentSpot }
+        }}
+      >
         <ListItemText
           disableTypography
           primary={
@@ -121,6 +125,7 @@ const SpotCardHeader = props => {
 };
 
 const SpotCardContent = () => {
+  const smUp = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -132,14 +137,6 @@ const SpotCardContent = () => {
   );
   const { currentSpot, spotReviews, currentMap } = useMappedState(mapState);
 
-  const handleCreateReviewClick = useCallback(() => {
-    let place = {
-      description: currentSpot.name,
-      placeId: currentSpot.place_id
-    };
-    dispatch(selectPlaceForReview(place));
-  });
-
   return (
     <div>
       <CardContent style={styles.cardContentSmall}>
@@ -147,15 +144,14 @@ const SpotCardContent = () => {
           <DragHandleIcon color="disabled" />
         </div>
         <SpotCardHeader currentSpot={currentSpot} />
-        <GridList cols={2.5} cellHeight={100} style={styles.gridList}>
+        <GridList
+          cols={smUp ? 4.5 : 2.5}
+          cellHeight={100}
+          style={styles.gridList}
+        >
           {currentMap.postable && (
-            <GridListTile key="add-review" onClick={handleCreateReviewClick}>
-              <img src={process.env.SUBSTITUTE_URL} />
-              <GridListTileBar
-                style={styles.createReviewTile}
-                title={<AddIcon fontSize="large" />}
-                subtitle={I18n.t('create new report')}
-              />
+            <GridListTile key="add-review">
+              <CreateReviewTile currentSpot={currentSpot} />
             </GridListTile>
           )}
           {spotReviews.map(review => (
@@ -226,14 +222,11 @@ const MapSpotDrawer = () => {
     dispatch(closeSpotCard());
   });
 
-  useEffect(
-    () => {
-      if (spotReviews.length < 1) {
-        handleClose();
-      }
-    },
-    [spotReviews]
-  );
+  useEffect(() => {
+    if (spotReviews.length < 1) {
+      handleClose();
+    }
+  }, [spotReviews]);
 
   const dialogOpen = reviewDialogOpen || spotDialogOpen || mapSummaryOpen;
 

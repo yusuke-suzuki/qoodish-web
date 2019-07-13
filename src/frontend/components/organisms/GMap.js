@@ -37,6 +37,9 @@ const styles = {
     left: 380,
     marginTop: 64
   },
+  mapWrapperMd: {
+    height: '100%'
+  },
   mapWrapperSmall: {
     height: '100%'
   },
@@ -55,7 +58,9 @@ const styles = {
 const GMap = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const smUp = useMediaQuery('(min-width: 600px)');
+  const mdUp = useMediaQuery('(min-width: 960px)');
+  const lgUp = useMediaQuery('(min-width: 1280px)');
 
   const [gMap, setGMap] = useState(undefined);
   const [googleMapsApi, setGoogleMapsApi] = useState(undefined);
@@ -128,7 +133,7 @@ const GMap = () => {
       },
       streetViewControl: true,
       streetViewControlOptions: {
-        position: large
+        position: mdUp
           ? googleMapsApi.ControlPosition.RIGHT_TOP
           : googleMapsApi.ControlPosition.LEFT_TOP
       },
@@ -194,7 +199,7 @@ const GMap = () => {
   const onSpotMarkerClick = useCallback(async (e, spot) => {
     dispatch(selectSpot(spot));
 
-    if (large) {
+    if (mdUp) {
       setAnchorEl(e.currentTarget);
       setWindowOpen(true);
     } else {
@@ -203,8 +208,16 @@ const GMap = () => {
   });
 
   return (
-    <div style={large ? styles.mapWrapperLarge : styles.mapWrapperSmall}>
-      <div id="map" style={large ? styles.mapLarge : styles.mapSmall} />
+    <div
+      style={
+        lgUp
+          ? styles.mapWrapperLarge
+          : smUp
+          ? styles.mapWrapperMd
+          : styles.mapWrapperSmall
+      }
+    >
+      <div id="map" style={lgUp ? styles.mapLarge : styles.mapSmall} />
       <Popover
         id="spot-info-window"
         anchorEl={anchorEl}
@@ -239,7 +252,7 @@ const GMap = () => {
                 <SpotMarker
                   spot={spot}
                   onClick={e => onSpotMarkerClick(e, spot)}
-                  large={large}
+                  large={mdUp}
                   aria-label="Info window"
                   aria-owns={windowOpen ? 'spot-info-window' : null}
                   aria-haspopup="true"
@@ -261,7 +274,7 @@ const GMap = () => {
           gMap={gMap}
         >
           <React.Suspense fallback={null}>
-            <CurrentPositionIcon currentUser={currentUser} large={large} />
+            <CurrentPositionIcon currentUser={currentUser} large={mdUp} />
           </React.Suspense>
         </OverlayView>
       )}

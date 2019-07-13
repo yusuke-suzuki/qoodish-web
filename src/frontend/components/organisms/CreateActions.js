@@ -20,6 +20,7 @@ import closeCreateActions from '../../actions/closeCreateActions';
 const ActionsList = () => {
   const mapState = useCallback(state => state.spotDetail.currentSpot, []);
   const spot = useMappedState(mapState);
+
   const dispatch = useDispatch();
 
   const handleCreateReviewButtonClick = useCallback(() => {
