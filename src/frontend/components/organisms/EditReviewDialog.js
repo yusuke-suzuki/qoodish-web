@@ -138,8 +138,8 @@ const EditReviewDialog = () => {
 
   const handleCommentChange = useCallback(input => {
     if (input) {
-      if (input.length > 200) {
-        setErrorComment(I18n.t('max characters 200'));
+      if (input.length > 500) {
+        setErrorComment(I18n.t('max characters 500'));
       } else {
         setErrorComment(undefined);
       }
