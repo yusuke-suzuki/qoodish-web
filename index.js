@@ -72,7 +72,9 @@ app.get('*', async (req, res) => {
     console.log(`Bot access: ${req.headers['user-agent']}`);
 
     const response = await fetch(
-      `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(req)}`
+      `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(
+        req
+      )}?mobile=true`
     );
     const body = await response.text();
 

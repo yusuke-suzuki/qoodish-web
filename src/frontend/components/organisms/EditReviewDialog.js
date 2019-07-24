@@ -114,8 +114,7 @@ const EditReviewDialog = () => {
       selectedPlace: state.reviews.selectedPlace,
       currentReview: state.reviews.targetReview,
       currentMap: state.mapDetail.currentMap,
-      postableMaps: state.maps.postableMaps,
-      isMapDetail: state.shared.isMapDetail
+      postableMaps: state.maps.postableMaps
     }),
     []
   );
@@ -125,8 +124,7 @@ const EditReviewDialog = () => {
     selectedPlace,
     currentReview,
     currentMap,
-    postableMaps,
-    isMapDetail
+    postableMaps
   } = useMappedState(mapState);
 
   const handleMapChange = useCallback(selectedMapId => {
