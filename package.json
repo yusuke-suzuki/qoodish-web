@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "firebase": "^6.3.3",
     "history": "^4.9.0",
-    "load-google-maps-api": "^2.0.0",
+    "load-google-maps-api": "^2.0.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.0",
