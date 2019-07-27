@@ -64,7 +64,7 @@
     "puppeteer": "^1.18.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.38.0",
-    "webpack-cli": "^3.3.5",
+    "webpack-cli": "^3.3.6",
     "whatwg-fetch": "^3.0.0"
   }
 }
