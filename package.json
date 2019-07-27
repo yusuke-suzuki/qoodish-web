@@ -14,7 +14,7 @@
   "dependencies": {
     "@material-ui/core": "^4.2.1",
     "@material-ui/icons": "^4.2.1",
-    "@material-ui/styles": "^4.2.0",
+    "@material-ui/styles": "^4.2.1",
     "blueimp-canvas-to-blob": "^3.14.0",
     "blueimp-load-image": "^2.22.0",
     "express": "^4.17.1",
