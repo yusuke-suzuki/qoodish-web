@@ -6271,10 +6271,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-load-google-maps-api@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/load-google-maps-api/-/load-google-maps-api-2.0.0.tgz#7e0ee9de7557ef38a5d3bf383645ddf631df0843"
-  integrity sha512-CEwR9yrTI0J75jQbZmDrTK6R0Kn7PyKFvVZ6G48NbuTjvJfCWZyV/sZTj14n7ZsxwlgXrrE01Dh/w6AV/KcM5A==
+load-google-maps-api@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/load-google-maps-api/-/load-google-maps-api-2.0.1.tgz#3af80e2eb8196457b4b88360c092ad9575e35fec"
+  integrity sha512-eQRA90S//j3OFN1WNic9G9ZZKH6Z7J59/mB46S9ByPx0vFJMN5BnvR97IXNzQ2v4p0/tI0TSPV8L71e+G/3jjQ==
 
 load-json-file@^1.0.0:
   version "1.1.0"
