@@ -27,6 +27,7 @@ import SpotInfoWindow from '../molecules/SpotInfoWindow';
 
 import { ThemeProvider } from '@material-ui/styles';
 import useTheme from '@material-ui/styles/useTheme';
+import sleep from '../../utils/sleep';
 
 const styles = {
   mapWrapperLarge: {
@@ -184,16 +185,20 @@ const GMap = () => {
     }
   }, [gMap, googleMapsApi]);
 
-  useEffect(() => {
-    if (!currentMap || !isGoogleMapsApiReady) {
-      return;
-    }
-
+  const initCenter = useCallback(async () => {
+    await sleep(1000);
     if (currentMap.base.place_id) {
       dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
     } else {
       dispatch(requestCurrentPosition());
     }
+  });
+
+  useEffect(() => {
+    if (!currentMap || !isGoogleMapsApiReady) {
+      return;
+    }
+    initCenter();
   }, [currentMap]);
 
   const onSpotMarkerClick = useCallback(async (e, spot) => {

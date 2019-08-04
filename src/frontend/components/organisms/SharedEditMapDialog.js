@@ -44,6 +44,11 @@ const styles = {
   },
   controlLabel: {
     width: '100%'
+  },
+  placeChipLabel: {
+    overflow: 'hidden',
+    maxWidth: 'calc(100vw - 100px)',
+    textOverflow: 'ellipsis'
   }
 };
 
@@ -220,9 +225,11 @@ const SharedEditMapDialog = props => {
             </Avatar>
           }
           label={
-            props.selectedBase
-              ? props.selectedBase.description
-              : I18n.t('center of map')
+            <div style={styles.placeChipLabel}>
+              {props.selectedBase
+                ? props.selectedBase.description
+                : I18n.t('center of map')}
+            </div>
           }
           onClick={handleMapBaseClick}
           style={styles.mapCenterChip}

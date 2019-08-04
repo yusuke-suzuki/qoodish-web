@@ -24,6 +24,8 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
+import Typography from '@material-ui/core/Typography';
+
 import * as loadImage from 'blueimp-load-image';
 
 import createReview from '../../actions/createReview';
@@ -451,7 +453,14 @@ const EditReviewDialog = () => {
                 <ListItemAvatar>
                   <Avatar src={map.thumbnail_url} />
                 </ListItemAvatar>
-                <ListItemText primary={map.name} />
+                <ListItemText
+                  disableTypography={true}
+                  primary={
+                    <Typography variant="subtitle1" noWrap>
+                      {map.name}
+                    </Typography>
+                  }
+                />
               </MenuItem>
             ))}
           </Select>

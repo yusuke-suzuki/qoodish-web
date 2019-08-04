@@ -28,11 +28,11 @@ const styles = {
   },
   listItemLarge: {
     paddingLeft: 10,
-    paddingRight: 64
+    paddingRight: 80
   },
   listItemSmall: {
     paddingLeft: 10,
-    paddingRight: 64
+    paddingRight: 80
   },
   listItemSecondaryAction: {
     right: 10
