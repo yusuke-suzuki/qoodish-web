@@ -32,16 +32,13 @@ const App = () => {
     initUser();
   }, []);
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        return;
-      }
-      refreshNotifications();
-      refreshProviders();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      return;
+    }
+    refreshNotifications();
+    refreshProviders();
+  }, [currentUser.uid]);
 
   const initUser = useCallback(async () => {
     const firebase = await getFirebase();
@@ -82,15 +79,21 @@ const App = () => {
     });
   });
 
+  const refreshFirebaseToken = useCallback(async firebaseUser => {
+    console.log('Firebase token was refreshed.');
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await firebaseUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
+  });
+
   const initializeApiClient = useCallback(async firebaseUser => {
     const defaultClient = ApiClient.instance;
     defaultClient.basePath = process.env.API_ENDPOINT;
+    await refreshFirebaseToken(firebaseUser);
 
-    const token = await firebaseUser.getIdToken();
-
-    const firebaseAuth = defaultClient.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = token;
-    firebaseAuth.apiKeyPrefix = 'Bearer';
+    setInterval(() => {
+      refreshFirebaseToken(firebaseUser);
+    }, 1800000);
   });
 
   const refreshProviders = useCallback(async () => {

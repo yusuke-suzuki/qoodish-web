@@ -126,7 +126,6 @@ const SpotCardHeader = props => {
 
 const SpotCardContent = () => {
   const smUp = useMediaQuery('(min-width: 600px)');
-  const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
       currentSpot: state.spotCard.currentSpot,

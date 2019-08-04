@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
@@ -30,8 +30,15 @@ const styles = {
 };
 
 const ReactionsCount = props => {
-  const { review, disablePadding } = props;
+  const { review, disablePadding, disableBlank } = props;
   const dispatch = useDispatch();
+
+  const noReactions = useMemo(() => {
+    if (!review) {
+      return;
+    }
+    return review.comments.length < 1 && review.likes_count < 1;
+  }, [review]);
 
   const handleLikesClick = useCallback(async () => {
     dispatch(openLikesDialog());
@@ -44,11 +51,15 @@ const ReactionsCount = props => {
     });
   });
 
+  if (noReactions && disableBlank) {
+    return null;
+  }
+
   return (
     <CardContent
       style={disablePadding ? styles.disablePadding : styles.reactionsCount}
     >
-      {!review || (review.comments.length < 1 && review.likes_count < 1) ? (
+      {!review || noReactions ? (
         <Typography
           variant="subtitle2"
           color="textSecondary"

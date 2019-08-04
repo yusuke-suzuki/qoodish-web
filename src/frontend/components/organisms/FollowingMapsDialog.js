@@ -11,12 +11,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import I18n from '../../utils/I18n';
-import Link from '../molecules/Link';
+import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import FollowMapButton from '../molecules/FollowMapButton';
 
+import I18n from '../../utils/I18n';
+import Link from '../molecules/Link';
+import FollowMapButton from '../molecules/FollowMapButton';
 import closeFollowingMapsDialog from '../../actions/closeFollowingMapsDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
 
@@ -32,10 +33,7 @@ const styles = {
     padding: 0
   },
   listItem: {
-    paddingRight: 100
-  },
-  listItemSecondaryAction: {
-    paddingRight: 16
+    paddingRight: 110
   }
 };
 
@@ -87,10 +85,14 @@ const FollowingMapsDialog = () => {
                 <Avatar alt={map.name} src={map.thumbnail_url} />
               </ListItemAvatar>
               <ListItemText
-                primary={map.name}
-                primaryTypographyProps={{ noWrap: true }}
+                disableTypography={true}
+                primary={
+                  <Typography variant="subtitle1" noWrap>
+                    {map.name}
+                  </Typography>
+                }
               />
-              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
+              <ListItemSecondaryAction>
                 <FollowMapButton currentMap={map} />
               </ListItemSecondaryAction>
             </ListItem>

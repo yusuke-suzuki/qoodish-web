@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Link from '../molecules/Link';
+import Typography from '@material-ui/core/Typography';
 
 import searchMaps from '../../actions/searchMaps';
 import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
@@ -127,8 +128,12 @@ const SearchMapsDialog = () => {
                 <Avatar alt={map.name} src={map.thumbnail_url} />
               </ListItemAvatar>
               <ListItemText
-                primary={map.name}
-                primaryTypographyProps={{ noWrap: true }}
+                disableTypography={true}
+                primary={
+                  <Typography variant="subtitle1" noWrap>
+                    {map.name}
+                  </Typography>
+                }
               />
             </ListItem>
           ))}
