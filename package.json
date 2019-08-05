@@ -30,7 +30,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-facebook": "^8.0.4",
-    "react-firebaseui": "^3.1.2",
+    "react-firebaseui": "^4.0.0",
     "react-helmet": "^5.2.1",
     "react-share": "^3.0.0",
     "react-swipeable-views": "^0.13.3",
