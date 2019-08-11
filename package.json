@@ -28,7 +28,7 @@
     "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#d96136d",
     "react": "^16.9.0",
     "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.8.6",
+    "react-dom": "^16.9.0",
     "react-facebook": "^8.0.4",
     "react-firebaseui": "^4.0.0",
     "react-helmet": "^5.2.1",
