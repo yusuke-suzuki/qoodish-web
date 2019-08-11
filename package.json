@@ -26,7 +26,7 @@
     "node-fetch": "^2.6.0",
     "path-to-regexp": "^3.0.0",
     "qoodish_api": "https://github.com/yusuke-suzuki/qoodish-api-js-client#d96136d",
-    "react": "^16.8.6",
+    "react": "^16.9.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.6",
     "react-facebook": "^8.0.4",
