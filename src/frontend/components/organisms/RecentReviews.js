@@ -223,6 +223,7 @@ const RecentReviews = () => {
                   />
                   <CardMedia style={styles.cardMedia}>
                     <img
+                      loading="lazy"
                       src={
                         review.image
                           ? review.image.url

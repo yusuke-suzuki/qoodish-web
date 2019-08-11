@@ -2,21 +2,19 @@ import React, { useEffect } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
-const styles = {
-  backButton: {
-    zIndex: 1
-  },
-  backIcon: {
-    color: 'white'
-  }
-};
+import updateMetadata from '../../actions/updateMetadata';
+import I18n from '../../utils/I18n';
+import { useDispatch } from 'redux-react-hook';
 
 const Privacy = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/privacy',
-      page_title: 'Privacy | Qoodish'
-    });
+    const metadata = {
+      title: `${I18n.t('privacy policy')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/privacy`
+    };
+    dispatch(updateMetadata(metadata));
   }, []);
 
   return (

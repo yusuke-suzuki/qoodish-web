@@ -23,6 +23,8 @@ const BOTS = [
   'pingdom',
   'tumblr',
   'googlebot',
+  'google-structured-data-testing-tool',
+  'mediapartners-google',
   'notebot'
 ];
 

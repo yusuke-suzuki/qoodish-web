@@ -177,6 +177,7 @@
   "summary": "Summary",
   "you are hear": "You are here",
   "created date": "Created at",
+  "last reported date": "Last reported at",
   "map type": "Map type",
   "public": "Public",
   "private": "Private",
@@ -201,5 +202,7 @@
   "button like": "Like",
   "button unlike": "Unlike",
   "button invite": "Invite friends",
-  "button current location": "Move to current location"
+  "button current location": "Move to current location",
+  "og description": "Qoodish allows you to create maps with friends and share your favorite places.",
+  "og site name secondary": "Map-based SNS"
 }

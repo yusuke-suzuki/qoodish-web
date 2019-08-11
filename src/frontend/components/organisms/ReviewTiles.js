@@ -63,7 +63,7 @@ const ReviewTiles = props => {
               title={review.spot.name}
             >
               {review.image ? (
-                <img src={review.image.thumbnail_url} alt={review.spot.name} />
+                <img loading="lazy" src={review.image.thumbnail_url} alt={review.spot.name} />
               ) : (
                 <GridListTileBar
                   title={

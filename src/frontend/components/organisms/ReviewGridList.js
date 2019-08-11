@@ -63,6 +63,7 @@ const ReviewGridList = props => {
           >
             {review.image ? (
               <img
+                loading="lazy"
                 src={reviewImage(review, props.large)}
                 alt={review.spot.name}
               />

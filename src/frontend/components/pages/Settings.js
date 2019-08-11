@@ -13,8 +13,9 @@ import CreateResourceButton from '../molecules/CreateResourceButton';
 import PushSettings from '../organisms/PushSettings';
 import ProviderLinkSettings from '../organisms/ProviderLinkSettings';
 
-import I18n from '../../utils/I18n';
 import openDeleteAccountDialog from '../../actions/openDeleteAccountDialog';
+import updateMetadata from '../../actions/updateMetadata';
+import I18n from '../../utils/I18n';
 
 const styles = {
   card: {
@@ -66,13 +67,15 @@ const DeleteAccountCard = () => {
 };
 
 const Settings = () => {
+  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
   useEffect(() => {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/settings',
-      page_title: 'Settings | Qoodish'
-    });
+    const metadata = {
+      title: `${I18n.t('settings')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/settings`
+    };
+    dispatch(updateMetadata(metadata));
   }, []);
 
   return (

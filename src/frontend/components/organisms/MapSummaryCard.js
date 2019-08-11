@@ -134,8 +134,8 @@ const Followers = React.memo(() => {
   ));
 });
 
-const createdAt = map => {
-  return moment(map.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
+const parseDate = date => {
+  return moment(date, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(window.currentLocale)
     .format('LL');
 };
@@ -286,12 +286,24 @@ const MapSummaryCard = () => {
           onClick={handleBaseClick}
         />
 
+        {currentMap && currentMap.last_reported_at && (
+          <React.Fragment>
+            <Typography variant="subtitle2" gutterBottom color="textSecondary">
+              {I18n.t('last reported date')}
+            </Typography>
+
+            <Typography variant="subtitle1" gutterBottom style={styles.text}>
+              {parseDate(currentMap.last_reported_at)}
+            </Typography>
+          </React.Fragment>
+        )}
+
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {I18n.t('created date')}
         </Typography>
         {currentMap ? (
           <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {createdAt(currentMap)}
+            {parseDate(currentMap.created_at)}
           </Typography>
         ) : (
           <Chip style={styles.skeltonTextSecondary} />

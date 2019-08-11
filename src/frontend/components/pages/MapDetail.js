@@ -7,6 +7,7 @@ import openToast from '../../actions/openToast';
 import clearMapState from '../../actions/clearMapState';
 import fetchMapReviews from '../../actions/fetchMapReviews';
 import fetchCollaborators from '../../actions/fetchCollaborators';
+import updateMetadata from '../../actions/updateMetadata';
 
 import I18n from '../../utils/I18n';
 
@@ -50,7 +51,6 @@ const SpotHorizontalList = React.lazy(() =>
 import { ThemeProvider } from '@material-ui/styles';
 import useTheme from '@material-ui/styles/useTheme';
 
-import Helmet from 'react-helmet';
 import Drawer from '@material-ui/core/Drawer';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Fab from '@material-ui/core/Fab';
@@ -109,50 +109,6 @@ const styles = {
   infoIcon: {
     marginRight: 6
   }
-};
-
-const dispatchGtag = map => {
-  gtag('config', process.env.GA_TRACKING_ID, {
-    page_path: `/maps/${map.id}`,
-    page_title: `${map.name} | Qoodish`
-  });
-};
-
-const MapDetailHelmet = props => {
-  const map = props.map;
-
-  return (
-    <Helmet
-      title={`${map.name} | Qoodish`}
-      link={[
-        { rel: 'canonical', href: `${process.env.ENDPOINT}/maps/${map.id}` }
-      ]}
-      meta={[
-        map.private ? { name: 'robots', content: 'noindex' } : {},
-        { name: 'title', content: `${map.name} | Qoodish` },
-        {
-          name: 'keywords',
-          content: `${map.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
-        },
-        { name: 'description', content: map.description },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: `${map.name} | Qoodish` },
-        { name: 'twitter:description', content: map.description },
-        { name: 'twitter:image', content: map.image_url },
-        { property: 'og:title', content: `${map.name} | Qoodish` },
-        { property: 'og:type', content: 'website' },
-        {
-          property: 'og:url',
-          content: `${process.env.ENDPOINT}/maps/${map.id}`
-        },
-        { property: 'og:image', content: map.image_url },
-        {
-          property: 'og:description',
-          content: map.description
-        }
-      ]}
-    />
-  );
 };
 
 const MapSummaryDrawer = props => {
@@ -300,13 +256,6 @@ const MapDetail = props => {
     );
   });
 
-  useEffect(() => {
-    if (!currentMap) {
-      return;
-    }
-    dispatchGtag(currentMap);
-  }, [currentMap]);
-
   const refreshMap = useCallback(() => {
     initMap();
     initMapReviews();
@@ -324,9 +273,24 @@ const MapDetail = props => {
     };
   }, [currentUser.uid, props.params.primaryId]);
 
+  useEffect(() => {
+    if (!currentMap) {
+      return;
+    }
+    const metadata = {
+      noindex: currentMap.private,
+      title: `${currentMap.name} | Qoodish`,
+      keywords: `${currentMap.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`,
+      description: currentMap.description,
+      twitterCard: 'summary_large_image',
+      image: currentMap.image_url,
+      url: `${process.env.ENDPOINT}/maps/${currentMap.id}`
+    };
+    dispatch(updateMetadata(metadata));
+  }, [currentMap]);
+
   return (
     <div>
-      {currentMap && <MapDetailHelmet map={currentMap} />}
       {lgUp ? (
         <div>
           <MapSummaryDrawer {...props} />

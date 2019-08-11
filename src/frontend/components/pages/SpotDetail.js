@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Helmet from 'react-helmet';
 
 import SpotCard from '../organisms/SpotCard';
 import NoContents from '../molecules/NoContents';
@@ -12,6 +11,8 @@ import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import fetchSpot from '../../actions/fetchSpot';
 import clearSpotState from '../../actions/clearSpotState';
+import updateMetadata from '../../actions/updateMetadata';
+
 import { SpotsApi } from 'qoodish_api';
 
 const styles = {
@@ -19,47 +20,6 @@ const styles = {
     textAlign: 'center',
     paddingTop: 20
   }
-};
-
-const SpotDetailHelmet = props => {
-  const spot = props.spot;
-
-  return (
-    <Helmet
-      title={`${spot.name} | Qoodish`}
-      link={[
-        {
-          rel: 'canonical',
-          href: `${process.env.ENDPOINT}/spots/${spot.place_id}`
-        }
-      ]}
-      meta={[
-        { name: 'title', content: `${spot.name} | Qoodish` },
-        {
-          name: 'keywords',
-          content: `${
-            spot.name
-          }, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`
-        },
-        { name: 'description', content: spot.formatted_address },
-        { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:title', content: `${spot.name} | Qoodish` },
-        { name: 'twitter:description', content: spot.formatted_address },
-        { name: 'twitter:image', content: spot.image_url },
-        { property: 'og:title', content: `${spot.name} | Qoodish` },
-        { property: 'og:type', content: 'website' },
-        {
-          property: 'og:url',
-          content: `${process.env.ENDPOINT}/spots/${spot.place_id}`
-        },
-        { property: 'og:image', content: spot.image_url },
-        {
-          property: 'og:description',
-          content: spot.formatted_address
-        }
-      ]}
-    />
-  );
 };
 
 const SpotDetailContainer = props => {
@@ -117,38 +77,37 @@ const SpotDetail = props => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
 
-      if (!currentSpot) {
-        initSpot();
-      }
+    if (!currentSpot) {
+      initSpot();
+    }
 
-      return () => {
-        dispatch(clearSpotState());
-      };
-    },
-    [currentUser.uid]
-  );
+    return () => {
+      dispatch(clearSpotState());
+    };
+  }, [currentUser.uid]);
 
-  useEffect(
-    () => {
-      if (currentSpot) {
-        gtag('config', process.env.GA_TRACKING_ID, {
-          page_path: `/spots/${currentSpot.place_id}`,
-          page_title: `${currentSpot.name} | Qoodish`
-        });
-      }
-    },
-    [currentSpot]
-  );
+  useEffect(() => {
+    if (!currentSpot) {
+      return;
+    }
+    const metadata = {
+      title: `${currentSpot.name} | Qoodish`,
+      keywords: `${currentSpot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`,
+      description: currentSpot.formatted_address,
+      twitterCard: 'summary',
+      image: currentSpot.image_url,
+      url: `${process.env.ENDPOINT}/spots/${currentSpot.place_id}`
+    };
+    dispatch(updateMetadata(metadata));
+  }, [currentSpot]);
 
   return (
     <div>
-      {currentSpot && <SpotDetailHelmet spot={currentSpot} />}
       <div>
         {loading ? (
           <div style={styles.progress}>

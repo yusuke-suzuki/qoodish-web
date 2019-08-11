@@ -15,6 +15,7 @@ import moment from 'moment';
 import NoContents from '../molecules/NoContents';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
+import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
@@ -108,12 +109,15 @@ const Invites = () => {
       return;
     }
     fetchInvites();
-
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/invites',
-      page_title: `${I18n.t('invites')} | Qoodish'`
-    });
   }, [currentUser.uid]);
+
+  useEffect(() => {
+    const metadata = {
+      title: `${I18n.t('invites')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/invites`
+    };
+    dispatch(updateMetadata(metadata));
+  }, []);
 
   return (
     <div>

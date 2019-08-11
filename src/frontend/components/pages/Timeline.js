@@ -19,6 +19,8 @@ import fetchReviews from '../../actions/fetchReviews';
 import fetchMoreReviews from '../../actions/fetchMoreReviews';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
+import updateMetadata from '../../actions/updateMetadata';
+
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from 'qoodish_api';
 import Link from '../molecules/Link';
@@ -254,12 +256,15 @@ const Timeline = () => {
     }
 
     refreshReviews();
-
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/',
-      page_title: `${I18n.t('home')} | Qoodish`
-    });
   }, [currentUser.uid]);
+
+  useEffect(() => {
+    const metadata = {
+      title: 'Qoodish',
+      url: process.env.ENDPOINT
+    };
+    dispatch(updateMetadata(metadata));
+  }, []);
 
   return (
     <div>

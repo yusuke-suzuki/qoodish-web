@@ -186,7 +186,7 @@ const GMap = () => {
   }, [gMap, googleMapsApi]);
 
   const initCenter = useCallback(async () => {
-    await sleep(1000);
+    await sleep(2000);
     if (currentMap.base.place_id) {
       dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
     } else {

@@ -55,6 +55,7 @@ const MapCard = props => {
       <Card style={styles.card} elevation={0}>
         <CardMedia style={styles.cardMedia}>
           <img
+            loading="lazy"
             src={large ? map.image_url : map.thumbnail_url}
             alt={map.name}
             style={styles.mapImage}
