@@ -10,6 +10,7 @@ import NoContents from '../molecules/NoContents';
 import NotificationList from '../organisms/NotificationList';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 
+import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import fetchNotifications from '../../actions/fetchNotifications';
 import { NotificationsApi } from 'qoodish_api';
@@ -82,12 +83,15 @@ const Notifications = () => {
       return;
     }
     handleMount();
-
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/notifications',
-      page_title: `${I18n.t('notifications')} | Qoodish`
-    });
   }, [currentUser.uid]);
+
+  useEffect(() => {
+    const metadata = {
+      title: `${I18n.t('notifications')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/notifications`
+    };
+    dispatch(updateMetadata(metadata));
+  }, []);
 
   return (
     <div>

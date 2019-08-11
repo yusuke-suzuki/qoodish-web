@@ -20,6 +20,7 @@ import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
 import profileReducer from './reducers/profileReducer';
+import metadataReducer from './reducers/metadataReducer';
 
 import { createLogger } from 'redux-logger';
 import initializeFirebaseApp from './utils/initializeFirebaseApp';
@@ -47,7 +48,8 @@ const reducer = combineReducers({
   reviews: reviewsReducer,
   gMap: gMapReducer,
   settings: settingsReducer,
-  profile: profileReducer
+  profile: profileReducer,
+  metadata: metadataReducer
 });
 
 const store = compose(applyMiddleware(...middlewares))(createStore)(reducer);

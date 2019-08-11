@@ -18,10 +18,9 @@ import TrendingSpots from '../organisms/TrendingSpots';
 
 import I18n from '../../utils/I18n';
 
-import Helmet from 'react-helmet';
-
 import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
+import updateMetadata from '../../actions/updateMetadata';
 
 import { MapsApi } from 'qoodish_api';
 
@@ -53,24 +52,6 @@ const styles = {
   headerIcon: {
     marginRight: 10
   }
-};
-
-const DiscoverHelmet = () => {
-  return (
-    <Helmet
-      title={`${I18n.t('discover')} | Qoodish`}
-      link={[{ rel: 'canonical', href: `${process.env.ENDPOINT}/discover` }]}
-      meta={[
-        { name: 'title', content: `${I18n.t('discover')} | Qoodish` },
-        { property: 'og:title', content: `${I18n.t('discover')} | Qoodish` },
-        { property: 'og:type', content: 'website' },
-        {
-          property: 'og:url',
-          content: `${process.env.ENDPOINT}/discover`
-        }
-      ]}
-    />
-  );
 };
 
 const DiscoverProgress = () => {
@@ -153,20 +134,21 @@ const Discover = () => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
-
     initActiveMaps();
     initRecentMaps();
-
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/discover',
-      page_title: `${I18n.t('discover')} | Qoodish`
-    });
   }, [currentUser.uid]);
+
+  useEffect(() => {
+    dispatch(
+      updateMetadata({
+        title: `${I18n.t('discover')} | Qoodish`,
+        url: `${process.env.ENDPOINT}/discover`
+      })
+    );
+  }, []);
 
   return (
     <div>
-      <DiscoverHelmet />
-
       <div style={styles.container}>
         <Typography
           variant="subtitle1"

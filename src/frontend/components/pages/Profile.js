@@ -1,58 +1,14 @@
 import React, { useEffect, useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import SharedProfile from '../organisms/SharedProfile';
-import Helmet from 'react-helmet';
 import I18n from '../../utils/I18n';
 
 import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import clearProfileState from '../../actions/clearProfileState';
+import updateMetadata from '../../actions/updateMetadata';
 
 import { UserMapsApi, UsersApi } from 'qoodish_api';
-
-const ProfileHelmet = () => {
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser,
-      pathname: state.shared.currentLocation
-    }),
-    []
-  );
-
-  const { currentUser, pathname } = useMappedState(mapState);
-
-  return (
-    <Helmet
-      title={`${I18n.t('account')} | Qoodish`}
-      link={[
-        {
-          rel: 'canonical',
-          href: `${process.env.ENDPOINT}${pathname}`
-        }
-      ]}
-      meta={[
-        {
-          name: 'title',
-          content: `${I18n.t('account')} | Qoodish`
-        },
-        {
-          name: 'twitter:title',
-          content: `${I18n.t('account')} | Qoodish`
-        },
-        { name: 'twitter:image', content: currentUser.thumbnail_url },
-        {
-          property: 'og:title',
-          content: `${I18n.t('account')} | Qoodish`
-        },
-        { property: 'og:type', content: 'website' },
-        {
-          property: 'og:url',
-          content: `${process.env.ENDPOINT}${pathname}`
-        }
-      ]}
-    />
-  );
-};
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -94,33 +50,33 @@ const Profile = () => {
     );
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-        return;
-      }
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      return;
+    }
 
-      initProfile();
-      initFollowingMaps();
+    initProfile();
+    initFollowingMaps();
 
-      gtag('config', process.env.GA_TRACKING_ID, {
-        page_path: '/profile',
-        page_title: `${I18n.t('account')} | Qoodish`
-      });
+    return () => {
+      dispatch(clearProfileState());
+    };
+  }, [currentUser.uid]);
 
-      return () => {
-        dispatch(clearProfileState());
-      };
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.name) {
+      return;
+    }
+    const metadata = {
+      title: `${I18n.t('account')} | Qoodish`,
+      twitterCard: 'summary',
+      image: currentUser.thumbnail_url,
+      url: `${process.env.ENDPOINT}/profile`
+    };
+    dispatch(updateMetadata(metadata));
+  }, [currentUser]);
 
-  return (
-    <div>
-      {currentUser && currentUser.name && <ProfileHelmet />}
-      <SharedProfile currentUser={currentUser} />
-    </div>
-  );
+  return <SharedProfile currentUser={currentUser} />;
 };
 
 export default React.memo(Profile);

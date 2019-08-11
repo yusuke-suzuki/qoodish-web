@@ -2,12 +2,19 @@ import React, { useEffect } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
+import updateMetadata from '../../actions/updateMetadata';
+import I18n from '../../utils/I18n';
+import { useDispatch } from 'redux-react-hook';
+
 const Terms = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/terms',
-      page_title: 'Terms | Qoodish'
-    });
+    const metadata = {
+      title: `${I18n.t('terms of service')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/terms`
+    };
+    dispatch(updateMetadata(metadata));
   }, []);
 
   return (

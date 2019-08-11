@@ -1,86 +1,64 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useMappedState } from 'redux-react-hook';
+
 import Helmet from 'react-helmet';
 
 const AppHelmet = () => {
+  const mapState = useCallback(
+    state => ({
+      metadata: state.metadata.metadata,
+      structuredData: state.metadata.structuredData
+    }),
+    []
+  );
+
+  const { metadata, structuredData } = useMappedState(mapState);
+
+  useEffect(() => {
+    gtag('config', process.env.GA_TRACKING_ID, {
+      page_location: metadata.url,
+      page_title: metadata.title
+    });
+  }, [metadata]);
+
   return (
     <Helmet
-      title="Qoodish"
-      link={[{ rel: 'canonical', href: process.env.ENDPOINT }]}
+      title={metadata.title}
+      link={[{ rel: 'canonical', href: metadata.url }]}
       meta={[
-        { name: 'title', content: 'Qoodish' },
+        metadata.noindex ? { name: 'robots', content: 'noindex' } : {},
+        { name: 'title', content: metadata.title },
         {
           name: 'keywords',
-          content:
-            'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip'
+          content: metadata.keywords
         },
         { name: 'theme-color', content: '#ffc107' },
         {
           name: 'description',
-          content:
-            'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          content: metadata.description
         },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: 'Qoodish' },
+        { name: 'twitter:card', content: metadata.twitterCard },
+        { name: 'twitter:title', content: metadata.title },
         {
           name: 'twitter:description',
-          content:
-            'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          content: metadata.description
         },
-        { name: 'twitter:image', content: process.env.OGP_IMAGE_URL },
-        { property: 'og:site_name', content: 'Qoodish - マップベースド SNS' },
-        { property: 'og:title', content: 'Qoodish' },
-        { property: 'og:type', content: 'website' },
+        { name: 'twitter:image', content: metadata.image },
+        { property: 'og:site_name', content: metadata.siteName },
+        { property: 'og:title', content: metadata.title },
+        { property: 'og:type', content: metadata.type },
         {
           property: 'og:url',
-          content: process.env.ENDPOINT
+          content: metadata.url
         },
-        { property: 'og:image', content: process.env.OGP_IMAGE_URL },
+        { property: 'og:image', content: metadata.image },
         {
           property: 'og:description',
-          content:
-            'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
+          content: metadata.description
         },
         { 'http-equiv': 'content-language', content: window.currentLocale }
       ]}
-      script={[
-        {
-          type: 'application/ld+json',
-          innerHTML: JSON.stringify({
-            '@context': 'http://schema.org',
-            '@type': 'WebSite',
-            name: 'Qoodish',
-            mainEntityOfPage: {
-              '@type': 'WebPage',
-              '@id': process.env.ENDPOINT
-            },
-            headline: 'Qoodish | マップベースド SNS',
-            image: {
-              '@type': 'ImageObject',
-              url: process.env.OGP_IMAGE_URL,
-              width: 1280,
-              height: 630
-            },
-            datePublished: '',
-            dateModified: '',
-            author: {
-              '@type': 'Person',
-              name: ''
-            },
-            publisher: {
-              '@type': 'Organization',
-              name: 'Qoodish',
-              logo: {
-                '@type': 'ImageObject',
-                url: process.env.OGP_IMAGE_URL,
-                width: 1280,
-                height: 630
-              }
-            },
-            description:
-              'Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。'
-          })
-        }
-      ]}
+      script={[structuredData]}
     />
   );
 };

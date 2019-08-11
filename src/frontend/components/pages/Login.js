@@ -15,10 +15,11 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
+import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import LoginButtons from '../organisms/LoginButtons';
-import Helmet from 'react-helmet';
 import Footer from '../molecules/Footer';
+import { useDispatch } from 'redux-react-hook';
 
 const styles = {
   loginContainerLarge: {
@@ -94,37 +95,20 @@ const handleScrollTopClick = () => {
   window.scrollTo(0, 0);
 };
 
-const LoginHelmet = () => {
-  return (
-    <Helmet
-      title={`${I18n.t('login')} | Qoodish`}
-      link={[{ rel: 'canonical', href: `${process.env.ENDPOINT}/login` }]}
-      meta={[
-        { name: 'title', content: `${I18n.t('login')} | Qoodish` },
-        { property: 'og:title', content: `${I18n.t('login')} | Qoodish` },
-        { property: 'og:type', content: 'website' },
-        {
-          property: 'og:url',
-          content: `${process.env.ENDPOINT}/login`
-        }
-      ]}
-    />
-  );
-};
-
 const Login = () => {
+  const dispatch = useDispatch();
   const large = useMediaQuery('(min-width: 600px)');
 
   useEffect(() => {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: '/login',
-      page_title: `${I18n.t('login')} | Qoodish`
-    });
+    const metadata = {
+      title: `${I18n.t('login')} | Qoodish`,
+      url: `${process.env.ENDPOINT}/login`
+    };
+    dispatch(updateMetadata(metadata));
   }, []);
 
   return (
     <div>
-      <LoginHelmet />
       <div
         style={
           large ? styles.carouselContainerLarge : styles.carouselContainerSmall
