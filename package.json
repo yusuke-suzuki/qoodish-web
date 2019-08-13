@@ -63,7 +63,7 @@
     "prettier": "^1.18.2",
     "puppeteer": "^1.18.1",
     "style-loader": "^1.0.0",
-    "webpack": "^4.39.1",
+    "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "whatwg-fetch": "^3.0.0"
   }
