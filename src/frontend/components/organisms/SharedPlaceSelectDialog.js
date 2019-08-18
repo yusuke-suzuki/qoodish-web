@@ -37,7 +37,8 @@ const styles = {
     paddingTop: 24
   },
   dialogTitle: {
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'center'
   }
 };
 

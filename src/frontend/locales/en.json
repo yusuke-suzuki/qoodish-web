@@ -202,7 +202,5 @@
   "button like": "Like",
   "button unlike": "Unlike",
   "button invite": "Invite friends",
-  "button current location": "Move to current location",
-  "og description": "Qoodish allows you to create maps with friends and share your favorite places.",
-  "og site name secondary": "Map-based SNS"
+  "button current location": "Move to current location"
 }
