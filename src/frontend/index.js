@@ -5,6 +5,10 @@ import App from './components/App';
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { StoreContext } from 'redux-react-hook';
+import { createLogger } from 'redux-logger';
+
+import detectCurrentLocale from './utils/detectCurrentLocale';
+import initializeFirebaseApp from './utils/initializeFirebaseApp';
 
 import appReducer from './reducers/appReducer';
 import sharedReducer from './reducers/sharedReducer';
@@ -22,9 +26,7 @@ import settingsReducer from './reducers/settingsReducer';
 import profileReducer from './reducers/profileReducer';
 import metadataReducer from './reducers/metadataReducer';
 
-import { createLogger } from 'redux-logger';
-import initializeFirebaseApp from './utils/initializeFirebaseApp';
-
+detectCurrentLocale();
 initializeFirebaseApp();
 
 const middlewares = [];
