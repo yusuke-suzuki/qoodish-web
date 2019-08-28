@@ -32,7 +32,7 @@
     "react-facebook": "^8.0.4",
     "react-firebaseui": "^4.0.0",
     "react-helmet": "^5.2.1",
-    "react-share": "^3.0.0",
+    "react-share": "^3.0.1",
     "react-swipeable-views": "^0.13.3",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
