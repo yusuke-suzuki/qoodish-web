@@ -17,7 +17,6 @@ import closeDeleteReviewDialog from '../../actions/closeDeleteReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import deleteFromStorage from '../../utils/deleteFromStorage';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const DeleteReviewDialog = () => {
@@ -56,9 +55,6 @@ const DeleteReviewDialog = () => {
       dispatch(requestFinish());
 
       if (response.ok) {
-        if (review.image) {
-          deleteFromStorage(review.image.file_name);
-        }
         dispatch(closeDeleteReviewDialog());
 
         if (reviewDialogOpen) {
@@ -67,7 +63,7 @@ const DeleteReviewDialog = () => {
         dispatch(deleteReview(review.id));
         dispatch(openToast(I18n.t('delete report success')));
       } else {
-        dispatch(openToast(response.body.detail));
+        dispatch(openToast(I18n.t('delete report failed')));
       }
     });
   });
