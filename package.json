@@ -12,7 +12,7 @@
     "build:prod": "webpack --colors --mode production"
   },
   "dependencies": {
-    "@material-ui/core": "^4.3.3",
+    "@material-ui/core": "^4.7.0",
     "@material-ui/icons": "^4.2.1",
     "@material-ui/styles": "^4.3.0",
     "blueimp-canvas-to-blob": "^3.16.0",
