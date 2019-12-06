@@ -5,15 +5,12 @@ import {
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
-  OPEN_SPOT_DIALOG,
-  CLOSE_SPOT_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 
 const initialState = {
   currentSpot: undefined,
-  spotReviews: [],
-  spotDialogOpen: false
+  spotReviews: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -66,21 +63,6 @@ const reducer = (state = initialState, action) => {
         spotLoading: false,
         currentSpot: undefined,
         spotReviews: []
-      });
-    case OPEN_SPOT_DIALOG:
-      return Object.assign({}, state, {
-        spotDialogOpen: true,
-        currentSpot: action.payload.spot
-      });
-    case CLOSE_SPOT_DIALOG:
-      return Object.assign({}, state, {
-        spotDialogOpen: false,
-        currentSpot: undefined
-      });
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        spotDialogOpen: false,
-        currentSpot: undefined
       });
     default:
       return state;

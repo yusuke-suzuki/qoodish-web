@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import SharedEditMapDialog from './SharedEditMapDialog';
 
@@ -15,15 +16,16 @@ import { MapsApi, NewMap } from 'qoodish_api';
 
 const CreateMapDialog = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const mapState = useCallback(
     state => ({
       dialogOpen: state.maps.createMapDialogOpen,
-      selectedBase: state.maps.selectedBase,
-      history: state.shared.history
+      selectedBase: state.maps.selectedBase
     }),
     []
   );
-  const { dialogOpen, selectedBase, history } = useMappedState(mapState);
+  const { dialogOpen, selectedBase } = useMappedState(mapState);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeCreateMapDialog());

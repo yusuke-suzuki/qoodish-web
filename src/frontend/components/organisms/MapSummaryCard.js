@@ -7,7 +7,7 @@ import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import PlaceIcon from '@material-ui/icons/Place';
 import I18n from '../../utils/I18n';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import moment from 'moment';
 import PublicIcon from '@material-ui/icons/Public';

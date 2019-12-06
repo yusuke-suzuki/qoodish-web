@@ -13,7 +13,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import Typography from '@material-ui/core/Typography';
 
 import searchMaps from '../../actions/searchMaps';

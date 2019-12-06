@@ -47,8 +47,8 @@ const ProfileMyMaps = props => {
     setLoading(true);
 
     const userId =
-      props.params && props.params.primaryId
-        ? props.params.primaryId
+      props.params && props.params.userId
+        ? props.params.userId
         : currentUser.uid;
 
     const apiInstance = new UserMapsApi();
@@ -63,15 +63,12 @@ const ProfileMyMaps = props => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      initMaps();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    initMaps();
+  }, [currentUser.uid]);
 
   if (loading) {
     return (

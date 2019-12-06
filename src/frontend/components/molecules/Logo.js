@@ -2,7 +2,7 @@ import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Typography from '@material-ui/core/Typography';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   logo: {

@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import LockIcon from '@material-ui/icons/Lock';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import FollowMapButton from '../molecules/FollowMapButton';
 import I18n from '../../utils/I18n';
 

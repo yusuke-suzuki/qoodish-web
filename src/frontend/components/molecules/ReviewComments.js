@@ -14,7 +14,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import CommentMenu from './CommentMenu';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import I18n from '../../utils/I18n';
 import editReview from '../../actions/editReview';

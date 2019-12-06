@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';

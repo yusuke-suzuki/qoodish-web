@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   gridContainer: {
@@ -63,7 +63,11 @@ const ReviewTiles = props => {
               title={review.spot.name}
             >
               {review.image ? (
-                <img loading="lazy" src={review.image.thumbnail_url} alt={review.spot.name} />
+                <img
+                  loading="lazy"
+                  src={review.image.thumbnail_url}
+                  alt={review.spot.name}
+                />
               ) : (
                 <GridListTileBar
                   title={

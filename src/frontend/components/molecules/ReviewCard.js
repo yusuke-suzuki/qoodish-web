@@ -10,7 +10,7 @@ import moment from 'moment';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Divider from '@material-ui/core/Divider';
 import twitter from 'twitter-text';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import ReviewShareMenu from './ReviewShareMenu';
 import ReviewVertMenu from './ReviewVertMenu';
 import ReviewCardActions from './ReviewCardActions';

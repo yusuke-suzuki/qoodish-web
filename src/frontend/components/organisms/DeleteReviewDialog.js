@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,25 +14,24 @@ import I18n from '../../utils/I18n';
 
 import deleteReview from '../../actions/deleteReview';
 import closeDeleteReviewDialog from '../../actions/closeDeleteReviewDialog';
-import closeReviewDialog from '../../actions/closeReviewDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import { ReviewsApi } from 'qoodish_api';
 
-const DeleteReviewDialog = props => {
+const DeleteReviewDialog = () => {
   const mapState = useCallback(
     state => ({
       review: state.reviews.targetReview,
       dialogOpen: state.reviews.deleteReviewDialogOpen,
-      history: state.shared.history,
       isMapDetail: state.shared.isMapDetail
     }),
     []
   );
-  const { review, dialogOpen, history, isMapDetail } = useMappedState(mapState);
+  const { review, dialogOpen, isMapDetail } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -59,7 +59,6 @@ const DeleteReviewDialog = props => {
         if (review.image) {
           deleteFromStorage(review.image.file_name);
         }
-        dispatch(closeReviewDialog());
         dispatch(closeDeleteReviewDialog());
 
         if (isMapDetail) {

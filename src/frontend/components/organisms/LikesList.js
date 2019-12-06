@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import moment from 'moment';
 import List from '@material-ui/core/List';
@@ -97,8 +97,8 @@ const LikesList = props => {
     setLoading(true);
 
     const userId =
-      props.params && props.params.primaryId
-        ? props.params.primaryId
+      props.params && props.params.userId
+        ? props.params.userId
         : currentUser.uid;
 
     const apiInstance = new LikesApi();

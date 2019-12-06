@@ -6,7 +6,7 @@ import MobileStepper from '@material-ui/core/MobileStepper';
 import Fab from '@material-ui/core/Fab';
 import CardMedia from '@material-ui/core/CardMedia';
 import SwipeableViews from 'react-swipeable-views';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
 const styles = {
@@ -56,12 +56,9 @@ const SpotImageStepper = props => {
   const [activeStep, setActiveStep] = useState(0);
   let maxSteps = props.spotReviews.length;
 
-  useEffect(
-    () => {
-      setActiveStep(0);
-    },
-    [props.currentSpot]
-  );
+  useEffect(() => {
+    setActiveStep(0);
+  }, [props.currentSpot]);
 
   return (
     <CardMedia>

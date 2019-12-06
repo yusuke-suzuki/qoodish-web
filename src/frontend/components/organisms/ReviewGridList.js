@@ -6,7 +6,7 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import PlaceIcon from '@material-ui/icons/Place';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   container: {

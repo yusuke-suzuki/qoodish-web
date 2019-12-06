@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -8,20 +8,26 @@ import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import Grid from '@material-ui/core/Grid';
 
-const Routes = React.lazy(() =>
-  import(/* webpackChunkName: "routes" */ './Routes')
-);
+import { Router, useHistory } from '@yusuke-suzuki/rize-router';
+import routes from './routes';
+import locationChange from './actions/locationChange';
+import NotFound from './components/pages/NotFound';
+
 const RightItems = React.lazy(() =>
-  import(/* webpackChunkName: "right_items" */ './organisms/RightItems')
+  import(
+    /* webpackChunkName: "right_items" */ './components/organisms/RightItems'
+  )
 );
 const NavBar = React.lazy(() =>
-  import(/* webpackChunkName: "nav_bar" */ './organisms/NavBar')
+  import(/* webpackChunkName: "nav_bar" */ './components/organisms/NavBar')
 );
 const BottomNav = React.lazy(() =>
-  import(/* webpackChunkName: "bottom_nav" */ './molecules/BottomNav')
+  import(
+    /* webpackChunkName: "bottom_nav" */ './components/molecules/BottomNav'
+  )
 );
 const SharedDialogs = React.lazy(() =>
-  import(/* webpackChunkName: "shared_dialogs" */ './SharedDialogs')
+  import(/* webpackChunkName: "shared_dialogs" */ './components/SharedDialogs')
 );
 
 const theme = createMuiTheme({
@@ -73,6 +79,23 @@ const Layout = () => {
   const lgUp = useMediaQuery('(min-width: 1280px)');
   const xlUp = useMediaQuery('(min-width: 1920px)');
 
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const unlisten = useMemo(() => {
+    dispatch(locationChange(history.location));
+
+    return history.listen(location => {
+      dispatch(locationChange(location));
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
   const mapState = useCallback(
     state => ({
       showBottomNav: state.shared.showBottomNav,
@@ -116,7 +139,12 @@ const Layout = () => {
           style={fullWidth ? {} : smUp ? styles.mainLarge : styles.mainSmall}
         >
           <React.Suspense fallback={null}>
-            <Routes />
+            <Router
+              routes={routes}
+              fallback={{
+                component: NotFound
+              }}
+            />
           </React.Suspense>
         </Grid>
         {mdUp && !fullWidth && (

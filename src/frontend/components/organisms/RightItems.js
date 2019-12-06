@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardContent, Typography, Divider, Paper } from '@material-ui/core';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import I18n from '../../utils/I18n';
 
 const RecommendMaps = React.lazy(() =>

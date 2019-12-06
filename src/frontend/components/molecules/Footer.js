@@ -6,7 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import amber from '@material-ui/core/colors/amber';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import FbPage from '../molecules/FbPage';
 import I18n from '../../utils/I18n';
 

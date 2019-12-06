@@ -25,14 +25,11 @@ const UserProfile = props => {
   const initProfile = useCallback(async () => {
     const apiInstance = new UsersApi();
 
-    apiInstance.usersUserIdGet(
-      props.params.primaryId,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchUserProfile(response.body));
-        }
+    apiInstance.usersUserIdGet(props.params.userId, (error, data, response) => {
+      if (response.ok) {
+        dispatch(fetchUserProfile(response.body));
       }
-    );
+    });
   });
 
   const initFollowingMaps = useCallback(async () => {
@@ -42,7 +39,7 @@ const UserProfile = props => {
     };
 
     apiInstance.usersUserIdMapsGet(
-      props.params.primaryId,
+      props.params.userId,
       opts,
       (error, data, response) => {
         if (response.ok) {

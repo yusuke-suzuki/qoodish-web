@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
@@ -15,7 +14,6 @@ import TableRow from '@material-ui/core/TableRow';
 
 import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
-import fetchSpotReviews from '../../actions/fetchSpotReviews';
 import { ReviewsApi } from 'qoodish_api';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 
@@ -70,16 +68,10 @@ const OpeningHours = React.memo(props => {
 
 const SpotCard = props => {
   const large = useMediaQuery('(min-width: 600px)');
-  const dispatch = useDispatch();
 
-  const mapState = useCallback(
-    state => ({
-      currentSpot: state.spotDetail.currentSpot,
-      spotReviews: state.spotDetail.spotReviews
-    }),
-    []
-  );
-  const { currentSpot, spotReviews } = useMappedState(mapState);
+  const [spotReviews, setSpotReviews] = useState([]);
+
+  const { currentSpot } = props;
 
   const initSpotReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
@@ -88,7 +80,7 @@ const SpotCard = props => {
       props.placeId,
       (error, data, response) => {
         if (response.ok) {
-          dispatch(fetchSpotReviews(response.body));
+          setSpotReviews(response.body);
         }
       }
     );

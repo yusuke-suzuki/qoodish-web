@@ -19,7 +19,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import CreateReviewTile from '../molecules/CreateReviewTile';
 
 const styles = {

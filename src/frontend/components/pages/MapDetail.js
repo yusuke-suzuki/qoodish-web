@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import selectMap from '../../actions/selectMap';
 import openToast from '../../actions/openToast';
@@ -132,7 +133,7 @@ const MapSummaryDrawer = props => {
     >
       <React.Suspense fallback={null}>
         <MapSummary
-          mapId={props.params.primaryId}
+          mapId={props.params.mapId}
           dialogMode={lgUp ? false : true}
         />
       </React.Suspense>
@@ -196,42 +197,39 @@ const MapDetail = props => {
   const lgUp = useMediaQuery('(min-width: 1280px)');
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const mapState = useCallback(
     state => ({
       currentUser: state.app.currentUser,
-      currentMap: state.mapDetail.currentMap,
-      history: state.shared.history
+      currentMap: state.mapDetail.currentMap
     }),
     []
   );
-  const { currentUser, currentMap, history } = useMappedState(mapState);
+  const { currentUser, currentMap } = useMappedState(mapState);
 
   const initMap = useCallback(async () => {
     const apiInstance = new MapsApi();
 
-    apiInstance.mapsMapIdGet(
-      props.params.primaryId,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(selectMap(response.body));
-        } else if (response.status == 401) {
-          dispatch(openToast('Authenticate failed'));
-        } else if (response.status == 404) {
-          history.push('');
-          dispatch(openToast(I18n.t('map not found')));
-        } else {
-          dispatch(openToast('Failed to fetch Map.'));
-        }
+    apiInstance.mapsMapIdGet(props.params.mapId, (error, data, response) => {
+      if (response.ok) {
+        dispatch(selectMap(response.body));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else if (response.status == 404) {
+        history.push('');
+        dispatch(openToast(I18n.t('map not found')));
+      } else {
+        dispatch(openToast('Failed to fetch Map.'));
       }
-    );
+    });
   });
 
   const initMapReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsGet(
-      props.params.primaryId,
+      props.params.mapId,
       {},
       (error, data, response) => {
         if (response.ok) {
@@ -245,7 +243,7 @@ const MapDetail = props => {
     const apiInstance = new CollaboratorsApi();
 
     apiInstance.mapsMapIdCollaboratorsGet(
-      props.params.primaryId,
+      props.params.mapId,
       (error, data, response) => {
         if (response.ok) {
           dispatch(fetchCollaborators(response.body));
@@ -271,7 +269,7 @@ const MapDetail = props => {
     return () => {
       dispatch(clearMapState());
     };
-  }, [currentUser.uid, props.params.primaryId]);
+  }, [currentUser.uid]);
 
   useEffect(() => {
     if (!currentMap) {
@@ -315,9 +313,9 @@ const MapDetail = props => {
         </div>
       )}
       <React.Suspense fallback={null}>
-        <DeleteMapDialog mapId={props.params.primaryId} />
-        <InviteTargetDialog mapId={props.params.primaryId} />
-        {!lgUp && <MapSpotDrawer mapId={props.params.primaryId} />}
+        <DeleteMapDialog mapId={props.params.mapId} />
+        <InviteTargetDialog mapId={props.params.mapId} />
+        {!lgUp && <MapSpotDrawer mapId={props.params.mapId} />}
       </React.Suspense>
     </div>
   );

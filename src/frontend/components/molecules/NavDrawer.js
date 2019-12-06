@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useHistory, Link } from '@yusuke-suzuki/rize-router';
 
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
@@ -21,7 +22,6 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import Link from './Link';
 import I18n from '../../utils/I18n';
 
 import openFeedbackDialog from '../../actions/openFeedbackDialog';
@@ -80,18 +80,16 @@ const DrawerContents = React.memo(() => {
     state => ({
       currentLocation: state.shared.currentLocation,
       currentUser: state.app.currentUser,
-      history: state.shared.history,
       announcementIsNew: state.shared.announcementIsNew
     }),
     []
   );
-  const {
-    currentLocation,
-    currentUser,
-    history,
-    announcementIsNew
-  } = useMappedState(mapState);
+  const { currentLocation, currentUser, announcementIsNew } = useMappedState(
+    mapState
+  );
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleSignOutClick = useCallback(async () => {
     dispatch(requestStart());

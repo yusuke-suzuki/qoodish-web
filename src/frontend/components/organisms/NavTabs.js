@@ -19,7 +19,7 @@ import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import { NotificationsApi, InlineObject1 } from 'qoodish_api';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import I18n from '../../utils/I18n';
 
 const styles = {
@@ -100,27 +100,24 @@ const NavTabs = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentLocation) {
-        return;
-      }
-      switch (currentLocation.pathname) {
-        case '/':
-          setSelectedValue(0);
-          break;
-        case '/discover':
-          setSelectedValue(1);
-          break;
-        case '/profile':
-          setSelectedValue(2);
-          break;
-        default:
-          setSelectedValue(false);
-      }
-    },
-    [currentLocation]
-  );
+  useEffect(() => {
+    if (!currentLocation) {
+      return;
+    }
+    switch (currentLocation.pathname) {
+      case '/':
+        setSelectedValue(0);
+        break;
+      case '/discover':
+        setSelectedValue(1);
+        break;
+      case '/profile':
+        setSelectedValue(2);
+        break;
+      default:
+        setSelectedValue(false);
+    }
+  }, [currentLocation]);
 
   return (
     <div>

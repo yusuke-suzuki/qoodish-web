@@ -16,7 +16,7 @@ import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 
 import I18n from '../../utils/I18n';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import FollowMapButton from '../molecules/FollowMapButton';
 import closeFollowingMapsDialog from '../../actions/closeFollowingMapsDialog';
 import DialogAppBar from '../molecules/DialogAppBar';

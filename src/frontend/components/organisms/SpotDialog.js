@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useHistory } from '@yusuke-suzuki/rize-router';
+import { match } from 'path-to-regexp';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -27,16 +28,30 @@ const Transition = props => {
 };
 
 const SpotDialog = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentSpot, setCurrentSpot] = useState(undefined);
+
+  const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
-  const mapState = useCallback(
-    state => ({
-      dialogOpen: state.spotDetail.spotDialogOpen,
-      currentSpot: state.spotDetail.currentSpot,
-      history: state.shared.history
-    }),
-    []
-  );
-  const { dialogOpen, currentSpot, history } = useMappedState(mapState);
+
+  const unlisten = useMemo(() => {
+    return history.listen(location => {
+      const matched = match('/spots/:placeId')(location.pathname);
+
+      if (matched && location.state && location.state.modal) {
+        setCurrentSpot(location.state.spot);
+        setDialogOpen(true);
+      } else {
+        setDialogOpen(false);
+      }
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
 
   if (dialogOpen && currentSpot) {
     gtag('config', process.env.GA_TRACKING_ID, {
@@ -70,7 +85,7 @@ const SpotDialog = () => {
           {currentSpot && (
             <SpotCard
               currentSpot={currentSpot}
-              placeId={currentSpot && currentSpot.place_id}
+              placeId={currentSpot.place_id}
               dialog={true}
             />
           )}

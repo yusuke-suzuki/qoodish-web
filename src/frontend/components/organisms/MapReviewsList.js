@@ -11,8 +11,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import I18n from '../../utils/I18n';
-
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   activityText: {

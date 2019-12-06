@@ -13,7 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import I18n from '../../utils/I18n';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import { MapsApi } from 'qoodish_api';
 

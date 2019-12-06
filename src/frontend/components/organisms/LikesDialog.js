@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';
