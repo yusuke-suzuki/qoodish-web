@@ -4,7 +4,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import LockIcon from '@material-ui/icons/Lock';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -12,12 +11,12 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import I18n from '../../utils/I18n';
-import switchMap from '../../actions/switchMap';
 
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
 import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
+import BackButton from './BackButton';
 
 const styles = {
   toolbarLarge: {
@@ -29,10 +28,6 @@ const styles = {
     paddingLeft: 8,
     paddingRight: 8
   },
-  backButtonLarge: {
-    marginRight: 12
-  },
-  backButtonSmall: {},
   toolbarActions: {
     marginLeft: 'auto',
     display: 'flex'
@@ -45,7 +40,11 @@ const styles = {
   },
   mapTypeIcon: {
     marginRight: 6
-  }
+  },
+  backButtonLarge: {
+    marginRight: 12
+  },
+  backButtonSmall: {}
 };
 
 const isInvitable = map => {
@@ -59,36 +58,11 @@ const MapToolbar = () => {
 
   const mapState = useCallback(
     state => ({
-      previousLocation: state.shared.previousLocation,
-      map: state.mapSummary.currentMap,
-      mapSummaryOpen: state.mapDetail.mapSummaryOpen,
-      history: state.shared.history
+      map: state.mapSummary.currentMap
     }),
     []
   );
-  const { previousLocation, map, mapSummaryOpen, history } = useMappedState(
-    mapState
-  );
-
-  const handleBackButtonClick = useCallback(() => {
-    if (lgUp) {
-      if (previousLocation && !previousLocation.state) {
-        history.goBack();
-      } else {
-        history.push('/');
-      }
-    } else {
-      if (mapSummaryOpen) {
-        dispatch(switchMap());
-      } else {
-        if (previousLocation && !previousLocation.state) {
-          history.goBack();
-        } else {
-          history.push('/');
-        }
-      }
-    }
-  });
+  const { map } = useMappedState(mapState);
 
   const handleInviteButtonClick = useCallback(() => {
     dispatch(openInviteTargetDialog());
@@ -96,13 +70,9 @@ const MapToolbar = () => {
 
   return (
     <Toolbar style={lgUp ? styles.toolbarLarge : styles.toolbarSmall}>
-      <IconButton
-        color="inherit"
-        onClick={handleBackButtonClick}
-        style={lgUp ? styles.backButtonLarge : styles.backButtonSmall}
-      >
-        <ArrowBackIcon />
-      </IconButton>
+      <div style={lgUp ? styles.backButtonLarge : styles.backButtonSmall}>
+        <BackButton />
+      </div>
       {map && map.private && (
         <Tooltip title={I18n.t('this map is private')}>
           <LockIcon

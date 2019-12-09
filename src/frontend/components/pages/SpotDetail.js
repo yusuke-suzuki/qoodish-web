@@ -33,7 +33,7 @@ const SpotDetailContainer = props => {
 
   if (currentSpot) {
     return (
-      <SpotCard currentSpot={currentSpot} placeId={props.params.primaryId} />
+      <SpotCard currentSpot={currentSpot} placeId={props.params.placeId} />
     );
   } else {
     return (
@@ -61,7 +61,7 @@ const SpotDetail = props => {
     const apiInstance = new SpotsApi();
 
     apiInstance.spotsPlaceIdGet(
-      props.params.primaryId,
+      props.params.placeId,
       (error, data, response) => {
         setLoading(false);
         if (response.ok) {

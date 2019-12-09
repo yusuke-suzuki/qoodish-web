@@ -10,7 +10,7 @@ import {
 import SpotImageStepper from './SpotImageStepper';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import I18n from '../../utils/I18n';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import GoogleMapsLink from './GoogleMapsLink';
 
@@ -60,14 +60,11 @@ const SpotInfoWindow = () => {
     dispatch(selectPlaceForReview(place));
   });
 
-  const reviewAlreadyExists = useMemo(
-    () => {
-      return spotReviews.some(review => {
-        return review.place_id === currentSpot.place_id && review.editable;
-      });
-    },
-    [spotReviews]
-  );
+  const reviewAlreadyExists = useMemo(() => {
+    return spotReviews.some(review => {
+      return review.place_id === currentSpot.place_id && review.editable;
+    });
+  }, [spotReviews]);
 
   return (
     <div style={styles.root}>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useMappedState } from 'redux-react-hook';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';

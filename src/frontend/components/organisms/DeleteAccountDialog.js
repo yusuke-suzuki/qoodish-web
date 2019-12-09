@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -33,13 +34,13 @@ const DeleteAccountDialog = props => {
   const mapState = useCallback(
     state => ({
       dialogOpen: state.settings.deleteAccountDialogOpen,
-      currentUser: state.app.currentUser,
-      history: state.shared.history
+      currentUser: state.app.currentUser
     }),
     []
   );
-  const { dialogOpen, currentUser, history } = useMappedState(mapState);
+  const { dialogOpen, currentUser } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);

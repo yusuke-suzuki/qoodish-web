@@ -50,8 +50,8 @@ const ReviewDetail = props => {
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsReviewIdGet(
-      props.params.primaryId,
-      props.params.secondaryId,
+      props.params.mapId,
+      props.params.reviewId,
       (error, data, response) => {
         setLoading(false);
 

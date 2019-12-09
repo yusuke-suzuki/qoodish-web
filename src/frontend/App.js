@@ -6,13 +6,13 @@ const Layout = React.lazy(() =>
 );
 import AppHelmet from './AppHelmet';
 
-import fetchMyProfile from '../actions/fetchMyProfile';
-import updateLinkedProviders from '../actions/updateLinkedProviders';
-import fetchNotifications from '../actions/fetchNotifications';
-import signIn from '../actions/signIn';
+import fetchMyProfile from './actions/fetchMyProfile';
+import updateLinkedProviders from './actions/updateLinkedProviders';
+import fetchNotifications from './actions/fetchNotifications';
+import signIn from './actions/signIn';
 
-import getFirebase from '../utils/getFirebase';
-import getFirebaseAuth from '../utils/getFirebaseAuth';
+import getFirebase from './utils/getFirebase';
+import getFirebaseAuth from './utils/getFirebaseAuth';
 
 import { ApiClient, UsersApi, NotificationsApi } from 'qoodish_api';
 

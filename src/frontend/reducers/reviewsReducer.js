@@ -7,8 +7,6 @@ import {
   CLOSE_COPY_REVIEW_DIALOG,
   OPEN_DELETE_REVIEW_DIALOG,
   CLOSE_DELETE_REVIEW_DIALOG,
-  OPEN_REVIEW_DIALOG,
-  CLOSE_REVIEW_DIALOG,
   SELECT_PLACE_FOR_REVIEW,
   OPEN_DELETE_COMMENT_DIALOG,
   CLOSE_DELETE_COMMENT_DIALOG,
@@ -18,7 +16,6 @@ import {
 const initialState = {
   currentReview: undefined,
   targetReview: undefined,
-  reviewDialogOpen: false,
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
@@ -84,15 +81,6 @@ const reducer = (state = initialState, action) => {
         targetReview: null,
         deleteReviewDialogOpen: false
       });
-    case OPEN_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        reviewDialogOpen: true,
-        currentReview: action.payload.review
-      });
-    case CLOSE_REVIEW_DIALOG:
-      return Object.assign({}, state, {
-        reviewDialogOpen: false
-      });
     case OPEN_DELETE_COMMENT_DIALOG:
       return Object.assign({}, state, {
         targetComment: action.payload.comment,
@@ -105,7 +93,6 @@ const reducer = (state = initialState, action) => {
       });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
-        reviewDialogOpen: false,
         editReviewDialogOpen: false,
         copyReviewDialogOpen: false,
         deleteReviewDialogOpen: false,

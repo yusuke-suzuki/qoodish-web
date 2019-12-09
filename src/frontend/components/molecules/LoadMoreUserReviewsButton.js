@@ -49,7 +49,7 @@ const LoadMoreUserReviewsButton = props => {
     let userId =
       location && location.pathname === '/profile'
         ? props.currentUser.uid
-        : props.params.primaryId;
+        : props.params.userId;
 
     const apiInstance = new ReviewsApi();
     const opts = {

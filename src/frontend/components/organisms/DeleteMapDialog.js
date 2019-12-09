@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -23,13 +24,13 @@ const DeleteMapDialog = () => {
   const mapState = useCallback(
     state => ({
       currentMap: state.maps.targetMap,
-      dialogOpen: state.maps.deleteMapDialogOpen,
-      history: state.shared.history
+      dialogOpen: state.maps.deleteMapDialogOpen
     }),
     []
   );
-  const { currentMap, dialogOpen, history } = useMappedState(mapState);
+  const { currentMap, dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);

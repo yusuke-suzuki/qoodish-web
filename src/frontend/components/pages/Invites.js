@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -50,14 +51,14 @@ const createdAt = invite => {
 const Invites = () => {
   const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
+  const history = useHistory();
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
-      history: state.shared.history
+      currentUser: state.app.currentUser
     }),
     []
   );
-  const { currentUser, history } = useMappedState(mapState);
+  const { currentUser } = useMappedState(mapState);
 
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);

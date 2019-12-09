@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import { MapsApi } from 'qoodish_api';
 import I18n from '../../utils/I18n';
 
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 import MapCard from '../molecules/MapCard';
 import SkeltonMapCard from '../molecules/SkeltonMapCard';
 import { useMappedState } from 'redux-react-hook';
@@ -51,15 +51,12 @@ const RecommendMaps = () => {
     });
   });
 
-  useEffect(
-    () => {
-      if (!currentUser || !currentUser.uid) {
-        return;
-      }
-      refreshMaps();
-    },
-    [currentUser.uid]
-  );
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid) {
+      return;
+    }
+    refreshMaps();
+  }, [currentUser.uid]);
 
   return (
     <div>

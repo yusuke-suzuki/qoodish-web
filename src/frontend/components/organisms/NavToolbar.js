@@ -3,14 +3,13 @@ import { useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import SearchButton from '../molecules/SearchButton';
 import SearchBar from '../molecules/SearchBar';
 import AppMenuButton from '../molecules/AppMenuButton';
 import NavTabs from './NavTabs';
 import Logo from '../molecules/Logo';
+import BackButton from '../molecules/BackButton';
 
 const styles = {
   toolbarLarge: {
@@ -48,33 +47,15 @@ const styles = {
 const ToolbarSmall = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      showBackButton: state.shared.showBackButton,
-      previousLocation: state.shared.previousLocation,
-      history: state.shared.history
+      showBackButton: state.shared.showBackButton
     }),
     []
   );
-  const { showBackButton, previousLocation, history } = useMappedState(
-    mapState
-  );
-
-  const handleBackButtonClick = useCallback(() => {
-    if (previousLocation && !previousLocation.state) {
-      history.goBack();
-    } else {
-      history.push('/');
-    }
-  });
+  const { showBackButton } = useMappedState(mapState);
 
   return (
     <Toolbar style={styles.toolbarSmall}>
-      {showBackButton ? (
-        <IconButton color="inherit" onClick={handleBackButtonClick}>
-          <ArrowBackIcon />
-        </IconButton>
-      ) : (
-        <AppMenuButton />
-      )}
+      {showBackButton ? <BackButton /> : <AppMenuButton />}
       <div style={styles.logoContainerSmall}>
         <Logo color="inherit" />
       </div>

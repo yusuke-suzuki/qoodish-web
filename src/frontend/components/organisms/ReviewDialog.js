@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useHistory } from '@yusuke-suzuki/rize-router';
+import { match } from 'path-to-regexp';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -32,16 +33,32 @@ const Transition = props => {
 };
 
 const ReviewDialog = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentReview, setCurrentReview] = useState(undefined);
+
+  const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
-  const mapState = useCallback(
-    state => ({
-      dialogOpen: state.reviews.reviewDialogOpen,
-      currentReview: state.reviews.currentReview,
-      history: state.shared.history
-    }),
-    []
-  );
-  const { dialogOpen, currentReview, history } = useMappedState(mapState);
+
+  const unlisten = useMemo(() => {
+    return history.listen(location => {
+      const matched = match('/maps/:mapId/reports/:reviewId')(
+        location.pathname
+      );
+
+      if (matched && location.state && location.state.modal) {
+        setCurrentReview(location.state.review);
+        setDialogOpen(true);
+      } else {
+        setDialogOpen(false);
+      }
+    });
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
 
   if (dialogOpen && currentReview) {
     gtag('config', process.env.GA_TRACKING_ID, {

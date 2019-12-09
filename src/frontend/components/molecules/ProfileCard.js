@@ -7,7 +7,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 
 import ProfileAvatar from './ProfileAvatar';
 import I18n from '../../utils/I18n';
-import Link from './Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   cardContent: {

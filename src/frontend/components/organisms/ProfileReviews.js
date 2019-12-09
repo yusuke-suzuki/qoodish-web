@@ -63,8 +63,8 @@ const ProfileReviews = props => {
     setLoading(true);
 
     const userId =
-      props.params && props.params.primaryId
-        ? props.params.primaryId
+      props.params && props.params.userId
+        ? props.params.userId
         : currentUser.uid;
 
     const apiInstance = new ReviewsApi();

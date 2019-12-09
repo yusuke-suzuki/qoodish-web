@@ -23,7 +23,7 @@ import updateMetadata from '../../actions/updateMetadata';
 
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from 'qoodish_api';
-import Link from '../molecules/Link';
+import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   formCard: {

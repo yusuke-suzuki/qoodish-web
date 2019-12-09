@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch } from 'redux-react-hook';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
@@ -22,17 +23,10 @@ import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
 
 const LoginButtons = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [firebaseAuth, setFirebaseAuth] = useState(undefined);
   const [uiConfig, setUiConfig] = useState(undefined);
-
-  const mapState = useCallback(
-    state => ({
-      history: state.shared.history
-    }),
-    []
-  );
-  const { history } = useMappedState(mapState);
 
   const initFirebase = useCallback(async () => {
     await getFirebaseAuth();
