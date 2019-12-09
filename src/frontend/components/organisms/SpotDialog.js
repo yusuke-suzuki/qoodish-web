@@ -11,6 +11,9 @@ import Fade from '@material-ui/core/Fade';
 import SpotCard from '../organisms/SpotCard';
 import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
+import closeSpotDialog from '../../actions/closeSpotDialog';
+import openSpotDialog from '../../actions/openSpotDialog';
+import { useDispatch } from 'redux-react-hook';
 
 const styles = {
   dialogContent: {
@@ -31,6 +34,7 @@ const SpotDialog = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentSpot, setCurrentSpot] = useState(undefined);
 
+  const dispatch = useDispatch();
   const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
 
@@ -53,21 +57,27 @@ const SpotDialog = () => {
     };
   }, [unlisten]);
 
-  if (dialogOpen && currentSpot) {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: `/spots/${currentSpot.place_id}`,
-      page_title: `${currentSpot.name} | Qoodish`
-    });
-  }
+  const handleDialogOpen = useCallback(() => {
+    dispatch(openSpotDialog());
 
-  const handleRequestDialogClose = useCallback(() => {
+    if (currentSpot) {
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: `/spots/${currentSpot.place_id}`,
+        page_title: `${currentSpot.name} | Qoodish`
+      });
+    }
+  }, [currentSpot]);
+
+  const handleDialogClose = useCallback(() => {
+    dispatch(closeSpotDialog());
     history.goBack();
-  });
+  }, [history]);
 
   return (
     <Dialog
       open={dialogOpen}
-      onClose={handleRequestDialogClose}
+      onEntered={handleDialogOpen}
+      onClose={handleDialogClose}
       TransitionComponent={large ? Fade : Transition}
       fullWidth
       fullScreen={large ? false : true}
@@ -77,7 +87,7 @@ const SpotDialog = () => {
         <DialogAppBar
           title={I18n.t('spot')}
           iconType="back"
-          handleRequestDialogClose={handleRequestDialogClose}
+          handleRequestDialogClose={handleDialogClose}
         />
       )}
       <DialogContent style={styles.dialogContent}>

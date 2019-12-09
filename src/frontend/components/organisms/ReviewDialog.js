@@ -16,6 +16,8 @@ import DialogAppBar from '../molecules/DialogAppBar';
 
 import requestMapCenter from '../../actions/requestMapCenter';
 import { useDispatch } from 'redux-react-hook';
+import closeReviewDialog from '../../actions/closeReviewDialog';
+import openReviewDialog from '../../actions/openReviewDialog';
 
 const styles = {
   appbar: {
@@ -58,36 +60,37 @@ const ReviewDialog = () => {
     });
   }, [history]);
 
-  useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
+  const handleDialogOpen = useCallback(() => {
+    dispatch(openReviewDialog());
 
-  if (dialogOpen && currentReview) {
-    gtag('config', process.env.GA_TRACKING_ID, {
-      page_path: `/maps/${currentReview.map.id}/reports/${currentReview.id}`,
-      page_title: `${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`
-    });
-  }
-
-  const handleRequestDialogClose = useCallback(() => {
-    history.goBack();
-  });
-
-  const moveMapCenter = useCallback(() => {
     if (currentReview) {
+      gtag('config', process.env.GA_TRACKING_ID, {
+        page_path: `/maps/${currentReview.map.id}/reports/${currentReview.id}`,
+        page_title: `${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`
+      });
+
       dispatch(
         requestMapCenter(currentReview.spot.lat, currentReview.spot.lng)
       );
     }
   }, [currentReview]);
 
+  const handleDialogClose = useCallback(() => {
+    dispatch(closeReviewDialog());
+    history.goBack();
+  }, [history]);
+
+  useEffect(() => {
+    return () => {
+      unlisten();
+    };
+  }, [unlisten]);
+
   return (
     <Dialog
       open={dialogOpen}
-      onEntered={moveMapCenter}
-      onClose={handleRequestDialogClose}
+      onEntered={handleDialogOpen}
+      onClose={handleDialogClose}
       TransitionComponent={large ? Fade : Transition}
       fullWidth
       fullScreen={large ? false : true}
@@ -97,7 +100,7 @@ const ReviewDialog = () => {
         <DialogAppBar
           title={I18n.t('report')}
           iconType="back"
-          handleRequestDialogClose={handleRequestDialogClose}
+          handleRequestDialogClose={handleDialogClose}
         />
       )}
       <DialogContent style={styles.dialogContent}>

@@ -8,7 +8,6 @@ import {
 
 const initialState = {
   currentReviews: [],
-  reviewDialogOpen: false,
   noMoreReviews: false,
   nextTimestamp: ''
 };

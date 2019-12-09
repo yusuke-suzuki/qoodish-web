@@ -10,6 +10,8 @@ import {
   SELECT_PLACE_FOR_REVIEW,
   OPEN_DELETE_COMMENT_DIALOG,
   CLOSE_DELETE_COMMENT_DIALOG,
+  OPEN_REVIEW_DIALOG,
+  CLOSE_REVIEW_DIALOG,
   LOCATION_CHANGE
 } from '../actionTypes';
 
@@ -21,7 +23,8 @@ const initialState = {
   deleteReviewDialogOpen: false,
   selectedPlace: undefined,
   deleteCommentDialogOpen: false,
-  targetComment: undefined
+  targetComment: undefined,
+  reviewDialogOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -91,8 +94,17 @@ const reducer = (state = initialState, action) => {
         targetComment: undefined,
         deleteCommentDialogOpen: false
       });
+    case OPEN_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        reviewDialogOpen: true
+      });
+    case CLOSE_REVIEW_DIALOG:
+      return Object.assign({}, state, {
+        reviewDialogOpen: false
+      });
     case LOCATION_CHANGE:
       return Object.assign({}, state, {
+        reviewDialogOpen: false,
         editReviewDialogOpen: false,
         copyReviewDialogOpen: false,
         deleteReviewDialogOpen: false,
