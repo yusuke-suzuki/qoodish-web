@@ -14,6 +14,9 @@ import ReviewCardActions from '../molecules/ReviewCardActions';
 import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 
+import requestMapCenter from '../../actions/requestMapCenter';
+import { useDispatch } from 'redux-react-hook';
+
 const styles = {
   appbar: {
     position: 'relative'
@@ -33,6 +36,7 @@ const Transition = props => {
 };
 
 const ReviewDialog = () => {
+  const dispatch = useDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentReview, setCurrentReview] = useState(undefined);
 
@@ -71,9 +75,18 @@ const ReviewDialog = () => {
     history.goBack();
   });
 
+  const moveMapCenter = useCallback(() => {
+    if (currentReview) {
+      dispatch(
+        requestMapCenter(currentReview.spot.lat, currentReview.spot.lng)
+      );
+    }
+  }, [currentReview]);
+
   return (
     <Dialog
       open={dialogOpen}
+      onEntered={moveMapCenter}
       onClose={handleRequestDialogClose}
       TransitionComponent={large ? Fade : Transition}
       fullWidth
