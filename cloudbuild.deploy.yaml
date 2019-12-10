@@ -8,18 +8,18 @@ steps:
       - --location=global
       - --keyring=qoodish
       - --key=qoodish
-  - name: "gcr.io/cloud-builders/yarn"
-    entrypoint: "bash"
+  - name: node:13.3.0-alpine
+    entrypoint: sh
     args:
-      - "-c"
+      - -c
       - |
         yarn
         yarn build:prod
     env:
-      - "PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}"
-      - "API_ENDPOINT=${_API_ENDPOINT}"
-      - "ENDPOINT=${_ENDPOINT}"
-  - name: "gcr.io/kaniko-project/executor"
+      - 'PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}'
+      - 'API_ENDPOINT=${_API_ENDPOINT}'
+      - 'ENDPOINT=${_ENDPOINT}'
+  - name: gcr.io/kaniko-project/executor
     args:
       - --cache=true
       - --cache-ttl=6h
