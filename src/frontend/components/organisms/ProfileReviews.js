@@ -10,7 +10,7 @@ import NoContents from '../molecules/NoContents';
 
 import fetchUserReviews from '../../actions/fetchUserReviews';
 import I18n from '../../utils/I18n';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   reviewsLarge: {

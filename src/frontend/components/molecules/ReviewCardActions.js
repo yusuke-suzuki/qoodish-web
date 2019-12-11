@@ -11,7 +11,10 @@ import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
-import { CommentsApi, InlineObject } from 'qoodish_api';
+import {
+  CommentsApi,
+  InlineObject
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   root: {

@@ -23,7 +23,7 @@ import requestFinish from '../../actions/requestFinish';
 import uploadToStorage from '../../utils/uploadToStorage';
 import sleep from '../../utils/sleep';
 
-import { UsersApi, NewUser } from 'qoodish_api';
+import { UsersApi, NewUser } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {

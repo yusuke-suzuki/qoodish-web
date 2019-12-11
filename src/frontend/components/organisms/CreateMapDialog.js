@@ -12,7 +12,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import I18n from '../../utils/I18n';
-import { MapsApi, NewMap } from 'qoodish_api';
+import { MapsApi, NewMap } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const CreateMapDialog = () => {
   const dispatch = useDispatch();

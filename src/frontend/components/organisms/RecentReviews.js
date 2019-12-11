@@ -19,7 +19,7 @@ import moment from 'moment';
 import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import ReactionsCount from '../molecules/ReactionsCount';
 
 const styles = {

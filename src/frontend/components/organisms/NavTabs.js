@@ -17,7 +17,10 @@ import NotificationList from './NotificationList';
 
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
-import { NotificationsApi, InlineObject1 } from 'qoodish_api';
+import {
+  NotificationsApi,
+  InlineObject1
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 import { Link } from '@yusuke-suzuki/rize-router';
 import I18n from '../../utils/I18n';

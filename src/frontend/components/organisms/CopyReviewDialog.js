@@ -21,7 +21,11 @@ import uploadToStorage from '../../utils/uploadToStorage';
 import deleteFromStorage from '../../utils/deleteFromStorage';
 import downloadImage from '../../utils/downloadImage';
 
-import { MapsApi, NewReview, ReviewsApi } from 'qoodish_api';
+import {
+  MapsApi,
+  NewReview,
+  ReviewsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const CopyReviewDialog = () => {
   const mapState = useCallback(

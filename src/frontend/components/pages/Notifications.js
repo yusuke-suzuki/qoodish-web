@@ -13,7 +13,7 @@ import CreateResourceButton from '../molecules/CreateResourceButton';
 import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import fetchNotifications from '../../actions/fetchNotifications';
-import { NotificationsApi } from 'qoodish_api';
+import { NotificationsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   progressLarge: {

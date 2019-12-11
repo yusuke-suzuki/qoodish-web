@@ -22,7 +22,7 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import updateMetadata from '../../actions/updateMetadata';
 
 import I18n from '../../utils/I18n';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {

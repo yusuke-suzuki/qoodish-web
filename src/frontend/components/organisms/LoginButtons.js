@@ -18,7 +18,7 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
-import { UsersApi, NewUser } from 'qoodish_api';
+import { UsersApi, NewUser } from '@yusuke-suzuki/qoodish-api-js-client';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
 
 const LoginButtons = () => {

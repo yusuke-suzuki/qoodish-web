@@ -8,7 +8,7 @@ import fetchUserProfile from '../../actions/fetchUserProfile';
 import clearProfileState from '../../actions/clearProfileState';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { UserMapsApi, UsersApi } from 'qoodish_api';
+import { UserMapsApi, UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const UserProfile = props => {
   const dispatch = useDispatch();

@@ -25,7 +25,11 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import openToast from '../../actions/openToast';
 
-import { UsersApi, InvitesApi, NewInvite } from 'qoodish_api';
+import {
+  UsersApi,
+  InvitesApi,
+  NewInvite
+} from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {

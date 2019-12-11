@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
 import { Link } from '@yusuke-suzuki/rize-router';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import searchMaps from '../../actions/searchMaps';
 

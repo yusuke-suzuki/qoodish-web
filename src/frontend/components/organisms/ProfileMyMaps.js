@@ -9,7 +9,7 @@ import NoContents from '../molecules/NoContents';
 import fetchMyMaps from '../../actions/fetchMyMaps';
 import I18n from '../../utils/I18n';
 
-import { UserMapsApi } from 'qoodish_api';
+import { UserMapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   progress: {

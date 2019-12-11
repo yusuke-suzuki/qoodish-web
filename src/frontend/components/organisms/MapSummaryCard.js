@@ -17,7 +17,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import ReviewTiles from './ReviewTiles';
 
 import requestMapCenter from '../../actions/requestMapCenter';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 

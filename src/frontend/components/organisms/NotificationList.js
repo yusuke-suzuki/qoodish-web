@@ -15,7 +15,10 @@ import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
-import { NotificationsApi, InlineObject1 } from 'qoodish_api';
+import {
+  NotificationsApi,
+  InlineObject1
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   listItemText: {

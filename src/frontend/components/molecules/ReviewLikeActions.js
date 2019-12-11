@@ -6,7 +6,7 @@ import openToast from '../../actions/openToast';
 import editReview from '../../actions/editReview';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 const ReviewLikeActions = props => {
   const dispatch = useDispatch();
   const currentUser = useMappedState(

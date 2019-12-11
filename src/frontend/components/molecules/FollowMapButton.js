@@ -11,7 +11,10 @@ import requestFinish from '../../actions/requestFinish';
 import fetchCollaborators from '../../actions/fetchCollaborators';
 import joinMap from '../../actions/joinMap';
 import openToast from '../../actions/openToast';
-import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
+import {
+  CollaboratorsApi,
+  FollowsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   skelton: {

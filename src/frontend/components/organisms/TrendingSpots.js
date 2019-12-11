@@ -18,7 +18,7 @@ import CardContent from '@material-ui/core/CardContent';
 import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
-import { SpotsApi } from 'qoodish_api';
+import { SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   progress: {

@@ -12,7 +12,10 @@ import I18n from '../../utils/I18n';
 import createRegistrationToken from '../../utils/createRegistrationToken';
 import openToast from '../../actions/openToast';
 import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
-import { PushNotification, PushNotificationApi } from 'qoodish_api';
+import {
+  PushNotification,
+  PushNotificationApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';

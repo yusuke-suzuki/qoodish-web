@@ -21,7 +21,7 @@ import requestFinish from '../../actions/requestFinish';
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
 
-import { UsersApi } from 'qoodish_api';
+import { UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   deleteButton: {

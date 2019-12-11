@@ -13,7 +13,7 @@ import fetchSpot from '../../actions/fetchSpot';
 import clearSpotState from '../../actions/clearSpotState';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { SpotsApi } from 'qoodish_api';
+import { SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   progress: {
