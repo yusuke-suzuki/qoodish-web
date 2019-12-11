@@ -11,7 +11,7 @@ import selectReview from '../../actions/selectReview';
 import clearReviewState from '../../actions/clearReviewState';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   progress: {

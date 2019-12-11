@@ -18,7 +18,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import NoContents from '../molecules/NoContents';
 
 import I18n from '../../utils/I18n';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   listItemText: {

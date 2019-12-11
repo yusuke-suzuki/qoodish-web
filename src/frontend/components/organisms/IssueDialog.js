@@ -17,7 +17,10 @@ import closeIssueDialog from '../../actions/closeIssueDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { IssueContentsApi, InappropreateContent } from 'qoodish_api';
+import {
+  IssueContentsApi,
+  InappropreateContent
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const IssueDialog = () => {
   const dispatch = useDispatch();

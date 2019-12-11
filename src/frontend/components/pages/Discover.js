@@ -22,7 +22,7 @@ import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   container: {

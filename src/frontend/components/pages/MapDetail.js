@@ -12,7 +12,11 @@ import updateMetadata from '../../actions/updateMetadata';
 
 import I18n from '../../utils/I18n';
 
-import { MapsApi, CollaboratorsApi, ReviewsApi } from 'qoodish_api';
+import {
+  MapsApi,
+  CollaboratorsApi,
+  ReviewsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const GMap = React.lazy(() =>
   import(/* webpackChunkName: "gmap" */ '../organisms/GMap')

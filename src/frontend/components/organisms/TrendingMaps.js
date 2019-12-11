@@ -17,7 +17,7 @@ import Paper from '@material-ui/core/Paper';
 import CardContent from '@material-ui/core/CardContent';
 import GradeIcon from '@material-ui/icons/Grade';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
 

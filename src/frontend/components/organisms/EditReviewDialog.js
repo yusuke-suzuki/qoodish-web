@@ -44,7 +44,7 @@ import sleep from '../../utils/sleep';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
-import { MapsApi, ReviewsApi, NewReview } from 'qoodish_api';
+import { MapsApi, ReviewsApi, NewReview } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {

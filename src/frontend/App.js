@@ -14,7 +14,11 @@ import signIn from './actions/signIn';
 import getFirebase from './utils/getFirebase';
 import getFirebaseAuth from './utils/getFirebaseAuth';
 
-import { ApiClient, UsersApi, NotificationsApi } from 'qoodish_api';
+import {
+  ApiClient,
+  UsersApi,
+  NotificationsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const App = () => {
   const dispatch = useDispatch();

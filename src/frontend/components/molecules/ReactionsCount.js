@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import I18n from '../../utils/I18n';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 import { useDispatch } from 'redux-react-hook';

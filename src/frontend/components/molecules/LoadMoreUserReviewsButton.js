@@ -8,7 +8,7 @@ import I18n from '../../utils/I18n';
 
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   buttonLarge: {

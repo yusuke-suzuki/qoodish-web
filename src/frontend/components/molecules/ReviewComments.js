@@ -22,7 +22,7 @@ import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 
 import moment from 'moment';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import openLikesDialog from '../../actions/openLikesDialog';
 import fetchLikes from '../../actions/fetchLikes';
 

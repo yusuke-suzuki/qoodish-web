@@ -19,7 +19,10 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import fetchCollaborators from '../../actions/fetchCollaborators';
 
-import { CollaboratorsApi, FollowsApi } from 'qoodish_api';
+import {
+  CollaboratorsApi,
+  FollowsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;

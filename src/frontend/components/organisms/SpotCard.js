@@ -14,7 +14,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 
 const styles = {

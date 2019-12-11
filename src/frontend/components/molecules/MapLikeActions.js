@@ -6,7 +6,7 @@ import openToast from '../../actions/openToast';
 import editMap from '../../actions/editMap';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
-import { LikesApi } from 'qoodish_api';
+import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   likeButton: {

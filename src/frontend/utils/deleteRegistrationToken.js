@@ -1,4 +1,4 @@
-import { DevicesApi } from 'qoodish_api';
+import { DevicesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const deleteRegistrationToken = async () => {
   const registrationToken = localStorage.registrationToken;

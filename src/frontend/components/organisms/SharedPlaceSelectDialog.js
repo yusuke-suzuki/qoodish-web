@@ -20,7 +20,7 @@ import Fade from '@material-ui/core/Fade';
 import I18n from '../../utils/I18n';
 
 import searchPlaces from '../../actions/searchPlaces';
-import { PlacesApi } from 'qoodish_api';
+import { PlacesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {

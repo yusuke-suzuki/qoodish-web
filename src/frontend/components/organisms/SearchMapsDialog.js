@@ -20,7 +20,7 @@ import searchMaps from '../../actions/searchMaps';
 import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
 import I18n from '../../utils/I18n';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   toolbar: {

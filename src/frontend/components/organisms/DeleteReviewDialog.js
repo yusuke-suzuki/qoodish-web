@@ -18,7 +18,7 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import deleteFromStorage from '../../utils/deleteFromStorage';
-import { ReviewsApi } from 'qoodish_api';
+import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const DeleteReviewDialog = () => {
   const mapState = useCallback(

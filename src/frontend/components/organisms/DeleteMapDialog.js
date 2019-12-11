@@ -18,7 +18,7 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const DeleteMapDialog = () => {
   const mapState = useCallback(

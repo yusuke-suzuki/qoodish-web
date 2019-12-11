@@ -3,7 +3,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import { MapsApi } from 'qoodish_api';
+import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import I18n from '../../utils/I18n';
 
 import { Link } from '@yusuke-suzuki/rize-router';

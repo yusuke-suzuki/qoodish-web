@@ -1,6 +1,6 @@
 import getFirebase from './getFirebase';
 import getFirebaseMessaging from './getFirebaseMessaging';
-import { DevicesApi } from 'qoodish_api';
+import { DevicesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const pushAvailable = () => {
   return 'serviceWorker' in navigator && 'PushManager' in window;

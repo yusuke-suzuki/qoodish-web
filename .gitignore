@@ -70,3 +70,5 @@ public/*.hot-update.*
 
 firebase-debug.log
 .firebase
+
+.npmrc

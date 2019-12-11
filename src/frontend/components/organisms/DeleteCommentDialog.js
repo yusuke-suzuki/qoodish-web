@@ -14,7 +14,7 @@ import closeDeleteCommentDialog from '../../actions/closeDeleteCommentDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { CommentsApi } from 'qoodish_api';
+import { CommentsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const DeleteCommentDialog = () => {
   const mapState = useCallback(

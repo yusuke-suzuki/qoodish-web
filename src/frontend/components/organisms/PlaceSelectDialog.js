@@ -7,7 +7,7 @@ import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import searchPlaces from '../../actions/searchPlaces';
 import fetchCurrentPosition from '../../utils/fetchCurrentPosition';
 import getCurrentPosition from '../../actions/getCurrentPosition';
-import { PlacesApi } from 'qoodish_api';
+import { PlacesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const PlaceSelectDialog = () => {
   const dispatch = useDispatch();

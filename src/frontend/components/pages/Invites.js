@@ -21,7 +21,7 @@ import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { FollowsApi, InvitesApi } from 'qoodish_api';
+import { FollowsApi, InvitesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const styles = {
   cardLarge: {
