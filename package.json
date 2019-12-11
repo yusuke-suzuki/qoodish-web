@@ -37,7 +37,7 @@
     "react-swipeable-views": "^0.13.3",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
-    "redux-react-hook": "^3.3.2",
+    "redux-react-hook": "^4.0.1",
     "twitter-text": "^3.0.0",
     "uuid": "^3.3.3",
     "workbox-sw": "^4.3.1",

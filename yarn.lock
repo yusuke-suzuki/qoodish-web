@@ -8172,10 +8172,10 @@ redux-logger@^3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
-redux-react-hook@^3.3.2:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/redux-react-hook/-/redux-react-hook-3.4.0.tgz#9a58740ab12a5256fc058dfeb1b0e747bd384c99"
-  integrity "sha1-mlh0CrEqUlb8BY3+sbDnR704TJk= sha512-b8NICcx8gJgo+nth6isjBx4dU4dYSo2CFzqkuSeebgpOgGNPWlhPBn/tw1D3JLyJZMHzEpEnafnm36OnVJrTTw=="
+redux-react-hook@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/redux-react-hook/-/redux-react-hook-4.0.1.tgz#ff3ff92984c3815676208edb0528712cf2fb7bba"
+  integrity sha512-/CGTTHGt3YggK1GmTO9ZUHk+rb+Ff5vA4uL/Lg+afNqzqyKuIkOZ67T/zzwold1TQTZjSJ/wGJYmNgT8YW8UCA==
   dependencies:
     eslint "^6.5.1"
 
