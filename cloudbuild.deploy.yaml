@@ -1,3 +1,7 @@
+secrets:
+  - kmsKeyName: projects/api-project-411341268038/locations/global/keyRings/qoodish/cryptoKeys/qoodish
+    secretEnv:
+      NPM_TOKEN: CiQAVBSmKe8GLFeOo87fo/NE3bgd+CyRSUdzMWKnRSALdoG+HLgSUQDAy7GwfHjGd8Ey1+NDp5BgxrE2sWfbHWtHnovE9U6Xp3YaBRwUk9Ecxu04Miw1fqCPj5S65iIyIfnUAw2mXrzMZdT8j95YqEHvdMJls/N02Q==
 steps:
   - name: gcr.io/cloud-builders/gcloud
     args:
@@ -16,9 +20,11 @@ steps:
         yarn
         yarn build:prod
     env:
-      - 'PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}'
-      - 'API_ENDPOINT=${_API_ENDPOINT}'
-      - 'ENDPOINT=${_ENDPOINT}'
+      - "PICKED_UP_MAP_ID=${_PICKED_UP_MAP_ID}"
+      - "API_ENDPOINT=${_API_ENDPOINT}"
+      - "ENDPOINT=${_ENDPOINT}"
+    secretEnv:
+      - NPM_TOKEN
   - name: gcr.io/kaniko-project/executor
     args:
       - --cache=true
