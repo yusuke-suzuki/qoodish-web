@@ -166,7 +166,7 @@ const ReviewCard = props => {
         <ReviewComments comments={props.currentReview.comments} />
       )}
       {props.hideActions ? null : (
-        <CardActions disableActionSpacing style={styles.cardActions}>
+        <CardActions disableSpacing style={styles.cardActions}>
           <ReviewCardActions review={props.currentReview} />
         </CardActions>
       )}

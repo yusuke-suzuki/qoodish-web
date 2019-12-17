@@ -25,11 +25,11 @@ const DeleteReviewDialog = () => {
     state => ({
       review: state.reviews.targetReview,
       dialogOpen: state.reviews.deleteReviewDialogOpen,
-      isMapDetail: state.shared.isMapDetail
+      reviewDialogOpen: state.reviews.reviewDialogOpen
     }),
     []
   );
-  const { review, dialogOpen, isMapDetail } = useMappedState(mapState);
+  const { review, dialogOpen, reviewDialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -61,8 +61,8 @@ const DeleteReviewDialog = () => {
         }
         dispatch(closeDeleteReviewDialog());
 
-        if (isMapDetail) {
-          history.push(`/maps/${review.map.id}`);
+        if (reviewDialogOpen) {
+          history.goBack();
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast(I18n.t('delete report success')));

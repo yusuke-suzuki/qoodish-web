@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useHistory } from '@yusuke-suzuki/rize-router';
 import { match } from 'path-to-regexp';
@@ -15,14 +15,13 @@ import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 import requestMapCenter from '../../actions/requestMapCenter';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 import closeReviewDialog from '../../actions/closeReviewDialog';
 import openReviewDialog from '../../actions/openReviewDialog';
+import selectReview from '../../actions/selectReview';
+import clearReviewState from '../../actions/clearReviewState';
 
 const styles = {
-  appbar: {
-    position: 'relative'
-  },
   dialogContent: {
     padding: 0
   },
@@ -40,25 +39,34 @@ const Transition = props => {
 const ReviewDialog = () => {
   const dispatch = useDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [currentReview, setCurrentReview] = useState(undefined);
+  const mapState = useCallback(
+    state => ({
+      currentReview: state.reviews.currentReview,
+      currentLocation: state.shared.currentLocation
+    }),
+    []
+  );
+
+  const { currentReview, currentLocation } = useMappedState(mapState);
 
   const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
 
-  const unlisten = useMemo(() => {
-    return history.listen(location => {
-      const matched = match('/maps/:mapId/reports/:reviewId')(
-        location.pathname
-      );
+  const isMatched = useMemo(() => {
+    const matched = match('/maps/:mapId/reports/:reviewId')(
+      currentLocation.pathname
+    );
+    return matched && currentLocation.state && currentLocation.state.modal;
+  }, [currentLocation]);
 
-      if (matched && location.state && location.state.modal) {
-        setCurrentReview(location.state.review);
-        setDialogOpen(true);
-      } else {
-        setDialogOpen(false);
-      }
-    });
-  }, [history]);
+  useEffect(() => {
+    if (isMatched) {
+      dispatch(selectReview(currentLocation.state.review));
+      setDialogOpen(true);
+    } else {
+      setDialogOpen(false);
+    }
+  }, [isMatched, currentLocation]);
 
   const handleDialogOpen = useCallback(() => {
     dispatch(openReviewDialog());
@@ -80,21 +88,22 @@ const ReviewDialog = () => {
     history.goBack();
   }, [history]);
 
-  useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
+  const handleDialogExited = useCallback(() => {
+    dispatch(clearReviewState());
+  }, []);
 
   return (
     <Dialog
+      disableScrollLock
       open={dialogOpen}
       onEntered={handleDialogOpen}
       onClose={handleDialogClose}
+      onExited={handleDialogExited}
       TransitionComponent={large ? Fade : Transition}
       fullWidth
       fullScreen={large ? false : true}
       scroll={large ? 'body' : 'paper'}
+      disableRestoreFocus
     >
       {!large && (
         <DialogAppBar
@@ -114,7 +123,7 @@ const ReviewDialog = () => {
           )}
         </div>
       </DialogContent>
-      <DialogActions disableActionSpacing style={styles.dialogActions}>
+      <DialogActions disableSpacing style={styles.dialogActions}>
         <ReviewCardActions review={currentReview} />
       </DialogActions>
     </Dialog>

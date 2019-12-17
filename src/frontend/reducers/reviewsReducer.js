@@ -1,4 +1,6 @@
 import {
+  SELECT_REVIEW,
+  CLEAR_REVIEW_STATE,
   EDIT_REVIEW,
   DELETE_REVIEW,
   OPEN_EDIT_REVIEW_DIALOG,
@@ -29,6 +31,14 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case SELECT_REVIEW:
+      return Object.assign({}, state, {
+        currentReview: action.payload.review
+      });
+    case CLEAR_REVIEW_STATE:
+      return Object.assign({}, state, {
+        currentReview: undefined
+      });
     case SELECT_PLACE_FOR_REVIEW:
       return Object.assign({}, state, {
         selectedPlace: action.payload.place,
