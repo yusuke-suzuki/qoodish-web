@@ -1645,10 +1645,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity "sha1-0pHGpOl5ibXGHZrPOWrk/hM6cY0= sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ=="
 
-"@yusuke-suzuki/qoodish-api-js-client@^0.0.4":
-  version "0.0.4"
-  resolved "https://npm.pkg.github.com/download/@yusuke-suzuki/qoodish-api-js-client/0.0.4/307e1749c1cc05f9a930138a658a48505fa9b5eeefdd125e774f9c1ca7643924#"
-  integrity sha512-xeBxrvpQt9wStNDisCiqc3kl08mwy2QMPBChsrcp2jCGd2JqZhdqA6qZjYrpQU5RmxBXxBVXP2HIDKvhOyGmjA==
+"@yusuke-suzuki/qoodish-api-js-client@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@yusuke-suzuki/qoodish-api-js-client/-/qoodish-api-js-client-0.1.0.tgz#cf2c03ad7975943669f917fcdc45157ca9aece63"
+  integrity sha512-tUW+E+FlvuIPpU7E8O0QxBQfLszskMXP00q7biDnh9aeN60yL0+ON/S/Cc7gbOoevzpH4XzrJkOebwF+5F9/xQ==
   dependencies:
     "@babel/cli" "^7.0.0"
     superagent "3.7.0"
