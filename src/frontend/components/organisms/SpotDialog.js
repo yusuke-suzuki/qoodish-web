@@ -13,7 +13,7 @@ import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 import closeSpotDialog from '../../actions/closeSpotDialog';
 import openSpotDialog from '../../actions/openSpotDialog';
-import { useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 
 const styles = {
   dialogContent: {
@@ -38,6 +38,15 @@ const SpotDialog = () => {
   const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
 
+  const mapState = useCallback(
+    state => ({
+      currentLocation: state.shared.currentLocation
+    }),
+    []
+  );
+
+  const { currentLocation } = useMappedState(mapState);
+
   const isMatched = useMemo(() => {
     const matched = match('/spots/:placeId')(currentLocation.pathname);
     return matched && currentLocation.state && currentLocation.state.modal;
@@ -45,7 +54,7 @@ const SpotDialog = () => {
 
   useEffect(() => {
     if (isMatched) {
-      setCurrentSpot(location.state.spot);
+      setCurrentSpot(currentLocation.state.spot);
       setDialogOpen(true);
     } else {
       setDialogOpen(false);
