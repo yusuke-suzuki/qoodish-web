@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import { Link } from '@yusuke-suzuki/rize-router';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -47,9 +47,29 @@ const NotificationIcon = () => {
 };
 
 const BottomNav = () => {
-  const bottomNavValue = useMappedState(
-    useCallback(state => state.shared.bottomNavValue, [])
+  const mapState = useCallback(
+    state => ({
+      currentLocation: state.shared.currentLocation
+    }),
+    []
   );
+
+  const { currentLocation } = useMappedState(mapState);
+
+  const bottomNavValue = useMemo(() => {
+    switch (currentLocation.pathname) {
+      case '/':
+        return 0;
+      case '/discover':
+        return 1;
+      case '/profile':
+        return 3;
+      case '/notifications':
+        return 4;
+      default:
+        return undefined;
+    }
+  }, [currentLocation]);
 
   return (
     <Paper style={styles.bottomNav} elevation={20}>

@@ -38,24 +38,19 @@ const SpotDialog = () => {
   const history = useHistory();
   const large = useMediaQuery('(min-width: 600px)');
 
-  const unlisten = useMemo(() => {
-    return history.listen(location => {
-      const matched = match('/spots/:placeId')(location.pathname);
-
-      if (matched && location.state && location.state.modal) {
-        setCurrentSpot(location.state.spot);
-        setDialogOpen(true);
-      } else {
-        setDialogOpen(false);
-      }
-    });
-  }, [history]);
+  const isMatched = useMemo(() => {
+    const matched = match('/spots/:placeId')(currentLocation.pathname);
+    return matched && currentLocation.state && currentLocation.state.modal;
+  }, [currentLocation]);
 
   useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
+    if (isMatched) {
+      setCurrentSpot(location.state.spot);
+      setDialogOpen(true);
+    } else {
+      setDialogOpen(false);
+    }
+  }, [isMatched, currentLocation]);
 
   const handleDialogOpen = useCallback(() => {
     dispatch(openSpotDialog());

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -10,6 +10,7 @@ import AppMenuButton from '../molecules/AppMenuButton';
 import NavTabs from './NavTabs';
 import Logo from '../molecules/Logo';
 import BackButton from '../molecules/BackButton';
+import { match } from 'path-to-regexp';
 
 const styles = {
   toolbarLarge: {
@@ -44,14 +45,35 @@ const styles = {
   }
 };
 
+const routesShowBackButton = [
+  {
+    path: '/maps/:mapId'
+  },
+  {
+    path: '/maps/:mapId/reports/:reviewId'
+  },
+  {
+    path: '/spots/:placeId'
+  },
+  {
+    path: '/users/:userId'
+  }
+];
+
 const ToolbarSmall = React.memo(() => {
   const mapState = useCallback(
     state => ({
-      showBackButton: state.shared.showBackButton
+      currentLocation: state.shared.currentLocation
     }),
     []
   );
-  const { showBackButton } = useMappedState(mapState);
+  const { currentLocation } = useMappedState(mapState);
+
+  const showBackButton = useMemo(() => {
+    return routesShowBackButton.find(route => {
+      return match(route.path)(currentLocation.pathname);
+    });
+  }, [currentLocation, routesShowBackButton]);
 
   return (
     <Toolbar style={styles.toolbarSmall}>

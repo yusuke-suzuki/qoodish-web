@@ -28,14 +28,12 @@ import {
   CLOSE_ANNOUNCEMENT_DIALOG,
   UPDATE_ANNOUNCEMENT_IS_NEW
 } from '../actionTypes';
-import I18n from '../utils/I18n';
 
 const initialState = {
   toastOpen: false,
   toastMessage: '',
   toastDuration: 4000,
   blocking: false,
-  pageTitle: '',
   issueDialogOpen: false,
   issueTargetId: null,
   issueTargetType: null,
@@ -44,105 +42,16 @@ const initialState = {
   likesDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
-  showBackButton: false,
   signInRequiredDialogOpen: false,
   feedbackDialogOpen: false,
   drawerOpen: false,
-  bottomNavValue: undefined,
-  showBottomNav: true,
-  isMapDetail: false,
-  fullWidth: false,
-  previousLocation: undefined,
   currentLocation: undefined,
+  previousLocation: undefined,
   pickedMaps: [],
   searchMapsDialogOpen: false,
   createActionsOpen: false,
   announcementDialogOpen: false,
   announcementIsNew: false
-};
-
-const getBottomNavValue = pathname => {
-  switch (pathname) {
-    case '/':
-      return 0;
-    case '/discover':
-      return 1;
-    case '/profile':
-      return 3;
-    case '/notifications':
-      return 4;
-    default:
-      return undefined;
-  }
-};
-
-const switchPageTitle = (pathname, large) => {
-  if (pathname === '/') {
-    return I18n.t('home');
-  } else if (pathname === '/discover') {
-    return I18n.t('discover');
-  } else if (pathname.includes('/reports')) {
-    return I18n.t('report');
-  } else if (pathname.includes('/spots')) {
-    return I18n.t('spot');
-  } else if (pathname.includes('/users') || pathname === '/profile') {
-    return I18n.t('account');
-  } else if (pathname === '/notifications') {
-    return I18n.t('notifications');
-  } else if (pathname === '/settings') {
-    return I18n.t('settings');
-  } else if (pathname === '/invites') {
-    return I18n.t('invites');
-  } else if (pathname === '/terms') {
-    return large ? I18n.t('terms of service') : 'Qoodish';
-  } else if (pathname === '/privacy') {
-    return large ? I18n.t('privacy policy') : 'Qoodish';
-  } else if (pathname === '/login') {
-    return I18n.t('login');
-  } else {
-    return '';
-  }
-};
-
-const switchBottomNav = pathname => {
-  if (
-    pathname.includes('/maps/') ||
-    pathname.includes('/spots') ||
-    pathname.includes('/login') ||
-    pathname.includes('/terms') ||
-    pathname.includes('/privacy')
-  ) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
-const detectMapDetail = pathname => {
-  return pathname.includes('/maps/') && !pathname.includes('/reports');
-};
-
-const switchBackButton = pathname => {
-  if (
-    pathname.includes('/reports/') ||
-    pathname.includes('/maps/') ||
-    pathname.includes('/spots/') ||
-    pathname.includes('/users/')
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const switchFullWidth = pathname => {
-  let isMapDetail =
-    pathname.includes('/maps/') && !pathname.includes('/reports');
-  if (isMapDetail || pathname.includes('/login')) {
-    return true;
-  } else {
-    return false;
-  }
 };
 
 const reducer = (state = initialState, action) => {
@@ -284,51 +193,16 @@ const reducer = (state = initialState, action) => {
         createActionsOpen: false
       });
     case LOCATION_CHANGE:
-      if (
-        state.currentLocation &&
-        state.currentLocation.pathname === action.payload.location.pathname
-      ) {
-        return state;
-      }
-
-      let isModal =
-        action.payload.location.state && action.payload.location.state.modal;
-
-      let pageTitle =
-        isModal && state.previousLocation
-          ? state.pageTitle
-          : switchPageTitle(action.payload.location.pathname, state.large);
-      let showBackButton =
-        isModal && state.previousLocation
-          ? state.showBackButton
-          : switchBackButton(action.payload.location.pathname);
-      let showBottomNav =
-        isModal && state.previousLocation
-          ? state.showBottomNav
-          : switchBottomNav(action.payload.location.pathname);
-      let fullWidth = isModal
-        ? state.fullWidth
-        : switchFullWidth(action.payload.location.pathname);
-      let isMapDetail = isModal
-        ? state.isMapDetail
-        : detectMapDetail(action.payload.location.pathname);
-
       return Object.assign({}, state, {
-        previousLocation: state.currentLocation,
         currentLocation: action.payload.location,
-        pageTitle: pageTitle,
-        bottomNavValue: getBottomNavValue(action.payload.location.pathname),
-        showBackButton: showBackButton,
+        previousLocation: state.currentLocation,
         issueDialogOpen: false,
         likesDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         announcementDialogOpen: false,
         drawerOpen: false,
-        searchMapsDialogOpen: false,
-        showBottomNav: showBottomNav,
-        isMapDetail: isMapDetail,
-        fullWidth: fullWidth
+        searchMapsDialogOpen: false
       });
     default:
       return state;

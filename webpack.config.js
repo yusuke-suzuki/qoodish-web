@@ -32,6 +32,7 @@ const plugins = [
     'SUBSTITUTE_URL',
     'OGP_IMAGE_URL',
     'FIREBASE_PROJECT_ID',
+    'FIREBASE_APP_ID',
     'FIREBASE_API_KEY',
     'FIREBASE_AUTH_DOMAIN',
     'FIREBASE_DB_URL',

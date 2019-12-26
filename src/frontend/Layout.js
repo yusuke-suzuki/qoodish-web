@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -12,6 +12,8 @@ import { Router, useHistory } from '@yusuke-suzuki/rize-router';
 import routes from './routes';
 import locationChange from './actions/locationChange';
 import NotFound from './components/pages/NotFound';
+
+import { match } from 'path-to-regexp';
 
 const RightItems = React.lazy(() =>
   import(
@@ -73,6 +75,36 @@ const scrollTop = () => {
   window.scrollTo(0, 0);
 };
 
+const routesHideBottomNav = [
+  {
+    path: '/maps/:mapId'
+  },
+  {
+    path: '/maps/:mapId/reports/:reviewId'
+  },
+  {
+    path: '/spots/:placeId'
+  },
+  {
+    path: '/terms'
+  },
+  {
+    path: '/privacy'
+  },
+  {
+    path: '/login'
+  }
+];
+
+const routesFullWidth = [
+  {
+    path: '/maps/:mapId'
+  },
+  {
+    path: '/login'
+  }
+];
+
 const Layout = () => {
   const smUp = useMediaQuery('(min-width: 600px)');
   const mdUp = useMediaQuery('(min-width: 960px)');
@@ -82,41 +114,58 @@ const Layout = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const unlisten = useMemo(() => {
-    dispatch(locationChange(history.location));
-
-    return history.listen(location => {
-      dispatch(locationChange(location));
-    });
-  }, [history]);
-
-  useEffect(() => {
-    return () => {
-      unlisten();
-    };
-  }, [unlisten]);
+  const [fullWidth, setFullWidth] = useState(true);
+  const [currentLocation, setCurrentLocation] = useState(history.location);
 
   const mapState = useCallback(
     state => ({
-      showBottomNav: state.shared.showBottomNav,
-      currentLocation: state.shared.currentLocation,
-      fullWidth: state.shared.fullWidth
+      previousLocation: state.shared.previousLocation
     }),
     []
   );
-  const { showBottomNav, currentLocation, fullWidth } = useMappedState(
-    mapState
-  );
+
+  const { previousLocation } = useMappedState(mapState);
+
+  const handleLocationChange = useCallback(location => {
+    setCurrentLocation(location);
+  }, []);
 
   useEffect(() => {
-    if (
-      !currentLocation ||
-      (currentLocation.state && currentLocation.state.modal)
-    ) {
+    dispatch(locationChange(currentLocation));
+  }, [currentLocation]);
+
+  const isModalLocation = useCallback(location => {
+    return location && location.state && location.state.modal;
+  }, []);
+
+  const hideBottomNav = useMemo(() => {
+    return routesHideBottomNav.find(route => {
+      return match(route.path)(currentLocation.pathname);
+    });
+  }, [currentLocation, routesHideBottomNav]);
+
+  useEffect(() => {
+    if (isModalLocation(currentLocation)) {
+      return;
+    }
+
+    const matched = routesFullWidth.find(route => {
+      return match(route.path)(currentLocation.pathname);
+    });
+
+    if (matched) {
+      setFullWidth(true);
+    } else {
+      setFullWidth(false);
+    }
+  }, [currentLocation, routesFullWidth]);
+
+  useEffect(() => {
+    if (isModalLocation(currentLocation) || isModalLocation(previousLocation)) {
       return;
     }
     scrollTop();
-  }, [currentLocation]);
+  }, [currentLocation, previousLocation]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -144,6 +193,7 @@ const Layout = () => {
               fallback={{
                 component: NotFound
               }}
+              onLocationChange={handleLocationChange}
             />
           </React.Suspense>
         </Grid>
@@ -155,7 +205,7 @@ const Layout = () => {
           </Grid>
         )}
       </Grid>
-      {!smUp && showBottomNav && (
+      {!smUp && !hideBottomNav && (
         <React.Suspense fallback={null}>
           <BottomNav />
         </React.Suspense>
