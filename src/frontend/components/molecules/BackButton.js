@@ -13,11 +13,12 @@ const BackButton = () => {
 
   const mapState = useCallback(
     state => ({
-      mapSummaryOpen: state.mapDetail.mapSummaryOpen
+      mapSummaryOpen: state.mapDetail.mapSummaryOpen,
+      historyCount: state.shared.historyCount
     }),
     []
   );
-  const { mapSummaryOpen } = useMappedState(mapState);
+  const { mapSummaryOpen, historyCount } = useMappedState(mapState);
 
   const handleBackButtonClick = useCallback(() => {
     if (!lgUp && mapSummaryOpen) {
@@ -25,7 +26,7 @@ const BackButton = () => {
       return;
     }
 
-    if (history.length > 2) {
+    if (historyCount > 1) {
       history.goBack();
     } else {
       history.push('/');
