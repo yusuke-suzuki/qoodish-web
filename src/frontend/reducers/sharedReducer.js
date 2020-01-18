@@ -47,6 +47,7 @@ const initialState = {
   drawerOpen: false,
   currentLocation: undefined,
   previousLocation: undefined,
+  historyCount: 0,
   pickedMaps: [],
   searchMapsDialogOpen: false,
   createActionsOpen: false,
@@ -193,9 +194,17 @@ const reducer = (state = initialState, action) => {
         createActionsOpen: false
       });
     case LOCATION_CHANGE:
+      let nextLocation = action.payload.location;
+
+      let historyCount =
+        nextLocation.state && nextLocation.state.modal
+          ? state.historyCount
+          : state.historyCount + 1;
+
       return Object.assign({}, state, {
-        currentLocation: action.payload.location,
+        currentLocation: nextLocation,
         previousLocation: state.currentLocation,
+        historyCount: historyCount,
         issueDialogOpen: false,
         likesDialogOpen: false,
         signInRequiredDialogOpen: false,
