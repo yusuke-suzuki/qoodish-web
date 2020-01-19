@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import I18n from '../../utils/I18n';
@@ -26,6 +27,13 @@ import {
   NewReview,
   ReviewsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import { List } from '@material-ui/core';
+
+const styles = {
+  dialogContent: {
+    padding: 0
+  }
+};
 
 const CopyReviewDialog = () => {
   const mapState = useCallback(
@@ -106,13 +114,21 @@ const CopyReviewDialog = () => {
       fullWidth
     >
       <DialogTitle>{I18n.t('select map to copy this report to')}</DialogTitle>
-      <DialogContent>
-        {postableMaps.map(map => (
-          <ListItem button key={map.id} onClick={() => handleMapSelected(map)}>
-            <Avatar src={map.thumbnail_url} />
-            <ListItemText primary={map.name} />
-          </ListItem>
-        ))}
+      <DialogContent style={styles.dialogContent}>
+        <List>
+          {postableMaps.map(map => (
+            <ListItem
+              button
+              key={map.id}
+              onClick={() => handleMapSelected(map)}
+            >
+              <ListItemAvatar>
+                <Avatar src={map.thumbnail_url} />
+              </ListItemAvatar>
+              <ListItemText primary={map.name} />
+            </ListItem>
+          ))}
+        </List>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleRequestClose}>{I18n.t('cancel')}</Button>
