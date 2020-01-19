@@ -61,7 +61,7 @@ app.use(
 app.use(
   express.static(DIST_FOLDER, {
     index: false,
-    maxAge: 2592000
+    maxAge: 15552000
   })
 );
 
