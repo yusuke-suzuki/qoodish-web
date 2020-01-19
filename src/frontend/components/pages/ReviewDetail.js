@@ -8,7 +8,6 @@ import NoContents from '../molecules/NoContents';
 import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import selectReview from '../../actions/selectReview';
-import clearReviewState from '../../actions/clearReviewState';
 import updateMetadata from '../../actions/updateMetadata';
 
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
@@ -45,13 +44,17 @@ const ReviewDetail = props => {
   const { currentReview, currentUser } = useMappedState(mapState);
   const [loading, setLoading] = useState(true);
 
-  const initReview = useCallback(async () => {
+  const initReview = useCallback(async (mapId, reviewId) => {
+    if (currentReview && currentReview.id == reviewId) {
+      return;
+    }
+
     setLoading(true);
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsReviewIdGet(
-      props.params.mapId,
-      props.params.reviewId,
+      mapId,
+      reviewId,
       (error, data, response) => {
         setLoading(false);
 
@@ -73,14 +76,12 @@ const ReviewDetail = props => {
       return;
     }
 
-    if (!currentReview) {
-      initReview();
+    if (!props.params.mapId || !props.params.reviewId) {
+      return;
     }
 
-    return () => {
-      dispatch(clearReviewState());
-    };
-  }, [currentUser.uid]);
+    initReview(props.params.mapId, props.params.reviewId);
+  }, [currentUser.uid, props.params.mapId, props.params.reviewId]);
 
   useEffect(() => {
     if (!currentReview) {
