@@ -26,6 +26,10 @@ const pushAvailable = () => {
 
 const PushSettings = () => {
   const [pushEnabled, setPushEnabled] = useState(false);
+  const [likedEnabled, setLikedEnabled] = useState(false);
+  const [followedEnabled, setFollowedEnabled] = useState(false);
+  const [invitedEnabled, setInvitedEnabled] = useState(false);
+  const [commentEnabled, setCommentEnabled] = useState(false);
 
   const dispatch = useDispatch();
   const mapState = useCallback(
@@ -42,6 +46,13 @@ const PushSettings = () => {
     } else {
       setPushEnabled(false);
     }
+  });
+
+  const initPushSettings = useCallback(() => {
+    setLikedEnabled(currentUser.push_notification.liked);
+    setFollowedEnabled(currentUser.push_notification.followed);
+    setInvitedEnabled(currentUser.push_notification.invited);
+    setCommentEnabled(currentUser.push_notification.comment);
   });
 
   const handleEnablePush = useCallback(async () => {
@@ -104,6 +115,18 @@ const PushSettings = () => {
     initPushStatus();
   }, []);
 
+  useEffect(() => {
+    if (
+      !currentUser ||
+      currentUser.isAnonymous ||
+      !currentUser.push_notification
+    ) {
+      return;
+    }
+
+    initPushSettings();
+  }, [currentUser]);
+
   return (
     <Card elevation={0}>
       <CardContent>
@@ -128,12 +151,7 @@ const PushSettings = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={
-                currentUser &&
-                !currentUser.isAnonymous &&
-                currentUser.push_notification &&
-                currentUser.push_notification.liked
-              }
+              checked={likedEnabled}
               onChange={(e, checked) => handleChange('liked', checked)}
               disabled={disabled}
             />
@@ -144,12 +162,7 @@ const PushSettings = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={
-                currentUser &&
-                !currentUser.isAnonymous &&
-                currentUser.push_notification &&
-                currentUser.push_notification.followed
-              }
+              checked={followedEnabled}
               onChange={(e, checked) => handleChange('followed', checked)}
               disabled={disabled}
             />
@@ -160,12 +173,7 @@ const PushSettings = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={
-                currentUser &&
-                !currentUser.isAnonymous &&
-                currentUser.push_notification &&
-                currentUser.push_notification.invited
-              }
+              checked={invitedEnabled}
               onChange={(e, checked) => handleChange('invited', checked)}
               disabled={disabled}
             />
@@ -176,12 +184,7 @@ const PushSettings = () => {
         <FormControlLabel
           control={
             <Checkbox
-              checked={
-                currentUser &&
-                !currentUser.isAnonymous &&
-                currentUser.push_notification &&
-                currentUser.push_notification.comment
-              }
+              checked={commentEnabled}
               onChange={(e, checked) => handleChange('comment', checked)}
               disabled={disabled}
             />
