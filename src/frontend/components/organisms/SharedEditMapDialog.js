@@ -40,7 +40,7 @@ const styles = {
   },
   selectionIcon: {
     color: '#616161',
-    marginLeft: 10
+    marginRight: 10
   },
   controlLabel: {
     width: '100%'
@@ -105,7 +105,7 @@ const SharedEditMapDialog = props => {
 
   const handleMapNameChange = useCallback(input => {
     if (input) {
-      if (name.length > 30) {
+      if (input.length > 30) {
         setErrorMapName(I18n.t('max characters 30'));
       } else {
         setErrorMapName(undefined);
@@ -248,8 +248,8 @@ const SharedEditMapDialog = props => {
                 color="inherit"
                 style={styles.selectionLabel}
               >
-                {I18n.t('allow followers to post')}
                 <GroupIcon style={styles.selectionIcon} />
+                {I18n.t('allow followers to post')}
               </Typography>
             }
             style={styles.controlLabel}
@@ -266,8 +266,8 @@ const SharedEditMapDialog = props => {
                 color="inherit"
                 style={styles.selectionLabel}
               >
-                {I18n.t('set this map to private')}
                 <LockIcon style={styles.selectionIcon} />
+                {I18n.t('set this map to private')}
               </Typography>
             }
             style={styles.controlLabel}
@@ -287,8 +287,8 @@ const SharedEditMapDialog = props => {
                 color="inherit"
                 style={styles.selectionLabel}
               >
-                {I18n.t('allow followers to invite')}
                 <PersonAddIcon style={styles.selectionIcon} />
+                {I18n.t('allow followers to invite')}
               </Typography>
             }
             style={styles.controlLabel}
