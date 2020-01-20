@@ -55,6 +55,10 @@ const initialState = {
   announcementIsNew: false
 };
 
+const isModalLocation = location => {
+  return location.state && location.state.modal;
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case OPEN_TOAST:
@@ -197,7 +201,8 @@ const reducer = (state = initialState, action) => {
       let nextLocation = action.payload.location;
 
       let historyCount =
-        nextLocation.state && nextLocation.state.modal
+        isModalLocation(nextLocation) ||
+        (state.currentLocation && isModalLocation(state.currentLocation))
           ? state.historyCount
           : state.historyCount + 1;
 
