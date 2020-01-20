@@ -35,7 +35,7 @@
     "react-helmet": "^5.2.1",
     "react-share": "^3.0.1",
     "react-swipeable-views": "^0.13.3",
-    "redux": "^4.0.4",
+    "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-react-hook": "^4.0.1",
     "twitter-text": "^3.0.0",
