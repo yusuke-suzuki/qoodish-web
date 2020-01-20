@@ -12,7 +12,7 @@ steps:
       - --location=global
       - --keyring=qoodish
       - --key=qoodish
-  - name: node:13.3.0-alpine
+  - name: node:13.6.0-alpine
     entrypoint: sh
     args:
       - -c
