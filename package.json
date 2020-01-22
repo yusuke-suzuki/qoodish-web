@@ -39,7 +39,7 @@
     "redux-logger": "^3.0.6",
     "redux-react-hook": "^4.0.1",
     "twitter-text": "^3.0.0",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "workbox-sw": "^4.3.1",
     "workbox-webpack-plugin": "^4.3.1"
   },
