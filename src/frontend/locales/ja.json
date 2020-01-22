@@ -192,6 +192,7 @@
   "copy report success": "レポートをコピーしました！",
   "delete map success": "マップを削除しました",
   "delete report success": "レポートを削除しました",
+  "delete report failed": "レポートの削除に失敗しました",
   "follow map success": "マップをフォローしました！",
   "unfollow map success": "マップをアンフォローしました",
   "sign in success": "ログインしました！",

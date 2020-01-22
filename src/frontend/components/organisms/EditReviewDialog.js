@@ -38,13 +38,16 @@ import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import requestMapCenter from '../../actions/requestMapCenter';
 import selectSpot from '../../actions/selectSpot';
 import uploadToStorage from '../../utils/uploadToStorage';
-import deleteFromStorage from '../../utils/deleteFromStorage';
 import canvasToBlob from '../../utils/canvasToBlob';
 import sleep from '../../utils/sleep';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import I18n from '../../utils/I18n';
 
-import { MapsApi, ReviewsApi, NewReview } from '@yusuke-suzuki/qoodish-api-js-client';
+import {
+  MapsApi,
+  ReviewsApi,
+  NewReview
+} from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 const styles = {
@@ -98,7 +101,6 @@ const EditReviewDialog = () => {
   const [errorComment, setErrorComment] = useState(undefined);
   const [errorMap, setErrorMap] = useState(undefined);
   const [disabled, setDisabled] = useState(true);
-  const [imageDeleteRequest, setImageDeleteRequest] = useState(false);
 
   useEffect(() => {
     if (mapId && comment && !errorComment && !errorMap) {
@@ -170,21 +172,22 @@ const EditReviewDialog = () => {
 
   const handleClickCreateButton = useCallback(async (mapId, params, canvas) => {
     dispatch(requestStart());
-    let fileName;
+
     if (canvas) {
-      let blob = await canvasToBlob(canvas);
-      let response = await uploadToStorage(blob);
+      const blob = await canvasToBlob(canvas);
+      const response = await uploadToStorage(blob);
       params.image_url = response.imageUrl;
-      fileName = response.fileName;
     }
 
     const apiInstance = new ReviewsApi();
     const newReview = NewReview.constructFromObject(params);
+
     apiInstance.mapsMapIdReviewsPost(
       mapId,
       newReview,
       async (error, data, response) => {
         dispatch(requestFinish());
+
         if (response.ok) {
           dispatch(closeEditReviewDialog());
           dispatch(openToast(I18n.t('create review success')));
@@ -204,58 +207,49 @@ const EditReviewDialog = () => {
           dispatch(selectSpot(review.spot));
         } else {
           dispatch(openToast(response.body.detail));
-          if (fileName) {
-            deleteFromStorage(fileName);
-          }
         }
       }
     );
   });
 
-  const handleClickEditButton = useCallback(
-    async (oldReview, params, canvas, isImageDeleteRequest = false) => {
-      dispatch(requestStart());
-      let fileName;
-      if (canvas) {
-        let blob = await canvasToBlob(canvas);
-        let response = await uploadToStorage(blob);
-        params.image_url = response.imageUrl;
-        fileName = response.fileName;
-      } else if (isImageDeleteRequest) {
-        params.image_url = '';
-      }
+  const handleClickEditButton = useCallback(async (params, canvas) => {
+    dispatch(requestStart());
 
-      const apiInstance = new ReviewsApi();
-      const newReview = NewReview.constructFromObject(params);
-      apiInstance.reviewsReviewIdPut(
-        oldReview.id,
-        newReview,
-        async (error, data, response) => {
-          dispatch(requestFinish());
-          if (response.ok) {
-            if (oldReview.image && canvas) {
-              deleteFromStorage(oldReview.image.file_name);
-            }
-            dispatch(closeEditReviewDialog());
-            dispatch(openToast(I18n.t('edit review success')));
-
-            if (canvas) {
-              // wait until thumbnail created on cloud function
-              await sleep(5000);
-            }
-            const review = response.body;
-            dispatch(editReview(review));
-            dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-          } else {
-            dispatch(openToast(response.body.detail));
-            if (fileName) {
-              deleteFromStorage(fileName);
-            }
-          }
-        }
-      );
+    if (canvas) {
+      const blob = await canvasToBlob(canvas);
+      const response = await uploadToStorage(blob);
+      params.image_url = response.imageUrl;
+    } else {
+      params.image_url = '';
     }
-  );
+
+    const apiInstance = new ReviewsApi();
+    const newReview = NewReview.constructFromObject(params);
+
+    apiInstance.reviewsReviewIdPut(
+      params.review_id,
+      newReview,
+      async (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          dispatch(closeEditReviewDialog());
+          dispatch(openToast(I18n.t('edit review success')));
+
+          if (canvas) {
+            // wait until thumbnail created on cloud function
+            await sleep(5000);
+          }
+
+          const review = response.body;
+          dispatch(editReview(review));
+          dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
+        } else {
+          dispatch(openToast(response.body.detail));
+        }
+      }
+    );
+  });
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeEditReviewDialog());
@@ -275,8 +269,7 @@ const EditReviewDialog = () => {
 
     apiInstance.mapsGet(opts, (error, data, response) => {
       if (response.ok) {
-        const maps = response.body;
-        dispatch(fetchPostableMaps(maps));
+        dispatch(fetchPostableMaps(response.body));
       } else if (response.status == 401) {
         dispatch(openToast('Authenticate failed'));
       } else {
@@ -299,13 +292,16 @@ const EditReviewDialog = () => {
       comment: comment,
       place_id: selectedPlace.placeId
     };
+
     let canvas = document.getElementById('canvas');
+
     if (imageNotChanged()) {
       canvas = null;
     }
+
     if (currentReview) {
       params.review_id = id;
-      handleClickEditButton(currentReview, params, canvas, imageDeleteRequest);
+      handleClickEditButton(params, canvas);
     } else {
       handleClickCreateButton(mapId, params, canvas);
     }
@@ -332,7 +328,6 @@ const EditReviewDialog = () => {
         canvas => {
           let dataUrl = canvas.toDataURL('image/jpeg');
           setImagePreviewUrl(dataUrl);
-          setImageDeleteRequest(false);
         },
         options
       );
@@ -341,7 +336,6 @@ const EditReviewDialog = () => {
 
   const handleClearImageClick = useCallback(() => {
     setImagePreviewUrl('');
-    setImageDeleteRequest(true);
   });
 
   const clearInputs = useCallback(() => {
@@ -364,13 +358,16 @@ const EditReviewDialog = () => {
 
   useEffect(() => {
     let canvas = document.getElementById('canvas');
+
     if (!canvas) {
       return;
     }
+
     if (canvas.getContext) {
       let context = canvas.getContext('2d');
       let image = new Image();
       image.src = imagePreviewUrl;
+
       image.onload = () => {
         canvas.width = image.width;
         canvas.height = image.height;

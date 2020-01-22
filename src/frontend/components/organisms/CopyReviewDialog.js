@@ -19,7 +19,6 @@ import requestFinish from '../../actions/requestFinish';
 import createReview from '../../actions/createReview';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
 import uploadToStorage from '../../utils/uploadToStorage';
-import deleteFromStorage from '../../utils/deleteFromStorage';
 import downloadImage from '../../utils/downloadImage';
 
 import {
@@ -73,12 +72,11 @@ const CopyReviewDialog = () => {
       comment: review.comment,
       place_id: review.place_id
     };
-    let fileName;
+
     if (review.image) {
       const blob = await downloadImage(review.image.url);
       const uploadResponse = await uploadToStorage(blob);
       params.image_url = uploadResponse.imageUrl;
-      fileName = uploadResponse.fileName;
     }
 
     const apiInstance = new ReviewsApi();
@@ -98,9 +96,6 @@ const CopyReviewDialog = () => {
           });
         } else {
           dispatch(openToast(response.body.detail));
-          if (fileName) {
-            deleteFromStorage(fileName);
-          }
         }
       }
     );
