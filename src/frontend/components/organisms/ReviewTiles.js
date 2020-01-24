@@ -64,8 +64,7 @@ const ReviewTiles = props => {
             >
               {review.image ? (
                 <img
-                  loading="lazy"
-                  src={review.image.thumbnail_url}
+                  src={review.image.thumbnail_url_400}
                   alt={review.spot.name}
                 />
               ) : (

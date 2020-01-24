@@ -1,5 +1,7 @@
 const getCanvasToBlob = () => {
-  return import(/* webpackChunkName: "canvas_to_blob" */ 'blueimp-canvas-to-blob');
+  return import(
+    /* webpackChunkName: "canvas_to_blob" */ 'blueimp-canvas-to-blob'
+  );
 };
 
 const canvasToBlob = canvas => {
@@ -11,7 +13,7 @@ const canvasToBlob = canvas => {
         resolve(blob);
       },
       'image/jpeg',
-      0.5
+      1.0
     );
   });
 };

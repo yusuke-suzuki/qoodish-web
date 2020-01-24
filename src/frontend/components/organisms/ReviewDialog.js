@@ -119,6 +119,7 @@ const ReviewDialog = () => {
               currentReview={currentReview}
               detail={!large}
               hideActions
+              originalImage
             />
           )}
         </div>

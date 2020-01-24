@@ -19,7 +19,7 @@ const ProfileAvatar = props => {
   } else {
     return (
       <Avatar
-        src={currentUser.thumbnail_url}
+        src={currentUser.thumbnail_url_400}
         style={avatarStyle}
         alt={currentUser.name}
       />

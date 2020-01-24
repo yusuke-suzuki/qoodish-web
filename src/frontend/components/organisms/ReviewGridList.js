@@ -34,9 +34,9 @@ const styles = {
 
 const reviewImage = (review, large) => {
   if (large) {
-    return review.image.url;
+    return review.image.thumbnail_url_800;
   } else {
-    return review.image.thumbnail_url;
+    return review.image.thumbnail_url_400;
   }
 };
 
@@ -63,7 +63,6 @@ const ReviewGridList = props => {
           >
             {review.image ? (
               <img
-                loading="lazy"
                 src={reviewImage(review, props.large)}
                 alt={review.spot.name}
               />
