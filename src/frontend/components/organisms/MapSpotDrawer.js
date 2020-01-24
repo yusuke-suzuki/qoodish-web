@@ -165,7 +165,7 @@ const SpotCardContent = () => {
               <img
                 src={
                   review.image
-                    ? review.image.thumbnail_url
+                    ? review.image.thumbnail_url_400
                     : process.env.SUBSTITUTE_URL
                 }
                 alt={review.spot.name}

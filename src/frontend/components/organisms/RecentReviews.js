@@ -223,10 +223,9 @@ const RecentReviews = () => {
                   />
                   <CardMedia style={styles.cardMedia}>
                     <img
-                      loading="lazy"
                       src={
                         review.image
-                          ? review.image.url
+                          ? review.image.thumbnail_url_400
                           : process.env.SUBSTITUTE_URL
                       }
                       alt={review.image && review.spot.name}

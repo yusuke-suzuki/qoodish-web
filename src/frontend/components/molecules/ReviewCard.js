@@ -128,8 +128,11 @@ const ReviewCardMedia = React.memo(props => {
   return (
     <CardMedia style={styles.cardMedia}>
       <img
-        loading="lazy"
-        src={props.currentReview.image.url}
+        src={
+          props.originalImage
+            ? props.currentReview.image.url
+            : props.currentReview.image.thumbnail_url_800
+        }
         style={styles.reviewImage}
         alt={props.currentReview.spot.name}
       />
