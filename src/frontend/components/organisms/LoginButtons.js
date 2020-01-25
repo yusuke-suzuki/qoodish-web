@@ -112,7 +112,7 @@ const LoginButtons = () => {
         });
 
         // wait until thumbnail created on cloud function
-        await sleep(5000);
+        await sleep(3000);
         dispatch(signIn(response.body));
       } else {
         dispatch(openToast(response.body.detail));

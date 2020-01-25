@@ -94,7 +94,7 @@ const ReviewDetail = props => {
       description: currentReview.comment,
       twitterCard: 'summary_large_image',
       image: currentReview.image
-        ? currentReview.image.url
+        ? currentReview.image.thumbnail_url_800
         : process.env.OGP_IMAGE_URL,
       url: `${process.env.ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}`
     };

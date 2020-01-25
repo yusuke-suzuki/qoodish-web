@@ -100,7 +100,7 @@ const SpotDetail = props => {
       keywords: `${currentSpot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`,
       description: currentSpot.formatted_address,
       twitterCard: 'summary',
-      image: currentSpot.image_url,
+      image: currentSpot.thumbnail_url_800,
       url: `${process.env.ENDPOINT}/spots/${currentSpot.place_id}`
     };
     dispatch(updateMetadata(metadata));
