@@ -121,7 +121,7 @@ const TrendingSpots = () => {
               style={large ? styles.listItemLarge : styles.listItemSmall}
             >
               <ListItemAvatar>
-                <Avatar src={spot.image_url} alt={spot.name} />
+                <Avatar src={spot.thumbnail_url} alt={spot.name} />
               </ListItemAvatar>
               <ListItemText
                 disableTypography={true}
