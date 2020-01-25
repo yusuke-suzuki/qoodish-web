@@ -199,7 +199,7 @@ const EditReviewDialog = () => {
 
           if (canvas) {
             // wait until thumbnail created on cloud function
-            await sleep(5000);
+            await sleep(3000);
           }
           const review = response.body;
           dispatch(createReview(review));
@@ -238,7 +238,7 @@ const EditReviewDialog = () => {
 
           if (canvas) {
             // wait until thumbnail created on cloud function
-            await sleep(5000);
+            await sleep(3000);
           }
 
           const review = response.body;

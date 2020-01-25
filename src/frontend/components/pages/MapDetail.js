@@ -285,7 +285,7 @@ const MapDetail = props => {
       keywords: `${currentMap.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`,
       description: currentMap.description,
       twitterCard: 'summary_large_image',
-      image: currentMap.image_url,
+      image: currentMap.thumbnail_url_800,
       url: `${process.env.ENDPOINT}/maps/${currentMap.id}`
     };
     dispatch(updateMetadata(metadata));

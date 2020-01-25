@@ -184,7 +184,7 @@ const EditProfileDialog = () => {
           dispatch(closeEditProfileDialog());
           dispatch(openToast(I18n.t('edit profile success')));
           // wait until thumbnail created on cloud function
-          await sleep(5000);
+          await sleep(3000);
           dispatch(fetchMyProfile(response.body));
         } else if (response.status == 409) {
           dispatch(openToast(response.body.detail));
