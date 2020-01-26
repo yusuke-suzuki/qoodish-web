@@ -24,7 +24,7 @@ const PlaceSelectDialog = () => {
     dispatch(selectPlaceForReview(place));
   });
 
-  const onEnter = useCallback(async () => {
+  const onEntered = useCallback(async () => {
     const position = await fetchCurrentPosition();
     dispatch(
       getCurrentPosition(position.coords.latitude, position.coords.longitude)
@@ -47,7 +47,7 @@ const PlaceSelectDialog = () => {
   return (
     <SharedPlaceSelectDialog
       dialogOpen={dialogOpen}
-      onEnter={onEnter}
+      onEntered={onEntered}
       onClose={onClose}
       onPlaceSelected={onPlaceSelected}
     />

@@ -83,8 +83,8 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './src/frontend/index.js'],
     output: {
-      filename: '[name].[contenthash].js',
-      chunkFilename: '[name].[contenthash].js',
+      filename: '[name]-[contenthash].js',
+      chunkFilename: '[name]-[contenthash].js',
       path: __dirname + '/public',
       publicPath: '/'
     },

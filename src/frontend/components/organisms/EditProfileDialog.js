@@ -200,7 +200,7 @@ const EditProfileDialog = () => {
       open={dialogOpen}
       onEnter={setCurrentProfile}
       onClose={handleRequestDialogClose}
-      onExit={clearState}
+      onExited={clearState}
       disableBackdropClick
       disableEscapeKeyDown
       fullWidth

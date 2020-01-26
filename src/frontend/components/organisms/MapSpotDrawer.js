@@ -242,8 +242,11 @@ const MapSpotDrawer = () => {
       disableSwipeToOpen
       disableBackdropTransition
       ModalProps={{
-        hideBackdrop: true,
-        style: styles.modal
+        style: styles.modal,
+        BackdropProps: {
+          invisible: true,
+          open: false
+        }
       }}
     >
       {currentSpot && <SpotCardContent />}

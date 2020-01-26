@@ -88,7 +88,7 @@ const SharedPlaceSelectDialog = props => {
   return (
     <Dialog
       open={props.dialogOpen}
-      onEnter={props.onEnter}
+      onEntered={props.onEntered}
       onClose={props.onClose}
       fullWidth
       fullScreen={!large}

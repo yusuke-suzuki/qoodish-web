@@ -1,21 +1,23 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ReviewCard from '../molecules/ReviewCard';
 import NoContents from '../molecules/NoContents';
 
-import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import selectReview from '../../actions/selectReview';
 import updateMetadata from '../../actions/updateMetadata';
 
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import SkeletonReviewCard from '../molecules/SkeletonReviewCard';
+import I18n from '../../utils/I18n';
+import { Link } from '@yusuke-suzuki/rize-router';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 
 const styles = {
-  progress: {
-    textAlign: 'center',
-    paddingTop: 20
+  backButtonContainer: {
+    marginTop: 16
   }
 };
 
@@ -104,11 +106,21 @@ const ReviewDetail = props => {
   return (
     <div>
       {loading ? (
-        <div style={styles.progress}>
-          <CircularProgress />
-        </div>
+        <SkeletonReviewCard />
       ) : (
-        <ReviewCardContainer review={currentReview} />
+        <React.Fragment>
+          <ReviewCardContainer review={currentReview} />
+          <div style={styles.backButtonContainer}>
+            <Button
+              component={Link}
+              to={currentReview && `/maps/${currentReview.map.id}`}
+              color="primary"
+              startIcon={<KeyboardArrowLeftIcon />}
+            >
+              {I18n.t('back to map')}
+            </Button>
+          </div>
+        </React.Fragment>
       )}
     </div>
   );

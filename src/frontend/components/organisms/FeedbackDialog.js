@@ -39,21 +39,18 @@ const FeedbackDialog = () => {
   const [errorPositive, setErrorPositive] = useState(undefined);
   const [disabled, setDisabled] = useState(true);
 
-  useEffect(
-    () => {
-      if (
-        feedbackNegative &&
-        feedbackPositive &&
-        !errorNegative &&
-        !errorPositive
-      ) {
-        setDisabled(false);
-      } else {
-        setDisabled(true);
-      }
-    },
-    [feedbackNegative, feedbackPositive]
-  );
+  useEffect(() => {
+    if (
+      feedbackNegative &&
+      feedbackPositive &&
+      !errorNegative &&
+      !errorPositive
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [feedbackNegative, feedbackPositive]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeFeedbackDialog());
@@ -118,7 +115,7 @@ const FeedbackDialog = () => {
     <Dialog
       open={dialogOpen}
       onClose={handleRequestDialogClose}
-      onExit={clearState}
+      onExited={clearState}
       fullWidth
       TransitionComponent={Transition}
     >

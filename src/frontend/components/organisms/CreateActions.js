@@ -34,11 +34,10 @@ const ActionsList = () => {
     } else {
       dispatch(openPlaceSelectDialog());
     }
-    dispatch(closeCreateActions());
   });
+
   const handleCreateMapButtonClick = useCallback(() => {
     dispatch(openCreateMapDialog());
-    dispatch(closeCreateActions());
   });
 
   return (

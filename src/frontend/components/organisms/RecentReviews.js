@@ -11,8 +11,6 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
-import PersonIcon from '@material-ui/icons/Person';
-import Chip from '@material-ui/core/Chip';
 import NoContents from '../molecules/NoContents';
 import moment from 'moment';
 
@@ -21,6 +19,7 @@ import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import ReactionsCount from '../molecules/ReactionsCount';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
   gridList: {
@@ -58,22 +57,6 @@ const styles = {
     marginRight: 16,
     width: 80,
     height: 80
-  },
-  skeltonTextPrimary: {
-    width: '100%',
-    height: '1.25rem'
-  },
-  skeltonTextSecondary: {
-    width: '50%',
-    height: '1rem'
-  },
-  skeltonTextComment: {
-    width: '100%',
-    height: '1rem'
-  },
-  skeltonAvatar: {
-    width: 40,
-    height: 40
   },
   cardMedia: {
     marginBottom: -5
@@ -155,32 +138,18 @@ const RecentReviews = () => {
                 <Card style={styles.reviewCard} elevation={0}>
                   <CardHeader
                     avatar={
-                      <Avatar style={styles.skeltonAvatar}>
-                        <PersonIcon />
-                      </Avatar>
+                      <Skeleton variant="circle" width={40} height={40} />
                     }
-                    title={<Chip style={styles.skeltonTextSecondary} />}
-                    subheader={<Chip style={styles.skeltonTextSecondary} />}
+                    title={<Skeleton height={20} width="40%" />}
+                    subheader={<Skeleton height={20} width="40%" />}
                   />
-                  <CardMedia style={styles.cardMedia}>
-                    <div style={styles.reviewImage} />
-                  </CardMedia>
+                  <Skeleton variant="rect" height={180} />
                   <CardContent style={styles.cardContent}>
-                    <Typography
-                      variant="subtitle1"
-                      color="primary"
-                      gutterBottom
-                    >
-                      <Chip style={styles.skeltonTextSecondary} />
-                    </Typography>
-                    <Typography variant="h6" gutterBottom>
-                      <Chip style={styles.skeltonTextPrimary} />
-                    </Typography>
-                    <Typography component="p" style={styles.reviewComment}>
-                      <Chip style={styles.skeltonTextComment} />
-                      <Chip style={styles.skeltonTextComment} />
-                      <Chip style={styles.skeltonTextComment} />
-                    </Typography>
+                    <Skeleton height={28} width="40%" />
+                    <Skeleton height={32} width="40%" />
+                    <Skeleton height={24} width="100%" />
+                    <Skeleton height={24} width="100%" />
+                    <Skeleton height={24} width="100%" />
                   </CardContent>
                   <ReactionsCount />
                 </Card>

@@ -26,7 +26,9 @@ import {
   LOCATION_CHANGE,
   OPEN_ANNOUNCEMENT_DIALOG,
   CLOSE_ANNOUNCEMENT_DIALOG,
-  UPDATE_ANNOUNCEMENT_IS_NEW
+  UPDATE_ANNOUNCEMENT_IS_NEW,
+  OPEN_CREATE_MAP_DIALOG,
+  OPEN_PLACE_SELECT_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -194,6 +196,8 @@ const reducer = (state = initialState, action) => {
         createActionsOpen: true
       });
     case CLOSE_CREATE_ACTIONS:
+    case OPEN_CREATE_MAP_DIALOG:
+    case OPEN_PLACE_SELECT_DIALOG:
       return Object.assign({}, state, {
         createActionsOpen: false
       });

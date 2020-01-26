@@ -8,7 +8,7 @@ import I18n from '../../utils/I18n';
 
 import { Link } from '@yusuke-suzuki/rize-router';
 import MapCard from '../molecules/MapCard';
-import SkeltonMapCard from '../molecules/SkeltonMapCard';
+import SkeletonMapCard from '../molecules/SkeletonMapCard';
 import { useMappedState } from 'redux-react-hook';
 
 const styles = {
@@ -28,7 +28,6 @@ const styles = {
 
 const RecommendMaps = () => {
   const [maps, setMaps] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const mapState = useCallback(
     state => ({
@@ -40,11 +39,9 @@ const RecommendMaps = () => {
   const { currentUser } = useMappedState(mapState);
 
   const refreshMaps = useCallback(async () => {
-    setLoading(true);
     const apiInstance = new MapsApi();
 
     apiInstance.mapsGet({ recommend: true }, (error, data, response) => {
-      setLoading(false);
       if (response.ok) {
         setMaps(response.body.slice(0, 2));
       }
@@ -75,7 +72,7 @@ const RecommendMaps = () => {
             {I18n.t('discover more')}
           </Button>
         </div>
-        {loading ? (
+        {maps.length < 1 ? (
           <Loading />
         ) : (
           maps.map(map => (
@@ -94,7 +91,7 @@ const Loading = React.memo(() => {
     <div>
       {Array.from(new Array(2)).map((v, i) => (
         <div key={i} style={styles.mapCard}>
-          <SkeltonMapCard elevation={0} />
+          <SkeletonMapCard elevation={0} />
         </div>
       ))}
     </div>

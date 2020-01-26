@@ -203,5 +203,9 @@
   "button like": "いいね！",
   "button unlike": "いいね！を取り消す",
   "button invite": "他のユーザーを招待する",
-  "button current location": "現在地へ移動"
+  "button current location": "現在地へ移動",
+  "page not found": "ページが見つかりません",
+  "page not found description": "壊れたリンクをたどったか、このサイトに存在しないURLを入力したようです。",
+  "back to our site": "サイトに戻る",
+  "back to map": "マップに戻る"
 }

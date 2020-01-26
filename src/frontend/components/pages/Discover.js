@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import ExploreIcon from '@material-ui/icons/Explore';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Typography from '@material-ui/core/Typography';
 
 import MapCollection from '../organisms/MapCollection';
-import NoContents from '../molecules/NoContents';
 import RecentReviews from '../organisms/RecentReviews';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 import PickUpMap from '../organisms/PickUpMap';
@@ -54,23 +52,8 @@ const styles = {
   }
 };
 
-const DiscoverProgress = () => {
-  return (
-    <div style={styles.progress}>
-      <CircularProgress />
-    </div>
-  );
-};
-
 const MapContainer = props => {
-  const large = useMediaQuery('(min-width: 600px)');
-  if (props.maps.length > 0) {
-    return <MapCollection maps={props.maps} horizontal={!large} />;
-  } else {
-    return (
-      <NoContents contentType="map" message={I18n.t('maps will see here')} />
-    );
-  }
+  return <MapCollection maps={props.maps} horizontal />;
 };
 
 const Discover = () => {
@@ -87,20 +70,13 @@ const Discover = () => {
   );
   const { currentUser, activeMaps, recentMaps } = useMappedState(mapState);
 
-  const [loadingActiveMaps, setLoadingActiveMaps] = useState(true);
-  const [loadingRecentMaps, setLoadingRecentMaps] = useState(true);
-
   const initActiveMaps = useCallback(async () => {
-    setLoadingActiveMaps(true);
-
     const apiInstance = new MapsApi();
     const opts = {
       active: true
     };
 
     apiInstance.mapsGet(opts, (error, data, response) => {
-      setLoadingActiveMaps(false);
-
       if (response.ok) {
         const maps = response.body;
         dispatch(fetchActiveMaps(maps));
@@ -111,16 +87,12 @@ const Discover = () => {
   });
 
   const initRecentMaps = useCallback(async () => {
-    setLoadingRecentMaps(true);
-
     const apiInstance = new MapsApi();
     const opts = {
       recent: true
     };
 
     apiInstance.mapsGet(opts, (error, data, response) => {
-      setLoadingRecentMaps(false);
-
       if (response.ok) {
         const maps = response.body;
         dispatch(fetchRecentMaps(maps));
@@ -184,11 +156,7 @@ const Discover = () => {
         >
           <WhatshotIcon style={styles.headerIcon} /> {I18n.t('active maps')}
         </Typography>
-        {loadingActiveMaps ? (
-          <DiscoverProgress />
-        ) : (
-          <MapContainer maps={activeMaps} />
-        )}
+        <MapContainer maps={activeMaps} />
       </div>
 
       <div style={styles.mapsContainer}>
@@ -200,11 +168,7 @@ const Discover = () => {
         >
           <FiberNewIcon style={styles.headerIcon} /> {I18n.t('recent maps')}
         </Typography>
-        {loadingRecentMaps ? (
-          <DiscoverProgress />
-        ) : (
-          <MapContainer maps={recentMaps} />
-        )}
+        <MapContainer maps={recentMaps} />
       </div>
 
       {!mdUp && (

@@ -24,6 +24,7 @@ import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import { Link } from '@yusuke-suzuki/rize-router';
+import SkeletonReviewCard from '../molecules/SkeletonReviewCard';
 
 const styles = {
   formCard: {
@@ -271,9 +272,15 @@ const Timeline = () => {
       <CreateReviewForm />
       <div style={styles.container}>
         {loading ? (
-          <div style={styles.progress}>
-            <CircularProgress />
-          </div>
+          Array.from(new Array(2)).map((v, i) => (
+            <div
+              style={
+                large ? styles.cardContainerLarge : styles.cardContainerSmall
+              }
+            >
+              <SkeletonReviewCard />
+            </div>
+          ))
         ) : currentReviews.length > 0 ? (
           <ReviewsContainer currentReviews={currentReviews} />
         ) : (
