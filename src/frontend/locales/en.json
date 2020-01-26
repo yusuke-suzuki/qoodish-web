@@ -203,5 +203,8 @@
   "button like": "Like",
   "button unlike": "Unlike",
   "button invite": "Invite friends",
-  "button current location": "Move to current location"
+  "button current location": "Move to current location",
+  "page not found": "Page Not Found",
+  "page not found description": "Looks like you've followed a broken link or entered a URL that doesn't exist on this site.",
+  "back to our site": "Back to our site"
 }
