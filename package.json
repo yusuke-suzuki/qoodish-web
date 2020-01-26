@@ -12,9 +12,9 @@
     "build:prod": "webpack --colors --mode production"
   },
   "dependencies": {
-    "@material-ui/core": "4.3.3",
+    "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",
-    "@material-ui/styles": "^4.7.1",
+    "@material-ui/styles": "^4.9.0",
     "@yusuke-suzuki/qoodish-api-js-client": "^0.1.0",
     "@yusuke-suzuki/rize-router": "^0.1.1",
     "blueimp-canvas-to-blob": "^3.17.0",

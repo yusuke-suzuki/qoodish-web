@@ -163,7 +163,7 @@ const SharedEditMapDialog = props => {
       open={props.dialogOpen}
       onClose={props.handleRequestDialogClose}
       onEnter={setCurrentMap}
-      onExit={clearState}
+      onExited={clearState}
       disableBackdropClick
       disableEscapeKeyDown
       fullWidth

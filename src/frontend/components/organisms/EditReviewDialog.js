@@ -381,7 +381,7 @@ const EditReviewDialog = () => {
       open={dialogOpen}
       onEnter={initForm}
       onClose={handleRequestClose}
-      onExit={clearInputs}
+      onExited={clearInputs}
       disableBackdropClick
       disableEscapeKeyDown
       fullWidth

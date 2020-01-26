@@ -21,6 +21,13 @@ import {
   TwitterIcon
 } from 'react-share';
 
+const styles = {
+  shareButton: {
+    display: 'flex',
+    width: '100%'
+  }
+};
+
 const shareUrl = review => {
   return review
     ? `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${review.id}`
@@ -57,29 +64,37 @@ const ReviewShareMenu = props => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        <MenuItem
-          key="facebook"
-          onClick={() => setMenuOpen(false)}
-          component={FacebookShareButton}
-          url={shareUrl(review)}
-        >
-          <ListItemIcon>
-            <FacebookIcon round size={24} />
-          </ListItemIcon>
-          <ListItemText primary={I18n.t('share with facebook')} />
-        </MenuItem>
-        <MenuItem
-          key="twitter"
-          onClick={() => setMenuOpen(false)}
-          component={TwitterShareButton}
+        <FacebookShareButton url={shareUrl(review)} style={styles.shareButton}>
+          <MenuItem
+            key="facebook"
+            onClick={() => setMenuOpen(false)}
+            style={styles.shareButton}
+          >
+            <ListItemIcon>
+              <FacebookIcon round size={24} />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('share with facebook')} />
+          </MenuItem>
+        </FacebookShareButton>
+
+        <TwitterShareButton
+          hashtags={[]}
           url={shareUrl(review)}
           title={`${review.spot.name} - ${review.map.name}`}
+          style={styles.shareButton}
         >
-          <ListItemIcon>
-            <TwitterIcon round size={24} />
-          </ListItemIcon>
-          <ListItemText primary={I18n.t('share with twitter')} />
-        </MenuItem>
+          <MenuItem
+            key="twitter"
+            onClick={() => setMenuOpen(false)}
+            style={styles.shareButton}
+          >
+            <ListItemIcon>
+              <TwitterIcon round size={24} />
+            </ListItemIcon>
+            <ListItemText primary={I18n.t('share with twitter')} />
+          </MenuItem>
+        </TwitterShareButton>
+
         <CopyToClipboard
           text={shareUrl(review)}
           onCopy={handleUrlCopied}
