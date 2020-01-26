@@ -3,7 +3,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useMappedState } from 'redux-react-hook';
 import { Link } from '@yusuke-suzuki/rize-router';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -20,6 +19,7 @@ import GradeIcon from '@material-ui/icons/Grade';
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
+import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
 
 const styles = {
   progress: {
@@ -53,7 +53,6 @@ const styles = {
 
 const TrendingMaps = () => {
   const large = useMediaQuery('(min-width: 600px)');
-  const [loading, setLoading] = useState(true);
   const [maps, setMaps] = useState([]);
 
   const mapState = useCallback(
@@ -66,15 +65,12 @@ const TrendingMaps = () => {
   const { currentUser } = useMappedState(mapState);
 
   const initPopularMaps = useCallback(async () => {
-    setLoading(true);
-
     const apiInstance = new MapsApi();
     const opts = {
       popular: true
     };
 
     apiInstance.mapsGet(opts, (error, data, response) => {
-      setLoading(false);
       if (response.ok) {
         const maps = response.body;
         setMaps(maps);
@@ -86,16 +82,13 @@ const TrendingMaps = () => {
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
-      setLoading(false);
       return;
     }
     initPopularMaps();
   }, [currentUser.uid]);
 
-  return loading ? (
-    <div style={styles.progress}>
-      <CircularProgress />
-    </div>
+  return maps.length < 1 ? (
+    <SkeletonTrendingList />
   ) : (
     <Paper elevation={0}>
       <CardContent style={styles.cardContainer}>

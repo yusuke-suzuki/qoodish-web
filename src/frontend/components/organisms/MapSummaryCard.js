@@ -20,6 +20,7 @@ import requestMapCenter from '../../actions/requestMapCenter';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
   text: {
@@ -46,21 +47,6 @@ const styles = {
     float: 'right',
     borderWidth: 1,
     cursor: 'pointer'
-  },
-  skeltonTextPrimary: {
-    width: '100%',
-    height: '1.5rem',
-    marginBottom: 16
-  },
-  skeltonTextSecondary: {
-    width: '50%',
-    height: '0.875rem',
-    marginBottom: 16
-  },
-  skeltonAvatar: {
-    width: 40,
-    height: 40,
-    marginBottom: 16
   }
 };
 
@@ -229,7 +215,7 @@ const MapSummaryCard = () => {
             {currentMap.name}
           </Typography>
         ) : (
-          <Chip style={styles.skeltonTextPrimary} />
+          <Skeleton height={32} width="80%" />
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -265,7 +251,10 @@ const MapSummaryCard = () => {
             {currentMap.description}
           </Typography>
         ) : (
-          <Chip style={styles.skeltonTextSecondary} />
+          <React.Fragment>
+            <Skeleton height={32} width="100%" />
+            <Skeleton height={32} width="100%" />
+          </React.Fragment>
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -286,16 +275,15 @@ const MapSummaryCard = () => {
           onClick={handleBaseClick}
         />
 
-        {currentMap && currentMap.last_reported_at && (
-          <React.Fragment>
-            <Typography variant="subtitle2" gutterBottom color="textSecondary">
-              {I18n.t('last reported date')}
-            </Typography>
-
-            <Typography variant="subtitle1" gutterBottom style={styles.text}>
-              {parseDate(currentMap.last_reported_at)}
-            </Typography>
-          </React.Fragment>
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
+          {I18n.t('last reported date')}
+        </Typography>
+        {currentMap ? (
+          <Typography variant="subtitle1" gutterBottom style={styles.text}>
+            {parseDate(currentMap.last_reported_at)}
+          </Typography>
+        ) : (
+          <Skeleton height={28} width="40%" />
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -306,7 +294,7 @@ const MapSummaryCard = () => {
             {parseDate(currentMap.created_at)}
           </Typography>
         ) : (
-          <Chip style={styles.skeltonTextSecondary} />
+          <Skeleton height={28} width="40%" />
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -315,7 +303,16 @@ const MapSummaryCard = () => {
         {currentMap ? (
           <MapTypes />
         ) : (
-          <Chip avatar={<Avatar src="" alt="" />} style={styles.chip} />
+          <React.Fragment>
+            <Chip
+              avatar={<Skeleton variant="circle" width={40} height={40} />}
+              style={styles.chip}
+            />
+            <Chip
+              avatar={<Skeleton variant="circle" width={40} height={40} />}
+              style={styles.chip}
+            />
+          </React.Fragment>
         )}
 
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -327,9 +324,7 @@ const MapSummaryCard = () => {
           {currentMap ? (
             <Followers />
           ) : (
-            <Avatar style={styles.skeltonAvatar}>
-              <PersonIcon />
-            </Avatar>
+            <Skeleton variant="circle" width={40} height={40} />
           )}
         </div>
 

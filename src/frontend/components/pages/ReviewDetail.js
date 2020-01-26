@@ -11,6 +11,7 @@ import selectReview from '../../actions/selectReview';
 import updateMetadata from '../../actions/updateMetadata';
 
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import SkeletonReviewCard from '../molecules/SkeletonReviewCard';
 
 const styles = {
   progress: {
@@ -104,9 +105,7 @@ const ReviewDetail = props => {
   return (
     <div>
       {loading ? (
-        <div style={styles.progress}>
-          <CircularProgress />
-        </div>
+        <SkeletonReviewCard />
       ) : (
         <ReviewCardContainer review={currentReview} />
       )}

@@ -3,7 +3,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useMappedState } from 'redux-react-hook';
 import { Link } from '@yusuke-suzuki/rize-router';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -19,13 +18,9 @@ import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
 import { SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
 
 const styles = {
-  progress: {
-    textAlign: 'center',
-    padding: 10,
-    marginTop: 20
-  },
   listItemLarge: {
     paddingLeft: 10,
     paddingRight: 80
@@ -52,7 +47,6 @@ const styles = {
 
 const TrendingSpots = () => {
   const large = useMediaQuery('(min-width: 600px)');
-  const [loading, setLoading] = useState(true);
   const [spots, setSpots] = useState([]);
 
   const mapState = useCallback(
@@ -65,13 +59,11 @@ const TrendingSpots = () => {
   const { currentUser } = useMappedState(mapState);
 
   const initTrendingSpots = useCallback(async () => {
-    setLoading(true);
     const apiInstance = new SpotsApi();
     const opts = {
       popular: true
     };
     apiInstance.spotsGet(opts, (error, data, response) => {
-      setLoading(false);
       if (response.ok) {
         setSpots(response.body);
       }
@@ -80,16 +72,13 @@ const TrendingSpots = () => {
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
-      setLoading(false);
       return;
     }
     initTrendingSpots();
   }, [currentUser.uid]);
 
-  return loading ? (
-    <div style={styles.progress}>
-      <CircularProgress />
-    </div>
+  return spots.length < 1 ? (
+    <SkeletonTrendingList />
   ) : (
     <Paper elevation={0}>
       <CardContent style={styles.cardContainer}>
