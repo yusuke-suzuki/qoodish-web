@@ -59,12 +59,12 @@ typings/
 .env.development
 .env.production
 
-public/index.html
-public/bundle.js
-public/*.*.js
-public/sw-proto.js
-public/sw.js
-public/*.hot-update.*
+public/*
+!public/apple-touch-icon.png
+!public/favicon.ico
+!public/manifest.json
+!public/robots.txt
+!public/sitemap.xml
 
 .vscode
 
