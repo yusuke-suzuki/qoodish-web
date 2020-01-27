@@ -56,6 +56,7 @@ const ReviewCardHeader = React.memo(props => {
           <Avatar
             src={props.currentReview.author.profile_image_url}
             alt={props.currentReview.author.name}
+            loading="lazy"
           />
         </ButtonBase>
       }
@@ -131,6 +132,7 @@ const ReviewCardMedia = React.memo(props => {
         src={props.currentReview.image.thumbnail_url_800}
         style={styles.reviewImage}
         alt={props.currentReview.spot.name}
+        loading="lazy"
       />
     </CardMedia>
   );

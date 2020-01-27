@@ -105,6 +105,7 @@ const SpotCard = props => {
               currentSpot.lng
             }`}
             style={styles.staticMapImage}
+            loading="lazy"
           />
         </a>
       </CardMedia>

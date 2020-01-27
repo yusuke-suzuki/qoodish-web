@@ -100,6 +100,7 @@ const SpotInfoWindow = () => {
               src={review.author.profile_image_url}
               alt={review.author.name}
               style={styles.reviewerAvatar}
+              loading="lazy"
             />
           </ButtonBase>
         ))}

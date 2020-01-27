@@ -64,6 +64,7 @@ const MapReviewsList = () => {
             <Avatar
               src={review.author.profile_image_url}
               alt={review.author.name}
+              loading="lazy"
             />
           </ListItemAvatar>
           <ListItemText
@@ -86,6 +87,7 @@ const MapReviewsList = () => {
                   pathname: `/maps/${review.map.id}/reports/${review.id}`,
                   state: { modal: true, review: review }
                 }}
+                loading="lazy"
               />
             </ListItemSecondaryAction>
           )}

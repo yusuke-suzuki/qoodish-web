@@ -169,6 +169,7 @@ const SpotCardContent = () => {
                     : process.env.SUBSTITUTE_URL
                 }
                 alt={review.spot.name}
+                loading="lazy"
               />
               <GridListTileBar
                 style={styles.tileBar}
@@ -177,6 +178,7 @@ const SpotCardContent = () => {
                     src={review.author.profile_image_url}
                     alt={review.author.name}
                     style={styles.avatarGridTile}
+                    loading="lazy"
                   />
                 }
                 actionPosition="left"

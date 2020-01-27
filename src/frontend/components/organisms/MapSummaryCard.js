@@ -231,6 +231,7 @@ const MapSummaryCard = () => {
               <Avatar
                 src={currentMap && currentMap.owner_image_url}
                 alt={currentMap && currentMap.owner_name}
+                loading="lazy"
               />
             }
             label={currentMap && currentMap.owner_name}

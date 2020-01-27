@@ -22,6 +22,7 @@ const ProfileAvatar = props => {
         src={currentUser.thumbnail_url_400}
         style={avatarStyle}
         alt={currentUser.name}
+        loading="lazy"
       />
     );
   }

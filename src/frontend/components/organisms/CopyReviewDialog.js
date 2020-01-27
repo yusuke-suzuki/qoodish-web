@@ -118,7 +118,7 @@ const CopyReviewDialog = () => {
               onClick={() => handleMapSelected(map)}
             >
               <ListItemAvatar>
-                <Avatar src={map.thumbnail_url} />
+                <Avatar src={map.thumbnail_url} alt={map.name} loading="lazy" />
               </ListItemAvatar>
               <ListItemText primary={map.name} />
             </ListItem>

@@ -65,6 +65,7 @@ const ReviewGridList = props => {
               <img
                 src={reviewImage(review, props.large)}
                 alt={review.spot.name}
+                loading="lazy"
               />
             ) : (
               <GridListTileBar

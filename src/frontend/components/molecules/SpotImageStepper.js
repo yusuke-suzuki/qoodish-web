@@ -84,6 +84,7 @@ const SpotImageStepper = props => {
               }
               style={styles.spotImage}
               alt={review.spot.name}
+              loading="lazy"
             />
           </ButtonBase>
         ))}
