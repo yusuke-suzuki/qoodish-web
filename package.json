@@ -26,6 +26,7 @@
     "load-google-maps-api": "^2.0.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
+    "ms": "^2.1.2",
     "node-fetch": "^2.6.0",
     "path-to-regexp": "^6.1.0",
     "react": "^16.9.0",
