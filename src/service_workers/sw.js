@@ -7,7 +7,9 @@ import * as expiration from 'workbox-expiration';
 
 core.skipWaiting();
 core.clientsClaim();
-precaching.precacheAndRoute(self.__precacheManifest || []);
+precaching.precacheAndRoute(self.__precacheManifest || [], {
+  directoryIndex: null
+});
 googleAnalytics.initialize();
 
 routing.registerRoute(
