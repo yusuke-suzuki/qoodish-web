@@ -82,7 +82,7 @@ const FollowingMapsDialog = () => {
               style={styles.listItem}
             >
               <ListItemAvatar>
-                <Avatar alt={map.name} src={map.thumbnail_url} />
+                <Avatar alt={map.name} src={map.thumbnail_url} loading="lazy" />
               </ListItemAvatar>
               <ListItemText
                 disableTypography={true}

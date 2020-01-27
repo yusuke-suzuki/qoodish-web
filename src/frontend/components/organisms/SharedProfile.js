@@ -147,6 +147,7 @@ const ProfileCard = React.memo(props => {
             large ? 900 : 400
           }x${200}&scale=${2}&center=${35.710063},${139.8107}`}
           style={styles.staticMapImage}
+          loading="lazy"
         />
       </CardMedia>
       <CardContent

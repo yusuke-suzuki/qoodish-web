@@ -117,6 +117,7 @@ const NotificationList = props => {
         <Avatar
           src={notification.notifier.profile_image_url}
           alt={notification.notifier.name}
+          loading="lazy"
         />
       </ListItemAvatar>
       <ListItemText
@@ -139,6 +140,7 @@ const NotificationList = props => {
             <Avatar
               src={notification.notifiable.thumbnail_url}
               style={styles.secondaryAvatar}
+              loading="lazy"
             />
           </ButtonBase>
         </ListItemSecondaryAction>

@@ -58,6 +58,7 @@ const MapCard = props => {
             src={large ? map.thumbnail_url_800 : map.thumbnail_url_400}
             alt={map.name}
             style={styles.mapImage}
+            loading="lazy"
           />
         </CardMedia>
         <CardContent style={styles.cardContent}>

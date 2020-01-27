@@ -136,6 +136,7 @@ const LikesList = props => {
                 <Avatar
                   src={like.voter.profile_image_url}
                   alt={like.voter.name}
+                  loading="lazy"
                 />
               </ListItemAvatar>
               <ListItemText
@@ -158,6 +159,7 @@ const LikesList = props => {
                     <Avatar
                       src={like.votable.thumbnail_url}
                       style={styles.secondaryAvatar}
+                      loading="lazy"
                     />
                   </ButtonBase>
                 </ListItemSecondaryAction>

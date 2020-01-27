@@ -171,6 +171,7 @@ const RecentReviews = () => {
                       <Avatar
                         src={review.author.profile_image_url}
                         alt={review.author.name}
+                        loading="lazy"
                       />
                     }
                     title={
@@ -199,6 +200,7 @@ const RecentReviews = () => {
                       }
                       alt={review.image && review.spot.name}
                       style={styles.reviewImage}
+                      loading="lazy"
                     />
                   </CardMedia>
                   <CardContent style={styles.cardContent}>

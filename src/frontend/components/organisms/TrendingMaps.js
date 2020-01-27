@@ -117,7 +117,7 @@ const TrendingMaps = () => {
               style={large ? styles.listItemLarge : styles.listItemSmall}
             >
               <ListItemAvatar>
-                <Avatar src={map.thumbnail_url} alt={map.name} />
+                <Avatar src={map.thumbnail_url} alt={map.name} loading="lazy" />
               </ListItemAvatar>
               <ListItemText
                 disableTypography={true}

@@ -71,7 +71,11 @@ const PickUpMap = () => {
         to={`/maps/${map && map.id}`}
         title={map && map.name}
       >
-        <img src={map && map.thumbnail_url_800} alt={map && map.name} />
+        <img
+          src={map && map.thumbnail_url_800}
+          alt={map && map.name}
+          loading="lazy"
+        />
         <GridListTileBar
           title={
             <Typography

@@ -136,7 +136,11 @@ const SpotHorizontalList = () => {
               <div style={styles.reviewerContainer}>
                 <Reviewers spot={spot} />
               </div>
-              <img src={spot.thumbnail_url_400} alt={spot.name} />
+              <img
+                src={spot.thumbnail_url_400}
+                alt={spot.name}
+                loading="lazy"
+              />
               <GridListTileBar
                 style={styles.tileBar}
                 title={

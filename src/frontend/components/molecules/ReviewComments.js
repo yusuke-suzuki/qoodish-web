@@ -151,6 +151,7 @@ const Comments = React.memo(props => {
           <Avatar
             src={comment.author.profile_image_url}
             alt={comment.author.name}
+            loading="lazy"
           />
         </ListItemAvatar>
       </ButtonBase>
