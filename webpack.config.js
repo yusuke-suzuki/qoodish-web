@@ -23,8 +23,7 @@ const plugins = [
     icon512: process.env.ICON_512,
     ogpImage: process.env.OGP_IMAGE_URL,
     fbAppId: process.env.FB_APP_ID,
-    gaTrackingId: process.env.GA_TRACKING_ID,
-    filename: 'index.html?[hash]'
+    gaTrackingId: process.env.GA_TRACKING_ID
   }),
   new webpack.EnvironmentPlugin([
     'ENDPOINT',
