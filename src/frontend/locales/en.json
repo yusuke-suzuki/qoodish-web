@@ -1,4 +1,6 @@
 {
+  "authentication error": "An authentication error has occurred",
+  "internal server error": "An internal server error has occurred",
   "create map together": "Let's create adventure maps together.",
   "where are you going next": "Where are you going next?",
   "share favorite spot": "Let's share your favorite spots!",

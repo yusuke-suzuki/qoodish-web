@@ -7,7 +7,6 @@ import WhatshotIcon from '@material-ui/icons/Whatshot';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Typography from '@material-ui/core/Typography';
 
-import MapCollection from '../organisms/MapCollection';
 import RecentReviews from '../organisms/RecentReviews';
 import CreateResourceButton from '../molecules/CreateResourceButton';
 import PickUpMap from '../organisms/PickUpMap';
@@ -21,6 +20,8 @@ import fetchRecentMaps from '../../actions/fetchRecentMaps';
 import updateMetadata from '../../actions/updateMetadata';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import SkeletonMapCollection from '../organisms/SkeletonMapCollection';
+import MapCollection from '../organisms/MapCollection';
 
 const styles = {
   container: {
@@ -53,7 +54,17 @@ const styles = {
 };
 
 const MapContainer = props => {
-  return <MapCollection maps={props.maps} horizontal />;
+  const { maps } = props;
+
+  return (
+    <div>
+      {maps.length > 0 ? (
+        <MapCollection maps={maps} horizontal />
+      ) : (
+        <SkeletonMapCollection horizontal />
+      )}
+    </div>
+  );
 };
 
 const Discover = () => {

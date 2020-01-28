@@ -1,12 +1,7 @@
 import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import PlaceIcon from '@material-ui/icons/Place';
-
-import { Link } from '@yusuke-suzuki/rize-router';
 
 const styles = {
   container: {
@@ -16,76 +11,32 @@ const styles = {
   },
   gridList: {
     width: '100%'
-  },
-  gridTile: {
-    cursor: 'pointer'
-  },
-  tileBar: {
-    height: '100%',
-    textAlign: 'center'
-  },
-  placeIconLarge: {
-    fontSize: 64
-  },
-  placeIconSmall: {
-    fontSize: 36
-  }
-};
-
-const reviewImage = (review, large) => {
-  if (large) {
-    return review.image.thumbnail_url_800;
-  } else {
-    return review.image.thumbnail_url_400;
   }
 };
 
 const ReviewGridList = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const { cols, spacing, cellHeight } = props;
 
   return (
     <div style={styles.container}>
       <GridList
-        cols={large ? 4 : 3}
         style={styles.gridList}
-        spacing={large ? 20 : 4}
-        cellHeight={large ? 165 : 120}
+        cols={cols}
+        spacing={spacing}
+        cellHeight={cellHeight}
       >
-        {props.reviews.map(review => (
-          <GridListTile
-            key={review.id}
-            style={styles.gridTile}
-            component={Link}
-            to={{
-              pathname: `/maps/${review.map.id}/reports/${review.id}`,
-              state: { modal: true, review: review }
-            }}
-          >
-            {review.image ? (
-              <img
-                src={reviewImage(review, props.large)}
-                alt={review.spot.name}
-                loading="lazy"
-              />
-            ) : (
-              <GridListTileBar
-                title={
-                  <PlaceIcon
-                    style={
-                      props.large
-                        ? styles.placeIconLarge
-                        : styles.placeIconSmall
-                    }
-                  />
-                }
-                style={styles.tileBar}
-              />
-            )}
-          </GridListTile>
+        {props.children.map(child => (
+          <GridListTile>{child}</GridListTile>
         ))}
       </GridList>
     </div>
   );
+};
+
+ReviewGridList.defaultProps = {
+  cols: 3,
+  spacing: 4,
+  cellHeight: 100
 };
 
 export default React.memo(ReviewGridList);

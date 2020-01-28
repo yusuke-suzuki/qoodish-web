@@ -27,7 +27,12 @@ const styles = {
   },
   shareButton: {
     display: 'flex',
+    outline: 'none',
+    alignItems: 'center',
     width: '100%'
+  },
+  listItemText: {
+    flex: 'none'
   }
 };
 
@@ -69,35 +74,36 @@ const MapShareMenu = () => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        <FacebookShareButton url={shareUrl(map)} style={styles.shareButton}>
-          <MenuItem
-            key="facebook"
-            onClick={() => setMenuOpen(false)}
-            style={styles.shareButton}
-          >
+        <MenuItem
+          key="facebook"
+          onClick={() => setMenuOpen(false)}
+          style={styles.shareButton}
+        >
+          <FacebookShareButton url={shareUrl(map)} style={styles.shareButton}>
             <ListItemIcon>
               <FacebookIcon round size={24} />
             </ListItemIcon>
-            <ListItemText primary={I18n.t('share with facebook')} />
-          </MenuItem>
-        </FacebookShareButton>
+            <ListItemText primary={I18n.t('share with facebook')} style={styles.listItemText} />
+          </FacebookShareButton>
+        </MenuItem>
 
-        <TwitterShareButton
-          url={shareUrl(map)}
-          title={map && map.name}
+        <MenuItem
+          key="twitter"
+          onClick={() => setMenuOpen(false)}
           style={styles.shareButton}
         >
-          <MenuItem
-            key="twitter"
-            onClick={() => setMenuOpen(false)}
+          <TwitterShareButton
+            url={shareUrl(map)}
+            title={map && map.name}
             style={styles.shareButton}
           >
             <ListItemIcon>
               <TwitterIcon round size={24} />
             </ListItemIcon>
-            <ListItemText primary={I18n.t('share with twitter')} />
-          </MenuItem>
-        </TwitterShareButton>
+            <ListItemText primary={I18n.t('share with twitter')} style={styles.listItemText} />
+          </TwitterShareButton>
+        </MenuItem>
+
         <CopyToClipboard
           text={shareUrl(map)}
           onCopy={handleUrlCopied}

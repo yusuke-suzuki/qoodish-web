@@ -12,10 +12,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import ReviewTiles from '../organisms/ReviewTiles';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
+import ReviewGridList from './ReviewGridList';
+import ReviewImageTile from './ReviewImageTile';
 
 const styles = {
   cardMediaLarge: {
@@ -118,12 +119,17 @@ const SpotCard = props => {
         <GoogleMapsLink currentSpot={currentSpot} />
         <OpeningHours openingHours={currentSpot.opening_hours} />
         <div style={styles.reviewTilesContainer}>
-          <ReviewTiles
-            reviews={spotReviews}
+          <Typography variant="subtitle2" gutterBottom color="textSecondary">
+            {`${spotReviews.length} ${I18n.t('reviews count')}`}
+          </Typography>
+          <ReviewGridList
             spacing={large ? 16 : 4}
             cellHeight={large ? 140 : 100}
-            showSubheader
-          />
+          >
+            {spotReviews.map(review => (
+              <ReviewImageTile review={review} key={review.id} />
+            ))}
+          </ReviewGridList>
         </div>
       </CardContent>
     </Card>

@@ -1,11 +1,17 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import MapCollection from './MapCollection';
 import fetchMyMaps from '../../actions/fetchMyMaps';
 import { UserMapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import SkeletonMapCollection from './SkeletonMapCollection';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import NoContents from '../molecules/NoContents';
+import I18n from '../../utils/I18n';
 
 const ProfileMyMaps = props => {
   const dispatch = useDispatch();
+  const large = useMediaQuery('(min-width: 600px)');
+  const [loading, setLoading] = useState(true);
 
   const mapState = useCallback(
     state => ({
@@ -24,6 +30,7 @@ const ProfileMyMaps = props => {
       location.pathname === '/profile' &&
       currentUser.isAnonymous
     ) {
+      setLoading(false);
       return;
     }
 
@@ -35,10 +42,9 @@ const ProfileMyMaps = props => {
     const apiInstance = new UserMapsApi();
 
     apiInstance.usersUserIdMapsGet(userId, {}, (error, data, response) => {
+      setLoading(false);
       if (response.ok) {
         dispatch(fetchMyMaps(response.body));
-      } else {
-        console.log('API called successfully. Returned data: ' + data);
       }
     });
   });
@@ -50,7 +56,26 @@ const ProfileMyMaps = props => {
     initMaps();
   }, [currentUser.uid]);
 
-  return <MapCollection maps={myMaps} skeletonSize={3} />;
+  if (!loading && myMaps.length < 1) {
+    return (
+      <NoContents
+        contentType="map"
+        action="create-map"
+        secondaryAction="discover-maps"
+        message={I18n.t('maps will see here')}
+      />
+    );
+  }
+
+  return (
+    <div>
+      {loading ? (
+        <SkeletonMapCollection size={large ? 3 : 4} />
+      ) : (
+        <MapCollection maps={myMaps} />
+      )}
+    </div>
+  );
 };
 
 export default React.memo(ProfileMyMaps);
