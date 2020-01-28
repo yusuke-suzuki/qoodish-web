@@ -14,13 +14,14 @@ import PublicIcon from '@material-ui/icons/Public';
 import LockIcon from '@material-ui/icons/Lock';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
-import ReviewTiles from './ReviewTiles';
 
 import requestMapCenter from '../../actions/requestMapCenter';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 import Skeleton from '@material-ui/lab/Skeleton';
+import ReviewGridList from './ReviewGridList';
+import ReviewImageTile from './ReviewImageTile';
 
 const styles = {
   text: {
@@ -340,7 +341,14 @@ const MapSummaryCard = () => {
           </React.Fragment>
         )}
 
-        <ReviewTiles reviews={mapReviews} showSubheader />
+        <Typography variant="subtitle2" gutterBottom color="textSecondary">
+          {`${mapReviews.length} ${I18n.t('reviews count')}`}
+        </Typography>
+        <ReviewGridList>
+          {mapReviews.map(review => (
+            <ReviewImageTile review={review} key={review.id} />
+          ))}
+        </ReviewGridList>
       </CardContent>
     </div>
   );

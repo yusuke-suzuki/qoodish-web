@@ -1,4 +1,6 @@
 {
+  "authentication error": "認証エラーが発生しました",
+  "internal server error": "サーバーエラーが発生しました",
   "create map together": "みんなで作る、冒険の地図。",
   "where are you going next": "次はどこ行く？",
   "share favorite spot": "お気に入りの場所をシェアしよう！",

@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
-
 import LoadMoreUserReviewsButton from '../molecules/LoadMoreUserReviewsButton';
 import ReviewGridList from './ReviewGridList';
 import NoContents from '../molecules/NoContents';
@@ -11,6 +9,8 @@ import NoContents from '../molecules/NoContents';
 import fetchUserReviews from '../../actions/fetchUserReviews';
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import ReviewImageTile from './ReviewImageTile';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
   reviewsLarge: {
@@ -27,10 +27,10 @@ const styles = {
   noReviewsSmall: {
     paddingTop: 8
   },
-  progress: {
-    textAlign: 'center',
-    padding: 20,
-    marginTop: 20
+  skeleton: {
+    width: '100%',
+    height: '100%',
+    textAlign: 'center'
   }
 };
 
@@ -84,19 +84,8 @@ const ProfileReviews = props => {
     initReviews();
   }, [currentUser.uid]);
 
-  if (loading) {
+  if (!loading && currentReviews.length < 1) {
     return (
-      <div style={styles.progress}>
-        <CircularProgress />
-      </div>
-    );
-  } else {
-    return currentReviews.length > 0 ? (
-      <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
-        <ReviewGridList reviews={currentReviews} />
-        <LoadMoreUserReviewsButton {...props} />
-      </div>
-    ) : (
       <div style={large ? styles.noReviewsLarge : styles.noReviewsSmall}>
         <NoContents
           contentType="review"
@@ -106,6 +95,35 @@ const ProfileReviews = props => {
       </div>
     );
   }
+
+  return (
+    <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
+      {loading ? (
+        <ReviewGridList
+          cols={large ? 4 : 3}
+          spacing={large ? 20 : 4}
+          cellHeight={large ? 165 : 115}
+        >
+          {Array.from(new Array(large ? 8 : 6)).map((v, i) => (
+            <Skeleton key={i} variant="rect" style={styles.skeleton} />
+          ))}
+        </ReviewGridList>
+      ) : (
+        <React.Fragment>
+          <ReviewGridList
+            cols={large ? 4 : 3}
+            spacing={large ? 20 : 4}
+            cellHeight={large ? 165 : 115}
+          >
+            {currentReviews.map(review => (
+              <ReviewImageTile review={review} key={review.id} />
+            ))}
+          </ReviewGridList>
+          <LoadMoreUserReviewsButton {...props} />
+        </React.Fragment>
+      )}
+    </div>
+  );
 };
 
 export default React.memo(ProfileReviews);

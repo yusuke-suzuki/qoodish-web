@@ -24,7 +24,12 @@ import {
 const styles = {
   shareButton: {
     display: 'flex',
+    outline: 'none',
+    alignItems: 'center',
     width: '100%'
+  },
+  listItemText: {
+    flex: 'none'
   }
 };
 
@@ -73,7 +78,10 @@ const ReviewShareMenu = props => {
             <ListItemIcon>
               <FacebookIcon round size={24} />
             </ListItemIcon>
-            <ListItemText primary={I18n.t('share with facebook')} />
+            <ListItemText
+              primary={I18n.t('share with facebook')}
+              style={styles.listItemText}
+            />
           </MenuItem>
         </FacebookShareButton>
 
@@ -91,7 +99,10 @@ const ReviewShareMenu = props => {
             <ListItemIcon>
               <TwitterIcon round size={24} />
             </ListItemIcon>
-            <ListItemText primary={I18n.t('share with twitter')} />
+            <ListItemText
+              primary={I18n.t('share with twitter')}
+              style={styles.listItemText}
+            />
           </MenuItem>
         </TwitterShareButton>
 

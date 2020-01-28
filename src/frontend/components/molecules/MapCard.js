@@ -53,14 +53,12 @@ const MapCard = props => {
       style={styles.buttonBase}
     >
       <Card style={styles.card} elevation={0}>
-        <CardMedia style={styles.cardMedia}>
-          <img
-            src={large ? map.thumbnail_url_800 : map.thumbnail_url_400}
-            alt={map.name}
-            style={styles.mapImage}
-            loading="lazy"
-          />
-        </CardMedia>
+        <CardMedia
+          image={map.thumbnail_url_400}
+          alt={map.name}
+          style={styles.mapImage}
+          loading="lazy"
+        />
         <CardContent style={styles.cardContent}>
           <Typography variant="subtitle1" noWrap>
             {map.private && (
