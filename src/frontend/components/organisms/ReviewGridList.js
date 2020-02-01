@@ -26,7 +26,7 @@ const ReviewGridList = props => {
         cellHeight={cellHeight}
       >
         {props.children.map(child => (
-          <GridListTile>{child}</GridListTile>
+          <GridListTile key={child.key}>{child}</GridListTile>
         ))}
       </GridList>
     </div>

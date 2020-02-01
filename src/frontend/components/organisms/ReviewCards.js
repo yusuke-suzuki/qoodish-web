@@ -8,7 +8,7 @@ const ReviewCards = props => {
   return (
     <VerticalReviewList>
       {reviews.map(review => (
-        <ReviewCard currentReview={review} />
+        <ReviewCard key={review.id} currentReview={review} />
       ))}
     </VerticalReviewList>
   );

@@ -52,7 +52,9 @@ const MapGridList = props => {
         cellHeight={300}
       >
         {props.children.map(child => (
-          <GridListTile style={styles.gridTile}>{child}</GridListTile>
+          <GridListTile key={child.key} style={styles.gridTile}>
+            {child}
+          </GridListTile>
         ))}
       </GridList>
     </div>

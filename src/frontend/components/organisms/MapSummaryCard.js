@@ -344,7 +344,7 @@ const MapSummaryCard = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {`${mapReviews.length} ${I18n.t('reviews count')}`}
         </Typography>
-        <ReviewGridList>
+        <ReviewGridList cellHeight="auto">
           {mapReviews.map(review => (
             <ReviewImageTile review={review} key={review.id} />
           ))}

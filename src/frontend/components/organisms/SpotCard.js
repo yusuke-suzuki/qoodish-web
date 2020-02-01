@@ -122,10 +122,7 @@ const SpotCard = props => {
           <Typography variant="subtitle2" gutterBottom color="textSecondary">
             {`${spotReviews.length} ${I18n.t('reviews count')}`}
           </Typography>
-          <ReviewGridList
-            spacing={large ? 16 : 4}
-            cellHeight={large ? 140 : 100}
-          >
+          <ReviewGridList spacing={large ? 16 : 4} cellHeight="auto">
             {spotReviews.map(review => (
               <ReviewImageTile review={review} key={review.id} />
             ))}
