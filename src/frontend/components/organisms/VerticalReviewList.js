@@ -23,6 +23,7 @@ const VerticalReviewList = props => {
     <div style={styles.container}>
       {props.children.map(child => (
         <div
+          key={child.key}
           style={large ? styles.cardContainerLarge : styles.cardContainerSmall}
         >
           {child}

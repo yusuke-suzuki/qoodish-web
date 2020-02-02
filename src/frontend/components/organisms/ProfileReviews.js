@@ -113,7 +113,7 @@ const ProfileReviews = props => {
           <ReviewGridList
             cols={large ? 4 : 3}
             spacing={large ? 20 : 4}
-            cellHeight={large ? 165 : 115}
+            cellHeight="auto"
           >
             {currentReviews.map(review => (
               <ReviewImageTile review={review} key={review.id} />

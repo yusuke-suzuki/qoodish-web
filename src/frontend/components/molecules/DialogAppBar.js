@@ -17,8 +17,7 @@ const styles = {
   },
   actionButton: {
     marginLeft: 'auto'
-  },
-  closeButton: {}
+  }
 };
 
 const ExitIcon = React.memo(props => {
@@ -38,11 +37,7 @@ const DialogAppBar = props => {
       elevation={2}
     >
       <Toolbar style={styles.toolbar}>
-        <IconButton
-          color="inherit"
-          onClick={props.handleRequestDialogClose}
-          style={styles.closeButton}
-        >
+        <IconButton color="inherit" onClick={props.handleRequestDialogClose}>
           <ExitIcon iconType={props.iconType} />
         </IconButton>
         <Typography variant="h6" color="inherit" noWrap>

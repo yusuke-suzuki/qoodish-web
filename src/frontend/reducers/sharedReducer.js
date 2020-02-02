@@ -28,7 +28,9 @@ import {
   CLOSE_ANNOUNCEMENT_DIALOG,
   UPDATE_ANNOUNCEMENT_IS_NEW,
   OPEN_CREATE_MAP_DIALOG,
-  OPEN_PLACE_SELECT_DIALOG
+  OPEN_PLACE_SELECT_DIALOG,
+  OPEN_IMAGE_DIALOG,
+  CLOSE_IMAGE_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -54,7 +56,9 @@ const initialState = {
   searchMapsDialogOpen: false,
   createActionsOpen: false,
   announcementDialogOpen: false,
-  announcementIsNew: false
+  announcementIsNew: false,
+  imageDialogOpen: false,
+  currentImageUrl: undefined
 };
 
 const isModalLocation = location => {
@@ -93,6 +97,16 @@ const reducer = (state = initialState, action) => {
         issueDialogOpen: false,
         issueTargetId: null,
         issueTargetType: null
+      });
+    case OPEN_IMAGE_DIALOG:
+      return Object.assign({}, state, {
+        imageDialogOpen: true,
+        currentImageUrl: action.payload.imageUrl
+      });
+    case CLOSE_IMAGE_DIALOG:
+      return Object.assign({}, state, {
+        imageDialogOpen: false,
+        currentImageUrl: undefined
       });
     case SEARCH_PLACES:
       return Object.assign({}, state, {
@@ -220,7 +234,9 @@ const reducer = (state = initialState, action) => {
         feedbackDialogOpen: false,
         announcementDialogOpen: false,
         drawerOpen: false,
-        searchMapsDialogOpen: false
+        searchMapsDialogOpen: false,
+        imageDialogOpen: false,
+        currentImageUrl: undefined
       });
     default:
       return state;

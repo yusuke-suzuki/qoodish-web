@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'redux-react-hook';
+
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -16,6 +18,7 @@ import ReviewVertMenu from './ReviewVertMenu';
 import ReviewCardActions from './ReviewCardActions';
 import ReviewComments from './ReviewComments';
 import ReactionsCount from './ReactionsCount';
+import openImageDialog from '../../actions/openImageDialog';
 
 const styles = {
   cardTitle: {
@@ -126,15 +129,23 @@ const ReviewCardContent = React.memo(props => {
 });
 
 const ReviewCardMedia = React.memo(props => {
+  const dispatch = useDispatch();
+
+  const handleImageClick = useCallback(() => {
+    dispatch(openImageDialog(props.currentReview.image.url));
+  });
+
   return (
-    <CardMedia style={styles.cardMedia}>
-      <img
-        src={props.currentReview.image.thumbnail_url_800}
-        style={styles.reviewImage}
-        alt={props.currentReview.spot.name}
-        loading="lazy"
-      />
-    </CardMedia>
+    <ButtonBase onClick={handleImageClick}>
+      <CardMedia style={styles.cardMedia}>
+        <img
+          src={props.currentReview.image.thumbnail_url_800}
+          style={styles.reviewImage}
+          alt={props.currentReview.spot.name}
+          loading="lazy"
+        />
+      </CardMedia>
+    </ButtonBase>
   );
 });
 

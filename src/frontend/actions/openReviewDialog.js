@@ -1,6 +1,6 @@
 import { OPEN_REVIEW_DIALOG } from '../actionTypes';
 
-const openReviewDialog = review => {
+const openReviewDialog = () => {
   return {
     type: OPEN_REVIEW_DIALOG
   };
