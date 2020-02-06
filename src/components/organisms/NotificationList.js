@@ -37,7 +37,7 @@ const styles = {
 
 const fromNow = notification => {
   return moment(notification.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .fromNow();
 };
 

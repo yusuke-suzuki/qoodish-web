@@ -43,6 +43,13 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   console.log('[ServiceWorker] Activate');
+
+  const currentLocale =
+    self.navigator.language ||
+    self.navigator.userLanguage ||
+    self.navigator.browserLanguage;
+
+  I18n.locale = currentLocale;
 });
 
 self.addEventListener('fetch', e => {
@@ -90,11 +97,6 @@ const notificationOptions = data => {
 };
 
 const notificationBody = data => {
-  const currentLocale =
-    self.navigator.language ||
-    self.navigator.userLanguage ||
-    self.navigator.browserLanguage;
-
-  const message = I18n.t(`${data.key} ${data.notifiable_type}`, currentLocale);
+  const message = I18n.t(`${data.key} ${data.notifiable_type}`);
   return `${data.notifier_name} ${message}`;
 };

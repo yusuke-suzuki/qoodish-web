@@ -19,6 +19,7 @@ import ReviewCardActions from './ReviewCardActions';
 import ReviewComments from './ReviewComments';
 import ReactionsCount from './ReactionsCount';
 import openImageDialog from '../../actions/openImageDialog';
+import I18n from '../../utils/I18n';
 
 const styles = {
   cardTitle: {
@@ -151,7 +152,7 @@ const ReviewCardMedia = React.memo(props => {
 
 const createdAt = review => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .format('LL');
 };
 

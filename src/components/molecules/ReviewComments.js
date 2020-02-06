@@ -47,7 +47,7 @@ const styles = {
 
 const fromNow = comment => {
   return moment(comment.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .fromNow();
 };
 

@@ -30,7 +30,7 @@ const styles = {
 
 const fromNow = review => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .format('LL');
 };
 

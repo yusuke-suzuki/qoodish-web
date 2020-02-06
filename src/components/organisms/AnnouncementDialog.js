@@ -36,7 +36,7 @@ const styles = {
 
 const issuedAt = date => {
   return moment(date)
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .format('LL');
 };
 
@@ -79,24 +79,18 @@ const AnnouncementDialog = () => {
     fetchAnnouncements();
   }, []);
 
-  useEffect(
-    () => {
-      const newArrival = announcements.some(annoucement => {
-        const boundary = new Date();
-        boundary.setDate(boundary.getDate() - 7);
-        return annoucement.date > boundary;
-      });
-      setIsNew(newArrival);
-    },
-    [announcements]
-  );
+  useEffect(() => {
+    const newArrival = announcements.some(annoucement => {
+      const boundary = new Date();
+      boundary.setDate(boundary.getDate() - 7);
+      return annoucement.date > boundary;
+    });
+    setIsNew(newArrival);
+  }, [announcements]);
 
-  useEffect(
-    () => {
-      dispatch(updateAnnouncementIsNew(isNew));
-    },
-    [isNew]
-  );
+  useEffect(() => {
+    dispatch(updateAnnouncementIsNew(isNew));
+  }, [isNew]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeAnnouncementDialog());
