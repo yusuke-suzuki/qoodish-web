@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const fetch = require('node-fetch');
 const url = require('url');
-const ms = require('ms');
+const path = require('path');
 
 const DIST_FOLDER = __dirname + '/public';
 const PORT = process.env.PORT || 5000;
@@ -62,7 +62,12 @@ app.use(
 app.use(
   express.static(DIST_FOLDER, {
     index: false,
-    maxAge: ms('1y')
+    maxAge: '1y',
+    setHeaders: (res, targetPath, stat) => {
+      if (path.extname(targetPath) === '.js') {
+        res.set('Content-Encoding', 'gzip');
+      }
+    }
   })
 );
 

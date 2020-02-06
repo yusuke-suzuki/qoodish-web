@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
 require('dotenv').config();
@@ -53,6 +54,10 @@ const plugins = [
     swSrc: './src/sw.js',
     swDest: 'sw.js',
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB
+  }),
+  new CompressionPlugin({
+    test: /\.js$/,
+    filename: '[path]'
   })
 ];
 
@@ -65,12 +70,12 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js']
   },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
