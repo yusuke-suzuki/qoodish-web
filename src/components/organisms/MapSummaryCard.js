@@ -123,7 +123,7 @@ const Followers = React.memo(() => {
 
 const parseDate = date => {
   return moment(date, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(window.currentLocale)
+    .locale(I18n.locale)
     .format('LL');
 };
 

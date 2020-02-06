@@ -1,30 +1,35 @@
-import * as core from 'workbox-core';
-import * as precaching from 'workbox-precaching';
+import { skipWaiting, clientsClaim } from 'workbox-core';
+import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import * as googleAnalytics from 'workbox-google-analytics';
-import * as routing from 'workbox-routing';
-import * as strategies from 'workbox-strategies';
-import * as expiration from 'workbox-expiration';
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
 
-core.skipWaiting();
-core.clientsClaim();
-precaching.precacheAndRoute(self.__precacheManifest || [], {
+import I18n from './utils/I18n';
+
+cleanupOutdatedCaches();
+skipWaiting();
+clientsClaim();
+
+precacheAndRoute(self.__precacheManifest || self.__WB_MANIFEST, {
   directoryIndex: null
 });
+
 googleAnalytics.initialize();
 
-routing.registerRoute(
+registerRoute(
   new RegExp('https://fonts.googleapis.com'),
-  new strategies.StaleWhileRevalidate({
+  new StaleWhileRevalidate({
     cacheName: 'google-fonts-stylesheets'
   })
 );
 
-routing.registerRoute(
-  new RegExp('https://storage.cloud.google.com'),
-  new strategies.CacheFirst({
-    cacheName: 'storage-cloud-google-images',
+registerRoute(
+  new RegExp('https://storage.googleapis.com'),
+  new CacheFirst({
+    cacheName: 'storage-googleapis-images',
     plugins: [
-      new expiration.Plugin({
+      new ExpirationPlugin({
         maxEntries: 60,
         maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
       })
@@ -32,14 +37,19 @@ routing.registerRoute(
   })
 );
 
-import I18n from './I18n';
-
 self.addEventListener('install', e => {
   console.log('[ServiceWorker] Install');
 });
 
 self.addEventListener('activate', e => {
   console.log('[ServiceWorker] Activate');
+
+  const currentLocale =
+    self.navigator.language ||
+    self.navigator.userLanguage ||
+    self.navigator.browserLanguage;
+
+  I18n.locale = currentLocale;
 });
 
 self.addEventListener('fetch', e => {
@@ -87,11 +97,6 @@ const notificationOptions = data => {
 };
 
 const notificationBody = data => {
-  const currentLocale =
-    self.navigator.language ||
-    self.navigator.userLanguage ||
-    self.navigator.browserLanguage;
-
-  const message = I18n.t(`${data.key} ${data.notifiable_type}`, currentLocale);
+  const message = I18n.t(`${data.key} ${data.notifiable_type}`);
   return `${data.notifier_name} ${message}`;
 };

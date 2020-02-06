@@ -13,12 +13,11 @@ const plugins = [
       '!robots.txt',
       '!manifest.json',
       '!favicon.ico',
-      '!apple-touch-icon.png',
-      '!sw-proto.js'
+      '!apple-touch-icon.png'
     ]
   }),
   new HtmlWebpackPlugin({
-    template: 'src/views/index.html',
+    template: 'src/index.html',
     endpoint: process.env.ENDPOINT,
     icon512: process.env.ICON_512,
     ogpImage: process.env.OGP_IMAGE_URL,
@@ -51,65 +50,41 @@ const plugins = [
     'CLOUD_STORAGE_BUCKET_NAME'
   ]),
   new InjectManifest({
-    swSrc: './public/sw-proto.js',
-    swDest: 'sw.js'
+    swSrc: './src/sw.js',
+    swDest: 'sw.js',
+    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB
   })
 ];
 
-module.exports = [
-  {
-    entry: ['./src/service_workers/sw.js'],
-    output: {
-      path: __dirname + '/public',
-      publicPath: '/',
-      filename: 'sw-proto.js'
-    },
-    resolve: {
-      extensions: ['.js']
-    },
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader'
-          }
-        }
-      ]
-    },
-    plugins: []
+module.exports = {
+  entry: ['whatwg-fetch', './src/index.js'],
+  output: {
+    filename: '[name]-[contenthash].js',
+    chunkFilename: '[name]-[contenthash].js',
+    path: __dirname + '/public',
+    publicPath: '/'
   },
-  {
-    entry: ['whatwg-fetch', './src/frontend/index.js'],
-    output: {
-      filename: '[name]-[contenthash].js',
-      chunkFilename: '[name]-[contenthash].js',
-      path: __dirname + '/public',
-      publicPath: '/'
-    },
-    resolve: {
-      extensions: ['.js', '.jsx']
-    },
-    module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader'
-          }
-        },
-        {
-          test: /\.(jpe?g|png|gif|svg)$/i,
-          loaders: ['file-loader', 'image-webpack-loader']
-        },
-        {
-          test: /\.css/,
-          use: ['style-loader', 'css-loader']
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
         }
-      ]
-    },
-    plugins: plugins
-  }
-];
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loaders: ['file-loader', 'image-webpack-loader']
+      },
+      {
+        test: /\.css/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  },
+  plugins: plugins
+};
