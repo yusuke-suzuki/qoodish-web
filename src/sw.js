@@ -11,7 +11,7 @@ cleanupOutdatedCaches();
 skipWaiting();
 clientsClaim();
 
-precacheAndRoute(self.__precacheManifest || self.__WB_MANIFEST, {
+precacheAndRoute(self.__WB_MANIFEST, {
   directoryIndex: null
 });
 

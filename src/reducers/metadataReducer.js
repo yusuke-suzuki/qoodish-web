@@ -9,7 +9,7 @@ const initialState = {
     type: '',
     twitterCard: 'summary_large_image',
     image: process.env.OGP_IMAGE_URL,
-    noindex: {}
+    noindex: undefined
   },
   structuredData: {
     '@context': 'http://schema.org',
