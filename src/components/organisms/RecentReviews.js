@@ -18,7 +18,6 @@ import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import ReactionsCount from '../molecules/ReactionsCount';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
@@ -62,7 +61,7 @@ const styles = {
     marginBottom: -5
   },
   cardContent: {
-    paddingBottom: 0
+    paddingBottom: 16
   },
   reviewImage: {
     width: '100%',
@@ -151,7 +150,6 @@ const RecentReviews = () => {
                     <Skeleton height={24} width="100%" />
                     <Skeleton height={24} width="100%" />
                   </CardContent>
-                  <ReactionsCount />
                 </Card>
               </GridListTile>
             ))
@@ -194,11 +192,11 @@ const RecentReviews = () => {
                   <CardMedia style={styles.cardMedia}>
                     <img
                       src={
-                        review.image
-                          ? review.image.thumbnail_url_400
+                        review.images.length > 0
+                          ? review.images[0].thumbnail_url_400
                           : process.env.SUBSTITUTE_URL
                       }
-                      alt={review.image && review.spot.name}
+                      alt={review.images.length > 0 && review.spot.name}
                       style={styles.reviewImage}
                       loading="lazy"
                     />
@@ -219,7 +217,6 @@ const RecentReviews = () => {
                       {review.comment}
                     </Typography>
                   </CardContent>
-                  <ReactionsCount review={review} />
                 </Card>
               </GridListTile>
             ))}

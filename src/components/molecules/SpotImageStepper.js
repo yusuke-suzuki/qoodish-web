@@ -78,8 +78,8 @@ const SpotImageStepper = props => {
           >
             <img
               src={
-                review.image
-                  ? review.image.thumbnail_url_400
+                review.images.length > 0
+                  ? review.images[0].thumbnail_url_400
                   : process.env.SUBSTITUTE_URL
               }
               style={styles.spotImage}

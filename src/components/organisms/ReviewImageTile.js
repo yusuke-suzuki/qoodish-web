@@ -52,9 +52,9 @@ const ReviewImageTile = props => {
       }}
       title={review.spot.name}
     >
-      {review.image ? (
+      {review.images.length > 0 ? (
         <img
-          src={review.image.thumbnail_url_400}
+          src={review.images[0].thumbnail_url_400}
           alt={review.spot.name}
           loading="lazy"
           style={styles.reviewImage}

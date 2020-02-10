@@ -9,15 +9,21 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
 
     const storage = firebase.app().storage(process.env.FIREBASE_IMAGE_BUCKET);
     const storageRef = storage.ref();
+
     const metadata = {
       contentType: 'image/jpeg',
-      cacheControl: 'public,max-age=86400'
+      cacheControl: `public,max-age=${30 * 24 * 60 * 60}` // 30 Days
     };
+
     const fileName = `${dir}/${uuidv1()}.jpg`;
 
     let uploadTask;
     if (fileType === 'blob') {
       uploadTask = storageRef.child(fileName).put(image, metadata);
+    } else if (fileType === 'data_url') {
+      uploadTask = storageRef
+        .child(fileName)
+        .putString(image, 'data_url', metadata);
     } else {
       uploadTask = storageRef
         .child(fileName)
@@ -48,10 +54,8 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
         }
         reject();
       },
-      async () => {
-        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${
-          process.env.CLOUD_STORAGE_BUCKET_NAME
-        }/${fileName}`;
+      () => {
+        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${fileName}`;
         resolve({
           imageUrl: imageUrl,
           fileName: uploadTask.snapshot.ref.name
