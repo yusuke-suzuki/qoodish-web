@@ -64,7 +64,9 @@ const ReviewsContainer = React.memo(props => {
           </Button>
         </div>
       ) : (
-        <LoadMoreReviewsButton />
+        <div style={styles.buttonContainer}>
+          <LoadMoreReviewsButton />
+        </div>
       )}
     </div>
   );

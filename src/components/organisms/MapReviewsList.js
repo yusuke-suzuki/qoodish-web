@@ -76,10 +76,10 @@ const MapReviewsList = () => {
             }
             secondary={fromNow(review)}
           />
-          {review.image && (
+          {review.images.length > 0 && (
             <ListItemSecondaryAction>
               <Avatar
-                src={review.image.thumbnail_url}
+                src={review.images[0].thumbnail_url}
                 style={styles.secondaryAvatar}
                 alt={review.spot.name}
                 component={Link}

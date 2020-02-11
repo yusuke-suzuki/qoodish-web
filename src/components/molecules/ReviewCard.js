@@ -1,9 +1,7 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'redux-react-hook';
+import React from 'react';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
@@ -17,9 +15,8 @@ import ReviewShareMenu from './ReviewShareMenu';
 import ReviewVertMenu from './ReviewVertMenu';
 import ReviewCardActions from './ReviewCardActions';
 import ReviewComments from './ReviewComments';
-import ReactionsCount from './ReactionsCount';
-import openImageDialog from '../../actions/openImageDialog';
 import I18n from '../../utils/I18n';
+import ReviewImageStepper from './ReviewImageStepper';
 
 const styles = {
   cardTitle: {
@@ -32,12 +29,6 @@ const styles = {
   },
   cardContent: {
     paddingTop: 0
-  },
-  cardMedia: {
-    marginBottom: -5
-  },
-  reviewImage: {
-    width: '100%'
   },
   action: {
     display: 'flex'
@@ -129,27 +120,6 @@ const ReviewCardContent = React.memo(props => {
   );
 });
 
-const ReviewCardMedia = React.memo(props => {
-  const dispatch = useDispatch();
-
-  const handleImageClick = useCallback(() => {
-    dispatch(openImageDialog(props.currentReview.image.url));
-  });
-
-  return (
-    <ButtonBase onClick={handleImageClick}>
-      <CardMedia style={styles.cardMedia}>
-        <img
-          src={props.currentReview.image.thumbnail_url_800}
-          style={styles.reviewImage}
-          alt={props.currentReview.spot.name}
-          loading="lazy"
-        />
-      </CardMedia>
-    </ButtonBase>
-  );
-});
-
 const createdAt = review => {
   return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
     .locale(I18n.locale)
@@ -169,12 +139,11 @@ const ReviewCard = props => {
     <Card elevation={0}>
       <ReviewCardHeader {...props} />
       <ReviewCardContent {...props} />
-      {props.currentReview.image ? <ReviewCardMedia {...props} /> : <Divider />}
-      <ReactionsCount
-        review={props.currentReview}
-        disablePadding
-        disableBlank
-      />
+      {props.currentReview.images.length > 0 ? (
+        <ReviewImageStepper review={props.currentReview} />
+      ) : (
+        <Divider />
+      )}
       {props.currentReview.comments.length > 0 && (
         <ReviewComments comments={props.currentReview.comments} />
       )}

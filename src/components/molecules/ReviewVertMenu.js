@@ -83,12 +83,12 @@ const ReviewVertMenu = props => {
               </ListItemIcon>
               <ListItemText primary={I18n.t('edit')} />
             </MenuItem>,
-            <MenuItem key="copy-review" onClick={handleCopyReviewButtonClick}>
-              <ListItemIcon>
-                <AddLocationIcon />
-              </ListItemIcon>
-              <ListItemText primary={I18n.t('copy')} />
-            </MenuItem>,
+            // <MenuItem key="copy-review" onClick={handleCopyReviewButtonClick}>
+            //   <ListItemIcon>
+            //     <AddLocationIcon />
+            //   </ListItemIcon>
+            //   <ListItemText primary={I18n.t('copy')} />
+            // </MenuItem>,
             <MenuItem key="delete" onClick={handleDeleteMapButtonClick}>
               <ListItemIcon>
                 <DeleteIcon />
