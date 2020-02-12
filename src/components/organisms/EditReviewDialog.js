@@ -80,14 +80,15 @@ const EditReviewDialog = () => {
   const [errorComment, setErrorComment] = useState(undefined);
   const [disabled, setDisabled] = useState(true);
   const [images, setImages] = useState([]);
+  const [currentFiles, setCurrentFiles] = useState([]);
 
   useEffect(() => {
-    if (targetMapId && comment && !errorComment) {
+    if (targetMapId && comment && !errorComment && images.length <= 4) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [targetMapId, comment, errorComment]);
+  }, [targetMapId, comment, errorComment, images]);
 
   const dispatch = useDispatch();
 
@@ -120,6 +121,7 @@ const EditReviewDialog = () => {
           const element = new Image();
           element.src = image.url;
           element.id = uuidv1();
+          // element.dataset.fileName = image.file_name;
           return element;
         })
       );
@@ -160,44 +162,67 @@ const EditReviewDialog = () => {
   const handleImageFilesChange = useCallback(e => {
     const files = e.target.files;
 
-    files.forEach(file => {
-      if (!file.type.match(/image\/*/)) {
-        return;
+    for (let file of files) {
+      if (currentFiles.some(currentFile => currentFile.name === file.name)) {
+        continue;
+      }
+      currentFiles.push(file);
+    }
+
+    setCurrentFiles([...currentFiles]);
+  });
+
+  const fileToCanvas = useCallback(async file => {
+    if (!file.type.match(/image\/*/)) {
+      return;
+    }
+
+    if (images.some(image => image.dataset.fileName === file.name)) {
+      return;
+    }
+
+    const image = new Image();
+
+    loadImage.parseMetaData(file, data => {
+      const options = {
+        canvas: true
+      };
+
+      if (data.exif) {
+        options.orientation = data.exif.get('Orientation');
       }
 
-      const image = new Image();
+      loadImage(
+        file,
+        canvas => {
+          image.src = canvas.toDataURL('image/jpeg');
+          image.id = uuidv1();
+          image.dataset.fileName = file.name;
 
-      loadImage.parseMetaData(file, data => {
-        const options = {
-          canvas: true
-        };
-
-        if (data.exif) {
-          options.orientation = data.exif.get('Orientation');
-        }
-
-        loadImage(
-          file,
-          canvas => {
-            image.src = canvas.toDataURL('image/jpeg');
-            image.id = uuidv1();
-            setImages([...images, image]);
-          },
-          options
-        );
-      });
+          images.push(image);
+          setImages([...images]);
+        },
+        options
+      );
     });
   });
+
+  useEffect(() => {
+    for (let file of currentFiles) {
+      fileToCanvas(file);
+    }
+  }, [currentFiles]);
 
   const clearInputs = useCallback(() => {
     setDisabled(true);
     setImages([]);
+    setCurrentFiles([]);
   });
 
   const handleImageRemoved = useCallback(targetImage => {
     setImages(
       images.filter(image => {
-        return image.src !== targetImage.src;
+        return image.id !== targetImage.id;
       })
     );
   });
@@ -291,6 +316,7 @@ const EditReviewDialog = () => {
           id="review-image-input"
           onChange={handleImageFilesChange}
           style={styles.imageInput}
+          multiple
         />
       </DialogContent>
 
