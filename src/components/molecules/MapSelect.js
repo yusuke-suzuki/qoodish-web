@@ -44,7 +44,9 @@ const MapSelect = props => {
   });
 
   const initValue = useCallback(() => {
-    if (currentMap) {
+    if (currentReview) {
+      setMapId(currentReview.map.id);
+    } else if (currentMap) {
       setMapId(currentMap.id);
     } else if (postableMaps.length > 0) {
       setMapId(postableMaps[0].id);
@@ -53,7 +55,7 @@ const MapSelect = props => {
 
   useEffect(() => {
     initValue();
-  }, [currentMap, postableMaps]);
+  }, [currentReview, currentMap, postableMaps]);
 
   useEffect(() => {
     onMapChange(currentMapId);
@@ -69,7 +71,6 @@ const MapSelect = props => {
     >
       <InputLabel htmlFor="map-input">{I18n.t('map')}</InputLabel>
       <Select
-        defaultValue={currentReview && currentReview.map.id}
         value={currentMapId ? currentMapId : ''}
         onChange={e => handleMapChange(e.target.value)}
         input={<Input id="map-input" style={{ padding: 20 }} />}
