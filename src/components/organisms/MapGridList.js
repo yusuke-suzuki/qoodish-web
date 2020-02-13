@@ -5,11 +5,6 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around'
-  },
   gridList: {
     width: '100%'
   },
@@ -44,20 +39,18 @@ const MapGridList = props => {
   }, [large, horizontal]);
 
   return (
-    <div style={styles.container}>
-      <GridList
-        cols={cols}
-        style={horizontal ? styles.gridListHorizontal : styles.gridList}
-        spacing={large || horizontal ? 20 : 10}
-        cellHeight={300}
-      >
-        {props.children.map(child => (
-          <GridListTile key={child.key} style={styles.gridTile}>
-            {child}
-          </GridListTile>
-        ))}
-      </GridList>
-    </div>
+    <GridList
+      cols={cols}
+      style={horizontal ? styles.gridListHorizontal : styles.gridList}
+      spacing={large || horizontal ? 20 : 10}
+      cellHeight={290}
+    >
+      {props.children.map(child => (
+        <GridListTile key={child.key} style={styles.gridTile}>
+          {child}
+        </GridListTile>
+      ))}
+    </GridList>
   );
 };
 

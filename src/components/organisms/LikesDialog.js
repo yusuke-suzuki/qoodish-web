@@ -24,9 +24,9 @@ const styles = {
   }
 };
 
-const Transition = props => {
-  return <Slide direction="up" {...props} />;
-};
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const LikesDialog = () => {
   const large = useMediaQuery('(min-width: 600px)');

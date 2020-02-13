@@ -31,10 +31,10 @@ const styles = {
   }
 };
 
-const Transition = props => {
+const Transition = React.forwardRef(function Transition(props, ref) {
   const large = useMediaQuery('(min-width: 600px)');
-  return <Slide direction={large ? 'up' : 'left'} {...props} />;
-};
+  return <Slide direction={large ? 'up' : 'left'} ref={ref} {...props} />;
+});
 
 const ReviewDialog = () => {
   const dispatch = useDispatch();

@@ -24,9 +24,9 @@ import {
   FollowsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
 
-const Transition = props => {
-  return <Slide direction="up" {...props} />;
-};
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const LeaveMapDialog = () => {
   const large = useMediaQuery('(min-width: 600px)');

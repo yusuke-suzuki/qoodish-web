@@ -66,6 +66,7 @@ const ImageDialog = () => {
       onExited={handleOnExited}
       fullWidth
       scroll={large ? 'body' : 'paper'}
+      disableScrollLock
       disableRestoreFocus={large ? true : false}
       maxWidth="md"
       PaperProps={{

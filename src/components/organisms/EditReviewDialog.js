@@ -55,9 +55,9 @@ const styles = {
   }
 };
 
-const Transition = props => {
-  return <Slide direction="up" {...props} />;
-};
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const AddImageButton = React.memo(props => {
   const { images } = props;
@@ -121,7 +121,6 @@ const EditReviewDialog = () => {
           const element = new Image();
           element.src = image.url;
           element.id = uuidv1();
-          // element.dataset.fileName = image.file_name;
           return element;
         })
       );
@@ -177,10 +176,6 @@ const EditReviewDialog = () => {
       return;
     }
 
-    if (images.some(image => image.dataset.fileName === file.name)) {
-      return;
-    }
-
     const image = new Image();
 
     loadImage.parseMetaData(file, data => {
@@ -197,7 +192,6 @@ const EditReviewDialog = () => {
         canvas => {
           image.src = canvas.toDataURL('image/jpeg');
           image.id = uuidv1();
-          image.dataset.fileName = file.name;
 
           images.push(image);
           setImages([...images]);
