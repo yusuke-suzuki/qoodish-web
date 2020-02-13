@@ -129,7 +129,7 @@ const RecentReviews = () => {
         cols={large ? 2.5 : 1.2}
         style={styles.gridList}
         spacing={large ? 20 : 10}
-        cellHeight={475}
+        cellHeight={440}
       >
         {loading
           ? Array.from(new Array(8)).map((v, i) => (
@@ -144,11 +144,11 @@ const RecentReviews = () => {
                   />
                   <Skeleton variant="rect" height={180} />
                   <CardContent style={styles.cardContent}>
-                    <Skeleton height={28} width="40%" />
-                    <Skeleton height={32} width="40%" />
-                    <Skeleton height={24} width="100%" />
-                    <Skeleton height={24} width="100%" />
-                    <Skeleton height={24} width="100%" />
+                    <Skeleton height={30} width="40%" />
+                    <Skeleton height={38} width="40%" />
+                    <Skeleton height={26} width="100%" />
+                    <Skeleton height={26} width="100%" />
+                    <Skeleton height={26} width="100%" />
                   </CardContent>
                 </Card>
               </GridListTile>

@@ -35,13 +35,7 @@ const styles = {
     marginBottom: 20
   },
   mapsContainer: {
-    marginTop: 40,
-    marginBottom: 20
-  },
-  progress: {
-    textAlign: 'center',
-    padding: 10,
-    marginTop: 20
+    marginBottom: 40
   },
   gridHeader: {
     width: '100%',
@@ -53,19 +47,15 @@ const styles = {
   }
 };
 
-const MapContainer = props => {
+const MapContainer = React.memo(props => {
   const { maps } = props;
 
-  return (
-    <div>
-      {maps.length > 0 ? (
-        <MapCollection maps={maps} horizontal />
-      ) : (
-        <SkeletonMapCollection horizontal />
-      )}
-    </div>
+  return maps.length > 0 ? (
+    <MapCollection maps={maps} horizontal />
+  ) : (
+    <SkeletonMapCollection horizontal />
   );
-};
+});
 
 const Discover = () => {
   const large = useMediaQuery('(min-width: 600px)');
@@ -158,7 +148,7 @@ const Discover = () => {
         <RecentReviews />
       </div>
 
-      <div style={styles.mapsContainer}>
+      <div style={styles.container}>
         <Typography
           variant="subtitle1"
           gutterBottom
@@ -170,7 +160,7 @@ const Discover = () => {
         <MapContainer maps={activeMaps} />
       </div>
 
-      <div style={styles.mapsContainer}>
+      <div style={styles.container}>
         <Typography
           variant="subtitle1"
           gutterBottom
