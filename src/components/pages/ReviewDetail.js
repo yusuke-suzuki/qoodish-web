@@ -95,9 +95,10 @@ const ReviewDetail = props => {
       keywords: `${currentReview.map.name}, ${currentReview.spot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`,
       description: currentReview.comment,
       twitterCard: 'summary_large_image',
-      image: currentReview.image
-        ? currentReview.image.thumbnail_url_800
-        : process.env.OGP_IMAGE_URL,
+      image:
+        currentReview.images.length > 0
+          ? currentReview.images[0].thumbnail_url_800
+          : process.env.OGP_IMAGE_URL,
       url: `${process.env.ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}`
     };
     dispatch(updateMetadata(metadata));
