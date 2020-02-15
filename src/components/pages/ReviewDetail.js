@@ -21,7 +21,7 @@ const styles = {
   }
 };
 
-const ReviewCardContainer = props => {
+const ReviewCardContainer = React.memo(props => {
   if (props.review) {
     return <ReviewCard currentReview={props.review} />;
   } else {
@@ -32,46 +32,62 @@ const ReviewCardContainer = props => {
       />
     );
   }
-};
+});
+
+const MapButton = React.memo(props => {
+  const { currentReview } = props;
+  return (
+    <Button
+      component={Link}
+      to={`/maps/${currentReview.map.id}`}
+      color="primary"
+      startIcon={<KeyboardArrowLeftIcon />}
+    >
+      {I18n.t('back to map')}
+    </Button>
+  );
+});
 
 const ReviewDetail = props => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
       currentReview: state.reviewDetail.currentReview,
-      currentUser: state.app.currentUser
+      currentUser: state.app.currentUser,
+      previousLocation: state.shared.previousLocation
     }),
     []
   );
-  const { currentReview, currentUser } = useMappedState(mapState);
+  const { currentReview, currentUser, previousLocation } = useMappedState(
+    mapState
+  );
   const [loading, setLoading] = useState(true);
 
-  const initReview = useCallback(async (mapId, reviewId) => {
-    if (currentReview && currentReview.id == reviewId) {
-      return;
-    }
+  const initReview = useCallback(
+    async (mapId, reviewId) => {
+      setLoading(true);
+      const apiInstance = new ReviewsApi();
 
-    setLoading(true);
-    const apiInstance = new ReviewsApi();
+      apiInstance.mapsMapIdReviewsReviewIdGet(
+        mapId,
+        reviewId,
+        (error, data, response) => {
+          setLoading(false);
 
-    apiInstance.mapsMapIdReviewsReviewIdGet(
-      mapId,
-      reviewId,
-      (error, data, response) => {
-        setLoading(false);
-
-        if (response.ok) {
-          dispatch(selectReview(response.body));
-        } else if (response.status == 401) {
-          dispatch(openToast('Authenticate failed'));
-        } else if (response.status == 404) {
-          dispatch(openToast('Report not found.'));
-        } else {
-          dispatch(openToast('Failed to fetch Report.'));
+          if (response.ok) {
+            dispatch(selectReview(response.body));
+          } else if (response.status == 401) {
+            dispatch(openToast('Authenticate failed'));
+          } else if (response.status == 404) {
+            dispatch(openToast('Report not found.'));
+          } else {
+            dispatch(openToast('Failed to fetch Report.'));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [currentReview, dispatch]
+  );
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -79,6 +95,15 @@ const ReviewDetail = props => {
     }
 
     if (!props.params.mapId || !props.params.reviewId) {
+      return;
+    }
+
+    if (
+      currentReview &&
+      previousLocation &&
+      previousLocation.state &&
+      previousLocation.state.modal
+    ) {
       return;
     }
 
@@ -112,14 +137,7 @@ const ReviewDetail = props => {
         <React.Fragment>
           <ReviewCardContainer review={currentReview} />
           <div style={styles.backButtonContainer}>
-            <Button
-              component={Link}
-              to={currentReview && `/maps/${currentReview.map.id}`}
-              color="primary"
-              startIcon={<KeyboardArrowLeftIcon />}
-            >
-              {I18n.t('back to map')}
-            </Button>
+            {currentReview && <MapButton currentReview={currentReview} />}
           </div>
         </React.Fragment>
       )}

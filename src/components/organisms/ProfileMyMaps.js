@@ -67,14 +67,10 @@ const ProfileMyMaps = props => {
     );
   }
 
-  return (
-    <div>
-      {loading ? (
-        <SkeletonMapCollection size={large ? 3 : 4} />
-      ) : (
-        <MapCollection maps={myMaps} />
-      )}
-    </div>
+  return loading ? (
+    <SkeletonMapCollection size={large ? 3 : 4} />
+  ) : (
+    <MapCollection maps={myMaps} />
   );
 };
 

@@ -26,11 +26,19 @@ const styles = {
   },
   userMapsLarge: {
     marginTop: 20,
-    paddingBottom: 20
+    paddingBottom: 20,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 40
   },
   userMapsSmall: {
     marginTop: 8,
-    paddingBottom: 16
+    paddingBottom: 16,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 40
   },
   cardContentLarge: {
     padding: 24,
