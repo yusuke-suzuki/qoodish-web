@@ -141,7 +141,7 @@ const EditReviewDialog = () => {
   const initForm = useCallback(() => {
     setCurrentReview();
     initPostableMaps();
-  }, []);
+  });
 
   const initPostableMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
