@@ -14,9 +14,10 @@ const ReviewCommentForm = props => {
     if (currentReview) {
       setCurrentComment(currentReview.comment);
     }
-  });
+  }, [currentReview]);
 
-  const handleCommentChange = useCallback(input => {
+  const handleCommentChange = useCallback(e => {
+    const input = e.target.value;
     if (input) {
       if (input.length > MAX_COMMENT_LENGTH) {
         setErrorText(I18n.t('max characters 500'));
@@ -27,7 +28,7 @@ const ReviewCommentForm = props => {
       setErrorText(I18n.t('comment is required'));
     }
     setCurrentComment(input);
-  });
+  }, []);
 
   useEffect(() => {
     onCommentChange(currentComment, errorText);
@@ -40,7 +41,7 @@ const ReviewCommentForm = props => {
   return (
     <TextField
       label={I18n.t('comment')}
-      onChange={e => handleCommentChange(e.target.value)}
+      onChange={handleCommentChange}
       error={errorText ? true : false}
       helperText={errorText}
       fullWidth

@@ -8,7 +8,7 @@ import amber from '@material-ui/core/colors/amber';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import Grid from '@material-ui/core/Grid';
 
-import { Router, useHistory } from '@yusuke-suzuki/rize-router';
+import { Router } from '@yusuke-suzuki/rize-router';
 import routes from './routes';
 import locationChange from './actions/locationChange';
 import NotFound from './components/pages/NotFound';
@@ -75,6 +75,10 @@ const scrollTop = () => {
   window.scrollTo(0, 0);
 };
 
+const isModalLocation = location => {
+  return location && location.state && location.state.modal;
+};
+
 const routesHideBottomNav = [
   {
     path: '/maps/:mapId'
@@ -108,35 +112,29 @@ const routesFullWidth = [
 const Layout = () => {
   const smUp = useMediaQuery('(min-width: 600px)');
   const mdUp = useMediaQuery('(min-width: 960px)');
-  const lgUp = useMediaQuery('(min-width: 1280px)');
-  const xlUp = useMediaQuery('(min-width: 1920px)');
+  // const lgUp = useMediaQuery('(min-width: 1280px)');
+  // const xlUp = useMediaQuery('(min-width: 1920px)');
 
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const [fullWidth, setFullWidth] = useState(true);
-  const [currentLocation, setCurrentLocation] = useState(history.location);
 
   const mapState = useCallback(
     state => ({
+      currentLocation: state.shared.currentLocation,
       previousLocation: state.shared.previousLocation
     }),
     []
   );
 
-  const { previousLocation } = useMappedState(mapState);
+  const { currentLocation, previousLocation } = useMappedState(mapState);
 
-  const handleLocationChange = useCallback(location => {
-    setCurrentLocation(location);
-  }, []);
-
-  useEffect(() => {
-    dispatch(locationChange(currentLocation));
-  }, [currentLocation]);
-
-  const isModalLocation = useCallback(location => {
-    return location && location.state && location.state.modal;
-  }, []);
+  const handleLocationChange = useCallback(
+    location => {
+      dispatch(locationChange(location));
+    },
+    [dispatch]
+  );
 
   const hideBottomNav = useMemo(() => {
     return routesHideBottomNav.find(route => {

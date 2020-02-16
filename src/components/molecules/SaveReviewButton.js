@@ -45,7 +45,7 @@ const SaveReviewButton = props => {
       params.map_id = targetMapId;
       handleClickCreateButton(params, images);
     }
-  });
+  }, [currentReview, targetMapId, comment, images, selectedPlace]);
 
   const handleClickCreateButton = useCallback(async (params, images) => {
     dispatch(requestStart());
@@ -57,7 +57,7 @@ const SaveReviewButton = props => {
         const response = await uploadToStorage(image.src, 'images', 'data_url');
         params.images.push({ url: response.imageUrl });
       } else if (url.protocol === 'https:') {
-        params.images.push({ url: url });
+        params.images.push({ url: image.dataset.url });
       }
     }
 
@@ -92,7 +92,7 @@ const SaveReviewButton = props => {
         }
       }
     );
-  });
+  }, []);
 
   const handleClickEditButton = useCallback(async (params, images) => {
     dispatch(requestStart());
@@ -104,7 +104,7 @@ const SaveReviewButton = props => {
         const response = await uploadToStorage(image.src, 'images', 'data_url');
         params.images.push({ url: response.imageUrl });
       } else if (url.protocol === 'https:') {
-        params.images.push({ url: url });
+        params.images.push({ url: image.dataset.url });
       }
     }
 
@@ -134,7 +134,7 @@ const SaveReviewButton = props => {
         }
       }
     );
-  });
+  }, []);
 
   return (
     <Button

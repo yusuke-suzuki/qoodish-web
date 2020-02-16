@@ -1911,10 +1911,10 @@
     "@babel/cli" "^7.0.0"
     superagent "3.7.0"
 
-"@yusuke-suzuki/rize-router@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@yusuke-suzuki/rize-router/-/rize-router-0.1.1.tgz#23b6078125eb9237459a7503f87a2992b292ca3a"
-  integrity sha512-XJhODgPS/CKvepnsdeYODs+oVUJdYTuDsU0W4jDVGVwGn14EtKKzr9npODn9IqKD/S1Wr8/cQZhE7Uhdff5LfQ==
+"@yusuke-suzuki/rize-router@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@yusuke-suzuki/rize-router/-/rize-router-0.1.2.tgz#cf4aa31d5afac5635fec0e6f5beebc59bf406172"
+  integrity sha512-j/jMOFBFL9ioH8ro7Zvo8nbsawdFCp88iPoRVfwef5GupQMC6n92toZjrONEFgo747DDlfR+MWylj/9+PtPtPw==
 
 abab@^2.0.0:
   version "2.0.3"
