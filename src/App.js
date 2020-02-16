@@ -1,48 +1,33 @@
-import React, { useEffect, useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import React, { useEffect, useCallback, useLayoutEffect } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 const Layout = React.lazy(() =>
   import(/* webpackChunkName: "layout" */ './Layout')
 );
+
 import AppHelmet from './AppHelmet';
 
 import fetchMyProfile from './actions/fetchMyProfile';
-import updateLinkedProviders from './actions/updateLinkedProviders';
-import fetchNotifications from './actions/fetchNotifications';
 import signIn from './actions/signIn';
 
 import getFirebase from './utils/getFirebase';
 import getFirebaseAuth from './utils/getFirebaseAuth';
 
-import {
-  ApiClient,
-  UsersApi,
-  NotificationsApi
-} from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import locationChange from './actions/locationChange';
+import { useHistory } from '@yusuke-suzuki/rize-router';
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const history = useHistory();
 
   useEffect(() => {
     initUser();
   }, []);
 
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-      return;
-    }
-    refreshNotifications();
-    refreshProviders();
-  }, [currentUser.uid]);
+  useLayoutEffect(() => {
+    dispatch(locationChange(history.location));
+  }, [dispatch]);
 
   const initUser = useCallback(async () => {
     const firebase = await getFirebase();
@@ -61,34 +46,40 @@ const App = () => {
         await firebase.auth().signInAnonymously();
       }
     });
-  });
+  }, []);
 
-  const signInAnonymously = useCallback(firebaseUser => {
-    const user = {
-      uid: firebaseUser.uid,
-      isAnonymous: true
-    };
-    dispatch(signIn(user));
-  });
+  const signInAnonymously = useCallback(
+    firebaseUser => {
+      const user = {
+        uid: firebaseUser.uid,
+        isAnonymous: true
+      };
+      dispatch(signIn(user));
+    },
+    [dispatch]
+  );
 
-  const initProfile = useCallback(async firebaseUser => {
-    const apiInstance = new UsersApi();
+  const initProfile = useCallback(
+    async firebaseUser => {
+      const apiInstance = new UsersApi();
 
-    apiInstance.usersUserIdGet(firebaseUser.uid, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchMyProfile(response.body));
-      } else {
-        console.log('Fetch profile failed.');
-      }
-    });
-  });
+      apiInstance.usersUserIdGet(firebaseUser.uid, (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMyProfile(response.body));
+        } else {
+          console.log('Fetch profile failed.');
+        }
+      });
+    },
+    [dispatch]
+  );
 
   const refreshFirebaseToken = useCallback(async firebaseUser => {
     console.log('Firebase token was refreshed.');
     const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
     firebaseAuth.apiKey = await firebaseUser.getIdToken();
     firebaseAuth.apiKeyPrefix = 'Bearer';
-  });
+  }, []);
 
   const initializeApiClient = useCallback(async firebaseUser => {
     const defaultClient = ApiClient.instance;
@@ -98,28 +89,7 @@ const App = () => {
     setInterval(() => {
       refreshFirebaseToken(firebaseUser);
     }, 1800000);
-  });
-
-  const refreshProviders = useCallback(async () => {
-    const firebase = await getFirebase();
-    await getFirebaseAuth();
-    const firebaseUser = firebase.auth().currentUser;
-
-    const linkedProviders = firebaseUser.providerData.map(provider => {
-      return provider.providerId;
-    });
-    dispatch(updateLinkedProviders(linkedProviders));
-  });
-
-  const refreshNotifications = useCallback(async () => {
-    const apiInstance = new NotificationsApi();
-
-    apiInstance.notificationsGet((error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchNotifications(response.body));
-      }
-    });
-  });
+  }, []);
 
   return (
     <div>

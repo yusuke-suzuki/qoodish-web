@@ -105,13 +105,14 @@ const EditReviewDialog = () => {
 
   const handleMapChange = useCallback(currentMapId => {
     setTargetMapId(currentMapId);
-  });
+  }, []);
 
   const handleCommentChange = useCallback(
     (currentComment, currentCommentError) => {
       setErrorComment(currentCommentError);
       setComment(currentComment);
-    }
+    },
+    []
   );
 
   const setCurrentReview = useCallback(() => {
@@ -119,7 +120,8 @@ const EditReviewDialog = () => {
       setImages(
         currentReview.images.map(image => {
           const element = new Image();
-          element.src = image.url;
+          element.src = image.thumbnail_url_400;
+          element.dataset.url = image.url;
           element.id = uuidv1();
           return element;
         })
@@ -130,16 +132,16 @@ const EditReviewDialog = () => {
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeEditReviewDialog());
-  });
+  }, []);
 
   const handleSpotClick = useCallback(() => {
     dispatch(openPlaceSelectDialog());
-  });
+  }, [dispatch]);
 
   const initForm = useCallback(() => {
     setCurrentReview();
     initPostableMaps();
-  });
+  }, []);
 
   const initPostableMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -156,50 +158,56 @@ const EditReviewDialog = () => {
         console.log(error);
       }
     });
-  });
+  }, [dispatch]);
 
-  const handleImageFilesChange = useCallback(e => {
-    const files = e.target.files;
+  const handleImageFilesChange = useCallback(
+    e => {
+      const files = e.target.files;
 
-    for (let file of files) {
-      if (currentFiles.some(currentFile => currentFile.name === file.name)) {
-        continue;
-      }
-      currentFiles.push(file);
-    }
-
-    setCurrentFiles([...currentFiles]);
-  });
-
-  const fileToCanvas = useCallback(async file => {
-    if (!file.type.match(/image\/*/)) {
-      return;
-    }
-
-    const image = new Image();
-
-    loadImage.parseMetaData(file, data => {
-      const options = {
-        canvas: true
-      };
-
-      if (data.exif) {
-        options.orientation = data.exif.get('Orientation');
+      for (let file of files) {
+        if (currentFiles.some(currentFile => currentFile.name === file.name)) {
+          continue;
+        }
+        currentFiles.push(file);
       }
 
-      loadImage(
-        file,
-        canvas => {
-          image.src = canvas.toDataURL('image/jpeg');
-          image.id = uuidv1();
+      setCurrentFiles([...currentFiles]);
+    },
+    [currentFiles]
+  );
 
-          images.push(image);
-          setImages([...images]);
-        },
-        options
-      );
-    });
-  });
+  const fileToCanvas = useCallback(
+    async file => {
+      if (!file.type.match(/image\/*/)) {
+        return;
+      }
+
+      const image = new Image();
+
+      loadImage.parseMetaData(file, data => {
+        const options = {
+          canvas: true
+        };
+
+        if (data.exif) {
+          options.orientation = data.exif.get('Orientation');
+        }
+
+        loadImage(
+          file,
+          canvas => {
+            image.src = canvas.toDataURL('image/jpeg');
+            image.id = uuidv1();
+
+            images.push(image);
+            setImages([...images]);
+          },
+          options
+        );
+      });
+    },
+    [images]
+  );
 
   useEffect(() => {
     for (let file of currentFiles) {
@@ -211,15 +219,18 @@ const EditReviewDialog = () => {
     setDisabled(true);
     setImages([]);
     setCurrentFiles([]);
-  });
+  }, []);
 
-  const handleImageRemoved = useCallback(targetImage => {
-    setImages(
-      images.filter(image => {
-        return image.id !== targetImage.id;
-      })
-    );
-  });
+  const handleImageRemoved = useCallback(
+    targetImage => {
+      setImages(
+        images.filter(image => {
+          return image.id !== targetImage.id;
+        })
+      );
+    },
+    [images]
+  );
 
   return (
     <Dialog

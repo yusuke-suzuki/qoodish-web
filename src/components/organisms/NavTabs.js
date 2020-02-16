@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useMappedState } from 'redux-react-hook';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -8,41 +8,18 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Badge from '@material-ui/core/Badge';
-import Typography from '@material-ui/core/Typography';
-
-import NotificationList from './NotificationList';
-
-import readNotification from '../../actions/readNotification';
-import sleep from '../../utils/sleep';
-import {
-  NotificationsApi,
-  InlineObject1
-} from '@yusuke-suzuki/qoodish-api-js-client';
 
 import { Link } from '@yusuke-suzuki/rize-router';
 import I18n from '../../utils/I18n';
+
+import NotificationsMenu from './NotificationsMenu';
 
 const styles = {
   tab: {
     height: 64,
     minHeight: 64,
     minWidth: 90
-  },
-  notificationMenu: {
-    maxHeight: '50vh'
-  },
-  noContents: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    height: 'auto',
-    display: 'flow-root'
-  },
-  noContentsIcon: {
-    width: 80,
-    height: 80
   }
 };
 
@@ -51,57 +28,30 @@ const NavTabs = () => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
-  const dispatch = useDispatch();
-
   const mapState = useCallback(
     state => ({
       currentLocation: state.shared.currentLocation,
-      notifications: state.shared.notifications,
       unreadNotifications: state.shared.unreadNotifications
     }),
     []
   );
-  const {
-    currentLocation,
-    notifications,
-    unreadNotifications
-  } = useMappedState(mapState);
+  const { currentLocation, unreadNotifications } = useMappedState(mapState);
 
-  const isSelected = pathname => {
-    return currentLocation && currentLocation.pathname === pathname;
-  };
+  const isSelected = useCallback(
+    pathname => {
+      return currentLocation && currentLocation.pathname === pathname;
+    },
+    [currentLocation]
+  );
 
   const handleNotificationButtonClick = useCallback(e => {
     setNotificationOpen(true);
     setAnchorEl(e.currentTarget);
-  });
+  }, []);
 
   const handleRequestNotificationClose = useCallback(() => {
     setNotificationOpen(false);
-  });
-
-  const onEntered = useCallback(async () => {
-    await sleep(5000);
-    let unreadNotifications = notifications.filter(notification => {
-      return notification.read === false;
-    });
-    unreadNotifications.forEach(async notification => {
-      const apiInstance = new NotificationsApi();
-      const opts = {
-        inlineObject1: InlineObject1.constructFromObject({ read: true })
-      };
-      apiInstance.notificationsNotificationIdPut(
-        notification.id,
-        opts,
-        async (error, data, response) => {
-          if (response.ok) {
-            dispatch(readNotification(response.body));
-            await sleep(3000);
-          }
-        }
-      );
-    });
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentLocation) {
@@ -174,29 +124,12 @@ const NavTabs = () => {
           onClick={handleNotificationButtonClick}
         />
       </Tabs>
-      <Menu
-        id="notification-menu"
+
+      <NotificationsMenu
         anchorEl={anchorEl}
         open={notificationOpen}
         onClose={handleRequestNotificationClose}
-        onEntered={onEntered}
-        PaperProps={{ style: styles.notificationMenu }}
-      >
-        {notifications.length > 0 ? (
-          <NotificationList
-            notifications={notifications}
-            handleNotificationClick={handleRequestNotificationClose}
-            menu={true}
-          />
-        ) : (
-          <MenuItem style={styles.noContents}>
-            <NotificationsIcon style={styles.noContentsIcon} />
-            <Typography variant="subtitle1" color="inherit">
-              {I18n.t('no notifications')}
-            </Typography>
-          </MenuItem>
-        )}
-      </Menu>
+      />
     </div>
   );
 };

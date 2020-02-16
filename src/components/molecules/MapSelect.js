@@ -29,19 +29,23 @@ const MapSelect = props => {
 
   const { currentMap, postableMaps } = useMappedState(mapState);
 
-  const renderSelectValue = useCallback(mapId => {
-    let map = postableMaps.find(map => {
-      return map.id == mapId;
-    });
-    return map ? map.name : '';
-  });
+  const renderSelectValue = useCallback(
+    mapId => {
+      let map = postableMaps.find(map => {
+        return map.id == mapId;
+      });
+      return map ? map.name : '';
+    },
+    [postableMaps]
+  );
 
-  const handleMapChange = useCallback(selectedMapId => {
+  const handleMapChange = useCallback(e => {
+    const selectedMapId = e.target.value;
     if (!selectedMapId) {
       setErrorText(I18n.t('map is required'));
     }
     setMapId(selectedMapId);
-  });
+  }, []);
 
   const initValue = useCallback(() => {
     if (currentReview) {
@@ -51,7 +55,7 @@ const MapSelect = props => {
     } else if (postableMaps.length > 0) {
       setMapId(postableMaps[0].id);
     }
-  });
+  }, [currentReview, currentMap, postableMaps]);
 
   useEffect(() => {
     initValue();
@@ -72,9 +76,9 @@ const MapSelect = props => {
       <InputLabel htmlFor="map-input">{I18n.t('map')}</InputLabel>
       <Select
         value={currentMapId ? currentMapId : ''}
-        onChange={e => handleMapChange(e.target.value)}
+        onChange={handleMapChange}
         input={<Input id="map-input" style={{ padding: 20 }} />}
-        renderValue={value => renderSelectValue(value)}
+        renderValue={renderSelectValue}
         style={{ height: 'auto' }}
         data-test="map-select"
       >

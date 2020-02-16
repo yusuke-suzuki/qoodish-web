@@ -196,7 +196,7 @@ const RecentReviews = () => {
                           ? review.images[0].thumbnail_url_400
                           : process.env.SUBSTITUTE_URL
                       }
-                      alt={review.images.length > 0 && review.spot.name}
+                      alt={review.spot.name}
                       style={styles.reviewImage}
                       loading="lazy"
                     />

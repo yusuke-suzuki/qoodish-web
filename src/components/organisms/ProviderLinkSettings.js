@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import Card from '@material-ui/core/Card';
@@ -57,6 +57,17 @@ const LinkedProvidersList = () => {
     []
   );
   const { currentUser, linkedProviders } = useMappedState(mapState);
+
+  const refreshProviders = useCallback(async () => {
+    const firebase = await getFirebase();
+    await getFirebaseAuth();
+    const firebaseUser = firebase.auth().currentUser;
+
+    const linkedProviders = firebaseUser.providerData.map(provider => {
+      return provider.providerId;
+    });
+    dispatch(updateLinkedProviders(linkedProviders));
+  }, [dispatch]);
 
   const handleLinkProviderButtonClick = useCallback(async providerId => {
     dispatch(requestStart());
@@ -122,6 +133,13 @@ const LinkedProvidersList = () => {
     dispatch(requestFinish());
     dispatch(openToast(I18n.t('unlink provider success')));
   });
+
+  useEffect(() => {
+    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
+      return;
+    }
+    refreshProviders();
+  }, [currentUser, currentUser.uid]);
 
   let reachedMinimum = linkedProviders.length === 1;
 

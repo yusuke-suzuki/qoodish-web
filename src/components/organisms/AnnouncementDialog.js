@@ -59,7 +59,11 @@ const AnnouncementDialog = () => {
     await getFirestore();
 
     const firestore = firebase.firestore();
-    const querySnapshot = await firestore.collection('announcements').get();
+    const querySnapshot = await firestore
+      .collection('announcements')
+      .orderBy('date', 'desc')
+      .limit(10)
+      .get();
     const items = [];
 
     querySnapshot.forEach(doc => {
