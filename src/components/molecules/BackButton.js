@@ -26,7 +26,7 @@ const BackButton = () => {
       return;
     }
 
-    if (historyCount > 1) {
+    if (historyCount > 2) {
       history.goBack();
     } else {
       history.push('/');
