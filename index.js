@@ -82,7 +82,7 @@ app.get('*', async (req, res) => {
     const response = await fetch(
       `${process.env.RENDERTRON_ENDPOINT}/render/${generateUrl(
         req
-      )}?mobile=true`
+      )}?mobile=true&width=365&height=812`
     );
     const body = await response.text();
 
