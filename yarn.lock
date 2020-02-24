@@ -1385,21 +1385,19 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@material-ui/core@^4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.9.0.tgz#96ca3281ee06216d44fd4d0e306dbe0429eb2ebe"
-  integrity sha512-zrrr8mPU5DDBYaVil4uJYauW41PjSn5otn7cqGsmWOY0t90fypr9nNgM7rRJaPz2AP6oRSDx1kBQt2igf5uelg==
+"@material-ui/core@^4.9.4":
+  version "4.9.4"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.9.4.tgz#796515b12845dc6ea7e21872888cfc4c0c1c1efe"
+  integrity sha512-1wqm3jBC8mGpVHu0wVOYBX7LUzkPsWxkkTtKSn0Hz66T6TDJkke72mkSIL7akNdjnxy+bRc2Vi6NiJ4YutkDcw==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@material-ui/styles" "^4.9.0"
-    "@material-ui/system" "^4.7.1"
+    "@material-ui/system" "^4.9.3"
     "@material-ui/types" "^5.0.0"
     "@material-ui/utils" "^4.7.1"
     "@types/react-transition-group" "^4.2.0"
     clsx "^1.0.2"
-    convert-css-length "^2.0.1"
-    hoist-non-react-statics "^3.2.1"
-    normalize-scroll-left "^0.2.0"
+    hoist-non-react-statics "^3.3.2"
     popper.js "^1.14.1"
     prop-types "^15.7.2"
     react-is "^16.8.0"
@@ -1445,10 +1443,10 @@
     jss-plugin-vendor-prefixer "^10.0.3"
     prop-types "^15.7.2"
 
-"@material-ui/system@^4.7.1":
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.7.1.tgz#d928dacc0eeae6bea569ff3ee079f409efb3517d"
-  integrity sha512-zH02p+FOimXLSKOW/OT2laYkl9bB3dD1AvnZqsHYoseUaq0aVrpbl2BGjQi+vJ5lg8w73uYlt9zOWzb3+1UdMQ==
+"@material-ui/system@^4.9.3":
+  version "4.9.3"
+  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.9.3.tgz#ee48990d7941237fdaf21b7b399981d614bb0875"
+  integrity sha512-DBGsTKYrLlFpHG8BUp0X6ZpvaOzef+GhSwn/8DwVTXUdHitphaPQoL9xucrI8X9MTBo//El+7nylko7lo7eJIw==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@material-ui/utils" "^4.7.1"
@@ -3128,11 +3126,6 @@ content-type@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity "sha1-4TjMdeBAxyexlm/l5fjJruJW/js= sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA=="
-
-convert-css-length@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/convert-css-length/-/convert-css-length-2.0.1.tgz#90a76bde5bfd24d72881a5b45d02249b2c1d257c"
-  integrity "sha1-kKdr3lv9JNcogaW0XQIkmywdJXw= sha512-iGpbcvhLPRKUbBc0Quxx7w/bV14AC3ItuBEGMahA5WTYqB8lq9jH0kTXFheCBASsYnqeMFZhiTruNxr1N59Axg=="
 
 convert-source-map@^1.1.0, convert-source-map@^1.4.0, convert-source-map@^1.7.0:
   version "1.7.0"
@@ -5196,10 +5189,10 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^3.2.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#101685d3aff3b23ea213163f6e8e12f4f111e19f"
-  integrity "sha1-EBaF06/zsj6iExY/bo4S9PER4Z8= sha512-wbg3bpgA/ZqWrZuMOeJi8+SKMhr7X9TesL/rXMjTzh0p0JUBo3II8DHboYbuIXWRlttrUFxwcu/5kygrCw8fJw=="
+hoist-non-react-statics@^3.2.1, hoist-non-react-statics@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
+  integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   dependencies:
     react-is "^16.7.0"
 
@@ -7447,11 +7440,6 @@ normalize-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity "sha1-Dc1p/yOhybEf0JeDFmRKA4ghamU= sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="
-
-normalize-scroll-left@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/normalize-scroll-left/-/normalize-scroll-left-0.2.0.tgz#9445d74275f303cc661e113329aefa492f58114c"
-  integrity "sha1-lEXXQnXzA8xmHhEzKa76SS9YEUw= sha512-t5oCENZJl8TGusJKoCJm7+asaSsPuNmK6+iEjrZ5TyBj2f02brCRsd4c83hwtu+e5d4LCSBZ0uoDlMjBo+A8yA=="
 
 normalize-url@2.0.1:
   version "2.0.1"
