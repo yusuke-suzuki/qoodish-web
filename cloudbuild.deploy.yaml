@@ -6,7 +6,7 @@ steps:
       - -c
       - |
         gcloud beta secrets versions access latest --secret=DOTENV_WEB > .env
-  - name: node:13.7.0-alpine
+  - name: node:13.10.1-alpine3.11
     entrypoint: sh
     args:
       - -c
