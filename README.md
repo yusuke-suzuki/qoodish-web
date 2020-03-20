@@ -1,27 +1,15 @@
 # Qoodish Web
 
-Qoodish web application.
-
-## Set credentials for development (Admin)
-
-```
-gcloud config set project <GCP project ID>
-
-# Create keyring & key
-gcloud kms keyrings create qoodish --location=global
-gcloud kms keys create qoodish --location=global --keyring=qoodish --purpose=encryption
-
-# Encrypt secrets
-gcloud kms encrypt --plaintext-file=.env.development --ciphertext-file=.env.development.enc --location=global --keyring=qoodish --key=qoodish
-```
+Qoodish Web app.
 
 ## Set up development environment
 
-```
-gcloud config set project <GCP project ID>
+1. Install [yarn](https://classic.yarnpkg.com/ja/docs/install/#mac-stable)
+2. Install [gcloud](https://cloud.google.com/sdk/docs?hl=ja)
+3. Get secrets from Secret Manager
 
-# Decrypt secrets
-gcloud kms decrypt --ciphertext-file=.env.development.enc --plaintext-file=.env --location=global --keyring=qoodish --key=qoodish
+```
+gcloud beta secrets versions access latest --secret=DOTENV_WEB > .env
 ```
 
 ## Build JavaScripts
@@ -37,12 +25,12 @@ yarn watch:build
 
 ## Start app
 
-```
+```sh
 yarn serve
 ```
 
 ## Test
 
-```
+```sh
 yarn jest
 ```
