@@ -5,7 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import IconButton from '@material-ui/core/IconButton';
+import Fab from '@material-ui/core/Fab';
 import CardMedia from '@material-ui/core/CardMedia';
 import SwipeableViews from 'react-swipeable-views';
 import ButtonBase from '@material-ui/core/ButtonBase';
@@ -61,13 +61,14 @@ const ReviewImageStepper = props => {
     <div>
       <CardMedia style={styles.cardMedia}>
         {large && maxSteps > 1 && (
-          <IconButton
+          <Fab
+            size="small"
             onClick={() => setActiveStep(activeStep - 1)}
             disabled={activeStep === 0}
             style={styles.stepButtonLeft}
           >
             <KeyboardArrowLeft style={styles.icon} fontSize="large" />
-          </IconButton>
+          </Fab>
         )}
         <SwipeableViews
           index={activeStep}
@@ -85,13 +86,14 @@ const ReviewImageStepper = props => {
           ))}
         </SwipeableViews>
         {large && maxSteps > 1 && (
-          <IconButton
+          <Fab
+            size="small"
             onClick={() => setActiveStep(activeStep + 1)}
             disabled={activeStep === maxSteps - 1}
             style={styles.stepButtonRight}
           >
             <KeyboardArrowRight style={styles.icon} fontSize="large" />
-          </IconButton>
+          </Fab>
         )}
       </CardMedia>
       <MobileStepper

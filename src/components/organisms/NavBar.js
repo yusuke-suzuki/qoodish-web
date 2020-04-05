@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useMappedState } from 'redux-react-hook';
 
 import NavDrawer from '../molecules/NavDrawer';
@@ -29,6 +29,8 @@ const routesShowBackButton = [
 ];
 
 const NavBar = () => {
+  const [showMapToolbar, setShowMapToolbar] = useState(false);
+
   const mapState = useCallback(
     state => ({
       currentLocation: state.shared.currentLocation
@@ -38,12 +40,15 @@ const NavBar = () => {
 
   const { currentLocation } = useMappedState(mapState);
 
-  const isMapDetail = useMemo(() => {
+  useEffect(() => {
     if (isModalLocation(currentLocation)) {
-      return false;
+      return;
     }
-
-    return match('/maps/:mapId')(currentLocation.pathname);
+    if (match('/maps/:mapId')(currentLocation.pathname)) {
+      setShowMapToolbar(true);
+    } else {
+      setShowMapToolbar(false);
+    }
   }, [currentLocation]);
 
   const showBackButton = useMemo(() => {
@@ -59,7 +64,7 @@ const NavBar = () => {
   return (
     <div>
       <AppBar position="fixed">
-        {isMapDetail ? (
+        {showMapToolbar ? (
           <MapToolbar />
         ) : (
           <NavToolbar showBackButton={showBackButton} />

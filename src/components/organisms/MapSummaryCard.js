@@ -202,6 +202,9 @@ const MapSummaryCard = () => {
   const dispatch = useDispatch();
 
   const handleBaseClick = useCallback(() => {
+    if (!currentMap.base.name) {
+      return;
+    }
     dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
   });
 
@@ -269,8 +272,9 @@ const MapSummaryCard = () => {
             </Avatar>
           }
           label={
-            currentMap &&
-            (currentMap.base.name ? currentMap.base.name : I18n.t('not set'))
+            currentMap && currentMap.base.name
+              ? currentMap.base.name
+              : I18n.t('not set')
           }
           style={styles.chip}
           clickable
@@ -282,7 +286,9 @@ const MapSummaryCard = () => {
         </Typography>
         {currentMap ? (
           <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {parseDate(currentMap.last_reported_at)}
+            {currentMap.last_reported_at
+              ? parseDate(currentMap.last_reported_at)
+              : '-'}
           </Typography>
         ) : (
           <Skeleton height={28} width="40%" />
