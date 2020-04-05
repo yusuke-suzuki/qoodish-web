@@ -44,6 +44,7 @@ const plugins = [
     'LP_CAROUSEL_1',
     'LP_IMAGE_1',
     'LP_IMAGE_2',
+    'NO_IMAGE',
     'GA_TRACKING_ID',
     'GOOGLE_MAP_API_KEY',
     'GOOGLE_STATIC_MAP_URL',

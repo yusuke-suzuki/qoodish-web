@@ -1,11 +1,7 @@
 import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import PlaceIcon from '@material-ui/icons/Place';
 
 import { Link } from '@yusuke-suzuki/rize-router';
 import { ButtonBase } from '@material-ui/core';
-import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
   reviewTile: {
@@ -15,31 +11,11 @@ const styles = {
   },
   reviewImage: {
     width: '100%'
-  },
-  placeIconLarge: {
-    fontSize: 64,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translateY(-50%) translateX(-50%)'
-  },
-  placeIconSmall: {
-    fontSize: 36,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translateY(-50%) translateX(-50%)'
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    textAlign: 'center'
   }
 };
 
 const ReviewImageTile = props => {
   const { review } = props;
-  const large = useMediaQuery('(min-width: 600px)');
 
   return (
     <ButtonBase
@@ -52,21 +28,16 @@ const ReviewImageTile = props => {
       }}
       title={review.spot.name}
     >
-      {review.images.length > 0 ? (
-        <img
-          src={review.images[0].thumbnail_url_400}
-          alt={review.spot.name}
-          loading="lazy"
-          style={styles.reviewImage}
-        />
-      ) : (
-        <Skeleton variant="rect" style={styles.skeleton} animation={false}>
-          <PlaceIcon
-            style={large ? styles.placeIconLarge : styles.placeIconSmall}
-            color="disabled"
-          />
-        </Skeleton>
-      )}
+      <img
+        src={
+          review.images.length > 0
+            ? review.images[0].thumbnail_url_400
+            : process.env.NO_IMAGE
+        }
+        alt={review.spot.name}
+        loading="lazy"
+        style={styles.reviewImage}
+      />
     </ButtonBase>
   );
 };
