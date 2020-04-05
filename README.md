@@ -8,13 +8,13 @@ Qoodish Web app.
 2. Install [gcloud](https://cloud.google.com/sdk/docs?hl=ja)
 3. Get secrets from Secret Manager
 
-```
+```sh
 gcloud beta secrets versions access latest --secret=DOTENV_WEB > .env
 ```
 
 ## Build JavaScripts
 
-```
+```sh
 # Install dependencies
 yarn
 
@@ -32,5 +32,5 @@ yarn serve
 ## Test
 
 ```sh
-yarn jest
+yarn test
 ```

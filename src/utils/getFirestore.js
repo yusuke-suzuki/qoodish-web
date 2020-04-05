@@ -1,7 +1,5 @@
 const getFirestore = () => {
-  return import(
-    /* webpackChunkName: "firestore" */ '@firebase/firestore/dist/index.cjs.min'
-  );
+  return import(/* webpackChunkName: "firestore" */ '@firebase/firestore');
 };
 
 export default getFirestore;
