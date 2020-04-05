@@ -9,7 +9,8 @@
     "serve": "node --require dotenv/config index.js",
     "build": "webpack --colors --progress --mode development",
     "watch:build": "webpack --watch --colors --progress --mode development",
-    "build:prod": "webpack --colors --mode production"
+    "build:prod": "webpack --colors --mode production",
+    "test": "node --require dotenv/config playwright.js"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.7",
@@ -60,6 +61,7 @@
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^6.0.0",
+    "playwright": "^0.12.1",
     "prettier": "^1.19.1",
     "style-loader": "^1.1.3",
     "webpack": "^4.42.0",
