@@ -10,6 +10,7 @@ import closeCreateMapDialog from '../../actions/closeCreateMapDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import uploadToStorage from '../../utils/uploadToStorage';
 
 import I18n from '../../utils/I18n';
 import { MapsApi, NewMap } from '@yusuke-suzuki/qoodish-api-js-client';
@@ -33,6 +34,16 @@ const CreateMapDialog = () => {
 
   const handleSaveButtonClick = useCallback(async (params, _mapId) => {
     dispatch(requestStart());
+
+    if (params.image_url) {
+      const uploadResponse = await uploadToStorage(
+        params.image_url,
+        'maps',
+        'data_url'
+      );
+      params.image_url = uploadResponse.imageUrl;
+    }
+
     const apiInstance = new MapsApi();
     const newMap = NewMap.constructFromObject(params);
 

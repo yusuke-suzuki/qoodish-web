@@ -104,6 +104,7 @@ const EditProfileDialog = () => {
     setErrorName(undefined);
     setErrorBio(undefined);
     setDisabled(true);
+    setEditImage(false);
   });
 
   const handleNameChange = useCallback(inputName => {

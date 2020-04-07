@@ -12,6 +12,8 @@ import requestFinish from '../../actions/requestFinish';
 import I18n from '../../utils/I18n';
 import { MapsApi, NewMap } from '@yusuke-suzuki/qoodish-api-js-client';
 
+import uploadToStorage from '../../utils/uploadToStorage';
+
 const EditMapDialog = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
@@ -30,6 +32,16 @@ const EditMapDialog = () => {
 
   const handleSaveButtonClick = useCallback(async (params, mapId) => {
     dispatch(requestStart());
+
+    if (params.image_url) {
+      const uploadResponse = await uploadToStorage(
+        params.image_url,
+        'maps',
+        'data_url'
+      );
+      params.image_url = uploadResponse.imageUrl;
+    }
+
     const apiInstance = new MapsApi();
     const newMap = NewMap.constructFromObject(params);
 
