@@ -17,7 +17,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.46",
     "@material-ui/styles": "^4.9.6",
-    "@yusuke-suzuki/qoodish-api-js-client": "^0.2.1",
+    "@yusuke-suzuki/qoodish-api-js-client": "^0.2.2",
     "@yusuke-suzuki/rize-router": "^0.1.2",
     "blueimp-canvas-to-blob": "^3.17.0",
     "blueimp-load-image": "^2.26.0",

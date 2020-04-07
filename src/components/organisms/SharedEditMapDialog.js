@@ -20,8 +20,12 @@ import LockIcon from '@material-ui/icons/Lock';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import GroupIcon from '@material-ui/icons/Group';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import I18n from '../../utils/I18n';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import IconButton from '@material-ui/core/IconButton';
+import CardMedia from '@material-ui/core/CardMedia';
+import Skeleton from '@material-ui/lab/Skeleton';
 
+import I18n from '../../utils/I18n';
 import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
 
@@ -49,6 +53,22 @@ const styles = {
     overflow: 'hidden',
     maxWidth: 'calc(100vw - 100px)',
     textOverflow: 'ellipsis'
+  },
+  thumbnailContainer: {
+    marginBottom: 20,
+    position: 'relative'
+  },
+  thumbnail: {
+    width: 80,
+    height: 80
+  },
+  imageInput: {
+    display: 'none'
+  },
+  editImageButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16
   }
 };
 
@@ -58,6 +78,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SharedEditMapDialog = props => {
   const [mapId, setMapId] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [privateMap, setPrivateMap] = useState(false);
@@ -66,6 +87,7 @@ const SharedEditMapDialog = props => {
   const [errorMapName, setErrorMapName] = useState(undefined);
   const [errorDescription, setErrorDescription] = useState(undefined);
   const [disabled, setDisabled] = useState(undefined);
+  const [editImage, setEditImage] = useState(false);
 
   useEffect(() => {
     if (name && description && !errorMapName && !errorDescription) {
@@ -81,7 +103,9 @@ const SharedEditMapDialog = props => {
 
   const setCurrentMap = useCallback(() => {
     if (props.currentMap) {
+      console.log(props.currentMap);
       setMapId(props.currentMap.id);
+      setImageUrl(props.currentMap.thumbnail_url);
       setName(props.currentMap.name);
       setDescription(props.currentMap.description);
       setPrivateMap(props.currentMap.private);
@@ -93,6 +117,7 @@ const SharedEditMapDialog = props => {
 
   const clearState = useCallback(() => {
     setMapId('');
+    setImageUrl('');
     setName('');
     setDescription('');
     setPrivateMap(false);
@@ -101,6 +126,7 @@ const SharedEditMapDialog = props => {
     setErrorMapName(undefined);
     setErrorDescription(undefined);
     setDisabled(true);
+    setEditImage(false);
   });
 
   const handleMapNameChange = useCallback(input => {
@@ -151,11 +177,36 @@ const SharedEditMapDialog = props => {
       invitable: invitable,
       shared: shared
     };
+
+    if (editImage) {
+      params.image_url = imageUrl;
+    }
+
     props.handleSaveButtonClick(params, mapId);
   });
 
   const handleMapBaseClick = useCallback(() => {
     dispatch(openBaseSelectDialog());
+  });
+
+  const handleAddImageClick = useCallback(() => {
+    document.getElementById('image-input').click();
+  });
+
+  const handleImageChange = useCallback(e => {
+    let reader = new FileReader();
+    let file = e.target.files[0];
+    if (!file.type.match(/image\/*/)) {
+      return;
+    }
+
+    reader.onloadend = () => {
+      let dataUrl = reader.result;
+      setEditImage(true);
+      setImageUrl(dataUrl);
+    };
+
+    reader.readAsDataURL(file);
   });
 
   return (
@@ -196,6 +247,30 @@ const SharedEditMapDialog = props => {
       <DialogContent
         style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
+        <div style={styles.thumbnailContainer}>
+          {imageUrl ? (
+            <CardMedia style={styles.thumbnail} image={imageUrl} />
+          ) : (
+            <Skeleton
+              style={styles.thumbnail}
+              variant="rect"
+              animation={false}
+            />
+          )}
+          <IconButton
+            onClick={handleAddImageClick}
+            style={styles.editImageButton}
+          >
+            <PhotoCameraIcon />
+          </IconButton>
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          id="image-input"
+          onChange={handleImageChange}
+          style={styles.imageInput}
+        />
         <TextField
           label={I18n.t('map name')}
           onChange={e => handleMapNameChange(e.target.value)}
