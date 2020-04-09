@@ -21,10 +21,11 @@ import requestFinish from '../../actions/requestFinish';
 import { UsersApi, NewUser } from '@yusuke-suzuki/qoodish-api-js-client';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
 
-const LoginButtons = () => {
+const LoginButtons = props => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const { nextPath } = props;
   const [firebaseAuth, setFirebaseAuth] = useState(undefined);
   const [uiConfig, setUiConfig] = useState(undefined);
 
@@ -72,7 +73,11 @@ const LoginButtons = () => {
         isAnonymous: true
       };
       dispatch(signIn(user));
-      history.push('');
+
+      if (nextPath) {
+        history.push(nextPath);
+      }
+
       gtag('event', 'login', {
         method: 'anonymous'
       });
@@ -105,7 +110,10 @@ const LoginButtons = () => {
       dispatch(requestFinish());
 
       if (response.ok) {
-        history.push('');
+        if (nextPath) {
+          history.push(nextPath);
+        }
+
         dispatch(openToast(I18n.t('sign in success')));
         gtag('event', 'login', {
           method: authResult.additionalUserInfo.providerId
