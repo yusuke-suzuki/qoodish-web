@@ -103,7 +103,6 @@ const SharedEditMapDialog = props => {
 
   const setCurrentMap = useCallback(() => {
     if (props.currentMap) {
-      console.log(props.currentMap);
       setMapId(props.currentMap.id);
       setImageUrl(props.currentMap.thumbnail_url);
       setName(props.currentMap.name);
