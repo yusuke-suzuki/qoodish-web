@@ -154,6 +154,7 @@ const MapButtons = React.memo(props => {
       <React.Suspense fallback={null}>
         <CreateResourceButton
           buttonForMap
+          defaultCreateReview
           disabled={
             !(currentMap && currentMap.postable && currentMap.following)
           }

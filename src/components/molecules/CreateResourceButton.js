@@ -6,6 +6,7 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import openCreateActions from '../../actions/openCreateActions';
+import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 
 const styles = {
   buttonLarge: {
@@ -68,6 +69,8 @@ const CreateResourceButton = props => {
   const handleButtonClick = useCallback(() => {
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
+    } else if (props.defaultCreateReview) {
+      dispatch(openPlaceSelectDialog());
     } else {
       dispatch(openCreateActions());
     }
