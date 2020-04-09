@@ -138,7 +138,7 @@ const Login = () => {
                     <span>{I18n.t('where are you going next')}</span>
                   </Typography>
                   <div style={styles.firebaseContainer}>
-                    <LoginButtons />
+                    <LoginButtons nextPath="/" />
                   </div>
                 </div>
               }
