@@ -19,6 +19,7 @@ import requestMapCenter from '../../actions/requestMapCenter';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
+import openFollowersDialog from '../../actions/openFollowersDialog';
 import Skeleton from '@material-ui/lab/Skeleton';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
@@ -42,7 +43,6 @@ const styles = {
     marginBottom: 16,
     marginRight: -10.66666667,
     borderColor: '#fff',
-    backgroundColor: '#fff',
     borderRadius: '50%',
     borderStyle: 'solid',
     float: 'right',
@@ -101,24 +101,26 @@ const MapLikes = React.memo(() => {
 });
 
 const Followers = React.memo(() => {
+  const dispatch = useDispatch();
+
   const followers = useMappedState(
     useCallback(state => state.mapSummary.followers, [])
   );
 
-  return followers.slice(0, 9).map(follower => (
-    <ButtonBase
-      key={follower.id}
-      component={Link}
-      to={`/users/${follower.id}`}
-      title={follower.name}
-    >
+  const handleFollowersClick = useCallback(() => {
+    dispatch(openFollowersDialog());
+  });
+
+  return followers
+    .slice(0, 9)
+    .map(follower => (
       <Avatar
         src={follower.profile_image_url}
         alt={follower.name}
         style={styles.followerAvatar}
+        onClick={handleFollowersClick}
       />
-    </ButtonBase>
-  ));
+    ));
 });
 
 const parseDate = date => {

@@ -9,6 +9,8 @@ import {
   SEARCH_MAPS,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
+  OPEN_FOLLOWERS_DIALOG,
+  CLOSE_FOLLOWERS_DIALOG,
   FETCH_LIKES,
   FETCH_NOTIFICATIONS,
   READ_NOTIFICATION,
@@ -44,6 +46,7 @@ const initialState = {
   pickedPlaces: [],
   likes: [],
   likesDialogOpen: false,
+  followersDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
   signInRequiredDialogOpen: false,
@@ -123,6 +126,14 @@ const reducer = (state = initialState, action) => {
     case CLOSE_LIKES_DIALOG:
       return Object.assign({}, state, {
         likesDialogOpen: false
+      });
+    case OPEN_FOLLOWERS_DIALOG:
+      return Object.assign({}, state, {
+        followersDialogOpen: true
+      });
+    case CLOSE_FOLLOWERS_DIALOG:
+      return Object.assign({}, state, {
+        followersDialogOpen: false
       });
     case FETCH_LIKES:
       return Object.assign({}, state, {
@@ -230,6 +241,7 @@ const reducer = (state = initialState, action) => {
         historyCount: historyCount,
         issueDialogOpen: false,
         likesDialogOpen: false,
+        followersDialogOpen: false,
         signInRequiredDialogOpen: false,
         feedbackDialogOpen: false,
         announcementDialogOpen: false,
