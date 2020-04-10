@@ -12,6 +12,11 @@ const IssueDialog = React.lazy(() =>
 const LikesDialog = React.lazy(() =>
   import(/* webpackChunkName: "likes_dialog" */ './organisms/LikesDialog')
 );
+const FollowersDialog = React.lazy(() =>
+  import(
+    /* webpackChunkName: "followers_dialog" */ './organisms/FollowersDialog'
+  )
+);
 const CopyReviewDialog = React.lazy(() =>
   import(
     /* webpackChunkName: "copy_reviews_dialog" */ './organisms/CopyReviewDialog'
@@ -106,6 +111,7 @@ const SharedDialogs = () => {
       <SignInRequiredDialog />
       <IssueDialog />
       <LikesDialog />
+      <FollowersDialog />
       <CopyReviewDialog />
       <PlaceSelectDialog />
       <BaseSelectDialog />
