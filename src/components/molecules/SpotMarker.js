@@ -18,7 +18,7 @@ const SpotMarker = React.memo(props => {
     return (
       <Tooltip title={spot.name}>
         <Fab style={styles.overlayButton} onClick={props.onClick}>
-          <Badge badgeContent={spot.reviews.length} color="primary">
+          <Badge badgeContent={spot.reviews_count} color="primary">
             <Avatar src={spot.thumbnail_url} alt={spot.name} loading="lazy" />
           </Badge>
         </Fab>
@@ -27,7 +27,7 @@ const SpotMarker = React.memo(props => {
   } else {
     return (
       <Fab style={styles.overlayButton} onClick={props.onClick}>
-        <Badge badgeContent={spot.reviews.length} color="primary">
+        <Badge badgeContent={spot.reviews_count} color="primary">
           <Avatar src={spot.thumbnail_url} alt={spot.name} loading="lazy" />
         </Badge>
       </Fab>

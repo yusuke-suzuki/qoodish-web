@@ -21,6 +21,9 @@ import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
 import { Link } from '@yusuke-suzuki/rize-router';
 import CreateReviewTile from '../molecules/CreateReviewTile';
+import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
+import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
+import clearMapSpotState from '../../actions/clearMapSpotState';
 
 const styles = {
   drawerPaperLarge: {
@@ -79,7 +82,7 @@ const styles = {
   }
 };
 
-const SpotCardHeader = props => {
+const SpotCardHeader = React.memo(props => {
   const { currentSpot } = props;
 
   return (
@@ -90,7 +93,7 @@ const SpotCardHeader = props => {
         style={styles.listItem}
         component={Link}
         to={{
-          pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+          pathname: `/spots/${currentSpot.place_id}`,
           state: { modal: true, spot: currentSpot }
         }}
       >
@@ -98,12 +101,12 @@ const SpotCardHeader = props => {
           disableTypography
           primary={
             <Typography variant="h6" noWrap>
-              {currentSpot && currentSpot.name}
+              {currentSpot.name}
             </Typography>
           }
           secondary={
             <Typography component="p" noWrap color="textSecondary">
-              {currentSpot && props.currentSpot.formatted_address}
+              {currentSpot.formatted_address}
             </Typography>
           }
         />
@@ -111,7 +114,7 @@ const SpotCardHeader = props => {
           <IconButton
             component={Link}
             to={{
-              pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+              pathname: `/spots/${currentSpot.place_id}`,
               state: { modal: true, spot: currentSpot }
             }}
             style={styles.infoButton}
@@ -122,9 +125,9 @@ const SpotCardHeader = props => {
       </ListItem>
     </List>
   );
-};
+});
 
-const SpotCardContent = () => {
+const SpotCardContent = React.memo(() => {
   const smUp = useMediaQuery('(min-width: 600px)');
   const mapState = useCallback(
     state => ({
@@ -190,7 +193,7 @@ const SpotCardContent = () => {
       </CardContent>
     </div>
   );
-};
+});
 
 const MapSpotDrawer = () => {
   const dispatch = useDispatch();
@@ -223,6 +226,30 @@ const MapSpotDrawer = () => {
     dispatch(closeSpotCard());
   });
 
+  const initSpotReviews = useCallback(async () => {
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdSpotsPlaceIdReviewsGet(
+      currentSpot.map_id,
+      currentSpot.place_id,
+      (error, data, response) => {
+        if (response.ok) {
+          dispatch(fetchMapSpotReviews(response.body));
+        }
+      }
+    );
+  });
+
+  const clearSpot = useCallback(() => {
+    dispatch(clearMapSpotState());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (currentSpot.place_id) {
+      initSpotReviews();
+    }
+  }, [currentSpot.place_id]);
+
   useEffect(() => {
     if (spotReviews.length < 1) {
       handleClose();
@@ -241,6 +268,7 @@ const MapSpotDrawer = () => {
       }}
       onOpen={handleOpen}
       onClose={handleClose}
+      onExited={clearSpot}
       disableSwipeToOpen
       disableBackdropTransition
       ModalProps={{
@@ -251,7 +279,7 @@ const MapSpotDrawer = () => {
         }
       }}
     >
-      {currentSpot && <SpotCardContent />}
+      <SpotCardContent />
     </SwipeableDrawer>
   );
 };

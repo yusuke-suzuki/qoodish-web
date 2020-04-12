@@ -1,9 +1,10 @@
 import {
-  SELECT_SPOT,
+  SELECT_MAP_SPOT,
+  FETCH_MAP_SPOT_REVIEWS,
   OPEN_SPOT_CARD,
   CLOSE_SPOT_CARD,
   CLEAR_MAP_STATE,
-  CLEAR_SPOT_STATE,
+  CLEAR_MAP_SPOT_STATE,
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW
@@ -11,20 +12,19 @@ import {
 
 const initialState = {
   spotCardOpen: false,
-  currentSpot: undefined,
+  currentSpot: {},
   spotReviews: []
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SELECT_SPOT:
-      let reviews = [];
-      if (action.payload.spot.reviews) {
-        reviews = action.payload.spot.reviews;
-      }
+    case SELECT_MAP_SPOT:
       return Object.assign({}, state, {
-        currentSpot: action.payload.spot,
-        spotReviews: [...reviews]
+        currentSpot: action.payload.spot
+      });
+    case FETCH_MAP_SPOT_REVIEWS:
+      return Object.assign({}, state, {
+        spotReviews: action.payload.reviews
       });
     case OPEN_SPOT_CARD:
       return Object.assign({}, state, {
@@ -78,10 +78,10 @@ const reducer = (state = initialState, action) => {
         })
       });
     case CLEAR_MAP_STATE:
-    case CLEAR_SPOT_STATE:
+    case CLEAR_MAP_SPOT_STATE:
       return Object.assign({}, state, {
         spotCardOpen: false,
-        currentSpot: undefined,
+        currentSpot: {},
         spotReviews: []
       });
     default:

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 import {
   CardContent,
   Typography,
@@ -13,6 +13,8 @@ import I18n from '../../utils/I18n';
 import { Link } from '@yusuke-suzuki/rize-router';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import GoogleMapsLink from './GoogleMapsLink';
+import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
+import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 
 const styles = {
   root: {
@@ -52,6 +54,27 @@ const SpotInfoWindow = () => {
   );
   const { currentSpot, spotReviews, currentMap } = useMappedState(mapState);
 
+  const initSpotReviews = useCallback(async () => {
+    const apiInstance = new ReviewsApi();
+
+    apiInstance.mapsMapIdSpotsPlaceIdReviewsGet(
+      currentSpot.map_id,
+      currentSpot.place_id,
+      (error, data, response) => {
+        if (response.ok) {
+          console.log(response.body);
+          dispatch(fetchMapSpotReviews(response.body));
+        }
+      }
+    );
+  });
+
+  useEffect(() => {
+    if (currentSpot.place_id) {
+      initSpotReviews();
+    }
+  }, [currentSpot.place_id]);
+
   const handleCreateReviewClick = useCallback(() => {
     const place = {
       description: currentSpot.name,
@@ -73,16 +96,16 @@ const SpotInfoWindow = () => {
         <ButtonBase
           component={Link}
           to={{
-            pathname: currentSpot ? `/spots/${currentSpot.place_id}` : '',
+            pathname: `/spots/${currentSpot.place_id}`,
             state: { modal: true, spot: currentSpot }
           }}
         >
           <Typography variant="h6" gutterBottom>
-            {currentSpot && currentSpot.name}
+            {currentSpot.name}
           </Typography>
         </ButtonBase>
         <Typography variant="subtitle2" color="textSecondary" gutterBottom>
-          {currentSpot && currentSpot.formatted_address}
+          {currentSpot.formatted_address}
         </Typography>
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {`${spotReviews.length} ${I18n.t('reviews count')}`}
