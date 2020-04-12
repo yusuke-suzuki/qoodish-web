@@ -5,7 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import loadGoogleMapsApi from 'load-google-maps-api';
 
 import openSpotCard from '../../actions/openSpotCard';
-import selectSpot from '../../actions/selectSpot';
+import selectMapSpot from '../../actions/selectMapSpot';
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
 import requestMapCenter from '../../actions/requestMapCenter';
 
@@ -28,6 +28,7 @@ import SpotInfoWindow from '../molecules/SpotInfoWindow';
 import { ThemeProvider } from '@material-ui/styles';
 import useTheme from '@material-ui/styles/useTheme';
 import sleep from '../../utils/sleep';
+import clearMapSpotState from '../../actions/clearMapSpotState';
 
 const styles = {
   mapWrapperLarge: {
@@ -202,7 +203,7 @@ const GMap = () => {
   }, [currentMap]);
 
   const onSpotMarkerClick = useCallback(async (e, spot) => {
-    dispatch(selectSpot(spot));
+    dispatch(selectMapSpot(spot));
 
     if (mdUp) {
       setAnchorEl(e.currentTarget);
@@ -211,6 +212,10 @@ const GMap = () => {
       dispatch(openSpotCard());
     }
   });
+
+  const clearSpot = useCallback(() => {
+    dispatch(clearMapSpotState());
+  }, [dispatch]);
 
   return (
     <div
@@ -228,6 +233,7 @@ const GMap = () => {
         anchorEl={anchorEl}
         open={windowOpen}
         onClose={() => setWindowOpen(false)}
+        onExited={clearSpot}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'left'

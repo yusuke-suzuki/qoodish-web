@@ -9,7 +9,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import openToast from '../../actions/openToast';
 import requestMapCenter from '../../actions/requestMapCenter';
-import selectSpot from '../../actions/selectSpot';
+import selectMapSpot from '../../actions/selectMapSpot';
 import closeEditReviewDialog from '../../actions/closeEditReviewDialog';
 
 import uploadToStorage from '../../utils/uploadToStorage';
@@ -86,7 +86,7 @@ const SaveReviewButton = props => {
           const review = response.body;
           dispatch(createReview(review));
           dispatch(requestMapCenter(review.spot.lat, review.spot.lng));
-          dispatch(selectSpot(review.spot));
+          dispatch(selectMapSpot(review.spot));
         } else {
           dispatch(openToast(response.body.detail));
         }
