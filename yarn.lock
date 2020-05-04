@@ -1951,10 +1951,10 @@ bluebird@^3.5.5:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-blueimp-canvas-to-blob@^3.17.0:
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/blueimp-canvas-to-blob/-/blueimp-canvas-to-blob-3.17.0.tgz#d796e72aa1fd37f9471e0396e64d323956564a23"
-  integrity sha512-LcuVZZtKtE4yUrLb0IQA7ndMm19gooDTrzvjjkvmQ1MhkFlSzTw+8Ftp+/ckfGeP2UDQvDsPyy8mIT69itAqbg==
+blueimp-canvas-to-blob@^3.24.0:
+  version "3.24.0"
+  resolved "https://registry.yarnpkg.com/blueimp-canvas-to-blob/-/blueimp-canvas-to-blob-3.24.0.tgz#db4e58dcbe27d72a5a71a802263b7f2b647d1a1f"
+  integrity sha512-HnHPjn/3QOqQpKCrd+2FVZaUXKygz3alozRdA2E8DGSjngQujM7QPXhowqc3BajJr2OT+tJSs1L4LPL1OyXhSw==
 
 blueimp-load-image@^2.26.0:
   version "2.26.0"
