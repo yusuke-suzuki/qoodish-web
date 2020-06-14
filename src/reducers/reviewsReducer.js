@@ -64,7 +64,7 @@ const reducer = (state = initialState, action) => {
         targetReview: action.payload.review,
         editReviewDialogOpen: true,
         selectedPlace: {
-          placeId: action.payload.review.place_id,
+          placeId: action.payload.review.spot.place_id,
           description: action.payload.review.spot.name
         }
       });

@@ -62,7 +62,6 @@ const SpotInfoWindow = () => {
       currentSpot.place_id,
       (error, data, response) => {
         if (response.ok) {
-          console.log(response.body);
           dispatch(fetchMapSpotReviews(response.body));
         }
       }
@@ -85,7 +84,7 @@ const SpotInfoWindow = () => {
 
   const reviewAlreadyExists = useMemo(() => {
     return spotReviews.some(review => {
-      return review.place_id === currentSpot.place_id && review.editable;
+      return review.spot.place_id === currentSpot.place_id && review.editable;
     });
   }, [spotReviews]);
 

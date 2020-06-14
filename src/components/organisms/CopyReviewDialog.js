@@ -70,7 +70,7 @@ const CopyReviewDialog = () => {
     dispatch(requestStart());
     const params = {
       comment: review.comment,
-      place_id: review.place_id
+      place_id: review.spot.place_id
     };
 
     if (review.image) {
