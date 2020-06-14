@@ -38,7 +38,7 @@ const reducer = (state = initialState, action) => {
       if (
         state.spotReviews < 1 ||
         state.spotReviews[0].map.id !== action.payload.review.map.id ||
-        state.spotReviews[0].place_id !== action.payload.review.place_id
+        state.spotReviews[0].place_id !== action.payload.review.spot.place_id
       ) {
         return state;
       }
