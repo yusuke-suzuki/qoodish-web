@@ -33,7 +33,7 @@ import ReviewImagePreview from '../molecules/ReviewImagePreview';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 
-import uuidv1 from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 
 const styles = {
   dialogContentLarge: {},
