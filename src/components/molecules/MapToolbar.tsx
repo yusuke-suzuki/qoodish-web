@@ -66,7 +66,7 @@ const MapToolbar = () => {
 
   const handleInviteButtonClick = useCallback(() => {
     dispatch(openInviteTargetDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Toolbar style={lgUp ? styles.toolbarLarge : styles.toolbarSmall}>

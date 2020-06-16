@@ -18,11 +18,14 @@ const PlaceSelectDialog = () => {
 
   const onClose = useCallback(() => {
     dispatch(closePlaceSelectDialog());
-  });
+  }, [dispatch]);
 
-  const onPlaceSelected = useCallback(place => {
-    dispatch(selectPlaceForReview(place));
-  });
+  const onPlaceSelected = useCallback(
+    place => {
+      dispatch(selectPlaceForReview(place));
+    },
+    [dispatch]
+  );
 
   const onEntered = useCallback(async () => {
     const position = await fetchCurrentPosition();
@@ -42,7 +45,7 @@ const PlaceSelectDialog = () => {
         console.log('API called successfully. Returned data: ' + data);
       }
     });
-  });
+  }, [dispatch]);
 
   return (
     <SharedPlaceSelectDialog

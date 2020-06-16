@@ -60,6 +60,7 @@ const buttonStyle = (props, large) => {
 };
 
 const CreateResourceButton = props => {
+  const { defaultCreateReview } = props;
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
   );
@@ -69,12 +70,12 @@ const CreateResourceButton = props => {
   const handleButtonClick = useCallback(() => {
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
-    } else if (props.defaultCreateReview) {
+    } else if (defaultCreateReview) {
       dispatch(openPlaceSelectDialog());
     } else {
       dispatch(openCreateActions());
     }
-  });
+  }, [dispatch, currentUser, defaultCreateReview]);
 
   return (
     <Fab

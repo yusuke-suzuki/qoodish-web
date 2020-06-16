@@ -35,9 +35,7 @@ const styles = {
 };
 
 const issuedAt = date => {
-  return moment(date)
-    .locale(I18n.locale)
-    .format('LL');
+  return moment(date).locale(I18n.locale).format('LL');
 };
 
 const AnnouncementDialog = () => {
@@ -77,7 +75,7 @@ const AnnouncementDialog = () => {
     });
 
     setAnnouncements(items);
-  });
+  }, []);
 
   useEffect(() => {
     fetchAnnouncements();
@@ -98,7 +96,7 @@ const AnnouncementDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeAnnouncementDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>

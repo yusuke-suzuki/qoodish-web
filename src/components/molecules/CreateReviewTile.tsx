@@ -30,7 +30,7 @@ const CreateReviewTile = props => {
     } else {
       dispatch(openPlaceSelectDialog());
     }
-  });
+  }, [dispatch, currentSpot]);
 
   return (
     <div key="add-review" onClick={handleCreateReviewClick}>

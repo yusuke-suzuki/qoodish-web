@@ -23,6 +23,7 @@ const ProfileMyMaps = props => {
   );
 
   const { currentUser, myMaps, location } = useMappedState(mapState);
+  const { params } = props;
 
   const initMaps = useCallback(async () => {
     if (
@@ -34,10 +35,7 @@ const ProfileMyMaps = props => {
       return;
     }
 
-    const userId =
-      props.params && props.params.userId
-        ? props.params.userId
-        : currentUser.uid;
+    const userId = params && params.userId ? params.userId : currentUser.uid;
 
     const apiInstance = new UserMapsApi();
 
@@ -47,7 +45,7 @@ const ProfileMyMaps = props => {
         dispatch(fetchMyMaps(response.body));
       }
     });
-  });
+  }, [dispatch, params, currentUser, location]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

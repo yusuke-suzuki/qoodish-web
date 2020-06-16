@@ -31,7 +31,7 @@ const RoleButton = props => {
 
   const handleUnfollowButtonClick = useCallback(() => {
     dispatch(openLeaveMapDialog(map));
-  });
+  }, [dispatch]);
 
   const handleFollowButtonClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
@@ -70,7 +70,7 @@ const RoleButton = props => {
         console.log('API called successfully. Returned data: ' + data);
       }
     });
-  });
+  }, [dispatch, currentUser]);
 
   if (map.editable) {
     return (

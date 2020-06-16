@@ -220,11 +220,11 @@ const MapSpotDrawer = () => {
 
   const handleOpen = useCallback(() => {
     dispatch(openSpotCard());
-  });
+  }, [dispatch]);
 
   const handleClose = useCallback(() => {
     dispatch(closeSpotCard());
-  });
+  }, [dispatch]);
 
   const initSpotReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
@@ -238,7 +238,7 @@ const MapSpotDrawer = () => {
         }
       }
     );
-  });
+  }, [dispatch, currentSpot]);
 
   const clearSpot = useCallback(() => {
     dispatch(clearMapSpotState());

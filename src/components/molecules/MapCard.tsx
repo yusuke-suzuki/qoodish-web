@@ -1,5 +1,4 @@
 import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -42,7 +41,6 @@ const styles = {
 };
 
 const MapCard = props => {
-  const large = useMediaQuery('(min-width: 600px)');
   const { map } = props;
 
   return (

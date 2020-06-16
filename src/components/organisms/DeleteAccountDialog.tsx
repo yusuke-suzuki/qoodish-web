@@ -30,7 +30,7 @@ const styles = {
   }
 };
 
-const DeleteAccountDialog = props => {
+const DeleteAccountDialog = () => {
   const mapState = useCallback(
     state => ({
       dialogOpen: state.settings.deleteAccountDialogOpen,
@@ -48,13 +48,13 @@ const DeleteAccountDialog = props => {
   const handleCheckChange = useCallback(() => {
     setCheck(!check);
     setDisabled(!disabled);
-  });
+  }, [check, disabled]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteAccountDialog());
     setCheck(false);
     setDisabled(true);
-  });
+  }, [dispatch]);
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -84,7 +84,7 @@ const DeleteAccountDialog = props => {
         dispatch(openToast('Delete account successfully'));
       }
     );
-  });
+  }, [dispatch, history, currentUser]);
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>

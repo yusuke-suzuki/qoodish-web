@@ -73,11 +73,11 @@ const MapLikes = React.memo(() => {
         dispatch(fetchLikes(response.body));
       }
     });
-  });
+  }, [dispatch, currentMap]);
 
   const handleLikesClick = useCallback(() => {
     dispatch(openLikesDialog());
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -92,6 +92,7 @@ const MapLikes = React.memo(() => {
     .slice(0, 9)
     .map(like => (
       <Avatar
+        key={like.id}
         src={like.voter.profile_image_url}
         alt={like.voter.name}
         style={styles.followerAvatar}
@@ -109,12 +110,13 @@ const Followers = React.memo(() => {
 
   const handleFollowersClick = useCallback(() => {
     dispatch(openFollowersDialog());
-  });
+  }, [dispatch]);
 
   return followers
     .slice(0, 9)
     .map(follower => (
       <Avatar
+        key={follower.id}
         src={follower.profile_image_url}
         alt={follower.name}
         style={styles.followerAvatar}
@@ -208,7 +210,7 @@ const MapSummaryCard = () => {
       return;
     }
     dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
-  });
+  }, [dispatch, currentMap]);
 
   return (
     <div>

@@ -57,29 +57,32 @@ const SearchMapsDialog = () => {
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeSearchMapsDialog());
-  });
+  }, [dispatch]);
 
-  const handleInputChange = useCallback(async input => {
-    if (loading || !input) {
-      return;
-    }
-
-    setLoading(true);
-
-    const apiInstance = new MapsApi();
-    const opts = {
-      input: input
-    };
-
-    apiInstance.mapsGet(opts, (error, data, response) => {
-      setLoading(false);
-      if (response.ok) {
-        dispatch(searchMaps(response.body));
-      } else {
-        console.log(error);
+  const handleInputChange = useCallback(
+    async input => {
+      if (loading || !input) {
+        return;
       }
-    });
-  });
+
+      setLoading(true);
+
+      const apiInstance = new MapsApi();
+      const opts = {
+        input: input
+      };
+
+      apiInstance.mapsGet(opts, (error, data, response) => {
+        setLoading(false);
+        if (response.ok) {
+          dispatch(searchMaps(response.body));
+        } else {
+          console.log(error);
+        }
+      });
+    },
+    [dispatch, loading]
+  );
 
   return (
     <Dialog

@@ -49,7 +49,7 @@ const ReactionsCount = props => {
         dispatch(fetchLikes(response.body));
       }
     });
-  });
+  }, [dispatch, review]);
 
   if (noReactions && disableBlank) {
     return null;

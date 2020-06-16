@@ -46,17 +46,17 @@ const ImageDialog = () => {
 
   const handleDialogClose = useCallback(() => {
     dispatch(closeImageDialog());
-  });
+  }, [dispatch]);
 
   const handleOnEnter = useCallback(() => {
     if (imageUrl) {
       setCurrentImageUrl(imageUrl);
     }
-  });
+  }, [imageUrl]);
 
   const handleOnExited = useCallback(() => {
     setCurrentImageUrl(undefined);
-  });
+  }, []);
 
   return (
     <Dialog

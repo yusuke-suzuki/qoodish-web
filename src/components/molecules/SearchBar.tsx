@@ -74,32 +74,35 @@ const SearchBar = () => {
   const [listOpen, setListOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleInputChange = useCallback(async input => {
-    if (input) {
-      setListOpen(true);
-    } else {
-      setListOpen(false);
-    }
-    if (loading || !input) {
-      return;
-    }
-
-    setLoading(true);
-
-    const apiInstance = new MapsApi();
-    const opts = {
-      input: input
-    };
-
-    apiInstance.mapsGet(opts, (error, data, response) => {
-      setLoading(false);
-      if (response.ok) {
-        dispatch(searchMaps(response.body));
+  const handleInputChange = useCallback(
+    async input => {
+      if (input) {
+        setListOpen(true);
       } else {
-        console.log(error);
+        setListOpen(false);
       }
-    });
-  });
+      if (loading || !input) {
+        return;
+      }
+
+      setLoading(true);
+
+      const apiInstance = new MapsApi();
+      const opts = {
+        input: input
+      };
+
+      apiInstance.mapsGet(opts, (error, data, response) => {
+        setLoading(false);
+        if (response.ok) {
+          dispatch(searchMaps(response.body));
+        } else {
+          console.log(error);
+        }
+      });
+    },
+    [dispatch, loading]
+  );
 
   const classes = useStyles();
 

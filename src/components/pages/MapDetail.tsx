@@ -147,7 +147,7 @@ const MapSummaryDrawer = props => {
 
 const MapButtons = React.memo(props => {
   const lgUp = useMediaQuery('(min-width: 1280px)');
-  const currentMap = props.currentMap;
+  const { currentMap } = props;
 
   return (
     <div style={lgUp ? styles.mapButtonsLarge : styles.mapButtonsSmall}>
@@ -172,7 +172,7 @@ const SwitchSummaryButton = React.memo(() => {
 
   const handleSummaryButtonClick = useCallback(() => {
     dispatch(switchSummary());
-  });
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -198,6 +198,7 @@ const SwitchSummaryButton = React.memo(() => {
 });
 
 const MapDetail = props => {
+  const { params } = props;
   const smUp = useMediaQuery('(min-width: 600px)');
   const lgUp = useMediaQuery('(min-width: 1280px)');
 
@@ -216,7 +217,7 @@ const MapDetail = props => {
   const initMap = useCallback(async () => {
     const apiInstance = new MapsApi();
 
-    apiInstance.mapsMapIdGet(props.params.mapId, (error, data, response) => {
+    apiInstance.mapsMapIdGet(params.mapId, (error, data, response) => {
       if (response.ok) {
         dispatch(selectMap(response.body));
       } else if (response.status == 401) {
@@ -228,13 +229,13 @@ const MapDetail = props => {
         dispatch(openToast('Failed to fetch Map.'));
       }
     });
-  });
+  }, [dispatch, history, params]);
 
   const initMapReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
 
     apiInstance.mapsMapIdReviewsGet(
-      props.params.mapId,
+      params.mapId,
       {},
       (error, data, response) => {
         if (response.ok) {
@@ -242,13 +243,13 @@ const MapDetail = props => {
         }
       }
     );
-  });
+  }, [dispatch, params]);
 
   const initFollowers = useCallback(async () => {
     const apiInstance = new CollaboratorsApi();
 
     apiInstance.mapsMapIdCollaboratorsGet(
-      props.params.mapId,
+      params.mapId,
       (error, data, response) => {
         if (response.ok) {
           dispatch(fetchCollaborators(response.body));
@@ -257,13 +258,13 @@ const MapDetail = props => {
         }
       }
     );
-  });
+  }, [params]);
 
   const refreshMap = useCallback(() => {
     initMap();
     initMapReviews();
     initFollowers();
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

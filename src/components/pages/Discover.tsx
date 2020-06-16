@@ -85,7 +85,7 @@ const Discover = () => {
         console.log(error);
       }
     });
-  });
+  }, [dispatch]);
 
   const initRecentMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -101,7 +101,7 @@ const Discover = () => {
         console.log(error);
       }
     });
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

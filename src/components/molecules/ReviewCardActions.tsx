@@ -62,6 +62,7 @@ const UserAvatar = React.memo(() => {
 });
 
 const ReviewCardActions = React.memo(props => {
+  const { review } = props;
   const [commentFormActive, setCommentFormActive] = useState(false);
   const [comment, setComment] = useState(undefined);
   const [sending, setSending] = useState(false);
@@ -85,7 +86,7 @@ const ReviewCardActions = React.memo(props => {
     });
 
     apiInstance.reviewsReviewIdCommentsPost(
-      props.review.id,
+      review.id,
       inlineObject,
       (error, data, response) => {
         setCommentFormActive(false);
@@ -100,7 +101,7 @@ const ReviewCardActions = React.memo(props => {
         }
       }
     );
-  });
+  }, [dispatch, currentUser, review, comment]);
 
   return (
     <div style={styles.root}>
@@ -118,7 +119,7 @@ const ReviewCardActions = React.memo(props => {
           multiline={commentFormActive}
           onChange={e => setComment(e.target.value)}
         />
-        {!commentFormActive && <ReviewLikeActions target={props.review} />}
+        {!commentFormActive && <ReviewLikeActions target={review} />}
       </div>
       {commentFormActive && (
         <div style={styles.commentActions}>

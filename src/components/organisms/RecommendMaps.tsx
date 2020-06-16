@@ -46,7 +46,7 @@ const RecommendMaps = () => {
         setMaps(response.body.slice(0, 2));
       }
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

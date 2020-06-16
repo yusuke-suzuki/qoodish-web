@@ -10,12 +10,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
-import AddLocationIcon from '@material-ui/icons/AddLocation';
 
 import I18n from '../../utils/I18n';
 
 import openEditReviewDialog from '../../actions/openEditReviewDialog';
-import openCopyReviewDialog from '../../actions/openCopyReviewDialog';
+//import openCopyReviewDialog from '../../actions/openCopyReviewDialog';
 import openDeleteReviewDialog from '../../actions/openDeleteReviewDialog';
 import openIssueDialog from '../../actions/openIssueDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
@@ -24,7 +23,7 @@ const ReviewVertMenu = props => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const review = props.currentReview;
+  const { currentReview } = props;
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
   );
@@ -33,27 +32,27 @@ const ReviewVertMenu = props => {
 
   const handleEditMapButtonClick = useCallback(() => {
     setMenuOpen(false);
-    dispatch(openEditReviewDialog(review));
-  });
+    dispatch(openEditReviewDialog(currentReview));
+  }, [dispatch, currentReview]);
 
   const handleDeleteMapButtonClick = useCallback(() => {
     setMenuOpen(false);
-    dispatch(openDeleteReviewDialog(review));
-  });
+    dispatch(openDeleteReviewDialog(currentReview));
+  }, [dispatch, currentReview]);
 
-  const handleCopyReviewButtonClick = useCallback(() => {
-    setMenuOpen(false);
-    dispatch(openCopyReviewDialog(review));
-  });
+  // const handleCopyReviewButtonClick = useCallback(() => {
+  //   setMenuOpen(false);
+  //   dispatch(openCopyReviewDialog(currentReview));
+  // }, [dispatch, currentReview]);
 
   const handleIssueButtonClick = useCallback(() => {
     setMenuOpen(false);
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
     } else {
-      dispatch(openIssueDialog(review.id, 'review'));
+      dispatch(openIssueDialog(currentReview.id, 'review'));
     }
-  });
+  }, [dispatch, currentUser, currentReview]);
 
   return (
     <div>
@@ -75,7 +74,7 @@ const ReviewVertMenu = props => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        {review && review.editable ? (
+        {currentReview && currentReview.editable ? (
           [
             <MenuItem key="edit" onClick={handleEditMapButtonClick}>
               <ListItemIcon>

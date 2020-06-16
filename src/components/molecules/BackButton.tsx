@@ -31,7 +31,7 @@ const BackButton = () => {
     } else {
       history.push('/');
     }
-  });
+  }, [dispatch, history, mapSummaryOpen, historyCount, lgUp]);
 
   return (
     <IconButton color="inherit" onClick={handleBackButtonClick}>

@@ -27,14 +27,12 @@ const styles = {
     margin: 'auto'
   },
   rightContentsLarge: {
-    display: 'flex',
     width: '100%',
     justifyContent: 'flex-end',
     display: 'inline-flex',
     alignItems: 'center'
   },
   rightContentsSmall: {
-    display: 'flex',
     display: 'inline-flex',
     alignItems: 'center'
   },

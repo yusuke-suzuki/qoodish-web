@@ -97,7 +97,7 @@ const GMap = () => {
         dispatch(fetchSpots(response.body));
       }
     });
-  });
+  }, [dispatch, currentMap]);
 
   useEffect(() => {
     if (!gMap) {
@@ -108,7 +108,7 @@ const GMap = () => {
       lng: parseFloat(center.lng)
     });
     gMap.setZoom(zoom);
-  }, [center, zoom]);
+  }, [center, zoom, gMap]);
 
   useEffect(() => {
     if (currentMap) {
@@ -147,7 +147,7 @@ const GMap = () => {
 
     setGMap(map);
     setGoogleMapsApi(googleMapsApi);
-  });
+  }, []);
 
   useEffect(() => {
     initGoogleMaps();
@@ -193,7 +193,7 @@ const GMap = () => {
     } else {
       dispatch(requestCurrentPosition());
     }
-  });
+  }, [dispatch, currentMap]);
 
   useEffect(() => {
     if (!currentMap || !isGoogleMapsApiReady) {
@@ -202,16 +202,19 @@ const GMap = () => {
     initCenter();
   }, [currentMap]);
 
-  const onSpotMarkerClick = useCallback(async (e, spot) => {
-    dispatch(selectMapSpot(spot));
+  const onSpotMarkerClick = useCallback(
+    async (e, spot) => {
+      dispatch(selectMapSpot(spot));
 
-    if (mdUp) {
-      setAnchorEl(e.currentTarget);
-      setWindowOpen(true);
-    } else {
-      dispatch(openSpotCard());
-    }
-  });
+      if (mdUp) {
+        setAnchorEl(e.currentTarget);
+        setWindowOpen(true);
+      } else {
+        dispatch(openSpotCard());
+      }
+    },
+    [dispatch]
+  );
 
   const clearSpot = useCallback(() => {
     dispatch(clearMapSpotState());

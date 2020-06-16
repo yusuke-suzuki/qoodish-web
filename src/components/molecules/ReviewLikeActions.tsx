@@ -8,6 +8,7 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 const ReviewLikeActions = props => {
+  const { target } = props;
   const dispatch = useDispatch();
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
@@ -21,29 +22,26 @@ const ReviewLikeActions = props => {
 
     const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdLikePost(
-      props.target.id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(editReview(response.body));
-          dispatch(openToast(I18n.t('liked!')));
+    apiInstance.reviewsReviewIdLikePost(target.id, (error, data, response) => {
+      if (response.ok) {
+        dispatch(editReview(response.body));
+        dispatch(openToast(I18n.t('liked!')));
 
-          gtag('event', 'like', {
-            event_category: 'engagement',
-            event_label: 'review'
-          });
-        } else {
-          dispatch(openToast('Request failed.'));
-        }
+        gtag('event', 'like', {
+          event_category: 'engagement',
+          event_label: 'review'
+        });
+      } else {
+        dispatch(openToast('Request failed.'));
       }
-    );
-  });
+    });
+  }, [dispatch, target, currentUser]);
 
   const handleUnlikeButtonClick = useCallback(async () => {
     const apiInstance = new LikesApi();
 
     apiInstance.reviewsReviewIdLikeDelete(
-      props.target.id,
+      target.id,
       (error, data, response) => {
         if (response.ok) {
           dispatch(editReview(response.body));
@@ -58,13 +56,13 @@ const ReviewLikeActions = props => {
         }
       }
     );
-  });
+  }, [dispatch, target]);
 
   return (
     <SharedLikeActions
       handleLikeButtonClick={handleLikeButtonClick}
       handleUnlikeButtonClick={handleUnlikeButtonClick}
-      target={props.target}
+      target={target}
     />
   );
 };

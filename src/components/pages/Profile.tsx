@@ -29,7 +29,7 @@ const Profile = () => {
         dispatch(fetchMyProfile(response.body));
       }
     });
-  });
+  }, [dispatch, currentUser]);
 
   const initFollowingMaps = useCallback(async () => {
     const apiInstance = new UserMapsApi();
@@ -48,7 +48,7 @@ const Profile = () => {
         }
       }
     );
-  });
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {

@@ -104,7 +104,7 @@ const Timeline = () => {
         dispatch(openToast(I18n.t('internal server error')));
       }
     });
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

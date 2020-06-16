@@ -40,7 +40,7 @@ const IssueDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeIssueDialog());
-  });
+  }, [dispatch]);
 
   const handleSendButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -66,11 +66,14 @@ const IssueDialog = () => {
         }
       }
     );
-  });
+  }, [dispatch, issueTargetId, issueTargetType, value]);
 
-  const handleReasonChange = useCallback((e, value) => {
-    setValue(value);
-  });
+  const handleReasonChange = useCallback(
+    (e, value) => {
+      setValue(value);
+    },
+    [value]
+  );
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>

@@ -18,7 +18,9 @@ const styles = {
 
 const AppMenuButton = () => {
   const dispatch = useDispatch();
-  const handleButtonClick = useCallback(() => dispatch(toggleDrawer()));
+  const handleButtonClick = useCallback(() => {
+    dispatch(toggleDrawer());
+  }, [dispatch]);
 
   const mapState = useCallback(
     state => ({

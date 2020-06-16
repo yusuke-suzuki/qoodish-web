@@ -78,7 +78,7 @@ const TrendingMaps = () => {
         console.log(error);
       }
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

@@ -69,3 +69,5 @@ public/*
 
 firebase-debug.log
 .firebase
+
+.DS_Store

@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
 
 const ProfileAvatar = props => {
-  const { currentUser } = props;
+  const { currentUser, size } = props;
 
-  const avatarStyle = props.size
-    ? { width: props.size, height: props.size }
-    : { width: 40, height: 40 };
-  const iconStyle = props.size ? { fontSize: props.size } : { fontSize: 40 };
+  const avatarStyle = useMemo(() => {
+    return size ? { width: size, height: size } : { width: 40, height: 40 };
+  }, [size]);
+
+  const iconStyle = useMemo(() => {
+    return size ? { fontSize: props.size } : { fontSize: 40 };
+  }, [size]);
 
   if (!currentUser || currentUser.isAnonymous) {
     return (

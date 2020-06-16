@@ -49,6 +49,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const InviteTargetDialog = props => {
+  const { mapId } = props;
   const [loading, setLoading] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(undefined);
 
@@ -66,29 +67,32 @@ const InviteTargetDialog = props => {
 
   const onClose = useCallback(() => {
     dispatch(closeInviteTargetDialog());
-  });
+  }, [dispatch]);
 
-  const handleInputChange = useCallback(async input => {
-    if (loading || !input) {
-      return;
-    }
-    setLoading(true);
-
-    const apiInstance = new UsersApi();
-    const opts = {
-      input: input
-    };
-    apiInstance.usersGet(opts, (error, data, response) => {
-      setLoading(false);
-      if (response.ok) {
-        dispatch(fetchUsers(response.body));
+  const handleInputChange = useCallback(
+    async input => {
+      if (loading || !input) {
+        return;
       }
-    });
-  });
+      setLoading(true);
+
+      const apiInstance = new UsersApi();
+      const opts = {
+        input: input
+      };
+      apiInstance.usersGet(opts, (error, data, response) => {
+        setLoading(false);
+        if (response.ok) {
+          dispatch(fetchUsers(response.body));
+        }
+      });
+    },
+    [dispatch, loading]
+  );
 
   const handleUserClick = useCallback(user => {
     setSelectedUserId(user.id);
-  });
+  }, []);
 
   const handleSendButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -99,7 +103,7 @@ const InviteTargetDialog = props => {
     });
 
     apiInstance.mapsMapIdInvitesPost(
-      props.mapId,
+      mapId,
       newInvite,
       (error, data, response) => {
         dispatch(requestFinish());
@@ -111,7 +115,7 @@ const InviteTargetDialog = props => {
         }
       }
     );
-  });
+  }, [dispatch, mapId, selectedUserId]);
 
   return (
     <Dialog
@@ -130,12 +134,9 @@ const InviteTargetDialog = props => {
           action={
             <Button
               variant="contained"
-              onClick={() => {
-                handleSendButtonClick(selectedUserId);
-              }}
+              onClick={handleSendButtonClick}
               color="secondary"
               disabled={!selectedUserId}
-              style={styles.sendButton}
             >
               {I18n.t('invite')}
             </Button>

@@ -10,7 +10,7 @@ const SearchButton = () => {
   const dispatch = useDispatch();
   const handleSearchButtonClick = useCallback(() => {
     dispatch(openSearchMapsDialog());
-  });
+  }, [dispatch]);
 
   return (
     <IconButton color="inherit" onClick={handleSearchButtonClick}>

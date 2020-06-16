@@ -89,7 +89,7 @@ const EditProfileDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeEditProfileDialog());
-  });
+  }, [dispatch]);
 
   const setCurrentProfile = useCallback(() => {
     setName(currentUser.name);
@@ -105,7 +105,7 @@ const EditProfileDialog = () => {
     setErrorBio(undefined);
     setDisabled(true);
     setEditImage(false);
-  });
+  }, []);
 
   const handleNameChange = useCallback(inputName => {
     if (inputName) {
@@ -118,7 +118,7 @@ const EditProfileDialog = () => {
       setErrorName(I18n.t('name is required'));
     }
     setName(inputName);
-  });
+  }, []);
 
   const handleBioChange = useCallback(inputBio => {
     if (inputBio) {
@@ -131,11 +131,11 @@ const EditProfileDialog = () => {
       setErrorBio(undefined);
     }
     setBio(inputBio);
-  });
+  }, []);
 
   const handleAddImageClick = useCallback(() => {
     document.getElementById('profile-image-input').click();
-  });
+  }, []);
 
   const handleImageChange = useCallback(e => {
     let reader = new FileReader();
@@ -151,7 +151,7 @@ const EditProfileDialog = () => {
     };
 
     reader.readAsDataURL(file);
-  });
+  }, []);
 
   const handleSaveButtonClick = useCallback(async () => {
     let params = {
@@ -159,7 +159,9 @@ const EditProfileDialog = () => {
       biography: bio
     };
     if (editImage) {
-      params.image_url = imageUrl;
+      Object.assign(params, {
+        image_url: imageUrl
+      });
     }
 
     dispatch(requestStart());
@@ -170,7 +172,9 @@ const EditProfileDialog = () => {
         'profile',
         'data_url'
       );
-      params.image_url = uploadResponse.imageUrl;
+      Object.assign(params, {
+        image_url: uploadResponse.imageUrl
+      });
     }
 
     const apiInstance = new UsersApi();
@@ -194,7 +198,7 @@ const EditProfileDialog = () => {
         }
       }
     );
-  });
+  }, [dispatch, currentUser, name, bio]);
 
   return (
     <Dialog

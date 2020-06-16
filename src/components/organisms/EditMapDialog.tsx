@@ -28,38 +28,43 @@ const EditMapDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeEditMapDialog());
-  });
+  }, [dispatch]);
 
-  const handleSaveButtonClick = useCallback(async (params, mapId) => {
-    dispatch(requestStart());
+  const handleSaveButtonClick = useCallback(
+    async (params, mapId) => {
+      dispatch(requestStart());
 
-    if (params.image_url) {
-      const uploadResponse = await uploadToStorage(
-        params.image_url,
-        'maps',
-        'data_url'
-      );
-      params.image_url = uploadResponse.imageUrl;
-    }
-
-    const apiInstance = new MapsApi();
-    const newMap = NewMap.constructFromObject(params);
-
-    apiInstance.mapsMapIdPut(mapId, newMap, (error, data, response) => {
-      dispatch(requestFinish());
-
-      if (response.ok) {
-        const map = response.body;
-        dispatch(editMap(map));
-        dispatch(closeEditMapDialog());
-        dispatch(openToast(I18n.t('edit map success')));
-      } else if (response.status === 409) {
-        dispatch(openToast(response.body.detail));
-      } else {
-        dispatch(openToast('Failed to update map.'));
+      if (params.image_url) {
+        const uploadResponse = await uploadToStorage(
+          params.image_url,
+          'maps',
+          'data_url'
+        );
+        Object.assign(params, {
+          image_url: uploadResponse.imageUrl
+        });
       }
-    });
-  });
+
+      const apiInstance = new MapsApi();
+      const newMap = NewMap.constructFromObject(params);
+
+      apiInstance.mapsMapIdPut(mapId, newMap, (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          const map = response.body;
+          dispatch(editMap(map));
+          dispatch(closeEditMapDialog());
+          dispatch(openToast(I18n.t('edit map success')));
+        } else if (response.status === 409) {
+          dispatch(openToast(response.body.detail));
+        } else {
+          dispatch(openToast('Failed to update map.'));
+        }
+      });
+    },
+    [dispatch]
+  );
 
   return (
     <SharedEditMapDialog

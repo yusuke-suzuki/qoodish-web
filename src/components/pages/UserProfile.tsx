@@ -11,6 +11,7 @@ import updateMetadata from '../../actions/updateMetadata';
 import { UserMapsApi, UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 const UserProfile = props => {
+  const { params } = props;
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -25,12 +26,12 @@ const UserProfile = props => {
   const initProfile = useCallback(async () => {
     const apiInstance = new UsersApi();
 
-    apiInstance.usersUserIdGet(props.params.userId, (error, data, response) => {
+    apiInstance.usersUserIdGet(params.userId, (error, data, response) => {
       if (response.ok) {
         dispatch(fetchUserProfile(response.body));
       }
     });
-  });
+  }, [dispatch, params]);
 
   const initFollowingMaps = useCallback(async () => {
     const apiInstance = new UserMapsApi();
@@ -39,7 +40,7 @@ const UserProfile = props => {
     };
 
     apiInstance.usersUserIdMapsGet(
-      props.params.userId,
+      params.userId,
       opts,
       (error, data, response) => {
         if (response.ok) {
@@ -49,7 +50,7 @@ const UserProfile = props => {
         }
       }
     );
-  });
+  }, [dispatch, params]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

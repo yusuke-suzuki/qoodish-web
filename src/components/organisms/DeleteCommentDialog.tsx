@@ -29,7 +29,7 @@ const DeleteCommentDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteCommentDialog());
-  });
+  }, [dispatch]);
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -50,7 +50,7 @@ const DeleteCommentDialog = () => {
         }
       }
     );
-  });
+  }, [dispatch, comment]);
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose}>

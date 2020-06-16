@@ -35,11 +35,13 @@ const LocationButton = () => {
 
   const handleButtonClick = useCallback(async () => {
     const position = await fetchCurrentPosition();
+
     dispatch(
       getCurrentPosition(position.coords.latitude, position.coords.longitude)
     );
+
     dispatch(requestCurrentPosition());
-  });
+  }, [dispatch]);
 
   return (
     <Tooltip title={I18n.t('button current location')}>

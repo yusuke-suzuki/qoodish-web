@@ -62,6 +62,7 @@ const NotificationText = props => {
 
 const NotificationList = props => {
   const dispatch = useDispatch();
+  const { notifications } = props;
 
   const mapState = useCallback(
     state => ({
@@ -74,7 +75,7 @@ const NotificationList = props => {
 
   const handleReadNotification = useCallback(async () => {
     await sleep(5000);
-    let unreadNotifications = props.notifications.filter(notification => {
+    let unreadNotifications = notifications.filter(notification => {
       return notification.read === false;
     });
     unreadNotifications.forEach(async notification => {
@@ -93,7 +94,7 @@ const NotificationList = props => {
         }
       );
     });
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
@@ -102,7 +103,7 @@ const NotificationList = props => {
     handleReadNotification();
   }, [currentUser.uid]);
 
-  return props.notifications.map(notification => (
+  return notifications.map(notification => (
     <Item
       key={notification.id}
       onClick={props.handleNotificationClick}

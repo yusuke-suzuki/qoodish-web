@@ -38,12 +38,12 @@ const MapVertMenu = () => {
   const handleEditMapButtonClick = useCallback(() => {
     setMenuOpen(false);
     dispatch(openEditMapDialog(map));
-  });
+  }, [dispatch, map]);
 
   const handleDeleteMapButtonClick = useCallback(() => {
     setMenuOpen(false);
     dispatch(openDeleteMapDialog(map));
-  });
+  }, [dispatch, map]);
 
   return (
     <div>

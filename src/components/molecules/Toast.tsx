@@ -19,7 +19,7 @@ const Toast = () => {
   const dispatch = useDispatch();
   const handleRequestClose = useCallback(() => {
     dispatch(closeToast());
-  });
+  }, [dispatch]);
 
   return (
     <div>

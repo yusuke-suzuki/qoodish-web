@@ -15,7 +15,9 @@ const styles = {
 };
 
 const MapLikeActions = props => {
+  const { target } = props;
   const dispatch = useDispatch();
+
   const currentUser = useMappedState(
     useCallback(state => state.app.currentUser, [])
   );
@@ -27,7 +29,7 @@ const MapLikeActions = props => {
     }
 
     const apiInstance = new LikesApi();
-    apiInstance.mapsMapIdLikePost(props.target.id, (error, data, response) => {
+    apiInstance.mapsMapIdLikePost(target.id, (error, data, response) => {
       if (response.ok) {
         dispatch(editMap(response.body));
         dispatch(openToast(I18n.t('liked!')));
@@ -40,33 +42,30 @@ const MapLikeActions = props => {
         dispatch(openToast('Request failed.'));
       }
     });
-  });
+  }, [dispatch, currentUser, target]);
 
   const handleUnlikeButtonClick = useCallback(async () => {
     const apiInstance = new LikesApi();
-    apiInstance.mapsMapIdLikeDelete(
-      props.target.id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(editMap(response.body));
-          dispatch(openToast(I18n.t('unliked')));
+    apiInstance.mapsMapIdLikeDelete(target.id, (error, data, response) => {
+      if (response.ok) {
+        dispatch(editMap(response.body));
+        dispatch(openToast(I18n.t('unliked')));
 
-          gtag('event', 'unlike', {
-            event_category: 'engagement',
-            event_label: 'map'
-          });
-        } else {
-          dispatch(openToast('Request failed.'));
-        }
+        gtag('event', 'unlike', {
+          event_category: 'engagement',
+          event_label: 'map'
+        });
+      } else {
+        dispatch(openToast('Request failed.'));
       }
-    );
-  });
+    });
+  }, [dispatch, target]);
 
   return (
     <SharedLikeActions
       handleLikeButtonClick={handleLikeButtonClick}
       handleUnlikeButtonClick={handleUnlikeButtonClick}
-      target={props.target}
+      target={target}
       style={styles.likeButton}
     />
   );

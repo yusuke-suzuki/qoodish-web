@@ -99,11 +99,14 @@ const SpotTile = React.memo(props => {
   const [reviews, setReviews] = useState([]);
   const dispatch = useDispatch();
 
-  const handleSpotClick = useCallback(spot => {
-    dispatch(selectMapSpot(spot));
-    dispatch(openSpotCard());
-    dispatch(requestMapCenter(spot.lat, spot.lng));
-  });
+  const handleSpotClick = useCallback(
+    spot => {
+      dispatch(selectMapSpot(spot));
+      dispatch(openSpotCard());
+      dispatch(requestMapCenter(spot.lat, spot.lng));
+    },
+    [dispatch, spot]
+  );
 
   const initSpotReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
@@ -117,7 +120,7 @@ const SpotTile = React.memo(props => {
         }
       }
     );
-  });
+  }, [spot]);
 
   useEffect(() => {
     if (spot) {
@@ -166,9 +169,7 @@ const Container = React.memo(props => {
           style={styles.gridList}
         >
           {props.children.map(child => (
-            <GridListTile key={child.key} style={styles.gridTile}>
-              {child}
-            </GridListTile>
+            <GridListTile key={child.key}>{child}</GridListTile>
           ))}
         </GridList>
       </div>

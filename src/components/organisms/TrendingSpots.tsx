@@ -68,7 +68,7 @@ const TrendingSpots = () => {
         setSpots(response.body);
       }
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

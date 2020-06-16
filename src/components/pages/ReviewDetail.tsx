@@ -22,8 +22,9 @@ const styles = {
 };
 
 const ReviewCardContainer = React.memo(props => {
-  if (props.review) {
-    return <ReviewCard currentReview={props.review} />;
+  const { review } = props;
+  if (review) {
+    return <ReviewCard currentReview={review} />;
   } else {
     return (
       <NoContents

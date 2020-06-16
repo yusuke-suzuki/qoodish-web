@@ -56,7 +56,7 @@ const Title = React.memo(() => {
 
   const handleCloseDrawer = useCallback(() => {
     dispatch(closeDrawer());
-  });
+  }, [dispatch]);
 
   return (
     <ListItem

@@ -20,30 +20,31 @@ const styles = {
   }
 };
 
-const ExitIcon = React.memo(props => {
-  switch (props.iconType) {
-    case 'back':
-      return <ArrowBackIcon />;
-    default:
-      return <CloseIcon />;
-  }
-});
+type Props = {
+  color?: string;
+  iconType?: string;
+  handleRequestDialogClose: Function;
+  action?: Element;
+  title: string;
+};
 
-const DialogAppBar = props => {
+const DialogAppBar: React.FC<Props> = props => {
+  const { color, iconType, handleRequestDialogClose, action, title } = props;
+
   return (
     <AppBar
       style={styles.appbar}
-      color={props.color ? props.color : 'primary'}
+      color={color ? color : 'primary'}
       elevation={2}
     >
       <Toolbar style={styles.toolbar}>
-        <IconButton color="inherit" onClick={props.handleRequestDialogClose}>
-          <ExitIcon iconType={props.iconType} />
+        <IconButton color="inherit" onClick={handleRequestDialogClose}>
+          {iconType === 'back' ? <ArrowBackIcon /> : <CloseIcon />}
         </IconButton>
         <Typography variant="h6" color="inherit" noWrap>
-          {props.title}
+          {title}
         </Typography>
-        {props.action && <div style={styles.actionButton}>{props.action}</div>}
+        {action && <div style={styles.actionButton}>{action}</div>}
       </Toolbar>
     </AppBar>
   );

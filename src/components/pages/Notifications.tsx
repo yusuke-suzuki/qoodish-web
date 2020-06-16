@@ -75,7 +75,7 @@ const Notifications = () => {
         dispatch(fetchNotifications(response.body));
       }
     });
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {

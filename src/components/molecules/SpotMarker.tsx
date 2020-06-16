@@ -11,7 +11,7 @@ const styles = {
   }
 };
 
-const SpotMarker = React.memo(props => {
+const SpotMarker = props => {
   const { spot, large } = props;
 
   if (large) {
@@ -33,6 +33,6 @@ const SpotMarker = React.memo(props => {
       </Fab>
     );
   }
-});
+};
 
 export default React.memo(SpotMarker);

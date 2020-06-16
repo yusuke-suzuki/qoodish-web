@@ -39,10 +39,14 @@ const SaveReviewButton = props => {
     };
 
     if (currentReview) {
-      params.review_id = currentReview.id;
+      Object.assign(params, {
+        review_id: currentReview.id
+      });
       handleClickEditButton(params, images);
     } else {
-      params.map_id = targetMapId;
+      Object.assign(params, {
+        map_id: targetMapId
+      });
       handleClickCreateButton(params, images);
     }
   }, [currentReview, targetMapId, comment, images, selectedPlace]);
@@ -92,7 +96,7 @@ const SaveReviewButton = props => {
         }
       }
     );
-  }, []);
+  }, [dispatch]);
 
   const handleClickEditButton = useCallback(async (params, images) => {
     dispatch(requestStart());
@@ -134,7 +138,7 @@ const SaveReviewButton = props => {
         }
       }
     );
-  }, []);
+  }, [dispatch]);
 
   return (
     <Button

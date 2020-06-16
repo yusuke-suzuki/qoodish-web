@@ -70,12 +70,12 @@ const SpotDialog = () => {
         page_title: `${currentSpot.name} | Qoodish`
       });
     }
-  }, [currentSpot]);
+  }, [dispatch, currentSpot]);
 
   const handleDialogClose = useCallback(() => {
     dispatch(closeSpotDialog());
     history.goBack();
-  }, [history]);
+  }, [dispatch, history]);
 
   return (
     <Dialog

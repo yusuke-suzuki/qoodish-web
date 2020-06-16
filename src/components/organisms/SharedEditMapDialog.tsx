@@ -77,6 +77,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const SharedEditMapDialog = props => {
+  const {
+    currentMap,
+    handleSaveButtonClick,
+    selectedBase,
+    dialogOpen,
+    handleRequestDialogClose
+  } = props;
+
   const [mapId, setMapId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [name, setName] = useState('');
@@ -102,17 +110,17 @@ const SharedEditMapDialog = props => {
   const dispatch = useDispatch();
 
   const setCurrentMap = useCallback(() => {
-    if (props.currentMap) {
-      setMapId(props.currentMap.id);
-      setImageUrl(props.currentMap.thumbnail_url);
-      setName(props.currentMap.name);
-      setDescription(props.currentMap.description);
-      setPrivateMap(props.currentMap.private);
-      setInvitable(props.currentMap.invitable);
-      setShared(props.currentMap.shared);
+    if (currentMap) {
+      setMapId(currentMap.id);
+      setImageUrl(currentMap.thumbnail_url);
+      setName(currentMap.name);
+      setDescription(currentMap.description);
+      setPrivateMap(currentMap.private);
+      setInvitable(currentMap.invitable);
+      setShared(currentMap.shared);
       setDisabled(true);
     }
-  }, [props.currentMap]);
+  }, [currentMap]);
 
   const clearState = useCallback(() => {
     setMapId('');
@@ -126,7 +134,7 @@ const SharedEditMapDialog = props => {
     setErrorDescription(undefined);
     setDisabled(true);
     setEditImage(false);
-  });
+  }, []);
 
   const handleMapNameChange = useCallback(input => {
     if (input) {
@@ -139,7 +147,7 @@ const SharedEditMapDialog = props => {
       setErrorMapName(I18n.t('map name is required'));
     }
     setName(input);
-  });
+  }, []);
 
   const handleMapDescriptionChange = useCallback(input => {
     if (input) {
@@ -152,45 +160,58 @@ const SharedEditMapDialog = props => {
       setErrorDescription(I18n.t('description is required'));
     }
     setDescription(input);
-  });
+  }, []);
 
   const handlePrivateFlugChange = useCallback((e, checked) => {
     setPrivateMap(checked);
-  });
+  }, []);
 
   const handleInvitableFlugChange = useCallback((e, checked) => {
     setInvitable(checked);
-  });
+  }, []);
 
   const handleSharedFlugChange = useCallback((e, checked) => {
     setShared(checked);
-  });
+  }, []);
 
-  const handleSaveButtonClick = useCallback(() => {
+  const handleSaveClick = useCallback(() => {
     let params = {
       name: name,
       description: description,
-      base_id: props.selectedBase ? props.selectedBase.placeId : '',
-      base_name: props.selectedBase ? props.selectedBase.description : '',
+      base_id: selectedBase ? selectedBase.placeId : '',
+      base_name: selectedBase ? selectedBase.description : '',
       private: privateMap,
       invitable: invitable,
       shared: shared
     };
 
     if (editImage) {
-      params.image_url = imageUrl;
+      Object.assign(params, {
+        image_url: imageUrl
+      });
     }
 
-    props.handleSaveButtonClick(params, mapId);
-  });
+    handleSaveButtonClick(params, mapId);
+  }, [
+    name,
+    description,
+    selectedBase,
+    privateMap,
+    invitable,
+    shared,
+    editImage,
+    imageUrl,
+    mapId,
+    handleSaveButtonClick
+  ]);
 
   const handleMapBaseClick = useCallback(() => {
     dispatch(openBaseSelectDialog());
-  });
+  }, [dispatch]);
 
   const handleAddImageClick = useCallback(() => {
     document.getElementById('image-input').click();
-  });
+  }, []);
 
   const handleImageChange = useCallback(e => {
     let reader = new FileReader();
@@ -206,12 +227,12 @@ const SharedEditMapDialog = props => {
     };
 
     reader.readAsDataURL(file);
-  });
+  }, []);
 
   return (
     <Dialog
-      open={props.dialogOpen}
-      onClose={props.handleRequestDialogClose}
+      open={dialogOpen}
+      onClose={handleRequestDialogClose}
       onEnter={setCurrentMap}
       onExited={clearState}
       disableBackdropClick
@@ -222,25 +243,22 @@ const SharedEditMapDialog = props => {
     >
       {large ? (
         <DialogTitle>
-          {props.currentMap ? I18n.t('edit map') : I18n.t('create new map')}
+          {currentMap ? I18n.t('edit map') : I18n.t('create new map')}
         </DialogTitle>
       ) : (
         <DialogAppBar
-          title={
-            props.currentMap ? I18n.t('edit map') : I18n.t('create new map')
-          }
+          title={currentMap ? I18n.t('edit map') : I18n.t('create new map')}
           action={
             <Button
               variant="contained"
-              onClick={handleSaveButtonClick}
+              onClick={handleSaveClick}
               color="secondary"
               disabled={disabled}
-              style={styles.saveButton}
             >
               {I18n.t('save')}
             </Button>
           }
-          handleRequestDialogClose={props.handleRequestDialogClose}
+          handleRequestDialogClose={handleRequestDialogClose}
         />
       )}
       <DialogContent
@@ -300,8 +318,8 @@ const SharedEditMapDialog = props => {
           }
           label={
             <div style={styles.placeChipLabel}>
-              {props.selectedBase
-                ? props.selectedBase.description
+              {selectedBase
+                ? selectedBase.description
                 : I18n.t('center of map')}
             </div>
           }
@@ -371,12 +389,12 @@ const SharedEditMapDialog = props => {
       </DialogContent>
       {large && (
         <DialogActions>
-          <Button onClick={props.handleRequestDialogClose}>
+          <Button onClick={handleRequestDialogClose}>
             {I18n.t('cancel')}
           </Button>
           <Button
             variant="contained"
-            onClick={handleSaveButtonClick}
+            onClick={handleSaveClick}
             color="primary"
             disabled={disabled}
           >

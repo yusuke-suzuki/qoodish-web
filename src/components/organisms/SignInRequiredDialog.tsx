@@ -32,7 +32,7 @@ const SignInRequiredDialog = () => {
   );
   const onClose = useCallback(() => {
     dispatch(closeSignInRequiredDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Dialog

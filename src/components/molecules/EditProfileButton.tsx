@@ -24,7 +24,7 @@ const EditProfileButton = () => {
       return;
     }
     dispatch(openEditProfileDialog());
-  });
+  }, [dispatch, currentUser]);
 
   return (
     <Button

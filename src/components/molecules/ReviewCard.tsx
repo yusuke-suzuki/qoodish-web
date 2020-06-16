@@ -40,48 +40,52 @@ const styles = {
 };
 
 const ReviewCardHeader = React.memo(props => {
+  const { currentReview } = props;
+
   return (
     <CardHeader
       avatar={
         <ButtonBase
           component={Link}
-          to={`/users/${props.currentReview.author.id}`}
-          title={props.currentReview.author.name}
+          to={`/users/${currentReview.author.id}`}
+          title={currentReview.author.name}
         >
           <Avatar
-            src={props.currentReview.author.profile_image_url}
-            alt={props.currentReview.author.name}
+            src={currentReview.author.profile_image_url}
+            alt={currentReview.author.name}
             loading="lazy"
           />
         </ButtonBase>
       }
       action={
         <div style={styles.action}>
-          <ReviewShareMenu currentReview={props.currentReview} />
-          <ReviewVertMenu currentReview={props.currentReview} />
+          <ReviewShareMenu currentReview={currentReview} />
+          <ReviewVertMenu currentReview={currentReview} />
         </div>
       }
       title={
         <ButtonBase
           component={Link}
-          to={`/users/${props.currentReview.author.id}`}
-          title={props.currentReview.author.name}
+          to={`/users/${currentReview.author.id}`}
+          title={currentReview.author.name}
         >
-          {props.currentReview.author.name}
+          {currentReview.author.name}
         </ButtonBase>
       }
-      subheader={createdAt(props.currentReview)}
+      subheader={createdAt(currentReview)}
     />
   );
 });
 
 const ReviewCardContent = React.memo(props => {
+  const { currentReview } = props;
+
   return (
     <CardContent style={styles.cardContent}>
       <ButtonBase
         component={Link}
-        to={`/maps/${props.currentReview.map.id}`}
-        title={props.currentReview.map.name}
+        to={`/maps/${currentReview.map.id}`}
+        title={currentReview.map.name}
       >
         <Typography
           variant="subtitle1"
@@ -89,17 +93,17 @@ const ReviewCardContent = React.memo(props => {
           style={styles.cardTitle}
           gutterBottom
         >
-          {props.currentReview.map.name}
+          {currentReview.map.name}
         </Typography>
       </ButtonBase>
       <br />
       <ButtonBase
         component={Link}
         to={{
-          pathname: `/spots/${props.currentReview.spot.place_id}`,
-          state: { modal: true, spot: props.currentReview.spot }
+          pathname: `/spots/${currentReview.spot.place_id}`,
+          state: { modal: true, spot: currentReview.spot }
         }}
-        title={props.currentReview.spot.name}
+        title={currentReview.spot.name}
       >
         <Typography
           variant="h5"
@@ -107,12 +111,12 @@ const ReviewCardContent = React.memo(props => {
           style={styles.cardTitle}
           gutterBottom
         >
-          {props.currentReview.spot.name}
+          {currentReview.spot.name}
         </Typography>
       </ButtonBase>
       <Typography
         component="p"
-        dangerouslySetInnerHTML={commentHtml(props.currentReview)}
+        dangerouslySetInnerHTML={commentHtml(currentReview)}
         style={styles.reviewComment}
         data-test="review-card-comment"
       />
@@ -135,21 +139,23 @@ const commentHtml = review => {
 };
 
 const ReviewCard = props => {
+  const { currentReview } = props;
+
   return (
     <Card elevation={0}>
-      <ReviewCardHeader {...props} />
-      <ReviewCardContent {...props} />
-      {props.currentReview.images.length > 0 ? (
-        <ReviewImageStepper review={props.currentReview} />
+      <ReviewCardHeader currentReview={currentReview} />
+      <ReviewCardContent currentReview={currentReview} />
+      {currentReview.images.length > 0 ? (
+        <ReviewImageStepper review={currentReview} />
       ) : (
         <Divider />
       )}
       {props.currentReview.comments.length > 0 && (
-        <ReviewComments comments={props.currentReview.comments} />
+        <ReviewComments comments={currentReview.comments} />
       )}
       {props.hideActions ? null : (
         <CardActions disableSpacing style={styles.cardActions}>
-          <ReviewCardActions review={props.currentReview} />
+          <ReviewCardActions review={currentReview} />
         </CardActions>
       )}
     </Card>

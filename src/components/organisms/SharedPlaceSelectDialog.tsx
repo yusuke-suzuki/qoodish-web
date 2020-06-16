@@ -47,6 +47,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const SharedPlaceSelectDialog = props => {
+  const { onClose, onPlaceSelected, dialogOpen, onEntered } = props;
   const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
 
@@ -56,40 +57,46 @@ const SharedPlaceSelectDialog = props => {
     useCallback(state => state.shared.pickedPlaces, [])
   );
 
-  const handlePlaceSelected = useCallback(place => {
-    let params = {
-      placeId: place.place_id,
-      description: place.description
-    };
-    props.onClose();
-    props.onPlaceSelected(params);
-  });
+  const handlePlaceSelected = useCallback(
+    place => {
+      let params = {
+        placeId: place.place_id,
+        description: place.description
+      };
+      onClose();
+      onPlaceSelected(params);
+    },
+    [onClose, onPlaceSelected]
+  );
 
-  const handleInputChange = useCallback(async input => {
-    if (loading || !input) {
-      return;
-    }
-    setLoading(true);
-
-    const apiInstance = new PlacesApi();
-    const opts = {
-      input: input
-    };
-    apiInstance.placesGet(opts, (error, data, response) => {
-      setLoading(false);
-      if (response.ok) {
-        dispatch(searchPlaces(response.body));
-      } else {
-        console.log('API called successfully. Returned data: ' + data);
+  const handleInputChange = useCallback(
+    async input => {
+      if (loading || !input) {
+        return;
       }
-    });
-  });
+      setLoading(true);
+
+      const apiInstance = new PlacesApi();
+      const opts = {
+        input: input
+      };
+      apiInstance.placesGet(opts, (error, data, response) => {
+        setLoading(false);
+        if (response.ok) {
+          dispatch(searchPlaces(response.body));
+        } else {
+          console.log('API called successfully. Returned data: ' + data);
+        }
+      });
+    },
+    [dispatch, loading]
+  );
 
   return (
     <Dialog
-      open={props.dialogOpen}
-      onEntered={props.onEntered}
-      onClose={props.onClose}
+      open={dialogOpen}
+      onEntered={onEntered}
+      onClose={onClose}
       fullWidth
       fullScreen={!large}
       TransitionComponent={large ? Fade : Transition}
@@ -105,7 +112,7 @@ const SharedPlaceSelectDialog = props => {
       ) : (
         <DialogAppBar
           title={I18n.t('select place')}
-          handleRequestDialogClose={props.onClose}
+          handleRequestDialogClose={onClose}
         />
       )}
       <DialogContent
@@ -140,7 +147,7 @@ const SharedPlaceSelectDialog = props => {
       </DialogContent>
       {large && (
         <DialogActions>
-          <Button onClick={props.onClose}>{I18n.t('cancel')}</Button>
+          <Button onClick={onClose}>{I18n.t('cancel')}</Button>
         </DialogActions>
       )}
     </Dialog>

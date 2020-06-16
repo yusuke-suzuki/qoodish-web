@@ -75,34 +75,37 @@ const Invites = () => {
         dispatch(openToast('Failed to fetch invites'));
       }
     });
-  });
+  }, [dispatch]);
 
-  const handleFollowButtonClick = useCallback(async invite => {
-    dispatch(requestStart());
+  const handleFollowButtonClick = useCallback(
+    async invite => {
+      dispatch(requestStart());
 
-    const apiInstance = new FollowsApi();
-    const opts = {
-      inviteId: invite.id
-    };
+      const apiInstance = new FollowsApi();
+      const opts = {
+        inviteId: invite.id
+      };
 
-    apiInstance.mapsMapIdFollowPost(
-      invite.invitable.id,
-      opts,
-      (error, data, response) => {
-        dispatch(requestFinish());
-        if (response.ok) {
-          dispatch(openToast(I18n.t('follow map success')));
-          history.push(`/maps/${invite.invitable.id}`);
-          gtag('event', 'follow', {
-            event_category: 'engagement',
-            event_label: 'map'
-          });
-        } else {
-          dispatch(openToast('Failed to follow map'));
+      apiInstance.mapsMapIdFollowPost(
+        invite.invitable.id,
+        opts,
+        (error, data, response) => {
+          dispatch(requestFinish());
+          if (response.ok) {
+            dispatch(openToast(I18n.t('follow map success')));
+            history.push(`/maps/${invite.invitable.id}`);
+            gtag('event', 'follow', {
+              event_category: 'engagement',
+              event_label: 'map'
+            });
+          } else {
+            dispatch(openToast('Failed to follow map'));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [dispatch, history]
+  );
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {

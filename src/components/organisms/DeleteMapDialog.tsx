@@ -38,13 +38,13 @@ const DeleteMapDialog = () => {
   const handleCheckChange = useCallback(() => {
     setCheck(!check);
     setDisabled(!disabled);
-  });
+  }, [check, disabled]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteMapDialog());
     setCheck(false);
     setDisabled(true);
-  });
+  }, [dispatch]);
 
   const handleDeleteButtonClick = useCallback(() => {
     dispatch(requestStart());
@@ -62,7 +62,7 @@ const DeleteMapDialog = () => {
         dispatch(openToast('Failed to delete map.'));
       }
     });
-  });
+  }, [dispatch, history, currentMap]);
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>

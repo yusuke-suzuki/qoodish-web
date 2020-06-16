@@ -61,9 +61,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const AddImageButton = React.memo(props => {
   const { images } = props;
+
   const handleAddImageClick = useCallback(() => {
     document.getElementById('review-image-input').click();
-  });
+  }, []);
 
   return (
     <IconButton onClick={handleAddImageClick} disabled={4 <= images.length}>
@@ -141,7 +142,7 @@ const EditReviewDialog = () => {
   const initForm = useCallback(() => {
     setCurrentReview();
     initPostableMaps();
-  });
+  }, []);
 
   const initPostableMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -190,7 +191,9 @@ const EditReviewDialog = () => {
         };
 
         if (data.exif) {
-          options.orientation = data.exif.get('Orientation');
+          Object.assign(options, {
+            orientation: data.exif.get('Orientation')
+          });
         }
 
         loadImage(

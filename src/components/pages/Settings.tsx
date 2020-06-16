@@ -40,7 +40,7 @@ const DeleteAccountCard = () => {
 
   const handleDeleteAccountButtonClick = useCallback(async () => {
     dispatch(openDeleteAccountDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Card style={styles.card} elevation={0}>

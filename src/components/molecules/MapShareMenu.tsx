@@ -50,7 +50,7 @@ const MapShareMenu = () => {
 
   const handleUrlCopied = useCallback(() => {
     dispatch(openToast(I18n.t('copied')));
-  });
+  }, [dispatch]);
 
   return (
     <div>

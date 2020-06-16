@@ -65,7 +65,7 @@ const PrimaryAction = props => {
     } else {
       dispatch(openCreateMapDialog());
     }
-  });
+  }, [dispatch, currentUser]);
 
   const handleCreateReviewButtonClick = useCallback(() => {
     if (currentUser.isAnonymous) {
@@ -73,7 +73,7 @@ const PrimaryAction = props => {
     } else {
       dispatch(openPlaceSelectDialog());
     }
-  });
+  }, [dispatch, currentUser]);
 
   switch (props.action) {
     case 'create-map':

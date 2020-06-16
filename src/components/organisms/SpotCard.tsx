@@ -72,20 +72,17 @@ const SpotCard = props => {
 
   const [spotReviews, setSpotReviews] = useState([]);
 
-  const { currentSpot } = props;
+  const { currentSpot, placeId } = props;
 
   const initSpotReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
 
-    apiInstance.spotsPlaceIdReviewsGet(
-      props.placeId,
-      (error, data, response) => {
-        if (response.ok) {
-          setSpotReviews(response.body);
-        }
+    apiInstance.spotsPlaceIdReviewsGet(placeId, (error, data, response) => {
+      if (response.ok) {
+        setSpotReviews(response.body);
       }
-    );
-  });
+    });
+  }, [placeId]);
 
   useEffect(() => {
     if (currentSpot) {

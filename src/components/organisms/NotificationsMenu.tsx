@@ -70,7 +70,7 @@ const NotificationsMenu = props => {
         }
       );
     });
-  });
+  }, [dispatch, notifications]);
 
   const refreshNotifications = useCallback(async () => {
     const apiInstance = new NotificationsApi();

@@ -66,7 +66,7 @@ const SpotInfoWindow = () => {
         }
       }
     );
-  });
+  }, [dispatch, currentSpot]);
 
   useEffect(() => {
     if (currentSpot.place_id) {
@@ -80,13 +80,13 @@ const SpotInfoWindow = () => {
       placeId: currentSpot.place_id
     };
     dispatch(selectPlaceForReview(place));
-  });
+  }, [dispatch, currentSpot]);
 
   const reviewAlreadyExists = useMemo(() => {
     return spotReviews.some(review => {
       return review.spot.place_id === currentSpot.place_id && review.editable;
     });
-  }, [spotReviews]);
+  }, [spotReviews, currentSpot]);
 
   return (
     <div style={styles.root}>

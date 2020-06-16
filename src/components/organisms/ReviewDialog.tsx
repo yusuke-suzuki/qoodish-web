@@ -81,16 +81,16 @@ const ReviewDialog = () => {
         requestMapCenter(currentReview.spot.lat, currentReview.spot.lng)
       );
     }
-  }, [currentReview]);
+  }, [dispatch, currentReview]);
 
   const handleDialogClose = useCallback(() => {
     dispatch(closeReviewDialog());
     history.goBack();
-  }, [history]);
+  }, [dispatch, history]);
 
   const handleDialogExited = useCallback(() => {
     dispatch(clearReviewState());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Dialog

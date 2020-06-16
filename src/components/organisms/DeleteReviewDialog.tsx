@@ -38,13 +38,13 @@ const DeleteReviewDialog = () => {
   const handleCheckChange = useCallback(() => {
     setCheck(!check);
     setDisabled(!disabled);
-  });
+  }, [check, disabled]);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteReviewDialog());
     setCheck(false);
     setDisabled(true);
-  });
+  }, [dispatch]);
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -66,7 +66,7 @@ const DeleteReviewDialog = () => {
         dispatch(openToast(I18n.t('delete report failed')));
       }
     });
-  });
+  }, [dispatch, history, reviewDialogOpen, review]);
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>

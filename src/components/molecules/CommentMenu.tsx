@@ -32,12 +32,12 @@ const CommentMenu = props => {
     } else {
       dispatch(openIssueDialog(comment.id, 'comment'));
     }
-  });
+  }, [dispatch, currentUser, comment]);
 
   const handleDeleteButtonClick = useCallback(() => {
     setMenuOpen(false);
     dispatch(openDeleteCommentDialog(comment));
-  });
+  }, [dispatch, comment]);
 
   return (
     <div>

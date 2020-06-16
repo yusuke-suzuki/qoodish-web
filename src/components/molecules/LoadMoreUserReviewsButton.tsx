@@ -42,14 +42,16 @@ const LoadMoreUserReviewsButton = props => {
 
   const { noMoreReviews, nextTimestamp, location } = useMappedState(mapState);
 
+  const { currentUser, params } = props;
+
   const [loading, setLoading] = useState(false);
 
   const handleClickLoadMoreButton = useCallback(async () => {
     setLoading(true);
     let userId =
       location && location.pathname === '/profile'
-        ? props.currentUser.uid
-        : props.params.userId;
+        ? currentUser.uid
+        : params.userId;
 
     const apiInstance = new ReviewsApi();
     const opts = {
@@ -61,7 +63,7 @@ const LoadMoreUserReviewsButton = props => {
         dispatch(fetchMoreUserReviews(response.body));
       }
     });
-  });
+  }, [dispatch, currentUser, params, nextTimestamp, location]);
 
   if (loading) {
     return (

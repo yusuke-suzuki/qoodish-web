@@ -53,7 +53,7 @@ const PickUpMap = () => {
         }
       }
     );
-  });
+  }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

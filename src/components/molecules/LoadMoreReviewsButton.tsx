@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import fetchMoreReviews from '../../actions/fetchMoreReviews';
@@ -39,6 +38,7 @@ const LoadMoreButton = () => {
     const opts = {
       nextTimestamp: nextTimestamp
     };
+
     apiInstance.reviewsGet(opts, (error, data, response) => {
       setLoading(false);
 
@@ -50,7 +50,7 @@ const LoadMoreButton = () => {
         dispatch(openToast('Failed to fetch reports.'));
       }
     });
-  });
+  }, [dispatch, nextTimestamp]);
 
   if (loading) {
     return (
@@ -60,11 +60,9 @@ const LoadMoreButton = () => {
     );
   } else {
     return noMoreReviews ? null : (
-      <div style={styles.buttonContainer}>
-        <Button onClick={loadMoreReviews} color="primary">
-          {I18n.t('load more')}
-        </Button>
-      </div>
+      <Button onClick={loadMoreReviews} color="primary">
+        {I18n.t('load more')}
+      </Button>
     );
   }
 };

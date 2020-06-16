@@ -30,7 +30,7 @@ const CreateReviewForm = () => {
       return;
     }
     dispatch(openPlaceSelectDialog());
-  });
+  }, [dispatch, currentUser]);
 
   return (
     <Card

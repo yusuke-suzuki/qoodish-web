@@ -57,51 +57,57 @@ const LikeButton = React.memo(props => {
     useCallback(state => state.app.currentUser, [])
   );
 
-  const comment = props.comment;
+  const { comment } = props;
 
-  const likeComment = useCallback(async comment => {
-    const apiInstance = new LikesApi();
+  const likeComment = useCallback(
+    async comment => {
+      const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdCommentsCommentIdLikePost(
-      comment.review_id,
-      comment.id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(editReview(response.body));
-          dispatch(openToast(I18n.t('liked!')));
+      apiInstance.reviewsReviewIdCommentsCommentIdLikePost(
+        comment.review_id,
+        comment.id,
+        (error, data, response) => {
+          if (response.ok) {
+            dispatch(editReview(response.body));
+            dispatch(openToast(I18n.t('liked!')));
 
-          gtag('event', 'like', {
-            event_category: 'engagement',
-            event_label: 'review'
-          });
-        } else {
-          dispatch(openToast('Request failed.'));
+            gtag('event', 'like', {
+              event_category: 'engagement',
+              event_label: 'review'
+            });
+          } else {
+            dispatch(openToast('Request failed.'));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [dispatch, comment]
+  );
 
-  const unlikeComment = useCallback(async comment => {
-    const apiInstance = new LikesApi();
+  const unlikeComment = useCallback(
+    async comment => {
+      const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdCommentsCommentIdLikeDelete(
-      comment.review_id,
-      comment.id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(editReview(response.body));
-          dispatch(openToast(I18n.t('unliked')));
+      apiInstance.reviewsReviewIdCommentsCommentIdLikeDelete(
+        comment.review_id,
+        comment.id,
+        (error, data, response) => {
+          if (response.ok) {
+            dispatch(editReview(response.body));
+            dispatch(openToast(I18n.t('unliked')));
 
-          gtag('event', 'unlike', {
-            event_category: 'engagement',
-            event_label: 'review'
-          });
-        } else {
-          dispatch(openToast('Request failed.'));
+            gtag('event', 'unlike', {
+              event_category: 'engagement',
+              event_label: 'review'
+            });
+          } else {
+            dispatch(openToast('Request failed.'));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [dispatch, comment]
+  );
 
   const handleLikeCommentClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
@@ -109,7 +115,7 @@ const LikeButton = React.memo(props => {
       return;
     }
     comment.liked ? unlikeComment(comment) : likeComment(comment);
-  });
+  }, [dispatch, currentUser, comment]);
 
   return (
     <IconButton onClick={handleLikeCommentClick}>
@@ -123,24 +129,28 @@ const LikeButton = React.memo(props => {
 });
 
 const Comments = React.memo(props => {
+  const { comments } = props;
   const dispatch = useDispatch();
 
-  const handleLikesClick = useCallback(async comment => {
-    dispatch(openLikesDialog());
-    const apiInstance = new LikesApi();
+  const handleLikesClick = useCallback(
+    async comment => {
+      dispatch(openLikesDialog());
+      const apiInstance = new LikesApi();
 
-    apiInstance.reviewsReviewIdCommentsCommentIdLikesGet(
-      comment.review_id,
-      comment.id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchLikes(response.body));
+      apiInstance.reviewsReviewIdCommentsCommentIdLikesGet(
+        comment.review_id,
+        comment.id,
+        (error, data, response) => {
+          if (response.ok) {
+            dispatch(fetchLikes(response.body));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [dispatch]
+  );
 
-  return props.comments.map(comment => (
+  return comments.map(comment => (
     <ListItem key={comment.id}>
       <ButtonBase
         component={Link}

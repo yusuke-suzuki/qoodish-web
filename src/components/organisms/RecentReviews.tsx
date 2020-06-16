@@ -33,9 +33,6 @@ const styles = {
   reviewCard: {
     margin: 3
   },
-  reviewImage: {
-    width: '100%'
-  },
   reviewComment: {
     height: '4.5em',
     overflow: 'hidden',
@@ -107,7 +104,7 @@ const RecentReviews = () => {
         dispatch(openToast('Failed to fetch reports.'));
       }
     });
-  });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

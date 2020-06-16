@@ -127,7 +127,7 @@ const MapSummary = () => {
 
   const handleTabChange = useCallback((e, value) => {
     setTabValue(value);
-  });
+  }, []);
 
   return (
     <div style={lgUp ? styles.containerLarge : styles.containerSmall}>

@@ -69,70 +69,76 @@ const LinkedProvidersList = () => {
     dispatch(updateLinkedProviders(linkedProviders));
   }, [dispatch]);
 
-  const handleLinkProviderButtonClick = useCallback(async providerId => {
-    dispatch(requestStart());
+  const handleLinkProviderButtonClick = useCallback(
+    async providerId => {
+      dispatch(requestStart());
 
-    const firebase = await getFirebase();
-    await getFirebaseAuth();
-    const firebaseUser = firebase.auth().currentUser;
+      const firebase = await getFirebase();
+      await getFirebaseAuth();
+      const firebaseUser = firebase.auth().currentUser;
 
-    let provider;
-    switch (providerId) {
-      case 'google.com':
-        provider = new firebase.auth.GoogleAuthProvider();
-        break;
-      case 'facebook.com':
-        provider = new firebase.auth.FacebookAuthProvider();
-        break;
-      case 'twitter.com':
-        provider = new firebase.auth.TwitterAuthProvider();
-        break;
-      case 'github.com':
-        provider = new firebase.auth.GithubAuthProvider();
-        break;
-    }
+      let provider;
+      switch (providerId) {
+        case 'google.com':
+          provider = new firebase.auth.GoogleAuthProvider();
+          break;
+        case 'facebook.com':
+          provider = new firebase.auth.FacebookAuthProvider();
+          break;
+        case 'twitter.com':
+          provider = new firebase.auth.TwitterAuthProvider();
+          break;
+        case 'github.com':
+          provider = new firebase.auth.GithubAuthProvider();
+          break;
+      }
 
-    try {
-      await firebaseUser.linkWithPopup(provider);
-    } catch (error) {
-      console.log(error);
+      try {
+        await firebaseUser.linkWithPopup(provider);
+      } catch (error) {
+        console.log(error);
+        dispatch(requestFinish());
+        dispatch(openToast(error.message, 8000));
+        return;
+      }
+
+      const currentFirebaseUser = firebase.auth().currentUser;
+      const linkedProviders = currentFirebaseUser.providerData.map(provider => {
+        return provider.providerId;
+      });
+      dispatch(updateLinkedProviders(linkedProviders));
       dispatch(requestFinish());
-      dispatch(openToast(error.message, 8000));
-      return;
-    }
+      dispatch(openToast(I18n.t('link provider success')));
+    },
+    [dispatch]
+  );
 
-    const currentFirebaseUser = firebase.auth().currentUser;
-    const linkedProviders = currentFirebaseUser.providerData.map(provider => {
-      return provider.providerId;
-    });
-    dispatch(updateLinkedProviders(linkedProviders));
-    dispatch(requestFinish());
-    dispatch(openToast(I18n.t('link provider success')));
-  });
+  const handleUnlinkProviderButtonClick = useCallback(
+    async providerId => {
+      dispatch(requestStart());
+      const firebase = await getFirebase();
+      await getFirebaseAuth();
+      const firebaseUser = firebase.auth().currentUser;
 
-  const handleUnlinkProviderButtonClick = useCallback(async providerId => {
-    dispatch(requestStart());
-    const firebase = await getFirebase();
-    await getFirebaseAuth();
-    const firebaseUser = firebase.auth().currentUser;
+      try {
+        await firebaseUser.unlink(providerId);
+      } catch (error) {
+        console.log(error);
+        dispatch(requestFinish());
+        dispatch(openToast(error.message, 8000));
+        return;
+      }
 
-    try {
-      await firebaseUser.unlink(providerId);
-    } catch (error) {
-      console.log(error);
+      const currentFirebaseUser = firebase.auth().currentUser;
+      const linkedProviders = currentFirebaseUser.providerData.map(provider => {
+        return provider.providerId;
+      });
+      dispatch(updateLinkedProviders(linkedProviders));
       dispatch(requestFinish());
-      dispatch(openToast(error.message, 8000));
-      return;
-    }
-
-    const currentFirebaseUser = firebase.auth().currentUser;
-    const linkedProviders = currentFirebaseUser.providerData.map(provider => {
-      return provider.providerId;
-    });
-    dispatch(updateLinkedProviders(linkedProviders));
-    dispatch(requestFinish());
-    dispatch(openToast(I18n.t('unlink provider success')));
-  });
+      dispatch(openToast(I18n.t('unlink provider success')));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {

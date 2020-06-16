@@ -34,11 +34,11 @@ const ActionsList = () => {
     } else {
       dispatch(openPlaceSelectDialog());
     }
-  });
+  }, [dispatch, spot]);
 
   const handleCreateMapButtonClick = useCallback(() => {
     dispatch(openCreateMapDialog());
-  });
+  }, [dispatch]);
 
   return (
     <List>
@@ -76,7 +76,7 @@ const CreateActions = () => {
 
   const handleCloseDrawer = useCallback(() => {
     dispatch(closeCreateActions());
-  });
+  }, [dispatch]);
 
   return large ? (
     <Dialog open={open} onClose={handleCloseDrawer} fullWidth>

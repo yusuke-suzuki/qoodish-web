@@ -14,11 +14,14 @@ const BaseSelectDialog = () => {
 
   const onClose = useCallback(() => {
     dispatch(closeBaseSelectDialog());
-  });
+  }, [dispatch]);
 
-  const onPlaceSelected = useCallback(place => {
-    dispatch(selectMapBase(place));
-  });
+  const onPlaceSelected = useCallback(
+    place => {
+      dispatch(selectMapBase(place));
+    },
+    [dispatch]
+  );
 
   return (
     <SharedPlaceSelectDialog

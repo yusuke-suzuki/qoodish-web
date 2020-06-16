@@ -57,76 +57,79 @@ const LoginButtons = props => {
       tosUrl: `${process.env.ENDPOINT}/terms`,
       privacyPolicyUrl: `${process.env.ENDPOINT}/privacy`
     });
-  });
+  }, []);
 
   useEffect(() => {
     initFirebase();
   }, []);
 
-  const handleSignIn = useCallback(async (authResult, redirectUrl) => {
-    dispatch(closeSignInRequiredDialog());
-    const currentUser = authResult.user;
+  const handleSignIn = useCallback(
+    async (authResult, redirectUrl) => {
+      dispatch(closeSignInRequiredDialog());
+      const currentUser = authResult.user;
 
-    if (currentUser.isAnonymous) {
-      const user = {
-        uid: currentUser.uid,
-        isAnonymous: true
-      };
-      dispatch(signIn(user));
+      if (currentUser.isAnonymous) {
+        const user = {
+          uid: currentUser.uid,
+          isAnonymous: true
+        };
+        dispatch(signIn(user));
 
-      if (nextPath) {
-        history.push(nextPath);
-      }
-
-      gtag('event', 'login', {
-        method: 'anonymous'
-      });
-      return;
-    }
-
-    dispatch(requestStart());
-
-    const accessToken = await currentUser.getIdToken();
-    const credential = authResult.credential;
-
-    const currentProvider = currentUser.providerData.find(data => {
-      return data.providerId == credential.providerId;
-    });
-
-    const blob = await downloadImage(currentProvider.photoURL);
-    const uploadResponse = await uploadToStorage(blob, 'profile');
-
-    const params = {
-      uid: currentUser.uid,
-      token: accessToken,
-      image_url: uploadResponse.imageUrl,
-      display_name: currentProvider.displayName
-    };
-
-    const apiInstance = new UsersApi();
-    const newUser = NewUser.constructFromObject(params);
-
-    apiInstance.usersPost(newUser, async (error, data, response) => {
-      dispatch(requestFinish());
-
-      if (response.ok) {
         if (nextPath) {
           history.push(nextPath);
         }
 
-        dispatch(openToast(I18n.t('sign in success')));
         gtag('event', 'login', {
-          method: authResult.additionalUserInfo.providerId
+          method: 'anonymous'
         });
-
-        // wait until thumbnail created on cloud function
-        await sleep(3000);
-        dispatch(signIn(response.body));
-      } else {
-        dispatch(openToast(response.body.detail));
+        return;
       }
-    });
-  });
+
+      dispatch(requestStart());
+
+      const accessToken = await currentUser.getIdToken();
+      const credential = authResult.credential;
+
+      const currentProvider = currentUser.providerData.find(data => {
+        return data.providerId == credential.providerId;
+      });
+
+      const blob = await downloadImage(currentProvider.photoURL);
+      const uploadResponse = await uploadToStorage(blob, 'profile');
+
+      const params = {
+        uid: currentUser.uid,
+        token: accessToken,
+        image_url: uploadResponse.imageUrl,
+        display_name: currentProvider.displayName
+      };
+
+      const apiInstance = new UsersApi();
+      const newUser = NewUser.constructFromObject(params);
+
+      apiInstance.usersPost(newUser, async (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          if (nextPath) {
+            history.push(nextPath);
+          }
+
+          dispatch(openToast(I18n.t('sign in success')));
+          gtag('event', 'login', {
+            method: authResult.additionalUserInfo.providerId
+          });
+
+          // wait until thumbnail created on cloud function
+          await sleep(3000);
+          dispatch(signIn(response.body));
+        } else {
+          dispatch(openToast(response.body.detail));
+        }
+      });
+    },
+    [dispatch, history, nextPath]
+  );
 
   return uiConfig && firebaseAuth ? (
     <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseAuth} />

@@ -51,7 +51,7 @@ const FollowingMapsDialog = () => {
 
   const onClose = useCallback(() => {
     dispatch(closeFollowingMapsDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Dialog

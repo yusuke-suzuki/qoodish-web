@@ -54,7 +54,7 @@ const FeedbackDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeFeedbackDialog());
-  });
+  }, [dispatch]);
 
   const clearState = useCallback(() => {
     setFeedbackNegative('');
@@ -62,7 +62,7 @@ const FeedbackDialog = () => {
     setErrorNegative(undefined);
     setErrorPositive(undefined);
     setDisabled(true);
-  });
+  }, []);
 
   const handleNegativeChange = useCallback(input => {
     if (input) {
@@ -75,7 +75,7 @@ const FeedbackDialog = () => {
       setErrorNegative(I18n.t('comment is required'));
     }
     setFeedbackNegative(input);
-  });
+  }, []);
 
   const handlePositiveChange = useCallback(input => {
     if (input) {
@@ -88,7 +88,7 @@ const FeedbackDialog = () => {
       setErrorPositive(I18n.t('comment is required'));
     }
     setFeedbackPositive(input);
-  });
+  }, []);
 
   const handleSendButtonClick = useCallback(async () => {
     let params = {
@@ -109,7 +109,7 @@ const FeedbackDialog = () => {
     dispatch(closeFeedbackDialog());
     dispatch(requestFinish());
     dispatch(openToast(I18n.t('send feedback success')));
-  });
+  }, [dispatch]);
 
   return (
     <Dialog

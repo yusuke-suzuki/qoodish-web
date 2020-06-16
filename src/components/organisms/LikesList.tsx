@@ -72,6 +72,7 @@ const fromNow = like => {
 };
 
 const LikesList = props => {
+  const { params } = props;
   const [likes, setLikes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -96,10 +97,7 @@ const LikesList = props => {
     }
     setLoading(true);
 
-    const userId =
-      props.params && props.params.userId
-        ? props.params.userId
-        : currentUser.uid;
+    const userId = params && params.userId ? params.userId : currentUser.uid;
 
     const apiInstance = new LikesApi();
 
@@ -109,7 +107,7 @@ const LikesList = props => {
         setLikes(response.body);
       }
     });
-  });
+  }, [currentUser, location]);
 
   useEffect(() => {
     initUserLikes();

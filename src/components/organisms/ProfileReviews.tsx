@@ -35,6 +35,7 @@ const styles = {
 };
 
 const ProfileReviews = props => {
+  const { params } = props;
   const large = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
 
@@ -62,10 +63,7 @@ const ProfileReviews = props => {
     }
     setLoading(true);
 
-    const userId =
-      props.params && props.params.userId
-        ? props.params.userId
-        : currentUser.uid;
+    const userId = params && params.userId ? params.userId : currentUser.uid;
 
     const apiInstance = new ReviewsApi();
 
@@ -75,7 +73,7 @@ const ProfileReviews = props => {
         dispatch(fetchUserReviews(response.body));
       }
     });
-  });
+  }, [dispatch, params, currentUser, location]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

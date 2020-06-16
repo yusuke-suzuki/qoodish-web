@@ -43,7 +43,7 @@ const LikesDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeLikesDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Dialog

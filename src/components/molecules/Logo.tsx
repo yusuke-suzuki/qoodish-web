@@ -16,12 +16,13 @@ const styles = {
 };
 
 const Logo = props => {
+  const { color } = props;
   const smUp = useMediaQuery('(min-width: 600px)');
 
   return (
     <Typography
       variant={smUp ? 'h4' : 'h5'}
-      color={props.color ? props.color : 'primary'}
+      color={color ? color : 'primary'}
       style={styles.logo}
     >
       <Link to="/" style={styles.link} title="Qoodish">

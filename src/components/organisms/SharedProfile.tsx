@@ -100,17 +100,17 @@ const styles = {
 const Summary = React.memo(props => {
   const dispatch = useDispatch();
 
-  const currentUser = props.currentUser;
+  const { currentUser, handleTabChange } = props;
 
   const handleFollowingClick = useCallback(() => {
     dispatch(openFollowingMapsDialog());
-  });
+  }, [dispatch]);
 
   return (
     <div style={styles.summary}>
       <Button
         style={styles.summaryCountButton}
-        onClick={() => props.handleTabChange(undefined, 0)}
+        onClick={() => handleTabChange(undefined, 0)}
       >
         <Typography variant="subtitle2" style={styles.summaryCount}>
           {currentUser.reviews_count ? currentUser.reviews_count : 0}
@@ -145,7 +145,7 @@ const ProfileCard = React.memo(props => {
 
   const { location } = useMappedState(mapState);
 
-  const currentUser = props.currentUser;
+  const { currentUser, handleTabChange, tabValue } = props;
 
   return (
     <Card elevation={0}>
@@ -183,14 +183,11 @@ const ProfileCard = React.memo(props => {
         <Typography variant="body1" style={styles.biography} gutterBottom>
           {currentUser.biography}
         </Typography>
-        <Summary
-          handleTabChange={props.handleTabChange}
-          currentUser={props.currentUser}
-        />
+        <Summary handleTabChange={handleTabChange} currentUser={currentUser} />
       </CardContent>
       <Tabs
-        value={props.tabValue}
-        onChange={props.handleTabChange}
+        value={tabValue}
+        onChange={handleTabChange}
         indicatorColor="primary"
         textColor="primary"
         variant="fullWidth"
@@ -205,20 +202,22 @@ const ProfileCard = React.memo(props => {
 });
 
 const SharedProfile = props => {
+  const { currentUser } = props;
+
   const large = useMediaQuery('(min-width: 600px)');
 
   const [tabValue, setTabValue] = useState(0);
 
   const handleTabChange = useCallback((e, value) => {
     setTabValue(value);
-  });
+  }, []);
 
   return (
     <div>
       <ProfileCard
         tabValue={tabValue}
         handleTabChange={handleTabChange}
-        currentUser={props.currentUser}
+        currentUser={currentUser}
       />
       <div>
         {tabValue === 0 && <ProfileReviews {...props} />}

@@ -43,6 +43,7 @@ const SpotDetailContainer = props => {
 };
 
 const SpotDetail = props => {
+  const { params } = props;
   const dispatch = useDispatch();
 
   const mapState = useCallback(
@@ -60,22 +61,19 @@ const SpotDetail = props => {
     setLoading(true);
     const apiInstance = new SpotsApi();
 
-    apiInstance.spotsPlaceIdGet(
-      props.params.placeId,
-      (error, data, response) => {
-        setLoading(false);
-        if (response.ok) {
-          dispatch(fetchSpot(response.body));
-        } else if (response.status == 401) {
-          dispatch(openToast('Authenticate failed'));
-        } else if (response.status == 404) {
-          dispatch(openToast('Spot not found.'));
-        } else {
-          dispatch(openToast('Failed to fetch Spot.'));
-        }
+    apiInstance.spotsPlaceIdGet(params.placeId, (error, data, response) => {
+      setLoading(false);
+      if (response.ok) {
+        dispatch(fetchSpot(response.body));
+      } else if (response.status == 401) {
+        dispatch(openToast('Authenticate failed'));
+      } else if (response.status == 404) {
+        dispatch(openToast('Spot not found.'));
+      } else {
+        dispatch(openToast('Failed to fetch Spot.'));
       }
-    );
-  });
+    });
+  }, [params]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {

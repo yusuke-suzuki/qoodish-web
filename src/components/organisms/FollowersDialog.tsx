@@ -43,7 +43,7 @@ const FollowersDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeFollowersDialog());
-  });
+  }, [dispatch]);
 
   return (
     <Dialog

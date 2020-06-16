@@ -30,45 +30,50 @@ const CreateMapDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeCreateMapDialog());
-  });
+  }, [dispatch]);
 
-  const handleSaveButtonClick = useCallback(async (params, _mapId) => {
-    dispatch(requestStart());
+  const handleSaveButtonClick = useCallback(
+    async (params, _mapId) => {
+      dispatch(requestStart());
 
-    if (params.image_url) {
-      const uploadResponse = await uploadToStorage(
-        params.image_url,
-        'maps',
-        'data_url'
-      );
-      params.image_url = uploadResponse.imageUrl;
-    }
-
-    const apiInstance = new MapsApi();
-    const newMap = NewMap.constructFromObject(params);
-
-    apiInstance.mapsPost(newMap, (error, data, response) => {
-      dispatch(requestFinish());
-
-      if (response.ok) {
-        const map = response.body;
-        dispatch(createMap(map));
-        dispatch(closeCreateMapDialog());
-        dispatch(selectMap(map));
-        history.push(`/maps/${map.id}`);
-        dispatch(openToast(I18n.t('create map success')));
-
-        gtag('event', 'create', {
-          event_category: 'engagement',
-          event_label: 'map'
+      if (params.image_url) {
+        const uploadResponse = await uploadToStorage(
+          params.image_url,
+          'maps',
+          'data_url'
+        );
+        Object.assign(params, {
+          image_url: uploadResponse.imageUrl
         });
-      } else if (response.status === 409) {
-        dispatch(openToast(response.body.detail));
-      } else {
-        dispatch(openToast('Failed to create map.'));
       }
-    });
-  });
+
+      const apiInstance = new MapsApi();
+      const newMap = NewMap.constructFromObject(params);
+
+      apiInstance.mapsPost(newMap, (error, data, response) => {
+        dispatch(requestFinish());
+
+        if (response.ok) {
+          const map = response.body;
+          dispatch(createMap(map));
+          dispatch(closeCreateMapDialog());
+          dispatch(selectMap(map));
+          history.push(`/maps/${map.id}`);
+          dispatch(openToast(I18n.t('create map success')));
+
+          gtag('event', 'create', {
+            event_category: 'engagement',
+            event_label: 'map'
+          });
+        } else if (response.status === 409) {
+          dispatch(openToast(response.body.detail));
+        } else {
+          dispatch(openToast('Failed to create map.'));
+        }
+      });
+    },
+    [dispatch, history]
+  );
 
   return (
     <SharedEditMapDialog

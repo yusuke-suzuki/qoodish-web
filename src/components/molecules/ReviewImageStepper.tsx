@@ -49,9 +49,12 @@ const ReviewImageStepper = props => {
 
   const dispatch = useDispatch();
 
-  const handleImageClick = useCallback(image => {
-    dispatch(openImageDialog(image.url));
-  });
+  const handleImageClick = useCallback(
+    image => {
+      dispatch(openImageDialog(image.url));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     setActiveStep(0);
@@ -67,7 +70,7 @@ const ReviewImageStepper = props => {
             disabled={activeStep === 0}
             style={styles.stepButtonLeft}
           >
-            <KeyboardArrowLeft style={styles.icon} fontSize="large" />
+            <KeyboardArrowLeft fontSize="large" />
           </Fab>
         )}
         <SwipeableViews
@@ -92,7 +95,7 @@ const ReviewImageStepper = props => {
             disabled={activeStep === maxSteps - 1}
             style={styles.stepButtonRight}
           >
-            <KeyboardArrowRight style={styles.icon} fontSize="large" />
+            <KeyboardArrowRight fontSize="large" />
           </Fab>
         )}
       </CardMedia>

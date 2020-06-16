@@ -42,7 +42,7 @@ const LeaveMapDialog = () => {
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeLeaveMapDialog());
-  });
+  }, [dispatch]);
 
   const handleLeaveButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -79,7 +79,7 @@ const LeaveMapDialog = () => {
         }
       }
     );
-  });
+  }, [dispatch, currentMap]);
 
   return (
     <Dialog

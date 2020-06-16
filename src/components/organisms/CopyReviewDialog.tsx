@@ -43,12 +43,13 @@ const CopyReviewDialog = () => {
     }),
     []
   );
+
   const { dialogOpen, postableMaps, review } = useMappedState(mapState);
   const dispatch = useDispatch();
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeCopyReviewDialog());
-  });
+  }, [dispatch]);
 
   const handleOnEnter = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -64,42 +65,47 @@ const CopyReviewDialog = () => {
         console.log(error);
       }
     });
-  });
+  }, [dispatch]);
 
-  const handleMapSelected = useCallback(async map => {
-    dispatch(requestStart());
-    const params = {
-      comment: review.comment,
-      place_id: review.spot.place_id
-    };
+  const handleMapSelected = useCallback(
+    async map => {
+      dispatch(requestStart());
+      const params = {
+        comment: review.comment,
+        place_id: review.spot.place_id
+      };
 
-    if (review.image) {
-      const blob = await downloadImage(review.image.url);
-      const uploadResponse = await uploadToStorage(blob);
-      params.image_url = uploadResponse.imageUrl;
-    }
-
-    const apiInstance = new ReviewsApi();
-    const newReview = NewReview.constructFromObject(params);
-    apiInstance.mapsMapIdReviewsPost(
-      map.id,
-      newReview,
-      async (error, data, response) => {
-        dispatch(requestFinish());
-        if (response.ok) {
-          dispatch(closeCopyReviewDialog());
-          dispatch(createReview(response.body));
-          dispatch(openToast(I18n.t('copy report success')));
-          gtag('event', 'create', {
-            event_category: 'engagement',
-            event_label: 'review'
-          });
-        } else {
-          dispatch(openToast(response.body.detail));
-        }
+      if (review.image) {
+        const blob = await downloadImage(review.image.url);
+        const uploadResponse = await uploadToStorage(blob);
+        Object.assign(params, {
+          image_url: uploadResponse.imageUrl
+        });
       }
-    );
-  });
+
+      const apiInstance = new ReviewsApi();
+      const newReview = NewReview.constructFromObject(params);
+      apiInstance.mapsMapIdReviewsPost(
+        map.id,
+        newReview,
+        async (error, data, response) => {
+          dispatch(requestFinish());
+          if (response.ok) {
+            dispatch(closeCopyReviewDialog());
+            dispatch(createReview(response.body));
+            dispatch(openToast(I18n.t('copy report success')));
+            gtag('event', 'create', {
+              event_category: 'engagement',
+              event_label: 'review'
+            });
+          } else {
+            dispatch(openToast(response.body.detail));
+          }
+        }
+      );
+    },
+    [dispatch, review]
+  );
 
   return (
     <Dialog

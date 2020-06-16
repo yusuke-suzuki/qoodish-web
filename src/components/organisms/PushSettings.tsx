@@ -46,14 +46,14 @@ const PushSettings = () => {
     } else {
       setPushEnabled(false);
     }
-  });
+  }, []);
 
   const initPushSettings = useCallback(() => {
     setLikedEnabled(currentUser.push_notification.liked);
     setFollowedEnabled(currentUser.push_notification.followed);
     setInvitedEnabled(currentUser.push_notification.invited);
     setCommentEnabled(currentUser.push_notification.comment);
-  });
+  }, [currentUser]);
 
   const handleEnablePush = useCallback(async () => {
     Notification.requestPermission(async permission => {
@@ -65,13 +65,13 @@ const PushSettings = () => {
         dispatch(openToast(I18n.t('push disabled')));
       }
     });
-  });
+  }, [dispatch]);
 
   const handleDisablePush = useCallback(async () => {
     await deleteRegistrationToken();
     setPushEnabled(false);
     dispatch(openToast(I18n.t('push disabled')));
-  });
+  }, [dispatch]);
 
   const handlePushChange = useCallback((e, checked) => {
     if (checked) {
@@ -79,37 +79,40 @@ const PushSettings = () => {
     } else {
       handleDisablePush();
     }
-  });
+  }, []);
 
-  const handleChange = useCallback((action, checked) => {
-    dispatch(requestStart());
-    const pushNotification = new PushNotification();
-    pushNotification.liked = currentUser.push_notification.liked;
-    pushNotification.followed = currentUser.push_notification.followed;
-    pushNotification.invited = currentUser.push_notification.invited;
-    pushNotification.comment = currentUser.push_notification.comment;
-    pushNotification[action] = checked;
+  const handleChange = useCallback(
+    (action, checked) => {
+      dispatch(requestStart());
+      const pushNotification = new PushNotification();
+      pushNotification.liked = currentUser.push_notification.liked;
+      pushNotification.followed = currentUser.push_notification.followed;
+      pushNotification.invited = currentUser.push_notification.invited;
+      pushNotification.comment = currentUser.push_notification.comment;
+      pushNotification[action] = checked;
 
-    const apiInstance = new PushNotificationApi();
+      const apiInstance = new PushNotificationApi();
 
-    apiInstance.usersUserIdPushNotificationPut(
-      currentUser.uid,
-      pushNotification,
-      (error, data, response) => {
-        dispatch(requestFinish());
-        if (response.ok) {
-          dispatch(fetchMyProfile(response.body));
-          dispatch(openToast(I18n.t('push update success')));
-        } else {
-          dispatch(openToast(response.body.detail));
+      apiInstance.usersUserIdPushNotificationPut(
+        currentUser.uid,
+        pushNotification,
+        (error, data, response) => {
+          dispatch(requestFinish());
+          if (response.ok) {
+            dispatch(fetchMyProfile(response.body));
+            dispatch(openToast(I18n.t('push update success')));
+          } else {
+            dispatch(openToast(response.body.detail));
+          }
         }
-      }
-    );
-  });
+      );
+    },
+    [dispatch, currentUser]
+  );
 
   const disabled = useMemo(() => {
     return !currentUser || !pushAvailable() || currentUser.isAnonymous;
-  }, []);
+  }, [currentUser, pushAvailable]);
 
   useEffect(() => {
     initPushStatus();
