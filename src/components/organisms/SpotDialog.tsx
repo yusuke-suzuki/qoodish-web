@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 
-import SpotCard from '../organisms/SpotCard';
+import SpotCard from './SpotCard';
 import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 import closeSpotDialog from '../../actions/closeSpotDialog';

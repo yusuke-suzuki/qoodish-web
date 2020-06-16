@@ -52,8 +52,8 @@ const plugins = [
     'CLOUD_STORAGE_BUCKET_NAME'
   ]),
   new InjectManifest({
-    swSrc: './src/sw.js',
-    swDest: 'sw.js',
+    swSrc: './src/sw.ts',
+    swDest: 'sw.ts',
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB
   }),
   new CompressionPlugin({
@@ -63,7 +63,7 @@ const plugins = [
 ];
 
 module.exports = {
-  entry: ['whatwg-fetch', './src/index.js'],
+  entry: ['whatwg-fetch', './src/index.tsx'],
   output: {
     filename: '[name]-[contenthash].js',
     chunkFilename: '[name]-[contenthash].js',
@@ -71,15 +71,18 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true
+          }
         }
       },
       {
