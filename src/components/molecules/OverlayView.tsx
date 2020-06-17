@@ -8,9 +8,9 @@ class OverlayView extends React.PureComponent {
     this.position = props.position;
     this.containerDiv = document.createElement('div');
     this.containerDiv.style.position = 'absolute';
-    // props.googleMapsApi.OverlayView.preventMapHitsAndGesturesFrom(
-    //   this.containerDiv
-    // );
+    props.googleMapsApi.OverlayView.preventMapHitsAndGesturesFrom(
+      this.containerDiv
+    );
 
     const overlayView = new props.googleMapsApi.OverlayView();
     overlayView.onAdd = this.onAdd.bind(this);

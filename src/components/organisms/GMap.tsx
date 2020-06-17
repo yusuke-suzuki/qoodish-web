@@ -213,7 +213,7 @@ const GMap = () => {
         dispatch(openSpotCard());
       }
     },
-    [dispatch]
+    [dispatch, mdUp]
   );
 
   const clearSpot = useCallback(() => {
