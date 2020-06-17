@@ -1,6 +1,5 @@
-FROM node:13.12.0-alpine3.11
+FROM node:14.4.0-alpine3.12
 
-RUN mkdir /qoodish-web
 WORKDIR /qoodish-web
 
 COPY . /qoodish-web
