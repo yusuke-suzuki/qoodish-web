@@ -133,16 +133,11 @@ const EditReviewDialog = () => {
 
   const handleRequestClose = useCallback(() => {
     dispatch(closeEditReviewDialog());
-  }, []);
+  }, [dispatch]);
 
   const handleSpotClick = useCallback(() => {
     dispatch(openPlaceSelectDialog());
   }, [dispatch]);
-
-  const initForm = useCallback(() => {
-    setCurrentReview();
-    initPostableMaps();
-  }, []);
 
   const initPostableMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -160,6 +155,11 @@ const EditReviewDialog = () => {
       }
     });
   }, [dispatch]);
+
+  const initForm = useCallback(() => {
+    setCurrentReview();
+    initPostableMaps();
+  }, [setCurrentReview, initPostableMaps]);
 
   const handleImageFilesChange = useCallback(
     e => {
