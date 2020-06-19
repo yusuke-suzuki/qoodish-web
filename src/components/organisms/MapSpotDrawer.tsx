@@ -24,20 +24,10 @@ import CreateReviewTile from '../molecules/CreateReviewTile';
 import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
 import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 import clearMapSpotState from '../../actions/clearMapSpotState';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
-  drawerPaperLarge: {
-    height: 'calc(100vh - 64px)',
-    width: 380,
-    marginTop: 64,
-    zIndex: 1001
-  },
-  cardLarge: {
-    height: '100%',
-    minHeight: 'calc(100vh - 64px)',
-    overflowY: 'scroll'
-  },
-  cardContentSmall: {
+  cardContent: {
     paddingBottom: 16,
     paddingTop: 0
   },
@@ -66,7 +56,9 @@ const styles = {
   },
   gridList: {
     flexWrap: 'nowrap',
-    transform: 'translateZ(0)'
+    overflowX: 'auto'
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    // transform: 'translateZ(0)'
   },
   avatarGridTile: {
     width: 30,
@@ -140,58 +132,61 @@ const SpotCardContent = React.memo(() => {
   const { currentSpot, spotReviews, currentMap } = useMappedState(mapState);
 
   return (
-    <div>
-      <CardContent style={styles.cardContentSmall}>
-        <div style={styles.dragHandle}>
-          <DragHandleIcon color="disabled" />
-        </div>
-        <SpotCardHeader currentSpot={currentSpot} />
-        <GridList
-          cols={smUp ? 4.5 : 2.5}
-          cellHeight={100}
-          style={styles.gridList}
-        >
-          {currentMap.postable && (
-            <GridListTile key="add-review">
-              <CreateReviewTile currentSpot={currentSpot} />
-            </GridListTile>
-          )}
-          {spotReviews.map(review => (
-            <GridListTile
-              key={review.id}
-              component={Link}
-              to={{
-                pathname: `/maps/${review.map.id}/reports/${review.id}`,
-                state: { modal: true, review: review }
-              }}
-            >
-              <img
-                src={
-                  review.images.length > 0
-                    ? review.images[0].thumbnail_url_400
-                    : process.env.SUBSTITUTE_URL
-                }
-                alt={review.spot.name}
-                loading="lazy"
-              />
-              <GridListTileBar
-                style={styles.tileBar}
-                actionIcon={
-                  <Avatar
-                    src={review.author.profile_image_url}
-                    alt={review.author.name}
-                    style={styles.avatarGridTile}
-                    loading="lazy"
-                  />
-                }
-                actionPosition="left"
-                subtitle={review.comment}
-              />
-            </GridListTile>
-          ))}
-        </GridList>
-      </CardContent>
-    </div>
+    <CardContent style={styles.cardContent}>
+      <div style={styles.dragHandle}>
+        <DragHandleIcon color="disabled" />
+      </div>
+      <SpotCardHeader currentSpot={currentSpot} />
+      <GridList
+        cols={smUp ? 4.5 : 2.5}
+        cellHeight={100}
+        style={styles.gridList}
+      >
+        {currentMap.postable && (
+          <GridListTile key="add-review">
+            <CreateReviewTile currentSpot={currentSpot} />
+          </GridListTile>
+        )}
+        {spotReviews.length < 1 && (
+          <GridListTile>
+            <Skeleton variant="rect" height={100} />
+          </GridListTile>
+        )}
+        {spotReviews.map(review => (
+          <GridListTile
+            key={review.id}
+            component={Link}
+            to={{
+              pathname: `/maps/${review.map.id}/reports/${review.id}`,
+              state: { modal: true, review: review }
+            }}
+          >
+            <img
+              src={
+                review.images.length > 0
+                  ? review.images[0].thumbnail_url_400
+                  : process.env.SUBSTITUTE_URL
+              }
+              alt={review.spot.name}
+              loading="lazy"
+            />
+            <GridListTileBar
+              style={styles.tileBar}
+              actionIcon={
+                <Avatar
+                  src={review.author.profile_image_url}
+                  alt={review.author.name}
+                  style={styles.avatarGridTile}
+                  loading="lazy"
+                />
+              }
+              actionPosition="left"
+              subtitle={review.comment}
+            />
+          </GridListTile>
+        ))}
+      </GridList>
+    </CardContent>
   );
 });
 
