@@ -56,9 +56,9 @@ const styles = {
   },
   gridList: {
     flexWrap: 'nowrap',
-    overflowX: 'auto'
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    // transform: 'translateZ(0)'
+    transform: 'translateZ(0)',
+    '-webkit-overflow-scrolling': 'unset'
   },
   avatarGridTile: {
     width: 30,
