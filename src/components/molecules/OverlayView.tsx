@@ -1,73 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import ReactDOM from 'react-dom';
+import GoogleMapsContext from '../../GoogleMapsContext';
 
-class OverlayView extends React.PureComponent {
-  constructor(props) {
-    super(props);
+type Props = {
+  position: any;
+  children: JSX.Element;
+};
 
-    this.position = props.position;
-    this.containerDiv = document.createElement('div');
-    this.containerDiv.style.position = 'absolute';
-    props.googleMapsApi.OverlayView.preventMapHitsAndGesturesFrom(
-      this.containerDiv
-    );
+const OverlayView: React.FC<Props> = props => {
+  const { googleMapsApi, gMap } = useContext(GoogleMapsContext);
+  const { position, children } = props;
 
-    const overlayView = new props.googleMapsApi.OverlayView();
-    overlayView.onAdd = this.onAdd.bind(this);
-    overlayView.draw = this.draw.bind(this);
-    overlayView.onRemove = this.onRemove.bind(this);
+  const [container, setContainer] = useState(document.createElement('div'));
+  const [overlay, setOverlay] = useState(undefined);
 
-    overlayView.setMap(props.gMap);
+  const initOverlay = useCallback(() => {
+    const overlayView = new googleMapsApi.OverlayView();
+    overlayView.setMap(gMap);
+    setOverlay(overlayView);
+    googleMapsApi.OverlayView.preventMapHitsFrom(container);
+  }, [googleMapsApi, gMap, container]);
 
-    this.state = {
-      overlayView: overlayView
-    };
-  }
+  const onAdd = useCallback(() => {
+    container.style.position = 'absolute';
+    overlay.getPanes().overlayMouseTarget.appendChild(container);
+  }, [overlay]);
 
-  onAdd() {
-    this.state.overlayView
-      .getPanes()
-      .overlayMouseTarget.appendChild(this.containerDiv);
-  }
+  const draw = useCallback(() => {
+    const divPosition = overlay.getProjection().fromLatLngToDivPixel(position);
+    container.style.left = `${divPosition.x - 40}px`;
+    container.style.top = `${divPosition.y - 40}px`;
+  }, [overlay, container, position]);
 
-  onRemove() {
-    if (this.containerDiv.parentElement) {
-      this.containerDiv.parentElement.removeChild(this.containerDiv);
-      ReactDOM.unmountComponentAtNode(this.containerDiv);
-      this.containerDiv = null;
+  const onRemove = useCallback(() => {
+    ReactDOM.unmountComponentAtNode(container);
+    setContainer(undefined);
+    overlay.setMap(null);
+  }, [container, overlay]);
+
+  const bindFunctions = useCallback(() => {
+    overlay.onAdd = onAdd.bind(this);
+    overlay.draw = draw.bind(this);
+    overlay.onRemove = onRemove.bind(this);
+  }, [overlay]);
+
+  useEffect(() => {
+    if (overlay) {
+      bindFunctions();
     }
-  }
+  }, [overlay]);
 
-  draw() {
-    const divPosition = this.state.overlayView
-      .getProjection()
-      .fromLatLngToDivPixel(this.position);
+  useEffect(() => {
+    initOverlay();
+  }, []);
 
-    // Hide the popup when it is far out of view.
-    const display =
-      Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
-        ? 'block'
-        : 'none';
+  return ReactDOM.createPortal(children, container);
+};
 
-    if (display === 'block') {
-      this.containerDiv.style.left = divPosition.x - 40 + 'px';
-      this.containerDiv.style.top = divPosition.y - 40 + 'px';
-    }
-    if (this.containerDiv.style.display !== display) {
-      this.containerDiv.style.display = display;
-    }
-
-    ReactDOM.unstable_renderSubtreeIntoContainer(
-      this,
-      this.props.children,
-      this.containerDiv
-    );
-    // ReactDOM.createPortal(this.props.children, this.containerDiv);
-  }
-
-  render() {
-    return false;
-  }
-}
-
-export default OverlayView;
+export default React.memo(OverlayView);
