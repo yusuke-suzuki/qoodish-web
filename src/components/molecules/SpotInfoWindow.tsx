@@ -15,6 +15,7 @@ import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import GoogleMapsLink from './GoogleMapsLink';
 import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
 import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const styles = {
   root: {
@@ -34,6 +35,9 @@ const styles = {
     borderWidth: 1,
     width: 32,
     height: 32
+  },
+  skeletonAvatar: {
+    marginBottom: '0.35em'
   },
   cardActions: {
     padding: 12,
@@ -109,23 +113,32 @@ const SpotInfoWindow = () => {
         <Typography variant="subtitle2" gutterBottom color="textSecondary">
           {`${spotReviews.length} ${I18n.t('reviews count')}`}
         </Typography>
-        {spotReviews.map(review => (
-          <ButtonBase
-            key={review.id}
-            component={Link}
-            to={{
-              pathname: `/maps/${review.map.id}/reports/${review.id}`,
-              state: { modal: true, review: review }
-            }}
-          >
-            <Avatar
-              src={review.author.profile_image_url}
-              alt={review.author.name}
-              style={styles.reviewerAvatar}
-              loading="lazy"
-            />
-          </ButtonBase>
-        ))}
+        {spotReviews.length > 0 ? (
+          spotReviews.map(review => (
+            <ButtonBase
+              key={review.id}
+              component={Link}
+              to={{
+                pathname: `/maps/${review.map.id}/reports/${review.id}`,
+                state: { modal: true, review: review }
+              }}
+            >
+              <Avatar
+                src={review.author.profile_image_url}
+                alt={review.author.name}
+                style={styles.reviewerAvatar}
+                loading="lazy"
+              />
+            </ButtonBase>
+          ))
+        ) : (
+          <Skeleton
+            variant="circle"
+            width={32}
+            height={32}
+            style={styles.skeletonAvatar}
+          />
+        )}
         <GoogleMapsLink currentSpot={currentSpot} />
       </CardContent>
       {currentMap.postable && (
