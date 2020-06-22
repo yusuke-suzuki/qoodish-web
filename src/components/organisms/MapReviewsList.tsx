@@ -19,7 +19,6 @@ const styles = {
     fontSize: 14
   },
   secondaryAvatar: {
-    borderRadius: 0,
     marginRight: 12,
     cursor: 'pointer'
   },
@@ -80,6 +79,7 @@ const MapReviewsList = () => {
             <ListItemSecondaryAction>
               <Avatar
                 src={review.images[0].thumbnail_url}
+                variant="rounded"
                 style={styles.secondaryAvatar}
                 alt={review.spot.name}
                 component={Link}
