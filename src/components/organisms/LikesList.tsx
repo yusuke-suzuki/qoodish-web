@@ -25,7 +25,6 @@ const styles = {
     paddingRight: 32
   },
   secondaryAvatar: {
-    borderRadius: 0,
     marginRight: 12,
     cursor: 'pointer'
   },
@@ -156,6 +155,7 @@ const LikesList = props => {
                   <ButtonBase component={Link} to={like.click_action}>
                     <Avatar
                       src={like.votable.thumbnail_url}
+                      variant="rounded"
                       style={styles.secondaryAvatar}
                       loading="lazy"
                     />

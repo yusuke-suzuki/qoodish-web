@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useHistory, Link } from '@yusuke-suzuki/rize-router';
@@ -37,6 +37,7 @@ import ProfileCard from './ProfileCard';
 import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 import Logo from './Logo';
 import openAnnouncementDialog from '../../actions/openAnnouncementDialog';
+import { useIOS } from '../../utils/detectDevice';
 
 const styles = {
   titleLarge: {
@@ -111,19 +112,22 @@ const DrawerContents = React.memo(() => {
 
     history.push('/login');
     dispatch(requestFinish());
-  });
+  }, [dispatch, history]);
 
   const handleAnnouncementClick = useCallback(() => {
     dispatch(openAnnouncementDialog());
-  });
+  }, [dispatch]);
 
   const handleFeedbackClick = useCallback(() => {
     dispatch(openFeedbackDialog());
-  });
+  }, [dispatch]);
 
-  const isSelected = useCallback(pathname => {
-    return currentLocation && currentLocation.pathname === pathname;
-  });
+  const isSelected = useCallback(
+    pathname => {
+      return currentLocation && currentLocation.pathname === pathname;
+    },
+    [currentLocation]
+  );
 
   return (
     <div>
@@ -295,12 +299,18 @@ const NavDrawer = () => {
   const drawerOpen = useMappedState(
     useCallback(state => state.shared.drawerOpen, [])
   );
+
   const handleOpenDrawer = useCallback(() => {
     dispatch(openDrawer());
-  });
+  }, [dispatch]);
+
   const handleCloseDrawer = useCallback(() => {
     dispatch(closeDrawer());
-  });
+  }, [dispatch]);
+
+  const iOS = useMemo(() => {
+    return useIOS();
+  }, [useIOS]);
 
   return (
     <SwipeableDrawer
@@ -309,6 +319,8 @@ const NavDrawer = () => {
       onClose={handleCloseDrawer}
       onClick={handleCloseDrawer}
       PaperProps={{ style: styles.drawerPaper }}
+      disableBackdropTransition={!iOS}
+      disableDiscovery={iOS}
     >
       <DrawerContents />
     </SwipeableDrawer>

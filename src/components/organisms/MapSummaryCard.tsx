@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import CardContent from '@material-ui/core/CardContent';
@@ -16,13 +16,11 @@ import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
 
 import requestMapCenter from '../../actions/requestMapCenter';
-import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import fetchLikes from '../../actions/fetchLikes';
-import openLikesDialog from '../../actions/openLikesDialog';
-import openFollowersDialog from '../../actions/openFollowersDialog';
 import Skeleton from '@material-ui/lab/Skeleton';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
+import FollowerAvatars from '../molecules/FollowerAvatars';
+import VoterAvatars from '../molecules/VoterAvatars';
 
 const styles = {
   text: {
@@ -36,94 +34,11 @@ const styles = {
     marginBottom: 16,
     marginRight: 12
   },
-  followersContainer: {
-    display: 'flex'
-  },
-  followerAvatar: {
+  avatarsContainer: {
     marginBottom: 16,
-    marginRight: -10.66666667,
-    borderColor: '#fff',
-    borderRadius: '50%',
-    borderStyle: 'solid',
-    float: 'right',
-    borderWidth: 1,
     cursor: 'pointer'
   }
 };
-
-const MapLikes = React.memo(() => {
-  const [likes, setLikes] = useState([]);
-  const dispatch = useDispatch();
-
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser,
-      currentMap: state.mapSummary.currentMap
-    }),
-    []
-  );
-  const { currentUser, currentMap } = useMappedState(mapState);
-
-  const refreshLikes = useCallback(async () => {
-    const apiInstance = new LikesApi();
-
-    apiInstance.mapsMapIdLikesGet(currentMap.id, (error, data, response) => {
-      if (response.ok) {
-        setLikes(response.body);
-        dispatch(fetchLikes(response.body));
-      }
-    });
-  }, [dispatch, currentMap]);
-
-  const handleLikesClick = useCallback(() => {
-    dispatch(openLikesDialog());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid) {
-      return;
-    }
-    if (currentMap) {
-      refreshLikes();
-    }
-  }, [currentMap, currentUser.uid]);
-
-  return likes
-    .slice(0, 9)
-    .map(like => (
-      <Avatar
-        key={like.id}
-        src={like.voter.profile_image_url}
-        alt={like.voter.name}
-        style={styles.followerAvatar}
-        onClick={handleLikesClick}
-      />
-    ));
-});
-
-const Followers = React.memo(() => {
-  const dispatch = useDispatch();
-
-  const followers = useMappedState(
-    useCallback(state => state.mapSummary.followers, [])
-  );
-
-  const handleFollowersClick = useCallback(() => {
-    dispatch(openFollowersDialog());
-  }, [dispatch]);
-
-  return followers
-    .slice(0, 9)
-    .map(follower => (
-      <Avatar
-        key={follower.id}
-        src={follower.profile_image_url}
-        alt={follower.name}
-        style={styles.followerAvatar}
-        onClick={handleFollowersClick}
-      />
-    ));
-});
 
 const parseDate = date => {
   return moment(date, 'YYYY-MM-DDThh:mm:ss.SSSZ')
@@ -131,13 +46,11 @@ const parseDate = date => {
     .format('LL');
 };
 
-const MapTypes = React.memo(() => {
-  const map = useMappedState(
-    useCallback(state => state.mapSummary.currentMap, [])
-  );
+const MapTypes = React.memo(props => {
+  const { currentMap } = props;
 
   let mapTypes = [];
-  if (map.private) {
+  if (currentMap.private) {
     mapTypes.push(
       <Chip
         key="private"
@@ -164,7 +77,7 @@ const MapTypes = React.memo(() => {
       />
     );
   }
-  if (map.shared) {
+  if (currentMap.shared) {
     mapTypes.push(
       <Chip
         key="shared"
@@ -213,154 +126,148 @@ const MapSummaryCard = () => {
   }, [dispatch, currentMap]);
 
   return (
-    <div>
-      <CardContent>
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('map name')}
+    <CardContent>
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('map name')}
+      </Typography>
+      {currentMap ? (
+        <Typography variant="h5" gutterBottom style={styles.text}>
+          {currentMap.name}
         </Typography>
-        {currentMap ? (
-          <Typography variant="h5" gutterBottom style={styles.text}>
-            {currentMap.name}
-          </Typography>
-        ) : (
-          <Skeleton height={32} width="80%" />
-        )}
+      ) : (
+        <Skeleton height={32} width="80%" />
+      )}
 
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('owner')}
-        </Typography>
-        <ButtonBase
-          component={Link}
-          to={currentMap ? `/users/${currentMap.owner_id}` : '/'}
-          title={currentMap && currentMap.owner_name}
-        >
-          <Chip
-            avatar={
-              <Avatar
-                src={currentMap && currentMap.owner_image_url}
-                alt={currentMap && currentMap.owner_name}
-                loading="lazy"
-              />
-            }
-            label={currentMap && currentMap.owner_name}
-            style={styles.chip}
-            clickable
-          />
-        </ButtonBase>
-
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('description')}
-        </Typography>
-        {currentMap ? (
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            style={styles.description}
-          >
-            {currentMap.description}
-          </Typography>
-        ) : (
-          <React.Fragment>
-            <Skeleton height={32} width="100%" />
-            <Skeleton height={32} width="100%" />
-          </React.Fragment>
-        )}
-
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('map base')}
-        </Typography>
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('owner')}
+      </Typography>
+      <ButtonBase
+        component={Link}
+        to={currentMap ? `/users/${currentMap.owner_id}` : '/'}
+        title={currentMap && currentMap.owner_name}
+      >
         <Chip
           avatar={
-            <Avatar>
-              <PlaceIcon />
-            </Avatar>
+            <Avatar
+              src={currentMap && currentMap.owner_image_url}
+              alt={currentMap && currentMap.owner_name}
+              loading="lazy"
+            />
           }
-          label={
-            currentMap && currentMap.base.name
-              ? currentMap.base.name
-              : I18n.t('not set')
-          }
+          label={currentMap && currentMap.owner_name}
           style={styles.chip}
           clickable
-          onClick={handleBaseClick}
         />
+      </ButtonBase>
 
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('last reported date')}
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('description')}
+      </Typography>
+      {currentMap ? (
+        <Typography variant="subtitle1" gutterBottom style={styles.description}>
+          {currentMap.description}
         </Typography>
+      ) : (
+        <React.Fragment>
+          <Skeleton height={32} width="100%" />
+          <Skeleton height={32} width="100%" />
+        </React.Fragment>
+      )}
+
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('map base')}
+      </Typography>
+      <Chip
+        avatar={
+          <Avatar>
+            <PlaceIcon />
+          </Avatar>
+        }
+        label={
+          currentMap && currentMap.base.name
+            ? currentMap.base.name
+            : I18n.t('not set')
+        }
+        style={styles.chip}
+        clickable
+        onClick={handleBaseClick}
+      />
+
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('last reported date')}
+      </Typography>
+      {currentMap ? (
+        <Typography variant="subtitle1" gutterBottom style={styles.text}>
+          {currentMap.last_reported_at
+            ? parseDate(currentMap.last_reported_at)
+            : '-'}
+        </Typography>
+      ) : (
+        <Skeleton height={28} width="40%" />
+      )}
+
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('created date')}
+      </Typography>
+      {currentMap ? (
+        <Typography variant="subtitle1" gutterBottom style={styles.text}>
+          {parseDate(currentMap.created_at)}
+        </Typography>
+      ) : (
+        <Skeleton height={28} width="40%" />
+      )}
+
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {I18n.t('map type')}
+      </Typography>
+      {currentMap ? (
+        <MapTypes currentMap={currentMap} />
+      ) : (
+        <React.Fragment>
+          <Chip
+            avatar={<Skeleton variant="circle" width={24} height={24} />}
+            style={styles.chip}
+          />
+          <Chip
+            avatar={<Skeleton variant="circle" width={24} height={24} />}
+            style={styles.chip}
+          />
+        </React.Fragment>
+      )}
+
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {`${currentMap ? currentMap.followers_count : 0} ${I18n.t(
+          'followers count'
+        )}`}
+      </Typography>
+      <div style={styles.avatarsContainer}>
         {currentMap ? (
-          <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {currentMap.last_reported_at
-              ? parseDate(currentMap.last_reported_at)
-              : '-'}
+          <FollowerAvatars />
+        ) : (
+          <Skeleton variant="circle" width={40} height={40} />
+        )}
+      </div>
+
+      {currentMap && currentMap.likes_count > 0 && (
+        <React.Fragment>
+          <Typography variant="subtitle2" gutterBottom color="textSecondary">
+            {`${currentMap.likes_count} ${I18n.t('like users')}`}
           </Typography>
-        ) : (
-          <Skeleton height={28} width="40%" />
-        )}
+          <div style={styles.avatarsContainer}>
+            <VoterAvatars />
+          </div>
+        </React.Fragment>
+      )}
 
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('created date')}
-        </Typography>
-        {currentMap ? (
-          <Typography variant="subtitle1" gutterBottom style={styles.text}>
-            {parseDate(currentMap.created_at)}
-          </Typography>
-        ) : (
-          <Skeleton height={28} width="40%" />
-        )}
-
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {I18n.t('map type')}
-        </Typography>
-        {currentMap ? (
-          <MapTypes />
-        ) : (
-          <React.Fragment>
-            <Chip
-              avatar={<Skeleton variant="circle" width={40} height={40} />}
-              style={styles.chip}
-            />
-            <Chip
-              avatar={<Skeleton variant="circle" width={40} height={40} />}
-              style={styles.chip}
-            />
-          </React.Fragment>
-        )}
-
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {`${currentMap ? currentMap.followers_count : 0} ${I18n.t(
-            'followers count'
-          )}`}
-        </Typography>
-        <div style={styles.followersContainer}>
-          {currentMap ? (
-            <Followers />
-          ) : (
-            <Skeleton variant="circle" width={40} height={40} />
-          )}
-        </div>
-
-        {currentMap && currentMap.likes_count > 0 && (
-          <React.Fragment>
-            <Typography variant="subtitle2" gutterBottom color="textSecondary">
-              {`${currentMap.likes_count} ${I18n.t('like users')}`}
-            </Typography>
-            <div style={styles.followersContainer}>
-              <MapLikes currentMap={currentMap} />
-            </div>
-          </React.Fragment>
-        )}
-
-        <Typography variant="subtitle2" gutterBottom color="textSecondary">
-          {`${mapReviews.length} ${I18n.t('reviews count')}`}
-        </Typography>
-        <ReviewGridList cellHeight="auto">
-          {mapReviews.map(review => (
-            <ReviewImageTile review={review} key={review.id} />
-          ))}
-        </ReviewGridList>
-      </CardContent>
-    </div>
+      <Typography variant="subtitle2" gutterBottom color="textSecondary">
+        {`${mapReviews.length} ${I18n.t('reviews count')}`}
+      </Typography>
+      <ReviewGridList cellHeight="auto">
+        {mapReviews.map(review => (
+          <ReviewImageTile review={review} key={review.id} />
+        ))}
+      </ReviewGridList>
+    </CardContent>
   );
 };
 
