@@ -3,7 +3,7 @@
     "target": "es5",
     "module": "es2015",
     "esModuleInterop": true,
-    "jsx": "react"
-  },
-  "include": ["node_modules/**/*.d.ts"]
+    "jsx": "react",
+    "moduleResolution": "node"
+  }
 }
