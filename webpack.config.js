@@ -53,7 +53,7 @@ const plugins = [
   ]),
   new InjectManifest({
     swSrc: './src/sw.ts',
-    swDest: 'sw.ts',
+    swDest: 'sw.js',
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 // 5MB
   }),
   new CompressionPlugin({
