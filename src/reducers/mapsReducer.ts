@@ -59,7 +59,7 @@ const reducer = (state = initialState, action) => {
         targetMap: action.payload.map,
         editMapDialogOpen: true
       };
-      if (action.payload.map.base.place_id) {
+      if (action.payload.map.base) {
         Object.assign(newState, {
           selectedBase: {
             placeId: action.payload.map.base.place_id,
