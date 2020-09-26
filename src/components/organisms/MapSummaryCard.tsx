@@ -119,7 +119,7 @@ const MapSummaryCard = () => {
   const dispatch = useDispatch();
 
   const handleBaseClick = useCallback(() => {
-    if (!currentMap.base.name) {
+    if (!currentMap.base) {
       return;
     }
     dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
@@ -184,7 +184,7 @@ const MapSummaryCard = () => {
           </Avatar>
         }
         label={
-          currentMap && currentMap.base.name
+          currentMap && currentMap.base
             ? currentMap.base.name
             : I18n.t('not set')
         }

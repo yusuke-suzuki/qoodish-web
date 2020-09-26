@@ -63,7 +63,7 @@ const GMap = () => {
   const initCenter = useCallback(async () => {
     await sleep(2000);
 
-    if (currentMap.base.place_id) {
+    if (currentMap.base) {
       dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
     } else {
       dispatch(requestCurrentPosition());
