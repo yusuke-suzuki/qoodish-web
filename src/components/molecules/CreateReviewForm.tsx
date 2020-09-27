@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { memo, useCallback, useContext } from 'react';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
@@ -7,6 +7,7 @@ import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import ProfileAvatar from './ProfileAvatar';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   formCard: {
@@ -14,15 +15,17 @@ const styles = {
   }
 };
 
-const CreateReviewForm = () => {
+export default memo(function CreateReviewForm() {
   const dispatch = useDispatch();
+  const { currentUser } = useContext(AuthContext);
+
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser
+      profile: state.app.profile
     }),
     []
   );
-  const { currentUser } = useMappedState(mapState);
+  const { profile } = useMappedState(mapState);
 
   const handleCreateReviewClick = useCallback(() => {
     if (!currentUser || currentUser.isAnonymous) {
@@ -39,7 +42,7 @@ const CreateReviewForm = () => {
       elevation={0}
     >
       <CardHeader
-        avatar={<ProfileAvatar currentUser={currentUser} />}
+        avatar={<ProfileAvatar profile={profile} />}
         title={
           <Typography variant="body1" color="textSecondary">
             {I18n.t('share recent spot')}
@@ -48,6 +51,4 @@ const CreateReviewForm = () => {
       />
     </Card>
   );
-};
-
-export default React.memo(CreateReviewForm);
+});

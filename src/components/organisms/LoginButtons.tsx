@@ -13,13 +13,13 @@ import downloadImage from '../../utils/downloadImage';
 import sleep from '../../utils/sleep';
 import I18n from '../../utils/I18n';
 
-import signIn from '../../actions/signIn';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import { UsersApi, NewUser } from '@yusuke-suzuki/qoodish-api-js-client';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
+import fetchMyProfile from '../../actions/fetchMyProfile';
 
 const LoginButtons = props => {
   const dispatch = useDispatch();
@@ -69,12 +69,6 @@ const LoginButtons = props => {
       const currentUser = authResult.user;
 
       if (currentUser.isAnonymous) {
-        const user = {
-          uid: currentUser.uid,
-          isAnonymous: true
-        };
-        dispatch(signIn(user));
-
         if (nextPath) {
           history.push(nextPath);
         }
@@ -122,7 +116,7 @@ const LoginButtons = props => {
 
           // wait until thumbnail created on cloud function
           await sleep(3000);
-          dispatch(signIn(response.body));
+          dispatch(fetchMyProfile(response.body));
         } else {
           dispatch(openToast(response.body.detail));
         }

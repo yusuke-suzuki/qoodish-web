@@ -23,13 +23,15 @@ import {
   CollaboratorsApi,
   FollowsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import { useTheme } from '@material-ui/core';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const LeaveMapDialog = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -86,7 +88,7 @@ const LeaveMapDialog = () => {
       open={dialogOpen}
       onClose={handleRequestClose}
       fullWidth
-      TransitionComponent={large ? Fade : Transition}
+      TransitionComponent={smUp ? Fade : Transition}
     >
       <DialogTitle>{I18n.t('sure to unfollow map')}</DialogTitle>
       <DialogContent>

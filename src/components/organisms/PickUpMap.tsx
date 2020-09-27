@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import { Link } from '@yusuke-suzuki/rize-router';
@@ -7,8 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import { useMappedState } from 'redux-react-hook';
+import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { useTheme } from '@material-ui/core';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   gridList: {
@@ -31,19 +32,17 @@ const styles = {
 };
 
 const PickUpMap = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [map, setMap] = useState(undefined);
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const initPickUpMap = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.mapsMapIdGet(
       process.env.PICKED_UP_MAP_ID,
@@ -53,20 +52,20 @@ const PickUpMap = () => {
         }
       }
     );
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
     initPickUpMap();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   return (
     <GridList cols={1} style={styles.gridList} spacing={0}>
       <GridListTile
         key={map && map.id}
-        style={large ? styles.pickUpTileLarge : styles.pickUpTileSmall}
+        style={smUp ? styles.pickUpTileLarge : styles.pickUpTileSmall}
         component={Link}
         to={`/maps/${map && map.id}`}
         title={map && map.name}
@@ -79,7 +78,7 @@ const PickUpMap = () => {
         <GridListTileBar
           title={
             <Typography
-              variant={large ? 'h2' : 'h4'}
+              variant={smUp ? 'h2' : 'h4'}
               color="inherit"
               gutterBottom
               style={styles.pickUpText}
@@ -89,7 +88,7 @@ const PickUpMap = () => {
           }
           subtitle={
             <Typography
-              variant={large ? 'h4' : 'h5'}
+              variant={smUp ? 'h4' : 'h5'}
               color="inherit"
               style={styles.pickUpText}
             >

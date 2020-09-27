@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -19,9 +19,11 @@ import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonMapCollection from '../organisms/SkeletonMapCollection';
 import MapCollection from '../organisms/MapCollection';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   container: {
@@ -58,21 +60,27 @@ const MapContainer = React.memo(props => {
 });
 
 const Discover = () => {
-  const large = useMediaQuery('(min-width: 600px)');
-  const mdUp = useMediaQuery('(min-width: 960px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+  const { currentUser } = useContext(AuthContext);
+
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       activeMaps: state.discover.activeMaps,
       recentMaps: state.discover.recentMaps
     }),
     []
   );
-  const { currentUser, activeMaps, recentMaps } = useMappedState(mapState);
+  const { activeMaps, recentMaps } = useMappedState(mapState);
 
   const initActiveMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const opts = {
       active: true
     };
@@ -85,10 +93,13 @@ const Discover = () => {
         console.log(error);
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   const initRecentMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const opts = {
       recent: true
     };
@@ -101,7 +112,7 @@ const Discover = () => {
         console.log(error);
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -109,7 +120,7 @@ const Discover = () => {
     }
     initActiveMaps();
     initRecentMaps();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     dispatch(
@@ -184,7 +195,7 @@ const Discover = () => {
         </div>
       )}
 
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };

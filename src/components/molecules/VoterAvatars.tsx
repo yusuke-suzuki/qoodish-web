@@ -1,10 +1,11 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import fetchLikes from '../../actions/fetchLikes';
 import openLikesDialog from '../../actions/openLikesDialog';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const VoterAvatars = () => {
   const [likes, setLikes] = useState([]);
@@ -12,12 +13,12 @@ const VoterAvatars = () => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       currentMap: state.mapSummary.currentMap
     }),
     []
   );
-  const { currentUser, currentMap } = useMappedState(mapState);
+  const { currentMap } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const refreshLikes = useCallback(async () => {
     const apiInstance = new LikesApi();
@@ -41,7 +42,7 @@ const VoterAvatars = () => {
     if (currentMap) {
       refreshLikes();
     }
-  }, [currentMap, currentUser.uid]);
+  }, [currentMap, currentUser]);
 
   return (
     <AvatarGroup max={9} onClick={handleLikesClick}>

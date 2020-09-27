@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { useHistory } from '@yusuke-suzuki/rize-router';
 
@@ -13,8 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import I18n from '../../utils/I18n';
 
 import closeDeleteAccountDialog from '../../actions/closeDeleteAccountDialog';
-import signOut from '../../actions/signOut';
-import signIn from '../../actions/signIn';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
@@ -22,23 +20,28 @@ import getFirebase from '../../utils/getFirebase';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
 
 import { UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  deleteButton: {
-    color: 'white',
-    backgroundColor: 'red'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    deleteButton: {
+      color: 'white',
+      backgroundColor: 'red'
+    }
+  })
+);
 
 const DeleteAccountDialog = () => {
+  const { currentUser } = useContext(AuthContext);
+
   const mapState = useCallback(
     state => ({
-      dialogOpen: state.settings.deleteAccountDialogOpen,
-      currentUser: state.app.currentUser
+      dialogOpen: state.settings.deleteAccountDialogOpen
     }),
     []
   );
-  const { dialogOpen, currentUser } = useMappedState(mapState);
+  const { dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -66,18 +69,9 @@ const DeleteAccountDialog = () => {
         const firebase = await getFirebase();
         await getFirebaseAuth();
         await firebase.auth().signOut();
-        dispatch(signOut());
 
         localStorage.removeItem('registrationToken');
 
-        await firebase.auth().signInAnonymously();
-        const firebaseUser = firebase.auth().currentUser;
-        dispatch(
-          signIn({
-            uid: firebaseUser.uid,
-            isAnonymous: true
-          })
-        );
         dispatch(closeDeleteAccountDialog());
         dispatch(requestFinish());
         history.push('/login');
@@ -85,6 +79,8 @@ const DeleteAccountDialog = () => {
       }
     );
   }, [dispatch, history, currentUser]);
+
+  const classes = useStyles();
 
   return (
     <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>
@@ -103,7 +99,7 @@ const DeleteAccountDialog = () => {
           variant="contained"
           onClick={handleDeleteButtonClick}
           disabled={disabled}
-          style={disabled ? {} : styles.deleteButton}
+          className={disabled ? '' : classes.deleteButton}
         >
           {I18n.t('delete')}
         </Button>

@@ -1,16 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
+import AuthContext from '../../context/AuthContext';
 
-const ProfileAvatar = props => {
-  const { currentUser, size } = props;
+type Props = {
+  profile: any;
+  size: number;
+};
+
+export default function ProfileAvatar(props: Props) {
+  const { profile, size } = props;
+  const { currentUser } = useContext(AuthContext);
 
   const avatarStyle = useMemo(() => {
     return size ? { width: size, height: size } : { width: 40, height: 40 };
   }, [size]);
 
   const iconStyle = useMemo(() => {
-    return size ? { fontSize: props.size } : { fontSize: 40 };
+    return size ? { fontSize: size } : { fontSize: 40 };
   }, [size]);
 
   if (!currentUser || currentUser.isAnonymous) {
@@ -22,13 +29,11 @@ const ProfileAvatar = props => {
   } else {
     return (
       <Avatar
-        src={currentUser.thumbnail_url_400}
+        src={profile.thumbnail_url_400}
         style={avatarStyle}
-        alt={currentUser.name}
+        alt={profile.name}
         loading="lazy"
       />
     );
   }
-};
-
-export default React.memo(ProfileAvatar);
+}

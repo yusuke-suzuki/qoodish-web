@@ -1,9 +1,15 @@
-import React, { useContext, useEffect, useCallback, useState } from 'react';
-import GoogleMapsContext from '../../GoogleMapsContext';
+import React, {
+  useContext,
+  useEffect,
+  useCallback,
+  useState,
+  memo
+} from 'react';
+import GoogleMapsContext from '../../context/GoogleMapsContext';
 import { useMappedState } from 'redux-react-hook';
 import I18n from '../../utils/I18n';
 
-const CurrentPositionMarker = () => {
+export default memo(function CurrentPositionMarker() {
   const { googleMapsApi, gMap } = useContext(GoogleMapsContext);
   const [currentPositionMarker, setCurrentPositionMarker] = useState(undefined);
 
@@ -54,6 +60,4 @@ const CurrentPositionMarker = () => {
   }, [currentPosition]);
 
   return null;
-};
-
-export default React.memo(CurrentPositionMarker);
+});

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useHistory } from '@yusuke-suzuki/rize-router';
 
@@ -21,7 +21,13 @@ import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import { FollowsApi, InvitesApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import {
+  ApiClient,
+  FollowsApi,
+  InvitesApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
+import { useTheme } from '@material-ui/core';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   cardLarge: {
@@ -49,16 +55,11 @@ const createdAt = invite => {
 };
 
 const Invites = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
   const history = useHistory();
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,6 +83,9 @@ const Invites = () => {
       dispatch(requestStart());
 
       const apiInstance = new FollowsApi();
+      const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+      firebaseAuth.apiKey = await currentUser.getIdToken();
+      firebaseAuth.apiKeyPrefix = 'Bearer';
       const opts = {
         inviteId: invite.id
       };
@@ -104,7 +108,7 @@ const Invites = () => {
         }
       );
     },
-    [dispatch, history]
+    [dispatch, history, currentUser]
   );
 
   useEffect(() => {
@@ -113,7 +117,7 @@ const Invites = () => {
       return;
     }
     fetchInvites();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     const metadata = {
@@ -134,7 +138,7 @@ const Invites = () => {
           invites.map(invite => (
             <Card
               key={invite.id}
-              style={large ? styles.cardLarge : styles.cardSmall}
+              style={smUp ? styles.cardLarge : styles.cardSmall}
               elevation={0}
             >
               <CardHeader
@@ -166,7 +170,7 @@ const Invites = () => {
           />
         )}
       </div>
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };

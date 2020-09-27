@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -25,6 +25,7 @@ import moment from 'moment';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import openLikesDialog from '../../actions/openLikesDialog';
 import fetchLikes from '../../actions/fetchLikes';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   primaryText: {
@@ -53,9 +54,8 @@ const fromNow = comment => {
 
 const LikeButton = React.memo(props => {
   const dispatch = useDispatch();
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+
+  const { currentUser } = useContext(AuthContext);
 
   const { comment } = props;
 

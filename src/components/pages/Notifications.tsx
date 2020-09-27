@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -13,7 +13,12 @@ import CreateResourceButton from '../molecules/CreateResourceButton';
 import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
 import fetchNotifications from '../../actions/fetchNotifications';
-import { NotificationsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import {
+  ApiClient,
+  NotificationsApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   progressLarge: {
@@ -50,24 +55,29 @@ const NotificationsContainer = props => {
 };
 
 const Notifications = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const dispatch = useDispatch();
 
+  const { currentUser } = useContext(AuthContext);
+
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       notifications: state.shared.notifications
     }),
     []
   );
-  const { currentUser, notifications } = useMappedState(mapState);
+  const { notifications } = useMappedState(mapState);
   const [loading, setLoading] = useState(true);
 
   const handleMount = useCallback(async () => {
     setLoading(true);
 
     const apiInstance = new NotificationsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.notificationsGet((error, data, response) => {
       setLoading(false);
@@ -75,7 +85,7 @@ const Notifications = () => {
         dispatch(fetchNotifications(response.body));
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
@@ -83,7 +93,7 @@ const Notifications = () => {
       return;
     }
     handleMount();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     const metadata = {
@@ -96,13 +106,13 @@ const Notifications = () => {
   return (
     <div>
       {loading ? (
-        <div style={large ? styles.progressLarge : styles.progressSmall}>
+        <div style={smUp ? styles.progressLarge : styles.progressSmall}>
           <CircularProgress />
         </div>
       ) : (
         <NotificationsContainer notifications={notifications} />
       )}
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };

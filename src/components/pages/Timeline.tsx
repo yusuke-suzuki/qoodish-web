@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -13,12 +13,14 @@ import fetchReviews from '../../actions/fetchReviews';
 import updateMetadata from '../../actions/updateMetadata';
 
 import I18n from '../../utils/I18n';
-import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import { Link } from '@yusuke-suzuki/rize-router';
 import SkeletonReviewCards from '../organisms/SkeletonReviewCards';
 import ReviewCards from '../organisms/ReviewCards';
 import LoadMoreReviewsButton from '../molecules/LoadMoreReviewsButton';
 import CreateReviewForm from '../molecules/CreateReviewForm';
+import { useTheme } from '@material-ui/core';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   buttonContainer: {
@@ -32,16 +34,8 @@ const styles = {
 };
 
 const ReviewsContainer = React.memo(props => {
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
-
   const { reviews } = props;
+  const { currentUser } = useContext(AuthContext);
 
   return (
     <div>
@@ -74,17 +68,18 @@ const ReviewsContainer = React.memo(props => {
 
 const Timeline = () => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       currentReviews: state.timeline.currentReviews
     }),
     []
   );
 
-  const { currentUser, currentReviews } = useMappedState(mapState);
+  const { currentReviews } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
 
@@ -92,6 +87,9 @@ const Timeline = () => {
     setLoading(true);
 
     const apiInstance = new ReviewsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.reviewsGet({}, (error, data, response) => {
       setLoading(false);
@@ -104,7 +102,7 @@ const Timeline = () => {
         dispatch(openToast(I18n.t('internal server error')));
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -112,7 +110,7 @@ const Timeline = () => {
     }
 
     refreshReviews();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     const metadata = {
@@ -139,7 +137,7 @@ const Timeline = () => {
         />
       )}
 
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };

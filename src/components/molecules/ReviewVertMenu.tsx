@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -18,15 +18,14 @@ import openEditReviewDialog from '../../actions/openEditReviewDialog';
 import openDeleteReviewDialog from '../../actions/openDeleteReviewDialog';
 import openIssueDialog from '../../actions/openIssueDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
+import AuthContext from '../../context/AuthContext';
 
 const ReviewVertMenu = props => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentReview } = props;
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+  const { currentUser } = useContext(AuthContext);
 
   const dispatch = useDispatch();
 

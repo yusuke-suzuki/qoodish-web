@@ -17,6 +17,7 @@ import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   cardMediaLarge: {
@@ -68,7 +69,8 @@ const OpeningHours = React.memo(props => {
 });
 
 const SpotCard = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [spotReviews, setSpotReviews] = useState([]);
 
@@ -92,12 +94,12 @@ const SpotCard = props => {
 
   return (
     <Card elevation={0}>
-      <CardMedia style={large ? styles.cardMediaLarge : styles.cardMediaSmall}>
+      <CardMedia style={smUp ? styles.cardMediaLarge : styles.cardMediaSmall}>
         <a href={currentSpot.url} target="_blank">
           <img
             src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
-              large ? 700 : 400
-            }x${large ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
+              smUp ? 700 : 400
+            }x${smUp ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
               currentSpot.lng
             }&markers=size:mid%7Ccolor:red%7C${currentSpot.lat},${
               currentSpot.lng
@@ -119,7 +121,7 @@ const SpotCard = props => {
           <Typography variant="subtitle2" gutterBottom color="textSecondary">
             {`${spotReviews.length} ${I18n.t('reviews count')}`}
           </Typography>
-          <ReviewGridList spacing={large ? 16 : 4} cellHeight="auto">
+          <ReviewGridList spacing={smUp ? 16 : 4} cellHeight="auto">
             {spotReviews.map(review => (
               <ReviewImageTile review={review} key={review.id} />
             ))}

@@ -8,6 +8,7 @@ import NavToolbar from './NavToolbar';
 import AppBar from '@material-ui/core/AppBar';
 
 import { match } from 'path-to-regexp';
+import DrawerContext from '../../context/DrawerContext';
 
 const isModalLocation = location => {
   return location && location.state && location.state.modal;
@@ -29,6 +30,7 @@ const routesShowBackButton = [
 ];
 
 const NavBar = () => {
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [showMapToolbar, setShowMapToolbar] = useState(false);
 
   const mapState = useCallback(
@@ -62,16 +64,21 @@ const NavBar = () => {
   }, [currentLocation, routesShowBackButton]);
 
   return (
-    <div>
+    <DrawerContext.Provider
+      value={{
+        drawerOpen: drawerOpen,
+        setDrawerOpen: setDrawerOpen
+      }}
+    >
       <AppBar position="fixed">
         {showMapToolbar ? (
           <MapToolbar />
         ) : (
-          <NavToolbar showBackButton={showBackButton} />
+          <NavToolbar showBackButton={showBackButton as boolean} />
         )}
       </AppBar>
       <NavDrawer />
-    </div>
+    </DrawerContext.Provider>
   );
 };
 

@@ -31,6 +31,7 @@ import {
   NewInvite
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   dialogContentLarge: {
@@ -63,7 +64,8 @@ const InviteTargetDialog = props => {
   const { dialogOpen, users } = useMappedState(mapState);
 
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const onClose = useCallback(() => {
     dispatch(closeInviteTargetDialog());
@@ -122,10 +124,10 @@ const InviteTargetDialog = props => {
       open={dialogOpen}
       onClose={onClose}
       fullWidth
-      fullScreen={!large}
-      TransitionComponent={large ? Fade : Transition}
+      fullScreen={!smUp}
+      TransitionComponent={smUp ? Fade : Transition}
     >
-      {large ? (
+      {smUp ? (
         <DialogTitle>{I18n.t('select invite target')}</DialogTitle>
       ) : (
         <DialogAppBar
@@ -144,7 +146,7 @@ const InviteTargetDialog = props => {
         />
       )}
       <DialogContent
-        style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
+        style={smUp ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
         <TextField
           label={I18n.t('search users')}
@@ -174,7 +176,7 @@ const InviteTargetDialog = props => {
           ))}
         </List>
       </DialogContent>
-      {large && (
+      {smUp && (
         <DialogActions>
           <Button onClick={onClose}>{I18n.t('cancel')}</Button>
           <Button

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import TextField from '@material-ui/core/TextField';
@@ -15,6 +15,7 @@ import {
   CommentsApi,
   InlineObject
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   root: {
@@ -40,9 +41,9 @@ const styles = {
 };
 
 const UserAvatar = React.memo(() => {
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+  const profile = useMappedState(useCallback(state => state.app.profile, []));
+
+  const { currentUser } = useContext(AuthContext);
 
   if (currentUser.isAnonymous) {
     return (
@@ -53,8 +54,8 @@ const UserAvatar = React.memo(() => {
   } else {
     return (
       <Avatar
-        src={currentUser.thumbnail_url}
-        alt={currentUser.name}
+        src={profile.thumbnail_url}
+        alt={profile.name}
         style={styles.avatar}
       />
     );
@@ -63,13 +64,10 @@ const UserAvatar = React.memo(() => {
 
 const ReviewCardActions = React.memo(props => {
   const { review } = props;
+  const { currentUser } = useContext(AuthContext);
   const [commentFormActive, setCommentFormActive] = useState(false);
   const [comment, setComment] = useState(undefined);
   const [sending, setSending] = useState(false);
-
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
 
   const dispatch = useDispatch();
 

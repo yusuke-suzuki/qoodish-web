@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -13,7 +13,8 @@ import fetchSpot from '../../actions/fetchSpot';
 import clearSpotState from '../../actions/clearSpotState';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   progress: {
@@ -48,18 +49,21 @@ const SpotDetail = props => {
 
   const mapState = useCallback(
     state => ({
-      currentSpot: state.spotDetail.currentSpot,
-      currentUser: state.app.currentUser
+      currentSpot: state.spotDetail.currentSpot
     }),
     []
   );
-  const { currentSpot, currentUser } = useMappedState(mapState);
+  const { currentSpot } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
 
   const initSpot = useCallback(async () => {
     setLoading(true);
     const apiInstance = new SpotsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.spotsPlaceIdGet(params.placeId, (error, data, response) => {
       setLoading(false);
@@ -73,7 +77,7 @@ const SpotDetail = props => {
         dispatch(openToast('Failed to fetch Spot.'));
       }
     });
-  }, [params]);
+  }, [params, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -87,7 +91,7 @@ const SpotDetail = props => {
     return () => {
       dispatch(clearSpotState());
     };
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentSpot) {

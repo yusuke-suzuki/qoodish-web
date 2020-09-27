@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link } from '@yusuke-suzuki/rize-router';
@@ -17,8 +17,10 @@ import moment from 'moment';
 import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
-import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import Skeleton from '@material-ui/lab/Skeleton';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   gridList: {
@@ -71,17 +73,19 @@ const styles = {
 };
 
 const RecentReviews = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       recentReviews: state.discover.recentReviews
     }),
     []
   );
-  const { currentUser, recentReviews } = useMappedState(mapState);
+  const { recentReviews } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(true);
 
@@ -89,6 +93,9 @@ const RecentReviews = () => {
     setLoading(true);
 
     const apiInstance = new ReviewsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     const opts = {
       recent: true
@@ -104,14 +111,14 @@ const RecentReviews = () => {
         dispatch(openToast('Failed to fetch reports.'));
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
     initRecentReviews();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   if (!loading && recentReviews.length < 1) {
     return (
@@ -123,9 +130,9 @@ const RecentReviews = () => {
   } else {
     return (
       <GridList
-        cols={large ? 2.5 : 1.2}
+        cols={smUp ? 2.5 : 1.2}
         style={styles.gridList}
-        spacing={large ? 20 : 10}
+        spacing={smUp ? 20 : 10}
         cellHeight={440}
       >
         {loading

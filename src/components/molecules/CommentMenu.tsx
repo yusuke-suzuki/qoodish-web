@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import React, { useState, useCallback, useContext, memo } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,14 +15,17 @@ import I18n from '../../utils/I18n';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import openIssueDialog from '../../actions/openIssueDialog';
 import openDeleteCommentDialog from '../../actions/openDeleteCommentDialog';
+import AuthContext from '../../context/AuthContext';
 
-const CommentMenu = props => {
+type Props = {
+  comment: any;
+};
+
+export default memo(function CommentMenu(props: Props) {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
-  const comment = props.comment;
+  const { currentUser } = useContext(AuthContext);
+  const { comment } = props;
   const dispatch = useDispatch();
 
   const handleIssueButtonClick = useCallback(() => {
@@ -76,6 +79,4 @@ const CommentMenu = props => {
       </Menu>
     </div>
   );
-};
-
-export default React.memo(CommentMenu);
+});

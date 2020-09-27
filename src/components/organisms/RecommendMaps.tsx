@@ -1,15 +1,15 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useContext } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import I18n from '../../utils/I18n';
 
 import { Link } from '@yusuke-suzuki/rize-router';
 import MapCard from '../molecules/MapCard';
 import SkeletonMapCard from '../molecules/SkeletonMapCard';
-import { useMappedState } from 'redux-react-hook';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   titleContainer: {
@@ -28,32 +28,27 @@ const styles = {
 
 const RecommendMaps = () => {
   const [maps, setMaps] = useState([]);
-
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const refreshMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.mapsGet({ recommend: true }, (error, data, response) => {
       if (response.ok) {
         setMaps(response.body.slice(0, 2));
       }
     });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
     refreshMaps();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   return (
     <div>

@@ -1040,6 +1040,11 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.41.tgz#4e470c25a99fa0b1f629f1c5ef180a318d399fd0"
   integrity sha512-XcdMT5PSZHiuf7LJIhzKIe+RyYa25S3LHRRvLnZc6iFjwXkrSDJ8J/HWO6VT8d2ZTbawp3VcLEjRF/VN8glCrA==
 
+"@googlemaps/js-api-loader@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.2.0.tgz#d5229607638932ae7d0c1e91d1fc19784238834e"
+  integrity sha512-iSE0dRlnOSVOL07FJq7M0Vvi6se1gaJH196yZ04a1TZmKiDDAoVftl+OOv/sL1RgnOwk67mlsDF9o7p8TkdVmg==
+
 "@grpc/grpc-js@0.8.1":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-0.8.1.tgz#3003a422577da39e7113566f2fdd4872f31e6090"
@@ -1318,6 +1323,11 @@
   dependencies:
     "@types/minimatch" "*"
     "@types/node" "*"
+
+"@types/googlemaps@^3.39.13":
+  version "3.39.13"
+  resolved "https://registry.yarnpkg.com/@types/googlemaps/-/googlemaps-3.39.13.tgz#a2649ac618cb15bd04ad8700c41693c8c1f90e21"
+  integrity sha512-R/k5WKe8zQHo9oFRINuX/1haKYRkKEfItnBGrSjspbXXITakRdsj6daQIdL1+Pt84lnzduWurxNA5k0fgPMQUg==
 
 "@types/html-minifier-terser@^5.0.0":
   version "5.1.0"
@@ -5293,11 +5303,6 @@ levn@^0.3.0, levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
-
-load-google-maps-api@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/load-google-maps-api/-/load-google-maps-api-2.0.2.tgz#dd832a08d5ef49cbbe2e83f1c8ac1b2227860d7a"
-  integrity sha512-x/gIurGtJ2Gd34LXhed5tupZnG7P1oc1WpOHkyFpX7NesXkwhCBPyCsindj5BGKuQHrsbwARFWOjJGiAPhoMgg==
 
 load-json-file@^1.0.0:
   version "1.1.0"

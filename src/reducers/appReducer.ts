@@ -1,29 +1,15 @@
-import {
-  SIGN_IN,
-  SIGN_OUT,
-  FETCH_MY_PROFILE,
-  UPDATE_LINKED_PROVIDERS
-} from '../actionTypes';
+import { FETCH_MY_PROFILE, UPDATE_LINKED_PROVIDERS } from '../actionTypes';
 
 const initialState = {
-  currentUser: {},
+  profile: {},
   linkedProviders: []
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SIGN_IN:
-      return Object.assign({}, state, {
-        currentUser: action.payload.user,
-        linkedProviders: []
-      });
-    case SIGN_OUT:
-      return Object.assign({}, state, {
-        linkedProviders: []
-      });
     case FETCH_MY_PROFILE:
       return Object.assign({}, state, {
-        currentUser: action.payload.user
+        profile: action.payload.user
       });
     case UPDATE_LINKED_PROVIDERS:
       return Object.assign({}, state, {

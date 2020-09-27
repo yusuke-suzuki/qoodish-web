@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useHistory, Link } from '@yusuke-suzuki/rize-router';
@@ -25,12 +25,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import I18n from '../../utils/I18n';
 
 import openFeedbackDialog from '../../actions/openFeedbackDialog';
-import openDrawer from '../../actions/openDrawer';
-import closeDrawer from '../../actions/closeDrawer';
 
 import getFirebase from '../../utils/getFirebase';
 import getFirebaseAuth from '../../utils/getFirebaseAuth';
-import signIn from '../../actions/signIn';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import ProfileCard from './ProfileCard';
@@ -38,33 +35,41 @@ import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 import Logo from './Logo';
 import openAnnouncementDialog from '../../actions/openAnnouncementDialog';
 import { useIOS } from '../../utils/detectDevice';
+import AuthContext from '../../context/AuthContext';
+import { makeStyles, createStyles, useTheme } from '@material-ui/core';
+import DrawerContext from '../../context/DrawerContext';
 
-const styles = {
-  titleLarge: {
-    height: 64
-  },
-  titleSmall: {
-    height: 56
-  },
-  drawerPaper: {
-    width: 280
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    titleLarge: {
+      height: 64
+    },
+    titleSmall: {
+      height: 56
+    },
+    drawerPaper: {
+      width: 280
+    }
+  })
+);
 
-const Title = React.memo(() => {
-  const large = useMediaQuery('(min-width: 600px)');
-  const dispatch = useDispatch();
+const Title = memo(() => {
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const { setDrawerOpen } = useContext(DrawerContext);
 
   const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  }, [dispatch]);
+    setDrawerOpen(false);
+  }, []);
+
+  const classes = useStyles();
 
   return (
     <ListItem
       divider
       component={Link}
       to="/"
-      style={large ? styles.titleLarge : styles.titleSmall}
+      className={smUp ? classes.titleLarge : classes.titleSmall}
     >
       <ListItemText disableTypography primary={<Logo />} />
       <ListItemSecondaryAction>
@@ -76,18 +81,17 @@ const Title = React.memo(() => {
   );
 });
 
-const DrawerContents = React.memo(() => {
+const DrawerContents = memo(() => {
   const mapState = useCallback(
     state => ({
       currentLocation: state.shared.currentLocation,
-      currentUser: state.app.currentUser,
       announcementIsNew: state.shared.announcementIsNew
     }),
     []
   );
-  const { currentLocation, currentUser, announcementIsNew } = useMappedState(
-    mapState
-  );
+  const { currentLocation, announcementIsNew } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -101,16 +105,8 @@ const DrawerContents = React.memo(() => {
     await getFirebaseAuth();
 
     await firebase.auth().signOut();
-    await firebase.auth().signInAnonymously();
-
-    const currentUser = firebase.auth().currentUser;
-    const user = {
-      uid: currentUser.uid,
-      isAnonymous: true
-    };
-    dispatch(signIn(user));
-
     history.push('/login');
+
     dispatch(requestFinish());
   }, [dispatch, history]);
 
@@ -294,23 +290,22 @@ const DrawerContents = React.memo(() => {
   );
 });
 
-const NavDrawer = () => {
-  const dispatch = useDispatch();
-  const drawerOpen = useMappedState(
-    useCallback(state => state.shared.drawerOpen, [])
-  );
+export default memo(function NavDrawer() {
+  const { drawerOpen, setDrawerOpen } = useContext(DrawerContext);
 
   const handleOpenDrawer = useCallback(() => {
-    dispatch(openDrawer());
-  }, [dispatch]);
+    setDrawerOpen(true);
+  }, []);
 
   const handleCloseDrawer = useCallback(() => {
-    dispatch(closeDrawer());
-  }, [dispatch]);
+    setDrawerOpen(false);
+  }, []);
 
   const iOS = useMemo(() => {
     return useIOS();
   }, [useIOS]);
+
+  const classes = useStyles();
 
   return (
     <SwipeableDrawer
@@ -318,13 +313,11 @@ const NavDrawer = () => {
       onOpen={handleOpenDrawer}
       onClose={handleCloseDrawer}
       onClick={handleCloseDrawer}
-      PaperProps={{ style: styles.drawerPaper }}
+      PaperProps={{ className: classes.drawerPaper }}
       disableBackdropTransition={!iOS}
       disableDiscovery={iOS}
     >
       <DrawerContents />
     </SwipeableDrawer>
   );
-};
-
-export default React.memo(NavDrawer);
+});

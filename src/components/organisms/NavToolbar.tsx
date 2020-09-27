@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,6 +9,7 @@ import AppMenuButton from '../molecules/AppMenuButton';
 import NavTabs from './NavTabs';
 import Logo from '../molecules/Logo';
 import BackButton from '../molecules/BackButton';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   toolbarLarge: {
@@ -41,24 +42,16 @@ const styles = {
   }
 };
 
-const ToolbarSmall = React.memo(props => {
+type Props = {
+  showBackButton: boolean;
+};
+
+export default memo(function NavToolbar(props: Props) {
   const { showBackButton } = props;
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  return (
-    <Toolbar style={styles.toolbarSmall}>
-      {showBackButton ? <BackButton /> : <AppMenuButton />}
-      <div style={styles.logoContainerSmall}>
-        <Logo color="inherit" />
-      </div>
-      <div style={styles.rightContentsSmall}>
-        <SearchButton />
-      </div>
-    </Toolbar>
-  );
-});
-
-const ToolbarLarge = React.memo(() => {
-  return (
+  return mdUp ? (
     <Toolbar style={styles.toolbarLarge}>
       <AppMenuButton />
       <div style={styles.logoContainerLarge}>
@@ -71,18 +64,15 @@ const ToolbarLarge = React.memo(() => {
         <NavTabs />
       </div>
     </Toolbar>
+  ) : (
+    <Toolbar style={styles.toolbarSmall}>
+      {showBackButton ? <BackButton /> : <AppMenuButton />}
+      <div style={styles.logoContainerSmall}>
+        <Logo color="inherit" />
+      </div>
+      <div style={styles.rightContentsSmall}>
+        <SearchButton />
+      </div>
+    </Toolbar>
   );
 });
-
-const NavToolbar = props => {
-  const { showBackButton } = props;
-  const mdUp = useMediaQuery('(min-width: 960px)');
-
-  return mdUp ? (
-    <ToolbarLarge />
-  ) : (
-    <ToolbarSmall showBackButton={showBackButton} />
-  );
-};
-
-export default React.memo(NavToolbar);

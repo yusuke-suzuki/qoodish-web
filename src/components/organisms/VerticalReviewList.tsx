@@ -1,5 +1,6 @@
 import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   container: {
@@ -17,14 +18,15 @@ const styles = {
 };
 
 const VerticalReviewList = props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
     <div style={styles.container}>
       {props.children.map(child => (
         <div
           key={child.key}
-          style={large ? styles.cardContainerLarge : styles.cardContainerSmall}
+          style={smUp ? styles.cardContainerLarge : styles.cardContainerSmall}
         >
           {child}
         </div>

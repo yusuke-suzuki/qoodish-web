@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import Menu from '@material-ui/core/Menu';
@@ -18,6 +18,7 @@ import {
 } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   notificationMenu: {
@@ -42,12 +43,13 @@ const NotificationsMenu = props => {
 
   const mapState = useCallback(
     state => ({
-      notifications: state.shared.notifications,
-      currentUser: state.app.currentUser
+      notifications: state.shared.notifications
     }),
     []
   );
-  const { notifications, currentUser } = useMappedState(mapState);
+  const { notifications } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const onEntered = useCallback(async () => {
     await sleep(5000);
@@ -87,7 +89,7 @@ const NotificationsMenu = props => {
       return;
     }
     refreshNotifications();
-  }, [currentUser, currentUser.uid]);
+  }, [currentUser]);
 
   return (
     <Menu
