@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import HomeIcon from '@material-ui/icons/Home';
 import I18n from '../../utils/I18n';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   containerLarge: {
@@ -77,7 +78,8 @@ const styles = {
 };
 
 const MapBottomNav = React.memo(() => {
-  const smUp = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const currentMap = useMappedState(
     useCallback(state => state.mapSummary.currentMap, [])
   );
@@ -94,8 +96,9 @@ const MapBottomNav = React.memo(() => {
 });
 
 const MapTabs = React.memo(props => {
-  const lgUp = useMediaQuery('(min-width: 1280px)');
-  const smUp = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
 
   return (
     <Tabs
@@ -122,8 +125,9 @@ const MapTabs = React.memo(props => {
 
 const MapSummary = () => {
   const [tabValue, setTabValue] = useState(0);
-  const lgUp = useMediaQuery('(min-width: 1280px)');
-  const smUp = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
 
   const handleTabChange = useCallback((e, value) => {
     setTabValue(value);

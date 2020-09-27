@@ -14,6 +14,7 @@ import DialogAppBar from '../molecules/DialogAppBar';
 import closeSpotDialog from '../../actions/closeSpotDialog';
 import openSpotDialog from '../../actions/openSpotDialog';
 import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   dialogContent: {
@@ -26,8 +27,9 @@ const styles = {
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  const large = useMediaQuery('(min-width: 600px)');
-  return <Slide direction={large ? 'up' : 'left'} ref={ref} {...props} />;
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  return <Slide direction={smUp ? 'up' : 'left'} ref={ref} {...props} />;
 });
 
 const SpotDialog = () => {
@@ -36,7 +38,8 @@ const SpotDialog = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const mapState = useCallback(
     state => ({
@@ -82,12 +85,12 @@ const SpotDialog = () => {
       open={dialogOpen}
       onEntered={handleDialogOpen}
       onClose={handleDialogClose}
-      TransitionComponent={large ? Fade : Transition}
+      TransitionComponent={smUp ? Fade : Transition}
       fullWidth
-      fullScreen={large ? false : true}
-      scroll={large ? 'body' : 'paper'}
+      fullScreen={smUp ? false : true}
+      scroll={smUp ? 'body' : 'paper'}
     >
-      {!large && (
+      {!smUp && (
         <DialogAppBar
           title={I18n.t('spot')}
           iconType="back"

@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
 import SharedLikeActions from './SharedLikeActions';
 
 import openToast from '../../actions/openToast';
@@ -7,6 +7,7 @@ import editMap from '../../actions/editMap';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   likeButton: {
@@ -18,9 +19,7 @@ const MapLikeActions = props => {
   const { target } = props;
   const dispatch = useDispatch();
 
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+  const { currentUser } = useContext(AuthContext);
 
   const handleLikeButtonClick = useCallback(async () => {
     if (currentUser.isAnonymous) {

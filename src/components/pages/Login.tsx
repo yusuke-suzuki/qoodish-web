@@ -20,6 +20,7 @@ import I18n from '../../utils/I18n';
 import LoginButtons from '../organisms/LoginButtons';
 import Footer from '../molecules/Footer';
 import { useDispatch } from 'redux-react-hook';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   loginContainerLarge: {
@@ -97,7 +98,8 @@ const handleScrollTopClick = () => {
 
 const Login = () => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   useEffect(() => {
     const metadata = {
@@ -111,7 +113,7 @@ const Login = () => {
     <div>
       <div
         style={
-          large ? styles.carouselContainerLarge : styles.carouselContainerSmall
+          smUp ? styles.carouselContainerLarge : styles.carouselContainerSmall
         }
       >
         <GridList cols={1} spacing={0} cellHeight={600}>
@@ -120,7 +122,7 @@ const Login = () => {
             <GridListTileBar
               title={
                 <Typography
-                  variant={large ? 'h2' : 'h3'}
+                  variant={smUp ? 'h2' : 'h3'}
                   color="inherit"
                   style={styles.carouselTileBarText}
                   gutterBottom
@@ -131,7 +133,7 @@ const Login = () => {
               subtitle={
                 <div>
                   <Typography
-                    variant={large ? 'h5' : 'h6'}
+                    variant={smUp ? 'h5' : 'h6'}
                     color="inherit"
                     style={styles.carouselTileBarText}
                   >
@@ -148,7 +150,7 @@ const Login = () => {
         </GridList>
       </div>
       <div
-        style={large ? styles.loginContainerLarge : styles.loginContainerSmall}
+        style={smUp ? styles.loginContainerLarge : styles.loginContainerSmall}
       >
         <Grid container style={styles.gridContainer} spacing={24}>
           <Grid item xs={12} sm={12} md={12} lg={12}>

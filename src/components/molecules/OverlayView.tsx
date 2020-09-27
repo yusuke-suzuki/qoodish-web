@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import ReactDOM from 'react-dom';
-import GoogleMapsContext from '../../GoogleMapsContext';
+import GoogleMapsContext from '../../context/GoogleMapsContext';
 
 type Props = {
   position: any;
@@ -8,18 +8,18 @@ type Props = {
 };
 
 const OverlayView: React.FC<Props> = props => {
-  const { googleMapsApi, gMap } = useContext(GoogleMapsContext);
+  const { googleMap } = useContext(GoogleMapsContext);
   const { position, children } = props;
 
   const [container, setContainer] = useState(document.createElement('div'));
   const [overlay, setOverlay] = useState(undefined);
 
   const initOverlay = useCallback(() => {
-    const overlayView = new googleMapsApi.OverlayView();
-    overlayView.setMap(gMap);
+    const overlayView = new google.maps.OverlayView();
+    overlayView.setMap(googleMap);
     setOverlay(overlayView);
-    googleMapsApi.OverlayView.preventMapHitsFrom(container);
-  }, [googleMapsApi, gMap, container]);
+    google.maps.OverlayView.preventMapHitsFrom(container);
+  }, [googleMap, container]);
 
   const onAdd = useCallback(() => {
     container.style.position = 'absolute';

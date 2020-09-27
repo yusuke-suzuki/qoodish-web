@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import { Link } from '@yusuke-suzuki/rize-router';
@@ -18,6 +18,7 @@ import I18n from '../../utils/I18n';
 import openCreateMapDialog from '../../actions/openCreateMapDialog';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   container: {
@@ -54,9 +55,7 @@ const ContentsIcon = props => {
 };
 
 const PrimaryAction = props => {
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+  const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
 
   const handleCreateMapButtonClick = useCallback(() => {

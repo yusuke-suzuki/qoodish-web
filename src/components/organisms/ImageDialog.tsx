@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import closeImageDialog from '../../actions/closeImageDialog';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   imageSmall: {
@@ -30,7 +31,8 @@ const styles = {
 };
 
 const ImageDialog = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
   const [currentImageUrl, setCurrentImageUrl] = useState(undefined);
 
@@ -65,12 +67,12 @@ const ImageDialog = () => {
       onEnter={handleOnEnter}
       onExited={handleOnExited}
       fullWidth
-      scroll={large ? 'body' : 'paper'}
+      scroll={smUp ? 'body' : 'paper'}
       disableScrollLock
-      disableRestoreFocus={large ? true : false}
+      disableRestoreFocus={smUp ? true : false}
       maxWidth="md"
       PaperProps={{
-        style: large ? {} : styles.paperSmall,
+        style: smUp ? {} : styles.paperSmall,
         square: true
       }}
     >
@@ -85,7 +87,7 @@ const ImageDialog = () => {
         <div style={styles.container}>
           <img
             src={currentImageUrl}
-            style={large ? styles.imageLarge : styles.imageSmall}
+            style={smUp ? styles.imageLarge : styles.imageSmall}
             loading="lazy"
           />
         </div>

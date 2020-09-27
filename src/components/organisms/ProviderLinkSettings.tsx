@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import Card from '@material-ui/core/Card';
@@ -17,9 +17,11 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import updateLinkedProviders from '../../actions/updateLinkedProviders';
-import getFirebase from '../../utils/getFirebase';
-import getFirebaseAuth from '../../utils/getFirebaseAuth';
 import I18n from '../../utils/I18n';
+import AuthContext from '../../context/AuthContext';
+
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const providers = [
   {
@@ -51,31 +53,24 @@ const LinkedProvidersList = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       linkedProviders: state.app.linkedProviders
     }),
     []
   );
-  const { currentUser, linkedProviders } = useMappedState(mapState);
+  const { linkedProviders } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const refreshProviders = useCallback(async () => {
-    const firebase = await getFirebase();
-    await getFirebaseAuth();
-    const firebaseUser = firebase.auth().currentUser;
-
-    const linkedProviders = firebaseUser.providerData.map(provider => {
+    const linkedProviders = currentUser.providerData.map(provider => {
       return provider.providerId;
     });
     dispatch(updateLinkedProviders(linkedProviders));
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   const handleLinkProviderButtonClick = useCallback(
     async providerId => {
       dispatch(requestStart());
-
-      const firebase = await getFirebase();
-      await getFirebaseAuth();
-      const firebaseUser = firebase.auth().currentUser;
 
       let provider;
       switch (providerId) {
@@ -94,7 +89,7 @@ const LinkedProvidersList = () => {
       }
 
       try {
-        await firebaseUser.linkWithPopup(provider);
+        await currentUser.linkWithPopup(provider);
       } catch (error) {
         console.log(error);
         dispatch(requestFinish());
@@ -102,26 +97,22 @@ const LinkedProvidersList = () => {
         return;
       }
 
-      const currentFirebaseUser = firebase.auth().currentUser;
-      const linkedProviders = currentFirebaseUser.providerData.map(provider => {
+      const linkedProviders = currentUser.providerData.map(provider => {
         return provider.providerId;
       });
       dispatch(updateLinkedProviders(linkedProviders));
       dispatch(requestFinish());
       dispatch(openToast(I18n.t('link provider success')));
     },
-    [dispatch]
+    [dispatch, currentUser]
   );
 
   const handleUnlinkProviderButtonClick = useCallback(
     async providerId => {
       dispatch(requestStart());
-      const firebase = await getFirebase();
-      await getFirebaseAuth();
-      const firebaseUser = firebase.auth().currentUser;
 
       try {
-        await firebaseUser.unlink(providerId);
+        await currentUser.unlink(providerId);
       } catch (error) {
         console.log(error);
         dispatch(requestFinish());
@@ -129,15 +120,14 @@ const LinkedProvidersList = () => {
         return;
       }
 
-      const currentFirebaseUser = firebase.auth().currentUser;
-      const linkedProviders = currentFirebaseUser.providerData.map(provider => {
+      const linkedProviders = currentUser.providerData.map(provider => {
         return provider.providerId;
       });
       dispatch(updateLinkedProviders(linkedProviders));
       dispatch(requestFinish());
       dispatch(openToast(I18n.t('unlink provider success')));
     },
-    [dispatch]
+    [dispatch, currentUser]
   );
 
   useEffect(() => {
@@ -145,7 +135,7 @@ const LinkedProvidersList = () => {
       return;
     }
     refreshProviders();
-  }, [currentUser, currentUser.uid]);
+  }, [currentUser]);
 
   let reachedMinimum = linkedProviders.length === 1;
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 
 import Button from '@material-ui/core/Button';
@@ -15,6 +15,7 @@ import {
   CollaboratorsApi,
   FollowsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   skelton: {
@@ -23,9 +24,7 @@ const styles = {
 };
 
 const RoleButton = props => {
-  const currentUser = useMappedState(
-    useCallback(state => state.app.currentUser, [])
-  );
+  const { currentUser } = useContext(AuthContext);
   const map = props.currentMap;
   const dispatch = useDispatch();
 

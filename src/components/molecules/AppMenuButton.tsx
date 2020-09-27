@@ -1,42 +1,45 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import React, { memo, useCallback, useContext } from 'react';
+import { useMappedState } from 'redux-react-hook';
 
 import IconButton from '@material-ui/core/IconButton';
 
-import toggleDrawer from '../../actions/toggleDrawer';
 import ProfileAvatar from './ProfileAvatar';
+import { createStyles, makeStyles } from '@material-ui/core';
+import DrawerContext from '../../context/DrawerContext';
 
-const styles = {
-  iconButton: {
-    width: 48,
-    height: 48
-  },
-  avatarContainer: {
-    position: 'absolute'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    iconButton: {
+      width: 48,
+      height: 48
+    },
+    avatarContainer: {
+      position: 'absolute'
+    }
+  })
+);
 
-const AppMenuButton = () => {
-  const dispatch = useDispatch();
+export default memo(function AppMenuButton() {
+  const classes = useStyles();
+  const { setDrawerOpen } = useContext(DrawerContext);
+
   const handleButtonClick = useCallback(() => {
-    dispatch(toggleDrawer());
-  }, [dispatch]);
+    setDrawerOpen(true);
+  }, []);
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser
+      profile: state.app.profile
     }),
     []
   );
-  const { currentUser } = useMappedState(mapState);
+  const { profile } = useMappedState(mapState);
 
   return (
-    <IconButton onClick={handleButtonClick} style={styles.iconButton}>
-      <div style={styles.avatarContainer}>
-        <ProfileAvatar size={35} currentUser={currentUser} />
+    <IconButton onClick={handleButtonClick} className={classes.iconButton}>
+      <div className={classes.avatarContainer}>
+        <ProfileAvatar size={35} profile={profile} />
       </div>
     </IconButton>
   );
-};
-
-export default React.memo(AppMenuButton);
+});

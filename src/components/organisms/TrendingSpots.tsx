@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useMappedState } from 'redux-react-hook';
 import { Link } from '@yusuke-suzuki/rize-router';
 
 import Typography from '@material-ui/core/Typography';
@@ -17,8 +16,10 @@ import CardContent from '@material-ui/core/CardContent';
 import PlaceIcon from '@material-ui/icons/Place';
 
 import I18n from '../../utils/I18n';
-import { SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   listItemLarge: {
@@ -46,20 +47,17 @@ const styles = {
 };
 
 const TrendingSpots = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [spots, setSpots] = useState([]);
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const initTrendingSpots = useCallback(async () => {
     const apiInstance = new SpotsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const opts = {
       popular: true
     };
@@ -68,14 +66,14 @@ const TrendingSpots = () => {
         setSpots(response.body);
       }
     });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
     initTrendingSpots();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   return spots.length < 1 ? (
     <SkeletonTrendingList />
@@ -107,7 +105,7 @@ const TrendingSpots = () => {
                 state: { modal: true, spot: spot }
               }}
               title={spot.name}
-              style={large ? styles.listItemLarge : styles.listItemSmall}
+              style={smUp ? styles.listItemLarge : styles.listItemSmall}
             >
               <ListItemAvatar>
                 <Avatar

@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import React, { useEffect, useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 import moment from 'moment';
 import ListItem from '@material-ui/core/ListItem';
@@ -19,6 +19,7 @@ import {
   NotificationsApi,
   InlineObject1
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   listItemText: {
@@ -64,14 +65,7 @@ const NotificationList = props => {
   const dispatch = useDispatch();
   const { notifications } = props;
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const handleReadNotification = useCallback(async () => {
     await sleep(5000);
@@ -101,7 +95,7 @@ const NotificationList = props => {
       return;
     }
     handleReadNotification();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   return notifications.map(notification => (
     <Item

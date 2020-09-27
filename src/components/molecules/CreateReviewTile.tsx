@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useDispatch } from 'redux-react-hook';
 
 import AddIcon from '@material-ui/icons/Add';
@@ -15,7 +15,11 @@ const styles = {
   }
 };
 
-const CreateReviewTile = props => {
+type Props = {
+  currentSpot: any;
+};
+
+export default memo(function CreateReviewTile(props: Props) {
   const dispatch = useDispatch();
   const { currentSpot } = props;
 
@@ -41,6 +45,4 @@ const CreateReviewTile = props => {
       />
     </div>
   );
-};
-
-export default React.memo(CreateReviewTile);
+});

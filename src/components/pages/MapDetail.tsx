@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import selectMap from '../../actions/selectMap';
@@ -10,9 +9,12 @@ import fetchMapReviews from '../../actions/fetchMapReviews';
 import fetchCollaborators from '../../actions/fetchCollaborators';
 import updateMetadata from '../../actions/updateMetadata';
 
+import { Loader } from '@googlemaps/js-api-loader';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import I18n from '../../utils/I18n';
 
 import {
+  ApiClient,
   MapsApi,
   CollaboratorsApi,
   ReviewsApi
@@ -53,34 +55,13 @@ const SpotHorizontalList = React.lazy(() =>
   )
 );
 
-import { ThemeProvider } from '@material-ui/styles';
-import useTheme from '@material-ui/styles/useTheme';
-
 import Drawer from '@material-ui/core/Drawer';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Fab from '@material-ui/core/Fab';
 import switchSummary from '../../actions/switchSummary';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
-  containerLarge: {},
-  containerMd: {
-    position: 'fixed',
-    top: 64,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    display: 'block',
-    width: '100%'
-  },
-  containerSmall: {
-    position: 'fixed',
-    top: 56,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    display: 'block',
-    width: '100%'
-  },
   drawerPaperLarge: {
     zIndex: 1000
   },
@@ -93,7 +74,7 @@ const styles = {
     bottom: 0
   },
   mapButtonsSmall: {
-    position: 'relative',
+    position: 'absolute',
     right: 0,
     bottom: 124
   },
@@ -116,8 +97,9 @@ const styles = {
   }
 };
 
-const MapSummaryDrawer = props => {
-  const lgUp = useMediaQuery('(min-width: 1280px)');
+const MapSummaryDrawer = React.memo(props => {
+  const theme = useTheme();
+  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const mapState = useCallback(
     state => ({
       mapSummaryOpen: state.mapDetail.mapSummaryOpen
@@ -143,10 +125,11 @@ const MapSummaryDrawer = props => {
       </React.Suspense>
     </Drawer>
   );
-};
+});
 
 const MapButtons = React.memo(props => {
-  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const theme = useTheme();
+  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const { currentMap } = props;
 
   return (
@@ -166,56 +149,73 @@ const MapButtons = React.memo(props => {
 });
 
 const SwitchSummaryButton = React.memo(() => {
-  const smUp = useMediaQuery('(min-width: 600px)');
   const dispatch = useDispatch();
   const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleSummaryButtonClick = useCallback(() => {
     dispatch(switchSummary());
   }, [dispatch]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <div
-        style={
-          smUp
-            ? styles.switchSummaryContainerLarge
-            : styles.switchSummaryContainerSmall
-        }
+    <div
+      style={
+        smUp
+          ? styles.switchSummaryContainerLarge
+          : styles.switchSummaryContainerSmall
+      }
+    >
+      <Fab
+        variant="extended"
+        size="small"
+        color="primary"
+        onClick={handleSummaryButtonClick}
       >
-        <Fab
-          variant="extended"
-          size="small"
-          color="primary"
-          onClick={handleSummaryButtonClick}
-        >
-          <InfoOutlinedIcon style={styles.infoIcon} />
-          {I18n.t('summary')}
-        </Fab>
-      </div>
-    </ThemeProvider>
+        <InfoOutlinedIcon style={styles.infoIcon} />
+        {I18n.t('summary')}
+      </Fab>
+    </div>
   );
 });
 
 const MapDetail = props => {
   const { params } = props;
-  const smUp = useMediaQuery('(min-width: 600px)');
-  const lgUp = useMediaQuery('(min-width: 1280px)');
+  const { currentUser } = useContext(AuthContext);
+  const [googleMapsApiLoaded, setGoogleMapsApiLoaded] = useState<boolean>(
+    false
+  );
+  const theme = useTheme();
+  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
 
   const dispatch = useDispatch();
   const history = useHistory();
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       currentMap: state.mapDetail.currentMap
     }),
     []
   );
-  const { currentUser, currentMap } = useMappedState(mapState);
+  const { currentMap } = useMappedState(mapState);
+
+  const initGoogleMapsApi = useCallback(async () => {
+    const loader = new Loader({
+      apiKey: process.env.GOOGLE_MAP_API_KEY,
+      version: 'weekly',
+      libraries: ['places', 'geometry'],
+      region: 'JP',
+      language: 'ja'
+    });
+    await loader.load();
+
+    setGoogleMapsApiLoaded(true);
+  }, []);
 
   const initMap = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.mapsMapIdGet(params.mapId, (error, data, response) => {
       if (response.ok) {
@@ -229,10 +229,13 @@ const MapDetail = props => {
         dispatch(openToast('Failed to fetch Map.'));
       }
     });
-  }, [dispatch, history, params]);
+  }, [dispatch, history, params, currentUser]);
 
   const initMapReviews = useCallback(async () => {
     const apiInstance = new ReviewsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.mapsMapIdReviewsGet(
       params.mapId,
@@ -243,10 +246,13 @@ const MapDetail = props => {
         }
       }
     );
-  }, [dispatch, params]);
+  }, [dispatch, params, currentUser]);
 
   const initFollowers = useCallback(async () => {
     const apiInstance = new CollaboratorsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.mapsMapIdCollaboratorsGet(
       params.mapId,
@@ -258,24 +264,28 @@ const MapDetail = props => {
         }
       }
     );
-  }, [params]);
+  }, [params, currentUser]);
 
-  const refreshMap = useCallback(() => {
-    initMap();
-    initMapReviews();
-    initFollowers();
+  useEffect(() => {
+    if (googleMapsApiLoaded) {
+      return;
+    }
+
+    initGoogleMapsApi();
   }, []);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
-    refreshMap();
+    initMap();
+    initMapReviews();
+    initFollowers();
 
     return () => {
       dispatch(clearMapState());
     };
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentMap) {
@@ -299,19 +309,17 @@ const MapDetail = props => {
         <div>
           <MapSummaryDrawer {...props} />
           <React.Suspense fallback={null}>
-            <GMap />
+            {googleMapsApiLoaded && <GMap />}
           </React.Suspense>
           <MapButtons currentMap={currentMap} />
         </div>
       ) : (
         <div>
           <SwitchSummaryButton />
-          <div style={smUp ? styles.containerMd : styles.containerSmall}>
-            <React.Suspense fallback={null}>
-              <GMap />
-            </React.Suspense>
-            <MapButtons currentMap={currentMap} />
-          </div>
+          <React.Suspense fallback={null}>
+            {googleMapsApiLoaded && <GMap />}
+          </React.Suspense>
+          <MapButtons currentMap={currentMap} />
           <React.Suspense fallback={null}>
             <SpotHorizontalList />
           </React.Suspense>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import MapCollection from './MapCollection';
 import fetchMyMaps from '../../actions/fetchMyMaps';
@@ -7,22 +7,26 @@ import SkeletonMapCollection from './SkeletonMapCollection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import NoContents from '../molecules/NoContents';
 import I18n from '../../utils/I18n';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const ProfileMyMaps = props => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [loading, setLoading] = useState(true);
+
+  const { currentUser } = useContext(AuthContext);
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       myMaps: state.profile.myMaps,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentUser, myMaps, location } = useMappedState(mapState);
+  const { myMaps, location } = useMappedState(mapState);
   const { params } = props;
 
   const initMaps = useCallback(async () => {
@@ -52,7 +56,7 @@ const ProfileMyMaps = props => {
       return;
     }
     initMaps();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   if (!loading && myMaps.length < 1) {
     return (
@@ -66,7 +70,7 @@ const ProfileMyMaps = props => {
   }
 
   return loading ? (
-    <SkeletonMapCollection size={large ? 3 : 4} />
+    <SkeletonMapCollection size={smUp ? 3 : 4} />
   ) : (
     <MapCollection maps={myMaps} />
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useContext } from 'react';
 import { useMappedState } from 'redux-react-hook';
 
 import { Link } from '@yusuke-suzuki/rize-router';
@@ -19,6 +19,7 @@ import NoContents from '../molecules/NoContents';
 
 import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   listItemText: {
@@ -77,13 +78,14 @@ const LikesList = props => {
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentUser, location } = useMappedState(mapState);
+  const { location } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const initUserLikes = useCallback(async () => {
     if (

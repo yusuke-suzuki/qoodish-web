@@ -22,6 +22,7 @@ import I18n from '../../utils/I18n';
 import searchPlaces from '../../actions/searchPlaces';
 import { PlacesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   placeIcon: {
@@ -48,7 +49,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SharedPlaceSelectDialog = props => {
   const { onClose, onPlaceSelected, dialogOpen, onEntered } = props;
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -98,11 +100,11 @@ const SharedPlaceSelectDialog = props => {
       onEntered={onEntered}
       onClose={onClose}
       fullWidth
-      fullScreen={!large}
-      TransitionComponent={large ? Fade : Transition}
-      PaperProps={{ style: large ? styles.dialogPaper : {} }}
+      fullScreen={!smUp}
+      TransitionComponent={smUp ? Fade : Transition}
+      PaperProps={{ style: smUp ? styles.dialogPaper : {} }}
     >
-      {large ? (
+      {smUp ? (
         <DialogTitle>
           <div style={styles.dialogTitle}>
             <PlaceIcon style={styles.placeIcon} />
@@ -116,7 +118,7 @@ const SharedPlaceSelectDialog = props => {
         />
       )}
       <DialogContent
-        style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
+        style={smUp ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
         <TextField
           label={I18n.t('search places')}
@@ -145,7 +147,7 @@ const SharedPlaceSelectDialog = props => {
           ))}
         </List>
       </DialogContent>
-      {large && (
+      {smUp && (
         <DialogActions>
           <Button onClick={onClose}>{I18n.t('cancel')}</Button>
         </DialogActions>

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import SharedProfile from '../organisms/SharedProfile';
@@ -8,33 +8,46 @@ import fetchUserProfile from '../../actions/fetchUserProfile';
 import clearProfileState from '../../actions/clearProfileState';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { UserMapsApi, UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import {
+  ApiClient,
+  UserMapsApi,
+  UsersApi
+} from '@yusuke-suzuki/qoodish-api-js-client';
+import AuthContext from '../../context/AuthContext';
 
 const UserProfile = props => {
   const { params } = props;
   const dispatch = useDispatch();
+
+  const { currentUser } = useContext(AuthContext);
+
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       profile: state.profile.currentUser
     }),
     []
   );
 
-  const { currentUser, profile } = useMappedState(mapState);
+  const { profile } = useMappedState(mapState);
 
   const initProfile = useCallback(async () => {
     const apiInstance = new UsersApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.usersUserIdGet(params.userId, (error, data, response) => {
       if (response.ok) {
         dispatch(fetchUserProfile(response.body));
       }
     });
-  }, [dispatch, params]);
+  }, [dispatch, params, currentUser]);
 
   const initFollowingMaps = useCallback(async () => {
     const apiInstance = new UserMapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const opts = {
       following: true
     };
@@ -50,7 +63,7 @@ const UserProfile = props => {
         }
       }
     );
-  }, [dispatch, params]);
+  }, [dispatch, params, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
@@ -63,7 +76,7 @@ const UserProfile = props => {
     return () => {
       dispatch(clearProfileState());
     };
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!profile || !profile.name) {
@@ -78,7 +91,7 @@ const UserProfile = props => {
     dispatch(updateMetadata(metadata));
   }, [profile]);
 
-  return <SharedProfile {...props} currentUser={profile} />;
+  return <SharedProfile {...props} profile={profile} />;
 };
 
 export default React.memo(UserProfile);

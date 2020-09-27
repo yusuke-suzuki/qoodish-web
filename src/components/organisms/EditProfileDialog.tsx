@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -25,6 +25,7 @@ import sleep from '../../utils/sleep';
 
 import { UsersApi, NewUser } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   dialogContentSmall: {
@@ -65,11 +66,12 @@ const EditProfileDialog = () => {
   const mapState = useCallback(
     state => ({
       dialogOpen: state.profile.editProfileDialogOpen,
-      currentUser: state.app.currentUser
+      profile: state.app.profile
     }),
     []
   );
-  const { dialogOpen, currentUser } = useMappedState(mapState);
+  const { dialogOpen, profile } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const [name, setName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -92,10 +94,10 @@ const EditProfileDialog = () => {
   }, [dispatch]);
 
   const setCurrentProfile = useCallback(() => {
-    setName(currentUser.name);
-    setBio(currentUser.biography);
-    setImageUrl(currentUser.thumbnail_url);
-  }, [currentUser]);
+    setName(profile.name);
+    setBio(profile.biography);
+    setImageUrl(profile.thumbnail_url);
+  }, [profile]);
 
   const clearState = useCallback(() => {
     setName('');

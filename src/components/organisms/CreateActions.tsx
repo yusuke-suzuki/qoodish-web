@@ -16,6 +16,7 @@ import openCreateMapDialog from '../../actions/openCreateMapDialog';
 import selectPlaceForReview from '../../actions/selectPlaceForReview';
 import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import closeCreateActions from '../../actions/closeCreateActions';
+import { useTheme } from '@material-ui/core';
 
 const ActionsList = () => {
   const mapState = useCallback(state => state.spotDetail.currentSpot, []);
@@ -72,13 +73,14 @@ const CreateActions = () => {
   const mapState = useCallback(state => state.shared.createActionsOpen, []);
   const open = useMappedState(mapState);
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleCloseDrawer = useCallback(() => {
     dispatch(closeCreateActions());
   }, [dispatch]);
 
-  return large ? (
+  return smUp ? (
     <Dialog open={open} onClose={handleCloseDrawer} fullWidth>
       <ActionsList />
     </Dialog>

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
@@ -16,6 +16,8 @@ import ProviderLinkSettings from '../organisms/ProviderLinkSettings';
 import openDeleteAccountDialog from '../../actions/openDeleteAccountDialog';
 import updateMetadata from '../../actions/updateMetadata';
 import I18n from '../../utils/I18n';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   card: {
@@ -30,13 +32,7 @@ const styles = {
 const DeleteAccountCard = () => {
   const dispatch = useDispatch();
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const handleDeleteAccountButtonClick = useCallback(async () => {
     dispatch(openDeleteAccountDialog());
@@ -68,7 +64,8 @@ const DeleteAccountCard = () => {
 
 const Settings = () => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   useEffect(() => {
     const metadata = {
@@ -88,7 +85,7 @@ const Settings = () => {
       </div>
       <DeleteAccountCard />
       <DeleteAccountDialog />
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };

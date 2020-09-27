@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,6 +11,7 @@ import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 import I18n from '../../utils/I18n';
 import { Link } from '@yusuke-suzuki/rize-router';
+import { useTheme, useMediaQuery } from '@material-ui/core';
 
 const styles = {
   activityText: {
@@ -34,7 +34,8 @@ const fromNow = review => {
 };
 
 const MapReviewsList = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const mapReviews = useMappedState(
     useCallback(state => state.mapSummary.mapReviews, [])
   );
@@ -42,7 +43,7 @@ const MapReviewsList = () => {
   return (
     <List
       subheader={
-        large && (
+        smUp && (
           <ListSubheader style={styles.subheader}>
             {I18n.t('timeline')}
           </ListSubheader>

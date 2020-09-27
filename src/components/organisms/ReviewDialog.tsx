@@ -20,6 +20,7 @@ import closeReviewDialog from '../../actions/closeReviewDialog';
 import openReviewDialog from '../../actions/openReviewDialog';
 import selectReview from '../../actions/selectReview';
 import clearReviewState from '../../actions/clearReviewState';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   dialogContent: {
@@ -32,8 +33,9 @@ const styles = {
 };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  const large = useMediaQuery('(min-width: 600px)');
-  return <Slide direction={large ? 'up' : 'left'} ref={ref} {...props} />;
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  return <Slide direction={smUp ? 'up' : 'left'} ref={ref} {...props} />;
 });
 
 const ReviewDialog = () => {
@@ -50,7 +52,8 @@ const ReviewDialog = () => {
   const { currentReview, currentLocation } = useMappedState(mapState);
 
   const history = useHistory();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const isMatched = useMemo(() => {
     const matched = match('/maps/:mapId/reports/:reviewId')(
@@ -99,13 +102,13 @@ const ReviewDialog = () => {
       onEntered={handleDialogOpen}
       onClose={handleDialogClose}
       onExited={handleDialogExited}
-      TransitionComponent={large ? Fade : Transition}
+      TransitionComponent={smUp ? Fade : Transition}
       fullWidth
-      fullScreen={large ? false : true}
-      scroll={large ? 'body' : 'paper'}
+      fullScreen={smUp ? false : true}
+      scroll={smUp ? 'body' : 'paper'}
       disableRestoreFocus
     >
-      {!large && (
+      {!smUp && (
         <DialogAppBar
           title={I18n.t('report')}
           iconType="back"
@@ -117,7 +120,7 @@ const ReviewDialog = () => {
           {currentReview && (
             <ReviewCard
               currentReview={currentReview}
-              detail={!large}
+              detail={!smUp}
               hideActions
             />
           )}

@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useMappedState } from 'redux-react-hook';
 import { Link } from '@yusuke-suzuki/rize-router';
 
 import Typography from '@material-ui/core/Typography';
@@ -16,10 +15,12 @@ import Paper from '@material-ui/core/Paper';
 import CardContent from '@material-ui/core/CardContent';
 import GradeIcon from '@material-ui/icons/Grade';
 
-import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
+import { useTheme } from '@material-ui/core';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   progress: {
@@ -52,20 +53,17 @@ const styles = {
 };
 
 const TrendingMaps = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [maps, setMaps] = useState([]);
 
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
-
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const initPopularMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const opts = {
       popular: true
     };
@@ -78,14 +76,14 @@ const TrendingMaps = () => {
         console.log(error);
       }
     });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid) {
       return;
     }
     initPopularMaps();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   return maps.length < 1 ? (
     <SkeletonTrendingList />
@@ -114,7 +112,7 @@ const TrendingMaps = () => {
               component={Link}
               to={`/maps/${map.id}`}
               title={map.name}
-              style={large ? styles.listItemLarge : styles.listItemSmall}
+              style={smUp ? styles.listItemLarge : styles.listItemSmall}
             >
               <ListItemAvatar>
                 <Avatar src={map.thumbnail_url} alt={map.name} loading="lazy" />

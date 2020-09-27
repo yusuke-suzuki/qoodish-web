@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useContext
+} from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import Card from '@material-ui/core/Card';
@@ -19,6 +25,7 @@ import {
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
+import AuthContext from '../../context/AuthContext';
 
 const pushAvailable = () => {
   return 'serviceWorker' in navigator && 'PushManager' in window;
@@ -34,11 +41,13 @@ const PushSettings = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser
+      profile: state.app.profile
     }),
     []
   );
-  const { currentUser } = useMappedState(mapState);
+  const { profile } = useMappedState(mapState);
+
+  const { currentUser } = useContext(AuthContext);
 
   const initPushStatus = useCallback(() => {
     if (localStorage.registrationToken) {
@@ -49,11 +58,11 @@ const PushSettings = () => {
   }, []);
 
   const initPushSettings = useCallback(() => {
-    setLikedEnabled(currentUser.push_notification.liked);
-    setFollowedEnabled(currentUser.push_notification.followed);
-    setInvitedEnabled(currentUser.push_notification.invited);
-    setCommentEnabled(currentUser.push_notification.comment);
-  }, [currentUser]);
+    setLikedEnabled(profile.push_notification.liked);
+    setFollowedEnabled(profile.push_notification.followed);
+    setInvitedEnabled(profile.push_notification.invited);
+    setCommentEnabled(profile.push_notification.comment);
+  }, [profile]);
 
   const handleEnablePush = useCallback(async () => {
     Notification.requestPermission(async permission => {
@@ -85,10 +94,10 @@ const PushSettings = () => {
     (action, checked) => {
       dispatch(requestStart());
       const pushNotification = new PushNotification();
-      pushNotification.liked = currentUser.push_notification.liked;
-      pushNotification.followed = currentUser.push_notification.followed;
-      pushNotification.invited = currentUser.push_notification.invited;
-      pushNotification.comment = currentUser.push_notification.comment;
+      pushNotification.liked = profile.push_notification.liked;
+      pushNotification.followed = profile.push_notification.followed;
+      pushNotification.invited = profile.push_notification.invited;
+      pushNotification.comment = profile.push_notification.comment;
       pushNotification[action] = checked;
 
       const apiInstance = new PushNotificationApi();
@@ -107,7 +116,7 @@ const PushSettings = () => {
         }
       );
     },
-    [dispatch, currentUser]
+    [dispatch, currentUser, profile]
   );
 
   const disabled = useMemo(() => {
@@ -119,16 +128,12 @@ const PushSettings = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      !currentUser ||
-      currentUser.isAnonymous ||
-      !currentUser.push_notification
-    ) {
+    if (!currentUser || currentUser.isAnonymous || !profile.push_notification) {
       return;
     }
 
     initPushSettings();
-  }, [currentUser]);
+  }, [currentUser, profile]);
 
   return (
     <Card elevation={0}>

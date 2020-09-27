@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useContext } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import ReviewCard from '../molecules/ReviewCard';
@@ -8,12 +8,13 @@ import openToast from '../../actions/openToast';
 import selectReview from '../../actions/selectReview';
 import updateMetadata from '../../actions/updateMetadata';
 
-import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonReviewCard from '../molecules/SkeletonReviewCard';
 import I18n from '../../utils/I18n';
 import { Link } from '@yusuke-suzuki/rize-router';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   backButtonContainer: {
@@ -54,20 +55,22 @@ const ReviewDetail = props => {
   const mapState = useCallback(
     state => ({
       currentReview: state.reviewDetail.currentReview,
-      currentUser: state.app.currentUser,
       previousLocation: state.shared.previousLocation
     }),
     []
   );
-  const { currentReview, currentUser, previousLocation } = useMappedState(
-    mapState
-  );
+  const { currentReview, previousLocation } = useMappedState(mapState);
   const [loading, setLoading] = useState(true);
+
+  const { currentUser } = useContext(AuthContext);
 
   const initReview = useCallback(
     async (mapId, reviewId) => {
       setLoading(true);
       const apiInstance = new ReviewsApi();
+      const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+      firebaseAuth.apiKey = await currentUser.getIdToken();
+      firebaseAuth.apiKeyPrefix = 'Bearer';
 
       apiInstance.mapsMapIdReviewsReviewIdGet(
         mapId,
@@ -87,7 +90,7 @@ const ReviewDetail = props => {
         }
       );
     },
-    [currentReview, dispatch]
+    [currentReview, dispatch, currentUser]
   );
 
   useEffect(() => {
@@ -109,7 +112,7 @@ const ReviewDetail = props => {
     }
 
     initReview(props.params.mapId, props.params.reviewId);
-  }, [currentUser.uid, props.params.mapId, props.params.reviewId]);
+  }, [currentUser, props.params.mapId, props.params.reviewId]);
 
   useEffect(() => {
     if (!currentReview) {

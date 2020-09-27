@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -11,6 +11,8 @@ import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import ReviewImageTile from './ReviewImageTile';
 import Skeleton from '@material-ui/lab/Skeleton';
+import AuthContext from '../../context/AuthContext';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   reviewsLarge: {
@@ -36,19 +38,21 @@ const styles = {
 
 const ProfileReviews = props => {
   const { params } = props;
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+
+  const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
 
   const mapState = useCallback(
     state => ({
-      currentUser: state.app.currentUser,
       currentReviews: state.profile.currentReviews,
       location: state.shared.currentLocation
     }),
     []
   );
 
-  const { currentUser, currentReviews, location } = useMappedState(mapState);
+  const { currentReviews, location } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
@@ -80,11 +84,11 @@ const ProfileReviews = props => {
       return;
     }
     initReviews();
-  }, [currentUser.uid]);
+  }, [currentUser]);
 
   if (!loading && currentReviews.length < 1) {
     return (
-      <div style={large ? styles.noReviewsLarge : styles.noReviewsSmall}>
+      <div style={smUp ? styles.noReviewsLarge : styles.noReviewsSmall}>
         <NoContents
           contentType="review"
           action="create-review"
@@ -95,22 +99,22 @@ const ProfileReviews = props => {
   }
 
   return (
-    <div style={large ? styles.reviewsLarge : styles.reviewsSmall}>
+    <div style={smUp ? styles.reviewsLarge : styles.reviewsSmall}>
       {loading ? (
         <ReviewGridList
-          cols={large ? 4 : 3}
-          spacing={large ? 20 : 4}
-          cellHeight={large ? 165 : 115}
+          cols={smUp ? 4 : 3}
+          spacing={smUp ? 20 : 4}
+          cellHeight={smUp ? 165 : 115}
         >
-          {Array.from(new Array(large ? 8 : 6)).map((v, i) => (
+          {Array.from(new Array(smUp ? 8 : 6)).map((v, i) => (
             <Skeleton key={i} variant="rect" style={styles.skeleton} />
           ))}
         </ReviewGridList>
       ) : (
         <React.Fragment>
           <ReviewGridList
-            cols={large ? 4 : 3}
-            spacing={large ? 20 : 4}
+            cols={smUp ? 4 : 3}
+            spacing={smUp ? 20 : 4}
             cellHeight="auto"
           >
             {currentReviews.map(review => (

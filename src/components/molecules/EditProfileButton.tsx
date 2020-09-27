@@ -1,22 +1,17 @@
-import React, { useCallback } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import React, { useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
 import Button from '@material-ui/core/Button';
 
 import openEditProfileDialog from '../../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
+import AuthContext from '../../context/AuthContext';
 
 const EditProfileButton = () => {
   const dispatch = useDispatch();
-  const mapState = useCallback(
-    state => ({
-      currentUser: state.app.currentUser
-    }),
-    []
-  );
 
-  const { currentUser } = useMappedState(mapState);
+  const { currentUser } = useContext(AuthContext);
 
   const handleEditProfileButtonClick = useCallback(() => {
     if (currentUser.isAnonymous) {

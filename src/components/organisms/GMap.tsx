@@ -1,64 +1,55 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useDispatch, useMappedState } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import loadGoogleMapsApi from 'load-google-maps-api';
 
 import requestCurrentPosition from '../../actions/requestCurrentPosition';
 import requestMapCenter from '../../actions/requestMapCenter';
 
 import sleep from '../../utils/sleep';
-import GoogleMapsContext from '../../GoogleMapsContext';
+import GoogleMapsContext from '../../context/GoogleMapsContext';
 
 import CurrentPositionMarker from '../molecules/CurrentPositionMarker';
 import CurrentPositionIcon from '../molecules/CurrentPositionIcon';
 import SpotMarkers from './SpotMarkers';
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 
-const styles = {
-  mapWrapperLarge: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 380,
-    marginTop: 64
-  },
-  mapWrapperMd: {
-    height: '100%'
-  },
-  mapWrapperSmall: {
-    height: '100%'
-  },
-  mapLarge: {
-    height: '100%',
-    width: '100%'
-  },
-  mapSmall: {
-    height: '100%',
-    width: '100%',
-    position: 'relative',
-    overflow: 'hidden'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    mapWrapper: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0,
+      marginTop: 56,
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 64
+      },
+      [theme.breakpoints.up('lg')]: {
+        marginLeft: 380
+      }
+    },
+    map: {
+      height: '100%'
+    }
+  })
+);
 
 const GMap = () => {
+  const [googleMap, setGoogleMap] = useState<google.maps.Map>(null);
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useDispatch();
-  const smUp = useMediaQuery('(min-width: 600px)');
-  const mdUp = useMediaQuery('(min-width: 960px)');
-  const lgUp = useMediaQuery('(min-width: 1280px)');
-
-  const [gMap, setGMap] = useState(undefined);
-  const [googleMapsApi, setGoogleMapsApi] = useState(undefined);
 
   const mapState = useCallback(
     state => ({
+      currentMap: state.mapSummary.currentMap,
       center: state.gMap.center,
-      zoom: state.gMap.zoom,
-      currentMap: state.mapSummary.currentMap
+      zoom: state.gMap.zoom
     }),
     []
   );
-  const { center, zoom, currentMap } = useMappedState(mapState);
+  const { currentMap, center, zoom } = useMappedState(mapState);
 
   const initCenter = useCallback(async () => {
     await sleep(2000);
@@ -70,93 +61,68 @@ const GMap = () => {
     }
   }, [dispatch, currentMap]);
 
-  const initGoogleMapsApi = useCallback(async () => {
-    const options = {
-      key: process.env.GOOGLE_MAP_API_KEY,
-      v: 3
-    };
-    const api = await loadGoogleMapsApi(options);
-    setGoogleMapsApi(api);
-  }, []);
-
-  const initGoogleMaps = useCallback(async () => {
-    const map = new googleMapsApi.Map(document.querySelector('#map'), {
-      center: {
-        lat: parseFloat(center.lat),
-        lng: parseFloat(center.lng)
-      },
+  const initGoogleMaps = useCallback(() => {
+    const mapOptions = {
+      center: center,
       zoom: zoom,
       zoomControlOptions: {
-        position: googleMapsApi.ControlPosition.RIGHT_TOP,
-        style: googleMapsApi.ZoomControlStyle.SMALL
+        position: google.maps.ControlPosition.RIGHT_TOP,
+        style: google.maps.ZoomControlStyle.SMALL
       },
       streetViewControl: true,
       streetViewControlOptions: {
         position: mdUp
-          ? googleMapsApi.ControlPosition.RIGHT_TOP
-          : googleMapsApi.ControlPosition.LEFT_TOP
+          ? google.maps.ControlPosition.RIGHT_TOP
+          : google.maps.ControlPosition.LEFT_TOP
       },
       scaleControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
-      gestureHandling: 'greedy'
-    });
+      gestureHandling: 'greedy' as google.maps.GestureHandlingOptions
+    };
 
-    setGMap(map);
-  }, [googleMapsApi, center]);
+    const map = new google.maps.Map(document.querySelector('#map'), mapOptions);
+    setGoogleMap(map);
+  }, [center, zoom]);
 
   useEffect(() => {
-    if (!currentMap || !gMap || !googleMapsApi) {
+    if (!googleMap) {
+      return;
+    }
+    googleMap.setCenter({
+      lat: center.lat,
+      lng: center.lng
+    });
+    googleMap.setZoom(zoom);
+  }, [center, zoom, googleMap]);
+
+  useEffect(() => {
+    if (!currentMap || !googleMap) {
       return;
     }
     initCenter();
   }, [currentMap]);
 
   useEffect(() => {
-    if (!gMap) {
-      return;
-    }
-    gMap.setCenter({
-      lat: parseFloat(center.lat),
-      lng: parseFloat(center.lng)
-    });
-    gMap.setZoom(zoom);
-  }, [center, zoom, gMap]);
-
-  useEffect(() => {
-    if (!googleMapsApi) {
-      return;
-    }
     initGoogleMaps();
-  }, [googleMapsApi]);
-
-  useEffect(() => {
-    initGoogleMapsApi();
   }, []);
 
-  return (
-    <GoogleMapsContext.Provider
-      value={{
-        googleMapsApi: googleMapsApi,
-        gMap: gMap
-      }}
-    >
-      <SpotMarkers />
-      <CurrentPositionMarker />
-      <CurrentPositionIcon />
+  const classes = useStyles();
 
-      <div
-        style={
-          lgUp
-            ? styles.mapWrapperLarge
-            : smUp
-            ? styles.mapWrapperMd
-            : styles.mapWrapperSmall
-        }
+  return (
+    <div className={classes.mapWrapper}>
+      <div id="map" className={classes.map} />
+
+      <GoogleMapsContext.Provider
+        value={{
+          googleMap: googleMap
+        }}
       >
-        <div id="map" style={lgUp ? styles.mapLarge : styles.mapSmall} />
-      </div>
-    </GoogleMapsContext.Provider>
+        <SpotMarkers />
+        <CurrentPositionMarker />
+        <CurrentPositionIcon />
+      </GoogleMapsContext.Provider>
+    </div>
   );
 };
 

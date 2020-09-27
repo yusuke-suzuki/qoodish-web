@@ -28,6 +28,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import I18n from '../../utils/I18n';
 import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   dialogContentLarge: {},
@@ -105,7 +106,8 @@ const SharedEditMapDialog = props => {
     }
   }, [name, description]);
 
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const dispatch = useDispatch();
 
@@ -238,10 +240,10 @@ const SharedEditMapDialog = props => {
       disableBackdropClick
       disableEscapeKeyDown
       fullWidth
-      fullScreen={!large}
-      TransitionComponent={large ? Fade : Transition}
+      fullScreen={!smUp}
+      TransitionComponent={smUp ? Fade : Transition}
     >
-      {large ? (
+      {smUp ? (
         <DialogTitle>
           {currentMap ? I18n.t('edit map') : I18n.t('create new map')}
         </DialogTitle>
@@ -262,7 +264,7 @@ const SharedEditMapDialog = props => {
         />
       )}
       <DialogContent
-        style={large ? styles.dialogContentLarge : styles.dialogContentSmall}
+        style={smUp ? styles.dialogContentLarge : styles.dialogContentSmall}
       >
         <div style={styles.thumbnailContainer}>
           {imageUrl ? (
@@ -387,11 +389,9 @@ const SharedEditMapDialog = props => {
           />
         </div>
       </DialogContent>
-      {large && (
+      {smUp && (
         <DialogActions>
-          <Button onClick={handleRequestDialogClose}>
-            {I18n.t('cancel')}
-          </Button>
+          <Button onClick={handleRequestDialogClose}>{I18n.t('cancel')}</Button>
           <Button
             variant="contained"
             onClick={handleSaveClick}

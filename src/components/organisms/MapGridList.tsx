@@ -3,6 +3,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   gridList: {
@@ -20,10 +21,11 @@ const styles = {
 
 const MapGridList = props => {
   const { horizontal } = props;
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const cols = useMemo(() => {
-    if (large) {
+    if (smUp) {
       if (horizontal) {
         return 2.5;
       } else {
@@ -36,13 +38,13 @@ const MapGridList = props => {
         return 2;
       }
     }
-  }, [large, horizontal]);
+  }, [smUp, horizontal]);
 
   return (
     <GridList
       cols={cols}
       style={horizontal ? styles.gridListHorizontal : styles.gridList}
-      spacing={large || horizontal ? 20 : 10}
+      spacing={smUp || horizontal ? 20 : 10}
       cellHeight={290}
     >
       {props.children.map(child => (

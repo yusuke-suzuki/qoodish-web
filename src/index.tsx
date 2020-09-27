@@ -7,10 +7,7 @@ import { StoreContext } from 'redux-react-hook';
 import { RouterContext } from '@yusuke-suzuki/rize-router';
 import { createBrowserHistory } from 'history';
 
-import initializeApp from './utils/initializeApp';
 import configureStore from './configureStore';
-
-initializeApp();
 
 const { store } = configureStore();
 const history = createBrowserHistory();

@@ -6,7 +6,7 @@ import fetchSpots from '../../actions/fetchSpots';
 import selectMapSpot from '../../actions/selectMapSpot';
 import openSpotCard from '../../actions/openSpotCard';
 import clearMapSpotState from '../../actions/clearMapSpotState';
-import { Popover } from '@material-ui/core';
+import { Popover, useTheme } from '@material-ui/core';
 import SpotInfoWindow from '../molecules/SpotInfoWindow';
 import SpotMarker from '../molecules/SpotMarker';
 
@@ -14,7 +14,8 @@ const SpotMarkers = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [windowOpen, setWindowOpen] = useState(false);
-  const mdUp = useMediaQuery('(min-width: 960px)');
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const mapState = useCallback(
     state => ({

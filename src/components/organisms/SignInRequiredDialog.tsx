@@ -13,6 +13,7 @@ import Fade from '@material-ui/core/Fade';
 import LoginButtons from './LoginButtons';
 import I18n from '../../utils/I18n';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
+import { useTheme } from '@material-ui/core';
 
 const styles = {
   dialogContent: {
@@ -26,7 +27,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SignInRequiredDialog = () => {
   const dispatch = useDispatch();
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dialogOpen = useMappedState(
     useCallback(state => state.shared.signInRequiredDialogOpen, [])
   );
@@ -39,8 +41,8 @@ const SignInRequiredDialog = () => {
       open={dialogOpen}
       onClose={onClose}
       fullWidth
-      fullScreen={!large}
-      TransitionComponent={large ? Fade : Transition}
+      fullScreen={!smUp}
+      TransitionComponent={smUp ? Fade : Transition}
     >
       <DialogTitle>{I18n.t('this action requires sign in')}</DialogTitle>
       <DialogContent style={styles.dialogContent}>

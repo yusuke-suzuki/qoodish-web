@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -19,6 +19,8 @@ import ProfileAvatar from '../molecules/ProfileAvatar';
 
 import I18n from '../../utils/I18n';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
+import { useTheme } from '@material-ui/core';
+import AuthContext from '../../context/AuthContext';
 
 const styles = {
   cardMedia: {
@@ -100,7 +102,7 @@ const styles = {
 const Summary = React.memo(props => {
   const dispatch = useDispatch();
 
-  const { currentUser, handleTabChange } = props;
+  const { profile, handleTabChange } = props;
 
   const handleFollowingClick = useCallback(() => {
     dispatch(openFollowingMapsDialog());
@@ -113,7 +115,7 @@ const Summary = React.memo(props => {
         onClick={() => handleTabChange(undefined, 0)}
       >
         <Typography variant="subtitle2" style={styles.summaryCount}>
-          {currentUser.reviews_count ? currentUser.reviews_count : 0}
+          {profile.reviews_count ? profile.reviews_count : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('reviews count')}
@@ -121,9 +123,7 @@ const Summary = React.memo(props => {
       </Button>
       <Button style={styles.summaryCountButton} onClick={handleFollowingClick}>
         <Typography variant="subtitle2" style={styles.summaryCount}>
-          {currentUser.following_maps_count
-            ? currentUser.following_maps_count
-            : 0}
+          {profile.following_maps_count ? profile.following_maps_count : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('following maps')}
@@ -134,7 +134,8 @@ const Summary = React.memo(props => {
 });
 
 const ProfileCard = React.memo(props => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const mapState = useCallback(
     state => ({
@@ -144,29 +145,29 @@ const ProfileCard = React.memo(props => {
   );
 
   const { location } = useMappedState(mapState);
-
-  const { currentUser, handleTabChange, tabValue } = props;
+  const { currentUser } = useContext(AuthContext);
+  const { profile, handleTabChange, tabValue } = props;
 
   return (
     <Card elevation={0}>
       <CardMedia style={styles.cardMedia}>
         <img
           src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
-            large ? 900 : 400
+            smUp ? 900 : 400
           }x${200}&scale=${2}&center=${35.710063},${139.8107}`}
           style={styles.staticMapImage}
           loading="lazy"
         />
       </CardMedia>
       <CardContent
-        style={large ? styles.cardContentLarge : styles.cardContentSmall}
+        style={smUp ? styles.cardContentLarge : styles.cardContentSmall}
       >
         <div
           style={
-            large ? styles.avatarContainerLarge : styles.avatarContainerSmall
+            smUp ? styles.avatarContainerLarge : styles.avatarContainerSmall
           }
         >
-          <ProfileAvatar size={large ? 100 : 80} currentUser={currentUser} />
+          <ProfileAvatar size={smUp ? 100 : 80} profile={profile} />
         </div>
         <div style={styles.profileActions}>
           {location && location.pathname === '/profile' ? (
@@ -176,14 +177,14 @@ const ProfileCard = React.memo(props => {
           )}
         </div>
         <Typography variant="h5" gutterBottom>
-          {currentUser.isAnonymous
+          {currentUser && currentUser.isAnonymous
             ? I18n.t('anonymous user')
-            : currentUser.name}
+            : profile.name}
         </Typography>
         <Typography variant="body1" style={styles.biography} gutterBottom>
-          {currentUser.biography}
+          {profile.biography}
         </Typography>
-        <Summary handleTabChange={handleTabChange} currentUser={currentUser} />
+        <Summary handleTabChange={handleTabChange} profile={profile} />
       </CardContent>
       <Tabs
         value={tabValue}
@@ -202,9 +203,10 @@ const ProfileCard = React.memo(props => {
 });
 
 const SharedProfile = props => {
-  const { currentUser } = props;
+  const { profile } = props;
 
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -217,22 +219,22 @@ const SharedProfile = props => {
       <ProfileCard
         tabValue={tabValue}
         handleTabChange={handleTabChange}
-        currentUser={currentUser}
+        profile={profile}
       />
       <div>
         {tabValue === 0 && <ProfileReviews {...props} />}
         {tabValue === 1 && (
-          <div style={large ? styles.userMapsLarge : styles.userMapsSmall}>
+          <div style={smUp ? styles.userMapsLarge : styles.userMapsSmall}>
             <ProfileMyMaps {...props} />
           </div>
         )}
         {tabValue === 2 && (
-          <div style={large ? styles.likesLarge : styles.likesSmall}>
+          <div style={smUp ? styles.likesLarge : styles.likesSmall}>
             <LikesList {...props} />
           </div>
         )}
       </div>
-      {large && <CreateResourceButton />}
+      {smUp && <CreateResourceButton />}
     </div>
   );
 };
