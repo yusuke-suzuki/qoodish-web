@@ -1,7 +1,6 @@
 import {
   OPEN_DELETE_ACCOUNT_DIALOG,
-  CLOSE_DELETE_ACCOUNT_DIALOG,
-  LOCATION_CHANGE
+  CLOSE_DELETE_ACCOUNT_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -15,10 +14,6 @@ const reducer = (state = initialState, action) => {
         deleteAccountDialogOpen: true
       });
     case CLOSE_DELETE_ACCOUNT_DIALOG:
-      return Object.assign({}, state, {
-        deleteAccountDialogOpen: false
-      });
-    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         deleteAccountDialogOpen: false
       });

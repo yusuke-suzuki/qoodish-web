@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -10,26 +9,22 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
 import I18n from '../../utils/I18n';
 import closeFollowersDialog from '../../actions/closeFollowersDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
-const styles = {
-  dialogContent: {
-    padding: 0
-  }
-};
-
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const FollowersDialog = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useDispatch();
 
   const mapState = useCallback(
@@ -45,14 +40,20 @@ const FollowersDialog = () => {
     dispatch(closeFollowersDialog());
   }, [dispatch]);
 
+  useEffect(() => {
+    return () => {
+      handleRequestDialogClose();
+    };
+  }, []);
+
   return (
     <Dialog
       open={dialogOpen}
       onClose={handleRequestDialogClose}
       fullWidth
-      TransitionComponent={large ? Fade : Transition}
+      TransitionComponent={mdUp ? Fade : Transition}
     >
-      {large ? (
+      {mdUp ? (
         <DialogTitle>{I18n.t('followers')}</DialogTitle>
       ) : (
         <DialogAppBar
@@ -61,21 +62,28 @@ const FollowersDialog = () => {
           color="inherit"
         />
       )}
-      <DialogContent style={styles.dialogContent}>
+      <DialogContent>
         <List>
           {followers.map(follower => (
-            <ListItem
-              button
-              key={follower.id}
-              component={Link}
-              to={`/users/${follower.id}`}
-              title={follower.name}
-            >
-              <ListItemAvatar>
-                <Avatar src={follower.profile_image_url} alt={follower.name} />
-              </ListItemAvatar>
-              <ListItemText primary={follower.name} />
-            </ListItem>
+            <Link key={follower.id} href={`/users/${follower.id}`} passHref>
+              <ListItem button title={follower.name}>
+                <ListItemAvatar>
+                  <>
+                    {follower.profile_image_url ? (
+                      <Avatar
+                        src={follower.profile_image_url}
+                        alt={follower.name}
+                      />
+                    ) : (
+                      <Avatar alt={follower.name}>
+                        {follower.name.slice(0, 1)}
+                      </Avatar>
+                    )}
+                  </>
+                </ListItemAvatar>
+                <ListItemText primary={follower.name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </DialogContent>

@@ -1,60 +1,50 @@
-import React, { useCallback, useContext } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
-
-import { Link } from '@yusuke-suzuki/rize-router';
-import MapIcon from '@material-ui/icons/Map';
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import SearchIcon from '@material-ui/icons/Search';
-import RateReviewIcon from '@material-ui/icons/RateReview';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import PlaceIcon from '@material-ui/icons/Place';
-import MailIcon from '@material-ui/icons/Mail';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import { memo, useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
+import Link from 'next/link';
 import I18n from '../../utils/I18n';
-
 import openCreateMapDialog from '../../actions/openCreateMapDialog';
-import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import AuthContext from '../../context/AuthContext';
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography
+} from '@material-ui/core';
+import {
+  Add,
+  Edit,
+  Mail,
+  Map,
+  Notifications,
+  Place,
+  RateReview,
+  Search,
+  ThumbUp
+} from '@material-ui/icons';
+import openEditReviewDialog from '../../actions/openEditReviewDialog';
 
-const styles = {
-  container: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    padding: 20
-  },
-  icon: {
-    width: 150,
-    height: 150
-  },
-  buttonIcon: {
-    marginRight: 8
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      textAlign: 'center',
+      color: theme.palette.text.hint,
+      padding: theme.spacing(3)
+    },
+    icon: {
+      width: theme.spacing(12),
+      height: theme.spacing(12)
+    }
+  })
+);
+
+type ActionProps = {
+  actionType: string;
 };
 
-const ContentsIcon = props => {
-  switch (props.contentType) {
-    case 'map':
-      return <MapIcon style={styles.icon} />;
-    case 'review':
-      return <RateReviewIcon style={styles.icon} />;
-    case 'notification':
-      return <NotificationsIcon style={styles.icon} />;
-    case 'like':
-      return <ThumbUpIcon style={styles.icon} />;
-    case 'spot':
-      return <PlaceIcon style={styles.icon} />;
-    case 'invite':
-      return <MailIcon style={styles.icon} />;
-    default:
-      return null;
-  }
-};
-
-const PrimaryAction = props => {
+const PrimaryAction = memo((props: ActionProps) => {
+  const { actionType } = props;
   const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
 
@@ -70,19 +60,19 @@ const PrimaryAction = props => {
     if (currentUser.isAnonymous) {
       dispatch(openSignInRequiredDialog());
     } else {
-      dispatch(openPlaceSelectDialog());
+      dispatch(openEditReviewDialog(null));
     }
   }, [dispatch, currentUser]);
 
-  switch (props.action) {
+  switch (actionType) {
     case 'create-map':
       return (
         <Button
           variant="contained"
           color="primary"
           onClick={handleCreateMapButtonClick}
+          startIcon={<Add />}
         >
-          <AddIcon style={styles.buttonIcon} />
           {I18n.t('create new map')}
         </Button>
       );
@@ -92,61 +82,108 @@ const PrimaryAction = props => {
           variant="contained"
           color="primary"
           onClick={handleCreateReviewButtonClick}
+          startIcon={<Edit />}
         >
-          <EditIcon style={styles.buttonIcon} />
           {I18n.t('create new report')}
         </Button>
       );
     case 'discover-reviews':
       return (
-        <Button color="primary" component={Link} to="/discover">
-          <SearchIcon style={styles.buttonIcon} />
-          {I18n.t('discover reviews')}
-        </Button>
+        <Link href="/discover" passHref>
+          <Button color="primary" startIcon={<Search />}>
+            {I18n.t('discover reviews')}
+          </Button>
+        </Link>
       );
     default:
       return null;
   }
-};
+});
 
-const SecondaryAction = props => {
-  switch (props.secondaryAction) {
+const SecondaryAction = memo((props: ActionProps) => {
+  const { actionType } = props;
+
+  switch (actionType) {
     case 'discover-maps':
       return (
-        <Button color="primary" component={Link} to="/discover">
-          <SearchIcon style={styles.buttonIcon} />
-          {I18n.t('discover maps')}
-        </Button>
+        <Link href="/discover" passHref>
+          <Button color="primary" startIcon={<Search />}>
+            {I18n.t('discover maps')}
+          </Button>
+        </Link>
       );
     case 'discover-reviews':
       return (
-        <Button color="primary" component={Link} to="/discover">
-          <SearchIcon style={styles.buttonIcon} />
-          {I18n.t('discover reviews')}
-        </Button>
+        <Link href="/discover" passHref>
+          <Button color="primary" startIcon={<Search />}>
+            {I18n.t('discover reviews')}
+          </Button>
+        </Link>
       );
     default:
       return null;
   }
+});
+
+type IconProps = {
+  contentType: string;
 };
 
-const NoContents = props => {
+const ContentsIcon = memo((props: IconProps) => {
+  const classes = useStyles();
+  const { contentType } = props;
+
+  switch (contentType) {
+    case 'map':
+      return <Map className={classes.icon} />;
+    case 'review':
+      return <RateReview className={classes.icon} />;
+    case 'notification':
+      return <Notifications className={classes.icon} />;
+    case 'like':
+      return <ThumbUp className={classes.icon} />;
+    case 'spot':
+      return <Place className={classes.icon} />;
+    case 'invite':
+      return <Mail className={classes.icon} />;
+    default:
+      return null;
+  }
+});
+
+type Props = {
+  message: string;
+  contentType: 'map' | 'review' | 'notification' | 'like' | 'spot' | 'invite';
+  action?: 'create-map' | 'create-review' | 'discover-reviews';
+  secondaryAction?: 'discover-maps' | 'discover-reviews';
+};
+
+export default memo(function NoContents(props: Props) {
+  const classes = useStyles();
+  const { message, contentType, action, secondaryAction } = props;
+
   return (
-    <div style={styles.container}>
-      <ContentsIcon {...props} />
+    <div className={classes.container}>
+      <ContentsIcon contentType={contentType} />
       <Typography variant="subtitle1" color="inherit">
-        {props.message}
+        {message}
       </Typography>
-      <br />
-      <div>
-        <PrimaryAction {...props} />
-      </div>
-      <br />
-      <div>
-        <SecondaryAction {...props} />
-      </div>
+      {action && (
+        <>
+          <br />
+          <div>
+            <PrimaryAction actionType={action} />
+          </div>
+        </>
+      )}
+      {secondaryAction && (
+        <>
+          <br />
+          <div>
+            <SecondaryAction actionType={secondaryAction} />
+          </div>
+        </>
+      )}
     </div>
   );
-};
-
-export default React.memo(NoContents);
+});

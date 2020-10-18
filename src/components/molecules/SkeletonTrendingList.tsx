@@ -8,27 +8,32 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Paper from '@material-ui/core/Paper';
 import CardContent from '@material-ui/core/CardContent';
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 
-const styles = {
-  listItemLarge: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  listItemSmall: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  cardContainer: {
-    paddingBottom: 16
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    listItemLarge: {
+      paddingLeft: 10,
+      paddingRight: 80
+    },
+    listItemSmall: {
+      paddingLeft: 10,
+      paddingRight: 80
+    },
+    cardContainer: {
+      paddingBottom: theme.spacing(2)
+    }
+  })
+);
 
 const SkeletonTrendingList = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const classes = useStyles();
 
   return (
     <Paper elevation={0}>
-      <CardContent style={styles.cardContainer}>
+      <CardContent className={classes.cardContainer}>
         <List
           disablePadding
           subheader={
@@ -40,7 +45,7 @@ const SkeletonTrendingList = () => {
           {Array.from(new Array(10)).map((v, i) => (
             <ListItem
               key={i}
-              style={large ? styles.listItemLarge : styles.listItemSmall}
+              className={mdUp ? classes.listItemLarge : classes.listItemSmall}
             >
               <ListItemAvatar>
                 <Skeleton variant="circle" width={40} height={40} />

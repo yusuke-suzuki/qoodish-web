@@ -1,14 +1,12 @@
-import React, { useCallback, useContext } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
-
-import Button from '@material-ui/core/Button';
-
 import openEditProfileDialog from '../../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
+import { Button } from '@material-ui/core';
 
-const EditProfileButton = () => {
+export default memo(function EditProfileButton() {
   const dispatch = useDispatch();
 
   const { currentUser } = useContext(AuthContext);
@@ -30,6 +28,4 @@ const EditProfileButton = () => {
       {I18n.t('edit profile')}
     </Button>
   );
-};
-
-export default React.memo(EditProfileButton);
+});

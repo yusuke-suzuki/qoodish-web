@@ -1,88 +1,92 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { memo, useCallback, useContext, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import fetchMoreUserReviews from '../../actions/fetchMoreUserReviews';
-
 import I18n from '../../utils/I18n';
-
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
-import { useTheme } from '@material-ui/core';
+import {
+  Button,
+  CircularProgress,
+  createStyles,
+  makeStyles,
+  useMediaQuery,
+  useTheme
+} from '@material-ui/core';
 
-const styles = {
-  buttonLarge: {
-    textAlign: 'center',
-    padding: 20
-  },
-  buttonSmall: {
-    textAlign: 'center',
-    marginTop: 16,
-    paddingBottom: 8
-  },
-  progress: {
-    textAlign: 'center',
-    padding: 20,
-    marginTop: 20
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    buttonLarge: {
+      textAlign: 'center',
+      padding: 20
+    },
+    buttonSmall: {
+      textAlign: 'center',
+      marginTop: 16,
+      paddingBottom: 8
+    },
+    progress: {
+      textAlign: 'center',
+      padding: 20,
+      marginTop: 20
+    }
+  })
+);
+
+type Props = {
+  userId: string;
 };
 
-const LoadMoreUserReviewsButton = props => {
+export default memo(function LoadMoreUserReviewsButton(props: Props) {
+  const { userId } = props;
+
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
       noMoreReviews: state.profile.noMoreReviews,
-      nextTimestamp: state.profile.nextTimestamp,
-      location: state.shared.currentLocation
+      nextTimestamp: state.profile.nextTimestamp
     }),
     []
   );
 
-  const { noMoreReviews, nextTimestamp, location } = useMappedState(mapState);
+  const { noMoreReviews, nextTimestamp } = useMappedState(mapState);
 
-  const { params } = props;
   const { currentUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
 
   const handleClickLoadMoreButton = useCallback(async () => {
     setLoading(true);
-    let userId =
-      location && location.pathname === '/profile'
-        ? currentUser.uid
-        : params.userId;
+    const uid = userId ? userId : currentUser.uid;
 
     const apiInstance = new ReviewsApi();
     const opts = {
       nextTimestamp: nextTimestamp
     };
-    apiInstance.usersUserIdReviewsGet(userId, opts, (error, data, response) => {
+    apiInstance.usersUserIdReviewsGet(uid, opts, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
         dispatch(fetchMoreUserReviews(response.body));
       }
     });
-  }, [dispatch, currentUser, params, nextTimestamp, location]);
+  }, [dispatch, currentUser, userId, nextTimestamp]);
 
   if (loading) {
     return (
-      <div style={styles.progress}>
+      <div className={classes.progress}>
         <CircularProgress />
       </div>
     );
   } else {
     return noMoreReviews ? null : (
-      <div style={smUp ? styles.buttonLarge : styles.buttonSmall}>
+      <div className={smUp ? classes.buttonLarge : classes.buttonSmall}>
         <Button color="primary" onClick={handleClickLoadMoreButton}>
           {I18n.t('load more')}
         </Button>
       </div>
     );
   }
-};
-export default React.memo(LoadMoreUserReviewsButton);
+});

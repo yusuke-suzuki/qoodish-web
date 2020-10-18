@@ -15,9 +15,7 @@ import Switch from '@material-ui/core/Switch';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import I18n from '../../utils/I18n';
-import createRegistrationToken from '../../utils/createRegistrationToken';
 import openToast from '../../actions/openToast';
-import deleteRegistrationToken from '../../utils/deleteRegistrationToken';
 import {
   PushNotification,
   PushNotificationApi
@@ -26,13 +24,14 @@ import fetchMyProfile from '../../actions/fetchMyProfile';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import AuthContext from '../../context/AuthContext';
-
-const pushAvailable = () => {
-  return 'serviceWorker' in navigator && 'PushManager' in window;
-};
+import ServiceWorkerContext from '../../context/ServiceWorkerContext';
+import { usePushManager } from '../../hooks/usePushManager';
 
 const PushSettings = () => {
-  const [pushEnabled, setPushEnabled] = useState(false);
+  const { registration } = useContext(ServiceWorkerContext);
+
+  const { isSubscribed, subscribe, unsubscribe } = usePushManager();
+
   const [likedEnabled, setLikedEnabled] = useState(false);
   const [followedEnabled, setFollowedEnabled] = useState(false);
   const [invitedEnabled, setInvitedEnabled] = useState(false);
@@ -49,14 +48,6 @@ const PushSettings = () => {
 
   const { currentUser } = useContext(AuthContext);
 
-  const initPushStatus = useCallback(() => {
-    if (localStorage.registrationToken) {
-      setPushEnabled(true);
-    } else {
-      setPushEnabled(false);
-    }
-  }, []);
-
   const initPushSettings = useCallback(() => {
     setLikedEnabled(profile.push_notification.liked);
     setFollowedEnabled(profile.push_notification.followed);
@@ -65,34 +56,45 @@ const PushSettings = () => {
   }, [profile]);
 
   const handleEnablePush = useCallback(async () => {
-    Notification.requestPermission(async permission => {
-      if (permission === 'granted') {
-        await createRegistrationToken();
-        setPushEnabled(true);
-        dispatch(openToast(I18n.t('push enabled')));
-      } else {
-        dispatch(openToast(I18n.t('push disabled')));
-      }
-    });
-  }, [dispatch]);
+    dispatch(requestStart());
+
+    const permission = await Notification.requestPermission();
+
+    if (permission === 'granted') {
+      await subscribe();
+
+      dispatch(requestFinish());
+      dispatch(openToast(I18n.t('push enabled')));
+    } else {
+      dispatch(requestFinish());
+      dispatch(openToast(I18n.t('push disabled')));
+    }
+  }, [dispatch, subscribe]);
 
   const handleDisablePush = useCallback(async () => {
-    await deleteRegistrationToken();
-    setPushEnabled(false);
-    dispatch(openToast(I18n.t('push disabled')));
-  }, [dispatch]);
+    dispatch(requestStart());
 
-  const handlePushChange = useCallback((e, checked) => {
-    if (checked) {
-      handleEnablePush();
-    } else {
-      handleDisablePush();
-    }
-  }, []);
+    await unsubscribe();
+
+    dispatch(requestFinish());
+    dispatch(openToast(I18n.t('push disabled')));
+  }, [unsubscribe, dispatch]);
+
+  const handlePushChange = useCallback(
+    (_e, checked) => {
+      if (checked) {
+        handleEnablePush();
+      } else {
+        handleDisablePush();
+      }
+    },
+    [handleEnablePush, handleDisablePush]
+  );
 
   const handleChange = useCallback(
     (action, checked) => {
       dispatch(requestStart());
+
       const pushNotification = new PushNotification();
       pushNotification.liked = profile.push_notification.liked;
       pushNotification.followed = profile.push_notification.followed;
@@ -120,12 +122,8 @@ const PushSettings = () => {
   );
 
   const disabled = useMemo(() => {
-    return !currentUser || !pushAvailable() || currentUser.isAnonymous;
-  }, [currentUser, pushAvailable]);
-
-  useEffect(() => {
-    initPushStatus();
-  }, []);
+    return !currentUser || !registration || currentUser.isAnonymous;
+  }, [currentUser, registration]);
 
   useEffect(() => {
     if (!currentUser || currentUser.isAnonymous || !profile.push_notification) {
@@ -144,7 +142,7 @@ const PushSettings = () => {
         <FormControlLabel
           control={
             <Switch
-              checked={pushEnabled}
+              checked={isSubscribed}
               onChange={handlePushChange}
               disabled={disabled}
             />

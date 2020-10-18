@@ -25,7 +25,7 @@ const SharedLikeActions = props => {
         {props.target && props.target.liked ? (
           <FavoriteIcon color="error" />
         ) : (
-          <FavoriteBorderIcon style={props.style} />
+          <FavoriteBorderIcon className={props.className} />
         )}
       </IconButton>
     </Tooltip>

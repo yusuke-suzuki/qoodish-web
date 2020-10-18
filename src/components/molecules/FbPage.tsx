@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FacebookProvider, Page } from 'react-facebook';
 
-const FbPage = () => {
+export default memo(function FbPage() {
   return (
-    <FacebookProvider appId={process.env.FB_APP_ID}>
+    <FacebookProvider appId={process.env.NEXT_PUBLIC_FB_APP_ID}>
       <Page href="https://www.facebook.com/qoodish" />
     </FacebookProvider>
   );
-};
-
-export default React.memo(FbPage);
+});

@@ -1,45 +1,59 @@
-import { v1 as uuidv1 } from 'uuid';
-import getFirebase from './getFirebase';
-import getFirebaseStorage from './getFirebaseStorage';
+import { getApp } from 'firebase/app';
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  uploadString,
+  UploadResult,
+  UploadTask
+} from 'firebase/storage';
 
-const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
+const basePath = `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}`;
+
+export default function uploadToStorage(
+  data: string | Blob | Uint8Array | ArrayBuffer,
+  fileName: string,
+  fileType: 'blob' | 'data_url'
+): Promise<string> {
   return new Promise(async (resolve, reject) => {
-    await getFirebaseStorage();
-    const firebase = await getFirebase();
-
-    const storage = firebase.app().storage(process.env.FIREBASE_IMAGE_BUCKET);
-    const storageRef = storage.ref();
+    const firebaseApp = getApp();
+    const storage = getStorage(firebaseApp);
+    const storageRef = ref(storage, fileName);
 
     const metadata = {
       contentType: 'image/jpeg',
       cacheControl: `public,max-age=${30 * 24 * 60 * 60}` // 30 Days
     };
 
-    const fileName = `${dir}/${uuidv1()}.jpg`;
+    let uploadTask: UploadTask;
+    let uploadResult: UploadResult;
 
-    let uploadTask;
     if (fileType === 'blob') {
-      uploadTask = storageRef.child(fileName).put(image, metadata);
-    } else if (fileType === 'data_url') {
-      uploadTask = storageRef
-        .child(fileName)
-        .putString(image, 'data_url', metadata);
+      uploadTask = uploadBytesResumable(storageRef, data as Blob, metadata);
     } else {
-      uploadTask = storageRef
-        .child(fileName)
-        .putString(image, fileType, metadata);
+      uploadResult = await uploadString(
+        storageRef,
+        data as string,
+        fileType,
+        metadata
+      );
+    }
+
+    if (uploadResult) {
+      resolve(`${basePath}/${uploadResult.metadata.fullPath}`);
+      return;
     }
 
     uploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED,
+      'state_changed',
       snapshot => {
         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
-          case firebase.storage.TaskState.PAUSED:
+          case 'paused':
             console.log('Upload is paused');
             break;
-          case firebase.storage.TaskState.RUNNING:
+          case 'running':
             break;
         }
       },
@@ -55,14 +69,9 @@ const uploadToStorage = (image, dir = 'images', fileType = 'blob') => {
         reject();
       },
       () => {
-        const imageUrl = `${process.env.CLOUD_STORAGE_ENDPOINT}/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${fileName}`;
-        resolve({
-          imageUrl: imageUrl,
-          fileName: uploadTask.snapshot.ref.name
-        });
+        const imageUrl = `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/${fileName}`;
+        resolve(imageUrl);
       }
     );
   });
-};
-
-export default uploadToStorage;
+}

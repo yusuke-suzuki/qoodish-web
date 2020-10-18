@@ -1,7 +1,7 @@
-const fetchCurrentPosition = (options = {}) => {
+export default function fetchCurrentPosition(): Promise<any> {
   return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: false
+    });
   });
-};
-
-export default fetchCurrentPosition;
+}

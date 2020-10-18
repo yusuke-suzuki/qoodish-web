@@ -1,9 +1,0 @@
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow create: if request.auth.uid != null;
-      allow delete: if false;
-      allow read;
-    }
-  }
-}

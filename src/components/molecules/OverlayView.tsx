@@ -1,60 +1,80 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
-import ReactDOM from 'react-dom';
+import {
+  useEffect,
+  useCallback,
+  useContext,
+  ReactNode,
+  useMemo,
+  memo
+} from 'react';
+import { createPortal } from 'react-dom';
 import GoogleMapsContext from '../../context/GoogleMapsContext';
 
 type Props = {
-  position: any;
-  children: JSX.Element;
+  position: google.maps.LatLng;
+  enableRealtimeUpdate?: boolean;
+  children: ReactNode;
 };
 
-const OverlayView: React.FC<Props> = props => {
+export default memo(function OverlayView(props: Props) {
   const { googleMap } = useContext(GoogleMapsContext);
-  const { position, children } = props;
+  const { position, enableRealtimeUpdate, children } = props;
 
-  const [container, setContainer] = useState(document.createElement('div'));
-  const [overlay, setOverlay] = useState(undefined);
+  let container = useMemo<HTMLDivElement>(() => {
+    return document.createElement('div');
+  }, []);
 
-  const initOverlay = useCallback(() => {
-    const overlayView = new google.maps.OverlayView();
-    overlayView.setMap(googleMap);
-    setOverlay(overlayView);
-    google.maps.OverlayView.preventMapHitsFrom(container);
-  }, [googleMap, container]);
+  const overlayView = useMemo<google.maps.OverlayView>(() => {
+    return new google.maps.OverlayView();
+  }, []);
+
+  const unmount = useCallback(() => {
+    overlayView.setMap(null);
+  }, [overlayView]);
 
   const onAdd = useCallback(() => {
+    google.maps.OverlayView.preventMapHitsFrom(container);
     container.style.position = 'absolute';
-    overlay.getPanes().overlayMouseTarget.appendChild(container);
-  }, [overlay]);
+    overlayView.getPanes().overlayMouseTarget.appendChild(container);
+  }, [container, overlayView]);
 
   const draw = useCallback(() => {
-    const divPosition = overlay.getProjection().fromLatLngToDivPixel(position);
-    container.style.left = `${divPosition.x - 40}px`;
-    container.style.top = `${divPosition.y - 40}px`;
-  }, [overlay, container, position]);
+    const projection = overlayView.getProjection();
+    if (!projection) {
+      return;
+    }
+
+    const point = projection.fromLatLngToDivPixel(position);
+    container.style.left = `${point.x - 24}px`;
+    container.style.top = `${point.y - 24}px`;
+  }, [overlayView, container, position]);
 
   const onRemove = useCallback(() => {
-    ReactDOM.unmountComponentAtNode(container);
-    setContainer(undefined);
-    overlay.setMap(null);
-  }, [container, overlay]);
+    if (container) {
+      (container.parentNode as HTMLElement).removeChild(container);
+      container = null;
+    }
+  }, [container]);
 
-  const bindFunctions = useCallback(() => {
-    overlay.onAdd = onAdd.bind(this);
-    overlay.draw = draw.bind(this);
-    overlay.onRemove = onRemove.bind(this);
-  }, [overlay]);
+  const initOverlay = useCallback(() => {
+    overlayView.onAdd = onAdd.bind(this);
+    overlayView.draw = draw.bind(this);
+    overlayView.onRemove = onRemove.bind(this);
+
+    overlayView.setMap(googleMap);
+  }, [overlayView, googleMap, onAdd, draw, onRemove]);
 
   useEffect(() => {
-    if (overlay) {
-      bindFunctions();
+    if (position && enableRealtimeUpdate) {
+      draw();
+      overlayView.draw = draw.bind(this);
     }
-  }, [overlay]);
+  }, [position]);
 
   useEffect(() => {
     initOverlay();
+
+    return () => unmount();
   }, []);
 
-  return ReactDOM.createPortal(children, container);
-};
-
-export default React.memo(OverlayView);
+  return createPortal(children, container);
+});

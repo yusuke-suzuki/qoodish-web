@@ -13,7 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import I18n from '../../utils/I18n';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
@@ -124,25 +124,21 @@ const SearchBar = () => {
         <Paper className={classes.paper}>
           <List disablePadding>
             {pickedMaps.map(map => (
-              <ListItem
-                button
-                component={Link}
-                to={`/maps/${map.id}`}
-                key={map.id}
-                onClick={() => setListOpen(false)}
-              >
-                <ListItemAvatar>
-                  <Avatar alt={map.name} src={map.thumbnail_url} />
-                </ListItemAvatar>
-                <ListItemText
-                  disableTypography={true}
-                  primary={
-                    <Typography variant="subtitle1" noWrap>
-                      {map.name}
-                    </Typography>
-                  }
-                />
-              </ListItem>
+              <Link href="/profile" passHref key={map.id}>
+                <ListItem button onClick={() => setListOpen(false)}>
+                  <ListItemAvatar>
+                    <Avatar alt={map.name} src={map.thumbnail_url} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    disableTypography={true}
+                    primary={
+                      <Typography variant="subtitle1" noWrap>
+                        {map.name}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              </Link>
             ))}
           </List>
         </Paper>

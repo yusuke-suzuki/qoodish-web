@@ -1,6 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, forwardRef } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useDispatch } from 'redux-react-hook';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,92 +10,99 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import Chip from '@material-ui/core/Chip';
-import PlaceIcon from '@material-ui/icons/Place';
-import Avatar from '@material-ui/core/Avatar';
 import LockIcon from '@material-ui/icons/Lock';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import GroupIcon from '@material-ui/icons/Group';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-import IconButton from '@material-ui/core/IconButton';
 import CardMedia from '@material-ui/core/CardMedia';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import I18n from '../../utils/I18n';
-import openBaseSelectDialog from '../../actions/openBaseSelectDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
-import { useTheme } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme
+} from '@material-ui/core';
+import AddPhotoButton from '../molecules/AddPhotoButton';
+import { v1 as uuidv1 } from 'uuid';
+import uploadToStorage from '../../utils/uploadToStorage';
+import PlaceAutocomplete from '../molecules/PlaceAutocomplete';
 
-const styles = {
-  dialogContentLarge: {},
-  dialogContentSmall: {
-    paddingTop: 24
-  },
-  mapCenterChip: {
-    marginTop: 16,
-    marginBottom: 16
-  },
-  selectionLabel: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  selectionIcon: {
-    color: '#616161',
-    marginRight: 10
-  },
-  controlLabel: {
-    width: '100%'
-  },
-  placeChipLabel: {
-    overflow: 'hidden',
-    maxWidth: 'calc(100vw - 100px)',
-    textOverflow: 'ellipsis'
-  },
-  thumbnailContainer: {
-    marginBottom: 20,
-    position: 'relative'
-  },
-  thumbnail: {
-    width: 80,
-    height: 80
-  },
-  imageInput: {
-    display: 'none'
-  },
-  editImageButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    dialogContent: {
+      paddingTop: theme.spacing(3),
+      [theme.breakpoints.up('sm')]: {
+        paddingTop: 'initial'
+      }
+    },
+    mapCenterChip: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2)
+    },
+    selectionIcon: {
+      color: '#616161',
+      marginRight: 10
+    },
+    controlLabel: {
+      width: '100%'
+    },
+    placeChipLabel: {
+      overflow: 'hidden',
+      maxWidth: 'calc(100vw - 100px)',
+      textOverflow: 'ellipsis'
+    },
+    thumbnailContainer: {
+      marginBottom: 20,
+      position: 'relative'
+    },
+    thumbnail: {
+      width: 80,
+      height: 80
+    }
+  })
+);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const SharedEditMapDialog = props => {
+type Props = {
+  currentMap?: any;
+  handleSaveButtonClick: any;
+  dialogOpen: boolean;
+  handleRequestDialogClose: any;
+};
+
+const SharedEditMapDialog = (props: Props) => {
   const {
     currentMap,
     handleSaveButtonClick,
-    selectedBase,
     dialogOpen,
     handleRequestDialogClose
   } = props;
 
-  const [mapId, setMapId] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [privateMap, setPrivateMap] = useState(false);
-  const [invitable, setInvitable] = useState(false);
-  const [shared, setShared] = useState(false);
-  const [errorMapName, setErrorMapName] = useState(undefined);
-  const [errorDescription, setErrorDescription] = useState(undefined);
-  const [disabled, setDisabled] = useState(undefined);
-  const [editImage, setEditImage] = useState(false);
+  const classes = useStyles();
+
+  const [mapId, setMapId] = useState<string>('');
+  const [dataUrl, setDataUrl] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [privateMap, setPrivateMap] = useState<boolean>(false);
+  const [invitable, setInvitable] = useState<boolean>(false);
+  const [shared, setShared] = useState<boolean>(false);
+  const [selectedBase, setSelectedBase] = useState<{
+    placeId: string;
+    description: string;
+  } | null>(null);
+  const [errorMapName, setErrorMapName] = useState<string>(undefined);
+  const [errorDescription, setErrorDescription] = useState<string>(undefined);
+  const [disabled, setDisabled] = useState<boolean>(true);
 
   useEffect(() => {
     if (name && description && !errorMapName && !errorDescription) {
@@ -109,24 +115,23 @@ const SharedEditMapDialog = props => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const dispatch = useDispatch();
-
   const setCurrentMap = useCallback(() => {
     if (currentMap) {
       setMapId(currentMap.id);
-      setImageUrl(currentMap.thumbnail_url);
+      setDataUrl(currentMap.thumbnail_url);
       setName(currentMap.name);
       setDescription(currentMap.description);
       setPrivateMap(currentMap.private);
       setInvitable(currentMap.invitable);
       setShared(currentMap.shared);
+      setSelectedBase(currentMap.base);
       setDisabled(true);
     }
   }, [currentMap]);
 
   const clearState = useCallback(() => {
     setMapId('');
-    setImageUrl('');
+    setDataUrl('');
     setName('');
     setDescription('');
     setPrivateMap(false);
@@ -134,8 +139,25 @@ const SharedEditMapDialog = props => {
     setShared(false);
     setErrorMapName(undefined);
     setErrorDescription(undefined);
+    setSelectedBase(null);
     setDisabled(true);
-    setEditImage(false);
+  }, []);
+
+  const handlePlaceChange = useCallback(place => {
+    if (place) {
+      setSelectedBase({
+        placeId: place.place_id,
+        description: place.description
+      });
+    } else {
+      setSelectedBase(null);
+    }
+  }, []);
+
+  const handleImagesChange = useCallback(currentDataUrls => {
+    if (currentDataUrls.length > 0) {
+      setDataUrl(currentDataUrls[0]);
+    }
   }, []);
 
   const handleMapNameChange = useCallback(input => {
@@ -176,8 +198,8 @@ const SharedEditMapDialog = props => {
     setShared(checked);
   }, []);
 
-  const handleSaveClick = useCallback(() => {
-    let params = {
+  const handleSaveClick = useCallback(async () => {
+    const params = {
       name: name,
       description: description,
       base_id: selectedBase ? selectedBase.placeId : '',
@@ -187,9 +209,14 @@ const SharedEditMapDialog = props => {
       shared: shared
     };
 
-    if (editImage) {
+    const url = dataUrl ? new URL(dataUrl) : null;
+
+    if (url && url.protocol === 'data:') {
+      const fileName = `maps/${uuidv1()}.jpg`;
+      const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+
       Object.assign(params, {
-        image_url: imageUrl
+        image_url: url
       });
     }
 
@@ -201,34 +228,13 @@ const SharedEditMapDialog = props => {
     privateMap,
     invitable,
     shared,
-    editImage,
-    imageUrl,
+    dataUrl,
     mapId,
     handleSaveButtonClick
   ]);
 
-  const handleMapBaseClick = useCallback(() => {
-    dispatch(openBaseSelectDialog());
-  }, [dispatch]);
-
-  const handleAddImageClick = useCallback(() => {
-    document.getElementById('image-input').click();
-  }, []);
-
-  const handleImageChange = useCallback(e => {
-    let reader = new FileReader();
-    let file = e.target.files[0];
-    if (!file.type.match(/image\/*/)) {
-      return;
-    }
-
-    reader.onloadend = () => {
-      let dataUrl = reader.result;
-      setEditImage(true);
-      setImageUrl(dataUrl);
-    };
-
-    reader.readAsDataURL(file);
+  useEffect(() => {
+    return () => clearState();
   }, []);
 
   return (
@@ -263,33 +269,33 @@ const SharedEditMapDialog = props => {
           handleRequestDialogClose={handleRequestDialogClose}
         />
       )}
-      <DialogContent
-        style={smUp ? styles.dialogContentLarge : styles.dialogContentSmall}
-      >
-        <div style={styles.thumbnailContainer}>
-          {imageUrl ? (
-            <CardMedia style={styles.thumbnail} image={imageUrl} />
+      <DialogContent className={classes.dialogContent}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width="fit-content"
+          className={classes.thumbnailContainer}
+        >
+          {dataUrl ? (
+            <CardMedia className={classes.thumbnail} image={dataUrl} />
           ) : (
             <Skeleton
-              style={styles.thumbnail}
+              className={classes.thumbnail}
               variant="rect"
               animation={false}
             />
           )}
-          <IconButton
-            onClick={handleAddImageClick}
-            style={styles.editImageButton}
-          >
-            <PhotoCameraIcon />
-          </IconButton>
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          id="image-input"
-          onChange={handleImageChange}
-          style={styles.imageInput}
-        />
+
+          <Box position="absolute">
+            <AddPhotoButton
+              id="map-thumbnail-input"
+              onChange={handleImagesChange}
+              color="inherit"
+            />
+          </Box>
+        </Box>
+
         <TextField
           label={I18n.t('map name')}
           onChange={e => handleMapNameChange(e.target.value)}
@@ -299,6 +305,7 @@ const SharedEditMapDialog = props => {
           autoFocus
           required
           value={name}
+          variant="outlined"
         />
         <TextField
           label={I18n.t('description')}
@@ -311,25 +318,15 @@ const SharedEditMapDialog = props => {
           margin="normal"
           multiline
           rows="7"
+          variant="outlined"
         />
-        <Chip
-          avatar={
-            <Avatar>
-              <PlaceIcon />
-            </Avatar>
-          }
-          label={
-            <div style={styles.placeChipLabel}>
-              {selectedBase
-                ? selectedBase.description
-                : I18n.t('center of map')}
-            </div>
-          }
-          onClick={handleMapBaseClick}
-          style={styles.mapCenterChip}
-          clickable
+
+        <PlaceAutocomplete
+          onChange={handlePlaceChange}
+          defaultValue={currentMap ? currentMap.base : null}
+          label={I18n.t('map base')}
         />
-        <br />
+
         <ListSubheader disableGutters>{I18n.t('options')}</ListSubheader>
         <div>
           <FormControlLabel
@@ -337,16 +334,14 @@ const SharedEditMapDialog = props => {
               <Switch checked={shared} onChange={handleSharedFlugChange} />
             }
             label={
-              <Typography
-                variant="subtitle2"
-                color="inherit"
-                style={styles.selectionLabel}
-              >
-                <GroupIcon style={styles.selectionIcon} />
-                {I18n.t('allow followers to post')}
+              <Typography variant="subtitle2" color="inherit">
+                <Box display="flex" alignItems="center">
+                  <GroupIcon className={classes.selectionIcon} />
+                  {I18n.t('allow followers to post')}
+                </Box>
               </Typography>
             }
-            style={styles.controlLabel}
+            className={classes.controlLabel}
           />
         </div>
         <div>
@@ -355,16 +350,14 @@ const SharedEditMapDialog = props => {
               <Switch checked={privateMap} onChange={handlePrivateFlugChange} />
             }
             label={
-              <Typography
-                variant="subtitle2"
-                color="inherit"
-                style={styles.selectionLabel}
-              >
-                <LockIcon style={styles.selectionIcon} />
-                {I18n.t('set this map to private')}
+              <Typography variant="subtitle2" color="inherit">
+                <Box display="flex" alignItems="center">
+                  <LockIcon className={classes.selectionIcon} />
+                  {I18n.t('set this map to private')}
+                </Box>
               </Typography>
             }
-            style={styles.controlLabel}
+            className={classes.controlLabel}
           />
         </div>
         <div>
@@ -376,16 +369,14 @@ const SharedEditMapDialog = props => {
               />
             }
             label={
-              <Typography
-                variant="subtitle2"
-                color="inherit"
-                style={styles.selectionLabel}
-              >
-                <PersonAddIcon style={styles.selectionIcon} />
-                {I18n.t('allow followers to invite')}
+              <Typography variant="subtitle2" color="inherit">
+                <Box display="flex" alignItems="center">
+                  <PersonAddIcon className={classes.selectionIcon} />
+                  {I18n.t('allow followers to invite')}
+                </Box>
               </Typography>
             }
-            style={styles.controlLabel}
+            className={classes.controlLabel}
           />
         </div>
       </DialogContent>

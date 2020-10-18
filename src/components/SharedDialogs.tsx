@@ -1,125 +1,36 @@
-import React from 'react';
-
-const Toast = React.lazy(() =>
-  import(/* webpackChunkName: "toast" */ './molecules/Toast')
-);
-const BlockUi = React.lazy(() =>
-  import(/* webpackChunkName: "block_ui" */ './molecules/BlockUi')
-);
-const IssueDialog = React.lazy(() =>
-  import(/* webpackChunkName: "issue_dialog" */ './organisms/IssueDialog')
-);
-const LikesDialog = React.lazy(() =>
-  import(/* webpackChunkName: "likes_dialog" */ './organisms/LikesDialog')
-);
-const FollowersDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "followers_dialog" */ './organisms/FollowersDialog'
-  )
-);
-const CopyReviewDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "copy_reviews_dialog" */ './organisms/CopyReviewDialog'
-  )
-);
-const FeedbackDialog = React.lazy(() =>
-  import(/* webpackChunkName: "feedback_dialog" */ './organisms/FeedbackDialog')
-);
-const AnnouncementDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "announcement_dialog" */ './organisms/AnnouncementDialog'
-  )
-);
-const SignInRequiredDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "sign_in_required_dialog" */ './organisms/SignInRequiredDialog'
-  )
-);
-const ReviewDialog = React.lazy(() =>
-  import(/* webpackChunkName: "review_dialog" */ './organisms/ReviewDialog')
-);
-const ImageDialog = React.lazy(() =>
-  import(/* webpackChunkName: "image_dialog" */ './organisms/ImageDialog')
-);
-const SpotDialog = React.lazy(() =>
-  import(/* webpackChunkName: "spot_dialog" */ './organisms/SpotDialog')
-);
-const DeleteReviewDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "delete_review_dialog" */ './organisms/DeleteReviewDialog'
-  )
-);
-const DeleteCommentDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "delete_comment_dialog" */ './organisms/DeleteCommentDialog'
-  )
-);
-const PlaceSelectDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "place_select_dialog" */ './organisms/PlaceSelectDialog'
-  )
-);
-const BaseSelectDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "base_select_dialog" */ './organisms/BaseSelectDialog'
-  )
-);
-const EditReviewDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "edit_review_dialog" */ './organisms/EditReviewDialog'
-  )
-);
-const CreateMapDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "create_map_dialog" */ './organisms/CreateMapDialog'
-  )
-);
-const EditMapDialog = React.lazy(() =>
-  import(/* webpackChunkName: "edit_map_dialog" */ './organisms/EditMapDialog')
-);
-const EditProfileDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "edit_profile_dialog" */ './organisms/EditProfileDialog'
-  )
-);
-const SearchMapsDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "search_maps_dialog" */ './organisms/SearchMapsDialog'
-  )
-);
-const CreateActions = React.lazy(() =>
-  import(/* webpackChunkName: "create_actions" */ './organisms/CreateActions')
-);
-const FollowingMapsDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "following_maps_dialog" */ './organisms/FollowingMapsDialog'
-  )
-);
-const LeaveMapDialog = React.lazy(() =>
-  import(
-    /* webpackChunkName: "leave_map_dialog" */ './organisms/LeaveMapDialog'
-  )
-);
+import React, { Fragment } from 'react';
+import BlockUi from './molecules/BlockUi';
+import Toast from './molecules/Toast';
+import CreateActions from './organisms/CreateActions';
+import CreateMapDialog from './organisms/CreateMapDialog';
+import DeleteCommentDialog from './organisms/DeleteCommentDialog';
+import DeleteReviewDialog from './organisms/DeleteReviewDialog';
+import EditMapDialog from './organisms/EditMapDialog';
+import EditProfileDialog from './organisms/EditProfileDialog';
+import EditReviewDialog from './organisms/EditReviewDialog';
+import FollowersDialog from './organisms/FollowersDialog';
+import FollowingMapsDialog from './organisms/FollowingMapsDialog';
+import IssueDialog from './organisms/IssueDialog';
+import LeaveMapDialog from './organisms/LeaveMapDialog';
+import LikesDialog from './organisms/LikesDialog';
+import ReviewDialog from './organisms/ReviewDialog';
+import SearchMapsDialog from './organisms/SearchMapsDialog';
+import SignInRequiredDialog from './organisms/SignInRequiredDialog';
+import SpotDialog from './organisms/SpotDialog';
 
 const SharedDialogs = () => {
   return (
-    <React.Suspense fallback={null}>
+    <Fragment>
       <Toast />
       <BlockUi />
-      <FeedbackDialog />
-      <AnnouncementDialog />
       <SignInRequiredDialog />
       <IssueDialog />
       <LikesDialog />
       <FollowersDialog />
-      <CopyReviewDialog />
-      <PlaceSelectDialog />
-      <BaseSelectDialog />
       <EditReviewDialog />
       <DeleteReviewDialog />
       <DeleteCommentDialog />
       <ReviewDialog />
-      <ImageDialog />
       <SpotDialog />
       <CreateMapDialog />
       <EditMapDialog />
@@ -128,7 +39,7 @@ const SharedDialogs = () => {
       <CreateActions />
       <FollowingMapsDialog />
       <LeaveMapDialog />
-    </React.Suspense>
+    </Fragment>
   );
 };
 export default SharedDialogs;

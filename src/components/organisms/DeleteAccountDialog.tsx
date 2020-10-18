@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -16,12 +15,12 @@ import closeDeleteAccountDialog from '../../actions/closeDeleteAccountDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
-import getFirebase from '../../utils/getFirebase';
-import getFirebaseAuth from '../../utils/getFirebaseAuth';
 
 import { UsersApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { useRouter } from 'next/router';
+import { getAuth, signOut } from '@firebase/auth';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,7 +42,7 @@ const DeleteAccountDialog = () => {
   );
   const { dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -61,24 +60,22 @@ const DeleteAccountDialog = () => {
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
+
     const apiInstance = new UsersApi();
 
     apiInstance.usersUserIdDelete(
       currentUser.uid,
       async (error, data, response) => {
-        const firebase = await getFirebase();
-        await getFirebaseAuth();
-        await firebase.auth().signOut();
-
-        localStorage.removeItem('registrationToken');
+        const auth = getAuth();
+        await signOut(auth);
 
         dispatch(closeDeleteAccountDialog());
         dispatch(requestFinish());
-        history.push('/login');
+        router.push('/login');
         dispatch(openToast('Delete account successfully'));
       }
     );
-  }, [dispatch, history, currentUser]);
+  }, [dispatch, router, currentUser, getAuth, signOut]);
 
   const classes = useStyles();
 

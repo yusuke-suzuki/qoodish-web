@@ -1,6 +1,4 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Link } from '@yusuke-suzuki/rize-router';
 
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,36 +17,35 @@ import I18n from '../../utils/I18n';
 import { ApiClient, SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
 import AuthContext from '../../context/AuthContext';
-import { useTheme } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
+import SpotLink from '../molecules/SpotLink';
 
-const styles = {
-  listItemLarge: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  listItemSmall: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  listItemSecondaryAction: {
-    right: 10
-  },
-  gridHeader: {
-    width: '100%',
-    display: 'inline-flex'
-  },
-  headerIcon: {
-    marginLeft: 10,
-    marginRight: 10
-  },
-  cardContainer: {
-    paddingBottom: 16
-  }
-};
+const useStyles = makeStyles(theme =>
+  createStyles({
+    listItem: {
+      paddingLeft: 10,
+      paddingRight: 80
+    },
+    listItemSecondaryAction: {
+      right: 10
+    },
+    gridHeader: {
+      width: '100%',
+      display: 'inline-flex'
+    },
+    headerIcon: {
+      marginLeft: 10,
+      marginRight: 10
+    },
+    cardContainer: {
+      paddingBottom: theme.spacing(2)
+    }
+  })
+);
 
 const TrendingSpots = () => {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const classes = useStyles();
+
   const [spots, setSpots] = useState([]);
 
   const { currentUser } = useContext(AuthContext);
@@ -79,7 +76,7 @@ const TrendingSpots = () => {
     <SkeletonTrendingList />
   ) : (
     <Paper elevation={0}>
-      <CardContent style={styles.cardContainer}>
+      <CardContent className={classes.cardContainer}>
         <List
           disablePadding
           subheader={
@@ -87,61 +84,50 @@ const TrendingSpots = () => {
               <Typography
                 variant="subtitle1"
                 color="textSecondary"
-                style={styles.gridHeader}
+                className={classes.gridHeader}
               >
-                <PlaceIcon style={styles.headerIcon} />{' '}
+                <PlaceIcon className={classes.headerIcon} />{' '}
                 {I18n.t('trending spots')}
               </Typography>
             </ListSubheader>
           }
         >
           {spots.map((spot, i) => (
-            <ListItem
-              button
-              key={spot.place_id}
-              component={Link}
-              to={{
-                pathname: `/spots/${spot.place_id}`,
-                state: { modal: true, spot: spot }
-              }}
-              title={spot.name}
-              style={smUp ? styles.listItemLarge : styles.listItemSmall}
-            >
-              <ListItemAvatar>
-                <Avatar
-                  src={spot.thumbnail_url}
-                  alt={spot.name}
-                  loading="lazy"
+            <SpotLink spot={spot} key={spot.place_id}>
+              <ListItem button className={classes.listItem}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={spot.thumbnail_url}
+                    alt={spot.name}
+                    imgProps={{
+                      loading: 'lazy'
+                    }}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  disableTypography={true}
+                  primary={
+                    <Typography variant="subtitle1" noWrap>
+                      {i + 1}. {spot.name}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography component="p" noWrap color="textSecondary">
+                      {spot.formatted_address}
+                    </Typography>
+                  }
                 />
-              </ListItemAvatar>
-              <ListItemText
-                disableTypography={true}
-                primary={
-                  <Typography variant="subtitle1" noWrap>
-                    {i + 1}. {spot.name}
-                  </Typography>
-                }
-                secondary={
-                  <Typography component="p" noWrap color="textSecondary">
-                    {spot.formatted_address}
-                  </Typography>
-                }
-              />
-              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
-                <Button
-                  size="small"
-                  component={Link}
-                  to={{
-                    pathname: `/spots/${spot.place_id}`,
-                    state: { modal: true, spot: spot }
-                  }}
-                  title={spot.name}
-                  variant="outlined"
+                <ListItemSecondaryAction
+                  className={classes.listItemSecondaryAction}
                 >
-                  {I18n.t('detail')}
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
+                  <SpotLink spot={spot} key={spot.placeId}>
+                    <Button size="small" variant="outlined">
+                      {I18n.t('detail')}
+                    </Button>
+                  </SpotLink>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </SpotLink>
           ))}
         </List>
       </CardContent>

@@ -1,18 +1,23 @@
-import React, { useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import { Link } from '@yusuke-suzuki/rize-router';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Paper from '@material-ui/core/Paper';
-import HomeIcon from '@material-ui/icons/Home';
-import ExploreIcon from '@material-ui/icons/Explore';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import Badge from '@material-ui/core/Badge';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import I18n from '../../utils/I18n';
 import CreateResourceButton from './CreateResourceButton';
+import { useRouter } from 'next/router';
+import {
+  Badge,
+  BottomNavigation,
+  BottomNavigationAction,
+  makeStyles,
+  Paper
+} from '@material-ui/core';
+import {
+  AccountCircle,
+  Explore,
+  Home,
+  Notifications
+} from '@material-ui/icons';
 
-const styles = {
+const useStyles = makeStyles(() => ({
   bottomNav: {
     width: '100%',
     position: 'fixed',
@@ -27,10 +32,14 @@ const styles = {
   link: {
     textDecoration: 'none',
     color: 'inherit'
+  },
+  createButton: {
+    position: 'relative',
+    bottom: 28
   }
-};
+}));
 
-const NotificationIcon = () => {
+const NotificationIcon = memo(() => {
   const unreadNotifications = useMappedState(
     useCallback(state => state.shared.unreadNotifications, [])
   );
@@ -38,74 +47,85 @@ const NotificationIcon = () => {
   if (unreadNotifications.length > 0) {
     return (
       <Badge badgeContent={unreadNotifications.length} color="secondary">
-        <NotificationsIcon />
+        <Notifications />
       </Badge>
     );
   } else {
-    return <NotificationsIcon />;
+    return <Notifications />;
   }
-};
+});
 
-const BottomNav = () => {
-  const mapState = useCallback(
-    state => ({
-      currentLocation: state.shared.currentLocation
-    }),
-    []
+export default memo(function BottomNav() {
+  const [bottomNavValue, setBottomNavValue] = useState<number | undefined>(
+    undefined
+  );
+  const router = useRouter();
+
+  const { pathname } = router;
+
+  const handleLinkClick = useCallback(
+    path => {
+      router.push(path);
+    },
+    [router]
   );
 
-  const { currentLocation } = useMappedState(mapState);
+  const classes = useStyles();
 
-  const bottomNavValue = useMemo(() => {
-    switch (currentLocation.pathname) {
+  useEffect(() => {
+    switch (pathname) {
       case '/':
-        return 0;
+        setBottomNavValue(0);
+        break;
       case '/discover':
-        return 1;
+        setBottomNavValue(1);
+        break;
       case '/profile':
-        return 3;
+        setBottomNavValue(3);
+        break;
       case '/notifications':
-        return 4;
+        setBottomNavValue(4);
+        break;
       default:
-        return undefined;
+        setBottomNavValue(0);
     }
-  }, [currentLocation]);
+  }, [pathname]);
 
   return (
-    <Paper style={styles.bottomNav} elevation={20}>
+    <Paper className={classes.bottomNav} elevation={20}>
       <BottomNavigation value={bottomNavValue}>
         <BottomNavigationAction
-          component={Link}
-          to="/"
           title={I18n.t('home')}
-          icon={<HomeIcon />}
-          style={styles.bottomAction}
+          icon={<Home />}
+          className={classes.bottomAction}
+          onClick={() => handleLinkClick('/')}
+          showLabel
         />
         <BottomNavigationAction
-          component={Link}
-          to="/discover"
           title={I18n.t('discover')}
-          icon={<ExploreIcon />}
-          style={styles.bottomAction}
+          icon={<Explore />}
+          className={classes.bottomAction}
+          onClick={() => handleLinkClick('/discover')}
+          showLabel
         />
-        <CreateResourceButton bottomAction />
+        <div className={classes.createButton}>
+          <CreateResourceButton />
+        </div>
         <BottomNavigationAction
-          component={Link}
-          to="/profile"
           title={I18n.t('account')}
-          icon={<AccountCircleIcon />}
-          style={styles.bottomAction}
+          icon={<AccountCircle />}
+          className={classes.bottomAction}
+          onClick={() => handleLinkClick('/profile')}
+          showLabel
         />
         <BottomNavigationAction
-          component={Link}
-          to="/notifications"
           title={I18n.t('notice')}
           icon={<NotificationIcon />}
-          style={styles.bottomAction}
+          className={classes.bottomAction}
+          onClick={() => handleLinkClick('/notifications')}
+          showLabel
         />
       </BottomNavigation>
     </Paper>
   );
-};
-
-export default React.memo(BottomNav);
+});

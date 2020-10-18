@@ -1,9 +1,7 @@
-import React, { useCallback, useContext } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { memo, useCallback, useContext } from 'react';
+import { useDispatch } from 'redux-react-hook';
 
-import Button from '@material-ui/core/Button';
 import I18n from '../../utils/I18n';
-
 import openLeaveMapDialog from '../../actions/openLeaveMapDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import requestStart from '../../actions/requestStart';
@@ -16,21 +14,29 @@ import {
   FollowsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
+import { Button, createStyles, makeStyles } from '@material-ui/core';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 
-const styles = {
-  skelton: {
-    height: 36
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    skelton: {
+      height: 36
+    }
+  })
+);
+
+type Props = {
+  currentMap?: any;
 };
 
-const RoleButton = props => {
+const RoleButton = memo((props: Props) => {
+  const { currentMap } = props;
   const { currentUser } = useContext(AuthContext);
-  const map = props.currentMap;
   const dispatch = useDispatch();
 
   const handleUnfollowButtonClick = useCallback(() => {
-    dispatch(openLeaveMapDialog(map));
-  }, [dispatch]);
+    dispatch(openLeaveMapDialog(currentMap));
+  }, [dispatch, currentMap]);
 
   const handleFollowButtonClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
@@ -40,44 +46,49 @@ const RoleButton = props => {
     dispatch(requestStart());
     const apiInstance = new FollowsApi();
 
-    apiInstance.mapsMapIdFollowPost(map.id, {}, (error, data, response) => {
-      dispatch(requestFinish());
+    apiInstance.mapsMapIdFollowPost(
+      currentMap.id,
+      {},
+      (error, data, response) => {
+        dispatch(requestFinish());
 
-      if (response.ok) {
-        dispatch(joinMap(response.body));
-        dispatch(openToast(I18n.t('follow map success')));
+        if (response.ok) {
+          dispatch(joinMap(response.body));
+          dispatch(openToast(I18n.t('follow map success')));
 
-        gtag('event', 'follow', {
-          event_category: 'engagement',
-          event_label: 'map'
-        });
+          const analytics = getAnalytics();
 
-        const apiInstance = new CollaboratorsApi();
+          logEvent(analytics, 'join_group', {
+            group_id: currentMap.id
+          });
 
-        apiInstance.mapsMapIdCollaboratorsGet(
-          map.id,
-          (error, data, response) => {
-            if (response.ok) {
-              dispatch(fetchCollaborators(response.body));
-            } else {
-              console.log('API called successfully. Returned data: ' + data);
+          const apiInstance = new CollaboratorsApi();
+
+          apiInstance.mapsMapIdCollaboratorsGet(
+            currentMap.id,
+            (error, data, response) => {
+              if (response.ok) {
+                dispatch(fetchCollaborators(response.body));
+              } else {
+                console.log('API called successfully. Returned data: ' + data);
+              }
             }
-          }
-        );
-      } else {
-        dispatch(openToast('Failed to follow map'));
-        console.log('API called successfully. Returned data: ' + data);
+          );
+        } else {
+          dispatch(openToast('Failed to follow map'));
+          console.log('API called successfully. Returned data: ' + data);
+        }
       }
-    });
-  }, [dispatch, currentUser]);
+    );
+  }, [dispatch, currentUser, currentMap, getAnalytics, logEvent]);
 
-  if (map.editable) {
+  if (currentMap.editable) {
     return (
       <Button variant="contained" disabled>
         {I18n.t('owner')}
       </Button>
     );
-  } else if (map.following) {
+  } else if (currentMap.following) {
     return (
       <Button
         variant="outlined"
@@ -98,25 +109,22 @@ const RoleButton = props => {
       </Button>
     );
   }
-};
+});
 
-const FollowMapButton = props => {
-  return (
-    <div>
-      {props.currentMap ? (
-        <RoleButton {...props} />
-      ) : (
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled
-          style={styles.skelton}
-        >
-          {''}
-        </Button>
-      )}
-    </div>
+export default memo(function FollowMapButton(props: Props) {
+  const { currentMap } = props;
+  const classes = useStyles();
+
+  return currentMap ? (
+    <RoleButton {...props} />
+  ) : (
+    <Button
+      variant="contained"
+      color="secondary"
+      disabled
+      className={classes.skelton}
+    >
+      {''}
+    </Button>
   );
-};
-
-export default React.memo(FollowMapButton);
+});

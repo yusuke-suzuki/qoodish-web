@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -18,6 +17,7 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import closeReviewDialog from '../../actions/closeReviewDialog';
 
 const DeleteReviewDialog = () => {
   const mapState = useCallback(
@@ -30,7 +30,6 @@ const DeleteReviewDialog = () => {
   );
   const { review, dialogOpen, reviewDialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -42,9 +41,12 @@ const DeleteReviewDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteReviewDialog());
+  }, [dispatch]);
+
+  const handleExited = useCallback(() => {
     setCheck(false);
     setDisabled(true);
-  }, [dispatch]);
+  }, []);
 
   const handleDeleteButtonClick = useCallback(async () => {
     dispatch(requestStart());
@@ -58,7 +60,7 @@ const DeleteReviewDialog = () => {
         dispatch(closeDeleteReviewDialog());
 
         if (reviewDialogOpen) {
-          history.goBack();
+          dispatch(closeReviewDialog());
         }
         dispatch(deleteReview(review.id));
         dispatch(openToast(I18n.t('delete report success')));
@@ -66,10 +68,15 @@ const DeleteReviewDialog = () => {
         dispatch(openToast(I18n.t('delete report failed')));
       }
     });
-  }, [dispatch, history, reviewDialogOpen, review]);
+  }, [dispatch, reviewDialogOpen, review]);
 
   return (
-    <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>
+    <Dialog
+      open={dialogOpen}
+      onClose={handleRequestDialogClose}
+      onExited={handleExited}
+      fullWidth
+    >
       <DialogTitle>{I18n.t('sure to delete report')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{I18n.t('this cannot be undone')}</DialogContentText>

@@ -46,13 +46,19 @@ const VoterAvatars = () => {
 
   return (
     <AvatarGroup max={9} onClick={handleLikesClick}>
-      {likes.map(like => (
-        <Avatar
-          key={like.id}
-          src={like.voter.profile_image_url}
-          alt={like.voter.name}
-        />
-      ))}
+      {likes.map(like => {
+        return like.voter.profile_image_url ? (
+          <Avatar
+            key={like.id}
+            src={like.voter.profile_image_url}
+            alt={like.voter.name}
+          />
+        ) : (
+          <Avatar key={like.id} alt={like.voter.name}>
+            {like.voter.name.slice(0, 1)}
+          </Avatar>
+        );
+      })}
     </AvatarGroup>
   );
 };

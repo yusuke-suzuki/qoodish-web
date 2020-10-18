@@ -13,31 +13,20 @@ import Dialog from '@material-ui/core/Dialog';
 import I18n from '../../utils/I18n';
 
 import openCreateMapDialog from '../../actions/openCreateMapDialog';
-import selectPlaceForReview from '../../actions/selectPlaceForReview';
-import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import closeCreateActions from '../../actions/closeCreateActions';
 import { useTheme } from '@material-ui/core';
+import openEditReviewDialog from '../../actions/openEditReviewDialog';
 
 const ActionsList = () => {
-  const mapState = useCallback(state => state.spotDetail.currentSpot, []);
-  const spot = useMappedState(mapState);
-
   const dispatch = useDispatch();
 
   const handleCreateReviewButtonClick = useCallback(() => {
-    if (spot) {
-      dispatch(
-        selectPlaceForReview({
-          description: spot.name,
-          placeId: spot.place_id
-        })
-      );
-    } else {
-      dispatch(openPlaceSelectDialog());
-    }
-  }, [dispatch, spot]);
+    dispatch(closeCreateActions());
+    dispatch(openEditReviewDialog(null));
+  }, [dispatch]);
 
   const handleCreateMapButtonClick = useCallback(() => {
+    dispatch(closeCreateActions());
     dispatch(openCreateMapDialog());
   }, [dispatch]);
 

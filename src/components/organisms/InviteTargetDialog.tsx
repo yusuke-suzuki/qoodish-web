@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -13,7 +13,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -31,28 +31,32 @@ import {
   NewInvite
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
-import { useTheme } from '@material-ui/core';
+import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 
-const styles = {
-  dialogContentLarge: {
-    paddingBottom: 0
-  },
-  dialogContentSmall: {
-    paddingTop: 24
-  },
-  dialogTitle: {
-    display: 'flex'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    dialogContent: {
+      paddingTop: 24,
+      [theme.breakpoints.up('sm')]: {
+        paddingTop: 'initial',
+        paddingBottom: 0
+      }
+    }
+  })
+);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const InviteTargetDialog = props => {
+type Props = {
+  mapId: string;
+};
+
+const InviteTargetDialog = (props: Props) => {
   const { mapId } = props;
-  const [loading, setLoading] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>(undefined);
 
   const mapState = useCallback(
     state => ({
@@ -66,6 +70,7 @@ const InviteTargetDialog = props => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const classes = useStyles();
 
   const onClose = useCallback(() => {
     dispatch(closeInviteTargetDialog());
@@ -145,9 +150,7 @@ const InviteTargetDialog = props => {
           }
         />
       )}
-      <DialogContent
-        style={smUp ? styles.dialogContentLarge : styles.dialogContentSmall}
-      >
+      <DialogContent className={classes.dialogContent}>
         <TextField
           label={I18n.t('search users')}
           onChange={e => handleInputChange(e.target.value)}

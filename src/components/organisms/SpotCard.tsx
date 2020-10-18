@@ -7,68 +7,43 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-
 import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
-import { useTheme } from '@material-ui/core';
+import { useTheme, makeStyles, Theme, createStyles } from '@material-ui/core';
+import OpeningHours from '../molecules/OpeningHours';
 
-const styles = {
-  cardMediaLarge: {
-    cursor: 'pointer',
-    height: 250
-  },
-  cardMediaSmall: {
-    cursor: 'pointer',
-    height: 200
-  },
-  cardContent: {
-    textAlign: 'center'
-  },
-  reviewTilesContainer: {
-    marginTop: 16
-  },
-  staticMapImage: {
-    width: '100%',
-    height: '100%'
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    cardMedia: {
+      cursor: 'pointer',
+      height: 200,
+      [theme.breakpoints.up('sm')]: {
+        height: 250
+      }
+    },
+    cardContent: {
+      textAlign: 'center'
+    },
+    reviewTilesContainer: {
+      marginTop: theme.spacing(2)
+    },
+    staticMapImage: {
+      width: '100%',
+      height: '100%'
+    }
+  })
+);
+
+type Props = {
+  currentSpot: any;
+  placeId: string;
 };
 
-const OpeningHours = React.memo(props => {
-  let openingHours = JSON.parse(props.openingHours);
-  if (!openingHours) {
-    return null;
-  }
-  return (
-    <div>
-      <br />
-      <Typography variant="subtitle2" color="textSecondary">
-        {I18n.t('opening hours')}
-      </Typography>
-      <Table>
-        <TableBody>
-          {openingHours.weekday_text.map(weekday => {
-            let [key, text] = weekday.split(': ');
-            return (
-              <TableRow key={key}>
-                <TableCell>{key}</TableCell>
-                <TableCell align="right">{text}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
-  );
-});
-
-const SpotCard = props => {
+const SpotCard = (props: Props) => {
+  const classes = useStyles();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -94,22 +69,24 @@ const SpotCard = props => {
 
   return (
     <Card elevation={0}>
-      <CardMedia style={smUp ? styles.cardMediaLarge : styles.cardMediaSmall}>
-        <a href={currentSpot.url} target="_blank">
+      <CardMedia className={classes.cardMedia}>
+        <a href={currentSpot.url} target="_blank" rel="noopener">
           <img
-            src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
-              smUp ? 700 : 400
-            }x${smUp ? 250 : 200}&scale=${2}&center=${currentSpot.lat},${
+            src={`${
+              process.env.NEXT_PUBLIC_GOOGLE_STATIC_MAP_URL
+            }&zoom=${17}&size=${smUp ? 700 : 400}x${
+              smUp ? 250 : 200
+            }&scale=${2}&center=${currentSpot.lat},${
               currentSpot.lng
             }&markers=size:mid%7Ccolor:red%7C${currentSpot.lat},${
               currentSpot.lng
             }`}
-            style={styles.staticMapImage}
+            className={classes.staticMapImage}
             loading="lazy"
           />
         </a>
       </CardMedia>
-      <CardContent style={styles.cardContent}>
+      <CardContent className={classes.cardContent}>
         <PlaceIcon />
         <Typography variant="h5">{currentSpot.name}</Typography>
         <Typography variant="subtitle1" color="textSecondary">
@@ -117,7 +94,7 @@ const SpotCard = props => {
         </Typography>
         <GoogleMapsLink currentSpot={currentSpot} />
         <OpeningHours openingHours={currentSpot.opening_hours} />
-        <div style={styles.reviewTilesContainer}>
+        <div className={classes.reviewTilesContainer}>
           <Typography variant="subtitle2" gutterBottom color="textSecondary">
             {`${spotReviews.length} ${I18n.t('reviews count')}`}
           </Typography>

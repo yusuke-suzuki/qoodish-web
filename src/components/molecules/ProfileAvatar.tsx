@@ -1,11 +1,11 @@
-import React, { useContext, useMemo } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import PersonIcon from '@material-ui/icons/Person';
+import { useContext, useMemo } from 'react';
 import AuthContext from '../../context/AuthContext';
+import { Person } from '@material-ui/icons';
+import { Avatar } from '@material-ui/core';
 
 type Props = {
   profile: any;
-  size: number;
+  size?: number;
 };
 
 export default function ProfileAvatar(props: Props) {
@@ -23,16 +23,24 @@ export default function ProfileAvatar(props: Props) {
   if (!currentUser || currentUser.isAnonymous) {
     return (
       <Avatar style={avatarStyle}>
-        <PersonIcon style={iconStyle} />
+        <Person style={iconStyle} />
+      </Avatar>
+    );
+  } else if (!profile.image_url) {
+    return (
+      <Avatar style={avatarStyle}>
+        {profile.name && profile.name.slice(0, 1)}
       </Avatar>
     );
   } else {
     return (
       <Avatar
         src={profile.thumbnail_url_400}
+        imgProps={{
+          alt: profile.name,
+          loading: 'lazy'
+        }}
         style={avatarStyle}
-        alt={profile.name}
-        loading="lazy"
       />
     );
   }

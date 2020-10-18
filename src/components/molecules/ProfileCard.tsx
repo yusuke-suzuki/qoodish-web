@@ -1,39 +1,45 @@
-import React, { useCallback, useContext } from 'react';
+import { memo, useCallback, useContext } from 'react';
 import { useMappedState } from 'redux-react-hook';
-
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
-
 import ProfileAvatar from './ProfileAvatar';
 import I18n from '../../utils/I18n';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 import AuthContext from '../../context/AuthContext';
+import {
+  ButtonBase,
+  CardContent,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography
+} from '@material-ui/core';
 
-const styles = {
-  cardContent: {
-    paddingBottom: 0
-  },
-  name: {
-    marginTop: 8
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    cardContent: {
+      paddingBottom: 0
+    },
+    name: {
+      marginTop: theme.spacing(2)
+    }
+  })
+);
 
-const ProfileCard = () => {
+export default memo(function ProfileCard() {
   const profile = useMappedState(useCallback(state => state.app.profile, []));
 
   const { currentUser } = useContext(AuthContext);
+  const classes = useStyles();
 
   return (
-    <ButtonBase component={Link} to="/profile">
-      <CardContent style={styles.cardContent}>
-        <ProfileAvatar size={48} profile={profile} />
-        <Typography variant="h6" gutterBottom style={styles.name} inline>
-          {currentUser.isAnonymous ? I18n.t('anonymous user') : profile.name}
-        </Typography>
-      </CardContent>
-    </ButtonBase>
+    <Link href="/profile" passHref>
+      <ButtonBase>
+        <CardContent className={classes.cardContent}>
+          <ProfileAvatar size={48} profile={profile} />
+          <Typography variant="h6" gutterBottom className={classes.name}>
+            {currentUser.isAnonymous ? I18n.t('anonymous user') : profile.name}
+          </Typography>
+        </CardContent>
+      </ButtonBase>
+    </Link>
   );
-};
-
-export default React.memo(ProfileCard);
+});

@@ -1,9 +1,7 @@
 import React, { useEffect, useCallback, useState, useContext } from 'react';
-import { useMappedState } from 'redux-react-hook';
 
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
-import moment from 'moment';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -18,153 +16,163 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import NoContents from '../molecules/NoContents';
 
 import I18n from '../../utils/I18n';
-import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
+import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useRouter } from 'next/router';
+import { memo } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { enUS, ja } from 'date-fns/locale';
 
-const styles = {
-  listItemText: {
-    paddingRight: 32
-  },
-  secondaryAvatar: {
-    marginRight: 12,
-    cursor: 'pointer'
-  },
-  progress: {
-    textAlign: 'center',
-    padding: 20,
-    marginTop: 20
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    listItemText: {
+      paddingRight: theme.spacing(4)
+    },
+    secondaryAvatar: {
+      marginRight: 12,
+      cursor: 'pointer'
+    },
+    progress: {
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(3)
+    }
+  })
+);
+
+type TextProps = {
+  like: any;
 };
 
-const PrimaryText = props => {
-  switch (props.like.votable.type) {
+const PrimaryText = memo((props: TextProps) => {
+  const { like } = props;
+
+  switch (like.votable.type) {
     case 'review':
       return (
-        <React.Fragment>
-          <b>{props.like.voter.name}</b>
+        <Typography variant="subtitle1">
+          <b>{like.voter.name}</b>
           {` ${I18n.t('liked report of').replace(
             'owner',
-            props.like.votable.owner.name
+            like.votable.owner.name
           )}`}
-          <b>{props.like.votable.name}</b>
-        </React.Fragment>
+          <b>{like.votable.name}</b>
+        </Typography>
       );
     case 'map':
       return (
-        <React.Fragment>
-          <b>{props.like.voter.name}</b>
+        <Typography variant="subtitle1">
+          <b>{like.voter.name}</b>
           {` ${I18n.t('liked map of').replace(
             'owner',
-            props.like.votable.owner.name
+            like.votable.owner.name
           )}`}
-          <b>{props.like.votable.name}</b>
-        </React.Fragment>
+          <b>{like.votable.name}</b>
+        </Typography>
       );
     default:
-      return '';
+      return null;
   }
+});
+
+type Props = {
+  userId: string;
 };
 
-const fromNow = like => {
-  return moment(like.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(I18n.locale)
-    .fromNow();
-};
-
-const LikesList = props => {
-  const { params } = props;
+const LikesList = (props: Props) => {
+  const { userId } = props;
   const [likes, setLikes] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const mapState = useCallback(
-    state => ({
-      location: state.shared.currentLocation
-    }),
-    []
-  );
-
-  const { location } = useMappedState(mapState);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { currentUser } = useContext(AuthContext);
 
+  const router = useRouter();
+
   const initUserLikes = useCallback(async () => {
-    if (
-      location &&
-      location.pathname === '/profile' &&
-      currentUser.isAnonymous
-    ) {
+    if (router.pathname === '/profile' && currentUser.isAnonymous) {
       setLoading(false);
       return;
     }
     setLoading(true);
 
-    const userId = params && params.userId ? params.userId : currentUser.uid;
+    const uid = userId ? userId : currentUser.uid;
 
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const apiInstance = new LikesApi();
 
-    apiInstance.usersUserIdLikesGet(userId, (error, data, response) => {
+    apiInstance.usersUserIdLikesGet(uid, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
         setLikes(response.body);
       }
     });
-  }, [currentUser, location]);
+  }, [userId, currentUser]);
 
   useEffect(() => {
     initUserLikes();
   }, []);
 
+  const classes = useStyles();
+
   if (loading) {
     return (
-      <div style={styles.progress}>
+      <Box display="flex" justifyContent="center" className={classes.progress}>
         <CircularProgress />
-      </div>
+      </Box>
     );
   } else {
     return likes.length > 0 ? (
       <Paper elevation={0}>
         <List>
           {likes.map(like => (
-            <ListItem
-              key={like.id}
-              button
-              component={Link}
-              to={like.click_action}
-            >
-              <ListItemAvatar>
-                <Avatar
-                  src={like.voter.profile_image_url}
-                  alt={like.voter.name}
-                  loading="lazy"
+            <Link key={like.id} href={like.click_action} passHref>
+              <ListItem button>
+                <ListItemAvatar>
+                  <>
+                    {like.voter.profile_image_url ? (
+                      <Avatar
+                        src={like.voter.profile_image_url}
+                        alt={like.voter.name}
+                        imgProps={{
+                          loading: 'lazy'
+                        }}
+                      />
+                    ) : (
+                      <Avatar alt={like.voter.name}>
+                        {like.voter.name.slice(0, 1)}
+                      </Avatar>
+                    )}
+                  </>
+                </ListItemAvatar>
+                <ListItemText
+                  className={classes.listItemText}
+                  primary={<PrimaryText like={like} />}
+                  secondary={formatDistanceToNow(new Date(like.created_at), {
+                    addSuffix: true,
+                    locale: I18n.locale.includes('ja') ? ja : enUS
+                  })}
+                  disableTypography
                 />
-              </ListItemAvatar>
-              <ListItemText
-                style={styles.listItemText}
-                primary={
-                  <Typography variant="subtitle1">
-                    <PrimaryText like={like} />
-                  </Typography>
-                }
-                secondary={
-                  <Typography variant="subtitle1" color="textSecondary">
-                    {fromNow(like)}
-                  </Typography>
-                }
-                disableTypography
-              />
-              {like.votable.thumbnail_url && (
-                <ListItemSecondaryAction>
-                  <ButtonBase component={Link} to={like.click_action}>
-                    <Avatar
-                      src={like.votable.thumbnail_url}
-                      variant="rounded"
-                      style={styles.secondaryAvatar}
-                      loading="lazy"
-                    />
-                  </ButtonBase>
-                </ListItemSecondaryAction>
-              )}
-            </ListItem>
+                {like.votable.thumbnail_url && (
+                  <ListItemSecondaryAction>
+                    <Link key={like.id} href={like.click_action} passHref>
+                      <ButtonBase>
+                        <Avatar
+                          src={like.votable.thumbnail_url}
+                          variant="rounded"
+                          className={classes.secondaryAvatar}
+                          imgProps={{
+                            loading: 'lazy'
+                          }}
+                        />
+                      </ButtonBase>
+                    </Link>
+                  </ListItemSecondaryAction>
+                )}
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Paper>
@@ -178,4 +186,4 @@ const LikesList = props => {
   }
 };
 
-export default React.memo(LikesList);
+export default memo(LikesList);

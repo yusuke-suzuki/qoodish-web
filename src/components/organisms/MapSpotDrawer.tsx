@@ -1,22 +1,25 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 import openSpotCard from '../../actions/openSpotCard';
 import closeSpotCard from '../../actions/closeSpotCard';
-import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
 import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
 import SpotCardContent from '../molecules/SpotCardContent';
-import { useIOS } from '../../utils/detectDevice';
+import AuthContext from '../../context/AuthContext';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  modal: {
-    height: 0
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    modal: {
+      height: 0
+    }
+  })
+);
 
 const MapSpotDrawer = () => {
   const dispatch = useDispatch();
+  const { currentUser } = useContext(AuthContext);
 
   const mapState = useCallback(
     state => ({
@@ -47,22 +50,24 @@ const MapSpotDrawer = () => {
   }, [dispatch]);
 
   const initSpotReviews = useCallback(async () => {
-    const apiInstance = new ReviewsApi();
-
-    apiInstance.mapsMapIdSpotsPlaceIdReviewsGet(
-      currentSpot.map_id,
-      currentSpot.place_id,
-      (error, data, response) => {
-        if (response.ok) {
-          dispatch(fetchMapSpotReviews(response.body));
-        }
+    const opts = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${await currentUser.getIdToken()}`
       }
-    );
-  }, [dispatch, currentSpot]);
+    };
 
-  const iOS = useMemo(() => {
-    return useIOS();
-  }, [useIOS]);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps/${currentSpot.map_id}/spots/${currentSpot.place_id}/reviews`,
+      opts
+    );
+
+    if (response.ok) {
+      const json = await response.json();
+      dispatch(fetchMapSpotReviews(json));
+    }
+  }, [dispatch, currentSpot, currentUser]);
 
   useEffect(() => {
     if (currentSpot.place_id) {
@@ -78,6 +83,8 @@ const MapSpotDrawer = () => {
 
   const dialogOpen = reviewDialogOpen || spotDialogOpen || mapSummaryOpen;
 
+  const classes = useStyles();
+
   return (
     <SwipeableDrawer
       variant="temporary"
@@ -90,14 +97,13 @@ const MapSpotDrawer = () => {
       onClose={handleClose}
       disableSwipeToOpen
       ModalProps={{
-        style: styles.modal,
+        className: classes.modal,
         BackdropProps: {
           invisible: true,
           open: false
         }
       }}
       disableBackdropTransition
-      disableDiscovery={iOS}
     >
       <SpotCardContent />
     </SwipeableDrawer>

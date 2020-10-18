@@ -1,22 +1,29 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
 import fetchMoreReviews from '../../actions/fetchMoreReviews';
 import openToast from '../../actions/openToast';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import I18n from '../../utils/I18n';
+import {
+  Button,
+  CircularProgress,
+  createStyles,
+  makeStyles
+} from '@material-ui/core';
 
-const styles = {
-  progress: {
-    textAlign: 'center',
-    padding: 10,
-    marginTop: 20
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    progress: {
+      textAlign: 'center',
+      padding: 10,
+      marginTop: 20
+    }
+  })
+);
 
-const LoadMoreButton = () => {
+export default memo(function LoadMoreButton() {
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
@@ -54,7 +61,7 @@ const LoadMoreButton = () => {
 
   if (loading) {
     return (
-      <div style={styles.progress}>
+      <div className={classes.progress}>
         <CircularProgress />
       </div>
     );
@@ -65,6 +72,4 @@ const LoadMoreButton = () => {
       </Button>
     );
   }
-};
-
-export default React.memo(LoadMoreButton);
+});

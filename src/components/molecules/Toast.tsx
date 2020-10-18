@@ -22,7 +22,7 @@ const Toast = () => {
   }, [dispatch]);
 
   return (
-    <div>
+    <>
       <Snackbar
         open={toastOpen}
         message={toastMessage}
@@ -41,7 +41,7 @@ const Toast = () => {
           </React.Fragment>
         }
       />
-    </div>
+    </>
   );
 };
 

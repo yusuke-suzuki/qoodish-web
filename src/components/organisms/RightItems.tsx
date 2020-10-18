@@ -1,45 +1,52 @@
 import React from 'react';
-import { CardContent, Typography, Divider, Paper } from '@material-ui/core';
-import { Link } from '@yusuke-suzuki/rize-router';
+import {
+  CardContent,
+  Typography,
+  Divider,
+  Paper,
+  makeStyles,
+  createStyles,
+  Theme
+} from '@material-ui/core';
+import Link from 'next/link';
 import I18n from '../../utils/I18n';
+import RecommendMaps from './RecommendMaps';
+import TrendingMaps from './TrendingMaps';
+import TrendingSpots from './TrendingSpots';
+import FbPage from '../molecules/FbPage';
 
-const RecommendMaps = React.lazy(() =>
-  import(/* webpackChunkName: "recommend_maps" */ './RecommendMaps')
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    item: {
+      marginBottom: 20
+    },
+    cardContent: {
+      paddingBottom: theme.spacing(2)
+    },
+    fbPage: {
+      textAlign: 'center'
+    }
+  })
 );
-const TrendingMaps = React.lazy(() =>
-  import(/* webpackChunkName: "trending_maps" */ './TrendingMaps')
-);
-const TrendingSpots = React.lazy(() =>
-  import(/* webpackChunkName: "trending_spots" */ './TrendingSpots')
-);
-const FbPage = React.lazy(() =>
-  import(/* webpackChunkName: "fb_page" */ '../molecules/FbPage')
-);
-
-const styles = {
-  item: {
-    marginBottom: 20
-  },
-  cardContent: {
-    paddingBottom: 16
-  },
-  fbPage: {
-    textAlign: 'center'
-  }
-};
 
 const Footer = React.memo(() => {
+  const classes = useStyles();
+
   return (
     <Paper elevation={0}>
-      <CardContent style={styles.cardContent}>
+      <CardContent className={classes.cardContent}>
         <div>
-          <Link to="/terms">{I18n.t('terms of service')}</Link>
+          <Link href="/terms">
+            <a>{I18n.t('terms of service')}</a>
+          </Link>
         </div>
         <div>
-          <Link to="/privacy">{I18n.t('privacy policy')}</Link>
+          <Link href="/privacy">
+            <a>{I18n.t('privacy policy')}</a>
+          </Link>
         </div>
         <Typography variant="caption">
-          © 2019 Qoodish, All rights reserved.
+          © 2021 Qoodish, All rights reserved.
         </Typography>
       </CardContent>
     </Paper>
@@ -47,23 +54,25 @@ const Footer = React.memo(() => {
 });
 
 const RightItems = () => {
+  const classes = useStyles();
+
   return (
-    <div>
+    <>
       <RecommendMaps />
-      <Divider style={styles.item} />
-      <div style={styles.item}>
+      <Divider className={classes.item} />
+      <div className={classes.item}>
         <TrendingMaps />
       </div>
-      <div style={styles.item}>
+      <div className={classes.item}>
         <TrendingSpots />
       </div>
-      <div style={styles.item}>
+      <div className={classes.item}>
         <Footer />
       </div>
-      <div style={styles.fbPage}>
+      <div className={classes.fbPage}>
         <FbPage />
       </div>
-    </div>
+    </>
   );
 };
 

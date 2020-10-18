@@ -20,22 +20,25 @@ import {
   TwitterShareButton,
   TwitterIcon
 } from 'react-share';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  shareButton: {
-    display: 'flex',
-    outline: 'none',
-    alignItems: 'center',
-    width: '100%'
-  },
-  listItemText: {
-    flex: 'none'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    shareButton: {
+      display: 'flex',
+      outline: 'none',
+      alignItems: 'center',
+      width: '100%'
+    },
+    listItemText: {
+      flex: 'none'
+    }
+  })
+);
 
 const shareUrl = review => {
   return review
-    ? `${process.env.ENDPOINT}/maps/${review.map.id}/reports/${review.id}`
+    ? `${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map.id}/reports/${review.id}`
     : '';
 };
 
@@ -44,6 +47,7 @@ const ReviewShareMenu = props => {
   const [menuOpen, setMenuOpen] = useState(false);
   const review = props.currentReview;
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const handleUrlCopied = useCallback(() => {
     dispatch(openToast(I18n.t('copied')));
@@ -69,18 +73,21 @@ const ReviewShareMenu = props => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        <FacebookShareButton url={shareUrl(review)} style={styles.shareButton}>
+        <FacebookShareButton
+          url={shareUrl(review)}
+          className={classes.shareButton}
+        >
           <MenuItem
             key="facebook"
             onClick={() => setMenuOpen(false)}
-            style={styles.shareButton}
+            className={classes.shareButton}
           >
             <ListItemIcon>
               <FacebookIcon round size={24} />
             </ListItemIcon>
             <ListItemText
               primary={I18n.t('share with facebook')}
-              style={styles.listItemText}
+              className={classes.listItemText}
             />
           </MenuItem>
         </FacebookShareButton>
@@ -89,19 +96,19 @@ const ReviewShareMenu = props => {
           hashtags={[]}
           url={shareUrl(review)}
           title={`${review.spot.name} - ${review.map.name}`}
-          style={styles.shareButton}
+          className={classes.shareButton}
         >
           <MenuItem
             key="twitter"
             onClick={() => setMenuOpen(false)}
-            style={styles.shareButton}
+            className={classes.shareButton}
           >
             <ListItemIcon>
               <TwitterIcon round size={24} />
             </ListItemIcon>
             <ListItemText
               primary={I18n.t('share with twitter')}
-              style={styles.listItemText}
+              className={classes.listItemText}
             />
           </MenuItem>
         </TwitterShareButton>

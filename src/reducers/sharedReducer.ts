@@ -5,7 +5,6 @@ import {
   REQUEST_FINISH,
   OPEN_ISSUE_DIALOG,
   CLOSE_ISSUE_DIALOG,
-  SEARCH_PLACES,
   SEARCH_MAPS,
   OPEN_LIKES_DIALOG,
   CLOSE_LIKES_DIALOG,
@@ -16,23 +15,13 @@ import {
   READ_NOTIFICATION,
   OPEN_SIGN_IN_REQUIRED_DIALOG,
   CLOSE_SIGN_IN_REQUIRED_DIALOG,
-  OPEN_FEEDBACK_DIALOG,
-  CLOSE_FEEDBACK_DIALOG,
   OPEN_DRAWER,
   CLOSE_DRAWER,
   TOGGLE_DRAWER,
   OPEN_SEARCH_MAPS_DIALOG,
   CLOSE_SEARCH_MAPS_DIALOG,
   OPEN_CREATE_ACTIONS,
-  CLOSE_CREATE_ACTIONS,
-  LOCATION_CHANGE,
-  OPEN_ANNOUNCEMENT_DIALOG,
-  CLOSE_ANNOUNCEMENT_DIALOG,
-  UPDATE_ANNOUNCEMENT_IS_NEW,
-  OPEN_CREATE_MAP_DIALOG,
-  OPEN_PLACE_SELECT_DIALOG,
-  OPEN_IMAGE_DIALOG,
-  CLOSE_IMAGE_DIALOG
+  CLOSE_CREATE_ACTIONS
 } from '../actionTypes';
 
 const initialState = {
@@ -43,29 +32,16 @@ const initialState = {
   issueDialogOpen: false,
   issueTargetId: null,
   issueTargetType: null,
-  pickedPlaces: [],
   likes: [],
   likesDialogOpen: false,
   followersDialogOpen: false,
   notifications: [],
   unreadNotifications: [],
   signInRequiredDialogOpen: false,
-  feedbackDialogOpen: false,
   drawerOpen: false,
-  currentLocation: undefined,
-  previousLocation: undefined,
-  historyCount: 0,
   pickedMaps: [],
   searchMapsDialogOpen: false,
-  createActionsOpen: false,
-  announcementDialogOpen: false,
-  announcementIsNew: false,
-  imageDialogOpen: false,
-  currentImageUrl: undefined
-};
-
-const isModalLocation = location => {
-  return location.state && location.state.modal;
+  createActionsOpen: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -100,20 +76,6 @@ const reducer = (state = initialState, action) => {
         issueDialogOpen: false,
         issueTargetId: null,
         issueTargetType: null
-      });
-    case OPEN_IMAGE_DIALOG:
-      return Object.assign({}, state, {
-        imageDialogOpen: true,
-        currentImageUrl: action.payload.imageUrl
-      });
-    case CLOSE_IMAGE_DIALOG:
-      return Object.assign({}, state, {
-        imageDialogOpen: false,
-        currentImageUrl: undefined
-      });
-    case SEARCH_PLACES:
-      return Object.assign({}, state, {
-        pickedPlaces: action.payload.places
       });
     case SEARCH_MAPS:
       return Object.assign({}, state, {
@@ -176,26 +138,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         signInRequiredDialogOpen: false
       });
-    case OPEN_FEEDBACK_DIALOG:
-      return Object.assign({}, state, {
-        feedbackDialogOpen: true
-      });
-    case CLOSE_FEEDBACK_DIALOG:
-      return Object.assign({}, state, {
-        feedbackDialogOpen: false
-      });
-    case OPEN_ANNOUNCEMENT_DIALOG:
-      return Object.assign({}, state, {
-        announcementDialogOpen: true
-      });
-    case CLOSE_ANNOUNCEMENT_DIALOG:
-      return Object.assign({}, state, {
-        announcementDialogOpen: false
-      });
-    case UPDATE_ANNOUNCEMENT_IS_NEW:
-      return Object.assign({}, state, {
-        announcementIsNew: action.payload.isNew
-      });
     case OPEN_DRAWER:
       return Object.assign({}, state, {
         drawerOpen: true
@@ -221,34 +163,8 @@ const reducer = (state = initialState, action) => {
         createActionsOpen: true
       });
     case CLOSE_CREATE_ACTIONS:
-    case OPEN_CREATE_MAP_DIALOG:
-    case OPEN_PLACE_SELECT_DIALOG:
       return Object.assign({}, state, {
         createActionsOpen: false
-      });
-    case LOCATION_CHANGE:
-      let nextLocation = action.payload.location;
-
-      let historyCount =
-        isModalLocation(nextLocation) ||
-        (state.currentLocation && isModalLocation(state.currentLocation))
-          ? state.historyCount
-          : state.historyCount + 1;
-
-      return Object.assign({}, state, {
-        currentLocation: nextLocation,
-        previousLocation: state.currentLocation,
-        historyCount: historyCount,
-        issueDialogOpen: false,
-        likesDialogOpen: false,
-        followersDialogOpen: false,
-        signInRequiredDialogOpen: false,
-        feedbackDialogOpen: false,
-        announcementDialogOpen: false,
-        drawerOpen: false,
-        searchMapsDialogOpen: false,
-        imageDialogOpen: false,
-        currentImageUrl: undefined
       });
     default:
       return state;

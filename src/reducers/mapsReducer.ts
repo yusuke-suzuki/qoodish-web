@@ -8,10 +8,6 @@ import {
   OPEN_DELETE_MAP_DIALOG,
   CLOSE_DELETE_MAP_DIALOG,
   FETCH_POSTABLE_MAPS,
-  OPEN_BASE_SELECT_DIALOG,
-  CLOSE_BASE_SELECT_DIALOG,
-  SELECT_MAP_BASE,
-  LOCATION_CHANGE,
   LEAVE_MAP,
   OPEN_LEAVE_MAP_DIALOG,
   CLOSE_LEAVE_MAP_DIALOG
@@ -23,8 +19,6 @@ const initialState = {
   createMapDialogOpen: false,
   editMapDialogOpen: false,
   deleteMapDialogOpen: false,
-  baseSelectDialogOpen: false,
-  selectedBase: undefined,
   leaveMapDialogOpen: false
 };
 
@@ -44,8 +38,7 @@ const reducer = (state = initialState, action) => {
       });
     case CLOSE_CREATE_MAP_DIALOG:
       return Object.assign({}, state, {
-        createMapDialogOpen: false,
-        selectedBase: undefined
+        createMapDialogOpen: false
       });
     case DELETE_MAP:
       let rejected = state.postableMaps.filter(map => {
@@ -55,24 +48,14 @@ const reducer = (state = initialState, action) => {
         postableMaps: rejected
       });
     case OPEN_EDIT_MAP_DIALOG:
-      let newState = {
+      return Object.assign({}, state, {
         targetMap: action.payload.map,
         editMapDialogOpen: true
-      };
-      if (action.payload.map.base) {
-        Object.assign(newState, {
-          selectedBase: {
-            placeId: action.payload.map.base.place_id,
-            description: action.payload.map.base.name
-          }
-        });
-      }
-      return Object.assign({}, state, newState);
+      });
     case CLOSE_EDIT_MAP_DIALOG:
       return Object.assign({}, state, {
         targetMap: null,
-        editMapDialogOpen: false,
-        selectedBase: undefined
+        editMapDialogOpen: false
       });
     case OPEN_DELETE_MAP_DIALOG:
       return Object.assign({}, state, {
@@ -83,18 +66,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         targetMap: null,
         deleteMapDialogOpen: false
-      });
-    case OPEN_BASE_SELECT_DIALOG:
-      return Object.assign({}, state, {
-        baseSelectDialogOpen: true
-      });
-    case CLOSE_BASE_SELECT_DIALOG:
-      return Object.assign({}, state, {
-        baseSelectDialogOpen: false
-      });
-    case SELECT_MAP_BASE:
-      return Object.assign({}, state, {
-        selectedBase: action.payload.place
       });
     case LEAVE_MAP:
       return Object.assign({}, state, {
@@ -109,14 +80,6 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         leaveMapDialogOpen: false,
         targetMap: undefined
-      });
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        createMapDialogOpen: false,
-        editMapDialogOpen: false,
-        deleteMapDialogOpen: false,
-        baseSelectDialogOpen: false,
-        leaveMapDialogOpen: false
       });
     default:
       return state;

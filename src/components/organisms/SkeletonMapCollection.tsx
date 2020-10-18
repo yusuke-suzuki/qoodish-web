@@ -3,7 +3,12 @@ import React from 'react';
 import SkeletonMapCard from '../molecules/SkeletonMapCard';
 import MapGridList from './MapGridList';
 
-const SkeletonMapCollection = props => {
+type Props = {
+  size?: number;
+  horizontal?: boolean;
+};
+
+const SkeletonMapCollection = (props: Props) => {
   const { size, horizontal } = props;
 
   return (

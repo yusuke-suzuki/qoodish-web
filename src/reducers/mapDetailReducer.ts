@@ -1,7 +1,5 @@
 import {
   SELECT_MAP,
-  OPEN_PLACE_SELECT_DIALOG,
-  CLOSE_PLACE_SELECT_DIALOG,
   EDIT_MAP,
   JOIN_MAP,
   LEAVE_MAP,
@@ -10,13 +8,11 @@ import {
   OPEN_INVITE_TARGET_DIALOG,
   CLOSE_INVITE_TARGET_DIALOG,
   FETCH_USERS,
-  CLEAR_MAP_STATE,
-  LOCATION_CHANGE
+  CLEAR_MAP_STATE
 } from '../actionTypes';
 
 const initialState = {
   currentMap: null,
-  placeSelectDialogOpen: false,
   inviteTargetDialogOpen: false,
   pickedUsers: [],
   mapSummaryOpen: false
@@ -27,14 +23,6 @@ const reducer = (state = initialState, action) => {
     case SELECT_MAP:
       return Object.assign({}, state, {
         currentMap: action.payload.map
-      });
-    case OPEN_PLACE_SELECT_DIALOG:
-      return Object.assign({}, state, {
-        placeSelectDialogOpen: true
-      });
-    case CLOSE_PLACE_SELECT_DIALOG:
-      return Object.assign({}, state, {
-        placeSelectDialogOpen: false
       });
     case OPEN_INVITE_TARGET_DIALOG:
       return Object.assign({}, state, {
@@ -72,15 +60,9 @@ const reducer = (state = initialState, action) => {
     case CLEAR_MAP_STATE:
       return Object.assign({}, state, {
         currentMap: null,
-        placeSelectDialogOpen: false,
         inviteTargetDialogOpen: false,
         pickedUsers: [],
         mapSummaryOpen: false
-      });
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        placeSelectDialogOpen: false,
-        inviteTargetDialogOpen: false
       });
     default:
       return state;

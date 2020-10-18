@@ -1,5 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { useMappedState } from 'redux-react-hook';
+import React, { useMemo, useState, useEffect } from 'react';
 
 import NavDrawer from '../molecules/NavDrawer';
 import MapToolbar from '../molecules/MapToolbar';
@@ -9,10 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 
 import { match } from 'path-to-regexp';
 import DrawerContext from '../../context/DrawerContext';
-
-const isModalLocation = location => {
-  return location && location.state && location.state.modal;
-};
+import { useRouter } from 'next/router';
 
 const routesShowBackButton = [
   {
@@ -31,37 +27,23 @@ const routesShowBackButton = [
 
 const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  const [showMapToolbar, setShowMapToolbar] = useState(false);
+  const [showMapToolbar, setShowMapToolbar] = useState<boolean>(false);
 
-  const mapState = useCallback(
-    state => ({
-      currentLocation: state.shared.currentLocation
-    }),
-    []
-  );
-
-  const { currentLocation } = useMappedState(mapState);
+  const router = useRouter();
 
   useEffect(() => {
-    if (isModalLocation(currentLocation)) {
-      return;
-    }
-    if (match('/maps/:mapId')(currentLocation.pathname)) {
+    if (match('/maps/:mapId')(router.pathname)) {
       setShowMapToolbar(true);
     } else {
       setShowMapToolbar(false);
     }
-  }, [currentLocation]);
+  }, [router.pathname]);
 
   const showBackButton = useMemo(() => {
-    if (isModalLocation(currentLocation)) {
-      return false;
-    }
-
     return routesShowBackButton.find(route => {
-      return match(route.path)(currentLocation.pathname);
+      return match(route.path)(router.pathname);
     });
-  }, [currentLocation, routesShowBackButton]);
+  }, [router.pathname, routesShowBackButton]);
 
   return (
     <DrawerContext.Provider
@@ -74,7 +56,7 @@ const NavBar = () => {
         {showMapToolbar ? (
           <MapToolbar />
         ) : (
-          <NavToolbar showBackButton={showBackButton as boolean} />
+          <NavToolbar showBackButton={showBackButton ? true : false} />
         )}
       </AppBar>
       <NavDrawer />

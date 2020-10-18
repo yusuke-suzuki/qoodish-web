@@ -1,8 +1,11 @@
 import { OPEN_SPOT_DIALOG } from '../actionTypes';
 
-const openSpotDialog = () => {
+const openSpotDialog = spot => {
   return {
-    type: OPEN_SPOT_DIALOG
+    type: OPEN_SPOT_DIALOG,
+    payload: {
+      spot: spot
+    }
   };
 };
 
