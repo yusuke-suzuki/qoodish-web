@@ -1,4 +1,4 @@
-import { User } from 'firebase';
+import { User } from 'firebase/auth';
 import { createContext } from 'react';
 
 type ContextProps = {

@@ -15,7 +15,6 @@ import reviewsReducer from './reducers/reviewsReducer';
 import gMapReducer from './reducers/gMapReducer';
 import settingsReducer from './reducers/settingsReducer';
 import profileReducer from './reducers/profileReducer';
-import metadataReducer from './reducers/metadataReducer';
 
 const middlewares = [];
 
@@ -38,8 +37,7 @@ const reducer = combineReducers({
   reviews: reviewsReducer,
   gMap: gMapReducer,
   settings: settingsReducer,
-  profile: profileReducer,
-  metadata: metadataReducer
+  profile: profileReducer
 });
 
 export default () => {

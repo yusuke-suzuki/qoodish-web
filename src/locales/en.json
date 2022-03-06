@@ -1,4 +1,6 @@
 {
+  "meta headline": "Qoodish - Map-based SNS",
+  "meta description": "Qoodish allows you to create maps with friends and share your favorite places.",
   "authentication error": "An authentication error has occurred",
   "internal server error": "An internal server error has occurred",
   "create map together": "Let's create adventure maps together.",
@@ -124,10 +126,7 @@
   "unliked": "Unliked.",
   "add comment": "Add comment...",
   "followed map": "followed your map.",
-  "search places": "Search places...",
-  "search places example": "e.g. Hirosaki Ringo Park",
-  "search places help": "If you enter it like '<location> <place name>' it will be easier to find.",
-  "select place": "Select Place",
+  "search places": "Search places",
   "anonymous user": "Guest user",
   "reports": "Reports",
   "report": "Report",

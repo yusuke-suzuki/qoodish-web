@@ -12,19 +12,16 @@ import requestFinish from '../../actions/requestFinish';
 import I18n from '../../utils/I18n';
 import { MapsApi, NewMap } from '@yusuke-suzuki/qoodish-api-js-client';
 
-import uploadToStorage from '../../utils/uploadToStorage';
-
 const EditMapDialog = () => {
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
       dialogOpen: state.maps.editMapDialogOpen,
-      currentMap: state.maps.targetMap,
-      selectedBase: state.maps.selectedBase
+      currentMap: state.maps.targetMap
     }),
     []
   );
-  const { dialogOpen, currentMap, selectedBase } = useMappedState(mapState);
+  const { dialogOpen, currentMap } = useMappedState(mapState);
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeEditMapDialog());
@@ -33,17 +30,6 @@ const EditMapDialog = () => {
   const handleSaveButtonClick = useCallback(
     async (params, mapId) => {
       dispatch(requestStart());
-
-      if (params.image_url) {
-        const uploadResponse = await uploadToStorage(
-          params.image_url,
-          'maps',
-          'data_url'
-        );
-        Object.assign(params, {
-          image_url: uploadResponse.imageUrl
-        });
-      }
 
       const apiInstance = new MapsApi();
       const newMap = NewMap.constructFromObject(params);
@@ -69,7 +55,6 @@ const EditMapDialog = () => {
   return (
     <SharedEditMapDialog
       currentMap={currentMap}
-      selectedBase={selectedBase}
       dialogOpen={dialogOpen}
       handleSaveButtonClick={handleSaveButtonClick}
       handleRequestDialogClose={handleRequestDialogClose}

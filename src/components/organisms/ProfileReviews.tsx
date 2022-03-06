@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import LoadMoreUserReviewsButton from '../molecules/LoadMoreUserReviewsButton';
 import ReviewGridList from './ReviewGridList';
@@ -8,87 +7,100 @@ import NoContents from '../molecules/NoContents';
 
 import fetchUserReviews from '../../actions/fetchUserReviews';
 import I18n from '../../utils/I18n';
-import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import ReviewImageTile from './ReviewImageTile';
 import Skeleton from '@material-ui/lab/Skeleton';
 import AuthContext from '../../context/AuthContext';
-import { useTheme } from '@material-ui/core';
+import {
+  useTheme,
+  useMediaQuery,
+  makeStyles,
+  Theme,
+  createStyles
+} from '@material-ui/core';
+import { useRouter } from 'next/router';
 
-const styles = {
-  reviewsLarge: {
-    marginTop: 20,
-    paddingBottom: 20
-  },
-  reviewsSmall: {
-    marginTop: 8,
-    paddingBottom: 16
-  },
-  noReviewsLarge: {
-    paddingTop: 20
-  },
-  noReviewsSmall: {
-    paddingTop: 8
-  },
-  skeleton: {
-    width: '100%',
-    height: '100%',
-    textAlign: 'center'
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    reviews: {
+      marginTop: theme.spacing(1),
+      paddingBottom: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 20,
+        paddingBottom: 20
+      }
+    },
+    noReviews: {
+      paddingTop: theme.spacing(1),
+      [theme.breakpoints.up('sm')]: {
+        paddingTop: 20
+      }
+    },
+    skeleton: {
+      width: '100%',
+      height: '100%',
+      textAlign: 'center'
+    }
+  })
+);
+
+type Props = {
+  userId: string;
 };
 
-const ProfileReviews = props => {
-  const { params } = props;
+const ProfileReviews = (props: Props) => {
+  const { userId } = props;
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
-      currentReviews: state.profile.currentReviews,
-      location: state.shared.currentLocation
+      currentReviews: state.profile.currentReviews
     }),
     []
   );
 
-  const { currentReviews, location } = useMappedState(mapState);
+  const { currentReviews } = useMappedState(mapState);
 
   const [loading, setLoading] = useState(true);
 
   const initReviews = useCallback(async () => {
-    if (
-      location &&
-      location.pathname === '/profile' &&
-      currentUser.isAnonymous
-    ) {
+    if (router.pathname === '/profile' && currentUser.isAnonymous) {
       setLoading(false);
       return;
     }
     setLoading(true);
 
-    const userId = params && params.userId ? params.userId : currentUser.uid;
+    const uid = userId ? userId : currentUser.uid;
 
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const apiInstance = new ReviewsApi();
 
-    apiInstance.usersUserIdReviewsGet(userId, {}, (error, data, response) => {
+    apiInstance.usersUserIdReviewsGet(uid, {}, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
         dispatch(fetchUserReviews(response.body));
       }
     });
-  }, [dispatch, params, currentUser, location]);
+  }, [dispatch, userId, currentUser, router]);
 
   useEffect(() => {
-    if (!currentUser || !currentUser.uid) {
-      return;
+    if (currentUser && userId) {
+      initReviews();
     }
-    initReviews();
-  }, [currentUser]);
+  }, [currentUser, userId]);
 
   if (!loading && currentReviews.length < 1) {
     return (
-      <div style={smUp ? styles.noReviewsLarge : styles.noReviewsSmall}>
+      <div className={classes.noReviews}>
         <NoContents
           contentType="review"
           action="create-review"
@@ -99,30 +111,30 @@ const ProfileReviews = props => {
   }
 
   return (
-    <div style={smUp ? styles.reviewsLarge : styles.reviewsSmall}>
+    <div className={classes.reviews}>
       {loading ? (
         <ReviewGridList
           cols={smUp ? 4 : 3}
-          spacing={smUp ? 20 : 4}
+          spacing={smUp ? 10 : 4}
           cellHeight={smUp ? 165 : 115}
         >
           {Array.from(new Array(smUp ? 8 : 6)).map((v, i) => (
-            <Skeleton key={i} variant="rect" style={styles.skeleton} />
+            <Skeleton key={i} variant="rect" className={classes.skeleton} />
           ))}
         </ReviewGridList>
       ) : (
-        <React.Fragment>
+        <>
           <ReviewGridList
             cols={smUp ? 4 : 3}
-            spacing={smUp ? 20 : 4}
+            spacing={smUp ? 10 : 4}
             cellHeight="auto"
           >
             {currentReviews.map(review => (
               <ReviewImageTile review={review} key={review.id} />
             ))}
           </ReviewGridList>
-          <LoadMoreUserReviewsButton {...props} />
-        </React.Fragment>
+          <LoadMoreUserReviewsButton userId={userId} />
+        </>
       )}
     </div>
   );

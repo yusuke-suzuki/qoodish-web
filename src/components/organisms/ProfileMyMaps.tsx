@@ -2,61 +2,65 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import MapCollection from './MapCollection';
 import fetchMyMaps from '../../actions/fetchMyMaps';
-import { UserMapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { ApiClient, UserMapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonMapCollection from './SkeletonMapCollection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import NoContents from '../molecules/NoContents';
 import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 import { useTheme } from '@material-ui/core';
+import { useRouter } from 'next/router';
 
-const ProfileMyMaps = props => {
+type Props = {
+  userId?: string;
+};
+
+const ProfileMyMaps = (props: Props) => {
+  const { userId } = props;
+
   const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   const { currentUser } = useContext(AuthContext);
 
   const mapState = useCallback(
     state => ({
-      myMaps: state.profile.myMaps,
-      location: state.shared.currentLocation
+      myMaps: state.profile.myMaps
     }),
     []
   );
 
-  const { myMaps, location } = useMappedState(mapState);
-  const { params } = props;
+  const { myMaps } = useMappedState(mapState);
 
   const initMaps = useCallback(async () => {
-    if (
-      location &&
-      location.pathname === '/profile' &&
-      currentUser.isAnonymous
-    ) {
+    if (router.pathname === '/profile' && currentUser.isAnonymous) {
       setLoading(false);
       return;
     }
 
-    const userId = params && params.userId ? params.userId : currentUser.uid;
+    const uid = userId ? userId : currentUser.uid;
 
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
     const apiInstance = new UserMapsApi();
 
-    apiInstance.usersUserIdMapsGet(userId, {}, (error, data, response) => {
+    apiInstance.usersUserIdMapsGet(uid, {}, (error, data, response) => {
       setLoading(false);
       if (response.ok) {
         dispatch(fetchMyMaps(response.body));
       }
     });
-  }, [dispatch, params, currentUser, location]);
+  }, [dispatch, userId, currentUser, router]);
 
   useEffect(() => {
-    if (!currentUser || !currentUser.uid) {
-      return;
+    if (currentUser && userId) {
+      initMaps();
     }
-    initMaps();
-  }, [currentUser]);
+  }, [currentUser, userId]);
 
   if (!loading && myMaps.length < 1) {
     return (

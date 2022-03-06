@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 import I18n from '../../utils/I18n';
 
@@ -25,7 +25,7 @@ import {
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import { useTheme } from '@material-ui/core';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
@@ -57,11 +57,6 @@ const LeaveMapDialog = () => {
         if (response.ok) {
           dispatch(leaveMap(response.body));
           dispatch(openToast(I18n.t('unfollow map success')));
-
-          gtag('event', 'unfollow', {
-            event_category: 'engagement',
-            event_label: 'map'
-          });
 
           const apiInstance = new CollaboratorsApi();
 

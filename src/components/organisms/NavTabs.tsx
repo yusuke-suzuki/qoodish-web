@@ -10,38 +10,45 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import Badge from '@material-ui/core/Badge';
 
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 import I18n from '../../utils/I18n';
 
 import NotificationsMenu from './NotificationsMenu';
+import { createStyles, makeStyles } from '@material-ui/core';
+import { useRouter } from 'next/router';
 
-const styles = {
-  tab: {
-    height: 64,
-    minHeight: 64,
-    minWidth: 90
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    tab: {
+      height: 64,
+      minHeight: 64,
+      minWidth: 90
+    }
+  })
+);
 
 const NavTabs = () => {
-  const [selectedValue, setSelectedValue] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>(false);
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [notificationOpen, setNotificationOpen] = useState(false);
 
+  const classes = useStyles();
+
   const mapState = useCallback(
     state => ({
-      currentLocation: state.shared.currentLocation,
       unreadNotifications: state.shared.unreadNotifications
     }),
     []
   );
-  const { currentLocation, unreadNotifications } = useMappedState(mapState);
+  const { unreadNotifications } = useMappedState(mapState);
+
+  const router = useRouter();
 
   const isSelected = useCallback(
     pathname => {
-      return currentLocation && currentLocation.pathname === pathname;
+      return router.pathname === pathname;
     },
-    [currentLocation]
+    [router]
   );
 
   const handleNotificationButtonClick = useCallback(e => {
@@ -54,10 +61,7 @@ const NavTabs = () => {
   }, []);
 
   useEffect(() => {
-    if (!currentLocation) {
-      return;
-    }
-    switch (currentLocation.pathname) {
+    switch (router.pathname) {
       case '/':
         setSelectedValue(0);
         break;
@@ -70,39 +74,39 @@ const NavTabs = () => {
       default:
         setSelectedValue(false);
     }
-  }, [currentLocation]);
+  }, [router.pathname]);
 
   return (
-    <div>
+    <>
       <Tabs
         value={selectedValue}
         indicatorColor="secondary"
         textColor="inherit"
       >
-        <Tab
-          icon={<HomeIcon />}
-          selected={true}
-          style={styles.tab}
-          component={Link}
-          to="/"
-          title={I18n.t('home')}
-        />
-        <Tab
-          icon={<ExploreIcon />}
-          selected={isSelected('/discover')}
-          style={styles.tab}
-          component={Link}
-          to="/discover"
-          title={I18n.t('discover')}
-        />
-        <Tab
-          icon={<AccountCircleIcon />}
-          selected={isSelected('/profile')}
-          style={styles.tab}
-          component={Link}
-          to="/profile"
-          title={I18n.t('account')}
-        />
+        <Link href="/" passHref>
+          <Tab
+            icon={<HomeIcon />}
+            selected={true}
+            className={classes.tab}
+            title={I18n.t('home')}
+          />
+        </Link>
+        <Link href="/discover" passHref>
+          <Tab
+            icon={<ExploreIcon />}
+            selected={isSelected('/discover')}
+            className={classes.tab}
+            title={I18n.t('discover')}
+          />
+        </Link>
+        <Link href="/profile" passHref>
+          <Tab
+            icon={<AccountCircleIcon />}
+            selected={isSelected('/profile')}
+            className={classes.tab}
+            title={I18n.t('account')}
+          />
+        </Link>
         <Tab
           icon={
             unreadNotifications.length > 0 ? (
@@ -116,7 +120,7 @@ const NavTabs = () => {
               <NotificationsIcon />
             )
           }
-          style={styles.tab}
+          className={classes.tab}
           title={I18n.t('notifications')}
           aria-label="Notification"
           aria-owns={notificationOpen ? 'notification-menu' : null}
@@ -130,7 +134,7 @@ const NavTabs = () => {
         open={notificationOpen}
         onClose={handleRequestNotificationClose}
       />
-    </div>
+    </>
   );
 };
 

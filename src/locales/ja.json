@@ -1,4 +1,6 @@
 {
+  "meta headline": "Qoodish - マップベースド SNS",
+  "meta description": "Qoodish では友だちとマップを作成してお気に入りのお店や観光スポットなどの情報をシェアすることができます。",
   "authentication error": "認証エラーが発生しました",
   "internal server error": "サーバーエラーが発生しました",
   "create map together": "みんなで作る、冒険の地図。",
@@ -124,10 +126,7 @@
   "unliked": "いいね！を取り消しました",
   "add comment": "コメントを追加...",
   "followed map": "さんがあなたのマップをフォローしました。",
-  "search places": "プレイス名を入力します...",
-  "search places example": "例: 「弘前  りんご公園」",
-  "search places help": "「所在地  プレイス名」のように入力すると見つけやすくなります。",
-  "select place": "プレイスを選択します",
+  "search places": "プレイスを検索",
   "anonymous user": "ログインしていません",
   "reports": "レポート",
   "report": "レポート",

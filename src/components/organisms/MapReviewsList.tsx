@@ -8,32 +8,36 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment';
 import I18n from '../../utils/I18n';
-import { Link } from '@yusuke-suzuki/rize-router';
-import { useTheme, useMediaQuery } from '@material-ui/core';
+import {
+  useTheme,
+  useMediaQuery,
+  makeStyles,
+  Theme,
+  createStyles
+} from '@material-ui/core';
+import ReviewLink from '../molecules/ReviewLink';
+import { formatDistanceToNow } from 'date-fns';
+import { enUS, ja } from 'date-fns/locale';
 
-const styles = {
-  activityText: {
-    paddingRight: 32,
-    fontSize: 14
-  },
-  secondaryAvatar: {
-    marginRight: 12,
-    cursor: 'pointer'
-  },
-  subheader: {
-    height: 36
-  }
-};
-
-const fromNow = review => {
-  return moment(review.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(I18n.locale)
-    .format('LL');
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    activityText: {
+      paddingRight: theme.spacing(4),
+      fontSize: 14
+    },
+    secondaryAvatar: {
+      marginRight: 12,
+      cursor: 'pointer'
+    },
+    subheader: {
+      height: 36
+    }
+  })
+);
 
 const MapReviewsList = () => {
+  const classes = useStyles();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const mapReviews = useMappedState(
@@ -44,55 +48,59 @@ const MapReviewsList = () => {
     <List
       subheader={
         smUp && (
-          <ListSubheader style={styles.subheader}>
+          <ListSubheader className={classes.subheader}>
             {I18n.t('timeline')}
           </ListSubheader>
         )
       }
     >
       {mapReviews.map(review => (
-        <ListItem
-          button
-          key={review.id}
-          component={Link}
-          to={{
-            pathname: `/maps/${review.map.id}/reports/${review.id}`,
-            state: { modal: true, review: review }
-          }}
-        >
-          <ListItemAvatar>
-            <Avatar
-              src={review.author.profile_image_url}
-              alt={review.author.name}
-              loading="lazy"
+        <ReviewLink review={review} key={review.id}>
+          <ListItem button>
+            <ListItemAvatar>
+              {review.author.profile_image_url ? (
+                <Avatar
+                  src={review.author.profile_image_url}
+                  alt={review.author.name}
+                  imgProps={{
+                    loading: 'lazy'
+                  }}
+                />
+              ) : (
+                <Avatar alt={review.author.name}>
+                  {review.author.name.slice(0, 1)}
+                </Avatar>
+              )}
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <div className={classes.activityText}>
+                  <b>{review.author.name}</b> {I18n.t('created a report about')}
+                  <b>{review.spot.name}</b>
+                </div>
+              }
+              secondary={formatDistanceToNow(new Date(review.created_at), {
+                addSuffix: true,
+                locale: I18n.locale.includes('ja') ? ja : enUS
+              })}
             />
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <div style={styles.activityText}>
-                <b>{review.author.name}</b> {I18n.t('created a report about')}
-                <b>{review.spot.name}</b>
-              </div>
-            }
-            secondary={fromNow(review)}
-          />
-          {review.images.length > 0 && (
-            <ListItemSecondaryAction>
-              <Avatar
-                src={review.images[0].thumbnail_url}
-                variant="rounded"
-                style={styles.secondaryAvatar}
-                alt={review.spot.name}
-                component={Link}
-                to={{
-                  pathname: `/maps/${review.map.id}/reports/${review.id}`,
-                  state: { modal: true, review: review }
-                }}
-                loading="lazy"
-              />
-            </ListItemSecondaryAction>
-          )}
-        </ListItem>
+            {review.images.length > 0 && (
+              <ListItemSecondaryAction>
+                <ReviewLink review={review}>
+                  <Avatar
+                    src={review.images[0].thumbnail_url}
+                    variant="rounded"
+                    className={classes.secondaryAvatar}
+                    alt={review.spot.name}
+                    imgProps={{
+                      loading: 'lazy'
+                    }}
+                  />
+                </ReviewLink>
+              </ListItemSecondaryAction>
+            )}
+          </ListItem>
+        </ReviewLink>
       ))}
     </List>
   );

@@ -1,7 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -10,27 +8,37 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import Slide from '@material-ui/core/Slide';
+import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
 import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
+import {
+  useTheme,
+  useMediaQuery,
+  makeStyles,
+  createStyles
+} from '@material-ui/core';
 
-const styles = {
-  dialogContent: {
-    padding: 0
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    dialogContent: {
+      paddingTop: 0
+    }
+  })
+);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const LikesDialog = () => {
-  const large = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
@@ -41,44 +49,54 @@ const LikesDialog = () => {
   );
   const { dialogOpen, likes } = useMappedState(mapState);
 
-  const handleRequestDialogClose = useCallback(() => {
+  const handleClose = useCallback(() => {
     dispatch(closeLikesDialog());
   }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      handleClose();
+    };
+  }, []);
 
   return (
     <Dialog
       open={dialogOpen}
-      onClose={handleRequestDialogClose}
+      onClose={handleClose}
       fullWidth
-      TransitionComponent={large ? Fade : Transition}
+      TransitionComponent={smUp ? Fade : Transition}
     >
-      {large ? (
+      {smUp ? (
         <DialogTitle>{I18n.t('likes')}</DialogTitle>
       ) : (
         <DialogAppBar
           title={I18n.t('likes')}
-          handleRequestDialogClose={handleRequestDialogClose}
+          handleRequestDialogClose={handleClose}
           color="inherit"
         />
       )}
-      <DialogContent style={styles.dialogContent}>
+      <DialogContent className={classes.dialogContent}>
         <List>
           {likes.map(like => (
-            <ListItem
-              button
-              key={like.id}
-              component={Link}
-              to={`/users/${like.voter.id}`}
-              title={like.voter.name}
-            >
-              <ListItemAvatar>
-                <Avatar
-                  src={like.voter.profile_image_url}
-                  alt={like.voter.name}
-                />
-              </ListItemAvatar>
-              <ListItemText primary={like.voter.name} />
-            </ListItem>
+            <Link key={like.id} href={`/users/${like.voter.id}`} passHref>
+              <ListItem button title={like.voter.name}>
+                <ListItemAvatar>
+                  <>
+                    {like.voter.profile_image_url ? (
+                      <Avatar
+                        src={like.voter.profile_image_url}
+                        alt={like.voter.name}
+                      />
+                    ) : (
+                      <Avatar alt={like.voter.name}>
+                        {like.voter.name.slice(0, 1)}
+                      </Avatar>
+                    )}
+                  </>
+                </ListItemAvatar>
+                <ListItemText primary={like.voter.name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </DialogContent>

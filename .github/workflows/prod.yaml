@@ -1,0 +1,122 @@
+name: Prod
+on:
+  push:
+    tags:
+      - v*
+env:
+  PROJECT_ID: qoodish
+  SERVICE_NAME: qoodish-web
+  ARTIFACT_REGISTRY: asia-northeast1-docker.pkg.dev
+  TARGET_BRANCH: master
+jobs:
+  build-image:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: github-actions@qoodish-common.iam.gserviceaccount.com
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: yarn
+      - name: yarn install
+        run: |
+          yarn install --frozen-lockfile
+      - name: Prettier
+        run: |
+          yarn prettier --check "**/*.{ts,tsx,js}"
+      - name: yarn build
+        run: |
+          yarn build
+        env:
+          NEXT_PUBLIC_ENDPOINT: https://qoodish.com
+          NEXT_PUBLIC_API_ENDPOINT: https://api.qoodish.com
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: qoodish
+          NEXT_PUBLIC_FIREBASE_APP_ID: 1:1023294569417:web:b6b3b674938f3ad5130618
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_PROD }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: auth.qoodish.com
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: qoodish.appspot.com
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: 1023294569417
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: G-BWBJSW4ZMZ
+          NEXT_PUBLIC_VAPID_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_KEY_PROD }}
+          NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT: https://storage.googleapis.com
+          NEXT_PUBLIC_GOOGLE_MAP_API_KEY: ${{ secrets.GOOGLE_MAP_API_KEY_PROD }}
+          NEXT_PUBLIC_GOOGLE_STATIC_MAP_URL: https://maps.googleapis.com/maps/api/staticmap?key=${{ secrets.GOOGLE_MAP_API_KEY_PROD }}
+          NEXT_PUBLIC_FB_APP_ID: 439433496260821
+          NEXT_PUBLIC_PICKED_UP_MAP_ID: 198
+      - run: |
+          gcloud auth configure-docker $ARTIFACT_REGISTRY --quiet
+      - name: Build image
+        run: |
+          docker build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            --cache-from $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:${GITHUB_REF##*/} \
+            -t $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
+            -t $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:${GITHUB_REF##*/} \
+            .
+        env:
+          DOCKER_BUILDKIT: 1
+      - name: Push image
+        run: |
+          docker push -a $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME
+  deploy:
+    needs:
+      - build-image
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: github-actions@qoodish-common.iam.gserviceaccount.com
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+      - name: Set release version
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: Set Cloud Run tag name
+        run: |
+          echo "CLOUD_RUN_TAG=$(echo ${RELEASE_VERSION} | sed -e "s/\./\-/g")" >> $GITHUB_ENV
+      - name: Deploy revision
+        env:
+          CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+          CLOUD_RUN_SA_NAME: dev-qoodish-web@qoodish-common.iam.gserviceaccount.com
+          SITE_DOMAIN: qoodish.com
+          RENDERTRON_ENDPOINT: https://rendertron.qoodish.com
+        run: |
+          gcloud beta run deploy $SERVICE_NAME \
+            --platform=managed \
+            --region=asia-northeast1 \
+            --project=$PROJECT_ID \
+            --cpu=1000m \
+            --memory=256Mi \
+            --port=8080 \
+            --service-account=$CLOUD_RUN_SA_NAME \
+            --ingress=all \
+            --allow-unauthenticated \
+            --no-traffic \
+            --tag=${{ env.CLOUD_RUN_TAG }} \
+            --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
+            --set-env-vars "NODE_ENV=production" \
+            --set-env-vars "SITE_DOMAIN=$SITE_DOMAIN" \
+            --set-env-vars "RENDERTRON_ENDPOINT=$RENDERTRON_ENDPOINT"
+      - name: Create draft release
+        run: |
+          gh release create ${{ env.RELEASE_VERSION }} \
+            --draft \
+            --target $TARGET_BRANCH \
+            --title ${{ env.RELEASE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

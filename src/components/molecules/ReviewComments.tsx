@@ -14,45 +14,44 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import CommentMenu from './CommentMenu';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
 import I18n from '../../utils/I18n';
 import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 
-import moment from 'moment';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import openLikesDialog from '../../actions/openLikesDialog';
 import fetchLikes from '../../actions/fetchLikes';
 import AuthContext from '../../context/AuthContext';
+import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { formatDistanceToNow } from 'date-fns';
+import { enUS, ja } from 'date-fns/locale';
 
-const styles = {
-  primaryText: {
-    display: 'flex'
-  },
-  fromNow: {
-    marginLeft: 'auto'
-  },
-  commentBody: {
-    wordBreak: 'break-all'
-  },
-  commentLikes: {
-    display: 'flex',
-    cursor: 'pointer'
-  },
-  commentLikesIcon: {
-    marginRight: 8
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    fromNow: {
+      marginLeft: 'auto'
+    },
+    commentBody: {
+      wordBreak: 'break-all'
+    },
+    commentLikes: {
+      display: 'flex',
+      cursor: 'pointer'
+    },
+    commentLikesIcon: {
+      marginRight: theme.spacing(1)
+    }
+  })
+);
+
+type CommentItemProps = {
+  comment: any;
 };
 
-const fromNow = comment => {
-  return moment(comment.created_at, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(I18n.locale)
-    .fromNow();
-};
-
-const LikeButton = React.memo(props => {
+const LikeButton = React.memo((props: CommentItemProps) => {
   const dispatch = useDispatch();
 
   const { currentUser } = useContext(AuthContext);
@@ -70,11 +69,6 @@ const LikeButton = React.memo(props => {
           if (response.ok) {
             dispatch(editReview(response.body));
             dispatch(openToast(I18n.t('liked!')));
-
-            gtag('event', 'like', {
-              event_category: 'engagement',
-              event_label: 'review'
-            });
           } else {
             dispatch(openToast('Request failed.'));
           }
@@ -95,11 +89,6 @@ const LikeButton = React.memo(props => {
           if (response.ok) {
             dispatch(editReview(response.body));
             dispatch(openToast(I18n.t('unliked')));
-
-            gtag('event', 'unlike', {
-              event_category: 'engagement',
-              event_label: 'review'
-            });
           } else {
             dispatch(openToast('Request failed.'));
           }
@@ -128,7 +117,11 @@ const LikeButton = React.memo(props => {
   );
 });
 
-const Comments = React.memo(props => {
+type Props = {
+  comments: any;
+};
+
+const Comments = React.memo((props: Props) => {
   const { comments } = props;
   const dispatch = useDispatch();
 
@@ -150,41 +143,46 @@ const Comments = React.memo(props => {
     [dispatch]
   );
 
+  const classes = useStyles();
+
   return comments.map(comment => (
     <ListItem key={comment.id}>
-      <ButtonBase
-        component={Link}
-        to={`/users/${comment.author.id}`}
-        title={comment.author.name}
-      >
-        <ListItemAvatar>
-          <Avatar
-            src={comment.author.profile_image_url}
-            alt={comment.author.name}
-            loading="lazy"
-          />
-        </ListItemAvatar>
-      </ButtonBase>
+      <Link href={`/users/${comment.author.id}`} passHref>
+        <ButtonBase title={comment.author.name}>
+          <ListItemAvatar>
+            <Avatar
+              src={comment.author.profile_image_url}
+              imgProps={{
+                alt: comment.author.name,
+                loading: 'lazy'
+              }}
+            />
+          </ListItemAvatar>
+        </ButtonBase>
+      </Link>
       <ListItemText
         primary={
-          <div style={styles.primaryText}>
+          <Box display="flex">
             <Typography color="textPrimary" noWrap>
               {comment.author.name}
             </Typography>
             <Typography
               color="textSecondary"
               variant="body2"
-              style={styles.fromNow}
+              className={classes.fromNow}
             >
-              {fromNow(comment)}
+              {formatDistanceToNow(new Date(comment.created_at), {
+                addSuffix: true,
+                locale: I18n.locale.includes('ja') ? ja : enUS
+              })}
             </Typography>
-          </div>
+          </Box>
         }
         secondary={
-          <React.Fragment>
+          <>
             <Typography
               color="textPrimary"
-              style={styles.commentBody}
+              className={classes.commentBody}
               gutterBottom
             >
               {comment.body}
@@ -192,17 +190,17 @@ const Comments = React.memo(props => {
             {comment.likes_count > 0 && (
               <Typography
                 color="textSecondary"
-                style={styles.commentLikes}
+                className={classes.commentLikes}
                 onClick={() => handleLikesClick(comment)}
               >
                 <FavoriteIcon
                   fontSize="small"
-                  style={styles.commentLikesIcon}
+                  className={classes.commentLikesIcon}
                 />{' '}
                 {comment.likes_count}
               </Typography>
             )}
-          </React.Fragment>
+          </>
         }
       />
       <ListItemSecondaryAction>

@@ -12,8 +12,7 @@ import {
   CLOSE_EDIT_PROFILE_DIALOG,
   OPEN_FOLLOWING_MAPS_DIALOG,
   CLOSE_FOLLOWING_MAPS_DIALOG,
-  LEAVE_MAP,
-  LOCATION_CHANGE
+  LEAVE_MAP
 } from '../actionTypes';
 
 const initialState = {
@@ -116,10 +115,6 @@ const reducer = (state = initialState, action) => {
       });
     case CLEAR_PROFILE_STATE:
       return Object.assign({}, state, initialState);
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        editProfileDialogOpen: false
-      });
     default:
       return state;
   }

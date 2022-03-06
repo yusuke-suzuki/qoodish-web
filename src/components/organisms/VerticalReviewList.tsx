@@ -1,33 +1,35 @@
 import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  container: {
-    display: 'inline-block',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    width: '100%'
-  },
-  cardContainerSmall: {
-    marginTop: 16
-  },
-  cardContainerLarge: {
-    marginTop: 20
-  }
+const useStyles = makeStyles(theme =>
+  createStyles({
+    container: {
+      display: 'inline-block',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      width: '100%'
+    },
+    cardContainer: {
+      marginTop: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 20
+      }
+    }
+  })
+);
+
+type Props = {
+  children: any;
 };
 
-const VerticalReviewList = props => {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+const VerticalReviewList = (props: Props) => {
+  const { children } = props;
+  const classes = useStyles();
 
   return (
-    <div style={styles.container}>
-      {props.children.map(child => (
-        <div
-          key={child.key}
-          style={smUp ? styles.cardContainerLarge : styles.cardContainerSmall}
-        >
+    <div className={classes.container}>
+      {children.map(child => (
+        <div key={child.key} className={classes.cardContainer}>
           {child}
         </div>
       ))}

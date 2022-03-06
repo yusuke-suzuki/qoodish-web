@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useDispatch } from 'redux-react-hook';
 import SharedLikeActions from './SharedLikeActions';
 
 import openToast from '../../actions/openToast';
@@ -8,7 +8,12 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
-const ReviewLikeActions = props => {
+
+type Props = {
+  target: any;
+};
+
+const ReviewLikeActions = (props: Props) => {
   const { target } = props;
   const dispatch = useDispatch();
 
@@ -26,11 +31,6 @@ const ReviewLikeActions = props => {
       if (response.ok) {
         dispatch(editReview(response.body));
         dispatch(openToast(I18n.t('liked!')));
-
-        gtag('event', 'like', {
-          event_category: 'engagement',
-          event_label: 'review'
-        });
       } else {
         dispatch(openToast('Request failed.'));
       }
@@ -46,11 +46,6 @@ const ReviewLikeActions = props => {
         if (response.ok) {
           dispatch(editReview(response.body));
           dispatch(openToast(I18n.t('unliked')));
-
-          gtag('event', 'unlike', {
-            event_category: 'engagement',
-            event_label: 'review'
-          });
         } else {
           dispatch(openToast('Request failed.'));
         }

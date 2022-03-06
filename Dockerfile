@@ -1,14 +1,14 @@
-FROM node:14.7.0-alpine3.12
+FROM gcr.io/distroless/nodejs:16
 
-WORKDIR /qoodish-web
+WORKDIR /app
 
-COPY . .
+ENV NODE_ENV production
 
-COPY --from=asia-docker.pkg.dev/berglas/berglas/berglas:latest /bin/berglas /bin/berglas
-
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+COPY ./next.config.js ./
+COPY ./public ./public
+COPY ./.next ./.next
+COPY ./node_modules ./node_modules
+COPY ./package.json ./package.json
 
 EXPOSE 8080
-CMD ["yarn", "serve"]
+CMD ["node_modules/.bin/next", "start", "-p", "8080"]

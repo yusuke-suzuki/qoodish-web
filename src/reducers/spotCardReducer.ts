@@ -36,7 +36,7 @@ const reducer = (state = initialState, action) => {
       });
     case CREATE_REVIEW:
       if (
-        state.spotReviews < 1 ||
+        state.spotReviews.length < 1 ||
         state.spotReviews[0].map.id !== action.payload.review.map.id ||
         state.spotReviews[0].place_id !== action.payload.review.spot.place_id
       ) {

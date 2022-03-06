@@ -1,4 +1,4 @@
-import { SELECT_REVIEW, EDIT_REVIEW, DELETE_REVIEW } from '../actionTypes';
+import { FETCH_REVIEW, EDIT_REVIEW, DELETE_REVIEW } from '../actionTypes';
 
 const initialState = {
   currentReview: undefined
@@ -6,7 +6,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SELECT_REVIEW:
+    case FETCH_REVIEW:
       return Object.assign({}, state, {
         currentReview: action.payload.review
       });

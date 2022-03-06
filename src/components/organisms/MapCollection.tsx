@@ -2,9 +2,19 @@ import React from 'react';
 
 import MapCard from '../molecules/MapCard';
 import MapGridList from './MapGridList';
+import SkeletonMapCollection from './SkeletonMapCollection';
 
-const MapCollection = props => {
+type Props = {
+  maps: any[];
+  horizontal?: boolean;
+};
+
+const MapCollection = (props: Props) => {
   const { maps, horizontal } = props;
+
+  if (maps.length < 1) {
+    return <SkeletonMapCollection horizontal={horizontal ? true : false} />;
+  }
 
   return (
     <MapGridList horizontal={horizontal ? true : false}>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { memo, useCallback, useContext, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import Card from '@material-ui/core/Card';
@@ -20,8 +20,16 @@ import updateLinkedProviders from '../../actions/updateLinkedProviders';
 import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { createStyles, makeStyles } from '@material-ui/core';
+import {
+  FacebookAuthProvider,
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  linkWithPopup,
+  TwitterAuthProvider,
+  unlink
+} from 'firebase/auth';
 
 const providers = [
   {
@@ -42,15 +50,18 @@ const providers = [
   }
 ];
 
-const styles = {
-  unlinkButton: {
-    color: 'red',
-    border: '1px solid red'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    unlinkButton: {
+      color: 'red',
+      border: '1px solid red'
+    }
+  })
+);
 
-const LinkedProvidersList = () => {
+const LinkedProvidersList = memo((): any => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const mapState = useCallback(
     state => ({
       linkedProviders: state.app.linkedProviders
@@ -72,24 +83,26 @@ const LinkedProvidersList = () => {
     async providerId => {
       dispatch(requestStart());
 
+      const auth = getAuth();
+
       let provider;
       switch (providerId) {
         case 'google.com':
-          provider = new firebase.auth.GoogleAuthProvider();
+          provider = new GoogleAuthProvider();
           break;
         case 'facebook.com':
-          provider = new firebase.auth.FacebookAuthProvider();
+          provider = new FacebookAuthProvider();
           break;
         case 'twitter.com':
-          provider = new firebase.auth.TwitterAuthProvider();
+          provider = new TwitterAuthProvider();
           break;
         case 'github.com':
-          provider = new firebase.auth.GithubAuthProvider();
+          provider = new GithubAuthProvider();
           break;
       }
 
       try {
-        await currentUser.linkWithPopup(provider);
+        await linkWithPopup(auth.currentUser, provider);
       } catch (error) {
         console.log(error);
         dispatch(requestFinish());
@@ -112,7 +125,7 @@ const LinkedProvidersList = () => {
       dispatch(requestStart());
 
       try {
-        await currentUser.unlink(providerId);
+        await unlink(currentUser, providerId);
       } catch (error) {
         console.log(error);
         dispatch(requestFinish());
@@ -134,13 +147,14 @@ const LinkedProvidersList = () => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
       return;
     }
+
     refreshProviders();
   }, [currentUser]);
 
-  let reachedMinimum = linkedProviders.length === 1;
+  const reachedMinimum = linkedProviders.length === 1;
 
   return providers.map(provider => {
-    let linked = linkedProviders.includes(provider.id);
+    const linked = linkedProviders.includes(provider.id);
 
     return (
       <ListItem disableGutters key={provider.id}>
@@ -158,9 +172,13 @@ const LinkedProvidersList = () => {
                 ? handleUnlinkProviderButtonClick(provider.id)
                 : handleLinkProviderButtonClick(provider.id);
             }}
-            disabled={currentUser.isAnonymous || (linked && reachedMinimum)}
+            disabled={
+              !currentUser ||
+              currentUser.isAnonymous ||
+              (linked && reachedMinimum)
+            }
             color="primary"
-            style={linked && !reachedMinimum ? styles.unlinkButton : {}}
+            className={linked && !reachedMinimum ? classes.unlinkButton : null}
           >
             {linked ? I18n.t('unlink') : I18n.t('link')}
           </Button>
@@ -168,7 +186,7 @@ const LinkedProvidersList = () => {
       </ListItem>
     );
   });
-};
+});
 
 const ProviderLinkSettings = () => {
   return (

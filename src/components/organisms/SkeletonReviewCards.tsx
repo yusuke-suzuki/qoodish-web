@@ -2,7 +2,12 @@ import React from 'react';
 import SkeletonReviewCard from '../molecules/SkeletonReviewCard';
 import VerticalReviewList from './VerticalReviewList';
 
-const SkeletonReviewCards = props => {
+type Props = {
+  size?: number;
+  horizontal?: boolean;
+};
+
+const SkeletonReviewCards = (props: Props) => {
   const { size } = props;
 
   return (

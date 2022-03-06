@@ -16,53 +16,57 @@ import {
   InlineObject
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
+import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const styles = {
-  root: {
-    width: '100%'
-  },
-  actions: {
-    display: 'flex',
-    width: '100%',
-    alignItems: 'center'
-  },
-  textField: {
-    justifyContent: 'center',
-    marginLeft: 16
-  },
-  commentActions: {
-    display: 'flex',
-    justifyContent: 'flex-end'
-  },
-  avatar: {
-    width: 24,
-    height: 24
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    textField: {
+      justifyContent: 'center',
+      marginLeft: theme.spacing(2)
+    },
+    avatar: {
+      width: theme.spacing(3),
+      height: theme.spacing(3)
+    }
+  })
+);
 
 const UserAvatar = React.memo(() => {
   const profile = useMappedState(useCallback(state => state.app.profile, []));
 
   const { currentUser } = useContext(AuthContext);
 
-  if (currentUser.isAnonymous) {
+  const classes = useStyles();
+
+  if (!currentUser || currentUser.isAnonymous) {
     return (
-      <Avatar style={styles.avatar}>
+      <Avatar className={classes.avatar}>
         <PersonIcon />
       </Avatar>
     );
   } else {
-    return (
+    return profile.thumbnail_url ? (
       <Avatar
         src={profile.thumbnail_url}
-        alt={profile.name}
-        style={styles.avatar}
+        imgProps={{
+          alt: profile.name,
+          loading: 'lazy'
+        }}
+        className={classes.avatar}
       />
+    ) : (
+      <Avatar className={classes.avatar}>
+        {profile.name && profile.name.slice(0, 1)}
+      </Avatar>
     );
   }
 });
 
-const ReviewCardActions = React.memo(props => {
+type ReviewCardChildrenProps = {
+  review: any;
+};
+
+const ReviewCardActions = React.memo((props: ReviewCardChildrenProps) => {
   const { review } = props;
   const { currentUser } = useContext(AuthContext);
   const [commentFormActive, setCommentFormActive] = useState(false);
@@ -70,6 +74,8 @@ const ReviewCardActions = React.memo(props => {
   const [sending, setSending] = useState(false);
 
   const dispatch = useDispatch();
+
+  const classes = useStyles();
 
   const handleSendCommentButtonClick = useCallback(async () => {
     if (currentUser.isAnonymous) {
@@ -102,8 +108,8 @@ const ReviewCardActions = React.memo(props => {
   }, [dispatch, currentUser, review, comment]);
 
   return (
-    <div style={styles.root}>
-      <div style={styles.actions}>
+    <Box width="100%">
+      <Box display="flex" alignItems="center" width="100%">
         <UserAvatar />
         <TextField
           fullWidth
@@ -111,16 +117,16 @@ const ReviewCardActions = React.memo(props => {
           InputProps={{
             disableUnderline: true
           }}
-          style={styles.textField}
+          className={classes.textField}
           onFocus={() => setCommentFormActive(true)}
           autoFocus={commentFormActive}
           multiline={commentFormActive}
           onChange={e => setComment(e.target.value)}
         />
         {!commentFormActive && <ReviewLikeActions target={review} />}
-      </div>
+      </Box>
       {commentFormActive && (
-        <div style={styles.commentActions}>
+        <Box display="flex" justifyContent="flex-end">
           <Button
             onClick={() => {
               setCommentFormActive(false);
@@ -136,9 +142,9 @@ const ReviewCardActions = React.memo(props => {
           >
             {I18n.t('post')}
           </Button>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 });
 

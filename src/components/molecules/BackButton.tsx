@@ -1,25 +1,23 @@
-import React, { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import switchMap from '../../actions/switchMap';
-import { useHistory } from '@yusuke-suzuki/rize-router';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import { useTheme, useMediaQuery } from '@material-ui/core';
+import { useTheme, useMediaQuery, IconButton } from '@material-ui/core';
+import { useRouter } from 'next/router';
+import { ArrowBack } from '@material-ui/icons';
 
-const BackButton = () => {
-  const history = useHistory();
+export default memo(function BackButton() {
+  const router = useRouter();
   const dispatch = useDispatch();
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
 
   const mapState = useCallback(
     state => ({
-      mapSummaryOpen: state.mapDetail.mapSummaryOpen,
-      historyCount: state.shared.historyCount
+      mapSummaryOpen: state.mapDetail.mapSummaryOpen
     }),
     []
   );
-  const { mapSummaryOpen, historyCount } = useMappedState(mapState);
+  const { mapSummaryOpen } = useMappedState(mapState);
 
   const handleBackButtonClick = useCallback(() => {
     if (!lgUp && mapSummaryOpen) {
@@ -27,18 +25,16 @@ const BackButton = () => {
       return;
     }
 
-    if (historyCount > 2) {
-      history.goBack();
+    if (window.history.length > 2) {
+      router.back();
     } else {
-      history.push('/');
+      router.push('/');
     }
-  }, [dispatch, history, mapSummaryOpen, historyCount, lgUp]);
+  }, [dispatch, router, mapSummaryOpen, lgUp]);
 
   return (
     <IconButton color="inherit" onClick={handleBackButtonClick}>
-      <ArrowBackIcon />
+      <ArrowBack />
     </IconButton>
   );
-};
-
-export default React.memo(BackButton);
+});

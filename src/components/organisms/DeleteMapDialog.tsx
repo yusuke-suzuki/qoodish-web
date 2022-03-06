@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { useHistory } from '@yusuke-suzuki/rize-router';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,6 +18,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { useRouter } from 'next/router';
 
 const DeleteMapDialog = () => {
   const mapState = useCallback(
@@ -30,7 +30,7 @@ const DeleteMapDialog = () => {
   );
   const { currentMap, dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -42,30 +42,45 @@ const DeleteMapDialog = () => {
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteMapDialog());
+  }, [dispatch]);
+
+  const handleExited = useCallback(() => {
     setCheck(false);
     setDisabled(true);
-  }, [dispatch]);
+  }, []);
 
   const handleDeleteButtonClick = useCallback(() => {
     dispatch(requestStart());
     const apiInstance = new MapsApi();
 
-    apiInstance.mapsMapIdDelete(currentMap.id, (error, data, response) => {
-      dispatch(requestFinish());
+    apiInstance.mapsMapIdDelete(
+      currentMap.id,
+      async (error, data, response) => {
+        dispatch(requestFinish());
 
-      if (response.ok) {
-        dispatch(closeDeleteMapDialog());
-        dispatch(deleteMap(currentMap.id));
-        history.push('');
-        dispatch(openToast(I18n.t('delete map success')));
-      } else {
-        dispatch(openToast('Failed to delete map.'));
+        if (response.ok) {
+          dispatch(closeDeleteMapDialog());
+          dispatch(openToast(I18n.t('delete map success')));
+          await router.push('/discover');
+          dispatch(deleteMap(currentMap.id));
+        } else {
+          dispatch(openToast('Failed to delete map.'));
+        }
       }
-    });
-  }, [dispatch, history, currentMap]);
+    );
+  }, [dispatch, router, currentMap]);
+
+  useEffect(() => {
+    return () => handleExited();
+  }, []);
 
   return (
-    <Dialog open={dialogOpen} onClose={handleRequestDialogClose} fullWidth>
+    <Dialog
+      open={dialogOpen}
+      onClose={handleRequestDialogClose}
+      onExited={handleExited}
+      fullWidth
+    >
       <DialogTitle>{I18n.t('sure to delete map')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{I18n.t('delete map detail')}</DialogContentText>

@@ -50,6 +50,9 @@ const SpotMarkers = () => {
   }, [dispatch]);
 
   const refreshSpots = useCallback(async () => {
+    setAnchorEl(undefined);
+    setWindowOpen(false);
+
     const apiInstance = new SpotsApi();
 
     apiInstance.mapsMapIdSpotsGet(currentMap.id, (error, data, response) => {

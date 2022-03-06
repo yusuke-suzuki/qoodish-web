@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
@@ -19,42 +18,40 @@ import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
-import { useTheme } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import AuthContext from '../../context/AuthContext';
 
-const styles = {
-  progress: {
-    textAlign: 'center',
-    padding: 10,
-    marginTop: 20
-  },
-  listItemLarge: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  listItemSmall: {
-    paddingLeft: 10,
-    paddingRight: 80
-  },
-  listItemSecondaryAction: {
-    right: 10
-  },
-  gridHeader: {
-    width: '100%',
-    display: 'inline-flex'
-  },
-  headerIcon: {
-    marginLeft: 10,
-    marginRight: 10
-  },
-  cardContainer: {
-    paddingBottom: 16
-  }
-};
+const useStyles = makeStyles(theme =>
+  createStyles({
+    progress: {
+      textAlign: 'center',
+      padding: 10,
+      marginTop: 20
+    },
+    listItem: {
+      paddingLeft: 10,
+      paddingRight: 80
+    },
+    listItemSecondaryAction: {
+      right: 10
+    },
+    gridHeader: {
+      width: '100%',
+      display: 'inline-flex'
+    },
+    headerIcon: {
+      marginLeft: 10,
+      marginRight: 10
+    },
+    cardContainer: {
+      paddingBottom: theme.spacing(2)
+    }
+  })
+);
 
 const TrendingMaps = () => {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const classes = useStyles();
+
   const [maps, setMaps] = useState([]);
 
   const { currentUser } = useContext(AuthContext);
@@ -89,7 +86,7 @@ const TrendingMaps = () => {
     <SkeletonTrendingList />
   ) : (
     <Paper elevation={0}>
-      <CardContent style={styles.cardContainer}>
+      <CardContent className={classes.cardContainer}>
         <List
           disablePadding
           subheader={
@@ -97,51 +94,50 @@ const TrendingMaps = () => {
               <Typography
                 variant="subtitle1"
                 color="textSecondary"
-                style={styles.gridHeader}
+                className={classes.gridHeader}
               >
-                <GradeIcon style={styles.headerIcon} />{' '}
+                <GradeIcon className={classes.headerIcon} />{' '}
                 {I18n.t('trending maps')}
               </Typography>
             </ListSubheader>
           }
         >
           {maps.map((map, i) => (
-            <ListItem
-              button
-              key={map.id}
-              component={Link}
-              to={`/maps/${map.id}`}
-              title={map.name}
-              style={smUp ? styles.listItemLarge : styles.listItemSmall}
-            >
-              <ListItemAvatar>
-                <Avatar src={map.thumbnail_url} alt={map.name} loading="lazy" />
-              </ListItemAvatar>
-              <ListItemText
-                disableTypography={true}
-                primary={
-                  <Typography variant="subtitle1" noWrap>
-                    {i + 1}. {map.name}
-                  </Typography>
-                }
-                secondary={
-                  <Typography component="p" noWrap color="textSecondary">
-                    {map.description}
-                  </Typography>
-                }
-              />
-              <ListItemSecondaryAction style={styles.listItemSecondaryAction}>
-                <Button
-                  size="small"
-                  component={Link}
-                  to={`/maps/${map.id}`}
-                  title={map.name}
-                  variant="outlined"
+            <Link key={map.id} href={`/maps/${map.id}`} passHref>
+              <ListItem button title={map.name} className={classes.listItem}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={map.thumbnail_url}
+                    alt={map.name}
+                    imgProps={{
+                      loading: 'lazy'
+                    }}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  disableTypography={true}
+                  primary={
+                    <Typography variant="subtitle1" noWrap>
+                      {i + 1}. {map.name}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography component="p" noWrap color="textSecondary">
+                      {map.description}
+                    </Typography>
+                  }
+                />
+                <ListItemSecondaryAction
+                  className={classes.listItemSecondaryAction}
                 >
-                  {I18n.t('detail')}
-                </Button>
-              </ListItemSecondaryAction>
-            </ListItem>
+                  <Link href={`/maps/${map.id}`} passHref>
+                    <Button size="small" title={map.name} variant="outlined">
+                      {I18n.t('detail')}
+                    </Button>
+                  </Link>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Link>
           ))}
         </List>
       </CardContent>

@@ -13,31 +13,42 @@ import readNotification from '../../actions/readNotification';
 
 import sleep from '../../utils/sleep';
 import {
+  ApiClient,
   NotificationsApi,
   InlineObject1
 } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  notificationMenu: {
-    maxHeight: '50vh'
-  },
-  noContents: {
-    textAlign: 'center',
-    color: '#9e9e9e',
-    height: 'auto',
-    display: 'flow-root'
-  },
-  noContentsIcon: {
-    width: 80,
-    height: 80
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    notificationMenu: {
+      maxHeight: '50vh'
+    },
+    noContents: {
+      textAlign: 'center',
+      color: '#9e9e9e',
+      height: 'auto',
+      display: 'flow-root'
+    },
+    noContentsIcon: {
+      width: 80,
+      height: 80
+    }
+  })
+);
+
+type Props = {
+  open: boolean;
+  onClose: any;
+  anchorEl: Element;
 };
 
-const NotificationsMenu = props => {
+const NotificationsMenu = (props: Props) => {
   const { open, onClose, anchorEl } = props;
+  const classes = useStyles();
 
   const dispatch = useDispatch();
 
@@ -76,18 +87,22 @@ const NotificationsMenu = props => {
 
   const refreshNotifications = useCallback(async () => {
     const apiInstance = new NotificationsApi();
+    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
+    firebaseAuth.apiKey = await currentUser.getIdToken();
+    firebaseAuth.apiKeyPrefix = 'Bearer';
 
     apiInstance.notificationsGet((error, data, response) => {
       if (response.ok) {
         dispatch(fetchNotifications(response.body));
       }
     });
-  }, [dispatch]);
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
       return;
     }
+
     refreshNotifications();
   }, [currentUser]);
 
@@ -98,7 +113,7 @@ const NotificationsMenu = props => {
       open={open}
       onClose={onClose}
       onEntered={onEntered}
-      PaperProps={{ style: styles.notificationMenu }}
+      PaperProps={{ className: classes.notificationMenu }}
     >
       {notifications.length > 0 ? (
         <NotificationList
@@ -107,8 +122,8 @@ const NotificationsMenu = props => {
           menu={true}
         />
       ) : (
-        <MenuItem style={styles.noContents}>
-          <NotificationsIcon style={styles.noContentsIcon} />
+        <MenuItem className={classes.noContents}>
+          <NotificationsIcon className={classes.noContentsIcon} />
           <Typography variant="subtitle1" color="inherit">
             {I18n.t('no notifications')}
           </Typography>

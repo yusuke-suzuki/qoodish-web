@@ -15,109 +15,114 @@ import Paper from '@material-ui/core/Paper';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import HomeIcon from '@material-ui/icons/Home';
 import I18n from '../../utils/I18n';
-import { useTheme } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme
+} from '@material-ui/core';
 
-const styles = {
-  containerLarge: {
-    width: 380,
-    height: '100%'
-  },
-  containerSmall: {
-    height: '100%'
-  },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%'
-  },
-  toolbarContainerLarge: {
-    position: 'absolute',
-    top: 64,
-    width: '100%',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
-  },
-  toolbarLarge: {
-    height: 64,
-    paddingLeft: 16,
-    paddingRight: 16
-  },
-  toolbarSmall: {
-    height: 56
-  },
-  tabsLarge: {
-    height: 64,
-    width: '100%'
-  },
-  tabsSmall: {},
-  tabLarge: {
-    height: 64,
-    minHeight: 64,
-    width: '20%',
-    minWidth: 'auto'
-  },
-  tabSmall: {
-    height: 56
-  },
-  tabContentsLarge: {
-    marginTop: 128,
-    overflowY: 'scroll',
-    height: 'calc(100% - 192px)'
-  },
-  tabContentsSmall: {
-    marginTop: 112,
-    marginBottom: 56,
-    overflowY: 'scroll',
-    height: 'calc(100% - 168px)'
-  },
-  tabIcon: {
-    position: 'absolute'
-  },
-  followMapButton: {
-    marginLeft: 'auto'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      height: '100%',
+      [theme.breakpoints.up('lg')]: {
+        width: 380
+      }
+    },
+    bottomNav: {
+      position: 'absolute',
+      bottom: 0,
+      width: '100%'
+    },
+    toolbarContainer: {
+      [theme.breakpoints.up('sm')]: {
+        position: 'absolute',
+        top: 64,
+        width: '100%',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
+      }
+    },
+    tabs: {
+      [theme.breakpoints.up('sm')]: {
+        height: 64,
+        width: '100%'
+      }
+    },
+    tab: {
+      height: 56,
+      [theme.breakpoints.up('sm')]: {
+        height: 64,
+        minHeight: 64,
+        width: '20%',
+        minWidth: 'auto'
+      }
+    },
+    tabContents: {
+      marginTop: 112,
+      marginBottom: 56,
+      overflowY: 'scroll',
+      height: 'calc(100% - 168px)',
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 128,
+        marginBottom: 'initial',
+        overflowY: 'scroll',
+        height: 'calc(100% - 192px)'
+      }
+    },
+    tabIcon: {
+      position: 'absolute'
+    }
+  })
+);
 
 const MapBottomNav = React.memo(() => {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const currentMap = useMappedState(
     useCallback(state => state.mapSummary.currentMap, [])
   );
+  const classes = useStyles();
 
   return (
-    <Paper style={styles.bottomNav} square elevation={1}>
-      <Toolbar style={smUp ? styles.toolbarLarge : styles.toolbarSmall}>
-        <div style={styles.followMapButton}>
+    <Paper className={classes.bottomNav} square elevation={1}>
+      <Toolbar>
+        <Box display="flex" justifyContent="flex-end" width="100%">
           <FollowMapButton currentMap={currentMap} />
-        </div>
+        </Box>
       </Toolbar>
     </Paper>
   );
 });
 
-const MapTabs = React.memo(props => {
+type TabsProps = {
+  tabValue: number;
+  handleTabChange: any;
+};
+
+const MapTabs = React.memo((props: TabsProps) => {
+  const { tabValue, handleTabChange } = props;
   const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
+  const classes = useStyles();
 
   return (
     <Tabs
-      value={props.tabValue}
-      onChange={props.handleTabChange}
-      style={smUp ? styles.tabsLarge : styles.tabsSmall}
+      value={tabValue}
+      onChange={handleTabChange}
+      className={classes.tabs}
       variant={lgUp ? 'fullWidth' : 'standard'}
       indicatorColor={lgUp ? 'primary' : 'secondary'}
       textColor={lgUp ? 'primary' : 'inherit'}
     >
       <Tab
-        icon={lgUp ? <HomeIcon style={styles.tabIcon} /> : null}
+        icon={lgUp ? <HomeIcon className={classes.tabIcon} /> : null}
         label={lgUp ? null : I18n.t('basic info')}
-        style={smUp ? styles.tabLarge : styles.tabSmall}
+        className={classes.tab}
       />
       <Tab
-        icon={lgUp ? <TimelineIcon style={styles.tabIcon} /> : null}
+        icon={lgUp ? <TimelineIcon className={classes.tabIcon} /> : null}
         label={lgUp ? null : I18n.t('timeline')}
-        style={smUp ? styles.tabLarge : styles.tabSmall}
+        className={classes.tab}
       />
     </Tabs>
   );
@@ -133,8 +138,10 @@ const MapSummary = () => {
     setTabValue(value);
   }, []);
 
+  const classes = useStyles();
+
   return (
-    <div style={lgUp ? styles.containerLarge : styles.containerSmall}>
+    <div className={classes.container}>
       {lgUp ? null : (
         <AppBar position="absolute">
           <MapToolbar />
@@ -143,12 +150,12 @@ const MapSummary = () => {
           </Toolbar>
         </AppBar>
       )}
-      <div style={smUp ? styles.tabContentsLarge : styles.tabContentsSmall}>
+      <div className={classes.tabContents}>
         {tabValue === 0 && <MapSummaryCard />}
         {tabValue === 1 && <MapReviewsList />}
       </div>
       {smUp && (
-        <Paper style={styles.toolbarContainerLarge} square elevation={0}>
+        <Paper className={classes.toolbarContainer} square elevation={0}>
           <Toolbar disableGutters>
             <MapTabs tabValue={tabValue} handleTabChange={handleTabChange} />
           </Toolbar>

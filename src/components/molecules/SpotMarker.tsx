@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import OverlayView from './OverlayView';
+
 const styles = {
   overlayButton: {
     backgroundColor: 'white'
@@ -25,14 +26,26 @@ const SpotMarker = props => {
         <Tooltip title={spot.name}>
           <Fab style={styles.overlayButton} onClick={props.onClick}>
             <Badge badgeContent={spot.reviews_count} color="primary">
-              <Avatar src={spot.thumbnail_url} alt={spot.name} loading="lazy" />
+              <Avatar
+                src={spot.thumbnail_url}
+                imgProps={{
+                  alt: spot.name,
+                  loading: 'lazy'
+                }}
+              />
             </Badge>
           </Fab>
         </Tooltip>
       ) : (
         <Fab style={styles.overlayButton} onClick={props.onClick}>
           <Badge badgeContent={spot.reviews_count} color="primary">
-            <Avatar src={spot.thumbnail_url} alt={spot.name} loading="lazy" />
+            <Avatar
+              src={spot.thumbnail_url}
+              imgProps={{
+                alt: spot.name,
+                loading: 'lazy'
+              }}
+            />
           </Badge>
         </Fab>
       )}

@@ -1,27 +1,33 @@
-import React from 'react';
-import { Typography } from '@material-ui/core';
+import { memo } from 'react';
+import { createStyles, makeStyles, Typography } from '@material-ui/core';
 import I18n from '../../utils/I18n';
 
-const styles = {
-  gmapLink: {
-    textDecoration: 'none'
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    gmapLink: {
+      textDecoration: 'none'
+    }
+  })
+);
+
+type Props = {
+  currentSpot: any;
 };
 
-const GoogleMapsLink = props => {
+export default memo(function GoogleMapsLink(props: Props) {
   const { currentSpot } = props;
+  const classes = useStyles();
 
   return (
     <Typography variant="subtitle2" color="textSecondary">
       <a
         href={currentSpot && currentSpot.url}
         target="_blank"
-        style={styles.gmapLink}
+        rel="noopener"
+        className={classes.gmapLink}
       >
         {I18n.t('open in google maps')}
       </a>
     </Typography>
   );
-};
-
-export default React.memo(GoogleMapsLink);
+});

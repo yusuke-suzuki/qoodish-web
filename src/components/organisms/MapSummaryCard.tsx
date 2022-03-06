@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useMappedState } from 'redux-react-hook';
 
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -7,49 +7,58 @@ import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import PlaceIcon from '@material-ui/icons/Place';
 import I18n from '../../utils/I18n';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 import ButtonBase from '@material-ui/core/ButtonBase';
-import moment from 'moment';
 import PublicIcon from '@material-ui/icons/Public';
 import LockIcon from '@material-ui/icons/Lock';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupIcon from '@material-ui/icons/Group';
 
-import requestMapCenter from '../../actions/requestMapCenter';
 import Skeleton from '@material-ui/lab/Skeleton';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
 import FollowerAvatars from '../molecules/FollowerAvatars';
 import VoterAvatars from '../molecules/VoterAvatars';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { format } from 'date-fns';
+import { enUS, ja } from 'date-fns/locale';
 
-const styles = {
-  text: {
-    wordBreak: 'break-all'
-  },
-  description: {
-    wordBreak: 'break-all',
-    whiteSpace: 'pre-wrap'
-  },
-  chip: {
-    marginBottom: 16,
-    marginRight: 12
-  },
-  avatarsContainer: {
-    marginBottom: 16,
-    cursor: 'pointer'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    text: {
+      wordBreak: 'break-all'
+    },
+    description: {
+      wordBreak: 'break-all',
+      whiteSpace: 'pre-wrap'
+    },
+    chip: {
+      marginBottom: theme.spacing(2),
+      marginRight: 12
+    },
+    avatarsContainer: {
+      marginBottom: theme.spacing(2),
+      cursor: 'pointer'
+    }
+  })
+);
 
 const parseDate = date => {
-  return moment(date, 'YYYY-MM-DDThh:mm:ss.SSSZ')
-    .locale(I18n.locale)
-    .format('LL');
+  return format(new Date(date), 'yyyy-MM-dd', {
+    locale: I18n.locale.includes('ja') ? ja : enUS
+  });
 };
 
-const MapTypes = React.memo(props => {
-  const { currentMap } = props;
+type MapTypesProps = {
+  currentMap: any;
+};
 
-  let mapTypes = [];
+const MapTypes = React.memo((props: MapTypesProps) => {
+  const { currentMap } = props;
+  const classes = useStyles();
+
+  const mapTypes = [];
+
   if (currentMap.private) {
     mapTypes.push(
       <Chip
@@ -60,7 +69,7 @@ const MapTypes = React.memo(props => {
           </Avatar>
         }
         label={I18n.t('private')}
-        style={styles.chip}
+        className={classes.chip}
       />
     );
   } else {
@@ -73,10 +82,11 @@ const MapTypes = React.memo(props => {
           </Avatar>
         }
         label={I18n.t('public')}
-        style={styles.chip}
+        className={classes.chip}
       />
     );
   }
+
   if (currentMap.shared) {
     mapTypes.push(
       <Chip
@@ -87,7 +97,7 @@ const MapTypes = React.memo(props => {
           </Avatar>
         }
         label={I18n.t('shared')}
-        style={styles.chip}
+        className={classes.chip}
       />
     );
   } else {
@@ -100,14 +110,17 @@ const MapTypes = React.memo(props => {
           </Avatar>
         }
         label={I18n.t('personal')}
-        style={styles.chip}
+        className={classes.chip}
       />
     );
   }
-  return mapTypes;
+
+  return mapTypes as any;
 });
 
 const MapSummaryCard = () => {
+  const classes = useStyles();
+
   const mapState = useCallback(
     state => ({
       currentMap: state.mapSummary.currentMap,
@@ -116,14 +129,6 @@ const MapSummaryCard = () => {
     []
   );
   const { currentMap, mapReviews } = useMappedState(mapState);
-  const dispatch = useDispatch();
-
-  const handleBaseClick = useCallback(() => {
-    if (!currentMap.base) {
-      return;
-    }
-    dispatch(requestMapCenter(currentMap.base.lat, currentMap.base.lng));
-  }, [dispatch, currentMap]);
 
   return (
     <CardContent>
@@ -131,7 +136,7 @@ const MapSummaryCard = () => {
         {I18n.t('map name')}
       </Typography>
       {currentMap ? (
-        <Typography variant="h5" gutterBottom style={styles.text}>
+        <Typography variant="h5" gutterBottom className={classes.text}>
           {currentMap.name}
         </Typography>
       ) : (
@@ -141,37 +146,47 @@ const MapSummaryCard = () => {
       <Typography variant="subtitle2" gutterBottom color="textSecondary">
         {I18n.t('owner')}
       </Typography>
-      <ButtonBase
-        component={Link}
-        to={currentMap ? `/users/${currentMap.owner_id}` : '/'}
-        title={currentMap && currentMap.owner_name}
-      >
-        <Chip
-          avatar={
-            <Avatar
-              src={currentMap && currentMap.owner_image_url}
-              alt={currentMap && currentMap.owner_name}
-              loading="lazy"
-            />
-          }
-          label={currentMap && currentMap.owner_name}
-          style={styles.chip}
-          clickable
-        />
-      </ButtonBase>
+      <Link href={currentMap ? `/users/${currentMap.owner_id}` : '/'} passHref>
+        <ButtonBase title={currentMap && currentMap.owner_name}>
+          <Chip
+            avatar={
+              currentMap && currentMap.owner_image_url ? (
+                <Avatar
+                  src={currentMap && currentMap.owner_image_url}
+                  alt={currentMap && currentMap.owner_name}
+                  imgProps={{
+                    loading: 'lazy'
+                  }}
+                />
+              ) : (
+                <Avatar alt={currentMap && currentMap.owner_name}>
+                  {currentMap && currentMap.owner_name.slice(0, 1)}
+                </Avatar>
+              )
+            }
+            label={currentMap && currentMap.owner_name}
+            className={classes.chip}
+            clickable
+          />
+        </ButtonBase>
+      </Link>
 
       <Typography variant="subtitle2" gutterBottom color="textSecondary">
         {I18n.t('description')}
       </Typography>
       {currentMap ? (
-        <Typography variant="subtitle1" gutterBottom style={styles.description}>
+        <Typography
+          variant="subtitle1"
+          gutterBottom
+          className={classes.description}
+        >
           {currentMap.description}
         </Typography>
       ) : (
-        <React.Fragment>
+        <>
           <Skeleton height={32} width="100%" />
           <Skeleton height={32} width="100%" />
-        </React.Fragment>
+        </>
       )}
 
       <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -188,16 +203,14 @@ const MapSummaryCard = () => {
             ? currentMap.base.name
             : I18n.t('not set')
         }
-        style={styles.chip}
-        clickable
-        onClick={handleBaseClick}
+        className={classes.chip}
       />
 
       <Typography variant="subtitle2" gutterBottom color="textSecondary">
         {I18n.t('last reported date')}
       </Typography>
       {currentMap ? (
-        <Typography variant="subtitle1" gutterBottom style={styles.text}>
+        <Typography variant="subtitle1" gutterBottom className={classes.text}>
           {currentMap.last_reported_at
             ? parseDate(currentMap.last_reported_at)
             : '-'}
@@ -210,7 +223,7 @@ const MapSummaryCard = () => {
         {I18n.t('created date')}
       </Typography>
       {currentMap ? (
-        <Typography variant="subtitle1" gutterBottom style={styles.text}>
+        <Typography variant="subtitle1" gutterBottom className={classes.text}>
           {parseDate(currentMap.created_at)}
         </Typography>
       ) : (
@@ -223,16 +236,16 @@ const MapSummaryCard = () => {
       {currentMap ? (
         <MapTypes currentMap={currentMap} />
       ) : (
-        <React.Fragment>
+        <>
           <Chip
             avatar={<Skeleton variant="circle" width={24} height={24} />}
-            style={styles.chip}
+            className={classes.chip}
           />
           <Chip
             avatar={<Skeleton variant="circle" width={24} height={24} />}
-            style={styles.chip}
+            className={classes.chip}
           />
-        </React.Fragment>
+        </>
       )}
 
       <Typography variant="subtitle2" gutterBottom color="textSecondary">
@@ -240,7 +253,7 @@ const MapSummaryCard = () => {
           'followers count'
         )}`}
       </Typography>
-      <div style={styles.avatarsContainer}>
+      <div className={classes.avatarsContainer}>
         {currentMap ? (
           <FollowerAvatars />
         ) : (
@@ -249,14 +262,14 @@ const MapSummaryCard = () => {
       </div>
 
       {currentMap && currentMap.likes_count > 0 && (
-        <React.Fragment>
+        <>
           <Typography variant="subtitle2" gutterBottom color="textSecondary">
             {`${currentMap.likes_count} ${I18n.t('like users')}`}
           </Typography>
-          <div style={styles.avatarsContainer}>
+          <div className={classes.avatarsContainer}>
             <VoterAvatars />
           </div>
-        </React.Fragment>
+        </>
       )}
 
       <Typography variant="subtitle2" gutterBottom color="textSecondary">

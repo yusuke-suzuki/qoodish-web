@@ -1,60 +1,50 @@
-import React, { useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import LockIcon from '@material-ui/icons/Lock';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import Tooltip from '@material-ui/core/Tooltip';
-
 import I18n from '../../utils/I18n';
-
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
 import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
 import BackButton from './BackButton';
+import {
+  createStyles,
+  IconButton,
+  makeStyles,
+  Theme,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@material-ui/core';
+import { Lock, PersonAdd } from '@material-ui/icons';
 
-const styles = {
-  toolbarLarge: {
-    paddingLeft: 12,
-    paddingRight: 12
-  },
-  toolbarSmall: {
-    height: 56,
-    paddingLeft: 8,
-    paddingRight: 8
-  },
-  toolbarActions: {
-    marginLeft: 'auto',
-    display: 'flex'
-  },
-  mapMenuIcon: {
-    color: 'white'
-  },
-  mapName: {
-    cursor: 'pointer'
-  },
-  mapTypeIcon: {
-    marginRight: 6
-  },
-  backButtonLarge: {
-    marginRight: 12
-  },
-  backButtonSmall: {}
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    toolbarActions: {
+      marginLeft: 'auto',
+      display: 'flex'
+    },
+    mapMenuIcon: {
+      color: 'white'
+    },
+    mapName: {
+      cursor: 'pointer'
+    },
+    mapTypeIcon: {
+      marginRight: theme.spacing(1)
+    },
+    backButton: {
+      marginRight: theme.spacing(2)
+    }
+  })
+);
 
-const isInvitable = map => {
-  return map && (map.editable || (map.following && map.invitable));
-};
-
-const MapToolbar = () => {
+export default memo(function MapToolbar() {
   const dispatch = useDispatch();
-  const lgUp = useMediaQuery('(min-width: 1280px)');
-  const smUp = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
@@ -68,51 +58,53 @@ const MapToolbar = () => {
     dispatch(openInviteTargetDialog());
   }, [dispatch]);
 
+  const isInvitable = useMemo(() => {
+    return map && (map.editable || (map.following && map.invitable));
+  }, [map]);
+
+  const isPrivate = useMemo(() => {
+    return map && map.private;
+  }, [map]);
+
+  const isEditable = useMemo(() => {
+    return map && map.editable;
+  }, [map]);
+
   return (
-    <Toolbar style={lgUp ? styles.toolbarLarge : styles.toolbarSmall}>
-      <div style={lgUp ? styles.backButtonLarge : styles.backButtonSmall}>
+    <Toolbar>
+      <div className={classes.backButton}>
         <BackButton />
       </div>
-      {map && map.private && (
+      {isPrivate && (
         <Tooltip title={I18n.t('this map is private')}>
-          <LockIcon
+          <Lock
             color="inherit"
-            style={styles.mapTypeIcon}
+            className={classes.mapTypeIcon}
             fontSize="small"
           />
         </Tooltip>
       )}
-      {map && (
-        <Typography
-          variant={smUp ? 'h6' : 'subtitle1'}
-          color="inherit"
-          noWrap
-          style={styles.mapName}
-        >
-          {map.name}
-        </Typography>
-      )}
-      <div style={styles.toolbarActions}>
-        {isInvitable(map) && (
+      <Typography
+        variant={smUp ? 'h6' : 'subtitle1'}
+        color="inherit"
+        noWrap
+        className={classes.mapName}
+      >
+        {map && map.name}
+      </Typography>
+      <div className={classes.toolbarActions}>
+        {isInvitable && (
           <Tooltip title={I18n.t('button invite')}>
             <IconButton color="inherit" onClick={handleInviteButtonClick}>
-              <PersonAddIcon />
+              <PersonAdd />
             </IconButton>
           </Tooltip>
         )}
+
         <MapShareMenu />
-        {!map ? (
-          <IconButton color="primary">
-            <RefreshIcon />
-          </IconButton>
-        ) : map.editable ? (
-          <MapVertMenu />
-        ) : (
-          <MapLikeActions target={map} />
-        )}
+
+        {isEditable ? <MapVertMenu /> : <MapLikeActions target={map} />}
       </div>
     </Toolbar>
   );
-};
-
-export default React.memo(MapToolbar);
+});

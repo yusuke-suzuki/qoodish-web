@@ -1,13 +1,11 @@
 import {
   FETCH_SPOT,
   FETCH_SPOT_REVIEWS,
-  CLEAR_SPOT_STATE,
   CREATE_REVIEW,
   EDIT_REVIEW,
   DELETE_REVIEW,
   OPEN_SPOT_DIALOG,
-  CLOSE_SPOT_DIALOG,
-  LOCATION_CHANGE
+  CLOSE_SPOT_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -61,21 +59,12 @@ const reducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         spotReviews: rejected
       });
-    case CLEAR_SPOT_STATE:
-      return Object.assign({}, state, {
-        spotLoading: false,
-        currentSpot: undefined,
-        spotReviews: []
-      });
     case OPEN_SPOT_DIALOG:
       return Object.assign({}, state, {
-        spotDialogOpen: true
+        spotDialogOpen: true,
+        currentSpot: action.payload.spot
       });
     case CLOSE_SPOT_DIALOG:
-      return Object.assign({}, state, {
-        spotDialogOpen: false
-      });
-    case LOCATION_CHANGE:
       return Object.assign({}, state, {
         spotDialogOpen: false
       });

@@ -1,35 +1,54 @@
-import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import React, { memo } from 'react';
+import Link from 'next/link';
+import {
+  Typography,
+  useTheme,
+  useMediaQuery,
+  makeStyles,
+  createStyles
+} from '@material-ui/core';
 
-import Typography from '@material-ui/core/Typography';
-import { Link } from '@yusuke-suzuki/rize-router';
+const useStyles = makeStyles(() =>
+  createStyles({
+    logo: {
+      cursor: 'pointer',
+      fontFamily: "'Lobster', cursive"
+    },
+    link: {
+      textDecoration: 'none',
+      color: 'inherit'
+    }
+  })
+);
 
-const styles = {
-  logo: {
-    cursor: 'pointer',
-    fontFamily: "'Lobster', cursive"
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit'
-  }
+type Props = {
+  color?:
+    | 'inherit'
+    | 'initial'
+    | 'primary'
+    | 'secondary'
+    | 'textPrimary'
+    | 'textSecondary'
+    | 'error';
 };
 
-const Logo = props => {
+export default memo(function Logo(props: Props) {
   const { color } = props;
-  const smUp = useMediaQuery('(min-width: 600px)');
+  const theme = useTheme();
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const classes = useStyles();
 
   return (
     <Typography
       variant={smUp ? 'h4' : 'h5'}
       color={color ? color : 'primary'}
-      style={styles.logo}
+      className={classes.logo}
     >
-      <Link to="/" style={styles.link} title="Qoodish">
-        Qoodish
+      <Link href="/">
+        <a title="Qoodish" className={classes.link}>
+          Qoodish
+        </a>
       </Link>
     </Typography>
   );
-};
-
-export default React.memo(Logo);
+});

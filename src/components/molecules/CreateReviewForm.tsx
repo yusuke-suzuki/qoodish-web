@@ -1,23 +1,30 @@
 import React, { memo, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Typography from '@material-ui/core/Typography';
-import openPlaceSelectDialog from '../../actions/openPlaceSelectDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import ProfileAvatar from './ProfileAvatar';
 import AuthContext from '../../context/AuthContext';
+import {
+  Card,
+  CardHeader,
+  createStyles,
+  makeStyles,
+  Typography
+} from '@material-ui/core';
+import openEditReviewDialog from '../../actions/openEditReviewDialog';
 
-const styles = {
-  formCard: {
-    cursor: 'pointer'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    formCard: {
+      cursor: 'pointer'
+    }
+  })
+);
 
 export default memo(function CreateReviewForm() {
   const dispatch = useDispatch();
   const { currentUser } = useContext(AuthContext);
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
@@ -32,12 +39,12 @@ export default memo(function CreateReviewForm() {
       dispatch(openSignInRequiredDialog());
       return;
     }
-    dispatch(openPlaceSelectDialog());
+    dispatch(openEditReviewDialog(null));
   }, [dispatch, currentUser]);
 
   return (
     <Card
-      style={styles.formCard}
+      className={classes.formCard}
       onClick={handleCreateReviewClick}
       elevation={0}
     >

@@ -1,6 +1,4 @@
 import {
-  SELECT_REVIEW,
-  CLEAR_REVIEW_STATE,
   EDIT_REVIEW,
   DELETE_REVIEW,
   OPEN_EDIT_REVIEW_DIALOG,
@@ -9,12 +7,10 @@ import {
   CLOSE_COPY_REVIEW_DIALOG,
   OPEN_DELETE_REVIEW_DIALOG,
   CLOSE_DELETE_REVIEW_DIALOG,
-  SELECT_PLACE_FOR_REVIEW,
   OPEN_DELETE_COMMENT_DIALOG,
   CLOSE_DELETE_COMMENT_DIALOG,
   OPEN_REVIEW_DIALOG,
-  CLOSE_REVIEW_DIALOG,
-  LOCATION_CHANGE
+  CLOSE_REVIEW_DIALOG
 } from '../actionTypes';
 
 const initialState = {
@@ -23,7 +19,6 @@ const initialState = {
   editReviewDialogOpen: false,
   copyReviewDialogOpen: false,
   deleteReviewDialogOpen: false,
-  selectedPlace: undefined,
   deleteCommentDialogOpen: false,
   targetComment: undefined,
   reviewDialogOpen: false
@@ -31,19 +26,6 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case SELECT_REVIEW:
-      return Object.assign({}, state, {
-        currentReview: action.payload.review
-      });
-    case CLEAR_REVIEW_STATE:
-      return Object.assign({}, state, {
-        currentReview: undefined
-      });
-    case SELECT_PLACE_FOR_REVIEW:
-      return Object.assign({}, state, {
-        selectedPlace: action.payload.place,
-        editReviewDialogOpen: true
-      });
     case EDIT_REVIEW:
       if (
         !state.currentReview ||
@@ -62,17 +44,12 @@ const reducer = (state = initialState, action) => {
     case OPEN_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: action.payload.review,
-        editReviewDialogOpen: true,
-        selectedPlace: {
-          placeId: action.payload.review.spot.place_id,
-          description: action.payload.review.spot.name
-        }
+        editReviewDialogOpen: true
       });
     case CLOSE_EDIT_REVIEW_DIALOG:
       return Object.assign({}, state, {
         targetReview: null,
-        editReviewDialogOpen: false,
-        selectedPlace: undefined
+        editReviewDialogOpen: false
       });
     case OPEN_COPY_REVIEW_DIALOG:
       return Object.assign({}, state, {
@@ -106,19 +83,12 @@ const reducer = (state = initialState, action) => {
       });
     case OPEN_REVIEW_DIALOG:
       return Object.assign({}, state, {
-        reviewDialogOpen: true
+        reviewDialogOpen: true,
+        currentReview: action.payload.review
       });
     case CLOSE_REVIEW_DIALOG:
       return Object.assign({}, state, {
         reviewDialogOpen: false
-      });
-    case LOCATION_CHANGE:
-      return Object.assign({}, state, {
-        reviewDialogOpen: false,
-        editReviewDialogOpen: false,
-        copyReviewDialogOpen: false,
-        deleteReviewDialogOpen: false,
-        deleteCommentDialogOpen: false
       });
     default:
       return state;

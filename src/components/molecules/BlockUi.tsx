@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+import { Backdrop, CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -11,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const BlockUi = () => {
+export default memo(function BlockUi() {
   const classes = useStyles();
 
   const blocking = useMappedState(
@@ -23,6 +22,4 @@ const BlockUi = () => {
       <CircularProgress color="primary" />
     </Backdrop>
   );
-};
-
-export default React.memo(BlockUi);
+});

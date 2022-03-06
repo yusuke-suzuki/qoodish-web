@@ -54,10 +54,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.*
-
 public/*
 !public/apple-touch-icon.png
 !public/favicon.ico
@@ -71,3 +67,10 @@ firebase-debug.log
 .firebase
 
 .DS_Store
+
+.next
+
+.env.*
+
+credentials.json
+credentials.*.json

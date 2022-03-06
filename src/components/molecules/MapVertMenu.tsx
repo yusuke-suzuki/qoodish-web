@@ -1,29 +1,32 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-
 import I18n from '../../utils/I18n';
-
 import openEditMapDialog from '../../actions/openEditMapDialog';
 import openDeleteMapDialog from '../../actions/openDeleteMapDialog';
+import {
+  createStyles,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Menu,
+  MenuItem
+} from '@material-ui/core';
+import { Delete, Edit, MoreVert } from '@material-ui/icons';
 
-const styles = {
-  mapMenuIcon: {
-    color: 'white'
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    mapMenuIcon: {
+      color: 'white'
+    }
+  })
+);
 
-const MapVertMenu = () => {
+export default memo(function MapVertMenu() {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const classes = useStyles();
 
   const mapState = useCallback(
     state => ({
@@ -46,7 +49,7 @@ const MapVertMenu = () => {
   }, [dispatch, map]);
 
   return (
-    <div>
+    <>
       <IconButton
         aria-label="More vert"
         aria-owns={menuOpen ? 'vert-menu' : null}
@@ -55,8 +58,9 @@ const MapVertMenu = () => {
           setAnchorEl(e.currentTarget);
           setMenuOpen(true);
         }}
+        edge="end"
       >
-        <MoreVertIcon style={styles.mapMenuIcon} />
+        <MoreVert className={classes.mapMenuIcon} />
       </IconButton>
 
       <Menu
@@ -68,20 +72,18 @@ const MapVertMenu = () => {
         {map && [
           <MenuItem key="edit" onClick={handleEditMapButtonClick}>
             <ListItemIcon>
-              <EditIcon />
+              <Edit />
             </ListItemIcon>
             <ListItemText primary={I18n.t('edit')} />
           </MenuItem>,
           <MenuItem key="delete" onClick={handleDeleteMapButtonClick}>
             <ListItemIcon>
-              <DeleteIcon />
+              <Delete />
             </ListItemIcon>
             <ListItemText primary={I18n.t('delete')} />
           </MenuItem>
         ]}
       </Menu>
-    </div>
+    </>
   );
-};
-
-export default React.memo(MapVertMenu);
+});

@@ -6,29 +6,33 @@ import Button from '@material-ui/core/Button';
 import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import I18n from '../../utils/I18n';
 
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 import MapCard from '../molecules/MapCard';
 import SkeletonMapCard from '../molecules/SkeletonMapCard';
 import AuthContext from '../../context/AuthContext';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const styles = {
-  titleContainer: {
-    display: 'inline-flex',
-    alignItems: 'baseline',
-    marginBottom: 15,
-    width: '100%'
-  },
-  mapCard: {
-    marginBottom: 20
-  },
-  discoverButton: {
-    marginLeft: 'auto'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    titleContainer: {
+      display: 'inline-flex',
+      alignItems: 'baseline',
+      marginBottom: theme.spacing(2),
+      width: '100%'
+    },
+    mapCard: {
+      marginBottom: 20
+    },
+    discoverButton: {
+      marginLeft: 'auto'
+    }
+  })
+);
 
 const RecommendMaps = () => {
   const [maps, setMaps] = useState([]);
   const { currentUser } = useContext(AuthContext);
+  const classes = useStyles();
 
   const refreshMaps = useCallback(async () => {
     const apiInstance = new MapsApi();
@@ -51,45 +55,45 @@ const RecommendMaps = () => {
   }, [currentUser]);
 
   return (
-    <div>
-      <div>
-        <div style={styles.titleContainer}>
-          <Typography variant="subtitle1" color="textSecondary">
-            {I18n.t('recommend')}
-          </Typography>
+    <>
+      <div className={classes.titleContainer}>
+        <Typography variant="subtitle1" color="textSecondary">
+          {I18n.t('recommend')}
+        </Typography>
+        <Link href="/discover" passHref>
           <Button
-            component={Link}
-            to="/discover"
             size="small"
             color="primary"
-            style={styles.discoverButton}
+            className={classes.discoverButton}
           >
             {I18n.t('discover more')}
           </Button>
-        </div>
-        {maps.length < 1 ? (
-          <Loading />
-        ) : (
-          maps.map(map => (
-            <div key={map.id} style={styles.mapCard}>
-              <MapCard map={map} />
-            </div>
-          ))
-        )}
+        </Link>
       </div>
-    </div>
+      {maps.length < 1 ? (
+        <Loading />
+      ) : (
+        maps.map(map => (
+          <div key={map.id} className={classes.mapCard}>
+            <MapCard map={map} />
+          </div>
+        ))
+      )}
+    </>
   );
 };
 
 const Loading = React.memo(() => {
+  const classes = useStyles();
+
   return (
-    <div>
+    <>
       {Array.from(new Array(2)).map((v, i) => (
-        <div key={i} style={styles.mapCard}>
-          <SkeletonMapCard elevation={0} />
+        <div key={i} className={classes.mapCard}>
+          <SkeletonMapCard />
         </div>
       ))}
-    </div>
+    </>
   );
 });
 

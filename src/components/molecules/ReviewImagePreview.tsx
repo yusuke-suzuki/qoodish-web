@@ -2,27 +2,31 @@ import React, { useEffect } from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  imagePreviewContainer: {
-    position: 'relative'
-  },
-  imagePreview: {
-    width: '100%',
-    objectFit: 'cover',
-    height: 150
-  },
-  clearImageIcon: {
-    position: 'absolute',
-    right: 0
-  }
-};
+const useStyles = makeStyles(() =>
+  createStyles({
+    imagePreviewContainer: {
+      position: 'relative'
+    },
+    imagePreview: {
+      width: '100%',
+      objectFit: 'cover',
+      height: 150
+    },
+    clearImageIcon: {
+      position: 'absolute',
+      right: 0
+    }
+  })
+);
 
 const ReviewImagePreview = props => {
   const { id, image, onImageRemoved } = props;
+  const classes = useStyles();
 
   useEffect(() => {
-    const canvas = document.getElementById(id);
+    const canvas: any = document.getElementById(id);
 
     if (!canvas) {
       return;
@@ -40,12 +44,12 @@ const ReviewImagePreview = props => {
   }, [image]);
 
   return (
-    <div style={styles.imagePreviewContainer}>
-      <IconButton style={styles.clearImageIcon} onClick={onImageRemoved}>
+    <div className={classes.imagePreviewContainer}>
+      <IconButton className={classes.clearImageIcon} onClick={onImageRemoved}>
         <CancelIcon />
       </IconButton>
 
-      <canvas id={id} style={styles.imagePreview} />
+      <canvas id={id} className={classes.imagePreview} />
     </div>
   );
 };

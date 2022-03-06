@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import SharedLikeActions from './SharedLikeActions';
 
@@ -8,16 +8,24 @@ import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  likeButton: {
-    color: 'white'
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    likeButton: {
+      color: 'white'
+    }
+  })
+);
+
+type Props = {
+  target: any;
 };
 
-const MapLikeActions = props => {
+export default memo(function MapLikeActions(props: Props) {
   const { target } = props;
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -32,11 +40,6 @@ const MapLikeActions = props => {
       if (response.ok) {
         dispatch(editMap(response.body));
         dispatch(openToast(I18n.t('liked!')));
-
-        gtag('event', 'like', {
-          event_category: 'engagement',
-          event_label: 'map'
-        });
       } else {
         dispatch(openToast('Request failed.'));
       }
@@ -49,11 +52,6 @@ const MapLikeActions = props => {
       if (response.ok) {
         dispatch(editMap(response.body));
         dispatch(openToast(I18n.t('unliked')));
-
-        gtag('event', 'unlike', {
-          event_category: 'engagement',
-          event_label: 'map'
-        });
       } else {
         dispatch(openToast('Request failed.'));
       }
@@ -65,9 +63,7 @@ const MapLikeActions = props => {
       handleLikeButtonClick={handleLikeButtonClick}
       handleUnlikeButtonClick={handleUnlikeButtonClick}
       target={target}
-      style={styles.likeButton}
+      className={classes.likeButton}
     />
   );
-};
-
-export default React.memo(MapLikeActions);
+});

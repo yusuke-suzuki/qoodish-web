@@ -6,55 +6,58 @@ import MobileStepper from '@material-ui/core/MobileStepper';
 import Fab from '@material-ui/core/Fab';
 import CardMedia from '@material-ui/core/CardMedia';
 import SwipeableViews from 'react-swipeable-views';
-import { Link } from '@yusuke-suzuki/rize-router';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import ReviewLink from './ReviewLink';
 
-const styles = {
-  swipeable: {
-    height: 150
-  },
-  stepperContainer: {
-    width: '100%',
-    zIndex: 1,
-    position: 'absolute',
-    top: 125
-  },
-  stepper: {
-    background: 'rgba(0, 0, 0, 0)',
-    justifyContent: 'center'
-  },
-  spotImage: {
-    width: '100%',
-    objectFit: 'cover',
-    height: 150
-  },
-  stepButtonLeft: {
-    position: 'absolute',
-    zIndex: 1,
-    top: 60,
-    left: 12,
-    width: 24,
-    height: 24,
-    minHeight: 'auto'
-  },
-  stepButtonRight: {
-    position: 'absolute',
-    zIndex: 1,
-    top: 60,
-    right: 12,
-    width: 24,
-    height: 24,
-    minHeight: 'auto'
-  },
-  icon: {
-    width: '0.7em',
-    height: '0.7em'
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    swipeable: {
+      height: 150
+    },
+    stepperContainer: {
+      width: '100%',
+      zIndex: 1,
+      position: 'absolute',
+      top: 125
+    },
+    stepper: {
+      background: 'rgba(0, 0, 0, 0)',
+      justifyContent: 'center'
+    },
+    spotImage: {
+      width: '100%',
+      objectFit: 'cover',
+      height: 150
+    },
+    stepButtonLeft: {
+      position: 'absolute',
+      zIndex: 1,
+      top: 60,
+      left: theme.spacing(2),
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+      minHeight: 'auto'
+    },
+    stepButtonRight: {
+      position: 'absolute',
+      zIndex: 1,
+      top: 60,
+      left: theme.spacing(2),
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+      minHeight: 'auto'
+    },
+    icon: {
+      width: '0.7em',
+      height: '0.7em'
+    }
+  })
+);
 
 const SpotImageStepper = props => {
   const [activeStep, setActiveStep] = useState(0);
   let maxSteps = props.spotReviews.length;
+  const classes = useStyles();
 
   useEffect(() => {
     setActiveStep(0);
@@ -65,28 +68,21 @@ const SpotImageStepper = props => {
       <SwipeableViews
         index={activeStep}
         onChangeIndex={step => setActiveStep(step)}
-        style={styles.swipeable}
+        className={classes.swipeable}
       >
         {props.spotReviews.map(review => (
-          <ButtonBase
-            key={review.id}
-            component={Link}
-            to={{
-              pathname: `/maps/${review.map.id}/reports/${review.id}`,
-              state: { modal: true, review: review }
-            }}
-          >
+          <ReviewLink review={review}>
             <img
               src={
                 review.images.length > 0
                   ? review.images[0].thumbnail_url_400
-                  : process.env.SUBSTITUTE_URL
+                  : process.env.NEXT_PUBLIC_SUBSTITUTE_URL
               }
-              style={styles.spotImage}
+              className={classes.spotImage}
               alt={review.spot.name}
               loading="lazy"
             />
-          </ButtonBase>
+          </ReviewLink>
         ))}
       </SwipeableViews>
       {maxSteps > 1 && (
@@ -95,24 +91,26 @@ const SpotImageStepper = props => {
             size="small"
             onClick={() => setActiveStep(activeStep - 1)}
             disabled={activeStep === 0}
-            style={styles.stepButtonLeft}
+            className={classes.stepButtonLeft}
           >
-            <KeyboardArrowLeft style={styles.icon} />
+            <KeyboardArrowLeft className={classes.icon} />
           </Fab>
           <Fab
             size="small"
             onClick={() => setActiveStep(activeStep + 1)}
             disabled={activeStep === maxSteps - 1}
-            style={styles.stepButtonRight}
+            className={classes.stepButtonRight}
           >
-            <KeyboardArrowRight style={styles.icon} />
+            <KeyboardArrowRight className={classes.icon} />
           </Fab>
-          <div style={styles.stepperContainer}>
+          <div className={classes.stepperContainer}>
             <MobileStepper
-              style={styles.stepper}
+              className={classes.stepper}
               steps={maxSteps}
               position="static"
               activeStep={activeStep}
+              backButton={null}
+              nextButton={null}
             />
           </div>
         </React.Fragment>

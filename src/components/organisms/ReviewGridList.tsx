@@ -2,30 +2,41 @@ import React from 'react';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around'
-  },
-  gridList: {
-    width: '100%'
-  }
+const useStyles = makeStyles(() =>
+  createStyles({
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around'
+    },
+    gridList: {
+      width: '100%'
+    }
+  })
+);
+
+type Props = {
+  cols: any;
+  spacing: any;
+  cellHeight: any;
+  children: any;
 };
 
-const ReviewGridList = props => {
-  const { cols, spacing, cellHeight } = props;
+const ReviewGridList = (props: Props) => {
+  const { cols, spacing, cellHeight, children } = props;
+  const classes = useStyles();
 
   return (
-    <div style={styles.container}>
+    <div className={classes.container}>
       <GridList
-        style={styles.gridList}
+        className={classes.gridList}
         cols={cols}
         spacing={spacing}
         cellHeight={cellHeight}
       >
-        {props.children.map(child => (
+        {children.map(child => (
           <GridListTile key={child.key}>{child}</GridListTile>
         ))}
       </GridList>

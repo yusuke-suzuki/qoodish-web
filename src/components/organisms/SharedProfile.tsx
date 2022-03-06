@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
+import { useDispatch } from 'redux-react-hook';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
-import CreateResourceButton from '../molecules/CreateResourceButton';
 
 import LikesList from './LikesList';
 import ProfileReviews from './ProfileReviews';
@@ -19,87 +18,90 @@ import ProfileAvatar from '../molecules/ProfileAvatar';
 
 import I18n from '../../utils/I18n';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
-import { useTheme } from '@material-ui/core';
+import { Box, createStyles, Theme, useTheme } from '@material-ui/core';
 import AuthContext from '../../context/AuthContext';
+import { makeStyles } from '@material-ui/core';
+import { useRouter } from 'next/router';
 
-const styles = {
-  cardMedia: {
-    height: 200
-  },
-  userMapsLarge: {
-    marginTop: 20,
-    paddingBottom: 20,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    marginBottom: 40
-  },
-  userMapsSmall: {
-    marginTop: 8,
-    paddingBottom: 16,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    marginBottom: 40
-  },
-  cardContentLarge: {
-    padding: 24,
-    paddingBottom: 16
-  },
-  cardContentSmall: {
-    padding: 16,
-    paddingBottom: 8
-  },
-  tab: {
-    minWidth: 'auto'
-  },
-  gridHeader: {
-    width: '100%',
-    display: 'inline-flex',
-    marginBottom: 15
-  },
-  profileActions: {
-    width: 'max-content',
-    marginLeft: 'auto'
-  },
-  likesLarge: {
-    marginTop: 20
-  },
-  likesSmall: {
-    marginTop: 8
-  },
-  summary: {
-    display: 'flex'
-  },
-  summaryCount: {
-    marginRight: '0.5em'
-  },
-  summaryCountButton: {
-    paddingLeft: 0,
-    paddingRight: 0,
-    marginRight: 20
-  },
-  biography: {
-    wordWrap: 'break-word'
-  },
-  staticMapImage: {
-    width: '100%',
-    height: '100%'
-  },
-  avatarContainerLarge: {
-    marginTop: -75,
-    position: 'absolute'
-  },
-  avatarContainerSmall: {
-    marginTop: -56,
-    position: 'absolute'
-  },
-  dummyButton: {
-    height: 36
-  }
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    cardMedia: {
+      height: 200
+    },
+    userMaps: {
+      marginTop: theme.spacing(1),
+      paddingBottom: theme.spacing(2),
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      marginBottom: theme.spacing(5),
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 20,
+        paddingBottom: 20
+      }
+    },
+    cardContent: {
+      padding: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+      [theme.breakpoints.up('sm')]: {
+        padding: theme.spacing(3),
+        paddingBottom: theme.spacing(2)
+      }
+    },
+    tab: {
+      minWidth: 'auto'
+    },
+    gridHeader: {
+      width: '100%',
+      display: 'inline-flex',
+      marginBottom: 15
+    },
+    profileActions: {
+      width: 'max-content',
+      marginLeft: 'auto'
+    },
+    likes: {
+      marginTop: theme.spacing(1),
+      [theme.breakpoints.up('sm')]: {
+        marginTop: 20
+      }
+    },
+    summaryCount: {
+      marginRight: '0.5em'
+    },
+    summaryCountButton: {
+      paddingLeft: 0,
+      paddingRight: 0,
+      marginRight: 20
+    },
+    biography: {
+      wordWrap: 'break-word'
+    },
+    staticMapImage: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      objectPosition: 'bottom'
+    },
+    avatarContainer: {
+      marginTop: -56,
+      position: 'absolute',
+      [theme.breakpoints.up('sm')]: {
+        marginTop: -75
+      }
+    },
+    dummyButton: {
+      height: 36
+    }
+  })
+);
+
+type SummaryProps = {
+  profile: any;
+  handleTabChange: Function;
 };
 
-const Summary = React.memo(props => {
+const Summary = React.memo((props: SummaryProps) => {
   const dispatch = useDispatch();
 
   const { profile, handleTabChange } = props;
@@ -108,72 +110,74 @@ const Summary = React.memo(props => {
     dispatch(openFollowingMapsDialog());
   }, [dispatch]);
 
+  const classes = useStyles();
+
   return (
-    <div style={styles.summary}>
+    <Box display="flex">
       <Button
-        style={styles.summaryCountButton}
+        className={classes.summaryCountButton}
         onClick={() => handleTabChange(undefined, 0)}
       >
-        <Typography variant="subtitle2" style={styles.summaryCount}>
+        <Typography variant="subtitle2" className={classes.summaryCount}>
           {profile.reviews_count ? profile.reviews_count : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('reviews count')}
         </Typography>
       </Button>
-      <Button style={styles.summaryCountButton} onClick={handleFollowingClick}>
-        <Typography variant="subtitle2" style={styles.summaryCount}>
+      <Button
+        className={classes.summaryCountButton}
+        onClick={handleFollowingClick}
+      >
+        <Typography variant="subtitle2" className={classes.summaryCount}>
           {profile.following_maps_count ? profile.following_maps_count : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('following maps')}
         </Typography>
       </Button>
-    </div>
+    </Box>
   );
 });
 
-const ProfileCard = React.memo(props => {
+type ProfileCardProps = {
+  profile: any;
+  handleTabChange: any;
+  tabValue: any;
+};
+
+const ProfileCard = React.memo((props: ProfileCardProps) => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
-  const mapState = useCallback(
-    state => ({
-      location: state.shared.currentLocation
-    }),
-    []
-  );
-
-  const { location } = useMappedState(mapState);
   const { currentUser } = useContext(AuthContext);
   const { profile, handleTabChange, tabValue } = props;
 
+  const classes = useStyles();
+  const router = useRouter();
+
   return (
     <Card elevation={0}>
-      <CardMedia style={styles.cardMedia}>
+      <CardMedia className={classes.cardMedia}>
         <img
-          src={`${process.env.GOOGLE_STATIC_MAP_URL}&zoom=${17}&size=${
+          src={`${
+            process.env.NEXT_PUBLIC_GOOGLE_STATIC_MAP_URL
+          }&zoom=${17}&size=${
             smUp ? 900 : 400
           }x${200}&scale=${2}&center=${35.710063},${139.8107}`}
-          style={styles.staticMapImage}
+          className={classes.staticMapImage}
           loading="lazy"
         />
       </CardMedia>
-      <CardContent
-        style={smUp ? styles.cardContentLarge : styles.cardContentSmall}
-      >
-        <div
-          style={
-            smUp ? styles.avatarContainerLarge : styles.avatarContainerSmall
-          }
-        >
+      <CardContent className={classes.cardContent}>
+        <div className={classes.avatarContainer}>
           <ProfileAvatar size={smUp ? 100 : 80} profile={profile} />
         </div>
-        <div style={styles.profileActions}>
-          {location && location.pathname === '/profile' ? (
+        <div className={classes.profileActions}>
+          {router.pathname === '/profile' ? (
             <EditProfileButton />
           ) : (
-            <div style={styles.dummyButton} />
+            <div className={classes.dummyButton} />
           )}
         </div>
         <Typography variant="h5" gutterBottom>
@@ -181,7 +185,7 @@ const ProfileCard = React.memo(props => {
             ? I18n.t('anonymous user')
             : profile.name}
         </Typography>
-        <Typography variant="body1" style={styles.biography} gutterBottom>
+        <Typography variant="body1" className={classes.biography} gutterBottom>
           {profile.biography}
         </Typography>
         <Summary handleTabChange={handleTabChange} profile={profile} />
@@ -194,19 +198,20 @@ const ProfileCard = React.memo(props => {
         variant="fullWidth"
         centered
       >
-        <Tab label={I18n.t('reports')} style={styles.tab} />
-        <Tab label={I18n.t('maps')} style={styles.tab} />
-        <Tab label={I18n.t('like')} style={styles.tab} />
+        <Tab label={I18n.t('reports')} className={classes.tab} />
+        <Tab label={I18n.t('maps')} className={classes.tab} />
+        <Tab label={I18n.t('like')} className={classes.tab} />
       </Tabs>
     </Card>
   );
 });
 
-const SharedProfile = props => {
-  const { profile } = props;
+type Props = {
+  profile: any;
+};
 
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+const SharedProfile = (props: Props) => {
+  const { profile } = props;
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -214,28 +219,29 @@ const SharedProfile = props => {
     setTabValue(value);
   }, []);
 
+  const classes = useStyles();
+
   return (
-    <div>
+    <>
       <ProfileCard
         tabValue={tabValue}
         handleTabChange={handleTabChange}
         profile={profile}
       />
-      <div>
-        {tabValue === 0 && <ProfileReviews {...props} />}
+      <>
+        {tabValue === 0 && <ProfileReviews userId={profile.id} />}
         {tabValue === 1 && (
-          <div style={smUp ? styles.userMapsLarge : styles.userMapsSmall}>
-            <ProfileMyMaps {...props} />
+          <div className={classes.userMaps}>
+            <ProfileMyMaps userId={profile.id} />
           </div>
         )}
         {tabValue === 2 && (
-          <div style={smUp ? styles.likesLarge : styles.likesSmall}>
-            <LikesList {...props} />
+          <div className={classes.likes}>
+            <LikesList userId={profile.id} />
           </div>
         )}
-      </div>
-      {smUp && <CreateResourceButton />}
-    </div>
+      </>
+    </>
   );
 };
 

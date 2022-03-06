@@ -13,7 +13,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import { Link } from '@yusuke-suzuki/rize-router';
+import Link from 'next/link';
 import Typography from '@material-ui/core/Typography';
 
 import searchMaps from '../../actions/searchMaps';
@@ -21,28 +21,32 @@ import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
 import I18n from '../../utils/I18n';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const styles = {
-  toolbar: {
-    height: 56,
-    paddingLeft: 8,
-    paddingRight: 8
-  },
-  paper: {
-    marginTop: 56
-  },
-  dialogPaper: {
-    background: '#f1f1f1'
-  },
-  input: {
-    padding: 0
-  },
-  backButton: {
-    marginRight: 8
-  }
-};
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    toolbar: {
+      height: 56,
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1)
+    },
+    paper: {
+      marginTop: 56
+    },
+    dialogPaper: {
+      background: '#f1f1f1'
+    },
+    input: {
+      padding: 0
+    },
+    backButton: {
+      marginRight: theme.spacing(1)
+    }
+  })
+);
 
 const SearchMapsDialog = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({
@@ -90,15 +94,15 @@ const SearchMapsDialog = () => {
       onClose={handleRequestClose}
       fullScreen
       PaperProps={{
-        style: styles.dialogPaper
+        className: classes.dialogPaper
       }}
     >
       <AppBar color="inherit">
-        <Toolbar style={styles.toolbar}>
+        <Toolbar className={classes.toolbar}>
           <IconButton
             color="inherit"
             onClick={handleRequestClose}
-            style={styles.backButton}
+            className={classes.backButton}
           >
             <ArrowBackIcon />
           </IconButton>
@@ -112,33 +116,29 @@ const SearchMapsDialog = () => {
               disableUnderline: true
             }}
             inputProps={{
-              style: styles.input
+              className: classes.input
             }}
           />
         </Toolbar>
       </AppBar>
-      <Paper style={styles.paper}>
+      <Paper className={classes.paper}>
         <List disablePadding={pickedMaps.length < 1}>
           {pickedMaps.map(map => (
-            <ListItem
-              button
-              component={Link}
-              to={`/maps/${map.id}`}
-              key={map.id}
-              onClick={handleRequestClose}
-            >
-              <ListItemAvatar>
-                <Avatar alt={map.name} src={map.thumbnail_url} />
-              </ListItemAvatar>
-              <ListItemText
-                disableTypography={true}
-                primary={
-                  <Typography variant="subtitle1" noWrap>
-                    {map.name}
-                  </Typography>
-                }
-              />
-            </ListItem>
+            <Link key={map.id} href={`/maps/${map.id}`} passHref>
+              <ListItem button onClick={handleRequestClose}>
+                <ListItemAvatar>
+                  <Avatar alt={map.name} src={map.thumbnail_url} />
+                </ListItemAvatar>
+                <ListItemText
+                  disableTypography={true}
+                  primary={
+                    <Typography variant="subtitle1" noWrap>
+                      {map.name}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Paper>

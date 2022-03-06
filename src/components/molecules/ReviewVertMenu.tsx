@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
-import { useDispatch, useMappedState } from 'redux-react-hook';
+import { useDispatch } from 'redux-react-hook';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
@@ -54,7 +54,7 @@ const ReviewVertMenu = props => {
   }, [dispatch, currentUser, currentReview]);
 
   return (
-    <div>
+    <>
       <IconButton
         aria-label="More vert"
         aria-owns={menuOpen ? 'vert-menu' : null}
@@ -103,7 +103,7 @@ const ReviewVertMenu = props => {
           </MenuItem>
         )}
       </Menu>
-    </div>
+    </>
   );
 };
 
