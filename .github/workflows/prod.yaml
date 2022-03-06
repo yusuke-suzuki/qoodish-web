@@ -92,7 +92,7 @@ jobs:
       - name: Deploy revision
         env:
           CLOUDSDK_CORE_DISABLE_PROMPTS: 1
-          CLOUD_RUN_SA_NAME: dev-qoodish-web@qoodish-common.iam.gserviceaccount.com
+          CLOUD_RUN_SA_NAME: prod-qoodish-web@qoodish-common.iam.gserviceaccount.com
           SITE_DOMAIN: qoodish.com
           RENDERTRON_ENDPOINT: https://rendertron.qoodish.com
         run: |
