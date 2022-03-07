@@ -16,7 +16,7 @@ import {
 } from '../actionTypes';
 
 const initialState = {
-  currentUser: {},
+  currentUser: null,
   myMaps: [],
   followingMaps: [],
   currentReviews: [],

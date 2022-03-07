@@ -20,19 +20,7 @@ export default function ProfileAvatar(props: Props) {
     return size ? { fontSize: size } : { fontSize: 40 };
   }, [size]);
 
-  if (!currentUser || currentUser.isAnonymous) {
-    return (
-      <Avatar style={avatarStyle}>
-        <Person style={iconStyle} />
-      </Avatar>
-    );
-  } else if (!profile.image_url) {
-    return (
-      <Avatar style={avatarStyle}>
-        {profile.name && profile.name.slice(0, 1)}
-      </Avatar>
-    );
-  } else {
+  if (profile && profile.image_url) {
     return (
       <Avatar
         src={profile.thumbnail_url_400}
@@ -42,6 +30,18 @@ export default function ProfileAvatar(props: Props) {
         }}
         style={avatarStyle}
       />
+    );
+  } else if (!currentUser || currentUser.isAnonymous) {
+    return (
+      <Avatar style={avatarStyle}>
+        <Person style={iconStyle} />
+      </Avatar>
+    );
+  } else {
+    return (
+      <Avatar style={avatarStyle}>
+        {profile.name && profile.name.slice(0, 1)}
+      </Avatar>
     );
   }
 }

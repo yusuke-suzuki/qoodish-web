@@ -1,5 +1,4 @@
-import React, { forwardRef, useCallback } from 'react';
-import dynamic from 'next/dynamic';
+import React, { forwardRef, useCallback, useEffect } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import {
   useTheme,
@@ -12,30 +11,18 @@ import {
   Slide,
   Fade,
   SlideProps,
-  makeStyles,
-  createStyles
+  Box
 } from '@material-ui/core';
 import I18n from '../../utils/I18n';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
-
-const LoginButtons = dynamic(() => import('./LoginButtons'), {
-  ssr: false
-});
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    dialogContent: {
-      paddingBottom: 0
-    }
-  })
-);
+import Link from 'next/link';
+import { ExitToApp } from '@material-ui/icons';
 
 const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const SignInRequiredDialog = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
@@ -43,24 +30,41 @@ const SignInRequiredDialog = () => {
     useCallback(state => state.shared.signInRequiredDialogOpen, [])
   );
 
-  const onClose = useCallback(() => {
+  const handleClose = useCallback(() => {
     dispatch(closeSignInRequiredDialog());
   }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      handleClose();
+    };
+  }, []);
 
   return (
     <Dialog
       open={dialogOpen}
-      onClose={onClose}
+      onClose={handleClose}
       fullWidth
       fullScreen={!smUp}
       TransitionComponent={smUp ? Fade : Transition}
     >
       <DialogTitle>{I18n.t('this action requires sign in')}</DialogTitle>
-      <DialogContent className={classes.dialogContent}>
-        <LoginButtons />
+      <DialogContent>
+        <Box display="flex" justifyContent="center">
+          <Link href="/login" passHref>
+            <Button
+              color="secondary"
+              startIcon={<ExitToApp />}
+              size="large"
+              variant="contained"
+            >
+              {I18n.t('login')}
+            </Button>
+          </Link>
+        </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{I18n.t('cancel')}</Button>
+        <Button onClick={handleClose}>{I18n.t('cancel')}</Button>
       </DialogActions>
     </Dialog>
   );
