@@ -1,7 +1,7 @@
 import { FETCH_MY_PROFILE, UPDATE_LINKED_PROVIDERS } from '../actionTypes';
 
 const initialState = {
-  profile: {},
+  profile: null,
   linkedProviders: []
 };
 

@@ -11,16 +11,14 @@ import AuthContext from '../../context/AuthContext';
 import DrawerContext from '../../context/DrawerContext';
 import {
   makeStyles,
-  createStyles,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
   IconButton,
   List,
   ListItemIcon,
   Divider,
   SwipeableDrawer,
-  Theme
+  Toolbar
 } from '@material-ui/core';
 import {
   AccountCircle,
@@ -34,14 +32,14 @@ import {
 } from '@material-ui/icons';
 import { getAuth, signOut } from '@firebase/auth';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    title: theme.mixins.toolbar,
-    drawerPaper: {
-      width: 280
-    }
-  })
-);
+const useStyles = makeStyles(theme => ({
+  closeButton: {
+    marginRight: theme.spacing(1)
+  },
+  drawerPaper: {
+    width: 280
+  }
+}));
 
 const Title = memo(() => {
   const { setDrawerOpen } = useContext(DrawerContext);
@@ -53,16 +51,18 @@ const Title = memo(() => {
   const classes = useStyles();
 
   return (
-    <Link href="/" passHref>
-      <ListItem divider className={classes.title}>
-        <ListItemText disableTypography primary={<Logo />} />
-        <ListItemSecondaryAction>
-          <IconButton onClick={handleCloseDrawer}>
-            <ChevronLeft />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    </Link>
+    <Toolbar>
+      <IconButton
+        onClick={handleCloseDrawer}
+        edge="start"
+        className={classes.closeButton}
+      >
+        <ChevronLeft />
+      </IconButton>
+      <Link href="/" passHref>
+        <Logo />
+      </Link>
+    </Toolbar>
   );
 });
 

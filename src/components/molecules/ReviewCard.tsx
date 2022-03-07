@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     cardActions: {
       paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(2)
+      paddingRight: theme.spacing(3)
     },
     link: {
       textDecoration: 'none',

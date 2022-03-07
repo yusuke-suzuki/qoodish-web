@@ -52,6 +52,7 @@ const Profile = () => {
 
     apiInstance.usersUserIdGet(currentUser.uid, (error, data, response) => {
       if (response.ok) {
+        console.log(response);
         dispatch(fetchMyProfile(response.body));
       }
     });

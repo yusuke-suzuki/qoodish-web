@@ -9,34 +9,18 @@ import AppMenuButton from '../molecules/AppMenuButton';
 import NavTabs from './NavTabs';
 import Logo from '../molecules/Logo';
 import BackButton from '../molecules/BackButton';
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    toolbar: {
-      height: 56,
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      [theme.breakpoints.up('md')]: {
-        height: 'auto',
-        paddingLeft: 12,
-        paddingRight: 12
-      }
-    },
-    logoContainer: {
-      margin: 'auto',
-      [theme.breakpoints.up('md')]: {
-        margin: 'initial',
-        marginLeft: 12
-      }
-    },
-    rightContents: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      [theme.breakpoints.up('md')]: {
-        width: '100%',
-        justifyContent: 'flex-end'
-      }
+    menuButton: {
+      marginRight: theme.spacing(1)
     },
     search: {
       marginRight: theme.spacing(3)
@@ -55,27 +39,41 @@ export default memo(function NavToolbar(props: Props) {
   const classes = useStyles();
 
   return mdUp ? (
-    <Toolbar className={classes.toolbar}>
-      <AppMenuButton />
-      <div className={classes.logoContainer}>
-        <Logo color="inherit" />
-      </div>
-      <div className={classes.rightContents}>
-        <div className={classes.search}>
-          <SearchBar />
-        </div>
-        <NavTabs />
-      </div>
+    <Toolbar>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+      >
+        <Box display="flex" alignItems="center">
+          <Box className={classes.menuButton}>
+            <AppMenuButton />
+          </Box>
+          <Logo color="inherit" />
+        </Box>
+        <Box display="flex" alignItems="center">
+          <Box className={classes.search}>
+            <SearchBar />
+          </Box>
+          <NavTabs />
+        </Box>
+      </Box>
     </Toolbar>
   ) : (
-    <Toolbar className={classes.toolbar}>
-      {showBackButton ? <BackButton /> : <AppMenuButton />}
-      <div className={classes.logoContainer}>
+    <Toolbar>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+      >
+        <Box className={classes.menuButton}>
+          {showBackButton ? <BackButton /> : <AppMenuButton />}
+        </Box>
         <Logo color="inherit" />
-      </div>
-      <div className={classes.rightContents}>
         <SearchButton />
-      </div>
+      </Box>
     </Toolbar>
   );
 });

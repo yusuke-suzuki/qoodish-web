@@ -12,26 +12,19 @@ import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import {
-  useTheme,
-  useMediaQuery,
-  makeStyles,
-  createStyles
-} from '@material-ui/core';
+import { useTheme, useMediaQuery, makeStyles } from '@material-ui/core';
 import closeReviewDialog from '../../actions/closeReviewDialog';
 import { useEffect } from 'react';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    dialogContent: {
-      padding: 0
-    },
-    dialogActions: {
-      paddingLeft: 20,
-      paddingRight: 12
-    }
-  })
-);
+const useStyles = makeStyles(theme => ({
+  dialogContent: {
+    padding: 0
+  },
+  dialogActions: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
+  }
+}));
 
 const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   const theme = useTheme();

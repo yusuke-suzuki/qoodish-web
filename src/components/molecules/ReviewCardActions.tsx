@@ -109,24 +109,35 @@ const ReviewCardActions = React.memo((props: ReviewCardChildrenProps) => {
 
   return (
     <Box width="100%">
-      <Box display="flex" alignItems="center" width="100%">
-        <UserAvatar />
-        <TextField
-          fullWidth
-          placeholder={I18n.t('add comment')}
-          InputProps={{
-            disableUnderline: true
-          }}
-          className={classes.textField}
-          onFocus={() => setCommentFormActive(true)}
-          autoFocus={commentFormActive}
-          multiline={commentFormActive}
-          onChange={e => setComment(e.target.value)}
-        />
-        {!commentFormActive && <ReviewLikeActions target={review} />}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+      >
+        <Box display="flex" alignItems="center" width="100%">
+          <UserAvatar />
+          <TextField
+            fullWidth
+            placeholder={I18n.t('add comment')}
+            InputProps={{
+              disableUnderline: true
+            }}
+            className={classes.textField}
+            onFocus={() => setCommentFormActive(true)}
+            autoFocus={commentFormActive}
+            multiline={commentFormActive}
+            onChange={e => setComment(e.target.value)}
+          />
+        </Box>
+
+        <Box display="flex" alignItems="center">
+          {!commentFormActive && <ReviewLikeActions target={review} />}
+        </Box>
       </Box>
+
       {commentFormActive && (
-        <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="flex-end" width="100%">
           <Button
             onClick={() => {
               setCommentFormActive(false);

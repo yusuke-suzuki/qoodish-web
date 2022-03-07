@@ -22,6 +22,7 @@ import { Box, createStyles, Theme, useTheme } from '@material-ui/core';
 import AuthContext from '../../context/AuthContext';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -119,7 +120,7 @@ const Summary = React.memo((props: SummaryProps) => {
         onClick={() => handleTabChange(undefined, 0)}
       >
         <Typography variant="subtitle2" className={classes.summaryCount}>
-          {profile.reviews_count ? profile.reviews_count : 0}
+          {profile && profile.reviews_count ? profile.reviews_count : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('reviews count')}
@@ -130,7 +131,9 @@ const Summary = React.memo((props: SummaryProps) => {
         onClick={handleFollowingClick}
       >
         <Typography variant="subtitle2" className={classes.summaryCount}>
-          {profile.following_maps_count ? profile.following_maps_count : 0}
+          {profile && profile.following_maps_count
+            ? profile.following_maps_count
+            : 0}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary">
           {I18n.t('following maps')}
@@ -181,12 +184,22 @@ const ProfileCard = React.memo((props: ProfileCardProps) => {
           )}
         </div>
         <Typography variant="h5" gutterBottom>
-          {currentUser && currentUser.isAnonymous
-            ? I18n.t('anonymous user')
-            : profile.name}
+          {profile ? (
+            profile.name
+          ) : currentUser && currentUser.isAnonymous ? (
+            I18n.t('anonymous user')
+          ) : (
+            <Skeleton />
+          )}
         </Typography>
         <Typography variant="body1" className={classes.biography} gutterBottom>
-          {profile.biography}
+          {profile ? (
+            profile.biography
+          ) : currentUser && currentUser.isAnonymous ? (
+            ''
+          ) : (
+            <Skeleton />
+          )}
         </Typography>
         <Summary handleTabChange={handleTabChange} profile={profile} />
       </CardContent>
@@ -229,15 +242,17 @@ const SharedProfile = (props: Props) => {
         profile={profile}
       />
       <>
-        {tabValue === 0 && <ProfileReviews userId={profile.id} />}
+        {tabValue === 0 && (
+          <ProfileReviews userId={profile ? profile.id : null} />
+        )}
         {tabValue === 1 && (
           <div className={classes.userMaps}>
-            <ProfileMyMaps userId={profile.id} />
+            <ProfileMyMaps userId={profile ? profile.id : null} />
           </div>
         )}
         {tabValue === 2 && (
           <div className={classes.likes}>
-            <LikesList userId={profile.id} />
+            <LikesList userId={profile ? profile.id : null} />
           </div>
         )}
       </>

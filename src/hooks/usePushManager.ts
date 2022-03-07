@@ -63,6 +63,10 @@ export function usePushManager() {
   }, [registration]);
 
   const unsubscribe = useCallback(async () => {
+    if (!subscription) {
+      return;
+    }
+
     const successful = await subscription.unsubscribe();
 
     if (successful) {

@@ -21,6 +21,7 @@ const SharedLikeActions = props => {
             ? props.handleUnlikeButtonClick()
             : props.handleLikeButtonClick();
         }}
+        edge="end"
       >
         {props.target && props.target.liked ? (
           <FavoriteIcon color="error" />

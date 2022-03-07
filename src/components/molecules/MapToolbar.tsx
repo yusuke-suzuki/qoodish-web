@@ -7,6 +7,7 @@ import MapLikeActions from './MapLikeActions';
 import openInviteTargetDialog from '../../actions/openInviteTargetDialog';
 import BackButton from './BackButton';
 import {
+  Box,
   createStyles,
   IconButton,
   makeStyles,
@@ -28,14 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
     mapMenuIcon: {
       color: 'white'
     },
-    mapName: {
-      cursor: 'pointer'
-    },
     mapTypeIcon: {
       marginRight: theme.spacing(1)
     },
     backButton: {
-      marginRight: theme.spacing(2)
+      marginRight: theme.spacing(1)
     }
   })
 );
@@ -72,39 +70,49 @@ export default memo(function MapToolbar() {
 
   return (
     <Toolbar>
-      <div className={classes.backButton}>
-        <BackButton />
-      </div>
-      {isPrivate && (
-        <Tooltip title={I18n.t('this map is private')}>
-          <Lock
-            color="inherit"
-            className={classes.mapTypeIcon}
-            fontSize="small"
-          />
-        </Tooltip>
-      )}
-      <Typography
-        variant={smUp ? 'h6' : 'subtitle1'}
-        color="inherit"
-        noWrap
-        className={classes.mapName}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
       >
-        {map && map.name}
-      </Typography>
-      <div className={classes.toolbarActions}>
-        {isInvitable && (
-          <Tooltip title={I18n.t('button invite')}>
-            <IconButton color="inherit" onClick={handleInviteButtonClick}>
-              <PersonAdd />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Box display="flex" alignItems="center">
+          <Box className={classes.backButton}>
+            <BackButton />
+          </Box>
+          <Box display="grid" alignItems="center">
+            {isPrivate && (
+              <Tooltip title={I18n.t('this map is private')}>
+                <Lock
+                  color="inherit"
+                  className={classes.mapTypeIcon}
+                  fontSize="small"
+                />
+              </Tooltip>
+            )}
+            <Typography
+              variant={smUp ? 'h6' : 'subtitle1'}
+              color="inherit"
+              noWrap
+            >
+              {map && map.name}
+            </Typography>
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center">
+          {isInvitable && (
+            <Tooltip title={I18n.t('button invite')}>
+              <IconButton color="inherit" onClick={handleInviteButtonClick}>
+                <PersonAdd />
+              </IconButton>
+            </Tooltip>
+          )}
 
-        <MapShareMenu />
+          <MapShareMenu />
 
-        {isEditable ? <MapVertMenu /> : <MapLikeActions target={map} />}
-      </div>
+          {isEditable ? <MapVertMenu /> : <MapLikeActions target={map} />}
+        </Box>
+      </Box>
     </Toolbar>
   );
 });
