@@ -21,7 +21,7 @@ export default memo(function AppMenuButton() {
   const { profile } = useMappedState(mapState);
 
   return (
-    <IconButton onClick={handleButtonClick}>
+    <IconButton onClick={handleButtonClick} edge="start">
       <ProfileAvatar size={35} profile={profile} />
     </IconButton>
   );

@@ -33,7 +33,7 @@ export default memo(function BackButton() {
   }, [dispatch, router, mapSummaryOpen, lgUp]);
 
   return (
-    <IconButton color="inherit" onClick={handleBackButtonClick}>
+    <IconButton color="inherit" onClick={handleBackButtonClick} edge="start">
       <ArrowBack />
     </IconButton>
   );

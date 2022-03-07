@@ -40,7 +40,7 @@ export default function ProfileAvatar(props: Props) {
   } else {
     return (
       <Avatar style={avatarStyle}>
-        {profile.name && profile.name.slice(0, 1)}
+        {profile && profile.name && profile.name.slice(0, 1)}
       </Avatar>
     );
   }

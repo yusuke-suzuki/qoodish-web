@@ -13,7 +13,7 @@ const SearchButton = () => {
   }, [dispatch]);
 
   return (
-    <IconButton color="inherit" onClick={handleSearchButtonClick}>
+    <IconButton color="inherit" onClick={handleSearchButtonClick} edge="end">
       <SearchIcon />
     </IconButton>
   );
