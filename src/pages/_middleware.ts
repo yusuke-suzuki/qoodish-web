@@ -81,5 +81,12 @@ export async function middleware(req: NextRequest, _ev: NextFetchEvent) {
   console.log('Rendertron response:', response);
   const body = await response.text();
 
-  return new Response(body);
+  const headers = new Headers({
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+
+  return new Response(body, {
+    status: 200,
+    headers: headers
+  });
 }
