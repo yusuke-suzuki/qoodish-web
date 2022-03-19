@@ -12,7 +12,8 @@ const useStyles = makeStyles(() =>
   createStyles({
     link: {
       textDecoration: 'none',
-      color: 'inherit'
+      color: 'inherit',
+      display: 'flex'
     }
   })
 );

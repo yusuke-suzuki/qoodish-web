@@ -38,14 +38,14 @@ const UserAvatar = React.memo(() => {
 
   const classes = useStyles();
 
-  if (!currentUser || currentUser.isAnonymous) {
+  if (!currentUser || currentUser.isAnonymous || !profile) {
     return (
       <Avatar className={classes.avatar}>
         <PersonIcon />
       </Avatar>
     );
-  } else {
-    return profile.thumbnail_url ? (
+  } else if (profile.thumbnail_url) {
+    return (
       <Avatar
         src={profile.thumbnail_url}
         imgProps={{
@@ -54,7 +54,9 @@ const UserAvatar = React.memo(() => {
         }}
         className={classes.avatar}
       />
-    ) : (
+    );
+  } else {
+    return (
       <Avatar className={classes.avatar}>
         {profile.name && profile.name.slice(0, 1)}
       </Avatar>

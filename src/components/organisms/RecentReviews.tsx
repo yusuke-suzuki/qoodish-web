@@ -121,7 +121,7 @@ const RecentReviews = () => {
         cols={smUp ? 2.5 : 1.2}
         className={classes.gridList}
         spacing={10}
-        cellHeight={440}
+        cellHeight={464}
       >
         {loading
           ? Array.from(new Array(8)).map((v, i) => (

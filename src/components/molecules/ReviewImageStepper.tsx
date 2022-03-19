@@ -7,7 +7,6 @@ import MobileStepper from '@material-ui/core/MobileStepper';
 import Fab from '@material-ui/core/Fab';
 import CardMedia from '@material-ui/core/CardMedia';
 import SwipeableViews from 'react-swipeable-views';
-import ButtonBase from '@material-ui/core/ButtonBase';
 
 import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 
@@ -72,19 +71,12 @@ const ReviewImageStepper = props => {
           onChangeIndex={step => setActiveStep(step)}
         >
           {review.images.map(image => (
-            <ButtonBase
-              key={image.id}
-              href={image.url}
-              target="_blank"
-              rel="noopener"
-            >
-              <img
-                src={image.thumbnail_url_800}
-                className={classes.reviewImage}
-                alt={review.spot.name}
-                loading="lazy"
-              />
-            </ButtonBase>
+            <img
+              src={image.thumbnail_url_800}
+              className={classes.reviewImage}
+              alt={review.spot.name}
+              loading="lazy"
+            />
           ))}
         </SwipeableViews>
         {mdUp && maxSteps > 1 && (
