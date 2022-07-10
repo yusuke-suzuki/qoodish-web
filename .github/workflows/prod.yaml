@@ -7,7 +7,6 @@ env:
   PROJECT_ID: qoodish
   SERVICE_NAME: qoodish-web
   ARTIFACT_REGISTRY: asia-northeast1-docker.pkg.dev
-  TARGET_BRANCH: master
 jobs:
   build-image:
     permissions:

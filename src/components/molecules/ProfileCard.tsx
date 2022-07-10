@@ -36,7 +36,9 @@ export default memo(function ProfileCard() {
         <CardContent className={classes.cardContent}>
           <ProfileAvatar size={48} profile={profile} />
           <Typography variant="h6" gutterBottom className={classes.name}>
-            {currentUser.isAnonymous ? I18n.t('anonymous user') : profile.name}
+            {currentUser.isAnonymous || !profile
+              ? I18n.t('anonymous user')
+              : profile.name}
           </Typography>
         </CardContent>
       </ButtonBase>

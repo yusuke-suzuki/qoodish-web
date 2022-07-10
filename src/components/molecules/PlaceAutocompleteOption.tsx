@@ -28,11 +28,13 @@ export default memo(function PlaceAutocompleteOption(props: Props) {
   const classes = useStyles();
 
   const matches = useMemo(() => {
-    return option.structured_formatting.main_text_matched_substrings;
+    return option.structured_formatting
+      ? option.structured_formatting.main_text_matched_substrings
+      : [];
   }, [option]);
 
   const parts = useMemo(() => {
-    return matches
+    return matches && matches.length > 0
       ? parse(
           option.structured_formatting.main_text,
           matches.map(match => [match.offset, match.offset + match.length])
@@ -53,7 +55,9 @@ export default memo(function PlaceAutocompleteOption(props: Props) {
         ))}
 
         <Typography variant="body2" color="textSecondary">
-          {option.structured_formatting.secondary_text}
+          {option.structured_formatting
+            ? option.structured_formatting.secondary_text
+            : option.description}
         </Typography>
       </Grid>
     </Grid>

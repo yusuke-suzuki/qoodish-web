@@ -124,7 +124,7 @@ const SearchBar = () => {
         <Paper className={classes.paper}>
           <List disablePadding>
             {pickedMaps.map(map => (
-              <Link href="/profile" passHref key={map.id}>
+              <Link href={`/maps/${map.id}`} passHref key={map.id}>
                 <ListItem button onClick={() => setListOpen(false)}>
                   <ListItemAvatar>
                     <Avatar alt={map.name} src={map.thumbnail_url} />
