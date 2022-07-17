@@ -1,7 +1,6 @@
 import { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import Link from 'next/link';
-import I18n from '../../utils/I18n';
 import openCreateMapDialog from '../../actions/openCreateMapDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import AuthContext from '../../context/AuthContext';
@@ -24,6 +23,7 @@ import {
   ThumbUp
 } from '@material-ui/icons';
 import openEditReviewDialog from '../../actions/openEditReviewDialog';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,6 +47,7 @@ const PrimaryAction = memo((props: ActionProps) => {
   const { actionType } = props;
   const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const handleCreateMapButtonClick = useCallback(() => {
     if (currentUser.isAnonymous) {
@@ -102,6 +103,7 @@ const PrimaryAction = memo((props: ActionProps) => {
 
 const SecondaryAction = memo((props: ActionProps) => {
   const { actionType } = props;
+  const { I18n } = useLocale();
 
   switch (actionType) {
     case 'discover-maps':

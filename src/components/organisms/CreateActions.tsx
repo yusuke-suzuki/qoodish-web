@@ -10,12 +10,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EditIcon from '@material-ui/icons/Edit';
 import MapIcon from '@material-ui/icons/Map';
 import Dialog from '@material-ui/core/Dialog';
-import I18n from '../../utils/I18n';
 
 import openCreateMapDialog from '../../actions/openCreateMapDialog';
 import closeCreateActions from '../../actions/closeCreateActions';
 import { useTheme } from '@material-ui/core';
 import openEditReviewDialog from '../../actions/openEditReviewDialog';
+import { useLocale } from '../../hooks/useLocale';
 
 const ActionsList = () => {
   const dispatch = useDispatch();
@@ -29,6 +29,8 @@ const ActionsList = () => {
     dispatch(closeCreateActions());
     dispatch(openCreateMapDialog());
   }, [dispatch]);
+
+  const { I18n } = useLocale();
 
   return (
     <List>

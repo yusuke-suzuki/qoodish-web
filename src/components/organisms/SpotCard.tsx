@@ -7,13 +7,13 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import PlaceIcon from '@material-ui/icons/Place';
 
-import I18n from '../../utils/I18n';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import GoogleMapsLink from '../molecules/GoogleMapsLink';
 import ReviewGridList from './ReviewGridList';
 import ReviewImageTile from './ReviewImageTile';
 import { useTheme, makeStyles, Theme, createStyles } from '@material-ui/core';
 import OpeningHours from '../molecules/OpeningHours';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +46,7 @@ const SpotCard = (props: Props) => {
   const classes = useStyles();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const { I18n } = useLocale();
 
   const [spotReviews, setSpotReviews] = useState([]);
 

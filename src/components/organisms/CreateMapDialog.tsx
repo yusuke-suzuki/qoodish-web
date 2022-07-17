@@ -10,13 +10,14 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 
-import I18n from '../../utils/I18n';
 import { MapsApi, NewMap } from '@yusuke-suzuki/qoodish-api-js-client';
 import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 export default memo(function CreateMapDialog() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

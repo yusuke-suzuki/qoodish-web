@@ -6,7 +6,7 @@ import {
   Typography
 } from '@material-ui/core';
 import { memo } from 'react';
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 type Props = {
   openingHours: string;
@@ -15,6 +15,7 @@ type Props = {
 export default memo(function OpeningHours(props: Props) {
   const { openingHours } = props;
   const json = JSON.parse(openingHours);
+  const { I18n } = useLocale();
 
   if (!json) {
     return null;

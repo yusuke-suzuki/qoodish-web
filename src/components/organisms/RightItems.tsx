@@ -9,11 +9,11 @@ import {
   Theme
 } from '@material-ui/core';
 import Link from 'next/link';
-import I18n from '../../utils/I18n';
 import RecommendMaps from './RecommendMaps';
 import TrendingMaps from './TrendingMaps';
 import TrendingSpots from './TrendingSpots';
 import FbPage from '../molecules/FbPage';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Footer = React.memo(() => {
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Paper elevation={0}>

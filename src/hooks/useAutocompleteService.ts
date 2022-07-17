@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import throttle from 'lodash/throttle';
+import { useGoogleMapsApi } from './useGoogleMapsApi';
+import { LoaderStatus } from '@googlemaps/js-api-loader';
 
 type AutocompleteService = {
   current: google.maps.places.AutocompleteService;
@@ -10,6 +12,8 @@ const autocompleteService: AutocompleteService = {
 };
 
 export function useAutocompleteService() {
+  const { status } = useGoogleMapsApi();
+
   const fetch = useMemo(
     () =>
       throttle((request, callback) => {
@@ -28,10 +32,12 @@ export function useAutocompleteService() {
   );
 
   useEffect(() => {
-    if (!autocompleteService.current) {
-      autocompleteService.current = new google.maps.places.AutocompleteService();
+    if (status !== LoaderStatus.SUCCESS || autocompleteService.current) {
+      return;
     }
-  }, []);
+
+    autocompleteService.current = new google.maps.places.AutocompleteService();
+  }, [status]);
 
   return {
     fetchPlacePredictions: fetchPlacePredictions

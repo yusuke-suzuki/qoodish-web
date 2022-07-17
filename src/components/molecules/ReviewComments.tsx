@@ -16,7 +16,6 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import CommentMenu from './CommentMenu';
 import Link from 'next/link';
 
-import I18n from '../../utils/I18n';
 import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
@@ -28,6 +27,8 @@ import AuthContext from '../../context/AuthContext';
 import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +54,7 @@ type CommentItemProps = {
 
 const LikeButton = React.memo((props: CommentItemProps) => {
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -124,6 +126,7 @@ type Props = {
 const Comments = React.memo((props: Props) => {
   const { comments } = props;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleLikesClick = useCallback(
     async comment => {
@@ -173,7 +176,7 @@ const Comments = React.memo((props: Props) => {
             >
               {formatDistanceToNow(new Date(comment.created_at), {
                 addSuffix: true,
-                locale: I18n.locale.includes('ja') ? ja : enUS
+                locale: router.locale === 'ja' ? ja : enUS
               })}
             </Typography>
           </Box>

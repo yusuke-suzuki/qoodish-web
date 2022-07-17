@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import FollowMapButton from '../molecules/FollowMapButton';
-import I18n from '../../utils/I18n';
 import Link from 'next/link';
 import {
   Card,

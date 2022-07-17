@@ -26,7 +26,6 @@ import { useDispatch, useMappedState } from 'redux-react-hook';
 import closeEditReviewDialog from '../../actions/closeEditReviewDialog';
 import { ReviewsApi, NewReview } from '@yusuke-suzuki/qoodish-api-js-client';
 import openToast from '../../actions/openToast';
-import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 import PhotoTiles from '../molecules/PhotoTiles';
 import AddPhotoButton from '../molecules/AddPhotoButton';
@@ -39,6 +38,7 @@ import editReview from '../../actions/editReview';
 import ReviewCommentForm from '../molecules/ReviewCommentForm';
 import PlaceAutocomplete from '../molecules/PlaceAutocomplete';
 import PostableMapsAutocomplete from '../molecules/PostableMapsAutocomplete';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,6 +71,7 @@ const Transition = forwardRef(function Transition(props: SlideProps, ref) {
 
 export default memo(function EditReviewDialog() {
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

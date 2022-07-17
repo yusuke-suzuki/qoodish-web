@@ -1,6 +1,5 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import { useEffect, useCallback, useContext, memo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 
 import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
 import fetchMyProfile from '../../actions/fetchMyProfile';
@@ -17,6 +16,8 @@ import Layout from '../../components/Layout';
 import Head from 'next/head';
 import { Grid, makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 import CreateResourceButton from '../../components/molecules/CreateResourceButton';
+import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme => ({
   buttonGroup: {
@@ -28,6 +29,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = () => {
+  const router = useRouter();
+  const { I18n } = useLocale();
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -93,82 +96,56 @@ const Profile = () => {
     };
   }, [currentUser]);
 
+  const title = `${I18n.t('account')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        {profile && profile.name && (
-          <title>{`${I18n.t('account')} | Qoodish`}</title>
-        )}
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/profile`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/profile?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/profile?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/profile`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta name="robots" content="noindex" />
-        {profile && profile.name && (
-          <meta
-            name="keywords"
-            content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip"
-          />
-        )}
-        {profile && profile.name && (
-          <meta name="title" content={`${I18n.t('account')} | Qoodish`} />
-        )}
-        {profile && profile.name && (
-          <meta name="description" content={I18n.t('meta description')} />
-        )}
-        {profile && profile.name && (
-          <meta
-            property="og:title"
-            content={`${I18n.t('account')} | Qoodish`}
-          />
-        )}
-        {profile && profile.name && (
-          <meta
-            property="og:description"
-            content={I18n.t('meta description')}
-          />
-        )}
-        {profile && profile.name && (
-          <meta
-            property="og:url"
-            content={`${process.env.NEXT_PUBLIC_ENDPOINT}/profile`}
-          />
-        )}
-        {profile && profile.name && (
-          <meta property="og:image" content={profile.thumbnail_url} />
-        )}
+
+        <meta
+          name="keywords"
+          content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip"
+        />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
+        />
+        <meta property="og:image" content={thumbnailUrl} />
+
         <meta name="twitter:card" content="summary" />
-        {profile && profile.name && (
-          <meta name="twitter:image" content={profile.thumbnail_url} />
-        )}
-        {profile && profile.name && (
-          <meta
-            name="twitter:title"
-            content={`${I18n.t('account')} | Qoodish`}
-          />
-        )}
-        {profile && profile.name && (
-          <meta
-            name="twitter:description"
-            content={I18n.t('meta description')}
-          />
-        )}
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
@@ -187,4 +164,4 @@ const Profile = () => {
   );
 };
 
-export default React.memo(Profile);
+export default memo(Profile);

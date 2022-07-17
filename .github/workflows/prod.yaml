@@ -35,6 +35,7 @@ jobs:
       - name: yarn build
         run: |
           yarn build
+          yarn prisma generate
         env:
           NEXT_PUBLIC_ENDPOINT: https://qoodish.com
           NEXT_PUBLIC_API_ENDPOINT: https://api.qoodish.com
@@ -92,22 +93,23 @@ jobs:
         env:
           CLOUDSDK_CORE_DISABLE_PROMPTS: 1
           CLOUD_RUN_SA_NAME: prod-qoodish-web@qoodish-common.iam.gserviceaccount.com
-          SITE_DOMAIN: qoodish.com
-          RENDERTRON_ENDPOINT: https://rendertron.qoodish.com
         run: |
           gcloud beta run deploy $SERVICE_NAME \
             --platform=managed \
             --region=asia-northeast1 \
             --project=$PROJECT_ID \
             --cpu=1000m \
-            --memory=256Mi \
+            --memory=512Mi \
             --port=8080 \
             --service-account=$CLOUD_RUN_SA_NAME \
             --ingress=all \
             --allow-unauthenticated \
+            --execution-environment=gen2 \
             --no-traffic \
             --tag=${{ env.CLOUD_RUN_TAG }} \
             --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
-            --set-env-vars "NODE_ENV=production" \
-            --set-env-vars "SITE_DOMAIN=$SITE_DOMAIN" \
-            --set-env-vars "RENDERTRON_ENDPOINT=$RENDERTRON_ENDPOINT"
+            --vpc-connector=projects/qoodish/locations/asia-northeast1/connectors/qoodish \
+            --vpc-egress=private-ranges-only \
+            --set-secrets "GOOGLE_API_KEY=QOODISH_API_GOOGLE_API_KEY:latest" \
+            --set-secrets "DATABASE_URL=QOODISH_API_DATABASE_URL:latest" \
+            --set-env-vars "NODE_ENV=production"

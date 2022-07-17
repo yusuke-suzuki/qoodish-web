@@ -5,10 +5,10 @@ import SharedLikeActions from './SharedLikeActions';
 import openToast from '../../actions/openToast';
 import editMap from '../../actions/editMap';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
-import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,6 +26,7 @@ export default memo(function MapLikeActions(props: Props) {
   const { target } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 

@@ -3,13 +3,13 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 import fetchMoreReviews from '../../actions/fetchMoreReviews';
 import openToast from '../../actions/openToast';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import I18n from '../../utils/I18n';
 import {
   Button,
   CircularProgress,
   createStyles,
   makeStyles
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -24,6 +24,7 @@ const useStyles = makeStyles(() =>
 export default memo(function LoadMoreButton() {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

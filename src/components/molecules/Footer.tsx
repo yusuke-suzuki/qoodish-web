@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import Link from 'next/link';
 import FbPage from '../molecules/FbPage';
-import I18n from '../../utils/I18n';
 import {
   Container,
   createStyles,
@@ -12,6 +11,7 @@ import {
   Typography
 } from '@material-ui/core';
 import { amber } from '@material-ui/core/colors';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default memo(function Footer() {
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Paper square>
@@ -63,7 +64,7 @@ export default memo(function Footer() {
       <div className={classes.bottomContents}>
         <Container>
           <Typography variant="caption">
-            © 2021 Qoodish, All rights reserved.
+            © 2022 Qoodish, All rights reserved.
           </Typography>
         </Container>
       </div>

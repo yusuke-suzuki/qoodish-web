@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import PlaceIcon from '@material-ui/icons/Place';
-import I18n from '../../utils/I18n';
 import Link from 'next/link';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import PublicIcon from '@material-ui/icons/Public';
@@ -22,6 +21,8 @@ import VoterAvatars from '../molecules/VoterAvatars';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { format } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,12 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const parseDate = date => {
-  return format(new Date(date), 'yyyy-MM-dd', {
-    locale: I18n.locale.includes('ja') ? ja : enUS
-  });
-};
-
 type MapTypesProps = {
   currentMap: any;
 };
@@ -56,6 +51,7 @@ type MapTypesProps = {
 const MapTypes = React.memo((props: MapTypesProps) => {
   const { currentMap } = props;
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapTypes = [];
 
@@ -120,6 +116,8 @@ const MapTypes = React.memo((props: MapTypesProps) => {
 
 const MapSummaryCard = () => {
   const classes = useStyles();
+  const { I18n } = useLocale();
+  const router = useRouter();
 
   const mapState = useCallback(
     state => ({
@@ -212,7 +210,9 @@ const MapSummaryCard = () => {
       {currentMap ? (
         <Typography variant="subtitle1" gutterBottom className={classes.text}>
           {currentMap.last_reported_at
-            ? parseDate(currentMap.last_reported_at)
+            ? format(new Date(currentMap.last_reported_at), 'yyyy-MM-dd', {
+                locale: router.locale === 'ja' ? ja : enUS
+              })
             : '-'}
         </Typography>
       ) : (
@@ -224,7 +224,9 @@ const MapSummaryCard = () => {
       </Typography>
       {currentMap ? (
         <Typography variant="subtitle1" gutterBottom className={classes.text}>
-          {parseDate(currentMap.created_at)}
+          {format(new Date(currentMap.created_at), 'yyyy-MM-dd', {
+            locale: router.locale === 'ja' ? ja : enUS
+          })}
         </Typography>
       ) : (
         <Skeleton height={28} width="40%" />

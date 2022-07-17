@@ -2,10 +2,9 @@ import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { jaJP, enUS, Localization } from '@material-ui/core/locale';
+import { jaJP, enUS } from '@material-ui/core/locale';
 import { ApiClient } from '@yusuke-suzuki/qoodish-api-js-client';
 import { amber, lightBlue } from '@material-ui/core/colors';
-import I18n from '../utils/I18n';
 import AuthContext from '../context/AuthContext';
 
 import { StoreContext } from 'redux-react-hook';
@@ -29,12 +28,12 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration>(
     null
   );
-  const [locale, setLocale] = useState<Localization>(enUS);
 
   const router = useRouter();
-  const { hl } = router.query;
 
   const theme = useMemo(() => {
+    const locale = router.locale === 'ja' ? jaJP : enUS;
+
     return createMuiTheme(
       {
         palette: {
@@ -57,7 +56,7 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
       },
       locale
     );
-  }, [locale]);
+  }, [router.locale]);
 
   const measurePageView = useCallback(
     path => {
@@ -95,20 +94,6 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
     setRegistration(reg);
   }, []);
 
-  const switchLocale = useCallback(() => {
-    I18n.locale =
-      hl ||
-      window.navigator.language ||
-      window.navigator['userLanguage'] ||
-      window.navigator['browserLanguage'];
-
-    if (I18n.locale.includes('ja')) {
-      setLocale(jaJP);
-    } else {
-      setLocale(enUS);
-    }
-  }, [hl, jaJP, enUS]);
-
   const initApiClient = useCallback(() => {
     const defaultClient = ApiClient.instance;
     defaultClient.basePath = process.env.NEXT_PUBLIC_API_ENDPOINT;
@@ -125,13 +110,6 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
     },
     [getAuth, signInAnonymously]
   );
-
-  useEffect(() => {
-    // Fires when the query parameters are completely initialized
-    if (router.isReady) {
-      switchLocale();
-    }
-  }, [router.isReady]);
 
   useEffect(() => {
     router.events.on('routeChangeComplete', measurePageView);

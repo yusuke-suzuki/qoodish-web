@@ -12,7 +12,6 @@ import CreateResourceButton from '../components/molecules/CreateResourceButton';
 import openToast from '../actions/openToast';
 import fetchReviews from '../actions/fetchReviews';
 
-import I18n from '../utils/I18n';
 import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import Link from 'next/link';
 import SkeletonReviewCards from '../components/organisms/SkeletonReviewCards';
@@ -22,6 +21,8 @@ import CreateReviewForm from '../components/molecules/CreateReviewForm';
 import { createStyles, Grid, makeStyles, useTheme } from '@material-ui/core';
 import AuthContext from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { useLocale } from '../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -43,10 +44,12 @@ const useStyles = makeStyles(theme =>
 );
 
 const Timeline = () => {
+  const { I18n } = useLocale();
   const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const router = useRouter();
 
   const mapState = useCallback(
     state => ({
@@ -89,43 +92,56 @@ const Timeline = () => {
     refreshReviews();
   }, [currentUser]);
 
+  const title = 'Qoodish';
+  const description = I18n.t('meta description');
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        <title>Qoodish</title>
-        <link rel="canonical" href={process.env.NEXT_PUBLIC_ENDPOINT} />
+        <title>{title}</title>
+
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}`}
+        />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={process.env.NEXT_PUBLIC_ENDPOINT}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta name="title" content="Qoodish" />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta property="og:title" content="Qoodish" />
-        <meta property="og:description" content={I18n.t('meta description')} />
-        <meta property="og:url" content={process.env.NEXT_PUBLIC_ENDPOINT} />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}`}
         />
-        <meta name="twitter:title" content="Qoodish" />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+        <meta
+          property="og:image"
+          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 

@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
 import { ja, enUS } from 'date-fns/locale';
-import I18n from '../../utils/I18n';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,6 +56,7 @@ type Props = {
 export default memo(function ReviewCard(props: Props) {
   const { currentReview, hideActions } = props;
   const classes = useStyles();
+  const router = useRouter();
 
   return (
     <Card elevation={0}>
@@ -92,7 +93,7 @@ export default memo(function ReviewCard(props: Props) {
         }
         subheader={formatDistanceToNow(new Date(currentReview.created_at), {
           addSuffix: true,
-          locale: I18n.locale.includes('ja') ? ja : enUS
+          locale: router.locale === 'ja' ? ja : enUS
         })}
       />
 

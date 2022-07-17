@@ -7,7 +7,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import I18n from '../../utils/I18n';
 
 import editReview from '../../actions/editReview';
 import closeDeleteCommentDialog from '../../actions/closeDeleteCommentDialog';
@@ -15,6 +14,7 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { CommentsApi } from '@yusuke-suzuki/qoodish-api-js-client';
+import { useLocale } from '../../hooks/useLocale';
 
 const DeleteCommentDialog = () => {
   const mapState = useCallback(
@@ -26,6 +26,7 @@ const DeleteCommentDialog = () => {
   );
   const { comment, dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const handleRequestDialogClose = useCallback(() => {
     dispatch(closeDeleteCommentDialog());

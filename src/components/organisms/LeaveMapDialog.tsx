@@ -10,7 +10,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import I18n from '../../utils/I18n';
 
 import leaveMap from '../../actions/leaveMap';
 import closeLeaveMapDialog from '../../actions/closeLeaveMapDialog';
@@ -24,12 +23,14 @@ import {
   FollowsApi
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import { useTheme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const LeaveMapDialog = () => {
+  const { I18n } = useLocale();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();

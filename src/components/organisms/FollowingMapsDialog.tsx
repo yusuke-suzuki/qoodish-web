@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 
-import I18n from '../../utils/I18n';
 import Link from 'next/link';
 import FollowMapButton from '../molecules/FollowMapButton';
 import closeFollowingMapsDialog from '../../actions/closeFollowingMapsDialog';
@@ -24,6 +23,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -53,6 +53,7 @@ const FollowingMapsDialog = () => {
   );
   const { open, maps } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const onClose = useCallback(() => {
     dispatch(closeFollowingMapsDialog());

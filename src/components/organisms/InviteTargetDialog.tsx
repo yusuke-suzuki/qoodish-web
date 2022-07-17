@@ -17,7 +17,6 @@ import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
-import I18n from '../../utils/I18n';
 
 import closeInviteTargetDialog from '../../actions/closeInviteTargetDialog';
 import fetchUsers from '../../actions/fetchUsers';
@@ -32,6 +31,7 @@ import {
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import DialogAppBar from '../molecules/DialogAppBar';
 import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,7 +50,7 @@ const Transition = forwardRef(function Transition(props: SlideProps, ref) {
 });
 
 type Props = {
-  mapId: string;
+  mapId: number;
 };
 
 const InviteTargetDialog = (props: Props) => {
@@ -71,6 +71,7 @@ const InviteTargetDialog = (props: Props) => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const onClose = useCallback(() => {
     dispatch(closeInviteTargetDialog());

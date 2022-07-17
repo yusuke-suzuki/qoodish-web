@@ -11,14 +11,13 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 
-import I18n from '../../utils/I18n';
-
 import openEditReviewDialog from '../../actions/openEditReviewDialog';
-//import openCopyReviewDialog from '../../actions/openCopyReviewDialog';
+// import openCopyReviewDialog from '../../actions/openCopyReviewDialog';
 import openDeleteReviewDialog from '../../actions/openDeleteReviewDialog';
 import openIssueDialog from '../../actions/openIssueDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import AuthContext from '../../context/AuthContext';
+import { useLocale } from '../../hooks/useLocale';
 
 const ReviewVertMenu = props => {
   const [anchorEl, setAnchorEl] = useState(undefined);
@@ -28,6 +27,7 @@ const ReviewVertMenu = props => {
   const { currentUser } = useContext(AuthContext);
 
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const handleEditMapButtonClick = useCallback(() => {
     setMenuOpen(false);

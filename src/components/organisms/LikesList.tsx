@@ -15,7 +15,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import NoContents from '../molecules/NoContents';
 
-import I18n from '../../utils/I18n';
 import { ApiClient, LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
 import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
@@ -23,6 +22,7 @@ import { useRouter } from 'next/router';
 import { memo } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +46,7 @@ type TextProps = {
 
 const PrimaryText = memo((props: TextProps) => {
   const { like } = props;
+  const { I18n } = useLocale();
 
   switch (like.votable.type) {
     case 'review':
@@ -115,6 +116,7 @@ const LikesList = (props: Props) => {
   }, []);
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   if (loading) {
     return (
@@ -151,7 +153,7 @@ const LikesList = (props: Props) => {
                   primary={<PrimaryText like={like} />}
                   secondary={formatDistanceToNow(new Date(like.created_at), {
                     addSuffix: true,
-                    locale: I18n.locale.includes('ja') ? ja : enUS
+                    locale: router.locale === 'ja' ? ja : enUS
                   })}
                   disableTypography
                 />

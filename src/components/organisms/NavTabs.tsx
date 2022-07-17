@@ -11,11 +11,11 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 
 import Link from 'next/link';
-import I18n from '../../utils/I18n';
 
 import NotificationsMenu from './NotificationsMenu';
 import { createStyles, makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,6 +43,7 @@ const NavTabs = () => {
   const { unreadNotifications } = useMappedState(mapState);
 
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const isSelected = useCallback(
     pathname => {

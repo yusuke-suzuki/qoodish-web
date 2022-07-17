@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useContext } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
-import I18n from '../../utils/I18n';
 import ProfileAvatar from './ProfileAvatar';
 import AuthContext from '../../context/AuthContext';
 import {
@@ -12,6 +11,7 @@ import {
   Typography
 } from '@material-ui/core';
 import openEditReviewDialog from '../../actions/openEditReviewDialog';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,6 +25,7 @@ export default memo(function CreateReviewForm() {
   const dispatch = useDispatch();
   const { currentUser } = useContext(AuthContext);
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

@@ -16,13 +16,13 @@ import ProfileMyMaps from './ProfileMyMaps';
 import EditProfileButton from '../molecules/EditProfileButton';
 import ProfileAvatar from '../molecules/ProfileAvatar';
 
-import I18n from '../../utils/I18n';
 import openFollowingMapsDialog from '../../actions/openFollowingMapsDialog';
 import { Box, createStyles, Theme, useTheme } from '@material-ui/core';
 import AuthContext from '../../context/AuthContext';
 import { makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { Skeleton } from '@material-ui/lab';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -112,6 +112,7 @@ const Summary = React.memo((props: SummaryProps) => {
   }, [dispatch]);
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Box display="flex">
@@ -158,6 +159,7 @@ const ProfileCard = React.memo((props: ProfileCardProps) => {
 
   const classes = useStyles();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   return (
     <Card elevation={0}>

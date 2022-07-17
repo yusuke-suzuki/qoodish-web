@@ -17,7 +17,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
-import I18n from '../../utils/I18n';
 
 import fetchMyProfile from '../../actions/fetchMyProfile';
 import closeEditProfileDialog from '../../actions/closeEditProfileDialog';
@@ -40,6 +39,7 @@ import {
 } from '@material-ui/core';
 import AddPhotoButton from '../molecules/AddPhotoButton';
 import Skeleton from '@material-ui/lab/Skeleton';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,6 +77,7 @@ const EditProfileDialog = () => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

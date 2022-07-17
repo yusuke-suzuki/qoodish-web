@@ -5,9 +5,9 @@ import SharedLikeActions from './SharedLikeActions';
 import openToast from '../../actions/openToast';
 import editReview from '../../actions/editReview';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
-import I18n from '../../utils/I18n';
 import { LikesApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
+import { useLocale } from '../../hooks/useLocale';
 
 type Props = {
   target: any;
@@ -16,6 +16,7 @@ type Props = {
 const ReviewLikeActions = (props: Props) => {
   const { target } = props;
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 

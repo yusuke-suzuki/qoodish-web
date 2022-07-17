@@ -1,19 +1,10 @@
-import React, {
-  useEffect,
-  useCallback,
-  useState,
-  useContext,
-  Fragment,
-  memo
-} from 'react';
+import { useEffect, useCallback, useState, useContext, memo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+
 import ReviewCard from '../../../../components/molecules/ReviewCard';
 import NoContents from '../../../../components/molecules/NoContents';
-import I18n from '../../../../utils/I18n';
 import AuthContext from '../../../../context/AuthContext';
 import fetchReview from '../../../../actions/fetchReview';
 import openToast from '../../../../actions/openToast';
@@ -22,19 +13,46 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Layout from '../../../../components/Layout';
 import Head from 'next/head';
-import { createStyles, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
+import { GetServerSideProps } from 'next';
+import { Image, Map, PrismaClient, Review, Spot } from '@prisma/client';
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    backButtonContainer: {
-      marginTop: theme.spacing(2)
-    }
-  })
-);
+import path from 'path';
+import { useLocale } from '../../../../hooks/useLocale';
+import {
+  Client,
+  Language,
+  PlaceData
+} from '@googlemaps/google-maps-services-js';
+import { KeyboardArrowLeft } from '@material-ui/icons';
 
-export default memo(function ReviewDetail() {
+const useStyles = makeStyles(theme => ({
+  backButtonContainer: {
+    marginTop: theme.spacing(2)
+  }
+}));
+
+type Props = {
+  isPrivate: boolean;
+  review:
+    | (Review & {
+        map: Map;
+        spot: Spot;
+        images: Image[];
+      })
+    | null;
+  placeData: PlaceData;
+  thumbnailUrl: string;
+};
+
+const ReviewPage = (props: Props) => {
+  const { isPrivate, review, placeData, thumbnailUrl } = props;
+
+  const { I18n } = useLocale();
+
   const router = useRouter();
   const { mapId, reviewId } = router.query;
+
   const classes = useStyles();
   const dispatch = useDispatch();
   const mapState = useCallback(
@@ -84,110 +102,64 @@ export default memo(function ReviewDetail() {
     }
   }, [currentUser, mapId, reviewId]);
 
+  const title = isPrivate
+    ? 'Qoodish'
+    : `${placeData.name} - ${review.map.name} | Qoodish`;
+  const description = isPrivate ? I18n.t('meta description') : review.comment;
+  const keywords =
+    (isPrivate ? '' : `${review.map.name}, ${placeData.name}, `) +
+    'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip';
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={true} fullWidth={false}>
       <Head>
-        {currentReview && (
-          <title>{`${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`}</title>
-        )}
-        {currentReview && (
-          <link
-            rel="canonical"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}`}
-          />
-        )}
-        {currentReview && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}?hl=en`}
-            hrefLang="en"
-          />
-        )}
-        {currentReview && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}?hl=ja`}
-            hrefLang="ja"
-          />
-        )}
-        {currentReview && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}`}
-            hrefLang="x-default"
-          />
-        )}
-        {currentReview && currentReview.map.private && (
-          <meta name="robots" content="noindex" />
-        )}
-        {currentReview && (
-          <meta
-            name="keywords"
-            content={`${currentReview.map.name}, ${currentReview.spot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`}
-          />
-        )}
-        {currentReview && (
-          <meta
-            name="title"
-            content={`${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`}
-          />
-        )}
-        {currentReview && (
-          <meta name="description" content={currentReview.comment} />
-        )}
-        {currentReview && (
-          <meta
-            property="og:title"
-            content={`${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`}
-          />
-        )}
-        {currentReview && (
-          <meta property="og:description" content={currentReview.comment} />
-        )}
-        {currentReview && (
-          <meta
-            property="og:url"
-            content={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentReview.map.id}/reports/${currentReview.id}`}
-          />
-        )}
-        {currentReview && (
-          <meta
-            property="og:image"
-            content={
-              currentReview.images.length > 0
-                ? currentReview.images[0].thumbnail_url_800
-                : process.env.NEXT_PUBLIC_OGP_IMAGE_URL
-            }
-          />
-        )}
+        <title>{title}</title>
+
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map_id}/reports/${review.id}`}
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map_id}/reports/${review.id}`}
+          hrefLang="en"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${review.map_id}/reports/${review.id}`}
+          hrefLang="ja"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map_id}/reports/${review.id}`}
+          hrefLang="x-default"
+        />
+
+        {isPrivate && <meta name="robots" content="noindex" />}
+
+        <meta name="keywords" content={keywords} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map_id}/reports/${review.id}`}
+        />
+        <meta property="og:image" content={thumbnailUrl} />
+
         <meta name="twitter:card" content="summary_large_image" />
-        {currentReview && (
-          <meta
-            name="twitter:image"
-            content={
-              currentReview.images.length > 0
-                ? currentReview.images[0].thumbnail_url_800
-                : process.env.NEXT_PUBLIC_OGP_IMAGE_URL
-            }
-          />
-        )}
-        {currentReview && (
-          <meta
-            name="twitter:title"
-            content={`${currentReview.spot.name} - ${currentReview.map.name} | Qoodish`}
-          />
-        )}
-        {currentReview && (
-          <meta name="twitter:description" content={currentReview.comment} />
-        )}
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
       {loading ? (
         <SkeletonReviewCard />
       ) : (
-        <Fragment>
+        <>
           {currentReview ? (
             <ReviewCard currentReview={currentReview} />
           ) : (
@@ -198,15 +170,87 @@ export default memo(function ReviewDetail() {
           )}
           <div className={classes.backButtonContainer}>
             {currentReview && (
-              <Link href={`/maps/${currentReview.map.id}`} passHref>
-                <Button color="primary" startIcon={<KeyboardArrowLeftIcon />}>
+              <Link href={`/maps/${mapId}`} passHref>
+                <Button color="primary" startIcon={<KeyboardArrowLeft />}>
                   {I18n.t('back to map')}
                 </Button>
               </Link>
             )}
           </div>
-        </Fragment>
+        </>
       )}
     </Layout>
   );
-});
+};
+
+const prisma = new PrismaClient();
+const client = new Client();
+
+export const getServerSideProps: GetServerSideProps = async ({
+  res,
+  params,
+  locale
+}) => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=300, stale-while-revalidate=300'
+  );
+
+  const review = await prisma.review.findUnique({
+    where: {
+      id: Number(params.reviewId)
+    },
+    include: {
+      map: true,
+      spot: {
+        include: {
+          place: true
+        }
+      },
+      images: true
+    }
+  });
+
+  if (!review) {
+    return {
+      notFound: true
+    };
+  }
+
+  const placeDetails = await client.placeDetails({
+    params: {
+      place_id: review.spot.place.place_id_val,
+      language: Language[locale],
+      key: process.env.GOOGLE_API_KEY
+    }
+  });
+
+  const thumbnail = review.images[0];
+
+  const isPrivate = review.map.private;
+
+  return {
+    props: {
+      isPrivate: isPrivate,
+      review: isPrivate
+        ? null
+        : JSON.parse(
+            JSON.stringify(review, (_key, value) =>
+              typeof value === 'bigint' ? Number(value) : value
+            )
+          ),
+      placeData: isPrivate ? null : placeDetails.data.result,
+      thumbnailUrl:
+        isPrivate || !thumbnail
+          ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL
+          : `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${
+              process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+            }/images/thumbnails/${path.basename(
+              thumbnail.url,
+              path.extname(thumbnail.url)
+            )}_800x800${path.extname(thumbnail.url)}`
+    }
+  };
+};
+
+export default memo(ReviewPage);

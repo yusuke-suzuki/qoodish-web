@@ -1,7 +1,6 @@
 import { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 
-import I18n from '../../utils/I18n';
 import openLeaveMapDialog from '../../actions/openLeaveMapDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import requestStart from '../../actions/requestStart';
@@ -16,6 +15,7 @@ import {
 import AuthContext from '../../context/AuthContext';
 import { Button, createStyles, makeStyles } from '@material-ui/core';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,6 +33,7 @@ const RoleButton = memo((props: Props) => {
   const { currentMap } = props;
   const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const handleUnfollowButtonClick = useCallback(() => {
     dispatch(openLeaveMapDialog(currentMap));

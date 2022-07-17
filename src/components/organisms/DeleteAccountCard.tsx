@@ -10,7 +10,7 @@ import { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import openDeleteAccountDialog from '../../actions/openDeleteAccountDialog';
 import AuthContext from '../../context/AuthContext';
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles({
   deleteButton: {
@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 const DeleteAccountCard = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 

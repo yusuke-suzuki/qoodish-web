@@ -6,8 +6,6 @@ import WhatshotIcon from '@material-ui/icons/Whatshot';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Typography from '@material-ui/core/Typography';
 
-import I18n from '../../utils/I18n';
-
 import fetchActiveMaps from '../../actions/fetchActiveMaps';
 import fetchRecentMaps from '../../actions/fetchRecentMaps';
 
@@ -22,6 +20,8 @@ import TrendingSpots from '../../components/organisms/TrendingSpots';
 import CreateResourceButton from '../../components/molecules/CreateResourceButton';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(theme => ({
   buttonGroup: {
@@ -59,6 +59,9 @@ export default memo(function Discover() {
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const classes = useStyles();
+
+  const router = useRouter();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -118,53 +121,57 @@ export default memo(function Discover() {
     initRecentMaps();
   }, [currentUser]);
 
+  const title = `${I18n.t('discover')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        <title>{`${I18n.t('discover')} | Qoodish`}</title>
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/discover`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/discover?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/discover?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/discover`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta name="title" content={`${I18n.t('discover')} | Qoodish`} />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta property="og:title" content={`${I18n.t('discover')} | Qoodish`} />
-        <meta property="og:description" content={I18n.t('meta description')} />
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}/discover`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
+        <meta
+          property="og:image"
+          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
+        />
+
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
-        />
-        <meta
-          name="twitter:title"
-          content={`${I18n.t('discover')} | Qoodish`}
-        />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 

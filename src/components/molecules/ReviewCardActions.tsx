@@ -10,13 +10,13 @@ import ReviewLikeActions from './ReviewLikeActions';
 import editReview from '../../actions/editReview';
 import openToast from '../../actions/openToast';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
-import I18n from '../../utils/I18n';
 import {
   CommentsApi,
   InlineObject
 } from '@yusuke-suzuki/qoodish-api-js-client';
 import AuthContext from '../../context/AuthContext';
 import { Box, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,6 +78,7 @@ const ReviewCardActions = React.memo((props: ReviewCardChildrenProps) => {
   const dispatch = useDispatch();
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const handleSendCommentButtonClick = useCallback(async () => {
     if (currentUser.isAnonymous) {

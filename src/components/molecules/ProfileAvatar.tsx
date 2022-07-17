@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { memo, useContext, useMemo } from 'react';
 import AuthContext from '../../context/AuthContext';
 import { Person } from '@material-ui/icons';
 import { Avatar } from '@material-ui/core';
@@ -8,7 +8,7 @@ type Props = {
   size?: number;
 };
 
-export default function ProfileAvatar(props: Props) {
+export default memo(function ProfileAvatar(props: Props) {
   const { profile, size } = props;
   const { currentUser } = useContext(AuthContext);
 
@@ -44,4 +44,4 @@ export default function ProfileAvatar(props: Props) {
       </Avatar>
     );
   }
-}
+});

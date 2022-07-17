@@ -18,10 +18,10 @@ import Typography from '@material-ui/core/Typography';
 
 import searchMaps from '../../actions/searchMaps';
 import closeSearchMapsDialog from '../../actions/closeSearchMapsDialog';
-import I18n from '../../utils/I18n';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const SearchMapsDialog = () => {
+  const { I18n } = useLocale();
   const classes = useStyles();
   const dispatch = useDispatch();
   const mapState = useCallback(
