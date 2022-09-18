@@ -3,7 +3,6 @@ import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import fetchSpot from '../../actions/fetchSpot';
 
@@ -15,6 +14,15 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
 import { makeStyles } from '@material-ui/core';
+import {
+  Client,
+  Language,
+  PlaceData
+} from '@googlemaps/google-maps-services-js';
+import { PrismaClient } from '@prisma/client';
+import { useLocale } from '../../hooks/useLocale';
+import { GetServerSideProps } from 'next';
+import path from 'path';
 
 const useStyles = makeStyles({
   progress: {
@@ -23,7 +31,16 @@ const useStyles = makeStyles({
   }
 });
 
-const SpotDetail = () => {
+type Props = {
+  placeData: PlaceData;
+  thumbnailUrl: string;
+};
+
+const SpotDetail = (props: Props) => {
+  const { placeData, thumbnailUrl } = props;
+
+  const { I18n } = useLocale();
+
   const router = useRouter();
   const { placeId } = router.query;
   const dispatch = useDispatch();
@@ -71,84 +88,51 @@ const SpotDetail = () => {
     }
   }, [currentUser, placeId]);
 
+  const title = `${placeData.name} | Qoodish`;
+  const description = placeData.formatted_address;
+  const keywords = `${placeData.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={true} fullWidth={false}>
       <Head>
-        {currentSpot && <title>{`${currentSpot.name} | Qoodish`}</title>}
-        {currentSpot && (
-          <link
-            rel="canonical"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/spots/${currentSpot.place_id}`}
-          />
-        )}
-        {currentSpot && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/spots/${currentSpot.place_id}?hl=en`}
-            hrefLang="en"
-          />
-        )}
-        {currentSpot && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/spots/${currentSpot.place_id}?hl=ja`}
-            hrefLang="ja"
-          />
-        )}
-        {currentSpot && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/spots/${currentSpot.place_id}`}
-            hrefLang="x-default"
-          />
-        )}
-        {currentSpot && (
-          <meta
-            name="keywords"
-            content={`${currentSpot.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`}
-          />
-        )}
-        {currentSpot && (
-          <meta name="title" content={`${currentSpot.name} | Qoodish`} />
-        )}
-        {currentSpot && (
-          <meta name="description" content={currentSpot.formatted_address} />
-        )}
-        {currentSpot && (
-          <meta property="og:title" content={`${currentSpot.name} | Qoodish`} />
-        )}
-        {currentSpot && (
-          <meta
-            property="og:description"
-            content={currentSpot.formatted_address}
-          />
-        )}
-        {currentSpot && (
-          <meta
-            property="og:url"
-            content={`${process.env.NEXT_PUBLIC_ENDPOINT}/spots/${currentSpot.place_id}`}
-          />
-        )}
-        {currentSpot && (
-          <meta property="og:image" content={currentSpot.thumbnail_url_800} />
-        )}
-        <meta name="twitter:card" content="summary" />
-        {currentSpot && (
-          <meta name="twitter:image" content={currentSpot.thumbnail_url_800} />
-        )}
-        {currentSpot && (
-          <meta
-            name="twitter:title"
-            content={`${currentSpot.name} | Qoodish`}
-          />
-        )}
-        {currentSpot && (
-          <meta
-            name="twitter:description"
-            content={currentSpot.formatted_address}
-          />
-        )}
-        <meta property="og:locale" content={I18n.locale} />
+        <title>{title}</title>
+
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/sports/${placeData.place_id}`}
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/sports/${placeData.place_id}`}
+          hrefLang="en"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/sports/${placeData.place_id}`}
+          hrefLang="ja"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/sports/${placeData.place_id}`}
+          hrefLang="x-default"
+        />
+
+        <meta name="keywords" content={keywords} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/sports/${placeData.place_id}`}
+        />
+        <meta property="og:image" content={thumbnailUrl} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
@@ -165,6 +149,72 @@ const SpotDetail = () => {
       </div>
     </Layout>
   );
+};
+
+const prisma = new PrismaClient();
+const client = new Client();
+
+export const getServerSideProps: GetServerSideProps = async ({
+  res,
+  params,
+  locale
+}) => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=300, stale-while-revalidate=300'
+  );
+
+  const place = await prisma.place.findUnique({
+    where: {
+      place_id_val: String(params.placeId)
+    },
+    include: {
+      spots: {
+        include: {
+          reviews: {
+            include: {
+              images: true
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if (!place) {
+    return {
+      notFound: true
+    };
+  }
+
+  const placeDetails = await client.placeDetails({
+    params: {
+      place_id: place.place_id_val,
+      language: Language[locale],
+      key: process.env.GOOGLE_API_KEY
+    }
+  });
+
+  const thumbnail = place.spots[0]?.reviews[0]?.images[0];
+
+  return {
+    props: {
+      place: JSON.parse(
+        JSON.stringify(place, (_key, value) =>
+          typeof value === 'bigint' ? Number(value) : value
+        )
+      ),
+      placeData: placeDetails.data.result,
+      thumbnailUrl: !thumbnail
+        ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL
+        : `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${
+            process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+          }/images/thumbnails/${path.basename(
+            thumbnail.url,
+            path.extname(thumbnail.url)
+          )}_800x800${path.extname(thumbnail.url)}`
+    }
+  };
 };
 
 export default React.memo(SpotDetail);

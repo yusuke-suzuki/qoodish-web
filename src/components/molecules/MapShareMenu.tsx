@@ -1,7 +1,6 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useMemo } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 
 import {
@@ -21,6 +20,9 @@ import {
   Tooltip
 } from '@material-ui/core';
 import { FileCopy, Share } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
+import { Map } from '@prisma/client';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,17 +41,19 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const shareUrl = map => {
-  return map ? `${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${map.id}` : '';
+type Props = {
+  map: Map;
 };
 
-export default memo(function MapShareMenu() {
+export default memo(function MapShareMenu(props: Props) {
+  const { map } = props;
+
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const map = useMappedState(
-    useCallback(state => state.mapSummary.currentMap, [])
-  );
+  const router = useRouter();
+  const { I18n } = useLocale();
+
   const dispatch = useDispatch();
 
   const handleUrlCopied = useCallback(() => {
@@ -57,6 +61,10 @@ export default memo(function MapShareMenu() {
   }, [dispatch]);
 
   const classes = useStyles();
+
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map.id}`;
 
   return (
     <div>
@@ -85,10 +93,7 @@ export default memo(function MapShareMenu() {
           onClick={() => setMenuOpen(false)}
           className={classes.shareButton}
         >
-          <FacebookShareButton
-            url={shareUrl(map)}
-            className={classes.shareButton}
-          >
+          <FacebookShareButton url={url} className={classes.shareButton}>
             <ListItemIcon>
               <FacebookIcon round size={24} />
             </ListItemIcon>
@@ -105,7 +110,7 @@ export default memo(function MapShareMenu() {
           className={classes.shareButton}
         >
           <TwitterShareButton
-            url={shareUrl(map)}
+            url={url}
             title={map && map.name}
             className={classes.shareButton}
           >
@@ -119,11 +124,7 @@ export default memo(function MapShareMenu() {
           </TwitterShareButton>
         </MenuItem>
 
-        <CopyToClipboard
-          text={shareUrl(map)}
-          onCopy={handleUrlCopied}
-          key="copy"
-        >
+        <CopyToClipboard text={url} onCopy={handleUrlCopied} key="copy">
           <MenuItem key="copy" onClick={() => setMenuOpen(false)}>
             <ListItemIcon>
               <FileCopy />

@@ -14,7 +14,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import {
   PushNotification,
@@ -26,6 +25,7 @@ import requestFinish from '../../actions/requestFinish';
 import AuthContext from '../../context/AuthContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import { usePushManager } from '../../hooks/usePushManager';
+import { useLocale } from '../../hooks/useLocale';
 
 const PushSettings = () => {
   const { registration } = useContext(ServiceWorkerContext);
@@ -37,6 +37,7 @@ const PushSettings = () => {
   const [invitedEnabled, setInvitedEnabled] = useState(false);
   const [commentEnabled, setCommentEnabled] = useState(false);
 
+  const { I18n } = useLocale();
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({

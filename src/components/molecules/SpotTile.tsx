@@ -9,7 +9,7 @@ import { useDispatch } from 'redux-react-hook';
 import openSpotCard from '../../actions/openSpotCard';
 import selectMapSpot from '../../actions/selectMapSpot';
 import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles({
   tileBar: {
@@ -51,6 +51,7 @@ export default memo(function SpotTile(props: Props) {
   const dispatch = useDispatch();
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const handleSpotClick = useCallback(
     spot => {

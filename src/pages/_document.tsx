@@ -1,4 +1,11 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+  DocumentInitialProps
+} from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core';
 import { Fragment } from 'react';
 
@@ -10,7 +17,9 @@ const styles = {
 };
 
 class CustomDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitialProps(
+    ctx: DocumentContext
+  ): Promise<DocumentInitialProps> {
     const muiSheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
 
@@ -91,7 +100,10 @@ class CustomDocument extends Document {
           />
 
           <meta name="theme-color" content="#ffc107" />
+
           <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="Qoodish" />
+
           <meta name="twitter:domain" content="qoodish.com" />
 
           {process.env.NEXT_PUBLIC_ENDPOINT.includes('dev') && (

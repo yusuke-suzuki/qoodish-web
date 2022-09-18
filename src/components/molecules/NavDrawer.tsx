@@ -2,7 +2,6 @@ import { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import I18n from '../../utils/I18n';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import ProfileCard from './ProfileCard';
@@ -31,6 +30,7 @@ import {
   Settings
 } from '@material-ui/icons';
 import { getAuth, signOut } from '@firebase/auth';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme => ({
   closeButton: {
@@ -71,6 +71,7 @@ const DrawerContents = memo(() => {
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const handleSignOutClick = useCallback(async () => {
     dispatch(requestStart());

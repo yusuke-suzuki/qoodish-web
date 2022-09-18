@@ -9,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import I18n from '../../utils/I18n';
 
 import deleteReview from '../../actions/deleteReview';
 import closeDeleteReviewDialog from '../../actions/closeDeleteReviewDialog';
@@ -18,6 +17,7 @@ import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import { ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import closeReviewDialog from '../../actions/closeReviewDialog';
+import { useLocale } from '../../hooks/useLocale';
 
 const DeleteReviewDialog = () => {
   const mapState = useCallback(
@@ -30,6 +30,7 @@ const DeleteReviewDialog = () => {
   );
   const { review, dialogOpen, reviewDialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);

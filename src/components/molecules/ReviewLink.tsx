@@ -1,4 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core';
+import { useRouter } from 'next/router';
 import React, { memo, useCallback } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import openReviewDialog from '../../actions/openReviewDialog';
@@ -22,6 +23,7 @@ export default memo(function ReviewLink(props: Props) {
   const { review, children } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
+  const router = useRouter();
 
   const handleClick = useCallback(
     e => {
@@ -31,9 +33,12 @@ export default memo(function ReviewLink(props: Props) {
     [dispatch, review]
   );
 
+  const basePath =
+    router.locale === router.defaultLocale ? '/' : `/${router.locale}`;
+
   return (
     <a
-      href={`/maps/${review.map.id}/reports/${review.id}`}
+      href={`${basePath}/maps/${review.map.id}/reports/${review.id}`}
       title={review.spot.name}
       className={classes.link}
       onClick={handleClick}

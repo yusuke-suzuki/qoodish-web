@@ -19,7 +19,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Skeleton from '@material-ui/lab/Skeleton';
 
-import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 import {
   Box,
@@ -32,6 +31,7 @@ import AddPhotoButton from '../molecules/AddPhotoButton';
 import { v1 as uuidv1 } from 'uuid';
 import uploadToStorage from '../../utils/uploadToStorage';
 import PlaceAutocomplete from '../molecules/PlaceAutocomplete';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -114,6 +114,7 @@ const SharedEditMapDialog = (props: Props) => {
 
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const { I18n } = useLocale();
 
   const setCurrentMap = useCallback(() => {
     if (currentMap) {

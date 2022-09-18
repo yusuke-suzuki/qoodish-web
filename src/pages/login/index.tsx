@@ -17,10 +17,11 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
-import I18n from '../../utils/I18n';
 import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 import Footer from '../../components/molecules/Footer';
 import Layout from '../../components/Layout';
+import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 const LoginButtons = dynamic(
   () => import('../../components/organisms/LoginButtons'),
@@ -99,51 +100,59 @@ const Login = () => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const { I18n } = useLocale();
+  const router = useRouter();
+
+  const title = `${I18n.t('login')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
 
   return (
     <Layout hideBottomNav={true} fullWidth={true}>
       <Head>
-        <title>{`${I18n.t('login')} | Qoodish`}</title>
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/login`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/login?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/login?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/login`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta name="title" content={`${I18n.t('login')} | Qoodish`} />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta property="og:title" content={`${I18n.t('login')} | Qoodish`} />
-        <meta property="og:description" content={I18n.t('meta description')} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}/login`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
-        <meta name="twitter:card" content="summary_large_image" />
         <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
+          property="og:image"
+          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
         />
-        <meta name="twitter:title" content={`${I18n.t('login')} | Qoodish`} />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 

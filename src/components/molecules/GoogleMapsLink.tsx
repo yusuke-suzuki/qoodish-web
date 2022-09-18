@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,6 +17,7 @@ type Props = {
 export default memo(function GoogleMapsLink(props: Props) {
   const { currentSpot } = props;
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Typography variant="subtitle2" color="textSecondary">

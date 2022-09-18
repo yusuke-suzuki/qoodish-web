@@ -1,7 +1,6 @@
 import { TextField } from '@material-ui/core';
 import { useCallback, useState, useEffect, memo } from 'react';
-
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 const MAX_COMMENT_LENGTH = 500;
 
@@ -12,6 +11,8 @@ type Props = {
 
 export default memo(function ReviewCommentForm(props: Props) {
   const { currentReview, onChange } = props;
+
+  const { I18n } = useLocale();
 
   const [comment, setComment] = useState<string>(null);
   const [error, setError] = useState<string>(null);

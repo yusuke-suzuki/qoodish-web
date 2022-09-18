@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'redux-react-hook';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -11,7 +10,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import I18n from '../../utils/I18n';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
@@ -29,6 +27,7 @@ import Head from 'next/head';
 import { format } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -52,17 +51,17 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const createdAt = invite => {
-  return format(new Date(invite.created_at), 'yyyy-MM-dd', {
-    locale: I18n.locale.includes('ja') ? ja : enUS
-  });
-};
-
 const Invites = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const router = useRouter();
   const { currentUser } = useContext(AuthContext);
+  const { I18n } = useLocale();
+
+  const title = `${I18n.t('invites')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
 
   const [invites, setInvites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,47 +126,48 @@ const Invites = () => {
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        <title>{`${I18n.t('invites')} | Qoodish`}</title>
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/invites`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/invites?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/invites?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/invites`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta name="title" content={`${I18n.t('invites')} | Qoodish`} />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta property="og:title" content={`${I18n.t('invites')} | Qoodish`} />
-        <meta property="og:description" content={I18n.t('meta description')} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}/invites`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
-        <meta name="twitter:card" content="summary_large_image" />
         <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
+          property="og:image"
+          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
         />
-        <meta name="twitter:title" content={`${I18n.t('invites')} | Qoodish`} />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
@@ -182,7 +182,9 @@ const Invites = () => {
               <CardHeader
                 avatar={<Avatar src={invite.invitable.image_url} />}
                 title={invite.invitable.name}
-                subheader={createdAt(invite)}
+                subheader={format(new Date(invite.created_at), 'yyyy-MM-dd', {
+                  locale: router.locale === 'ja' ? ja : enUS
+                })}
               />
               <CardContent className={classes.cardContent}>
                 <Typography component="p" className={classes.contentText}>

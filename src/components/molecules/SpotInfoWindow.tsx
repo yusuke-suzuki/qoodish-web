@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import SpotImageStepper from './SpotImageStepper';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 import GoogleMapsLink from './GoogleMapsLink';
 import ReviewsApi from '@yusuke-suzuki/qoodish-api-js-client/dist/api/ReviewsApi';
 import fetchMapSpotReviews from '../../actions/fetchMapSpotReviews';
@@ -17,6 +16,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import SpotLink from './SpotLink';
 import ReviewLink from './ReviewLink';
 import { AvatarGroup } from '@material-ui/lab';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const SpotInfoWindow = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

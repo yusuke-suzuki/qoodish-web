@@ -1,6 +1,5 @@
 import { useState, useCallback, memo } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 import openEditMapDialog from '../../actions/openEditMapDialog';
 import openDeleteMapDialog from '../../actions/openDeleteMapDialog';
 import {
@@ -13,6 +12,7 @@ import {
   MenuItem
 } from '@material-ui/core';
 import { Delete, Edit, MoreVert } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,6 +27,7 @@ export default memo(function MapVertMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

@@ -12,12 +12,12 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
-import I18n from '../../utils/I18n';
 import Link from 'next/link';
 
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
 import searchMaps from '../../actions/searchMaps';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -105,6 +105,7 @@ const SearchBar = () => {
   );
 
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <div className={classes.search}>

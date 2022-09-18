@@ -12,7 +12,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import I18n from '../../utils/I18n';
 import closeIssueDialog from '../../actions/closeIssueDialog';
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
@@ -21,8 +20,10 @@ import {
   IssueContentsApi,
   InappropreateContent
 } from '@yusuke-suzuki/qoodish-api-js-client';
+import { useLocale } from '../../hooks/useLocale';
 
 const IssueDialog = () => {
+  const { I18n } = useLocale();
   const dispatch = useDispatch();
   const mapState = useCallback(
     state => ({

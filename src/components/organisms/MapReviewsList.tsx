@@ -8,7 +8,6 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '@material-ui/core/Avatar';
-import I18n from '../../utils/I18n';
 import {
   useTheme,
   useMediaQuery,
@@ -19,6 +18,8 @@ import {
 import ReviewLink from '../molecules/ReviewLink';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const MapReviewsList = () => {
   const classes = useStyles();
+  const router = useRouter();
+  const { I18n } = useLocale();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const mapReviews = useMappedState(
@@ -81,7 +84,7 @@ const MapReviewsList = () => {
               }
               secondary={formatDistanceToNow(new Date(review.created_at), {
                 addSuffix: true,
-                locale: I18n.locale.includes('ja') ? ja : enUS
+                locale: router.locale === 'ja' ? ja : enUS
               })}
             />
             {review.images.length > 0 && (

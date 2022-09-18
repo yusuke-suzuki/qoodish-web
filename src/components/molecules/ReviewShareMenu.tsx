@@ -10,7 +10,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import CopyToClipboard from 'react-copy-to-clipboard';
-import I18n from '../../utils/I18n';
 
 import openToast from '../../actions/openToast';
 
@@ -21,6 +20,8 @@ import {
   TwitterIcon
 } from 'react-share';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,22 +37,22 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const shareUrl = review => {
-  return review
-    ? `${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map.id}/reports/${review.id}`
-    : '';
-};
-
 const ReviewShareMenu = props => {
   const [anchorEl, setAnchorEl] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const review = props.currentReview;
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
+  const router = useRouter();
 
   const handleUrlCopied = useCallback(() => {
     dispatch(openToast(I18n.t('copied')));
   }, [dispatch]);
+
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map.id}/reports/${review.id}`;
 
   return (
     <div>
@@ -73,10 +74,7 @@ const ReviewShareMenu = props => {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
       >
-        <FacebookShareButton
-          url={shareUrl(review)}
-          className={classes.shareButton}
-        >
+        <FacebookShareButton url={url} className={classes.shareButton}>
           <MenuItem
             key="facebook"
             onClick={() => setMenuOpen(false)}
@@ -94,7 +92,7 @@ const ReviewShareMenu = props => {
 
         <TwitterShareButton
           hashtags={[]}
-          url={shareUrl(review)}
+          url={url}
           title={`${review.spot.name} - ${review.map.name}`}
           className={classes.shareButton}
         >
@@ -113,11 +111,7 @@ const ReviewShareMenu = props => {
           </MenuItem>
         </TwitterShareButton>
 
-        <CopyToClipboard
-          text={shareUrl(review)}
-          onCopy={handleUrlCopied}
-          key="copy"
-        >
+        <CopyToClipboard text={url} onCopy={handleUrlCopied} key="copy">
           <MenuItem key="copy" onClick={() => setMenuOpen(false)}>
             <ListItemIcon>
               <FileCopyIcon />

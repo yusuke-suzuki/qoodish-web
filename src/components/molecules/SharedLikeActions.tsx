@@ -3,10 +3,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 const SharedLikeActions = props => {
+  const { I18n } = useLocale();
+
   return (
     <Tooltip
       title={

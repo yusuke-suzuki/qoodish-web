@@ -4,6 +4,8 @@ import { useMappedState } from 'redux-react-hook';
 import GoogleMapsContext from '../../context/GoogleMapsContext';
 
 import { makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
+import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
+import { LoaderStatus } from '@googlemaps/js-api-loader';
 
 const useStyles = makeStyles({
   map: {
@@ -20,6 +22,8 @@ const GoogleMaps = (props: Props) => {
   const [googleMap, setGoogleMap] = useState<google.maps.Map>(null);
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+  const { status } = useGoogleMapsApi();
 
   const mapState = useCallback(
     state => ({
@@ -114,8 +118,12 @@ const GoogleMaps = (props: Props) => {
   }, [currentMap, googleMap]);
 
   useEffect(() => {
+    if (status !== LoaderStatus.SUCCESS) {
+      return;
+    }
+
     initGoogleMaps();
-  }, []);
+  }, [status]);
 
   const classes = useStyles();
 

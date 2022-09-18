@@ -1,6 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 import MapShareMenu from './MapShareMenu';
 import MapVertMenu from './MapVertMenu';
 import MapLikeActions from './MapLikeActions';
@@ -19,6 +18,7 @@ import {
   useTheme
 } from '@material-ui/core';
 import { Lock, PersonAdd } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +43,7 @@ export default memo(function MapToolbar() {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({
@@ -80,7 +81,7 @@ export default memo(function MapToolbar() {
           <Box className={classes.backButton}>
             <BackButton />
           </Box>
-          <Box display="grid" alignItems="center">
+          <Box display="flex" alignItems="center">
             {isPrivate && (
               <Tooltip title={I18n.t('this map is private')}>
                 <Lock
@@ -108,7 +109,7 @@ export default memo(function MapToolbar() {
             </Tooltip>
           )}
 
-          <MapShareMenu />
+          {map && <MapShareMenu map={map} />}
 
           {isEditable ? <MapVertMenu /> : <MapLikeActions target={map} />}
         </Box>

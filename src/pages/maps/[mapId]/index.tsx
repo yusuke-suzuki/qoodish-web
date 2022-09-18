@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo
+} from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 
 import selectMap from '../../../actions/selectMap';
@@ -16,7 +22,6 @@ import {
   useMediaQuery,
   useTheme
 } from '@material-ui/core';
-import I18n from '../../../utils/I18n';
 
 import {
   ApiClient,
@@ -42,6 +47,11 @@ import SpotMarkers from '../../../components/organisms/SpotMarkers';
 import MapSummaryDrawer from '../../../components/organisms/MapSummaryDrawer';
 import { use100vh } from 'react-div-100vh';
 import CurrentLocationButton from '../../../components/molecules/CurrentLocationButton';
+import { GetServerSideProps } from 'next';
+import { Map, PrismaClient } from '@prisma/client';
+
+import path from 'path';
+import { useLocale } from '../../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,7 +86,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const MapDetail = () => {
+type Props = {
+  isPrivate: boolean;
+  map: Map | null;
+  thumbnailUrl: string;
+};
+
+const MapPage = (props: Props) => {
+  const { isPrivate, map, thumbnailUrl } = props;
+
+  const { I18n } = useLocale();
+
   const { currentUser } = useContext(AuthContext);
 
   const theme = useTheme();
@@ -172,78 +192,55 @@ const MapDetail = () => {
     };
   }, [currentUser, mapId]);
 
+  const title = isPrivate ? 'Qoodish' : `${map.name} | Qoodish`;
+  const description = isPrivate ? I18n.t('meta description') : map.description;
+  const keywords =
+    (isPrivate ? '' : `${map.name}, `) +
+    'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip';
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={true} fullWidth={true}>
       <Head>
-        {currentMap && <title>{`${currentMap.name} | Qoodish`}</title>}
-        {currentMap && (
-          <link
-            rel="canonical"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentMap.id}`}
-          />
-        )}
-        {currentMap && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentMap.id}?hl=en`}
-            hrefLang="en"
-          />
-        )}
-        {currentMap && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentMap.id}?hl=ja`}
-            hrefLang="ja"
-          />
-        )}
-        {currentMap && (
-          <link
-            rel="alternate"
-            href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentMap.id}`}
-            hrefLang="x-default"
-          />
-        )}
-        {currentMap && currentMap.private && (
-          <meta name="robots" content="noindex" />
-        )}
-        {currentMap && (
-          <meta
-            name="keywords"
-            content={`${currentMap.name}, Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`}
-          />
-        )}
-        {currentMap && (
-          <meta name="title" content={`${currentMap.name} | Qoodish`} />
-        )}
-        {currentMap && (
-          <meta name="description" content={currentMap.description} />
-        )}
-        {currentMap && (
-          <meta property="og:title" content={`${currentMap.name} | Qoodish`} />
-        )}
-        {currentMap && (
-          <meta property="og:description" content={currentMap.description} />
-        )}
-        {currentMap && (
-          <meta
-            property="og:url"
-            content={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${currentMap.id}`}
-          />
-        )}
-        {currentMap && (
-          <meta property="og:image" content={currentMap.thumbnail_url_800} />
-        )}
+        <title>{title}</title>
+
+        <link
+          rel="canonical"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map.id}`}
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${map.id}`}
+          hrefLang="en"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${map.id}`}
+          hrefLang="ja"
+        />
+        <link
+          rel="alternate"
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${map.id}`}
+          hrefLang="x-default"
+        />
+
+        {isPrivate && <meta name="robots" content="noindex" />}
+
+        <meta name="keywords" content={keywords} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+          property="og:url"
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map.id}`}
+        />
+        <meta property="og:image" content={thumbnailUrl} />
+
         <meta name="twitter:card" content="summary_large_image" />
-        {currentMap && (
-          <meta name="twitter:image" content={currentMap.thumbnail_url_800} />
-        )}
-        {currentMap && (
-          <meta name="twitter:title" content={`${currentMap.name} | Qoodish`} />
-        )}
-        {currentMap && (
-          <meta name="twitter:description" content={currentMap.description} />
-        )}
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
@@ -290,9 +287,57 @@ const MapDetail = () => {
 
       <MapSummaryDrawer />
       <DeleteMapDialog />
-      <InviteTargetDialog mapId={mapId as string} />
+      <InviteTargetDialog mapId={Number(mapId)} />
     </Layout>
   );
 };
 
-export default React.memo(MapDetail);
+const prisma = new PrismaClient();
+
+export const getServerSideProps: GetServerSideProps = async ({
+  res,
+  params
+}) => {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=300, stale-while-revalidate=300'
+  );
+
+  const map = await prisma.map.findUnique({
+    where: {
+      id: Number(params.mapId)
+    }
+  });
+
+  if (!map) {
+    return {
+      notFound: true
+    };
+  }
+
+  const isPrivate = map.private;
+
+  return {
+    props: {
+      isPrivate: isPrivate,
+      map: isPrivate
+        ? null
+        : JSON.parse(
+            JSON.stringify(map, (_key, value) =>
+              typeof value === 'bigint' ? Number(value) : value
+            )
+          ),
+      thumbnailUrl:
+        isPrivate || !map.image_url
+          ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL
+          : `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${
+              process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+            }/maps/thumbnails/${path.basename(
+              map.image_url,
+              path.extname(map.image_url)
+            )}_800x800${path.extname(map.image_url)}`
+    }
+  };
+};
+
+export default memo(MapPage);

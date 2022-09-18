@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from 'react';
+import React, { useEffect, useCallback, useContext, memo } from 'react';
 import { useDispatch } from 'redux-react-hook';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +11,6 @@ import Link from 'next/link';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 
-import I18n from '../../utils/I18n';
 import readNotification from '../../actions/readNotification';
 import sleep from '../../utils/sleep';
 import {
@@ -22,6 +21,8 @@ import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,8 +51,13 @@ const Item = props => {
   }
 };
 
-const NotificationText = props => {
+type NotificationTextProps = {
+  notification: any;
+};
+
+const NotificationText = memo((props: NotificationTextProps) => {
   const { notification } = props;
+  const { I18n } = useLocale();
 
   return (
     <>
@@ -59,7 +65,7 @@ const NotificationText = props => {
       {` ${I18n.t(`${notification.key} ${notification.notifiable.type}`)}`}
     </>
   );
-};
+});
 
 type Props = {
   menu?: boolean;
@@ -71,6 +77,7 @@ const NotificationList = (props: Props) => {
   const { menu, notifications, handleNotificationClick } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
+  const router = useRouter();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -132,7 +139,7 @@ const NotificationList = (props: Props) => {
             <Typography variant="subtitle1" color="textSecondary">
               {formatDistanceToNow(new Date(notification.created_at), {
                 addSuffix: true,
-                locale: I18n.locale.includes('ja') ? ja : enUS
+                locale: router.locale === 'ja' ? ja : enUS
               })}
             </Typography>
           }

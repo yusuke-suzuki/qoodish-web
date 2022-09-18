@@ -1,14 +1,13 @@
-import React from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import I18n from '../../utils/I18n';
-import { makeStyles, useTheme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import PushSettings from '../../components/organisms/PushSettings';
 import ProviderLinkSettings from '../../components/organisms/ProviderLinkSettings';
 import DeleteAccountDialog from '../../components/organisms/DeleteAccountDialog';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
 import DeleteAccountCard from '../../components/organisms/DeleteAccountCard';
+import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
+import { memo } from 'react';
 
 const useStyles = makeStyles({
   card: {
@@ -17,57 +16,58 @@ const useStyles = makeStyles({
 });
 
 const Settings = () => {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const router = useRouter();
   const classes = useStyles();
+  const { I18n } = useLocale();
+
+  const title = `${I18n.t('settings')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
 
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        <title>{`${I18n.t('settings')} | Qoodish`}</title>
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/settings`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/settings?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/settings?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/settings`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta name="title" content={`${I18n.t('settings')} | Qoodish`} />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta property="og:title" content={`${I18n.t('settings')} | Qoodish`} />
-        <meta property="og:description" content={I18n.t('meta description')} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}/settings`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
+        <meta property="og:image" content={thumbnailUrl} />
+
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
-        <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
-        />
-        <meta
-          name="twitter:title"
-          content={`${I18n.t('settings')} | Qoodish`}
-        />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 
@@ -85,4 +85,4 @@ const Settings = () => {
   );
 };
 
-export default React.memo(Settings);
+export default memo(Settings);

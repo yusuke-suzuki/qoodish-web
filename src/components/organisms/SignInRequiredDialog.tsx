@@ -13,16 +13,17 @@ import {
   SlideProps,
   Box
 } from '@material-ui/core';
-import I18n from '../../utils/I18n';
 import closeSignInRequiredDialog from '../../actions/closeSignInRequiredDialog';
 import Link from 'next/link';
 import { ExitToApp } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const SignInRequiredDialog = () => {
+  const { I18n } = useLocale();
   const dispatch = useDispatch();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));

@@ -9,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import I18n from '../../utils/I18n';
 
 import closeDeleteAccountDialog from '../../actions/closeDeleteAccountDialog';
 import openToast from '../../actions/openToast';
@@ -21,6 +20,7 @@ import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { getAuth, signOut } from '@firebase/auth';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,6 +43,7 @@ const DeleteAccountDialog = () => {
   const { dialogOpen } = useMappedState(mapState);
   const dispatch = useDispatch();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);

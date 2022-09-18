@@ -2,12 +2,13 @@ import React, { memo, useCallback, useContext } from 'react';
 import { useDispatch } from 'redux-react-hook';
 import openEditProfileDialog from '../../actions/openEditProfileDialog';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
-import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 import { Button } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 export default memo(function EditProfileButton() {
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 

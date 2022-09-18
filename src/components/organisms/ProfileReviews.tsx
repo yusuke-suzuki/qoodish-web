@@ -6,7 +6,6 @@ import ReviewGridList from './ReviewGridList';
 import NoContents from '../molecules/NoContents';
 
 import fetchUserReviews from '../../actions/fetchUserReviews';
-import I18n from '../../utils/I18n';
 import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import ReviewImageTile from './ReviewImageTile';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -19,6 +18,7 @@ import {
   createStyles
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,6 +56,7 @@ const ProfileReviews = (props: Props) => {
   const { currentUser } = useContext(AuthContext);
   const dispatch = useDispatch();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const classes = useStyles();
 

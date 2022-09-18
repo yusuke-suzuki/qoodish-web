@@ -1,65 +1,63 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 
-import Typography from '@material-ui/core/Typography';
-
-import I18n from '../../utils/I18n';
 import Layout from '../../components/Layout';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
+import { Typography } from '@material-ui/core';
 
 export default memo(function Terms() {
+  const { I18n } = useLocale();
+  const router = useRouter();
+
+  const title = `${I18n.t('terms of service')} | Qoodish`;
+  const description = I18n.t('meta description');
+  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   return (
     <Layout hideBottomNav={true} fullWidth={false}>
       <Head>
-        <title>{`${I18n.t('terms of service')} | Qoodish`}</title>
+        <title>{title}</title>
+
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/terms`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/terms?hl=en`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/terms?hl=ja`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja${router.pathname}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/terms`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${router.pathname}`}
           hrefLang="x-default"
         />
+
         <meta
           name="keywords"
           content="Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip"
         />
-        <meta
-          name="title"
-          content={`${I18n.t('terms of service')} | Qoodish`}
-        />
-        <meta name="description" content={I18n.t('meta description')} />
-        <meta
-          property="og:title"
-          content={`${I18n.t('terms of service')} | Qoodish`}
-        />
-        <meta property="og:description" content={I18n.t('meta description')} />
+        <meta name="description" content={description} />
+
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}/terms`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta property="og:image" content={process.env.NEXT_PUBLIC_OGP_IMAGE} />
+        <meta property="og:image" content={thumbnailUrl} />
+
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE}
-        />
-        <meta
-          name="twitter:title"
-          content={`${I18n.t('terms of service')} | Qoodish`}
-        />
-        <meta name="twitter:description" content={I18n.t('meta description')} />
-        <meta property="og:locale" content={I18n.locale} />
+
+        <meta property="og:locale" content={router.locale} />
         <meta property="og:site_name" content={I18n.t('meta headline')} />
       </Head>
 

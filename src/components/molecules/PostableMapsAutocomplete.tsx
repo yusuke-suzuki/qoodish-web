@@ -7,7 +7,7 @@ import getMapPredictions from '../../utils/getMapPredictions';
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import fetchPostableMaps from '../../actions/fetchPostableMaps';
-import I18n from '../../utils/I18n';
+import { useLocale } from '../../hooks/useLocale';
 
 type Props = {
   onChange: Function;
@@ -19,6 +19,7 @@ export default memo(function PostableMapsAutocomplete(props: Props) {
   const { onChange, defaultValue, required } = props;
 
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

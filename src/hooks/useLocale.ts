@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+
 const en = require('../locales/en.json');
 const ja = require('../locales/ja.json');
 
@@ -24,4 +26,10 @@ const I18n = {
   }
 };
 
-export default I18n;
+export const useLocale = () => {
+  const router = useRouter();
+
+  I18n.locale = router.locale;
+
+  return { I18n };
+};

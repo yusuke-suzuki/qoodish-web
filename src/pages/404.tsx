@@ -1,14 +1,15 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Head from 'next/head';
-import Alert from '@material-ui/lab/Alert';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import Link from 'next/link';
-import I18n from '../utils/I18n';
 import Layout from '../components/Layout';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { useLocale } from '../hooks/useLocale';
+import { Button } from '@material-ui/core';
+import { KeyboardArrowLeft } from '@material-ui/icons';
 
 const NotFound = () => {
+  const { I18n } = useLocale();
+
   return (
     <>
       <Alert severity="warning">
@@ -16,7 +17,7 @@ const NotFound = () => {
         {I18n.t('page not found description')}
       </Alert>
       <Link href="/discover" passHref>
-        <Button color="primary" startIcon={<KeyboardArrowLeftIcon />}>
+        <Button color="primary" startIcon={<KeyboardArrowLeft />}>
           {I18n.t('back to our site')}
         </Button>
       </Link>
@@ -25,6 +26,8 @@ const NotFound = () => {
 };
 
 export default memo(function Custom404() {
+  const { I18n } = useLocale();
+
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>

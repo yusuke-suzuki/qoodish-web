@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import NoContents from '../molecules/NoContents';
 
-import I18n from '../../utils/I18n';
 import fetchRecentReviews from '../../actions/fetchRecentReviews';
 import openToast from '../../actions/openToast';
 import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
@@ -22,6 +21,8 @@ import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
 import ReviewLink from '../molecules/ReviewLink';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
+import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +64,8 @@ const RecentReviews = () => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const { I18n } = useLocale();
+  const router = useRouter();
 
   const dispatch = useDispatch();
   const mapState = useCallback(
@@ -177,7 +180,7 @@ const RecentReviews = () => {
                         new Date(review.created_at),
                         {
                           addSuffix: true,
-                          locale: I18n.locale.includes('ja') ? ja : enUS
+                          locale: router.locale === 'ja' ? ja : enUS
                         }
                       )}
                     />

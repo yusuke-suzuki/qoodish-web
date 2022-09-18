@@ -13,10 +13,10 @@ import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 import Link from 'next/link';
 
-import I18n from '../../utils/I18n';
 import closeFollowersDialog from '../../actions/closeFollowersDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
 import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const Transition = forwardRef(function Transition(props: SlideProps, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,6 +26,7 @@ const FollowersDialog = () => {
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({

@@ -17,7 +17,6 @@ import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
 import requestFinish from '../../actions/requestFinish';
 import updateLinkedProviders from '../../actions/updateLinkedProviders';
-import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 
 import { createStyles, makeStyles } from '@material-ui/core';
@@ -30,6 +29,7 @@ import {
   TwitterAuthProvider,
   unlink
 } from 'firebase/auth';
+import { useLocale } from '../../hooks/useLocale';
 
 const providers = [
   {
@@ -62,6 +62,7 @@ const useStyles = makeStyles(() =>
 const LinkedProvidersList = memo((): any => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
   const mapState = useCallback(
     state => ({
       linkedProviders: state.app.linkedProviders
@@ -189,6 +190,8 @@ const LinkedProvidersList = memo((): any => {
 });
 
 const ProviderLinkSettings = () => {
+  const { I18n } = useLocale();
+
   return (
     <Card elevation={0}>
       <CardContent>

@@ -16,10 +16,10 @@ import GradeIcon from '@material-ui/icons/Grade';
 
 import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 
-import I18n from '../../utils/I18n';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
 import { createStyles, makeStyles } from '@material-ui/core';
 import AuthContext from '../../context/AuthContext';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -51,6 +51,7 @@ const useStyles = makeStyles(theme =>
 
 const TrendingMaps = () => {
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const [maps, setMaps] = useState([]);
 

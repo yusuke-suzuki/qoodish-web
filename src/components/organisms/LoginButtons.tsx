@@ -5,7 +5,6 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { useIOS } from '../../utils/detectDevice';
 import sleep from '../../utils/sleep';
-import I18n from '../../utils/I18n';
 
 import openToast from '../../actions/openToast';
 import requestStart from '../../actions/requestStart';
@@ -25,10 +24,12 @@ import {
   GithubAuthProvider
 } from 'firebase/auth';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { useLocale } from '../../hooks/useLocale';
 
 const LoginButtons = props => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const { nextPath } = props;
   const [firebaseAuth, setFirebaseAuth] = useState(undefined);

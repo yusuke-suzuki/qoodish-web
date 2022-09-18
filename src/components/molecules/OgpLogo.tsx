@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import I18n from '../../utils/I18n';
 import { Card, createStyles, makeStyles, Typography } from '@material-ui/core';
 import { Map } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,6 +36,7 @@ const useStyles = makeStyles(() =>
 
 export default memo(function OgpLogo() {
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Card className={classes.card} square={true} elevation={0}>

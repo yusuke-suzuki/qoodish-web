@@ -6,7 +6,6 @@ import Slide from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 
 import SpotCard from './SpotCard';
-import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 import closeSpotDialog from '../../actions/closeSpotDialog';
 import { useDispatch, useMappedState } from 'redux-react-hook';
@@ -17,6 +16,7 @@ import {
   makeStyles,
   createStyles
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -49,6 +49,7 @@ const SpotDialog = () => {
   const classes = useStyles();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const { I18n } = useLocale();
 
   const handleDialogClose = useCallback(() => {
     dispatch(closeSpotDialog());

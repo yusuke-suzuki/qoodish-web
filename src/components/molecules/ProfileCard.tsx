@@ -1,7 +1,6 @@
 import { memo, useCallback, useContext } from 'react';
 import { useMappedState } from 'redux-react-hook';
 import ProfileAvatar from './ProfileAvatar';
-import I18n from '../../utils/I18n';
 import Link from 'next/link';
 import AuthContext from '../../context/AuthContext';
 import {
@@ -12,6 +11,7 @@ import {
   Theme,
   Typography
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +29,7 @@ export default memo(function ProfileCard() {
 
   const { currentUser } = useContext(AuthContext);
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Link href="/profile" passHref>

@@ -1,6 +1,5 @@
 import { useState, useCallback, useContext, memo } from 'react';
 import { useDispatch } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 import openSignInRequiredDialog from '../../actions/openSignInRequiredDialog';
 import openIssueDialog from '../../actions/openIssueDialog';
 import openDeleteCommentDialog from '../../actions/openDeleteCommentDialog';
@@ -13,6 +12,7 @@ import {
   MenuItem
 } from '@material-ui/core';
 import { Delete, MoreVert, ReportProblem } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 type Props = {
   comment: any;
@@ -24,6 +24,7 @@ export default memo(function CommentMenu(props: Props) {
   const { currentUser } = useContext(AuthContext);
   const { comment } = props;
   const dispatch = useDispatch();
+  const { I18n } = useLocale();
 
   const handleIssueButtonClick = useCallback(() => {
     setMenuOpen(false);

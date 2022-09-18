@@ -14,7 +14,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import HomeIcon from '@material-ui/icons/Home';
-import I18n from '../../utils/I18n';
 import {
   Box,
   createStyles,
@@ -22,6 +21,7 @@ import {
   Theme,
   useTheme
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -104,6 +104,7 @@ const MapTabs = React.memo((props: TabsProps) => {
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   return (
     <Tabs

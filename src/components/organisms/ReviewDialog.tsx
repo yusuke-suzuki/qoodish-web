@@ -8,13 +8,13 @@ import Fade from '@material-ui/core/Fade';
 
 import ReviewCard from '../molecules/ReviewCard';
 import ReviewCardActions from '../molecules/ReviewCardActions';
-import I18n from '../../utils/I18n';
 import DialogAppBar from '../molecules/DialogAppBar';
 
 import { useDispatch, useMappedState } from 'redux-react-hook';
 import { useTheme, useMediaQuery, makeStyles } from '@material-ui/core';
 import closeReviewDialog from '../../actions/closeReviewDialog';
 import { useEffect } from 'react';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme => ({
   dialogContent: {
@@ -46,6 +46,7 @@ const ReviewDialog = () => {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const handleDialogClose = useCallback(() => {
     dispatch(closeReviewDialog());

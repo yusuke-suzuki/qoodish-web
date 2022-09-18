@@ -18,9 +18,9 @@ import {
   InlineObject1
 } from '@yusuke-suzuki/qoodish-api-js-client';
 
-import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -48,7 +48,9 @@ type Props = {
 
 const NotificationsMenu = (props: Props) => {
   const { open, onClose, anchorEl } = props;
+
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const dispatch = useDispatch();
 

@@ -6,10 +6,10 @@ import { ApiClient, UserMapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonMapCollection from './SkeletonMapCollection';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import NoContents from '../molecules/NoContents';
-import I18n from '../../utils/I18n';
 import AuthContext from '../../context/AuthContext';
 import { useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { useLocale } from '../../hooks/useLocale';
 
 type Props = {
   userId?: string;
@@ -23,6 +23,7 @@ const ProfileMyMaps = (props: Props) => {
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const { I18n } = useLocale();
 
   const { currentUser } = useContext(AuthContext);
 

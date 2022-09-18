@@ -13,12 +13,12 @@ import Paper from '@material-ui/core/Paper';
 import CardContent from '@material-ui/core/CardContent';
 import PlaceIcon from '@material-ui/icons/Place';
 
-import I18n from '../../utils/I18n';
 import { ApiClient, SpotsApi } from '@yusuke-suzuki/qoodish-api-js-client';
 import SkeletonTrendingList from '../molecules/SkeletonTrendingList';
 import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles } from '@material-ui/core';
 import SpotLink from '../molecules/SpotLink';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme =>
 
 const TrendingSpots = () => {
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const [spots, setSpots] = useState([]);
 

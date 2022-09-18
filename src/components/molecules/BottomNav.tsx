@@ -1,6 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useMappedState } from 'redux-react-hook';
-import I18n from '../../utils/I18n';
 import CreateResourceButton from './CreateResourceButton';
 import { useRouter } from 'next/router';
 import {
@@ -16,6 +15,7 @@ import {
   Home,
   Notifications
 } from '@material-ui/icons';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() => ({
   bottomNav: {
@@ -59,6 +59,8 @@ export default memo(function BottomNav() {
   const [bottomNavValue, setBottomNavValue] = useState<number | undefined>(
     undefined
   );
+
+  const { I18n } = useLocale();
   const router = useRouter();
 
   const { pathname } = router;

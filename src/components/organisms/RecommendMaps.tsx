@@ -4,13 +4,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import I18n from '../../utils/I18n';
 
 import Link from 'next/link';
 import MapCard from '../molecules/MapCard';
 import SkeletonMapCard from '../molecules/SkeletonMapCard';
 import AuthContext from '../../context/AuthContext';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +33,7 @@ const RecommendMaps = () => {
   const [maps, setMaps] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const refreshMaps = useCallback(async () => {
     const apiInstance = new MapsApi();

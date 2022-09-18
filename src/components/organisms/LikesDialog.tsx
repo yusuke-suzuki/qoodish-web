@@ -12,7 +12,6 @@ import Slide, { SlideProps } from '@material-ui/core/Slide';
 import Fade from '@material-ui/core/Fade';
 import Link from 'next/link';
 
-import I18n from '../../utils/I18n';
 import closeLikesDialog from '../../actions/closeLikesDialog';
 import DialogAppBar from '../molecules/DialogAppBar';
 import {
@@ -21,6 +20,7 @@ import {
   makeStyles,
   createStyles
 } from '@material-ui/core';
+import { useLocale } from '../../hooks/useLocale';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -39,6 +39,7 @@ const LikesDialog = () => {
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { I18n } = useLocale();
 
   const mapState = useCallback(
     state => ({
