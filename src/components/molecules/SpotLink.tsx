@@ -37,7 +37,7 @@ export default memo(function SpotLink(props: Props) {
 
   return (
     <a
-      href={`${basePath}/spots/${spot.place_id}`}
+      href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/spots/${spot.place_id}`}
       title={spot.name}
       onClick={handleClick}
       className={classes.link}
