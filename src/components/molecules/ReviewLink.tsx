@@ -34,7 +34,7 @@ export default memo(function ReviewLink(props: Props) {
   );
 
   const basePath =
-    router.locale === router.defaultLocale ? '/' : `/${router.locale}`;
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
 
   return (
     <a
