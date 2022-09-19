@@ -33,7 +33,7 @@ export default memo(function SpotLink(props: Props) {
   );
 
   const basePath =
-    router.locale === router.defaultLocale ? '/' : `/${router.locale}`;
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
 
   return (
     <a
