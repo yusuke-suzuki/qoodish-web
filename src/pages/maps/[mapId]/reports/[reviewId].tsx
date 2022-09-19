@@ -119,21 +119,21 @@ const ReviewPage = (props: Props) => {
 
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map_id}/reports/${review.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${mapId}/reports/${reviewId}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map_id}/reports/${review.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${mapId}/reports/${reviewId}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${review.map_id}/reports/${review.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${mapId}/reports/${reviewId}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${review.map_id}/reports/${review.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${mapId}/reports/${reviewId}`}
           hrefLang="x-default"
         />
 
@@ -146,7 +146,7 @@ const ReviewPage = (props: Props) => {
         <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map_id}/reports/${review.id}`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${mapId}/reports/${reviewId}`}
         />
         <meta property="og:image" content={thumbnailUrl} />
 

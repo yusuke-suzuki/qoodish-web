@@ -207,21 +207,21 @@ const MapPage = (props: Props) => {
 
         <link
           rel="canonical"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${mapId}`}
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${map.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${mapId}`}
           hrefLang="en"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${map.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/ja/maps/${mapId}`}
           hrefLang="ja"
         />
         <link
           rel="alternate"
-          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${map.id}`}
+          href={`${process.env.NEXT_PUBLIC_ENDPOINT}/maps/${mapId}`}
           hrefLang="x-default"
         />
 
@@ -234,7 +234,7 @@ const MapPage = (props: Props) => {
         <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map.id}`}
+          content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${mapId}`}
         />
         <meta property="og:image" content={thumbnailUrl} />
 
