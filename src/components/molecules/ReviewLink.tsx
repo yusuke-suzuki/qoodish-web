@@ -38,7 +38,7 @@ export default memo(function ReviewLink(props: Props) {
 
   return (
     <a
-      href={`${basePath}/maps/${review.map.id}/reports/${review.id}`}
+      href={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review.map.id}/reports/${review.id}`}
       title={review.spot.name}
       className={classes.link}
       onClick={handleClick}
