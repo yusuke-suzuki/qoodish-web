@@ -1,40 +1,73 @@
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { jaJP, enUS } from '@material-ui/core/locale';
-import { ApiClient } from '@yusuke-suzuki/qoodish-api-js-client';
-import { amber, lightBlue } from '@material-ui/core/colors';
+import {
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import AuthContext from '../context/AuthContext';
 
-import { StoreContext } from 'redux-react-hook';
-import configureStore from '../configureStore';
-import AppPortal from '../components/AppPortal';
-
-import { initializeApp, getApps } from 'firebase/app';
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInAnonymously,
-  User
-} from 'firebase/auth';
 import { getAnalytics, logEvent } from 'firebase/analytics';
+import { getApps, initializeApp } from 'firebase/app';
+import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
-const { store } = configureStore();
+import { CacheProvider, EmotionCache, css } from '@emotion/react';
+import {
+  CssBaseline,
+  GlobalStyles,
+  ThemeProvider,
+  createTheme
+} from '@mui/material';
+import { amber, lightBlue } from '@mui/material/colors';
+import { enUS, jaJP } from '@mui/material/locale';
+import { NextPage } from 'next';
+import { SnackbarProvider } from 'notistack';
+import createEmotionCache from '../../createEmotionCache';
+import SWRContainer from '../components/SWRContainer';
+import { usePushManager } from '../hooks/usePushManager';
 
-export default function CustomApp({ Component, pageProps }: AppProps) {
+const globalStyles = css`
+  .pac-container {
+    z-index: 1300 !important;
+  }
+`;
+
+const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
+
+const clientSideEmotionCache = createEmotionCache();
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+  emotionCache?: EmotionCache;
+};
+
+export default function CustomApp({
+  Component,
+  emotionCache = clientSideEmotionCache,
+  pageProps
+}: AppPropsWithLayout) {
+  const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<User>(null);
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration>(
-    null
-  );
+  const [signInRequired, setSignInRequired] = useState(false);
+  const [registration, setRegistration] =
+    useState<ServiceWorkerRegistration>(null);
+
+  usePushManager(registration);
 
   const router = useRouter();
 
   const theme = useMemo(() => {
     const locale = router.locale === 'ja' ? jaJP : enUS;
 
-    return createMuiTheme(
+    return createTheme(
       {
         palette: {
           primary: {
@@ -58,16 +91,13 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
     );
   }, [router.locale]);
 
-  const measurePageView = useCallback(
-    path => {
-      const analytics = getAnalytics();
+  const measurePageView = useCallback((path) => {
+    const analytics = getAnalytics();
 
-      logEvent(analytics, 'page_view', {
-        page_path: path
-      });
-    },
-    [logEvent, getAnalytics]
-  );
+    logEvent(analytics, 'page_view', {
+      page_path: path
+    });
+  }, []);
 
   const initFirebase = useCallback(() => {
     initializeApp({
@@ -79,37 +109,40 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
       measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
     });
-  }, [initializeApp]);
+  }, []);
 
   const initServiceWorker = useCallback(async () => {
-    const { Workbox } = await import('workbox-window');
-    const wb = new Workbox('/sw.js');
-    const reg = await wb.register();
+    try {
+      const { Workbox } = await import('workbox-window');
+      const wb = new Workbox('/sw.js');
+      const reg = await wb.register();
 
-    console.log(
-      'ServiceWorker registration successful with scope: ',
-      reg.scope
-    );
+      console.log(
+        'ServiceWorker registration successful with scope: ',
+        reg.scope
+      );
 
-    setRegistration(reg);
+      setRegistration(reg);
+    } catch (error) {
+      console.log('ServiceWorker registration failed: ', error);
+    }
   }, []);
 
-  const initApiClient = useCallback(() => {
-    const defaultClient = ApiClient.instance;
-    defaultClient.basePath = process.env.NEXT_PUBLIC_API_ENDPOINT;
-  }, []);
-
-  const handleAuthStateChanged = useCallback(
-    async (user: User) => {
-      if (user) {
-        setCurrentUser(user);
+  const handleAuthStateChanged = useCallback(async (user: User) => {
+    if (user) {
+      if (user.isAnonymous) {
+        await user.delete();
+        setCurrentUser(null);
       } else {
-        const auth = getAuth();
-        await signInAnonymously(auth);
+        setCurrentUser(user);
       }
-    },
-    [getAuth, signInAnonymously]
-  );
+
+      setIsLoading(false);
+    } else {
+      setCurrentUser(null);
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     router.events.on('routeChangeComplete', measurePageView);
@@ -117,48 +150,57 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
     return () => {
       router.events.off('routeChangeComplete', measurePageView);
     };
-  }, []);
+  }, [router.events, measurePageView]);
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       initServiceWorker();
     }
-  }, []);
+  }, [initServiceWorker]);
 
   useEffect(() => {
     if (!getApps().length) {
       initFirebase();
     }
 
-    initApiClient();
-
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, handleAuthStateChanged);
 
     return () => unsubscribe();
-  }, []);
+  }, [initFirebase, handleAuthStateChanged]);
+
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <StoreContext.Provider value={store}>
+    <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
-        <AuthContext.Provider
-          value={{
-            currentUser: currentUser,
-            setCurrentUser: setCurrentUser
-          }}
+        <CssBaseline />
+        {inputGlobalStyles}
+        <SnackbarProvider
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          <ServiceWorkerContext.Provider
+          <AuthContext.Provider
             value={{
-              registration: registration
+              currentUser: currentUser,
+              setCurrentUser: setCurrentUser,
+              isLoading: isLoading,
+              signInRequired: signInRequired,
+              setSignInRequired: setSignInRequired
             }}
           >
-            <AppPortal>
-              <Component {...pageProps} />
-            </AppPortal>
-          </ServiceWorkerContext.Provider>
-        </AuthContext.Provider>
+            <ServiceWorkerContext.Provider
+              value={{
+                registration: registration
+              }}
+            >
+              <SWRContainer>
+                {getLayout(<Component {...pageProps} />)}
+              </SWRContainer>
+            </ServiceWorkerContext.Provider>
+          </AuthContext.Provider>
+        </SnackbarProvider>
       </ThemeProvider>
-    </StoreContext.Provider>
+    </CacheProvider>
   );
 }

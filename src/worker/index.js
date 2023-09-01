@@ -1,12 +1,14 @@
 import { clientsClaim } from 'workbox-core';
-import { cleanupOutdatedCaches } from 'workbox-precaching';
-import * as googleAnalytics from 'workbox-google-analytics';
-import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate, CacheFirst } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
+import * as googleAnalytics from 'workbox-google-analytics';
+import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
-const en = require('../locales/en.json');
-const ja = require('../locales/ja.json');
+precacheAndRoute(self.__WB_MANIFEST);
+
+const en = require('../dictionaries/en.json');
+const ja = require('../dictionaries/ja.json');
 
 const I18n = {
   _locale: 'en',
@@ -31,8 +33,6 @@ const I18n = {
   }
 };
 
-cleanupOutdatedCaches();
-self.skipWaiting();
 clientsClaim();
 
 googleAnalytics.initialize();
@@ -57,25 +57,29 @@ registerRoute(
   })
 );
 
-self.addEventListener('install', e => {
+self.addEventListener('install', (e) => {
   console.log('[ServiceWorker] Install');
+
+  e.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('activate', e => {
+self.addEventListener('activate', (e) => {
   console.log('[ServiceWorker] Activate');
+
+  e.waitUntil(cleanupOutdatedCaches());
 });
 
-self.addEventListener('fetch', e => {
+self.addEventListener('fetch', (e) => {
   // console.log(e.request.url);
 });
 
-self.addEventListener('push', e => {
+self.addEventListener('push', (e) => {
   console.log('[ServiceWorker] Push message received:', e);
 
   const currentLocale =
     self.navigator.language ||
-    self.navigator['userLanguage'] ||
-    self.navigator['browserLanguage'];
+    self.navigator.userLanguage ||
+    self.navigator.browserLanguage;
 
   I18n.locale = currentLocale;
   console.log('[ServiceWorker] current locale:', I18n.locale);
@@ -88,7 +92,7 @@ self.addEventListener('push', e => {
   );
 });
 
-self.addEventListener('notificationclick', e => {
+self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   const clickAction = e.notification.data.click_action;
   if (clickAction) {
@@ -96,8 +100,8 @@ self.addEventListener('notificationclick', e => {
   }
 });
 
-const eventToPayload = e => {
-  if (e && e.data) {
+const eventToPayload = (e) => {
+  if (e?.data) {
     console.log(e.data);
     return e.data.json();
   } else {
@@ -105,11 +109,11 @@ const eventToPayload = e => {
   }
 };
 
-const notificationTitle = _data => {
+const notificationTitle = (_data) => {
   return 'Qoodish';
 };
 
-const notificationOptions = data => {
+const notificationOptions = (data) => {
   return {
     body: notificationBody(data),
     icon: data.icon,
@@ -120,7 +124,7 @@ const notificationOptions = data => {
   };
 };
 
-const notificationBody = data => {
+const notificationBody = (data) => {
   const message = I18n.t(`${data.key} ${data.notifiable_type}`);
   return `${data.notifier_name} ${message}`;
 };

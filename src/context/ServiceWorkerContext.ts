@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 type ContextProps = {
-  registration: ServiceWorkerRegistration;
+  registration: ServiceWorkerRegistration | null;
 };
 
 const ServiceWorkerContext = createContext<ContextProps>({

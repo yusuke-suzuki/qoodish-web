@@ -1,19 +1,41 @@
-FROM node:16-slim as build
+FROM node:20-alpine AS deps
 
-FROM gcr.io/distroless/nodejs-debian11:16
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-ENV NODE_ENV production
+COPY package.json pnpm-lock.yaml ./
 
-COPY --from=build /lib/x86_64-linux-gnu/libz.so.* /lib/x86_64-linux-gnu/
+RUN corepack enable && corepack prepare pnpm@8.7.6 --activate
 
-COPY ./next.config.js ./
-COPY ./public ./public
-COPY ./.next ./.next
-COPY ./node_modules ./node_modules
-COPY ./package.json ./package.json
-COPY ./prisma ./prisma
+RUN pnpm install
+
+
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@8.7.6 --activate
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN pnpm build
+
+
+FROM gcr.io/distroless/nodejs20-debian12 AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 8080
-CMD ["node_modules/.bin/next", "start", "-p", "8080"]
+
+ENV PORT 8080
+ENV HOSTNAME 0.0.0.0
+
+CMD ["/app/server.js"]

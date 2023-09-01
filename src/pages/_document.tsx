@@ -1,67 +1,46 @@
-import Document, {
-  Html,
-  Head,
-  Main,
-  NextScript,
-  DocumentContext,
-  DocumentInitialProps
-} from 'next/document';
-import { ServerStyleSheets } from '@material-ui/core';
-import { Fragment } from 'react';
+import createEmotionServer from '@emotion/server/create-instance';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+import createEmotionCache from '../../createEmotionCache';
 
-const styles = {
-  body: {
-    padding: 0,
-    margin: 0
-  }
-};
-
-class CustomDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext
-  ): Promise<DocumentInitialProps> {
-    const muiSheets = new ServerStyleSheets();
-    const originalRenderPage = ctx.renderPage;
-
-    ctx.renderPage = () =>
-      originalRenderPage({
-        enhanceApp: App => props => muiSheets.collect(<App {...props} />),
-        enhanceComponent: Component => Component
-      });
-
-    const initialProps = await Document.getInitialProps(ctx);
-
-    return {
-      ...initialProps,
-      styles: (
-        <Fragment>
-          {initialProps.styles}
-          {muiSheets.getStyleElement()}
-        </Fragment>
-      )
-    };
-  }
-
+export default class CustomDocument extends Document {
   render() {
     return (
       <Html>
         <Head>
-          <link rel="manifest" href="/manifest.json" />
+          <link rel="manifest" href="/app.webmanifest" />
+
           <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href={process.env.NEXT_PUBLIC_ICON_512}
+            rel="icon"
+            type="image/webp"
+            sizes="32x32"
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x32.webp"
           />
           <link
             rel="icon"
-            type="image/x-icon"
-            href={process.env.NEXT_PUBLIC_ICON_512}
+            type="image/webp"
+            sizes="16x16"
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x16.webp"
           />
           <link
             rel="apple-touch-icon"
-            type="image/png"
-            href={process.env.NEXT_PUBLIC_ICON_512}
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone.png"
           />
+          <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone-retina.png"
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="167x167"
+            href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad-retina.png"
+          />
+
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
@@ -93,6 +72,11 @@ class CustomDocument extends Document {
             href="https://storage.googleapis.com"
             rel="preconnect dns-prefetch"
           />
+          <link
+            rel="stylesheet preconnect dns-prefetch"
+            href="https://unpkg.com/react-spring-bottom-sheet/dist/style.css"
+            crossOrigin="anonymous"
+          />
 
           <meta
             property="fb:app_id"
@@ -109,8 +93,11 @@ class CustomDocument extends Document {
           {process.env.NEXT_PUBLIC_ENDPOINT.includes('dev') && (
             <meta name="googlebot" content="noindex" />
           )}
+
+          <meta name="emotion-insertion-point" content="" />
+          {(this.props as any).emotionStyleTags}
         </Head>
-        <body style={styles.body}>
+        <body>
           <Main />
           <NextScript />
         </body>
@@ -119,4 +106,33 @@ class CustomDocument extends Document {
   }
 }
 
-export default CustomDocument;
+CustomDocument.getInitialProps = async (ctx) => {
+  const originalRenderPage = ctx.renderPage;
+
+  const cache = createEmotionCache();
+  const { extractCriticalToChunks } = createEmotionServer(cache);
+
+  ctx.renderPage = () =>
+    originalRenderPage({
+      enhanceApp: (App: any) =>
+        function EnhanceApp(props) {
+          return <App emotionCache={cache} {...props} />;
+        }
+    });
+
+  const initialProps = await Document.getInitialProps(ctx);
+
+  const emotionStyles = extractCriticalToChunks(initialProps.html);
+  const emotionStyleTags = emotionStyles.styles.map((style) => (
+    <style
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
+      key={style.key}
+      dangerouslySetInnerHTML={{ __html: style.css }}
+    />
+  ));
+
+  return {
+    ...initialProps,
+    emotionStyleTags
+  };
+};

@@ -58,6 +58,7 @@ public/*
 !public/apple-touch-icon.png
 !public/favicon.ico
 !public/manifest.json
+!public/app.webmanifest
 !public/robots.txt
 !public/sitemap.xml
 
@@ -74,3 +75,5 @@ firebase-debug.log
 
 credentials.json
 credentials.*.json
+
+.pnpm-store

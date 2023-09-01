@@ -1,5 +1,5 @@
-const sleep = msec => {
-  return new Promise((resolve, reject) => {
+const sleep = (msec) => {
+  return new Promise((resolve, _reject) => {
     setTimeout(resolve, msec);
   });
 };

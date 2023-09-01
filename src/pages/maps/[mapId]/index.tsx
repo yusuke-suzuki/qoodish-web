@@ -1,207 +1,95 @@
-import React, {
-  memo,
+import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import {
+  ReactElement,
   useCallback,
   useContext,
   useEffect,
-  useMemo
+  useState
 } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-
-import selectMap from '../../../actions/selectMap';
-import openToast from '../../../actions/openToast';
-import clearMapState from '../../../actions/clearMapState';
-import fetchMapReviews from '../../../actions/fetchMapReviews';
-import fetchCollaborators from '../../../actions/fetchCollaborators';
-
-import {
-  Box,
-  createStyles,
-  Grid,
-  makeStyles,
-  Theme,
-  useMediaQuery,
-  useTheme
-} from '@material-ui/core';
-
-import {
-  ApiClient,
-  MapsApi,
-  CollaboratorsApi,
-  ReviewsApi
-} from '@yusuke-suzuki/qoodish-api-js-client';
-
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import Fab from '@material-ui/core/Fab';
-import switchSummary from '../../../actions/switchSummary';
-import AuthContext from '../../../context/AuthContext';
-import CreateResourceButton from '../../../components/molecules/CreateResourceButton';
-import { useRouter } from 'next/router';
-import SpotHorizontalList from '../../../components/organisms/SpotHorizontalList';
-import DeleteMapDialog from '../../../components/organisms/DeleteMapDialog';
-import MapSpotDrawer from '../../../components/organisms/MapSpotDrawer';
-import GoogleMaps from '../../../components/organisms/GoogleMaps';
-import InviteTargetDialog from '../../../components/organisms/InviteTargetDialog';
+import { AppMap } from '../../../../types';
 import Layout from '../../../components/Layout';
-import Head from 'next/head';
-import SpotMarkers from '../../../components/organisms/SpotMarkers';
-import MapSummaryDrawer from '../../../components/organisms/MapSummaryDrawer';
-import { use100vh } from 'react-div-100vh';
-import CurrentLocationButton from '../../../components/molecules/CurrentLocationButton';
-import { GetServerSideProps } from 'next';
-import { Map, PrismaClient } from '@prisma/client';
-
-import path from 'path';
-import { useLocale } from '../../../hooks/useLocale';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    mapWrapper: {
-      [theme.breakpoints.up('lg')]: {
-        marginLeft: 380
-      }
-    },
-    buttonGroup: {
-      position: 'fixed',
-      zIndex: 1,
-      bottom: theme.spacing(18),
-      right: theme.spacing(2),
-      [theme.breakpoints.up('sm')]: {
-        bottom: theme.spacing(4),
-        right: theme.spacing(4)
-      }
-    },
-    switchSummaryContainer: {
-      textAlign: 'center',
-      width: '100%',
-      position: 'absolute',
-      zIndex: 1,
-      top: 70,
-      [theme.breakpoints.up('sm')]: {
-        top: 78
-      }
-    },
-    infoIcon: {
-      marginRight: 6
-    }
-  })
-);
+import IssueDialog from '../../../components/common/IssueDialog';
+import CustomOverlays from '../../../components/maps/CustomOverlays';
+import DeleteMapDialog from '../../../components/maps/DeleteMapDialog';
+import EditMapDialog from '../../../components/maps/EditMapDialog';
+import GoogleMaps from '../../../components/maps/GoogleMaps';
+import MapSummaryCard from '../../../components/maps/MapSummaryCard';
+import MobileMapDrawer from '../../../components/maps/MobileMapDrawer';
+import AuthContext from '../../../context/AuthContext';
+import useDictionary from '../../../hooks/useDictionary';
+import { useMap } from '../../../hooks/useMap';
+import { useMapReviews } from '../../../hooks/useMapReviews';
+import { useProfile } from '../../../hooks/useProfile';
+import { NextPageWithLayout } from '../../_app';
 
 type Props = {
-  isPrivate: boolean;
-  map: Map | null;
-  thumbnailUrl: string;
+  map: AppMap | null;
 };
 
-const MapPage = (props: Props) => {
-  const { isPrivate, map, thumbnailUrl } = props;
+const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
+  const dictionary = useDictionary();
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { I18n } = useLocale();
+  const router = useRouter();
+  const {
+    query: { mapId, lat, lng, zoom }
+  } = router;
+
+  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
+  const [currentZoom, setCurrentZoom] = useState(17);
 
   const { currentUser } = useContext(AuthContext);
+  const { profile } = useProfile(currentUser?.uid);
 
-  const theme = useTheme();
-  const lgUp = useMediaQuery(theme.breakpoints.up('lg'));
-  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const { map: clientMap, mutate: mutateMap } = useMap(Number(mapId));
+  const { reviews, mutate: mutateReviews } = useMapReviews(Number(mapId));
 
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const { mapId } = router.query;
-  const classes = useStyles();
+  const map = clientMap || serverMap;
 
-  const mapState = useCallback(
-    state => ({
-      currentMap: state.mapDetail.currentMap
-    }),
-    []
-  );
-  const { currentMap } = useMappedState(mapState);
-
-  const height = use100vh();
-
-  const wrapperHeight = useMemo(() => {
-    const marginTop = mdUp ? theme.spacing(8) : theme.spacing(7);
-
-    return height ? height - marginTop : `calc(100vh - ${marginTop}px)`;
-  }, [height, mdUp]);
-
-  const disabled = useMemo(() => {
-    return !(currentMap && currentMap.postable && currentMap.following);
-  }, [currentMap]);
-
-  const initMap = useCallback(async () => {
-    const apiInstance = new MapsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-
-    apiInstance.mapsMapIdGet(mapId, (error, data, response) => {
-      if (response.ok) {
-        dispatch(selectMap(response.body));
-      } else if (response.status == 401) {
-        dispatch(openToast('Authenticate failed'));
-      } else if (response.status == 404) {
-        router.push('');
-        dispatch(openToast(I18n.t('map not found')));
-      } else {
-        dispatch(openToast('Failed to fetch Map.'));
-      }
-    });
-  }, [dispatch, router, mapId, currentUser]);
-
-  const initMapReviews = useCallback(async () => {
-    const apiInstance = new ReviewsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-
-    apiInstance.mapsMapIdReviewsGet(mapId, {}, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchMapReviews(response.body));
-      }
-    });
-  }, [dispatch, mapId, currentUser]);
-
-  const initFollowers = useCallback(async () => {
-    const apiInstance = new CollaboratorsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-
-    apiInstance.mapsMapIdCollaboratorsGet(mapId, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchCollaborators(response.body));
-      } else {
-        console.log('API called successfully. Returned data: ' + data);
-      }
-    });
-  }, [mapId, currentUser]);
-
-  const handleSummaryButtonClick = useCallback(() => {
-    dispatch(switchSummary());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (currentUser && mapId) {
-      initMap();
-      initMapReviews();
-      initFollowers();
-    }
-
-    return () => {
-      dispatch(clearMapState());
-    };
-  }, [currentUser, mapId]);
-
-  const title = isPrivate ? 'Qoodish' : `${map.name} | Qoodish`;
-  const description = isPrivate ? I18n.t('meta description') : map.description;
-  const keywords =
-    (isPrivate ? '' : `${map.name}, `) +
-    'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip';
+  const title = map ? `${map.name} | Qoodish` : 'Qoodish';
+  const description = map ? map.description : dictionary['meta description'];
+  const keywords = `${
+    map ? `${map.name}, ` : ''
+  }Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const defaultThumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+  const thumbnailUrl = map ? map.thumbnail_url_800 : defaultThumbnailUrl;
+
+  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleReviewSaved = useCallback(() => {
+    mutateMap();
+    mutateReviews();
+  }, [mutateMap, mutateReviews]);
+
+  useEffect(() => {
+    if (lat && lng) {
+      setCenter({
+        lat: Number(lat),
+        lng: Number(lng)
+      });
+    }
+  }, [lat, lng]);
+
+  useEffect(() => {
+    if (zoom) {
+      setCurrentZoom(Number(zoom));
+    }
+  }, [zoom]);
 
   return (
-    <Layout hideBottomNav={true} fullWidth={true}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -225,7 +113,7 @@ const MapPage = (props: Props) => {
           hrefLang="x-default"
         />
 
-        {isPrivate && <meta name="robots" content="noindex" />}
+        {!serverMap && <meta name="robots" content="noindex" />}
 
         <meta name="keywords" content={keywords} />
         <meta name="description" content={description} />
@@ -241,103 +129,117 @@ const MapPage = (props: Props) => {
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <Box
-        position="relative"
-        className={classes.mapWrapper}
-        style={{
-          height: wrapperHeight
-        }}
-      >
-        <GoogleMaps>
-          <SpotMarkers />
+      {mdDown && (
+        <MobileMapDrawer
+          map={map}
+          currentProfile={profile}
+          onEditClick={() => setEditDialogOpen(true)}
+          onDeleteClick={() => setDeleteDialogOpen(true)}
+          onReportClick={() => setIssueDialogOpen(true)}
+        />
+      )}
 
-          <div className={classes.buttonGroup}>
-            <Grid container direction="column" spacing={2}>
-              <Grid item xs={6}>
-                <CreateResourceButton defaultCreateReview disabled={disabled} />
-              </Grid>
-              <Grid item xs={6}>
-                <CurrentLocationButton />
-              </Grid>
-            </Grid>
-          </div>
+      <Box sx={{ display: { xs: 'block', md: 'flex' } }}>
+        {mdUp && (
+          <Box sx={{ width: 360, zIndex: 1, height: '100dvh' }}>
+            <MapSummaryCard
+              map={map}
+              currentProfile={profile}
+              onEditClick={() => setEditDialogOpen(true)}
+              onDeleteClick={() => setDeleteDialogOpen(true)}
+              onReportClick={() => setIssueDialogOpen(true)}
+            />
+          </Box>
+        )}
+
+        <GoogleMaps
+          mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
+          sx={{
+            height: {
+              xs: `calc(75dvh - ${theme.spacing(7)})`,
+              sm: `calc(75dvh - ${theme.spacing(8)})`,
+              md: '100dvh'
+            },
+            width: {
+              md: `calc(100dvw - 360px - ${theme.spacing(8)})`
+            }
+          }}
+          center={center}
+          zoom={currentZoom}
+        >
+          <CustomOverlays
+            map={clientMap}
+            reviews={reviews}
+            onReviewSaved={handleReviewSaved}
+          />
         </GoogleMaps>
       </Box>
 
-      {!lgUp && (
-        <>
-          <div className={classes.switchSummaryContainer}>
-            <Fab
-              variant="extended"
-              size="small"
-              color="primary"
-              onClick={handleSummaryButtonClick}
-            >
-              <InfoOutlinedIcon className={classes.infoIcon} />
-              {I18n.t('summary')}
-            </Fab>
-          </div>
-          <SpotHorizontalList />
-          <MapSpotDrawer />
-        </>
-      )}
+      <EditMapDialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        currentMap={map}
+        onSaved={mutateMap}
+      />
 
-      <MapSummaryDrawer />
-      <DeleteMapDialog />
-      <InviteTargetDialog mapId={Number(mapId)} />
-    </Layout>
+      <DeleteMapDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        map={map}
+        onDeleted={router.reload}
+      />
+
+      <IssueDialog
+        open={issueDialogOpen}
+        onClose={() => setIssueDialogOpen(false)}
+        contentType="map"
+        contentId={map ? map.id : null}
+      />
+    </>
   );
 };
 
-const prisma = new PrismaClient();
-
 export const getServerSideProps: GetServerSideProps = async ({
   res,
-  params
+  params,
+  locale
 }) => {
   res.setHeader(
     'Cache-Control',
     'public, s-maxage=300, stale-while-revalidate=300'
   );
 
-  const map = await prisma.map.findUnique({
-    where: {
-      id: Number(params.mapId)
+  const request = new Request(
+    `${process.env.API_ENDPOINT}/guest/maps/${params?.mapId}`,
+    {
+      method: 'GET',
+      headers: new Headers({
+        Accept: 'application/json',
+        'Accept-Language': locale,
+        'Content-Type': 'application/json'
+      })
     }
-  });
+  );
 
-  if (!map) {
-    return {
-      notFound: true
-    };
-  }
-
-  const isPrivate = map.private;
+  const response = await fetch(request);
+  const data = await response.json();
 
   return {
     props: {
-      isPrivate: isPrivate,
-      map: isPrivate
-        ? null
-        : JSON.parse(
-            JSON.stringify(map, (_key, value) =>
-              typeof value === 'bigint' ? Number(value) : value
-            )
-          ),
-      thumbnailUrl:
-        isPrivate || !map.image_url
-          ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL
-          : `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${
-              process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-            }/maps/thumbnails/${path.basename(
-              map.image_url,
-              path.extname(map.image_url)
-            )}_800x800${path.extname(map.image_url)}`
+      map: response.ok ? data : null
     }
   };
 };
 
-export default memo(MapPage);
+MapPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout hideBottomNav fullWidth>
+      {page}
+    </Layout>
+  );
+};
+
+export default MapPage;

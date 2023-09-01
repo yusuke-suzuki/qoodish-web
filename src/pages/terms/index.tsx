@@ -1,23 +1,27 @@
-import { memo } from 'react';
+import { ReactElement } from 'react';
 
-import Layout from '../../components/Layout';
+import { Typography } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useLocale } from '../../hooks/useLocale';
-import { Typography } from '@material-ui/core';
+import Layout from '../../components/Layout';
+import useDictionary from '../../hooks/useDictionary';
+import { NextPageWithLayout } from '../_app';
 
-export default memo(function Terms() {
-  const { I18n } = useLocale();
+const TOSPage: NextPageWithLayout = () => {
+  const dictionary = useDictionary();
   const router = useRouter();
 
-  const title = `${I18n.t('terms of service')} | Qoodish`;
-  const description = I18n.t('meta description');
-  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const title = `${dictionary['terms of service']} | Qoodish`;
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return (
-    <Layout hideBottomNav={true} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -58,15 +62,16 @@ export default memo(function Terms() {
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         利用規約
       </Typography>
       <Typography component="p" gutterBottom>
         Qoodish 製作委員会 (以下、当委員会といいます)
-        は、当委員会が提供するサービスである「Qoodish」(以下、Qoodishといいます)
+        は、当委員会が提供するサービスである「Qoodish」(以下、Qoodish
+        といいます)
         の利用について、以下のように定めます。(以下、本規約といいます)。 Qoodish
         の利用者 (以下、お客さまといいます)
         は、予め本規約に同意したうえで、Qoodish を利用するものとします。
@@ -75,7 +80,7 @@ export default memo(function Terms() {
         内の通知機能により通知をさせていただきますので、最新の利用規約を適宜ご参照ください。
       </Typography>
       <br />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         1. Qoodish の目的
       </Typography>
       <Typography component="p" gutterBottom>
@@ -85,7 +90,7 @@ export default memo(function Terms() {
         のユーザー間で共有し、旅行や外食の際の参考情報として活用していただくことを主な目的としています。
       </Typography>
       <br />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         2. 会員登録の手続き
       </Typography>
       <Typography component="p" gutterBottom>
@@ -98,7 +103,7 @@ export default memo(function Terms() {
         差異の内容につきましては、当委員会が任意に決定し、随時変更できるものとします。
       </Typography>
       <br />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         3. アカウントについて
       </Typography>
       <Typography component="p" gutterBottom>
@@ -110,7 +115,7 @@ export default memo(function Terms() {
         当該サービスを利用したことによって生じた損害・運営者とお客さまの間に生じたトラブル等につきましては、当委員会は一切の責任を負わないものとします。
       </Typography>
       <br />
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         4. Qoodish の利用について
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
@@ -380,6 +385,12 @@ export default memo(function Terms() {
         <br />
         メールアドレス: support@qoodish.com
       </Typography>
-    </Layout>
+    </>
   );
-});
+};
+
+TOSPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout hideBottomNav>{page}</Layout>;
+};
+
+export default TOSPage;

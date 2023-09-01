@@ -1,133 +1,37 @@
-import React, { memo, useCallback, useContext, useEffect } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-
-import ExploreIcon from '@material-ui/icons/Explore';
-import WhatshotIcon from '@material-ui/icons/Whatshot';
-import FiberNewIcon from '@material-ui/icons/FiberNew';
-import Typography from '@material-ui/core/Typography';
-
-import fetchActiveMaps from '../../actions/fetchActiveMaps';
-import fetchRecentMaps from '../../actions/fetchRecentMaps';
-
-import { ApiClient, MapsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-import AuthContext from '../../context/AuthContext';
-import { useTheme, useMediaQuery, makeStyles, Grid } from '@material-ui/core';
-import MapCollection from '../../components/organisms/MapCollection';
-import PickUpMap from '../../components/organisms/PickUpMap';
-import RecentReviews from '../../components/organisms/RecentReviews';
-import TrendingMaps from '../../components/organisms/TrendingMaps';
-import TrendingSpots from '../../components/organisms/TrendingSpots';
-import CreateResourceButton from '../../components/molecules/CreateResourceButton';
-import Layout from '../../components/Layout';
+import { Explore, FiberNew, Whatshot } from '@mui/icons-material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import Head from 'next/head';
-import { useLocale } from '../../hooks/useLocale';
 import { useRouter } from 'next/router';
+import { ReactElement } from 'react';
+import Layout from '../../components/Layout';
+import PickUpMap from '../../components/discover/PickUpMap';
+import MapGridList from '../../components/maps/MapGridList';
+import ReviewGridList from '../../components/reviews/ReviewGridList';
+import { useActiveMaps } from '../../hooks/useActiveMaps';
+import useDictionary from '../../hooks/useDictionary';
+import { useRecentMaps } from '../../hooks/useRecentMaps';
+import { useRecentReviews } from '../../hooks/useRecentReviews';
+import { NextPageWithLayout } from '../_app';
 
-const useStyles = makeStyles(theme => ({
-  buttonGroup: {
-    position: 'fixed',
-    zIndex: 1,
-    bottom: theme.spacing(4),
-    right: theme.spacing(4)
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    marginBottom: theme.spacing(5)
-  },
-  rankingContainer: {
-    marginTop: theme.spacing(5),
-    marginBottom: 20
-  },
-  mapsContainer: {
-    marginBottom: theme.spacing(5)
-  },
-  gridHeader: {
-    width: '100%',
-    display: 'inline-flex',
-    marginBottom: 15
-  },
-  headerIcon: {
-    marginRight: 10
-  }
-}));
-
-export default memo(function Discover() {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-
-  const classes = useStyles();
-
+const DiscoverPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { I18n } = useLocale();
+  const dictionary = useDictionary();
 
-  const { currentUser } = useContext(AuthContext);
-
-  const dispatch = useDispatch();
-  const mapState = useCallback(
-    state => ({
-      activeMaps: state.discover.activeMaps,
-      recentMaps: state.discover.recentMaps
-    }),
-    []
-  );
-  const { activeMaps, recentMaps } = useMappedState(mapState);
-
-  const initActiveMaps = useCallback(async () => {
-    const apiInstance = new MapsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-    const opts = {
-      active: true
-    };
-
-    apiInstance.mapsGet(opts, (error, data, response) => {
-      if (response.ok) {
-        const maps = response.body;
-        dispatch(fetchActiveMaps(maps));
-      } else {
-        console.log(error);
-      }
-    });
-  }, [dispatch, currentUser]);
-
-  const initRecentMaps = useCallback(async () => {
-    const apiInstance = new MapsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-    const opts = {
-      recent: true
-    };
-
-    apiInstance.mapsGet(opts, (error, data, response) => {
-      if (response.ok) {
-        const maps = response.body;
-        dispatch(fetchRecentMaps(maps));
-      } else {
-        console.log(error);
-      }
-    });
-  }, [dispatch, currentUser]);
-
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid) {
-      return;
-    }
-    initActiveMaps();
-    initRecentMaps();
-  }, [currentUser]);
-
-  const title = `${I18n.t('discover')} | Qoodish`;
-  const description = I18n.t('meta description');
+  const title = `${dictionary.discover} | Qoodish`;
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+
+  const { reviews: recentReviews } = useRecentReviews();
+  const { maps: activeMaps } = useActiveMaps();
+  const { maps: recentMaps } = useRecentMaps();
 
   return (
-    <Layout hideBottomNav={false} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -164,91 +68,63 @@ export default memo(function Discover() {
           property="og:url"
           content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta
-          property="og:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
-        />
+        <meta property="og:image" content={thumbnailUrl} />
 
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <div className={classes.container}>
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          color="textSecondary"
-          className={classes.gridHeader}
-        >
-          <ExploreIcon className={classes.headerIcon} /> {I18n.t('pick up')}
-        </Typography>
-        <br />
-        <PickUpMap />
-      </div>
+      <Stack spacing={4} divider={<Divider />}>
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Explore color="secondary" />
+            <Typography variant="subtitle1">{dictionary['pick up']}</Typography>
+          </Box>
 
-      <div className={classes.container}>
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          color="textSecondary"
-          className={classes.gridHeader}
-        >
-          <FiberNewIcon className={classes.headerIcon} />{' '}
-          {I18n.t('recent reports')}
-        </Typography>
-        <br />
-        <RecentReviews />
-      </div>
+          <PickUpMap />
+        </Box>
 
-      <div className={classes.container}>
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          color="textSecondary"
-          className={classes.gridHeader}
-        >
-          <WhatshotIcon className={classes.headerIcon} />{' '}
-          {I18n.t('active maps')}
-        </Typography>
-        <MapCollection maps={activeMaps} horizontal />
-      </div>
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">
+              {dictionary['recent reports']}
+            </Typography>
+          </Box>
 
-      <div className={classes.container}>
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          color="textSecondary"
-          className={classes.gridHeader}
-        >
-          <FiberNewIcon className={classes.headerIcon} />{' '}
-          {I18n.t('recent maps')}
-        </Typography>
-        <MapCollection maps={recentMaps} horizontal />
-      </div>
+          <ReviewGridList reviews={recentReviews} />
+        </Box>
 
-      {!mdUp && (
-        <div>
-          <div className={classes.rankingContainer}>
-            <TrendingMaps />
-          </div>
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Whatshot color="secondary" />
+            <Typography variant="subtitle1">
+              {dictionary['active maps']}
+            </Typography>
+          </Box>
 
-          <div className={classes.rankingContainer}>
-            <TrendingSpots />
-          </div>
-        </div>
-      )}
+          <MapGridList maps={activeMaps} />
+        </Box>
 
-      {smUp && (
-        <div className={classes.buttonGroup}>
-          <Grid container direction="column" spacing={2}>
-            <Grid item xs={12}>
-              <CreateResourceButton />
-            </Grid>
-          </Grid>
-        </div>
-      )}
-    </Layout>
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">
+              {dictionary['recent maps']}
+            </Typography>
+          </Box>
+
+          <MapGridList maps={recentMaps} />
+        </Box>
+      </Stack>
+    </>
   );
-});
+};
+
+DiscoverPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default DiscoverPage;

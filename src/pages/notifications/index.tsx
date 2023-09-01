@@ -1,97 +1,30 @@
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-
-import fetchNotifications from '../../actions/fetchNotifications';
-import {
-  ApiClient,
-  NotificationsApi
-} from '@yusuke-suzuki/qoodish-api-js-client';
-import AuthContext from '../../context/AuthContext';
-import {
-  CircularProgress,
-  Grid,
-  List,
-  makeStyles,
-  Paper,
-  useMediaQuery,
-  useTheme
-} from '@material-ui/core';
-import NotificationList from '../../components/organisms/NotificationList';
-import NoContents from '../../components/molecules/NoContents';
-import CreateResourceButton from '../../components/molecules/CreateResourceButton';
-import Layout from '../../components/Layout';
+import { Box, CircularProgress, List } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useLocale } from '../../hooks/useLocale';
+import { ReactElement } from 'react';
+import Layout from '../../components/Layout';
+import NotificationList from '../../components/notifications/NotificationList';
+import useDictionary from '../../hooks/useDictionary';
+import { useNotifications } from '../../hooks/useNotifications';
+import { NextPageWithLayout } from '../_app';
 
-const useStyles = makeStyles(theme => ({
-  buttonGroup: {
-    position: 'fixed',
-    zIndex: 1,
-    bottom: theme.spacing(4),
-    right: theme.spacing(4)
-  },
-  progress: {
-    textAlign: 'center',
-    paddingTop: theme.spacing(5),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: 20
-    }
-  }
-}));
-
-const Notifications = () => {
+const NotificationsPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const { I18n } = useLocale();
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const classes = useStyles();
+  const dictionary = useDictionary();
 
-  const dispatch = useDispatch();
+  const { notifications, isLoading, mutate } = useNotifications();
 
-  const { currentUser } = useContext(AuthContext);
-
-  const mapState = useCallback(
-    state => ({
-      notifications: state.shared.notifications
-    }),
-    []
-  );
-  const { notifications } = useMappedState(mapState);
-  const [loading, setLoading] = useState(true);
-
-  const handleMount = useCallback(async () => {
-    setLoading(true);
-
-    const apiInstance = new NotificationsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-
-    apiInstance.notificationsGet((error, data, response) => {
-      setLoading(false);
-      if (response.ok) {
-        dispatch(fetchNotifications(response.body));
-      }
-    });
-  }, [dispatch, currentUser]);
-
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid || currentUser.isAnonymous) {
-      setLoading(false);
-      return;
-    }
-    handleMount();
-  }, [currentUser]);
-
-  const title = `${I18n.t('notifications')} | Qoodish`;
-  const description = I18n.t('meta description');
-  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const title = `${dictionary.notification} | Qoodish`;
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return (
-    <Layout hideBottomNav={false} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -132,40 +65,33 @@ const Notifications = () => {
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      {loading ? (
-        <div className={classes.progress}>
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'grid',
+            placeItems: 'center',
+            my: 2
+          }}
+        >
           <CircularProgress />
-        </div>
-      ) : notifications.length > 0 ? (
-        <Paper elevation={0}>
-          <List>
-            <NotificationList
-              notifications={notifications}
-              handleNotificationClick={() => {}}
-            />
-          </List>
-        </Paper>
+        </Box>
       ) : (
-        <NoContents
-          contentType="notification"
-          message={I18n.t('notifications will see here')}
-        />
+        <List>
+          <NotificationList
+            notifications={notifications}
+            onReadNotifications={mutate}
+          />
+        </List>
       )}
-
-      {smUp && (
-        <div className={classes.buttonGroup}>
-          <Grid container direction="column" spacing={2}>
-            <Grid item xs={12}>
-              <CreateResourceButton />
-            </Grid>
-          </Grid>
-        </div>
-      )}
-    </Layout>
+    </>
   );
 };
 
-export default memo(Notifications);
+NotificationsPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout fullWidth>{page}</Layout>;
+};
+
+export default NotificationsPage;

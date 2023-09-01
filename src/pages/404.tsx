@@ -1,24 +1,23 @@
-import { memo } from 'react';
+import { KeyboardArrowLeft } from '@mui/icons-material';
+import { Alert, AlertTitle, Button } from '@mui/material';
 import Head from 'next/head';
 import Link from 'next/link';
+import { memo } from 'react';
 import Layout from '../components/Layout';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { useLocale } from '../hooks/useLocale';
-import { Button } from '@material-ui/core';
-import { KeyboardArrowLeft } from '@material-ui/icons';
+import useDictionary from '../hooks/useDictionary';
 
 const NotFound = () => {
-  const { I18n } = useLocale();
+  const dictionary = useDictionary();
 
   return (
     <>
       <Alert severity="warning">
-        <AlertTitle>{I18n.t('page not found')}</AlertTitle>
-        {I18n.t('page not found description')}
+        <AlertTitle>{dictionary['page not found']}</AlertTitle>
+        {dictionary['page not found description']}
       </Alert>
       <Link href="/discover" passHref>
         <Button color="primary" startIcon={<KeyboardArrowLeft />}>
-          {I18n.t('back to our site')}
+          {dictionary['back to our site']}
         </Button>
       </Link>
     </>
@@ -26,12 +25,12 @@ const NotFound = () => {
 };
 
 export default memo(function Custom404() {
-  const { I18n } = useLocale();
+  const dictionary = useDictionary();
 
   return (
     <Layout hideBottomNav={false} fullWidth={false}>
       <Head>
-        <title>{`${I18n.t('page not found')} | Qoodish`}</title>
+        <title>{`${dictionary['page not found']} | Qoodish`}</title>
         <meta name="robots" content="noindex" />
       </Head>
 

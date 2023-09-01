@@ -1,115 +1,48 @@
-import React from 'react';
+import { Explore, Place } from '@mui/icons-material';
+import {
+  Box,
+  Card,
+  CardMedia,
+  Container,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+  css,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import PlaceIcon from '@material-ui/icons/Place';
-import ExploreIcon from '@material-ui/icons/Explore';
-import amber from '@material-ui/core/colors/amber';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import Fab from '@material-ui/core/Fab';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core';
-import Footer from '../../components/molecules/Footer';
-import Layout from '../../components/Layout';
 import { useRouter } from 'next/router';
-import { useLocale } from '../../hooks/useLocale';
+import { ReactElement } from 'react';
+import Layout from '../../components/Layout';
+import Footer from '../../components/layouts/Footer';
+import useDictionary from '../../hooks/useDictionary';
+import { NextPageWithLayout } from '../_app';
 
-const LoginButtons = dynamic(
-  () => import('../../components/organisms/LoginButtons'),
-  {
-    ssr: false
-  }
-);
+const LoginCard = dynamic(() => import('../../components/layouts/LoginCard'), {
+  ssr: false
+});
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    loginContainer: {
-      textAlign: 'center',
-      margin: '0 auto',
-      padding: 20,
-      [theme.breakpoints.up('lg')]: {
-        width: '80%'
-      }
-    },
-    gridContainer: {
-      width: '100%',
-      margin: 'auto'
-    },
-    descriptionIcon: {
-      width: 150,
-      height: 150,
-      color: amber[500]
-    },
-    descriptionCard: {
-      height: '100%',
-      boxShadow: 'initial',
-      backgroundColor: 'initial'
-    },
-    bottomCardContent: {
-      backgroundColor: amber[500]
-    },
-    bottomCardLicense: {
-      backgroundColor: amber[700],
-      paddingBottom: theme.spacing(2)
-    },
-    container: {
-      width: '100%',
-      margin: '0 auto',
-      [theme.breakpoints.up('lg')]: {
-        width: '80%'
-      }
-    },
-    image: {
-      width: '100%'
-    },
-    firebaseContainer: {
-      marginTop: 20,
-      whiteSpace: 'initial'
-    },
-    carouselContainer: {
-      textAlign: 'center',
-      width: '100%'
-    },
-    carouselTileBar: {
-      height: '100%',
-      background: 'rgba(0, 0, 0, 0.1)'
-    },
-    carouselTileBarText: {
-      whiteSpace: 'initial'
-    },
-    scrollTopButton: {
-      margin: 20
-    }
-  })
-);
-
-const handleScrollTopClick = () => {
-  window.scrollTo(0, 0);
-};
-
-const Login = () => {
+const LoginPage: NextPageWithLayout = () => {
+  const dictionary = useDictionary();
+  const router = useRouter();
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const classes = useStyles();
-  const { I18n } = useLocale();
-  const router = useRouter();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  const title = `${I18n.t('login')} | Qoodish`;
-  const description = I18n.t('meta description');
+  const title = `${dictionary.login} | Qoodish`;
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return (
-    <Layout hideBottomNav={true} fullWidth={true}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -145,103 +78,141 @@ const Login = () => {
           property="og:url"
           content={`${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}${router.pathname}`}
         />
-        <meta
-          property="og:image"
-          content={process.env.NEXT_PUBLIC_OGP_IMAGE_URL}
-        />
+        <meta property="og:image" content={thumbnailUrl} />
 
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <div className={classes.carouselContainer}>
-        <GridList cols={1} spacing={0} cellHeight={600}>
-          <GridListTile key="carousel">
-            <img src={process.env.NEXT_PUBLIC_LP_CAROUSEL_1} />
-            <GridListTileBar
-              title={
-                <Typography
-                  variant={smUp ? 'h2' : 'h3'}
-                  color="inherit"
-                  className={classes.carouselTileBarText}
-                  gutterBottom
-                >
-                  {I18n.t('create map together')}
-                </Typography>
-              }
-              subtitle={
-                <div>
-                  <Typography
-                    variant={smUp ? 'h5' : 'h6'}
-                    color="inherit"
-                    className={classes.carouselTileBarText}
-                  >
-                    <span>{I18n.t('where are you going next')}</span>
-                  </Typography>
-                  <div className={classes.firebaseContainer}>
-                    <LoginButtons nextPath="/" />
-                  </div>
-                </div>
-              }
-              className={classes.carouselTileBar}
-            />
-          </GridListTile>
-        </GridList>
-      </div>
-      <div className={classes.loginContainer}>
-        <Grid container className={classes.gridContainer} spacing={10}>
+      <Box
+        sx={{
+          display: 'flex',
+          position: 'relative'
+        }}
+      >
+        <CardMedia
+          component="img"
+          image={process.env.NEXT_PUBLIC_LP_CAROUSEL_1}
+          width={4592}
+          height={2576}
+          alt="Qoodish"
+          loading="lazy"
+          sx={{
+            height: mdUp
+              ? 'auto'
+              : `calc(100dvh - ${smUp ? theme.spacing(8) : theme.spacing(7)})`,
+            width: '100%'
+          }}
+        />
+
+        <Box
+          sx={{
+            position: 'absolute',
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
+            display: 'grid',
+            placeContent: 'center',
+            background: 'rgba(0, 0, 0, 0.1)'
+          }}
+        >
+          <Container maxWidth="md">
+            <LoginCard />
+          </Container>
+        </Box>
+      </Box>
+
+      <Container maxWidth="md" sx={{ my: 4 }}>
+        <Grid container spacing={10}>
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Card className={classes.descriptionCard}>
-              <CardContent>
-                <Typography gutterBottom>
-                  <PlaceIcon className={classes.descriptionIcon} />
-                </Typography>
-                <Typography variant="h4" gutterBottom>
-                  {I18n.t('share favorite spot')}
-                </Typography>
-                <Typography component="p" gutterBottom>
-                  {I18n.t('tell friends spot')}
-                </Typography>
-              </CardContent>
-              <CardMedia>
-                <img
-                  src={process.env.NEXT_PUBLIC_LP_IMAGE_1}
-                  className={classes.image}
+            <Stack alignItems="center" spacing={2}>
+              <Place
+                color="primary"
+                sx={{
+                  fontSize: '6rem'
+                }}
+              />
+
+              <Typography
+                variant={mdUp ? 'h4' : 'h5'}
+                component="h2"
+                align="center"
+              >
+                {dictionary['share favorite spot']}
+              </Typography>
+              <Typography component="p" align="center">
+                {dictionary['tell friends spot']}
+              </Typography>
+
+              <Card>
+                <CardMedia
+                  component="img"
+                  image={process.env.NEXT_PUBLIC_LP_IMAGE_1}
+                  width={2878}
+                  height={1578}
+                  alt="Qoodish"
+                  loading="lazy"
+                  sx={{
+                    height: 'auto',
+                    width: '100%'
+                  }}
                 />
-              </CardMedia>
-            </Card>
+              </Card>
+            </Stack>
           </Grid>
+
           <Grid item xs={12} sm={12} md={12} lg={12}>
-            <Card className={classes.descriptionCard}>
-              <CardContent>
-                <Typography gutterBottom>
-                  <ExploreIcon className={classes.descriptionIcon} />
-                </Typography>
-                <Typography variant="h4" gutterBottom>
-                  {I18n.t('find your best place')}
-                </Typography>
-                <Typography component="p" gutterBottom>
-                  {I18n.t('surely your friends know')}
-                </Typography>
-              </CardContent>
-              <CardMedia>
-                <img
-                  src={process.env.NEXT_PUBLIC_LP_IMAGE_2}
-                  className={classes.image}
+            <Stack alignItems="center" spacing={2}>
+              <Explore
+                color="primary"
+                sx={{
+                  fontSize: '6rem'
+                }}
+              />
+
+              <Typography
+                variant={mdUp ? 'h4' : 'h5'}
+                component="h2"
+                align="center"
+              >
+                {dictionary['find your best place']}
+              </Typography>
+              <Typography component="p" align="center">
+                {dictionary['surely your friends know']}
+              </Typography>
+
+              <Card>
+                <CardMedia
+                  component="img"
+                  image={process.env.NEXT_PUBLIC_LP_IMAGE_2}
+                  width={2878}
+                  height={1578}
+                  alt="Qoodish"
+                  loading="lazy"
+                  sx={{
+                    height: 'auto',
+                    width: '100%'
+                  }}
                 />
-              </CardMedia>
-            </Card>
+              </Card>
+            </Stack>
           </Grid>
         </Grid>
-        <Fab onClick={handleScrollTopClick} className={classes.scrollTopButton}>
-          <ArrowUpwardIcon />
-        </Fab>
-      </div>
+      </Container>
+
       <Footer />
+    </>
+  );
+};
+
+LoginPage.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout hideBottomNav fullWidth>
+      {page}
     </Layout>
   );
 };
 
-export default React.memo(Login);
+export default LoginPage;
