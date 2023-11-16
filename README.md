@@ -1,36 +1,23 @@
-# Qoodish Web
+# Qoodish
 
-Qoodish Web app.
+## Description
 
-## Set up development environment
+https://qoodish.com
 
-1. Install [yarn](https://classic.yarnpkg.com/ja/docs/install/#mac-stable)
-2. Install [gcloud](https://cloud.google.com/sdk/docs?hl=ja)
-3. Get secrets from Secret Manager
+## Installation
 
-```sh
-gcloud beta secrets versions access latest --secret=DOTENV_WEB > .env
+```bash
+$ pnpm install
 ```
 
-## Build JavaScripts
+## Decrypt secrets
 
-```sh
-# Install dependencies
-yarn
-
-yarn build
-# or
-yarn watch:build
+```bash
+$ gcloud secrets versions access latest --secret=QOODISH_WEB_DOTENV --project=$PROJECT_ID --out-file=.env.local
 ```
 
-## Start app
+## Running app
 
-```sh
-yarn serve
-```
-
-## Test
-
-```sh
-yarn test
+```bash
+$ pnpm dev
 ```
