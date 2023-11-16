@@ -17,59 +17,65 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - id: auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v1
         with:
+          token_format: access_token
           workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
           service_account: github-actions@qoodish-common.iam.gserviceaccount.com
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-      - uses: actions/setup-node@v2
+        uses: google-github-actions/setup-gcloud@v1
+      - name: Decrypt secrets
+        run: |
+          gcloud secrets versions access latest \
+            --secret=QOODISH_WEB_DOTENV \
+            --project=$PROJECT_ID \
+            --out-file=.env.local
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: 16
-          cache: yarn
-      - name: yarn install
+          version: 8.7.6
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - name: Install dependencies
         run: |
-          yarn install --frozen-lockfile
-      - name: Prettier
+          pnpm install
+      - name: Lint
         run: |
-          yarn prettier --check "**/*.{ts,tsx,js}"
-      - name: yarn build
+          pnpm lint
+      - name: Biome check
         run: |
-          yarn build
-          yarn prisma generate
-        env:
-          NEXT_PUBLIC_ENDPOINT: https://dev.qoodish.com
-          NEXT_PUBLIC_API_ENDPOINT: https://api-dev.qoodish.com
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: qoodish-dev
-          NEXT_PUBLIC_FIREBASE_APP_ID: 1:412705999417:web:eb2eaa0a4d7976474adbe8
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY_DEV }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: auth-dev.qoodish.com
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: qoodish-dev.appspot.com
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: 412705999417
-          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: G-DTEPY35ZS7
-          NEXT_PUBLIC_VAPID_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_KEY_DEV }}
-          NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT: https://storage.googleapis.com
-          NEXT_PUBLIC_GOOGLE_MAP_API_KEY: ${{ secrets.GOOGLE_MAP_API_KEY_DEV }}
-          NEXT_PUBLIC_GOOGLE_STATIC_MAP_URL: https://maps.googleapis.com/maps/api/staticmap?key=${{ secrets.GOOGLE_MAP_API_KEY_DEV }}
-          NEXT_PUBLIC_FB_APP_ID: 455361741334663
-          NEXT_PUBLIC_PICKED_UP_MAP_ID: 1
-      - run: |
-          gcloud auth configure-docker $ARTIFACT_REGISTRY --quiet
-      - name: Build image
-        run: |
-          docker build \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
-            --cache-from $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$BRANCH_NAME \
-            -t $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
-            -t $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$BRANCH_NAME \
-            .
-        env:
-          DOCKER_BUILDKIT: 1
-      - name: Push image
-        run: |
-          docker push -a $ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME
+          pnpm biome ci ./src
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GAR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ARTIFACT_REGISTRY }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}
+          labels: |
+            org.opencontainers.image.revision=${{ env.GITHUB_SHA }}
+          tags: |
+            type=ref,event=pr,prefix=pr-,suffix=
+            type=sha,prefix=,suffix=,format=long
+      - name: Build and push image
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   deploy:
     needs:
       - build-image
@@ -78,14 +84,14 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - id: auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
           service_account: github-actions@qoodish-common.iam.gserviceaccount.com
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@v1
       - name: Deploy revision
         env:
           CLOUDSDK_CORE_DISABLE_PROMPTS: 1
@@ -97,14 +103,12 @@ jobs:
             --project=$PROJECT_ID \
             --cpu=1000m \
             --memory=512Mi \
+            --max-instances=1 \
             --port=8080 \
             --service-account=$CLOUD_RUN_SA_NAME \
             --ingress=all \
             --allow-unauthenticated \
             --execution-environment=gen2 \
+            --tag=$BRANCH_NAME \
             --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
-            --vpc-connector=projects/qoodish-dev/locations/asia-northeast1/connectors/qoodish \
-            --vpc-egress=private-ranges-only \
-            --set-secrets "GOOGLE_API_KEY=QOODISH_API_GOOGLE_API_KEY:latest" \
-            --set-secrets "DATABASE_URL=QOODISH_API_DATABASE_URL:latest" \
-            --set-env-vars "NODE_ENV=production" \
+            --set-env-vars "NODE_ENV=production"

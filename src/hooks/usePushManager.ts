@@ -1,13 +1,11 @@
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/AuthContext';
-import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
-export function usePushManager() {
+export function usePushManager(registration: ServiceWorkerRegistration | null) {
   const [subscription, setSubscription] = useState<PushSubscription>(null);
 
-  const { registration } = useContext(ServiceWorkerContext);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, isLoading } = useContext(AuthContext);
 
   const [registrationToken, setRegistrationToken] = useState(null);
 
@@ -21,7 +19,7 @@ export function usePushManager() {
     try {
       const token = await currentUser.getIdToken();
 
-      await fetch(
+      const request = new Request(
         `${process.env.NEXT_PUBLIC_API_ENDPOINT}/devices/${registrationToken}`,
         {
           method: 'PUT',
@@ -30,26 +28,15 @@ export function usePushManager() {
           }
         }
       );
+
+      const res = await fetch(request);
+
+      if (!res.ok) {
+        const data = await res.json();
+        console.error('Failed to send registration token', data);
+      }
     } catch (error) {
       console.error('Failed to send registration token', error);
-    }
-  }, [registrationToken, currentUser]);
-
-  const deleteRegistrationToken = useCallback(async () => {
-    try {
-      const token = await currentUser.getIdToken();
-
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/devices/${registrationToken}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Failed to delete registration token', error);
     }
   }, [registrationToken, currentUser]);
 
@@ -63,7 +50,7 @@ export function usePushManager() {
   }, [registration]);
 
   const unsubscribe = useCallback(async () => {
-    if (!subscription) {
+    if (!subscription || isLoading) {
       return;
     }
 
@@ -72,9 +59,7 @@ export function usePushManager() {
     if (successful) {
       setSubscription(null);
     }
-
-    await deleteRegistrationToken();
-  }, [subscription, deleteRegistrationToken]);
+  }, [subscription, isLoading]);
 
   const getRegistrationToken = useCallback(async () => {
     const messaging = getMessaging();
@@ -89,32 +74,32 @@ export function usePushManager() {
     }
 
     setRegistrationToken(token);
-  }, [getMessaging, getToken, registration]);
+  }, [registration]);
 
   useEffect(() => {
-    if (currentUser && currentUser.isAnonymous) {
-      // When signed out or deleted account
+    if (!currentUser && !isLoading) {
+      // When signed out, unsubscribe from push notifications
       unsubscribe();
     }
-  }, [currentUser]);
+  }, [currentUser, isLoading, unsubscribe]);
 
   useEffect(() => {
     if (registrationToken) {
       persistRegistrationToken();
     }
-  }, [registrationToken]);
+  }, [registrationToken, persistRegistrationToken]);
 
   useEffect(() => {
     if (subscription) {
       getRegistrationToken();
     }
-  }, [subscription]);
+  }, [subscription, getRegistrationToken]);
 
   useEffect(() => {
-    if (registration && currentUser && !currentUser.isAnonymous) {
+    if (registration && currentUser) {
       initPushStatus();
     }
-  }, [registration, currentUser]);
+  }, [registration, currentUser, initPushStatus]);
 
   return {
     subscribe: subscribe,

@@ -1,92 +1,30 @@
-import React, { useEffect, useCallback, useContext } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-
-import fetchFollowingMaps from '../../actions/fetchFollowingMaps';
-import fetchUserProfile from '../../actions/fetchUserProfile';
-import clearProfileState from '../../actions/clearProfileState';
-
-import {
-  ApiClient,
-  UserMapsApi,
-  UsersApi
-} from '@yusuke-suzuki/qoodish-api-js-client';
-import AuthContext from '../../context/AuthContext';
-import SharedProfile from '../../components/organisms/SharedProfile';
-import { useRouter } from 'next/router';
-import Layout from '../../components/Layout';
 import Head from 'next/head';
-import { useLocale } from '../../hooks/useLocale';
+import { useRouter } from 'next/router';
+import { ReactElement } from 'react';
+import Layout from '../../components/Layout';
+import UserProfile from '../../components/profiles/UserProfile';
+import useDictionary from '../../hooks/useDictionary';
+import { useProfile } from '../../hooks/useProfile';
+import { NextPageWithLayout } from '../_app';
 
-const UserProfile = () => {
+const UserPage: NextPageWithLayout = () => {
   const router = useRouter();
   const { userId } = router.query;
-  const { I18n } = useLocale();
-  const dispatch = useDispatch();
+  const dictionary = useDictionary();
 
-  const { currentUser } = useContext(AuthContext);
+  const { profile } = useProfile(Number(userId));
 
-  const mapState = useCallback(
-    state => ({
-      profile: state.profile.currentUser
-    }),
-    []
-  );
-
-  const { profile } = useMappedState(mapState);
-
-  const initProfile = useCallback(async () => {
-    const apiInstance = new UsersApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-
-    apiInstance.usersUserIdGet(userId, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchUserProfile(response.body));
-      }
-    });
-  }, [dispatch, userId, currentUser]);
-
-  const initFollowingMaps = useCallback(async () => {
-    const apiInstance = new UserMapsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
-    const opts = {
-      following: true
-    };
-
-    apiInstance.usersUserIdMapsGet(userId, opts, (error, data, response) => {
-      if (response.ok) {
-        dispatch(fetchFollowingMaps(response.body));
-      } else {
-        console.log('API called successfully. Returned data: ' + data);
-      }
-    });
-  }, [dispatch, userId, currentUser]);
-
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid || !userId) {
-      return;
-    }
-
-    initProfile();
-    initFollowingMaps();
-
-    return () => {
-      dispatch(clearProfileState());
-    };
-  }, [currentUser, userId]);
-
-  const title =
-    profile && profile.name ? `${profile.name} | Qoodish` : 'Qoodish';
-  const description = I18n.t('meta description');
-  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const title = profile?.name ? `${profile.name} | Qoodish` : 'Qoodish';
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return (
-    <Layout hideBottomNav={true} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -129,12 +67,16 @@ const UserProfile = () => {
         <meta name="twitter:card" content="summary" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <SharedProfile profile={profile} />
-    </Layout>
+      <UserProfile id={Number(userId)} />
+    </>
   );
 };
 
-export default React.memo(UserProfile);
+UserPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default UserPage;

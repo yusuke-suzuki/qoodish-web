@@ -1,33 +1,28 @@
-import { makeStyles } from '@material-ui/core';
-import PushSettings from '../../components/organisms/PushSettings';
-import ProviderLinkSettings from '../../components/organisms/ProviderLinkSettings';
-import DeleteAccountDialog from '../../components/organisms/DeleteAccountDialog';
-import Layout from '../../components/Layout';
+import { Stack } from '@mui/material';
 import Head from 'next/head';
-import DeleteAccountCard from '../../components/organisms/DeleteAccountCard';
 import { useRouter } from 'next/router';
-import { useLocale } from '../../hooks/useLocale';
-import { memo } from 'react';
+import { ReactElement } from 'react';
+import Layout from '../../components/Layout';
+import DeleteAccountCard from '../../components/settings/DeleteAccountCard';
+import PushNotificationsCard from '../../components/settings/PushNotificationsCard';
+import useDictionary from '../../hooks/useDictionary';
+import { NextPageWithLayout } from '../_app';
 
-const useStyles = makeStyles({
-  card: {
-    marginBottom: 20
-  }
-});
-
-const Settings = () => {
+const SettingsPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const classes = useStyles();
-  const { I18n } = useLocale();
+  const dictionary = useDictionary();
 
-  const title = `${I18n.t('settings')} | Qoodish`;
-  const description = I18n.t('meta description');
-  const thumbnailUrl = process.env.NEXT_PUBLIC_OGP_IMAGE_URL;
+  const title = `${dictionary.settings} | Qoodish`;
+  const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const thumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return (
-    <Layout hideBottomNav={false} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -68,21 +63,19 @@ const Settings = () => {
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      <div className={classes.card}>
-        <PushSettings />
-      </div>
-      <div className={classes.card}>
-        <ProviderLinkSettings />
-      </div>
-      <div className={classes.card}>
+      <Stack spacing={3}>
+        <PushNotificationsCard />
         <DeleteAccountCard />
-      </div>
-      <DeleteAccountDialog />
-    </Layout>
+      </Stack>
+    </>
   );
 };
 
-export default memo(Settings);
+SettingsPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default SettingsPage;

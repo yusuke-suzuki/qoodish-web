@@ -1,44 +1,31 @@
-import { User } from 'firebase/auth';
-import useSWR, { Fetcher } from 'swr';
+import { useContext, useMemo } from 'react';
+import useSWR from 'swr';
 import { Profile } from '../../types';
+import AuthContext from '../context/AuthContext';
 
-type GetProfileResponse = {
-  profile: Profile;
-};
+export function useProfile(id: number | string) {
+  const { currentUser, isLoading } = useContext(AuthContext);
 
-const fetcher: Fetcher<GetProfileResponse> = async (currentUser: User) => {
-  const token = await currentUser.getIdToken();
+  const path = useMemo(() => {
+    if (isLoading || !id) {
+      return null;
+    }
 
-  const abortController = new AbortController();
+    if (currentUser) {
+      return `/users/${id}`;
+    } else {
+      return `/guest/users/${id}`;
+    }
+  }, [currentUser, isLoading, id]);
 
-  setTimeout(() => {
-    abortController.abort();
-  }, 10000);
-
-  const opts = {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    signal: abortController.signal
-  };
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${currentUser.uid}`,
-    opts
-  );
-
-  return await res.json();
-};
-
-export function useProfile(currentUser: User) {
-  const { data, error, mutate } = useSWR(
-    currentUser && !currentUser.isAnonymous ? [currentUser] : null,
-    fetcher
+  const { data, error, mutate } = useSWR<Profile>(
+    path
+      ? [`${process.env.NEXT_PUBLIC_API_ENDPOINT}${path}`, currentUser]
+      : null
   );
 
   return {
-    profile: data,
+    profile: !error && data ? data : null,
     isLoading: !error && !data,
     isError: error,
     mutate: mutate

@@ -1,119 +1,78 @@
-import { useEffect, useCallback, useState, useContext, memo } from 'react';
-import { useMappedState, useDispatch } from 'redux-react-hook';
-
-import { ApiClient, ReviewsApi } from '@yusuke-suzuki/qoodish-api-js-client';
-
-import ReviewCard from '../../../../components/molecules/ReviewCard';
-import NoContents from '../../../../components/molecules/NoContents';
-import AuthContext from '../../../../context/AuthContext';
-import fetchReview from '../../../../actions/fetchReview';
-import openToast from '../../../../actions/openToast';
-import SkeletonReviewCard from '../../../../components/molecules/SkeletonReviewCard';
+import { KeyboardArrowLeft } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography
+} from '@mui/material';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { ReactElement, useContext, useState } from 'react';
+import { Review } from '../../../../../types';
 import Layout from '../../../../components/Layout';
-import Head from 'next/head';
-import { Button, makeStyles } from '@material-ui/core';
-import { GetServerSideProps } from 'next';
-import { Image, Map, PrismaClient, Review, Spot } from '@prisma/client';
-
-import path from 'path';
-import { useLocale } from '../../../../hooks/useLocale';
-import {
-  Client,
-  Language,
-  PlaceData
-} from '@googlemaps/google-maps-services-js';
-import { KeyboardArrowLeft } from '@material-ui/icons';
-
-const useStyles = makeStyles(theme => ({
-  backButtonContainer: {
-    marginTop: theme.spacing(2)
-  }
-}));
+import IssueDialog from '../../../../components/common/IssueDialog';
+import DeleteReviewDialog from '../../../../components/reviews/DeleteReviewDialog';
+import EditReviewDialog from '../../../../components/reviews/EditReviewDialog';
+import ReviewCardActions from '../../../../components/reviews/ReviewCardActions';
+import ReviewCardHeader from '../../../../components/reviews/ReviewCardHeader';
+import ReviewComments from '../../../../components/reviews/ReviewComments';
+import ReviewImageList from '../../../../components/reviews/ReviewImageList';
+import ReviewMenuButton from '../../../../components/reviews/ReviewMenuButton';
+import AuthContext from '../../../../context/AuthContext';
+import useDictionary from '../../../../hooks/useDictionary';
+import { useProfile } from '../../../../hooks/useProfile';
+import { useReview } from '../../../../hooks/useReview';
+import { NextPageWithLayout } from '../../../_app';
 
 type Props = {
-  isPrivate: boolean;
-  review:
-    | (Review & {
-        map: Map;
-        spot: Spot;
-        images: Image[];
-      })
-    | null;
-  placeData: PlaceData;
-  thumbnailUrl: string;
+  review: Review;
 };
 
-const ReviewPage = (props: Props) => {
-  const { isPrivate, review, placeData, thumbnailUrl } = props;
-
-  const { I18n } = useLocale();
+const ReviewPage: NextPageWithLayout = ({ review: serverReview }: Props) => {
+  const dictionary = useDictionary();
 
   const router = useRouter();
   const { mapId, reviewId } = router.query;
 
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const mapState = useCallback(
-    state => ({
-      currentReview: state.reviewDetail.currentReview
-    }),
-    []
-  );
-  const { currentReview } = useMappedState(mapState);
-  const [loading, setLoading] = useState(true);
-
   const { currentUser } = useContext(AuthContext);
+  const { profile } = useProfile(currentUser?.uid);
 
-  const initReview = useCallback(async () => {
-    setLoading(true);
-    const apiInstance = new ReviewsApi();
-    const firebaseAuth = ApiClient.instance.authentications['firebaseAuth'];
-    firebaseAuth.apiKey = await currentUser.getIdToken();
-    firebaseAuth.apiKeyPrefix = 'Bearer';
+  const {
+    review: clientReview,
+    isLoading,
+    mutate
+  } = useReview(Number(mapId), Number(reviewId));
 
-    apiInstance.mapsMapIdReviewsReviewIdGet(
-      mapId,
-      reviewId,
-      (error, data, response) => {
-        setLoading(false);
+  const review = clientReview || serverReview;
 
-        if (response.ok) {
-          dispatch(fetchReview(response.body));
-        } else if (response.status == 401) {
-          dispatch(openToast('Authenticate failed'));
-        } else if (response.status == 404) {
-          dispatch(openToast('Report not found.'));
-        } else {
-          dispatch(openToast('Failed to fetch Report.'));
-        }
-      }
-    );
-  }, [currentReview, dispatch, currentUser, mapId, reviewId]);
+  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  useEffect(() => {
-    if (!currentUser || !currentUser.uid) {
-      return;
-    }
-
-    if (mapId && reviewId) {
-      initReview();
-    }
-  }, [currentUser, mapId, reviewId]);
-
-  const title = isPrivate
-    ? 'Qoodish'
-    : `${placeData.name} - ${review.map.name} | Qoodish`;
-  const description = isPrivate ? I18n.t('meta description') : review.comment;
-  const keywords =
-    (isPrivate ? '' : `${review.map.name}, ${placeData.name}, `) +
-    'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip';
+  const title = review
+    ? `${review.name} - ${review.map.name} | Qoodish`
+    : 'Qoodish';
+  const description = review ? review.comment : dictionary['meta description'];
+  const keywords = `${
+    review ? `${review.map.name}, ${review.name}, ` : ''
+  }Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const defaultThumbnailUrl =
+    router.locale === router.defaultLocale
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+  const thumbnailUrl =
+    review && review.images.length > 0
+      ? review.images[0].thumbnail_url_800
+      : defaultThumbnailUrl;
 
   return (
-    <Layout hideBottomNav={true} fullWidth={false}>
+    <>
       <Head>
         <title>{title}</title>
 
@@ -137,7 +96,8 @@ const ReviewPage = (props: Props) => {
           hrefLang="x-default"
         />
 
-        {isPrivate && <meta name="robots" content="noindex" />}
+        {!review ||
+          (review.map.private && <meta name="robots" content="noindex" />)}
 
         <meta name="keywords" content={keywords} />
         <meta name="description" content={description} />
@@ -153,38 +113,94 @@ const ReviewPage = (props: Props) => {
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta property="og:locale" content={router.locale} />
-        <meta property="og:site_name" content={I18n.t('meta headline')} />
+        <meta property="og:site_name" content={dictionary['meta headline']} />
       </Head>
 
-      {loading ? (
-        <SkeletonReviewCard />
+      {isLoading ? (
+        <Box
+          sx={{
+            display: 'grid',
+            placeItems: 'center',
+            my: 2
+          }}
+        >
+          <CircularProgress />
+        </Box>
       ) : (
         <>
-          {currentReview ? (
-            <ReviewCard currentReview={currentReview} />
-          ) : (
-            <NoContents
-              contentType="review"
-              message={I18n.t('reports will see here')}
+          <Card elevation={0}>
+            <ReviewCardHeader
+              review={review}
+              action={
+                <ReviewMenuButton
+                  review={review}
+                  currentProfile={profile}
+                  onReportClick={() => setIssueDialogOpen(true)}
+                  onEditClick={() => setEditDialogOpen(true)}
+                  onDeleteClick={() => setDeleteDialogOpen(true)}
+                  hideDetail
+                />
+              }
             />
-          )}
-          <div className={classes.backButtonContainer}>
-            {currentReview && (
-              <Link href={`/maps/${mapId}`} passHref>
-                <Button color="primary" startIcon={<KeyboardArrowLeft />}>
-                  {I18n.t('back to map')}
-                </Button>
-              </Link>
+            <CardContent sx={{ py: 0 }}>
+              <Typography variant="h5" component="h2" gutterBottom>
+                {review.name}
+              </Typography>
+
+              <Typography component="p" gutterBottom>
+                {review.comment}
+              </Typography>
+
+              {review.images.length > 0 && <ReviewImageList review={review} />}
+            </CardContent>
+            <ReviewCardActions review={review} onCommentAdded={mutate} />
+
+            {review.comments.length > 0 && (
+              <CardContent>
+                <ReviewComments comments={review.comments} onDeleted={mutate} />
+              </CardContent>
             )}
-          </div>
+            <div />
+          </Card>
+
+          <Box sx={{ mt: 2 }}>
+            {review && (
+              <Button
+                color="secondary"
+                startIcon={<KeyboardArrowLeft />}
+                LinkComponent={Link}
+                href={`/maps/${mapId}`}
+              >
+                {dictionary['back to map']}
+              </Button>
+            )}
+          </Box>
         </>
       )}
-    </Layout>
+
+      <EditReviewDialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        currentReview={review}
+        onSaved={mutate}
+      />
+
+      <DeleteReviewDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        review={review}
+        onDeleted={router.reload}
+      />
+
+      <IssueDialog
+        open={issueDialogOpen}
+        onClose={() => setIssueDialogOpen(false)}
+        contentType="review"
+        contentId={review ? review.id : null}
+      />
+    </>
   );
 };
-
-const prisma = new PrismaClient();
-const client = new Client();
 
 export const getServerSideProps: GetServerSideProps = async ({
   res,
@@ -196,61 +212,30 @@ export const getServerSideProps: GetServerSideProps = async ({
     'public, s-maxage=300, stale-while-revalidate=300'
   );
 
-  const review = await prisma.review.findUnique({
-    where: {
-      id: Number(params.reviewId)
-    },
-    include: {
-      map: true,
-      spot: {
-        include: {
-          place: true
-        }
-      },
-      images: true
+  const request = new Request(
+    `${process.env.API_ENDPOINT}/guest/reviews/${params?.reviewId}`,
+    {
+      method: 'GET',
+      headers: new Headers({
+        Accept: 'application/json',
+        'Accept-Language': locale,
+        'Content-Type': 'application/json'
+      })
     }
-  });
+  );
 
-  if (!review) {
-    return {
-      notFound: true
-    };
-  }
-
-  const placeDetails = await client.placeDetails({
-    params: {
-      place_id: review.spot.place.place_id_val,
-      language: Language[locale],
-      key: process.env.GOOGLE_API_KEY
-    }
-  });
-
-  const thumbnail = review.images[0];
-
-  const isPrivate = review.map.private;
+  const response = await fetch(request);
+  const data = await response.json();
 
   return {
     props: {
-      isPrivate: isPrivate,
-      review: isPrivate
-        ? null
-        : JSON.parse(
-            JSON.stringify(review, (_key, value) =>
-              typeof value === 'bigint' ? Number(value) : value
-            )
-          ),
-      placeData: isPrivate ? null : placeDetails.data.result,
-      thumbnailUrl:
-        isPrivate || !thumbnail
-          ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL
-          : `${process.env.NEXT_PUBLIC_CLOUD_STORAGE_ENDPOINT}/${
-              process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-            }/images/thumbnails/${path.basename(
-              thumbnail.url,
-              path.extname(thumbnail.url)
-            )}_800x800${path.extname(thumbnail.url)}`
+      review: response.ok ? data : null
     }
   };
 };
 
-export default memo(ReviewPage);
+ReviewPage.getLayout = function getLayout(page: ReactElement) {
+  return <Layout hideBottomNav>{page}</Layout>;
+};
+
+export default ReviewPage;
