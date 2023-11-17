@@ -111,4 +111,5 @@ jobs:
             --execution-environment=gen2 \
             --tag=$BRANCH_NAME \
             --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
-            --set-env-vars "NODE_ENV=production"
+            --set-env-vars "NODE_ENV=production" \
+            --set-env-vars "API_ENDPOINT=https://api-dev.qoodish.com"

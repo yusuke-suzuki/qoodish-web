@@ -125,4 +125,5 @@ jobs:
             --no-traffic \
             --tag=${{ env.CLOUD_RUN_TAG }} \
             --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
-            --set-env-vars "NODE_ENV=production"
+            --set-env-vars "NODE_ENV=production" \
+            --set-env-vars "API_ENDPOINT=https://api.qoodish.com"
