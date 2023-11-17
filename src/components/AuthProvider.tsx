@@ -1,11 +1,11 @@
+import { getAnalytics, logEvent } from 'firebase/analytics';
+import { getApps, initializeApp } from 'firebase/app';
 import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { enqueueSnackbar } from 'notistack';
 import { ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import AuthContext from '../context/AuthContext';
-import { getApps, initializeApp } from 'firebase/app';
-import { enqueueSnackbar } from 'notistack';
 import useDictionary from '../hooks/useDictionary';
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { useRouter } from 'next/router';
 
 type Props = {
   children: ReactNode;

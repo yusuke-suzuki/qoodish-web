@@ -15,9 +15,9 @@ import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import Footer from '../../components/layouts/Footer';
+import LoginCard from '../../components/layouts/LoginCard';
 import useDictionary from '../../hooks/useDictionary';
 import { NextPageWithLayout } from '../_app';
-import LoginCard from '../../components/layouts/LoginCard';
 
 const LoginPage: NextPageWithLayout = () => {
   const dictionary = useDictionary();

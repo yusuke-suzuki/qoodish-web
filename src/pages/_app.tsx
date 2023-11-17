@@ -1,3 +1,4 @@
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import {
@@ -8,7 +9,6 @@ import {
   useMemo,
   useState
 } from 'react';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
 import { CacheProvider, EmotionCache, css } from '@emotion/react';
@@ -24,10 +24,10 @@ import { enUS, jaJP } from '@mui/material/locale';
 import { NextPage } from 'next';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import createEmotionCache from '../../createEmotionCache';
-import SWRContainer from '../components/SWRContainer';
-import { usePushManager } from '../hooks/usePushManager';
 import AuthProvider from '../components/AuthProvider';
+import SWRContainer from '../components/SWRContainer';
 import useDictionary from '../hooks/useDictionary';
+import { usePushManager } from '../hooks/usePushManager';
 
 const globalStyles = css`
   .pac-container {

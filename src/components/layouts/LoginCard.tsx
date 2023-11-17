@@ -1,8 +1,8 @@
 import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import SignInWithGoogleButton from './SignInWithGoogleButton';
-import { useRouter } from 'next/router';
 
 export default memo(function LoginCard() {
   const dictionary = useDictionary();

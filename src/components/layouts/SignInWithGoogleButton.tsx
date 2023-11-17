@@ -1,11 +1,11 @@
+import { LoadingButton } from '@mui/lab';
 import { SvgIcon } from '@mui/material';
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { LoadingButton } from '@mui/lab';
 
 type Props = {
   onSignInSuccess?: () => void;

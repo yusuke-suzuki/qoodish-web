@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev -p 5000",
-    "build": "next build && workbox injectManifest",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -53,8 +53,10 @@
     "@types/lodash.throttle": "^4.1.7",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@types/serviceworker": "^0.0.76",
     "eslint-config-next": "^14.0.2",
     "typescript": "^5.2.2",
-    "workbox-cli": "^7.0.0"
+    "workbox-cli": "^7.0.0",
+    "workbox-webpack-plugin": "^7.0.0"
   }
 }
