@@ -75,7 +75,7 @@ export default memo(function MobileDrawer({
           <Logo />
         </Toolbar>
 
-        <Box sx={{ p: 2, pb: 0 }}>
+        <Box sx={{ p: 2 }}>
           <Stack gap={1}>
             <ProfileAvatar size={48} profile={profile} />
 

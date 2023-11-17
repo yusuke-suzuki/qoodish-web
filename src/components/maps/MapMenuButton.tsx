@@ -123,7 +123,7 @@ export default memo(function MapMenuButton({
           </MenuItem>
         )}
 
-        <Divider />
+        {isAuthor && <Divider />}
 
         {isAuthor && (
           <MenuItem onClick={handleEditClick}>

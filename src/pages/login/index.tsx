@@ -5,14 +5,11 @@ import {
   CardMedia,
   Container,
   Grid,
-  Paper,
   Stack,
   Typography,
-  css,
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
@@ -20,10 +17,7 @@ import Layout from '../../components/Layout';
 import Footer from '../../components/layouts/Footer';
 import useDictionary from '../../hooks/useDictionary';
 import { NextPageWithLayout } from '../_app';
-
-const LoginCard = dynamic(() => import('../../components/layouts/LoginCard'), {
-  ssr: false
-});
+import LoginCard from '../../components/layouts/LoginCard';
 
 const LoginPage: NextPageWithLayout = () => {
   const dictionary = useDictionary();

@@ -25,7 +25,7 @@ import {
 import { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 import useDictionary from '../hooks/useDictionary';
-import SignInRequiredDialog from './common/SignInRequiredDialog';
+import SignInRequiredDialog from './layouts/SignInRequiredDialog';
 import BottomNav from './layouts/BottomNav';
 import FbPage from './layouts/FbPage';
 import MiniDrawer from './layouts/MiniDrawer';

@@ -138,7 +138,7 @@ export default memo(function ReviewMenuButton({
             <ListItemText primary={dictionary.report} />
           </MenuItem>
         )}
-        <Divider />
+        {isAuthor && <Divider />}
         {onEditClick && isAuthor && (
           <MenuItem onClick={handleEditClick}>
             <ListItemIcon>
