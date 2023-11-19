@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev -p 5000",
-    "build": "next build && workbox injectManifest",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -25,7 +25,6 @@
     "blueimp-load-image": "^5.12.0",
     "date-fns": "^2.17.0",
     "firebase": "^10.3.1",
-    "firebaseui": "^6.1.0",
     "html2canvas": "^1.4.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
@@ -54,8 +53,10 @@
     "@types/lodash.throttle": "^4.1.7",
     "@types/react": "^18.2.33",
     "@types/react-dom": "^18.2.14",
+    "@types/serviceworker": "^0.0.76",
     "eslint-config-next": "^14.0.2",
     "typescript": "^5.2.2",
-    "workbox-cli": "^7.0.0"
+    "workbox-cli": "^7.0.0",
+    "workbox-webpack-plugin": "^7.0.0"
   }
 }

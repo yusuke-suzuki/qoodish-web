@@ -25,13 +25,13 @@ import {
 import { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 import useDictionary from '../hooks/useDictionary';
-import SignInRequiredDialog from './common/SignInRequiredDialog';
 import BottomNav from './layouts/BottomNav';
 import FbPage from './layouts/FbPage';
 import MiniDrawer from './layouts/MiniDrawer';
 import MobileAppBar from './layouts/MobileAppBar';
 import RecommendMaps from './layouts/RecommendMaps';
 import SearchDialog from './layouts/SearchDialog';
+import SignInRequiredDialog from './layouts/SignInRequiredDialog';
 import TrendingMaps from './layouts/TrendingMaps';
 import CreateMapDialog from './maps/CreateMapDialog';
 

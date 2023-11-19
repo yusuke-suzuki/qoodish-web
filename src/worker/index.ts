@@ -5,6 +5,8 @@ import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
 
+declare const self: ServiceWorkerGlobalScope;
+
 precacheAndRoute(self.__WB_MANIFEST);
 
 const en = require('../dictionaries/en.json');
@@ -66,7 +68,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   console.log('[ServiceWorker] Activate');
 
-  e.waitUntil(cleanupOutdatedCaches());
+  cleanupOutdatedCaches();
 });
 
 self.addEventListener('fetch', (e) => {
@@ -76,10 +78,7 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', (e) => {
   console.log('[ServiceWorker] Push message received:', e);
 
-  const currentLocale =
-    self.navigator.language ||
-    self.navigator.userLanguage ||
-    self.navigator.browserLanguage;
+  const currentLocale = self.navigator.language;
 
   I18n.locale = currentLocale;
   console.log('[ServiceWorker] current locale:', I18n.locale);

@@ -1,3 +1,4 @@
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import {
@@ -8,15 +9,11 @@ import {
   useMemo,
   useState
 } from 'react';
-import AuthContext from '../context/AuthContext';
-
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { getApps, initializeApp } from 'firebase/app';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
 import { CacheProvider, EmotionCache, css } from '@emotion/react';
 import {
+  Button,
   CssBaseline,
   GlobalStyles,
   ThemeProvider,
@@ -25,9 +22,11 @@ import {
 import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
 import { NextPage } from 'next';
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider, closeSnackbar } from 'notistack';
 import createEmotionCache from '../../createEmotionCache';
+import AuthProvider from '../components/AuthProvider';
 import SWRContainer from '../components/SWRContainer';
+import useDictionary from '../hooks/useDictionary';
 import { usePushManager } from '../hooks/usePushManager';
 
 const globalStyles = css`
@@ -54,15 +53,13 @@ export default function CustomApp({
   emotionCache = clientSideEmotionCache,
   pageProps
 }: AppPropsWithLayout) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<User>(null);
-  const [signInRequired, setSignInRequired] = useState(false);
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration>(null);
 
   usePushManager(registration);
 
   const router = useRouter();
+  const dictionary = useDictionary();
 
   const theme = useMemo(() => {
     const locale = router.locale === 'ja' ? jaJP : enUS;
@@ -99,18 +96,6 @@ export default function CustomApp({
     });
   }, []);
 
-  const initFirebase = useCallback(() => {
-    initializeApp({
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    });
-  }, []);
-
   const initServiceWorker = useCallback(async () => {
     try {
       const { Workbox } = await import('workbox-window');
@@ -128,22 +113,6 @@ export default function CustomApp({
     }
   }, []);
 
-  const handleAuthStateChanged = useCallback(async (user: User) => {
-    if (user) {
-      if (user.isAnonymous) {
-        await user.delete();
-        setCurrentUser(null);
-      } else {
-        setCurrentUser(user);
-      }
-
-      setIsLoading(false);
-    } else {
-      setCurrentUser(null);
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     router.events.on('routeChangeComplete', measurePageView);
 
@@ -158,18 +127,6 @@ export default function CustomApp({
     }
   }, [initServiceWorker]);
 
-  useEffect(() => {
-    if (!getApps().length) {
-      initFirebase();
-    }
-
-    const auth = getAuth();
-
-    const unsubscribe = onAuthStateChanged(auth, handleAuthStateChanged);
-
-    return () => unsubscribe();
-  }, [initFirebase, handleAuthStateChanged]);
-
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
@@ -179,16 +136,13 @@ export default function CustomApp({
         {inputGlobalStyles}
         <SnackbarProvider
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          action={(snackbarId) => (
+            <Button onClick={() => closeSnackbar(snackbarId)}>
+              {dictionary.close}
+            </Button>
+          )}
         >
-          <AuthContext.Provider
-            value={{
-              currentUser: currentUser,
-              setCurrentUser: setCurrentUser,
-              isLoading: isLoading,
-              signInRequired: signInRequired,
-              setSignInRequired: setSignInRequired
-            }}
-          >
+          <AuthProvider>
             <ServiceWorkerContext.Provider
               value={{
                 registration: registration
@@ -198,7 +152,7 @@ export default function CustomApp({
                 {getLayout(<Component {...pageProps} />)}
               </SWRContainer>
             </ServiceWorkerContext.Provider>
-          </AuthContext.Provider>
+          </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>
     </CacheProvider>
