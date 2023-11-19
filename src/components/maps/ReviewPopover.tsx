@@ -4,7 +4,9 @@ import {
   CardMedia,
   IconButton,
   Popover,
-  Typography
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { memo, useContext } from 'react';
 import { Review } from '../../../types';
@@ -45,6 +47,9 @@ function ReviewPopover({
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
 
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
   return (
     <Popover
       id={popoverId}
@@ -58,10 +63,14 @@ function ReviewPopover({
       slotProps={{
         paper: {
           sx: {
-            width: 320
+            width: {
+              xs: 240,
+              md: 320
+            }
           }
         }
       }}
+      disableScrollLock
     >
       <ReviewCardHeader
         review={currentReview}
@@ -87,7 +96,10 @@ function ReviewPopover({
               width={1200}
               height={630}
               sx={{
-                height: 168,
+                height: {
+                  xs: 126,
+                  md: 168
+                },
                 cursor: 'grab'
               }}
             />
@@ -95,7 +107,7 @@ function ReviewPopover({
         ))}
       </Swiper>
       <CardContent sx={{ pt: currentReview?.images.length > 0 ? 2 : 0, pb: 0 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant={mdUp ? 'h6' : 'subtitle1'} gutterBottom>
           {currentReview?.name}
         </Typography>
         <Typography variant="body2" component="p">

@@ -59,7 +59,11 @@ export default memo(function AccountMenuButton() {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem>
+        <ListItemButton
+          LinkComponent={Link}
+          href={`/users/${profile?.id}`}
+          onClick={handleLinkClick}
+        >
           <ListItemAvatar>
             <ProfileAvatar profile={profile} size={30} />
           </ListItemAvatar>
@@ -67,7 +71,7 @@ export default memo(function AccountMenuButton() {
           <ListItemText>
             {profile ? profile.name : dictionary['anonymous user']}
           </ListItemText>
-        </MenuItem>
+        </ListItemButton>
 
         <Divider />
 

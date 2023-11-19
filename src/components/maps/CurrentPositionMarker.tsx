@@ -185,10 +185,14 @@ function CurrentPositionMarker({
         slotProps={{
           paper: {
             sx: {
-              width: 320
+              width: {
+                xs: 240,
+                sm: 320
+              }
             }
           }
         }}
+        disableScrollLock
       >
         <CardHeader
           avatar={

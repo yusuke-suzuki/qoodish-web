@@ -1,15 +1,17 @@
-import { Fab } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext } from 'react';
+import { memo, useCallback, useContext, useState } from 'react';
 import { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
   map: AppMap | null;
+  onSaved: () => void;
 };
 
-function FollowButton({ map }: Props) {
+function FollowButton({ map, onSaved }: Props) {
+  const [loading, setLoading] = useState(false);
   const { currentUser, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
@@ -19,6 +21,8 @@ function FollowButton({ map }: Props) {
 
       return;
     }
+
+    setLoading(true);
 
     const token = await currentUser.getIdToken();
 
@@ -41,6 +45,8 @@ function FollowButton({ map }: Props) {
       const res = await fetch(request);
 
       if (res.ok) {
+        onSaved();
+
         enqueueSnackbar(dictionary['follow map success'], {
           variant: 'success'
         });
@@ -50,20 +56,23 @@ function FollowButton({ map }: Props) {
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+    } finally {
+      setLoading(false);
     }
-  }, [map, currentUser, setSignInRequired, dictionary]);
+  }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
 
   return (
-    <Fab
-      variant="extended"
+    <LoadingButton
+      loading={loading}
+      variant="contained"
       color="secondary"
       size="medium"
-      sx={{ width: '100%' }}
+      fullWidth
       disabled={!map || map.following}
       onClick={handleClick}
     >
       {dictionary.follow}
-    </Fab>
+    </LoadingButton>
   );
 }
 

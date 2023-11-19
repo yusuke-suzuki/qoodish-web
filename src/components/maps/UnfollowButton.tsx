@@ -1,6 +1,6 @@
-import { Fab } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo } from 'react';
+import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import { AppMap, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -8,9 +8,11 @@ import useDictionary from '../../hooks/useDictionary';
 type Props = {
   map: AppMap | null;
   currentProfile: Profile | null;
+  onSaved: () => void;
 };
 
-function UnfollowButton({ map, currentProfile }: Props) {
+function UnfollowButton({ map, currentProfile, onSaved }: Props) {
+  const [loading, setLoading] = useState(false);
   const { currentUser, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
@@ -24,6 +26,8 @@ function UnfollowButton({ map, currentProfile }: Props) {
 
       return;
     }
+
+    setLoading(true);
 
     const token = await currentUser.getIdToken();
 
@@ -46,6 +50,8 @@ function UnfollowButton({ map, currentProfile }: Props) {
       const res = await fetch(request);
 
       if (res.ok) {
+        onSaved();
+
         enqueueSnackbar(dictionary['unfollow map success'], {
           variant: 'success'
         });
@@ -55,20 +61,22 @@ function UnfollowButton({ map, currentProfile }: Props) {
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+    } finally {
+      setLoading(false);
     }
-  }, [map, currentUser, setSignInRequired, dictionary]);
+  }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
 
   return (
-    <Fab
-      variant="extended"
-      color="default"
+    <LoadingButton
+      variant="outlined"
+      color="inherit"
       size="medium"
-      sx={{ width: '100%' }}
+      fullWidth
       disabled={!map || !map.following || isAuthor}
       onClick={handleClick}
     >
       {dictionary.unfollow}
-    </Fab>
+    </LoadingButton>
   );
 }
 

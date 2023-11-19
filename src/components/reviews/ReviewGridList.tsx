@@ -81,7 +81,7 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
                   p: 1
                 }}
                 actionIcon={
-                  review?.images.length > 0 && (
+                  review?.images.length > 1 && (
                     <PhotoLibrary htmlColor="white" fontSize="small" />
                   )
                 }

@@ -30,6 +30,7 @@ type Props = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onReportClick: () => void;
+  onSaved: () => void;
 };
 
 function MobileMapDrawer({
@@ -37,7 +38,8 @@ function MobileMapDrawer({
   currentProfile,
   onEditClick,
   onDeleteClick,
-  onReportClick
+  onReportClick,
+  onSaved
 }: Props) {
   const dictionary = useDictionary();
   const { reviews, isLoading } = useMapReviews(map ? map.id : null);
@@ -61,7 +63,7 @@ function MobileMapDrawer({
         defaultSnap={({ maxHeight }) => maxHeight / 4}
         snapPoints={({ maxHeight }) => [
           maxHeight - maxHeight / 10,
-          maxHeight / 4,
+          120,
           maxHeight * 0.6
         ]}
         header={
@@ -73,16 +75,19 @@ function MobileMapDrawer({
               mb: 1,
               textAlign: 'left'
             }}
+            onClick={() =>
+              sheetRef.current.snapTo(({ maxHeight }) => maxHeight / 2)
+            }
           >
             {map ? (
               <Avatar
                 alt={map.name}
                 src={map.thumbnail_url_400}
                 variant="rounded"
-                sx={{ width: 120, height: 120 }}
+                sx={{ width: 80, height: 80 }}
               />
             ) : (
-              <Skeleton variant="circular" width={120} height={120} />
+              <Skeleton variant="circular" width={80} height={80} />
             )}
 
             <Stack spacing={1}>
@@ -142,13 +147,19 @@ function MobileMapDrawer({
             </>
           )}
         </CardContent>
-        <CardActions sx={{ p: 2 }}>
-          {map?.following ? (
-            <UnfollowButton map={map} currentProfile={currentProfile} />
-          ) : (
-            <FollowButton map={map} />
-          )}
-        </CardActions>
+        {map?.editable ? null : (
+          <CardActions sx={{ p: 2 }}>
+            {map?.following ? (
+              <UnfollowButton
+                map={map}
+                currentProfile={currentProfile}
+                onSaved={onSaved}
+              />
+            ) : (
+              <FollowButton map={map} onSaved={onSaved} />
+            )}
+          </CardActions>
+        )}
         <Divider />
         <CardContent>
           <List disablePadding dense>

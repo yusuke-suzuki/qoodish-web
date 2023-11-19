@@ -59,7 +59,6 @@ export default memo(function CreateMapDialog({
   const [description, setDescription] = useState('');
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isInvitable, setIsInvitable] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
@@ -78,11 +77,9 @@ export default memo(function CreateMapDialog({
   const handleMapOptionsChange = useCallback(
     (options: {
       isPrivate: boolean;
-      isInvitable: boolean;
       isShared: boolean;
     }) => {
       setIsPrivate(options.isPrivate);
-      setIsInvitable(options.isInvitable);
       setIsShared(options.isShared);
     },
     []
@@ -97,7 +94,7 @@ export default memo(function CreateMapDialog({
       latitude: position.lat,
       longitude: position.lng,
       private: isPrivate,
-      invitable: isInvitable,
+      invitable: false,
       shared: isShared
     };
 
@@ -159,7 +156,6 @@ export default memo(function CreateMapDialog({
     thumbnailDataUrl,
     position,
     isPrivate,
-    isInvitable,
     isShared,
     dictionary,
     onClose,
@@ -172,7 +168,6 @@ export default memo(function CreateMapDialog({
     setThumbnailDataUrl(null);
     setPosition(null);
     setIsPrivate(false);
-    setIsInvitable(false);
     setIsShared(false);
   }, []);
 

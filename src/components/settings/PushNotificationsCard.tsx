@@ -124,7 +124,12 @@ function PushNotificationsCard() {
           {dictionary['push settings detail']}
         </Typography>
 
-        <FormControl component="fieldset" color="secondary" margin="normal">
+        <FormControl
+          component="fieldset"
+          color="secondary"
+          margin="normal"
+          disabled={registration ? false : true}
+        >
           <FormLabel component="legend">
             {dictionary['device settings']}
           </FormLabel>
