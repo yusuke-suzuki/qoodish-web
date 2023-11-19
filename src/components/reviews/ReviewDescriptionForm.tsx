@@ -1,5 +1,4 @@
-import { Description } from '@mui/icons-material';
-import { InputAdornment, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { memo, useCallback, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -57,13 +56,6 @@ function ReviewDescriptionForm({ onChange, defaultValue }: Props) {
       margin="normal"
       variant="outlined"
       minRows={3}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Description />
-          </InputAdornment>
-        )
-      }}
     />
   );
 }

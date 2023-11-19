@@ -30,6 +30,7 @@ type Props = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onReportClick: () => void;
+  onSaved: () => void;
 };
 
 export default memo(function MapSummaryCard({
@@ -37,7 +38,8 @@ export default memo(function MapSummaryCard({
   currentProfile,
   onEditClick,
   onDeleteClick,
-  onReportClick
+  onReportClick,
+  onSaved
 }: Props) {
   const dictionary = useDictionary();
   const { reviews, isLoading } = useMapReviews(map ? map.id : null);
@@ -96,7 +98,7 @@ export default memo(function MapSummaryCard({
           />
         }
       />
-      <CardContent sx={{ py: 0 }}>
+      <CardContent sx={{ pt: 0, pb: map?.editable ? 2 : 0 }}>
         {map ? (
           <Typography variant="body1">{map.description}</Typography>
         ) : (
@@ -106,13 +108,19 @@ export default memo(function MapSummaryCard({
           </>
         )}
       </CardContent>
-      <CardActions sx={{ p: 2 }}>
-        {map?.following ? (
-          <UnfollowButton map={map} currentProfile={currentProfile} />
-        ) : (
-          <FollowButton map={map} />
-        )}
-      </CardActions>
+      {map?.editable ? null : (
+        <CardActions sx={{ p: 2 }}>
+          {map?.following ? (
+            <UnfollowButton
+              map={map}
+              currentProfile={currentProfile}
+              onSaved={onSaved}
+            />
+          ) : (
+            <FollowButton map={map} onSaved={onSaved} />
+          )}
+        </CardActions>
+      )}
       <Divider />
       <CardContent>
         <List disablePadding dense>

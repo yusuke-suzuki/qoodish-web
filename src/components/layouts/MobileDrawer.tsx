@@ -53,11 +53,13 @@ export default memo(function MobileDrawer({
   const { profile } = useProfile(currentUser?.uid);
 
   const handleSignOutClick = useCallback(async () => {
+    onClose();
+
     const auth = getAuth();
     await signOut(auth);
 
     router.push('/login');
-  }, []);
+  }, [onClose]);
 
   const handleCreateMapClick = useCallback(() => {
     onClose();

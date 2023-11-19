@@ -139,6 +139,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
           onEditClick={() => setEditDialogOpen(true)}
           onDeleteClick={() => setDeleteDialogOpen(true)}
           onReportClick={() => setIssueDialogOpen(true)}
+          onSaved={mutateMap}
         />
       )}
 
@@ -151,6 +152,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
               onEditClick={() => setEditDialogOpen(true)}
               onDeleteClick={() => setDeleteDialogOpen(true)}
               onReportClick={() => setIssueDialogOpen(true)}
+              onSaved={mutateMap}
             />
           </Box>
         )}
@@ -159,8 +161,8 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
           sx={{
             height: {
-              xs: `calc(75dvh - ${theme.spacing(7)})`,
-              sm: `calc(75dvh - ${theme.spacing(8)})`,
+              xs: `calc(100dvh - 120px - ${theme.spacing(7)})`,
+              sm: `calc(100dvh - 120px - ${theme.spacing(8)})`,
               md: '100dvh'
             },
             width: {

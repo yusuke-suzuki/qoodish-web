@@ -11,7 +11,6 @@ import useDictionary from '../../hooks/useDictionary';
 
 type MapOptions = {
   isPrivate: boolean;
-  isInvitable: boolean;
   isShared: boolean;
 };
 
@@ -24,20 +23,18 @@ function MapOptions({ currentMap, onChange }: Props) {
   const dictionary = useDictionary();
 
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isInvitable, setIsInvitable] = useState(false);
   const [isShared, setIsShared] = useState(false);
 
   useEffect(() => {
     if (currentMap) {
       setIsPrivate(currentMap.private);
-      setIsInvitable(currentMap.invitable);
       setIsShared(currentMap.shared);
     }
   }, [currentMap]);
 
   useEffect(() => {
-    onChange({ isPrivate, isInvitable, isShared });
-  }, [isPrivate, isInvitable, isShared, onChange]);
+    onChange({ isPrivate, isShared });
+  }, [isPrivate, isShared, onChange]);
 
   return (
     <FormControl component="fieldset" color="secondary" margin="normal">
@@ -68,19 +65,6 @@ function MapOptions({ currentMap, onChange }: Props) {
             />
           }
           label={dictionary['set this map to private']}
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              color="secondary"
-              checked={isInvitable}
-              onChange={(
-                _event: ChangeEvent<HTMLInputElement>,
-                checked: boolean
-              ) => setIsInvitable(checked)}
-            />
-          }
-          label={dictionary['allow followers to invite']}
         />
       </FormGroup>
     </FormControl>
