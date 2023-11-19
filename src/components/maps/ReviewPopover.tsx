@@ -75,7 +75,6 @@ function ReviewPopover({
       <ReviewCardHeader
         review={currentReview}
         hideMapLink
-        hideDate
         action={
           <ReviewMenuButton
             review={currentReview}

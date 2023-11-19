@@ -34,8 +34,8 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
     <ImageList
       cols={cols || (smUp ? 3 : 1)}
       rowHeight={240}
-      sx={{ m: 0 }}
       gap={8}
+      sx={{ m: 0 }}
     >
       {(!maps.length ? Array.from(new Array(skeletonSize || 6)) : maps).map(
         (map: AppMap | null, i) => (
@@ -101,7 +101,7 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
                 position="below"
                 title={
                   map ? (
-                    <Typography variant="subtitle2" fontWeight={600}>
+                    <Typography variant="subtitle2" fontWeight={600} noWrap>
                       {map.name}
                     </Typography>
                   ) : (
@@ -117,6 +117,7 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
                     <Skeleton width="60%" height={24} />
                   )
                 }
+                sx={{ display: 'grid' }}
               />
             </ImageListItem>
           </MuiLink>
