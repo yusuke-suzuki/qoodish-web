@@ -11,10 +11,9 @@ type Props = {
   review: Review;
   action: ReactNode;
   hideMapLink?: boolean;
-  hideDate?: boolean;
 };
 
-function ReviewCardHeader({ review, action, hideMapLink, hideDate }: Props) {
+function ReviewCardHeader({ review, action, hideMapLink }: Props) {
   const router = useRouter();
 
   return (
@@ -39,7 +38,7 @@ function ReviewCardHeader({ review, action, hideMapLink, hideDate }: Props) {
             {review.author.name}
           </MuiLink>
 
-          {hideDate ? null : (
+          {hideMapLink ? null : (
             <Typography variant="body2" color="text.secondary">
               {formatDistanceToNow(new Date(review.created_at), {
                 addSuffix: true,
@@ -50,7 +49,14 @@ function ReviewCardHeader({ review, action, hideMapLink, hideDate }: Props) {
         </Box>
       }
       subheader={
-        hideMapLink ? null : (
+        hideMapLink ? (
+          <Typography variant="body2" color="text.secondary">
+            {formatDistanceToNow(new Date(review.created_at), {
+              addSuffix: true,
+              locale: router.locale === 'ja' ? ja : enUS
+            })}
+          </Typography>
+        ) : (
           <MuiLink
             underline="hover"
             component={Link}

@@ -95,16 +95,6 @@ jobs:
       - name: Set Cloud Run tag name
         run: |
           echo "CLOUD_RUN_TAG=$(echo ${RELEASE_VERSION} | sed -e "s/\./\-/g")" >> $GITHUB_ENV
-      - name: Clear VPC connector
-        env:
-          CLOUD_RUN_SA_NAME: prod-qoodish-web@qoodish-common.iam.gserviceaccount.com
-        run: |
-          gcloud run services update $SERVICE_NAME \
-            --clear-vpc-connector \
-            --platform=managed \
-            --region=asia-northeast1 \
-            --service-account=$CLOUD_RUN_SA_NAME \
-            --project=$PROJECT_ID
       - name: Deploy revision
         env:
           CLOUDSDK_CORE_DISABLE_PROMPTS: 1
