@@ -199,7 +199,7 @@ export default memo(function EditMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      fullScreen={!smUp}
+      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onEnter: setCurrentThumbnail, onExited: handleExited }}
     >

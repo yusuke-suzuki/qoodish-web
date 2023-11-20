@@ -188,6 +188,7 @@ export default memo(function EditReviewDialog({
       }}
       disableEscapeKeyDown
       fullWidth
+      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onEnter: setCurrentImages, onExited: handleExited }}
     >

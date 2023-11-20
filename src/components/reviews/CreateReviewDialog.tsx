@@ -194,6 +194,7 @@ export default memo(function CreateReviewDialog({
       }}
       disableEscapeKeyDown
       fullWidth
+      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onExited: handleExited }}
     >
