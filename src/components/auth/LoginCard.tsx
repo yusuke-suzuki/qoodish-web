@@ -2,7 +2,7 @@ import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
-import SignInWithGoogleButton from './SignInWithGoogleButton';
+import SignInButtons from './SignInButtons';
 
 export default memo(function LoginCard() {
   const dictionary = useDictionary();
@@ -40,9 +40,7 @@ export default memo(function LoginCard() {
           justifyContent: 'center'
         }}
       >
-        <Box>
-          <SignInWithGoogleButton onSignInSuccess={handleSignInSuccess} />
-        </Box>
+        <SignInButtons onSignInSuccess={handleSignInSuccess} />
       </Box>
     </Stack>
   );

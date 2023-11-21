@@ -82,9 +82,15 @@ export default memo(function MobileDrawer({
             <ProfileAvatar size={48} profile={profile} />
 
             {profile ? (
-              <Typography variant="subtitle1" fontWeight={600}>
-                {profile.name}
-              </Typography>
+              <Box>
+                <Typography variant="subtitle1" fontWeight={600}>
+                  {profile.name}
+                </Typography>
+
+                <Typography variant="subtitle2" color="text.secondary">
+                  {currentUser?.email}
+                </Typography>
+              </Box>
             ) : (
               <Typography variant="subtitle1">
                 {dictionary['anonymous user']}

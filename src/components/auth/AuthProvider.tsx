@@ -1,11 +1,7 @@
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getApps, initializeApp } from 'firebase/app';
 import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useRouter } from 'next/router';
-import { enqueueSnackbar } from 'notistack';
 import { ReactNode, memo, useCallback, useEffect, useState } from 'react';
-import AuthContext from '../context/AuthContext';
-import useDictionary from '../hooks/useDictionary';
+import AuthContext from '../../context/AuthContext';
 
 type Props = {
   children: ReactNode;
@@ -15,9 +11,6 @@ function AuthProvider({ children }: Props) {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
-
-  const dictionary = useDictionary();
-  const router = useRouter();
 
   const initFirebase = useCallback(() => {
     initializeApp({
@@ -31,30 +24,27 @@ function AuthProvider({ children }: Props) {
     });
   }, []);
 
-  const signIn = useCallback(
-    async (user: User) => {
-      const accessToken = await user.getIdToken();
+  const signIn = useCallback(async (user: User) => {
+    const accessToken = await user.getIdToken();
 
-      const headers = new Headers();
-      headers.append('Authorization', `Bearer ${accessToken}`);
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
 
-      const request = new Request(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`,
-        {
-          method: 'POST',
-          headers: headers
-        }
-      );
-
-      const res = await fetch(request);
-
-      if (res.ok) {
-        setCurrentUser(user);
-        setLoading(false);
+    const request = new Request(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`,
+      {
+        method: 'POST',
+        headers: headers
       }
-    },
-    [dictionary]
-  );
+    );
+
+    const res = await fetch(request);
+
+    if (res.ok) {
+      setCurrentUser(user);
+      setLoading(false);
+    }
+  }, []);
 
   const handleAuthStateChanged = useCallback(
     async (user: User) => {
