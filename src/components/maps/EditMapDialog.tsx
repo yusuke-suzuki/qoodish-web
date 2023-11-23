@@ -10,9 +10,7 @@ import {
   Skeleton,
   Slide,
   SlideProps,
-  Typography,
-  useMediaQuery,
-  useTheme
+  Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
@@ -52,9 +50,6 @@ export default memo(function EditMapDialog({
 }: Props) {
   const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
-
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -199,7 +194,7 @@ export default memo(function EditMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      fullScreen={!smUp}
+      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onEnter: setCurrentThumbnail, onExited: handleExited }}
     >

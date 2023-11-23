@@ -68,9 +68,10 @@ export default memo(function AccountMenuButton() {
             <ProfileAvatar profile={profile} size={30} />
           </ListItemAvatar>
 
-          <ListItemText>
-            {profile ? profile.name : dictionary['anonymous user']}
-          </ListItemText>
+          <ListItemText
+            primary={profile ? profile.name : dictionary['anonymous user']}
+            secondary={currentUser?.email}
+          />
         </ListItemButton>
 
         <Divider />

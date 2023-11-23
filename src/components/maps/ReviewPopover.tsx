@@ -64,7 +64,7 @@ function ReviewPopover({
         paper: {
           sx: {
             width: {
-              xs: 240,
+              xs: 280,
               md: 320
             }
           }
@@ -96,7 +96,7 @@ function ReviewPopover({
               height={630}
               sx={{
                 height: {
-                  xs: 126,
+                  xs: 147,
                   md: 168
                 },
                 cursor: 'grab'

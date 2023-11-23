@@ -12,7 +12,6 @@ export type PushNotification = {
 export type Profile = {
   id: number;
   uid: string;
-  email: string;
   name: string;
   biography: string;
   image_url: string;

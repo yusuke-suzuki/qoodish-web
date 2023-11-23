@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   CardActions,
   CardContent,
@@ -8,11 +7,11 @@ import {
   ListItem,
   ListItemText,
   Skeleton,
-  Stack,
-  Typography
+  Typography,
+  css
 } from '@mui/material';
 import { memo, useCallback, useRef } from 'react';
-import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet';
+import Sheet, { SheetRef } from 'react-modal-sheet';
 import { AppMap, Profile } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapReviews } from '../../hooks/useMapReviews';
@@ -21,7 +20,7 @@ import Followers from './Followers';
 import MapCardHeader from './MapCardHeader';
 import MapMenuButton from './MapMenuButton';
 import MapReviewList from './MapReviewList';
-import PrivateMapChip from './PrivateMapChip';
+import MobileMiniMapHeader from './MobileMiniMapHeader';
 import UnfollowButton from './UnfollowButton';
 
 type Props = {
@@ -32,6 +31,9 @@ type Props = {
   onReportClick: () => void;
   onSaved: () => void;
 };
+
+const snapPoints = [0.9, 0.5, 136];
+const initialSnap = 2;
 
 function MobileMapDrawer({
   map,
@@ -44,160 +46,113 @@ function MobileMapDrawer({
   const dictionary = useDictionary();
   const { reviews, isLoading } = useMapReviews(map ? map.id : null);
 
-  const focusRef = useRef<HTMLButtonElement>();
-  const sheetRef = useRef<BottomSheetRef>();
+  const sheetRef = useRef<SheetRef>();
 
-  const handleReviewClick = useCallback(() => {
-    sheetRef.current.snapTo(({ maxHeight }) => maxHeight / 4);
+  const handleClose = useCallback(() => {
+    sheetRef.current.snapTo(2);
   }, []);
 
   return (
     <>
-      <BottomSheet
-        open
-        blocking={false}
-        skipInitialTransition
-        expandOnContentDrag
+      <Sheet
         ref={sheetRef}
-        initialFocusRef={focusRef}
-        defaultSnap={({ maxHeight }) => maxHeight / 4}
-        snapPoints={({ maxHeight }) => [
-          maxHeight - maxHeight / 10,
-          120,
-          maxHeight * 0.6
-        ]}
-        header={
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              mb: 1,
-              textAlign: 'left'
-            }}
-            onClick={() =>
-              sheetRef.current.snapTo(({ maxHeight }) => maxHeight / 2)
-            }
-          >
-            {map ? (
-              <Avatar
-                alt={map.name}
-                src={map.thumbnail_url_400}
-                variant="rounded"
-                sx={{ width: 80, height: 80 }}
+        isOpen={true}
+        onClose={handleClose}
+        snapPoints={snapPoints}
+        initialSnap={initialSnap}
+        css={css`
+          z-index: 1100 !important;
+        `}
+      >
+        <Sheet.Container>
+          <Sheet.Header>
+            <MobileMiniMapHeader
+              map={map}
+              reviews={reviews}
+              draggable
+              sx={{ pt: 0 }}
+            />
+          </Sheet.Header>
+          <Sheet.Content>
+            <Sheet.Scroller>
+              <Divider />
+              <MapCardHeader
+                map={map}
+                action={
+                  <MapMenuButton
+                    map={map}
+                    currentProfile={currentProfile}
+                    onReportClick={onReportClick}
+                    onEditClick={onEditClick}
+                    onDeleteClick={onDeleteClick}
+                  />
+                }
               />
-            ) : (
-              <Skeleton variant="circular" width={80} height={80} />
-            )}
 
-            <Stack spacing={1}>
-              {map ? (
-                <>
-                  <Typography
-                    variant="subtitle1"
-                    component="h1"
-                    fontWeight={600}
-                  >
-                    {map.name}
+              <CardContent sx={{ pt: 0, pb: map?.editable ? 2 : 0 }}>
+                {map ? (
+                  <Typography variant="body1">{map.description}</Typography>
+                ) : (
+                  <>
+                    <Skeleton />
+                    <Skeleton />
+                  </>
+                )}
+              </CardContent>
+              {map?.editable ? null : (
+                <CardActions sx={{ p: 2 }}>
+                  {map?.following ? (
+                    <UnfollowButton
+                      map={map}
+                      currentProfile={currentProfile}
+                      onSaved={onSaved}
+                    />
+                  ) : (
+                    <FollowButton map={map} onSaved={onSaved} />
+                  )}
+                </CardActions>
+              )}
+              <Divider />
+              <CardContent>
+                <List disablePadding dense>
+                  <ListItem disableGutters>
+                    <ListItemText primary={dictionary.followers} />
+                    <Followers map={map} />
+                  </ListItem>
+                </List>
+              </CardContent>
+              <Divider />
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Typography variant="subtitle2" component="h2">
+                    {dictionary.spots}
                   </Typography>
 
                   <Typography
-                    variant="body2"
+                    variant="subtitle1"
                     component="div"
                     color="text.secondary"
                   >
-                    {reviews.length} {dictionary['spots count']}
+                    {reviews.length}
                   </Typography>
+                </Box>
 
-                  {map.private && (
-                    <Box>
-                      <PrivateMapChip />
-                    </Box>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Skeleton height={70} />
-                  <Skeleton />
-                </>
-              )}
-            </Stack>
-          </Box>
-        }
-      >
-        <MapCardHeader
-          map={map}
-          action={
-            <MapMenuButton
-              map={map}
-              currentProfile={currentProfile}
-              onReportClick={onReportClick}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-            />
-          }
-        />
-        <CardContent sx={{ pt: 0, pb: map?.editable ? 2 : 0 }}>
-          {map ? (
-            <Typography variant="body1">{map.description}</Typography>
-          ) : (
-            <>
-              <Skeleton />
-              <Skeleton />
-            </>
-          )}
-        </CardContent>
-        {map?.editable ? null : (
-          <CardActions sx={{ p: 2 }}>
-            {map?.following ? (
-              <UnfollowButton
-                map={map}
-                currentProfile={currentProfile}
-                onSaved={onSaved}
-              />
-            ) : (
-              <FollowButton map={map} onSaved={onSaved} />
-            )}
-          </CardActions>
-        )}
-        <Divider />
-        <CardContent>
-          <List disablePadding dense>
-            <ListItem disableGutters>
-              <ListItemText primary={dictionary.followers} />
-              <Followers map={map} />
-            </ListItem>
-          </List>
-        </CardContent>
-        <Divider />
-        <CardContent>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant="subtitle2" component="h2">
-              {dictionary.spots}
-            </Typography>
-
-            <Typography
-              variant="subtitle1"
-              component="div"
-              color="text.secondary"
-            >
-              {reviews.length}
-            </Typography>
-          </Box>
-
-          <MapReviewList
-            reviews={reviews}
-            isLoading={isLoading}
-            onReviewClick={handleReviewClick}
-          />
-        </CardContent>
-      </BottomSheet>
+                <MapReviewList
+                  reviews={reviews}
+                  isLoading={isLoading}
+                  onReviewClick={handleClose}
+                />
+              </CardContent>
+            </Sheet.Scroller>
+          </Sheet.Content>
+        </Sheet.Container>
+      </Sheet>
     </>
   );
 }

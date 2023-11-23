@@ -1,10 +1,8 @@
 import { Close } from '@mui/icons-material';
 import {
-  Button,
   Container,
   Divider,
   Drawer,
-  Grid,
   IconButton,
   Toolbar,
   Typography
@@ -12,8 +10,8 @@ import {
 import { memo, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
-import Logo from './Logo';
-import SignInWithGoogleButton from './SignInWithGoogleButton';
+import Logo from '../layouts/Logo';
+import SignInButtons from './SignInButtons';
 
 function SignInRequiredDialog() {
   const dictionary = useDictionary();
@@ -49,24 +47,9 @@ function SignInRequiredDialog() {
           {dictionary['this action requires sign in']}
         </Typography>
 
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={12} md={6}>
-            <SignInWithGoogleButton
-              onSignInSuccess={() => setSignInRequired(false)}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Button
-              onClick={() => setSignInRequired(false)}
-              variant="outlined"
-              fullWidth
-              color="secondary"
-            >
-              {dictionary.cancel}
-            </Button>
-          </Grid>
-        </Grid>
+        <Container maxWidth="sm">
+          <SignInButtons onSignInSuccess={() => setSignInRequired(false)} />
+        </Container>
       </Container>
     </Drawer>
   );

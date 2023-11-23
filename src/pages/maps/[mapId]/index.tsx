@@ -1,4 +1,5 @@
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { ExpandLess } from '@mui/icons-material';
+import { Box, Card, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -18,6 +19,7 @@ import EditMapDialog from '../../../components/maps/EditMapDialog';
 import GoogleMaps from '../../../components/maps/GoogleMaps';
 import MapSummaryCard from '../../../components/maps/MapSummaryCard';
 import MobileMapDrawer from '../../../components/maps/MobileMapDrawer';
+import MobileMiniMapHeader from '../../../components/maps/MobileMiniMapHeader';
 import AuthContext from '../../../context/AuthContext';
 import useDictionary from '../../../hooks/useDictionary';
 import { useMap } from '../../../hooks/useMap';
@@ -28,6 +30,9 @@ import { NextPageWithLayout } from '../../_app';
 type Props = {
   map: AppMap | null;
 };
+
+const bottomSheetHeight = 136;
+const summaryCardHeight = 360;
 
 const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
   const dictionary = useDictionary();
@@ -145,7 +150,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
 
       <Box sx={{ display: { xs: 'block', md: 'flex' } }}>
         {mdUp && (
-          <Box sx={{ width: 360, zIndex: 1, height: '100dvh' }}>
+          <Box sx={{ width: summaryCardHeight, zIndex: 1, height: '100dvh' }}>
             <MapSummaryCard
               map={map}
               currentProfile={profile}
@@ -161,12 +166,12 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
           sx={{
             height: {
-              xs: `calc(100dvh - 120px - ${theme.spacing(7)})`,
-              sm: `calc(100dvh - 120px - ${theme.spacing(8)})`,
+              xs: `calc(100dvh - ${bottomSheetHeight}px - ${theme.spacing(7)})`,
+              sm: `calc(100dvh - ${bottomSheetHeight}px - ${theme.spacing(8)})`,
               md: '100dvh'
             },
             width: {
-              md: `calc(100dvw - 360px - ${theme.spacing(8)})`
+              md: `calc(100dvw - ${summaryCardHeight}px - ${theme.spacing(8)})`
             }
           }}
           center={center}

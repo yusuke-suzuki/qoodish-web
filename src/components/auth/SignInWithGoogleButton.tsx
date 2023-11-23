@@ -1,58 +1,23 @@
-import { LoadingButton } from '@mui/lab';
 import { SvgIcon } from '@mui/material';
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
-import { useRouter } from 'next/router';
-import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import { AuthError, GoogleAuthProvider } from 'firebase/auth';
+import { memo, useMemo } from 'react';
+import SignInWithProviderButton from './SignInWithProviderButton';
 
 type Props = {
-  onSignInSuccess?: () => void;
+  onSignInSuccess: () => void;
+  onSignInError: (authError: AuthError) => void;
 };
 
-function SignInWithGoogleButton({ onSignInSuccess }: Props) {
-  const router = useRouter();
-  const dictionary = useDictionary();
-
-  const [loading, setLoading] = useState(false);
-
-  const handleClick = useCallback(async () => {
-    setLoading(true);
-
-    const auth = getAuth();
-    auth.languageCode = router.locale;
-    const provider = new GoogleAuthProvider();
-
-    try {
-      await signInWithPopup(auth, provider);
-
-      enqueueSnackbar(dictionary['sign in success'], {
-        variant: 'success'
-      });
-
-      if (onSignInSuccess) {
-        onSignInSuccess();
-      }
-
-      const analytics = getAnalytics();
-      logEvent(analytics, 'login');
-    } catch (error) {
-      enqueueSnackbar(dictionary['sign in failed'], {
-        variant: 'error'
-      });
-
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [dictionary, router.locale, onSignInSuccess]);
+function SignInWithGoogleButton({ onSignInSuccess, onSignInError }: Props) {
+  const provider = useMemo(() => {
+    return new GoogleAuthProvider();
+  }, []);
 
   return (
-    <LoadingButton
-      loading={loading}
-      variant="contained"
-      fullWidth
+    <SignInWithProviderButton
+      provider={provider}
+      onSignInSuccess={onSignInSuccess}
+      onSignInError={onSignInError}
       sx={{
         textTransform: 'none',
         backgroundColor: '#4285F4',
@@ -60,7 +25,7 @@ function SignInWithGoogleButton({ onSignInSuccess }: Props) {
           backgroundColor: '#357AE8'
         }
       }}
-      onClick={handleClick}
+      text="Sign in with Google"
       startIcon={
         <SvgIcon
           width="40"
@@ -100,9 +65,7 @@ function SignInWithGoogleButton({ onSignInSuccess }: Props) {
           </defs>
         </SvgIcon>
       }
-    >
-      Sign in with Google
-    </LoadingButton>
+    />
   );
 }
 

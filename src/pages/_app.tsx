@@ -24,8 +24,8 @@ import { enUS, jaJP } from '@mui/material/locale';
 import { NextPage } from 'next';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import createEmotionCache from '../../createEmotionCache';
-import AuthProvider from '../components/AuthProvider';
 import SWRContainer from '../components/SWRContainer';
+import AuthProvider from '../components/auth/AuthProvider';
 import useDictionary from '../hooks/useDictionary';
 import { usePushManager } from '../hooks/usePushManager';
 

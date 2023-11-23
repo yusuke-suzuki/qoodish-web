@@ -14,7 +14,7 @@ const NotificationsPage: NextPageWithLayout = () => {
 
   const { notifications, isLoading, mutate } = useNotifications();
 
-  const title = `${dictionary.notification} | Qoodish`;
+  const title = `${dictionary.notifications} | Qoodish`;
   const description = dictionary['meta description'];
   const basePath =
     router.locale === router.defaultLocale ? '' : `/${router.locale}`;

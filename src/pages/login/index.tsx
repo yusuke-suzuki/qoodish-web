@@ -14,8 +14,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 import Layout from '../../components/Layout';
+import LoginCard from '../../components/auth/LoginCard';
 import Footer from '../../components/layouts/Footer';
-import LoginCard from '../../components/layouts/LoginCard';
 import useDictionary from '../../hooks/useDictionary';
 import { NextPageWithLayout } from '../_app';
 
