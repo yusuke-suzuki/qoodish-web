@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import {
   MutableRefObject,
@@ -12,10 +13,7 @@ import { AppMap, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import { useProfile } from '../../hooks/useProfile';
-import IssueDialog from '../common/IssueDialog';
 import CreateReviewDialog from '../reviews/CreateReviewDialog';
-import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
-import EditReviewDialog from '../reviews/EditReviewDialog';
 import CurrentPositionMarker from './CurrentPositionMarker';
 import CustomMapControls from './CustomMapControls';
 import PlaceInfoWindow from './PlaceInfoWindow';
@@ -26,6 +24,7 @@ type Props = {
   map: AppMap | null;
   reviews: Review[];
   onReviewSaved: () => void;
+  onReviewClick: (review: Review) => void;
 };
 
 function positionInBounds(
@@ -47,7 +46,7 @@ function positionInBounds(
   );
 }
 
-function CustomOverlays({ map, reviews, onReviewSaved }: Props) {
+function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
 
   const { currentUser } = useContext(AuthContext);
@@ -55,17 +54,17 @@ function CustomOverlays({ map, reviews, onReviewSaved }: Props) {
 
   const router = useRouter();
 
+  const theme = useTheme();
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+
   const [currentBounds, setCurrentBounds] =
     useState<google.maps.LatLngBounds>(null);
   const [currentReview, setCurrentReview] = useState<Review | null>(null);
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
   const [createReviewDialogOpen, setCreateReviewDialogOpen] = useState(false);
-  const [editReviewDialogOpen, setEditReviewDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [currentPlace, setCurrentPlace] =
     useState<google.maps.places.Place | null>(null);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
 
   const filteredReviews = useMemo(() => {
     if (!currentBounds) {
@@ -83,10 +82,11 @@ function CustomOverlays({ map, reviews, onReviewSaved }: Props) {
   const handleReviewClick = useCallback(
     (review: Review, ref: MutableRefObject<HTMLButtonElement>) => {
       setCurrentReview(review);
+      onReviewClick(review);
 
       setPopoverAnchorEl(ref.current);
     },
-    []
+    [onReviewClick]
   );
 
   const handleReviewSaved = useCallback(() => {
@@ -193,16 +193,15 @@ function CustomOverlays({ map, reviews, onReviewSaved }: Props) {
         />
       ))}
 
-      <ReviewPopover
-        currentReview={currentReview}
-        anchorEl={popoverAnchorEl}
-        popoverId={reviewPopoverId}
-        popoverOpen={popoverOpen}
-        onPopoverClose={() => setPopoverAnchorEl(null)}
-        onReportClick={() => setIssueDialogOpen(true)}
-        onEditClick={() => setEditReviewDialogOpen(true)}
-        onDeleteClick={() => setDeleteDialogOpen(true)}
-      />
+      {mdUp && (
+        <ReviewPopover
+          currentReview={currentReview}
+          anchorEl={popoverAnchorEl}
+          popoverId={reviewPopoverId}
+          popoverOpen={popoverOpen}
+          onPopoverClose={() => setPopoverAnchorEl(null)}
+        />
+      )}
 
       <PlaceInfoWindow
         place={currentPlace}
@@ -220,27 +219,6 @@ function CustomOverlays({ map, reviews, onReviewSaved }: Props) {
         place={currentPlace}
         currentPosition={currentPosition}
         onSaved={onReviewSaved}
-      />
-
-      <EditReviewDialog
-        open={editReviewDialogOpen}
-        onClose={() => setEditReviewDialogOpen(false)}
-        currentReview={currentReview}
-        onSaved={handleReviewSaved}
-      />
-
-      <DeleteReviewDialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        review={currentReview}
-        onDeleted={handleReviewSaved}
-      />
-
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={currentReview ? currentReview.id : null}
       />
     </>
   );

@@ -183,7 +183,6 @@ export default memo(function CreateMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onExited: handleExited }}
     >

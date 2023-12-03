@@ -1,4 +1,10 @@
-import { Box, CardHeader, Link as MuiLink, Typography } from '@mui/material';
+import {
+  Box,
+  CardHeader,
+  Link as MuiLink,
+  SxProps,
+  Typography
+} from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
@@ -8,17 +14,19 @@ import { Review } from '../../../types';
 import AuthorAvatar from '../common/AuthorAvatar';
 
 type Props = {
-  review: Review;
+  review: Review | null;
   action: ReactNode;
   hideMapLink?: boolean;
+  sx?: SxProps;
 };
 
-function ReviewCardHeader({ review, action, hideMapLink }: Props) {
+function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
   const router = useRouter();
 
   return (
     <CardHeader
-      avatar={<AuthorAvatar author={review.author} />}
+      sx={sx}
+      avatar={review && <AuthorAvatar author={review.author} />}
       action={action}
       title={
         <Box
@@ -32,18 +40,19 @@ function ReviewCardHeader({ review, action, hideMapLink }: Props) {
             underline="hover"
             color="inherit"
             component={Link}
-            href={`/users/${review.author.id}`}
-            title={review.author.name}
+            href={`/users/${review?.author.id}`}
+            title={review?.author.name}
           >
-            {review.author.name}
+            {review?.author.name}
           </MuiLink>
 
           {hideMapLink ? null : (
             <Typography variant="body2" color="text.secondary">
-              {formatDistanceToNow(new Date(review.created_at), {
-                addSuffix: true,
-                locale: router.locale === 'ja' ? ja : enUS
-              })}
+              {review &&
+                formatDistanceToNow(new Date(review.created_at), {
+                  addSuffix: true,
+                  locale: router.locale === 'ja' ? ja : enUS
+                })}
             </Typography>
           )}
         </Box>
@@ -51,19 +60,20 @@ function ReviewCardHeader({ review, action, hideMapLink }: Props) {
       subheader={
         hideMapLink ? (
           <Typography variant="body2" color="text.secondary">
-            {formatDistanceToNow(new Date(review.created_at), {
-              addSuffix: true,
-              locale: router.locale === 'ja' ? ja : enUS
-            })}
+            {review &&
+              formatDistanceToNow(new Date(review.created_at), {
+                addSuffix: true,
+                locale: router.locale === 'ja' ? ja : enUS
+              })}
           </Typography>
         ) : (
           <MuiLink
             underline="hover"
             component={Link}
-            href={`/maps/${review.map.id}`}
-            title={review.map.name}
+            href={`/maps/${review?.map.id}`}
+            title={review?.map.name}
           >
-            {review.map.name}
+            {review?.map.name}
           </MuiLink>
         )
       }

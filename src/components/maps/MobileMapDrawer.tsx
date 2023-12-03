@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { memo, useCallback, useRef } from 'react';
 import Sheet, { SheetRef } from 'react-modal-sheet';
-import { AppMap, Profile } from '../../../types';
+import { AppMap, Profile, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapReviews } from '../../hooks/useMapReviews';
 import FollowButton from './FollowButton';
@@ -30,6 +30,8 @@ type Props = {
   onDeleteClick: () => void;
   onReportClick: () => void;
   onSaved: () => void;
+  onReviewClick: (review: Review) => void;
+  reviewDrawerOpen: boolean;
 };
 
 const snapPoints = [0.9, 0.5, 136];
@@ -41,7 +43,9 @@ function MobileMapDrawer({
   onEditClick,
   onDeleteClick,
   onReportClick,
-  onSaved
+  onSaved,
+  onReviewClick,
+  reviewDrawerOpen
 }: Props) {
   const dictionary = useDictionary();
   const { reviews, isLoading } = useMapReviews(map ? map.id : null);
@@ -52,11 +56,19 @@ function MobileMapDrawer({
     sheetRef.current.snapTo(2);
   }, []);
 
+  const handleReviewClick = useCallback(
+    (review: Review) => {
+      onReviewClick(review);
+      sheetRef.current.snapTo(0);
+    },
+    [onReviewClick]
+  );
+
   return (
     <>
       <Sheet
         ref={sheetRef}
-        isOpen={true}
+        isOpen={reviewDrawerOpen ? false : true}
         onClose={handleClose}
         snapPoints={snapPoints}
         initialSnap={initialSnap}
@@ -146,7 +158,7 @@ function MobileMapDrawer({
                 <MapReviewList
                   reviews={reviews}
                   isLoading={isLoading}
-                  onReviewClick={handleClose}
+                  onReviewClick={handleReviewClick}
                 />
               </CardContent>
             </Sheet.Scroller>

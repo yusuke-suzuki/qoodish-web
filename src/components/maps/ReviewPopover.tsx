@@ -4,11 +4,9 @@ import {
   CardMedia,
   IconButton,
   Popover,
-  Typography,
-  useMediaQuery,
-  useTheme
+  Typography
 } from '@mui/material';
-import { memo, useContext } from 'react';
+import { memo, useCallback, useContext, useState } from 'react';
 import { Review } from '../../../types';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewMenuButton from '../reviews/ReviewMenuButton';
@@ -21,6 +19,10 @@ import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import AuthContext from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
+import { useReview } from '../../hooks/useReview';
+import IssueDialog from '../common/IssueDialog';
+import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
+import EditReviewDialog from '../reviews/EditReviewDialog';
 import LikeReviewButton from '../reviews/LikeReviewButton';
 
 type Props = {
@@ -29,9 +31,6 @@ type Props = {
   popoverId: string | undefined;
   popoverOpen: boolean;
   onPopoverClose: () => void;
-  onReportClick: () => void;
-  onEditClick: () => void;
-  onDeleteClick: () => void;
 };
 
 function ReviewPopover({
@@ -39,92 +38,117 @@ function ReviewPopover({
   anchorEl,
   popoverId,
   popoverOpen,
-  onPopoverClose,
-  onReportClick,
-  onEditClick,
-  onDeleteClick
+  onPopoverClose
 }: Props) {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
+  const { review: mutableReview, mutate } = useReview(
+    currentReview?.map.id,
+    currentReview?.id
+  );
 
-  const theme = useTheme();
-  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+
+  const handleReviewSaved = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
+  const review = mutableReview || currentReview;
 
   return (
-    <Popover
-      id={popoverId}
-      open={popoverOpen}
-      anchorEl={anchorEl}
-      onClose={onPopoverClose}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left'
-      }}
-      slotProps={{
-        paper: {
-          sx: {
-            width: {
-              xs: 280,
-              md: 320
+    <>
+      <Popover
+        id={popoverId}
+        open={popoverOpen}
+        anchorEl={anchorEl}
+        onClose={onPopoverClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 320
             }
           }
-        }
-      }}
-      disableScrollLock
-    >
-      <ReviewCardHeader
-        review={currentReview}
-        hideMapLink
-        action={
-          <ReviewMenuButton
-            review={currentReview}
-            currentProfile={profile}
-            onReportClick={onReportClick}
-            onEditClick={onEditClick}
-            onDeleteClick={onDeleteClick}
-          />
-        }
-      />
-      <Swiper pagination={true} modules={[Pagination]}>
-        {currentReview?.images.map((image) => (
-          <SwiperSlide key={image.id}>
-            <CardMedia
-              component="img"
-              alt={currentReview.name}
-              image={image.thumbnail_url_400}
-              width={1200}
-              height={630}
-              sx={{
-                height: {
-                  xs: 147,
-                  md: 168
-                },
-                cursor: 'grab'
-              }}
+        }}
+        disableScrollLock
+      >
+        <ReviewCardHeader
+          review={review}
+          hideMapLink
+          action={
+            <ReviewMenuButton
+              review={review}
+              currentProfile={profile}
+              onReportClick={() => setIssueDialogOpen(true)}
+              onEditClick={() => setEditDialogOpen(true)}
+              onDeleteClick={() => setDeleteDialogOpen(true)}
             />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <CardContent sx={{ pt: currentReview?.images.length > 0 ? 2 : 0, pb: 0 }}>
-        <Typography variant={mdUp ? 'h6' : 'subtitle1'} gutterBottom>
-          {currentReview?.name}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {currentReview?.comment}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <LikeReviewButton review={currentReview} />
+          }
+        />
+        <Swiper pagination={true} modules={[Pagination]}>
+          {review?.images.map((image) => (
+            <SwiperSlide key={image.id}>
+              <CardMedia
+                component="img"
+                alt={review.name}
+                image={image.thumbnail_url_400}
+                width={1200}
+                height={630}
+                sx={{
+                  height: 168,
+                  cursor: 'grab'
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <CardContent sx={{ pt: review?.images.length > 0 ? 2 : 0, pb: 0 }}>
+          <Typography variant="h6" gutterBottom>
+            {review?.name}
+          </Typography>
+          <Typography variant="body2" component="p">
+            {review?.comment}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <LikeReviewButton review={review} />
 
-        <IconButton
-          LinkComponent={Link}
-          href={`/maps/${currentReview?.map.id}/reports/${currentReview?.id}`}
-          disabled={!currentReview}
-        >
-          <Comment />
-        </IconButton>
-      </CardActions>
-    </Popover>
+          <IconButton
+            LinkComponent={Link}
+            href={`/maps/${review?.map.id}/reports/${review?.id}`}
+            disabled={!review}
+          >
+            <Comment />
+          </IconButton>
+        </CardActions>
+      </Popover>
+
+      <EditReviewDialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        currentReview={review}
+        onSaved={handleReviewSaved}
+      />
+
+      <DeleteReviewDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        review={review}
+        onDeleted={handleReviewSaved}
+      />
+
+      <IssueDialog
+        open={issueDialogOpen}
+        onClose={() => setIssueDialogOpen(false)}
+        contentType="review"
+        contentId={review ? review.id : null}
+      />
+    </>
   );
 }
 

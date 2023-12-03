@@ -1,8 +1,7 @@
-import { AvatarGroup, Skeleton } from '@mui/material';
+import { Avatar, AvatarGroup, Skeleton } from '@mui/material';
 import { memo } from 'react';
 import { AppMap, Follower } from '../../../types';
 import { useMapFollowers } from '../../hooks/useMapFollowers';
-import AuthorAvatar from '../common/AuthorAvatar';
 
 type FollowersProps = {
   map: AppMap | null;
@@ -16,7 +15,14 @@ function Followers({ map }: FollowersProps) {
       {(isLoading ? Array.from(new Array(4)) : followers).map(
         (follower: Follower | null, i) =>
           follower ? (
-            <AuthorAvatar key={follower.id} author={follower} />
+            <Avatar
+              key={follower.id}
+              src={follower.profile_image_url}
+              alt={follower.name}
+              imgProps={{
+                loading: 'lazy'
+              }}
+            />
           ) : (
             <Skeleton variant="circular" width={40} height={40} key={i} />
           )
