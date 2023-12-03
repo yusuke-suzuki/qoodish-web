@@ -194,7 +194,6 @@ export default memo(function EditMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      scroll="body"
       TransitionComponent={Transition}
       TransitionProps={{ onEnter: setCurrentThumbnail, onExited: handleExited }}
     >

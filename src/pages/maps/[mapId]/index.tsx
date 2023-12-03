@@ -1,5 +1,4 @@
-import { ExpandLess } from '@mui/icons-material';
-import { Box, Card, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -10,7 +9,7 @@ import {
   useEffect,
   useState
 } from 'react';
-import { AppMap } from '../../../../types';
+import { AppMap, Review } from '../../../../types';
 import Layout from '../../../components/Layout';
 import IssueDialog from '../../../components/common/IssueDialog';
 import CustomOverlays from '../../../components/maps/CustomOverlays';
@@ -19,7 +18,7 @@ import EditMapDialog from '../../../components/maps/EditMapDialog';
 import GoogleMaps from '../../../components/maps/GoogleMaps';
 import MapSummaryCard from '../../../components/maps/MapSummaryCard';
 import MobileMapDrawer from '../../../components/maps/MobileMapDrawer';
-import MobileMiniMapHeader from '../../../components/maps/MobileMiniMapHeader';
+import ReviewDrawer from '../../../components/maps/ReviewDrawer';
 import AuthContext from '../../../context/AuthContext';
 import useDictionary from '../../../hooks/useDictionary';
 import { useMap } from '../../../hooks/useMap';
@@ -72,11 +71,18 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [currentReview, setCurrentReview] = useState<Review | null>(null);
+  const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
 
   const handleReviewSaved = useCallback(() => {
     mutateMap();
     mutateReviews();
   }, [mutateMap, mutateReviews]);
+
+  const handleReviewClick = useCallback((review: Review) => {
+    setCurrentReview(review);
+    setReviewDrawerOpen(true);
+  }, []);
 
   useEffect(() => {
     if (lat && lng) {
@@ -145,6 +151,19 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
           onDeleteClick={() => setDeleteDialogOpen(true)}
           onReportClick={() => setIssueDialogOpen(true)}
           onSaved={mutateMap}
+          onReviewClick={handleReviewClick}
+          reviewDrawerOpen={reviewDrawerOpen}
+        />
+      )}
+
+      {mdDown && (
+        <ReviewDrawer
+          currentReview={currentReview}
+          open={reviewDrawerOpen}
+          onClose={() => setReviewDrawerOpen(false)}
+          onExited={() => setCurrentReview(null)}
+          onSaved={handleReviewSaved}
+          onDeleted={handleReviewSaved}
         />
       )}
 
@@ -181,6 +200,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
             map={clientMap}
             reviews={reviews}
             onReviewSaved={handleReviewSaved}
+            onReviewClick={handleReviewClick}
           />
         </GoogleMaps>
       </Box>
