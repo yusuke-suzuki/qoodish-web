@@ -20,7 +20,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Profile } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
 import ProfileAvatar from '../common/ProfileAvatar';
 import MarkerView from './MarkerView';
 
@@ -64,8 +63,7 @@ function CurrentPositionMarker({
   onCreateReviewClick,
   disableCreateReview
 }: Props) {
-  const { loader } = useGoogleMapsApi();
-  const { currentPosition } = useGoogleMap();
+  const { loader, currentPosition } = useGoogleMap();
 
   const dictionary = useDictionary();
 

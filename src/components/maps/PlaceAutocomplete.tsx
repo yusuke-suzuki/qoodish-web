@@ -9,7 +9,7 @@ import {
   useEffect,
   useState
 } from 'react';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
+import { useGoogleMap } from '../../hooks/useGoogleMap';
 
 type Props = {
   onChange: (place: google.maps.places.Place) => void;
@@ -21,7 +21,8 @@ const PlaceAutocomplete = forwardRef(function PlaceAutocomplete(
   ref: MutableRefObject<HTMLInputElement>
 ) {
   const router = useRouter();
-  const { loader } = useGoogleMapsApi();
+
+  const { loader } = useGoogleMap();
 
   const [place, setPlace] = useState<google.maps.places.Place | null>(null);
   const [pac, setPac] = useState<google.maps.places.Autocomplete | null>(null);
@@ -68,8 +69,12 @@ const PlaceAutocomplete = forwardRef(function PlaceAutocomplete(
   }, [place, onChange]);
 
   useEffect(() => {
+    if (!loader) {
+      return;
+    }
+
     initPac();
-  }, [initPac]);
+  }, [loader, initPac]);
 
   return (
     <TextField
@@ -88,8 +93,7 @@ const PlaceAutocomplete = forwardRef(function PlaceAutocomplete(
           <InputAdornment position="start">
             <Search />
           </InputAdornment>
-        ),
-        disableUnderline: true
+        )
       }}
     />
   );

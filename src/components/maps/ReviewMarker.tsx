@@ -9,7 +9,7 @@ import {
   useState
 } from 'react';
 import { Review } from '../../../types';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
+import { useGoogleMap } from '../../hooks/useGoogleMap';
 import MarkerView from './MarkerView';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 };
 
 function ReviewMarker({ review, onClick }: Props) {
-  const { loader } = useGoogleMapsApi();
+  const { loader } = useGoogleMap();
 
   const [position, setPosition] = useState<google.maps.LatLng | null>(null);
 
