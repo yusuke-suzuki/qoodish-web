@@ -2,7 +2,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { useRouter } from 'next/router';
 import { Fetcher } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import { useGoogleMapsApi } from './useGoogleMapsApi';
+import { useGoogleMap } from './useGoogleMap';
 
 const fetcher: Fetcher<google.maps.places.Place> = async ([
   placeId,
@@ -28,7 +28,7 @@ const fetcher: Fetcher<google.maps.places.Place> = async ([
 };
 
 export function usePlaceDetails(placeId: string | null | undefined) {
-  const { loader } = useGoogleMapsApi();
+  const { loader } = useGoogleMap();
   const router = useRouter();
 
   const { data, error, mutate } = useSWRImmutable<google.maps.places.Place>(

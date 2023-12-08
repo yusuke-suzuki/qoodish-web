@@ -1,14 +1,15 @@
+import { Loader } from '@googlemaps/js-api-loader';
 import { Box, SxProps, useMediaQuery, useTheme } from '@mui/material';
 import {
   ReactNode,
   memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react';
 import GoogleMapsContext from '../../context/GoogleMapsContext';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
 
 type Props = {
   mapId: string;
@@ -17,16 +18,30 @@ type Props = {
   mapOptions?: Partial<google.maps.MapOptions>;
   center?: google.maps.LatLngLiteral;
   zoom?: number;
+  locale?: string;
 };
 
-function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
+function GoogleMaps({
+  mapId,
+  children,
+  sx,
+  mapOptions,
+  center,
+  zoom,
+  locale
+}: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
 
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] =
     useState<GeolocationPosition | null>(null);
 
-  const { loader } = useGoogleMapsApi();
+  const loader = useMemo(() => {
+    return new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+      version: 'beta'
+    });
+  }, []);
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -61,6 +76,14 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
   }, [mapId, mapOptions, mdUp, loader]);
 
   useEffect(() => {
+    if (!locale) {
+      return;
+    }
+
+    loader.options.language = locale;
+  }, [loader, locale]);
+
+  useEffect(() => {
     if (!googleMap && mapRef.current && loader) {
       initGoogleMaps();
     }
@@ -85,6 +108,7 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
       <GoogleMapsContext.Provider
         value={{
           googleMap: googleMap,
+          loader: loader,
           currentPosition: currentPosition,
           setCurrentPosition: setCurrentPosition
         }}

@@ -195,6 +195,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
           }}
           center={center}
           zoom={currentZoom}
+          locale={router.locale}
         >
           <CustomOverlays
             map={clientMap}

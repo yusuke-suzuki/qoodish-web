@@ -1,7 +1,6 @@
 import { ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
 
 type Props = {
   children: ReactNode;
@@ -11,8 +10,7 @@ type Props = {
 };
 
 function InfoWindow({ children, position, open, onClose }: Props) {
-  const { loader } = useGoogleMapsApi();
-  const { googleMap } = useGoogleMap();
+  const { googleMap, loader } = useGoogleMap();
 
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(

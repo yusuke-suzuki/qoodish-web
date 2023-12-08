@@ -2,7 +2,6 @@ import { Box, Paper, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
 import CurrentPositionButton from './CurrentPositionButton';
 import MapControl from './MapControl';
 import PlaceAutocomplete from './PlaceAutocomplete';
@@ -12,8 +11,7 @@ type Props = {
 };
 
 function CustomMapControls({ onPlaceChange }: Props) {
-  const { loader } = useGoogleMapsApi();
-  const { googleMap } = useGoogleMap();
+  const { googleMap, loader } = useGoogleMap();
 
   const dictionary = useDictionary();
 

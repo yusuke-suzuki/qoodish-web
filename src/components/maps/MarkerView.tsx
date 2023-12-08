@@ -8,7 +8,6 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { useGoogleMapsApi } from '../../hooks/useGoogleMapsApi';
 
 type Props = {
   children: ReactNode;
@@ -25,8 +24,7 @@ export default memo(function MarkerView({
   onMouseEnter,
   onMouseLeave
 }: Props) {
-  const { loader } = useGoogleMapsApi();
-  const { googleMap } = useGoogleMap();
+  const { loader, googleMap } = useGoogleMap();
   const [markerView, setMarkerView] =
     useState<google.maps.marker.AdvancedMarkerElement | null>(null);
 
