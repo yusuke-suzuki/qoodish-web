@@ -30,7 +30,7 @@ type Props = {
   map: AppMap | null;
 };
 
-const bottomSheetHeight = 136;
+const bottomSheetHeight = 105;
 const summaryCardHeight = 360;
 
 const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
@@ -160,6 +160,7 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
         <ReviewDrawer
           currentReview={currentReview}
           open={reviewDrawerOpen}
+          onOpen={() => setReviewDrawerOpen(true)}
           onClose={() => setReviewDrawerOpen(false)}
           onExited={() => setCurrentReview(null)}
           onSaved={handleReviewSaved}

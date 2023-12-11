@@ -20,7 +20,5 @@ export default memo(function UserMaps({ id }: Props) {
     );
   }
 
-  console.log(maps);
-
   return <MapGridList maps={maps} />;
 });

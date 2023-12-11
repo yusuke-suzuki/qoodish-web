@@ -6,9 +6,6 @@ import {
   CardContent,
   CardMedia,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
   Skeleton,
   Typography
 } from '@mui/material';
@@ -123,12 +120,12 @@ export default memo(function MapSummaryCard({
       )}
       <Divider />
       <CardContent>
-        <List disablePadding dense>
-          <ListItem disableGutters>
-            <ListItemText primary={dictionary.followers} />
-            <Followers map={map} />
-          </ListItem>
-        </List>
+        <Typography variant="subtitle1" component="h2" gutterBottom>
+          {dictionary.followers}
+        </Typography>
+        <Box sx={{ display: 'flex' }}>
+          <Followers map={map} />
+        </Box>
       </CardContent>
       <Divider />
       <CardContent>
