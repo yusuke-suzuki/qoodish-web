@@ -17,6 +17,7 @@ import CreateReviewDialog from '../reviews/CreateReviewDialog';
 import CurrentPositionMarker from './CurrentPositionMarker';
 import CustomMapControls from './CustomMapControls';
 import PlaceInfoWindow from './PlaceInfoWindow';
+import PositionInfoWindow from './PositionInfoWindow';
 import ReviewMarker from './ReviewMarker';
 import ReviewPopover from './ReviewPopover';
 
@@ -65,6 +66,8 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const [createReviewDialogOpen, setCreateReviewDialogOpen] = useState(false);
   const [currentPlace, setCurrentPlace] =
     useState<google.maps.places.Place | null>(null);
+  const [pinnedPosition, setPinnedPosition] =
+    useState<google.maps.LatLng | null>(null);
 
   const filteredReviews = useMemo(() => {
     if (!currentBounds) {
@@ -89,18 +92,19 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     [onReviewClick]
   );
 
-  const handleReviewSaved = useCallback(() => {
-    setPopoverAnchorEl(null);
-
-    onReviewSaved();
-  }, [onReviewSaved]);
-
   const handleMapClick = useCallback(
     async (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
       if ('placeId' in event) {
         // Prevent POI Click Events
         event.stop();
       }
+    },
+    []
+  );
+
+  const handleMapRightClick = useCallback(
+    async (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
+      setPinnedPosition(event.latLng);
     },
     []
   );
@@ -124,12 +128,17 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
 
     const idleListener = googleMap.addListener('idle', handleIdle);
     const clickListener = googleMap.addListener('click', handleMapClick);
+    const rightCickListener = googleMap.addListener(
+      'rightclick',
+      handleMapRightClick
+    );
 
     return () => {
       idleListener.remove();
       clickListener.remove();
+      rightCickListener.remove();
     };
-  }, [googleMap, handleIdle, handleMapClick]);
+  }, [googleMap, handleIdle, handleMapClick, handleMapRightClick]);
 
   useEffect(() => {
     if (googleMap && map) {
@@ -210,6 +219,13 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
         onClose={() => setCurrentPlace(null)}
       />
 
+      <PositionInfoWindow
+        position={pinnedPosition}
+        disableCreateReview={!map || !map.postable}
+        onCreateReviewClick={() => setCreateReviewDialogOpen(true)}
+        onClose={() => setPinnedPosition(null)}
+      />
+
       <CustomMapControls onPlaceChange={setCurrentPlace} />
 
       <CreateReviewDialog
@@ -218,6 +234,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
         map={map}
         place={currentPlace}
         currentPosition={currentPosition}
+        pinnedPosition={pinnedPosition}
         onSaved={onReviewSaved}
       />
     </>

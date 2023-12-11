@@ -40,6 +40,7 @@ type Props = {
   map: AppMap | null;
   place?: google.maps.places.Place | null;
   currentPosition?: GeolocationPosition | null;
+  pinnedPosition?: google.maps.LatLng | null;
 };
 
 export default memo(function CreateReviewDialog({
@@ -49,7 +50,8 @@ export default memo(function CreateReviewDialog({
   onSaved,
   map,
   place,
-  currentPosition
+  currentPosition,
+  pinnedPosition
 }: Props) {
   const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
@@ -184,6 +186,17 @@ export default memo(function CreateReviewDialog({
     };
   }, [currentPosition]);
 
+  const defaultPositionFromPinnedPosition = useMemo(() => {
+    if (!pinnedPosition) {
+      return null;
+    }
+
+    return {
+      lat: pinnedPosition.lat(),
+      lng: pinnedPosition.lng()
+    };
+  }, [pinnedPosition]);
+
   return (
     <Dialog
       open={open}
@@ -203,7 +216,9 @@ export default memo(function CreateReviewDialog({
         <Box sx={{ mb: 2 }}>
           <PositionForm
             defaultValue={
-              defaultPositionFromPlace || defaultPositionFromGeolocation
+              defaultPositionFromPlace ||
+              defaultPositionFromGeolocation ||
+              defaultPositionFromPinnedPosition
             }
             onChange={setPosition}
           />
