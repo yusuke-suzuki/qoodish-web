@@ -5,12 +5,11 @@ import {
   CardContent,
   CardMedia,
   IconButton,
-  Typography,
-  css
+  SwipeableDrawer,
+  Typography
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useCallback, useContext, useState } from 'react';
-import Sheet from 'react-modal-sheet';
 import { Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
@@ -24,6 +23,7 @@ import ReviewMenuButton from '../reviews/ReviewMenuButton';
 
 type Props = {
   open: boolean;
+  onOpen: () => void;
   onClose: () => void;
   onExited: () => void;
   currentReview: Review | null;
@@ -31,11 +31,9 @@ type Props = {
   onDeleted: () => void;
 };
 
-const snapPoints = [0.9, 0.5];
-const initialSnap = 1;
-
 function ReviewDrawer({
   open,
+  onOpen,
   onClose,
   onExited,
   currentReview,
@@ -67,86 +65,92 @@ function ReviewDrawer({
 
   return (
     <>
-      <Sheet
-        isOpen={open}
+      <SwipeableDrawer
+        anchor="bottom"
+        variant="temporary"
+        open={open}
+        onOpen={onOpen}
         onClose={onClose}
-        onCloseEnd={onExited}
-        snapPoints={snapPoints}
-        initialSnap={initialSnap}
-        css={css`
-          z-index: 1100 !important;
-        `}
+        disableSwipeToOpen
+        ModalProps={{
+          slotProps: {
+            backdrop: {
+              invisible: true
+            }
+          }
+        }}
+        SlideProps={{
+          onExited
+        }}
       >
-        <Sheet.Container>
-          <Sheet.Content>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              {<DragHandle fontSize="small" color="disabled" />}
-            </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          {<DragHandle fontSize="small" color="disabled" />}
+        </Box>
 
-            <CardContent sx={{ pt: 0, pb: 1 }}>
-              <Typography variant="h6">{review?.name}</Typography>
-            </CardContent>
+        <CardContent sx={{ pt: 0, pb: 1 }}>
+          <Typography variant="h6">{review?.name}</Typography>
+        </CardContent>
 
-            <ReviewCardHeader
-              sx={{ pt: 0 }}
+        <ReviewCardHeader
+          sx={{ pt: 0 }}
+          review={review}
+          hideMapLink
+          action={
+            <ReviewMenuButton
               review={review}
-              hideMapLink
-              action={
-                <ReviewMenuButton
-                  review={review}
-                  currentProfile={profile}
-                  onReportClick={() => setIssueDialogOpen(true)}
-                  onEditClick={() => setEditDialogOpen(true)}
-                  onDeleteClick={() => setDeleteDialogOpen(true)}
-                />
-              }
+              currentProfile={profile}
+              onReportClick={() => setIssueDialogOpen(true)}
+              onEditClick={() => setEditDialogOpen(true)}
+              onDeleteClick={() => setDeleteDialogOpen(true)}
             />
+          }
+        />
 
-            <CardContent sx={{ pt: 0 }}>
-              <Typography variant="body2" component="p">
-                {review?.comment}
-              </Typography>
-            </CardContent>
+        <CardContent sx={{ pt: 0 }}>
+          <Typography variant="body2" component="p">
+            {review?.comment}
+          </Typography>
+        </CardContent>
 
-            <CardContent
+        <CardContent
+          sx={{
+            display: 'flex',
+            gap: 2,
+            width: '100%',
+            overflowX: 'auto',
+            py: 0
+          }}
+        >
+          {review?.images.map((image) => (
+            <CardMedia
+              key={image.id}
+              component="img"
+              alt={review.name}
+              image={image.thumbnail_url_400}
+              width={200}
+              height={200}
               sx={{
-                display: 'flex',
-                gap: 2,
-                width: '100%',
-                overflowX: 'auto',
-                py: 0
+                height: 200,
+                width: 200
               }}
+            />
+          ))}
+        </CardContent>
+
+        <CardActions>
+          {review && <LikeReviewButton review={review} />}
+
+          {review && (
+            <IconButton
+              LinkComponent={Link}
+              href={`/maps/${review?.map.id}/reports/${review?.id}`}
+              disabled={!review}
             >
-              {review?.images.map((image) => (
-                <CardMedia
-                  key={image.id}
-                  component="img"
-                  alt={review.name}
-                  image={image.thumbnail_url_400}
-                  width={200}
-                  height={200}
-                  sx={{
-                    height: 200,
-                    width: 200
-                  }}
-                />
-              ))}
-            </CardContent>
-
-            <CardActions>
-              <LikeReviewButton review={review} />
-
-              <IconButton
-                LinkComponent={Link}
-                href={`/maps/${review?.map.id}/reports/${review?.id}`}
-                disabled={!review}
-              >
-                <Comment />
-              </IconButton>
-            </CardActions>
-          </Sheet.Content>
-        </Sheet.Container>
-      </Sheet>
+              <Comment />
+            </IconButton>
+          )}
+        </CardActions>
+      </SwipeableDrawer>
 
       <EditReviewDialog
         open={editDialogOpen}

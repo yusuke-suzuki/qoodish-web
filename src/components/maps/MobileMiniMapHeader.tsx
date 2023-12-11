@@ -1,12 +1,5 @@
 import { DragHandle } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  CardHeader,
-  Skeleton,
-  SxProps,
-  Typography
-} from '@mui/material';
+import { Avatar, Box, CardHeader, Skeleton, SxProps } from '@mui/material';
 import { ReactNode, memo } from 'react';
 import { AppMap, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
@@ -39,44 +32,38 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
               alt={map.name}
               src={map.thumbnail_url_400}
               variant="rounded"
-              sx={{ width: 80, height: 80 }}
+              sx={{ width: 64, height: 64 }}
             />
           ) : (
-            <Skeleton variant="rounded" width={80} height={80} />
+            <Skeleton variant="rounded" width={64} height={64} />
           )
         }
-        title={
-          map ? (
-            <Typography variant="subtitle1" component="h1" fontWeight={600}>
-              {map.name}
-            </Typography>
-          ) : (
-            <Skeleton width="100%" />
-          )
-        }
+        title={map ? map.name : <Skeleton width="100%" />}
+        titleTypographyProps={{
+          variant: 'subtitle1',
+          component: 'h1',
+          fontWeight: 600,
+          noWrap: true,
+          width: 'calc(100dvw - 112px)'
+        }}
         subheader={
           map ? (
-            <>
-              <Typography
-                variant="body2"
-                component="div"
-                color="text.secondary"
-                gutterBottom={map.private}
-              >
-                {reviews.length} {dictionary['spots count']}
-              </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              {reviews.length} {dictionary['spots count']}
 
-              {map.private && (
-                <Box>
-                  <PrivateMapChip />
-                </Box>
-              )}
-            </>
+              {map.private && <PrivateMapChip />}
+            </Box>
           ) : (
             <Skeleton width="50%" />
           )
         }
-        disableTypography
+        subheaderTypographyProps={{
+          variant: 'body2',
+          component: 'div',
+          noWrap: true,
+          color: 'text.secondary',
+          width: 'calc(100dvw - 112px)'
+        }}
         action={action || null}
       />
     </>
