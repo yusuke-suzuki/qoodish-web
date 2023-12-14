@@ -24,6 +24,7 @@ import useDictionary from '../../../hooks/useDictionary';
 import { useMap } from '../../../hooks/useMap';
 import { useMapReviews } from '../../../hooks/useMapReviews';
 import { useProfile } from '../../../hooks/useProfile';
+import Custom404 from '../../404';
 import { NextPageWithLayout } from '../../_app';
 
 type Props = {
@@ -264,6 +265,16 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 MapPage.getLayout = function getLayout(page: ReactElement) {
+  const { map } = page.props as Props;
+
+  if (!map) {
+    return (
+      <Layout hideBottomNav>
+        <Custom404 />
+      </Layout>
+    );
+  }
+
   return (
     <Layout hideBottomNav fullWidth>
       {page}

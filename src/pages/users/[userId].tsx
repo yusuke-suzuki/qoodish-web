@@ -5,6 +5,7 @@ import Layout from '../../components/Layout';
 import UserProfile from '../../components/profiles/UserProfile';
 import useDictionary from '../../hooks/useDictionary';
 import { useProfile } from '../../hooks/useProfile';
+import Custom404 from '../404';
 import { NextPageWithLayout } from '../_app';
 
 const UserPage: NextPageWithLayout = () => {
@@ -12,7 +13,7 @@ const UserPage: NextPageWithLayout = () => {
   const { userId } = router.query;
   const dictionary = useDictionary();
 
-  const { profile } = useProfile(Number(userId));
+  const { profile, isLoading } = useProfile(Number(userId));
 
   const title = profile?.name ? `${profile.name} | Qoodish` : 'Qoodish';
   const description = dictionary['meta description'];
@@ -22,6 +23,10 @@ const UserPage: NextPageWithLayout = () => {
     router.locale === router.defaultLocale
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+
+  if (!isLoading && !profile) {
+    return <Custom404 />;
+  }
 
   return (
     <>

@@ -26,6 +26,7 @@ import AuthContext from '../../../../context/AuthContext';
 import useDictionary from '../../../../hooks/useDictionary';
 import { useProfile } from '../../../../hooks/useProfile';
 import { useReview } from '../../../../hooks/useReview';
+import Custom404 from '../../../404';
 import { NextPageWithLayout } from '../../../_app';
 
 type Props = {
@@ -235,6 +236,16 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 ReviewPage.getLayout = function getLayout(page: ReactElement) {
+  const { review } = page.props as Props;
+
+  if (!review) {
+    return (
+      <Layout hideBottomNav>
+        <Custom404 />
+      </Layout>
+    );
+  }
+
   return <Layout hideBottomNav>{page}</Layout>;
 };
 
