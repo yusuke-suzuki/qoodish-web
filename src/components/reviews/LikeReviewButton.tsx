@@ -8,9 +8,10 @@ import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
   review: Review;
+  onSaved?: () => void;
 };
 
-export default memo(function LikeReviewButton({ review }: Props) {
+export default memo(function LikeReviewButton({ review, onSaved }: Props) {
   const { currentUser, setSignInRequired } = useContext(AuthContext);
   const [checked, setChecked] = useState(review.liked);
 
@@ -52,6 +53,10 @@ export default memo(function LikeReviewButton({ review }: Props) {
           const message = event.target.checked ? 'liked!' : 'unliked';
 
           enqueueSnackbar(dictionary[message], { variant: 'info' });
+
+          if (onSaved) {
+            onSaved();
+          }
         } else {
           const body = await res.json();
           enqueueSnackbar(body.detail, { variant: 'error' });
@@ -60,7 +65,7 @@ export default memo(function LikeReviewButton({ review }: Props) {
         enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
       }
     },
-    [currentUser, review, setSignInRequired, dictionary]
+    [currentUser, review, setSignInRequired, dictionary, onSaved]
   );
 
   return (
