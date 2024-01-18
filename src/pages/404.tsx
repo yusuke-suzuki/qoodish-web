@@ -3,7 +3,6 @@ import { Alert, AlertTitle, Button } from '@mui/material';
 import Head from 'next/head';
 import Link from 'next/link';
 import { memo } from 'react';
-import Layout from '../components/Layout';
 import useDictionary from '../hooks/useDictionary';
 
 const NotFound = () => {
@@ -28,13 +27,13 @@ export default memo(function Custom404() {
   const dictionary = useDictionary();
 
   return (
-    <Layout hideBottomNav={false} fullWidth={false}>
+    <>
       <Head>
         <title>{`${dictionary['page not found']} | Qoodish`}</title>
         <meta name="robots" content="noindex" />
       </Head>
 
       <NotFound />
-    </Layout>
+    </>
   );
 });

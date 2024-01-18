@@ -82,6 +82,12 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     );
   }, [reviews, currentBounds]);
 
+  const handleReviewDeleted = useCallback(() => {
+    setCurrentReview(null);
+    setPopoverAnchorEl(null);
+    onReviewSaved();
+  }, [onReviewSaved]);
+
   const handleReviewClick = useCallback(
     (review: Review, ref: MutableRefObject<HTMLButtonElement>) => {
       setCurrentReview(review);
@@ -209,6 +215,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
           popoverId={reviewPopoverId}
           popoverOpen={popoverOpen}
           onPopoverClose={() => setPopoverAnchorEl(null)}
+          onDeleted={handleReviewDeleted}
         />
       )}
 

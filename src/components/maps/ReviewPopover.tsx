@@ -31,6 +31,7 @@ type Props = {
   popoverId: string | undefined;
   popoverOpen: boolean;
   onPopoverClose: () => void;
+  onDeleted: () => void;
 };
 
 function ReviewPopover({
@@ -38,7 +39,8 @@ function ReviewPopover({
   anchorEl,
   popoverId,
   popoverOpen,
-  onPopoverClose
+  onPopoverClose,
+  onDeleted
 }: Props) {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
@@ -55,7 +57,11 @@ function ReviewPopover({
     mutate();
   }, [mutate]);
 
-  const review = mutableReview || currentReview;
+  const handleReviewDeleted = useCallback(() => {
+    onDeleted();
+  }, [onDeleted]);
+
+  const review: Review = mutableReview || currentReview;
 
   return (
     <>
@@ -116,7 +122,9 @@ function ReviewPopover({
           </Typography>
         </CardContent>
         <CardActions>
-          <LikeReviewButton review={review} />
+          {review && (
+            <LikeReviewButton review={review} onSaved={handleReviewSaved} />
+          )}
 
           <IconButton
             LinkComponent={Link}
@@ -139,7 +147,7 @@ function ReviewPopover({
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         review={review}
-        onDeleted={handleReviewSaved}
+        onDeleted={handleReviewDeleted}
       />
 
       <IssueDialog
