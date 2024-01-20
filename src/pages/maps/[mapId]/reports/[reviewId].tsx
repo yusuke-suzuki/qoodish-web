@@ -72,6 +72,10 @@ const ReviewPage: NextPageWithLayout = ({ review: serverReview }: Props) => {
       ? review.images[0].thumbnail_url_800
       : defaultThumbnailUrl;
 
+  if (!review && !isLoading) {
+    return <Custom404 />;
+  }
+
   return (
     <>
       <Head>
@@ -236,16 +240,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 ReviewPage.getLayout = function getLayout(page: ReactElement) {
-  const { review } = page.props as Props;
-
-  if (!review) {
-    return (
-      <Layout hideBottomNav>
-        <Custom404 />
-      </Layout>
-    );
-  }
-
   return <Layout hideBottomNav>{page}</Layout>;
 };
 

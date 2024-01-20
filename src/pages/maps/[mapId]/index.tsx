@@ -1,4 +1,4 @@
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Container, useMediaQuery, useTheme } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -51,7 +51,11 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
 
-  const { map: clientMap, mutate: mutateMap } = useMap(Number(mapId));
+  const {
+    map: clientMap,
+    mutate: mutateMap,
+    isLoading
+  } = useMap(Number(mapId));
   const { reviews, mutate: mutateReviews } = useMapReviews(Number(mapId));
 
   const map = clientMap || serverMap;
@@ -99,6 +103,18 @@ const MapPage: NextPageWithLayout = ({ map: serverMap }: Props) => {
       setCurrentZoom(Number(zoom));
     }
   }, [zoom]);
+
+  if (!map && !isLoading) {
+    return (
+      <Container
+        sx={{
+          py: { xs: 2, md: 4 }
+        }}
+      >
+        <Custom404 />
+      </Container>
+    );
+  }
 
   return (
     <>
@@ -265,16 +281,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 MapPage.getLayout = function getLayout(page: ReactElement) {
-  const { map } = page.props as Props;
-
-  if (!map) {
-    return (
-      <Layout hideBottomNav>
-        <Custom404 />
-      </Layout>
-    );
-  }
-
   return (
     <Layout hideBottomNav fullWidth>
       {page}
