@@ -72,11 +72,6 @@ export default class CustomDocument extends Document {
             href="https://storage.googleapis.com"
             rel="preconnect dns-prefetch"
           />
-          <link
-            rel="stylesheet preconnect dns-prefetch"
-            href="https://unpkg.com/react-spring-bottom-sheet/dist/style.css"
-            crossOrigin="anonymous"
-          />
 
           <meta
             property="fb:app_id"

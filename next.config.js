@@ -5,6 +5,9 @@ const path = require('path');
  * @type {import('next').NextConfig}
  */
 module.exports = {
+  experimental: {
+    typedRoutes: true
+  },
   output: 'standalone',
   i18n: {
     locales: ['en', 'ja'],
