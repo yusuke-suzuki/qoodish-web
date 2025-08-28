@@ -1,11 +1,11 @@
 import {
   Box,
-  Link as MuiLink,
   List,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
+  Link as MuiLink,
   Typography
 } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
@@ -13,7 +13,7 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { memo, useCallback, useContext, useState } from 'react';
-import { Comment } from '../../../types';
+import type { Comment } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
 import AuthorAvatar from '../common/AuthorAvatar';

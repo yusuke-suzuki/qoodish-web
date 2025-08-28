@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 
 type Props = {
   reviews: Review[];

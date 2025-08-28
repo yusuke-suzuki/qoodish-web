@@ -1,7 +1,7 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import {
-  MutableRefObject,
+  type MutableRefObject,
   memo,
   useCallback,
   useContext,
@@ -9,7 +9,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import { AppMap, Review } from '../../../types';
+import type { AppMap, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import { useProfile } from '../../hooks/useProfile';
@@ -53,13 +53,13 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser ? currentUser.uid : null);
 
-  const router = useRouter();
+  const { replace, query } = useRouter();
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const [currentBounds, setCurrentBounds] =
-    useState<google.maps.LatLngBounds>(null);
+    useState<google.maps.LatLngBounds | null>(null);
   const [currentReview, setCurrentReview] = useState<Review | null>(null);
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
@@ -148,10 +148,10 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
 
   useEffect(() => {
     if (googleMap && map) {
-      router.replace(
+      replace(
         {
           query: {
-            ...router.query,
+            ...query,
             lat: map.latitude,
             lng: map.longitude,
             zoom: 17
@@ -163,17 +163,17 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
         }
       );
     }
-  }, [googleMap, map]);
+  }, [googleMap, map, replace, query]);
 
   useEffect(() => {
     if (googleMap && currentPlace) {
-      router.replace(
+      replace(
         {
           query: {
-            ...router.query,
+            ...query,
             lat: currentPlace.location.lat(),
             lng: currentPlace.location.lng(),
-            zoom: 17
+            zoom: googleMap.getZoom()
           }
         },
         undefined,
@@ -182,7 +182,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
         }
       );
     }
-  }, [googleMap, currentPlace]);
+  }, [googleMap, currentPlace, replace, query]);
 
   const popoverOpen = Boolean(popoverAnchorEl);
 

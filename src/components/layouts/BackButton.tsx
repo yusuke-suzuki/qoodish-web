@@ -4,15 +4,15 @@ import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
 
 export default memo(function BackButton() {
-  const router = useRouter();
+  const { back, push } = useRouter();
 
   const handleBackButtonClick = useCallback(() => {
     if (window.history.length > 2) {
-      router.back();
+      back();
     } else {
-      router.push('/');
+      push('/');
     }
-  }, []);
+  }, [back, push]);
 
   return (
     <IconButton color="inherit" onClick={handleBackButtonClick} edge="start">

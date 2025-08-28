@@ -1,6 +1,6 @@
-import { Loader } from '@googlemaps/js-api-loader';
+import type { Loader } from '@googlemaps/js-api-loader';
 import { useRouter } from 'next/router';
-import { Fetcher } from 'swr';
+import type { Fetcher } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import { useGoogleMap } from './useGoogleMap';
 

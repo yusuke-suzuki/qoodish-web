@@ -1,4 +1,4 @@
-import { Loader } from '@googlemaps/js-api-loader';
+import type { Loader } from '@googlemaps/js-api-loader';
 import { createContext } from 'react';
 
 type ContextProps = {

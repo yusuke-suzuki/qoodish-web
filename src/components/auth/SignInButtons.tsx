@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { AuthError } from 'firebase/auth';
+import type { AuthError } from 'firebase/auth';
 import { memo, useState } from 'react';
 import LinkAccountDialog from './LinkAccountDialog';
 import SignInWithFacebookButton from './SignInWithFacebookButton';

@@ -8,7 +8,7 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
-import { AppMap, Profile, Review } from '../../../types';
+import type { AppMap, Profile, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapReviews } from '../../hooks/useMapReviews';
 import FollowButton from './FollowButton';

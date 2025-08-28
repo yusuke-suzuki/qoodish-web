@@ -12,7 +12,13 @@ import {
   RadioGroup
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { ChangeEvent, memo, useCallback, useContext, useState } from 'react';
+import {
+  type ChangeEvent,
+  memo,
+  useCallback,
+  useContext,
+  useState
+} from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 

@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import UserProfile from '../../components/profiles/UserProfile';
 import useDictionary from '../../hooks/useDictionary';
 import { useProfile } from '../../hooks/useProfile';
 import Custom404 from '../404';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const UserPage: NextPageWithLayout = () => {
   const router = useRouter();

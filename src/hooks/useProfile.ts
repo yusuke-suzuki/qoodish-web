@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
-import { Profile } from '../../types';
+import type { Profile } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useProfile(id: number | string) {
@@ -13,9 +13,8 @@ export function useProfile(id: number | string) {
 
     if (currentUser) {
       return `/users/${id}`;
-    } else {
-      return `/guest/users/${id}`;
     }
+    return `/guest/users/${id}`;
   }, [currentUser, isLoading, id]);
 
   const { data, error, mutate } = useSWR<Profile>(

@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { Review } from '../../types';
+import type { Review } from '../../types';
 
 export function useRecentReviews() {
   const { data, error, mutate } = useSWR<Review[]>([

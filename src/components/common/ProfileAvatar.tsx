@@ -1,7 +1,7 @@
 import { AccountCircle } from '@mui/icons-material';
-import { Avatar, SxProps } from '@mui/material';
+import { Avatar, type SxProps } from '@mui/material';
 import { memo, useMemo } from 'react';
-import { Profile } from '../../../types';
+import type { Profile } from '../../../types';
 
 type Props = {
   profile?: Profile | null;
@@ -24,19 +24,18 @@ function ProfileAvatar({ profile, size, variant }: Props) {
         <AccountCircle sx={iconStyle} />
       </Avatar>
     );
-  } else {
-    return (
-      <Avatar
-        src={profile.thumbnail_url_400}
-        alt={profile.name}
-        imgProps={{
-          loading: 'lazy'
-        }}
-        sx={avatarStyle}
-        variant={variant || 'circular'}
-      />
-    );
   }
+  return (
+    <Avatar
+      src={profile.thumbnail_url_400}
+      alt={profile.name}
+      imgProps={{
+        loading: 'lazy'
+      }}
+      sx={avatarStyle}
+      variant={variant || 'circular'}
+    />
+  );
 }
 
 export default memo(ProfileAvatar);

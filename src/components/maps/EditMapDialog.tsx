@@ -9,7 +9,7 @@ import {
   DialogTitle,
   Skeleton,
   Slide,
-  SlideProps,
+  type SlideProps,
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
@@ -21,7 +21,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import { AppMap } from '../../../types';
+import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';

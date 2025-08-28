@@ -1,8 +1,8 @@
 import { Icon, Stack, Typography, useTheme } from '@mui/material';
-import { ElementType, memo } from 'react';
+import { type ElementType, memo } from 'react';
 
 type Props = {
-  icon: ElementType<any>;
+  icon: ElementType;
   message: string;
 };
 

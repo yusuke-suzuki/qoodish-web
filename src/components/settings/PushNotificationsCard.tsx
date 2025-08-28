@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
-  ChangeEvent,
+  type ChangeEvent,
   memo,
   useCallback,
   useContext,
@@ -128,7 +128,7 @@ function PushNotificationsCard() {
           component="fieldset"
           color="secondary"
           margin="normal"
-          disabled={registration ? false : true}
+          disabled={!registration}
         >
           <FormLabel component="legend">
             {dictionary['device settings']}

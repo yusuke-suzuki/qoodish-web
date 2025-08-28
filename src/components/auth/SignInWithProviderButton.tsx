@@ -1,17 +1,17 @@
 import { LoadingButton } from '@mui/lab';
-import { SxProps } from '@mui/material';
+import type { SxProps } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
-  AuthError,
-  FacebookAuthProvider,
-  GoogleAuthProvider,
-  TwitterAuthProvider,
+  type AuthError,
+  type FacebookAuthProvider,
+  type GoogleAuthProvider,
+  type TwitterAuthProvider,
   getAuth,
   signInWithPopup
 } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { enqueueSnackbar } from 'notistack';
-import { ReactNode, memo, useCallback, useState } from 'react';
+import { type ReactNode, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {

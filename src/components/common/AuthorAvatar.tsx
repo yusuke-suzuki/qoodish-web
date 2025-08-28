@@ -1,7 +1,7 @@
-import { Avatar, Link as MuiLink, SxProps } from '@mui/material';
+import { Avatar, Link as MuiLink, type SxProps } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import { Author } from '../../../types';
+import type { Author } from '../../../types';
 
 type Props = {
   author: Author;

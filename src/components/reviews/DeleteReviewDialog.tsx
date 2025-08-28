@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 

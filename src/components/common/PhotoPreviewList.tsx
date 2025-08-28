@@ -23,7 +23,7 @@ export default memo(function PhotoPreviewList({ dataUrls, onDelete }: Props) {
   return (
     <ImageList cols={mdUp ? 2 : 1} rowHeight={mdUp ? 320 : 240} gap={8}>
       {dataUrls.map((dataUrl, i) => (
-        <ImageListItem key={i}>
+        <ImageListItem key={dataUrl}>
           <Card sx={{ height: '100%' }}>
             <CardMedia component="img" image={dataUrl} height="100%" />
           </Card>

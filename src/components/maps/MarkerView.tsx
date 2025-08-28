@@ -1,5 +1,5 @@
 import {
-  ReactNode,
+  type ReactNode,
   memo,
   useCallback,
   useEffect,

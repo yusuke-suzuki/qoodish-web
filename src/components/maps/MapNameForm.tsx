@@ -48,7 +48,7 @@ export default memo(function MapNameForm({ onChange, defaultValue }: Props) {
     <TextField
       label={dictionary['map name']}
       onChange={handleNameChange}
-      error={error ? true : false}
+      error={!!error}
       helperText={error}
       fullWidth
       value={name}

@@ -7,8 +7,8 @@ import {
 } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import { ReactNode, memo, useMemo } from 'react';
-import { AutocompleteOption } from '../../../types';
+import { type ReactNode, memo, useMemo } from 'react';
+import type { AutocompleteOption } from '../../../types';
 
 type Props = {
   option: AutocompleteOption;
@@ -36,22 +36,18 @@ export default memo(function AutocompleteListItem({
         <ListItemAvatar>{avatar}</ListItemAvatar>
         <ListItemText
           disableTypography
-          primary={
-            <>
-              {parts.map((part, index) => (
-                <Typography
-                  key={index}
-                  variant="subtitle1"
-                  component="span"
-                  sx={{
-                    fontWeight: part.highlight ? 700 : 400
-                  }}
-                >
-                  {part.text}
-                </Typography>
-              ))}
-            </>
-          }
+          primary={parts.map((part, index) => (
+            <Typography
+              key={`${part.text}-${index}`}
+              variant="subtitle1"
+              component="span"
+              sx={{
+                fontWeight: part.highlight ? 700 : 400
+              }}
+            >
+              {part.text}
+            </Typography>
+          ))}
         />
       </ListItemButton>
     </ListItem>

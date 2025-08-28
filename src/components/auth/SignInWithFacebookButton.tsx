@@ -1,5 +1,5 @@
 import { Facebook } from '@mui/icons-material';
-import { AuthError, FacebookAuthProvider } from 'firebase/auth';
+import { type AuthError, FacebookAuthProvider } from 'firebase/auth';
 import { memo, useMemo } from 'react';
 import SignInWithProviderButton from './SignInWithProviderButton';
 

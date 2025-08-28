@@ -14,7 +14,7 @@ import {
   useRef,
   useState
 } from 'react';
-import { Comment, Profile } from '../../../types';
+import type { Comment, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 

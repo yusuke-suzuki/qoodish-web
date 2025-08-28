@@ -2,15 +2,15 @@ import {
   Box,
   CardHeader,
   Link as MuiLink,
-  SxProps,
+  type SxProps,
   Typography
 } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, memo } from 'react';
-import { Review } from '../../../types';
+import { type ReactNode, memo } from 'react';
+import type { Review } from '../../../types';
 import AuthorAvatar from '../common/AuthorAvatar';
 
 type Props = {

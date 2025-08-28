@@ -7,12 +7,12 @@ import {
   CircularProgress,
   Typography
 } from '@mui/material';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactElement, useContext, useState } from 'react';
-import { Review } from '../../../../../types';
+import { type ReactElement, useContext, useState } from 'react';
+import type { Review } from '../../../../../types';
 import Layout from '../../../../components/Layout';
 import IssueDialog from '../../../../components/common/IssueDialog';
 import DeleteReviewDialog from '../../../../components/reviews/DeleteReviewDialog';
@@ -27,7 +27,7 @@ import useDictionary from '../../../../hooks/useDictionary';
 import { useProfile } from '../../../../hooks/useProfile';
 import { useReview } from '../../../../hooks/useReview';
 import Custom404 from '../../../404';
-import { NextPageWithLayout } from '../../../_app';
+import type { NextPageWithLayout } from '../../../_app';
 
 type Props = {
   review: Review;

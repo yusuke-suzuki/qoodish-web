@@ -5,8 +5,8 @@ import {
   FormLabel,
   Switch
 } from '@mui/material';
-import { ChangeEvent, memo, useEffect, useState } from 'react';
-import { AppMap } from '../../../types';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 
 type MapOptions = {

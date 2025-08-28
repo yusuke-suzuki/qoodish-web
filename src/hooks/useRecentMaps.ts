@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { AppMap } from '../../types';
+import type { AppMap } from '../../types';
 
 export function useRecentMaps() {
   const { data, error, mutate } = useSWR<AppMap[]>([

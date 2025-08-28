@@ -1,4 +1,4 @@
-import { ReactNode, memo, useCallback, useEffect, useState } from 'react';
+import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 

@@ -43,7 +43,7 @@ export default memo(function AddPhotoButton({
       <input
         accept="image/*"
         style={{ display: 'none' }}
-        multiple={multiple ? true : false}
+        multiple={!!multiple}
         id={id}
         type="file"
         onChange={handleImageFilesChange}

@@ -6,7 +6,7 @@ import {
   ImageListItem
 } from '@mui/material';
 import { memo } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 
 type Props = {
   review: Review;

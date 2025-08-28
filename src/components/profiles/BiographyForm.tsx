@@ -48,7 +48,7 @@ function BiographyForm({ onChange, defaultValue }: Props) {
     <TextField
       label={dictionary.biography}
       onChange={handleChange}
-      error={error ? true : false}
+      error={!!error}
       helperText={error}
       fullWidth
       value={biography}

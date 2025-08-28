@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
-import { AppMap } from '../../types';
+import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useRecommendMaps() {
@@ -13,9 +13,8 @@ export function useRecommendMaps() {
 
     if (currentUser) {
       return '/maps?recommend=true';
-    } else {
-      return '/guest/maps?recommend=true';
     }
+    return '/guest/maps?recommend=true';
   }, [currentUser, isLoading]);
 
   const { data, error, mutate } = useSWR<AppMap[]>(

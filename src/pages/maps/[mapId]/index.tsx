@@ -1,15 +1,15 @@
 import { Box, Container, useMediaQuery, useTheme } from '@mui/material';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
-  ReactElement,
+  type ReactElement,
   useCallback,
   useContext,
   useEffect,
   useState
 } from 'react';
-import { AppMap, Review } from '../../../../types';
+import type { AppMap, Review } from '../../../../types';
 import Layout from '../../../components/Layout';
 import IssueDialog from '../../../components/common/IssueDialog';
 import CustomOverlays from '../../../components/maps/CustomOverlays';
@@ -25,7 +25,7 @@ import { useMap } from '../../../hooks/useMap';
 import { useMapReviews } from '../../../hooks/useMapReviews';
 import { useProfile } from '../../../hooks/useProfile';
 import Custom404 from '../../404';
-import { NextPageWithLayout } from '../../_app';
+import type { NextPageWithLayout } from '../../_app';
 
 type Props = {
   map: AppMap | null;

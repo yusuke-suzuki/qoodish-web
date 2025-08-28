@@ -3,7 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { memo, useMemo } from 'react';
-import { AppMap } from '../../../types';
+import type { AppMap } from '../../../types';
 
 type Props = {
   option: AppMap;
@@ -28,7 +28,10 @@ export default memo(function MapAutocompleteOption({
       </Grid>
       <Grid item xs>
         {parts.map((part, index) => (
-          <span key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
+          <span
+            key={`${part.text}-${index}`}
+            style={{ fontWeight: part.highlight ? 700 : 400 }}
+          >
             {part.text}
           </span>
         ))}

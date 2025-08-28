@@ -27,7 +27,7 @@ export default memo(function UserReviews({ id }: Props) {
 
       <Box sx={{ display: 'grid', gap: 1 }}>
         {data.map((reviews, index) => (
-          <ReviewGridList key={index} reviews={reviews} hideSkeleton />
+          <ReviewGridList key={reviews[0].id} reviews={reviews} hideSkeleton />
         ))}
       </Box>
 

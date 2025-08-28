@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useCallback, useContext, useState } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import { useProfile } from '../../hooks/useProfile';
 import { useReview } from '../../hooks/useReview';

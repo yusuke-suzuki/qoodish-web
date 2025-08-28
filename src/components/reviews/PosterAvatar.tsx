@@ -14,7 +14,8 @@ export default memo(function PosterAvatar() {
         <Person />
       </Avatar>
     );
-  } else if (profile.thumbnail_url) {
+  }
+  if (profile.thumbnail_url) {
     return (
       <Avatar
         src={profile.thumbnail_url}
@@ -24,7 +25,6 @@ export default memo(function PosterAvatar() {
         }}
       />
     );
-  } else {
-    return <Avatar>{profile.name?.slice(0, 1)}</Avatar>;
   }
+  return <Avatar>{profile.name?.slice(0, 1)}</Avatar>;
 });

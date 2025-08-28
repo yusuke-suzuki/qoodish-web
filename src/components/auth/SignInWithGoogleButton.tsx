@@ -1,5 +1,5 @@
 import { SvgIcon } from '@mui/material';
-import { AuthError, GoogleAuthProvider } from 'firebase/auth';
+import { type AuthError, GoogleAuthProvider } from 'firebase/auth';
 import { memo, useMemo } from 'react';
 import SignInWithProviderButton from './SignInWithProviderButton';
 

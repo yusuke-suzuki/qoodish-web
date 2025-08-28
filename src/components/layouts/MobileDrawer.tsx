@@ -46,7 +46,7 @@ export default memo(function MobileDrawer({
   onClose,
   onCreateMapClick
 }: Props) {
-  const router = useRouter();
+  const { push, pathname } = useRouter();
   const dictionary = useDictionary();
 
   const { currentUser } = useContext(AuthContext);
@@ -58,8 +58,8 @@ export default memo(function MobileDrawer({
     const auth = getAuth();
     await signOut(auth);
 
-    router.push('/login');
-  }, [onClose]);
+    push('/login');
+  }, [onClose, push]);
 
   const handleCreateMapClick = useCallback(() => {
     onClose();
@@ -100,7 +100,7 @@ export default memo(function MobileDrawer({
         </Box>
 
         <ListItemButton
-          selected={router.pathname === '/'}
+          selected={pathname === '/'}
           onClick={onClose}
           LinkComponent={Link}
           href="/"
@@ -112,7 +112,7 @@ export default memo(function MobileDrawer({
           <ListItemText primary={dictionary.home} />
         </ListItemButton>
         <ListItemButton
-          selected={router.pathname === '/discover'}
+          selected={pathname === '/discover'}
           onClick={onClose}
           LinkComponent={Link}
           href="/discover"
@@ -127,7 +127,7 @@ export default memo(function MobileDrawer({
         {currentUser && (
           <>
             <ListItemButton
-              selected={router.pathname === '/users/[userId]'}
+              selected={pathname === '/users/[userId]'}
               onClick={onClose}
               LinkComponent={Link}
               href={`/users/${profile?.id}`}
@@ -139,7 +139,7 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.account} />
             </ListItemButton>
             <ListItemButton
-              selected={router.pathname === '/notifications'}
+              selected={pathname === '/notifications'}
               onClick={onClose}
               LinkComponent={Link}
               href="/notifications"
@@ -151,7 +151,7 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.notifications} />
             </ListItemButton>
             <ListItemButton
-              selected={router.pathname === '/settings'}
+              selected={pathname === '/settings'}
               onClick={onClose}
               LinkComponent={Link}
               href="/settings"

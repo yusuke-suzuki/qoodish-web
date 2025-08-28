@@ -15,14 +15,14 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  ReactNode,
+  type ReactNode,
   memo,
   useCallback,
   useContext,
   useEffect,
   useState
 } from 'react';
-import { AppMap } from '../../types';
+import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 import useDictionary from '../hooks/useDictionary';
 import SignInRequiredDialog from './auth/SignInRequiredDialog';
@@ -50,7 +50,7 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
 
   const dictionary = useDictionary();
 
-  const router = useRouter();
+  const { push, events } = useRouter();
 
   const { currentUser, setSignInRequired } = useContext(AuthContext);
 
@@ -68,10 +68,13 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
     setCreateMapDialogOpen(true);
   }, [currentUser, setSignInRequired]);
 
-  const handleCreatedMap = useCallback((map: AppMap) => {
-    setCreateMapDialogOpen(false);
-    router.push(`/maps/${map.id}`);
-  }, []);
+  const handleCreatedMap = useCallback(
+    (map: AppMap) => {
+      setCreateMapDialogOpen(false);
+      push(`/maps/${map.id}`);
+    },
+    [push]
+  );
 
   const showProgress = useCallback((_url, { shallow }) => {
     if (shallow) return;
@@ -84,16 +87,16 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
   }, []);
 
   useEffect(() => {
-    router.events.on('routeChangeStart', showProgress);
-    router.events.on('routeChangeComplete', hideProgress);
-    router.events.on('routeChangeError', hideProgress);
+    events.on('routeChangeStart', showProgress);
+    events.on('routeChangeComplete', hideProgress);
+    events.on('routeChangeError', hideProgress);
 
     return () => {
-      router.events.off('routeChangeStart', showProgress);
-      router.events.off('routeChangeComplete', hideProgress);
-      router.events.off('routeChangeError', hideProgress);
+      events.off('routeChangeStart', showProgress);
+      events.off('routeChangeComplete', hideProgress);
+      events.off('routeChangeError', hideProgress);
     };
-  }, [showProgress, hideProgress, router.events]);
+  }, [showProgress, hideProgress, events]);
 
   return (
     <>

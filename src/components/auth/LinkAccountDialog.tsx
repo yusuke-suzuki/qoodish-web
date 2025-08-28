@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
-  AuthError,
+  type AuthError,
   OAuthProvider,
   fetchSignInMethodsForEmail,
   getAuth,

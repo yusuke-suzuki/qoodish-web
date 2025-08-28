@@ -3,10 +3,10 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import html2canvas from 'html2canvas';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement, RefObject, useCallback, useRef } from 'react';
+import { type ReactElement, type RefObject, useCallback, useRef } from 'react';
 import Layout from '../components/Layout';
 import useDictionary from '../hooks/useDictionary';
-import { NextPageWithLayout } from './_app';
+import type { NextPageWithLayout } from './_app';
 
 const AssetsPage: NextPageWithLayout = () => {
   const iconRef = useRef<HTMLDivElement>(null);

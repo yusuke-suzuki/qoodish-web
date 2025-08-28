@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
-import { AppMap } from '../../../types';
+import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 

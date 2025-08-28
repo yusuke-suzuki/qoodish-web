@@ -1,12 +1,12 @@
 import { Stack } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import DeleteAccountCard from '../../components/settings/DeleteAccountCard';
 import PushNotificationsCard from '../../components/settings/PushNotificationsCard';
 import useDictionary from '../../hooks/useDictionary';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const SettingsPage: NextPageWithLayout = () => {
   const router = useRouter();

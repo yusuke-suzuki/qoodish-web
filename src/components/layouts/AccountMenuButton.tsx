@@ -21,7 +21,7 @@ export default memo(function AccountMenuButton() {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { push } = useRouter();
 
   const buttonRef = useRef<HTMLDivElement | null>(null);
 
@@ -37,8 +37,8 @@ export default memo(function AccountMenuButton() {
     const auth = getAuth();
     await signOut(auth);
 
-    router.push('/login');
-  }, []);
+    push('/login');
+  }, [push]);
 
   return (
     <>

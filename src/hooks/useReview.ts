@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
-import { Review } from '../../types';
+import type { Review } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useReview(mapId: number | null, reviewId: number | null) {
@@ -13,9 +13,8 @@ export function useReview(mapId: number | null, reviewId: number | null) {
 
     if (currentUser) {
       return `/maps/${mapId}/reviews/${reviewId}`;
-    } else {
-      return `/guest/reviews/${reviewId}`;
     }
+    return `/guest/reviews/${reviewId}`;
   }, [currentUser, isLoading, mapId, reviewId]);
 
   const { data, error, mutate } = useSWR<Review>(
