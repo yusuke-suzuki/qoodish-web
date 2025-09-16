@@ -146,43 +146,41 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     };
   }, [googleMap, handleIdle, handleMapClick, handleMapRightClick]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: query and replace are intentionally omitted to prevent infinite loops.
   useEffect(() => {
-    if (googleMap && map) {
-      replace(
-        {
-          query: {
-            ...query,
-            lat: map.latitude,
-            lng: map.longitude,
-            zoom: 17
-          }
-        },
-        undefined,
-        {
-          shallow: true
-        }
-      );
-    }
-  }, [googleMap, map, replace, query]);
+    if (!googleMap || !map) return;
 
-  useEffect(() => {
-    if (googleMap && currentPlace) {
-      replace(
-        {
-          query: {
-            ...query,
-            lat: currentPlace.location.lat(),
-            lng: currentPlace.location.lng(),
-            zoom: googleMap.getZoom()
-          }
-        },
-        undefined,
-        {
-          shallow: true
+    replace(
+      {
+        query: {
+          ...query,
+          lat: map.latitude,
+          lng: map.longitude,
+          zoom: 17
         }
-      );
-    }
-  }, [googleMap, currentPlace, replace, query]);
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [googleMap, map]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: query and replace are intentionally omitted to prevent infinite loops.
+  useEffect(() => {
+    if (!googleMap || !currentPlace) return;
+
+    replace(
+      {
+        query: {
+          ...query,
+          lat: currentPlace.location.lat(),
+          lng: currentPlace.location.lng(),
+          zoom: googleMap.getZoom()
+        }
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [googleMap, currentPlace]);
 
   const popoverOpen = Boolean(popoverAnchorEl);
 

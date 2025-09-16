@@ -24,6 +24,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
   const dictionary = useDictionary();
   const { push, query } = useRouter();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: query and push are intentionally omitted to prevent infinite loops.
   const handleClick = useCallback(
     (review: Review) => {
       if (onReviewClick) {
@@ -44,7 +45,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
         }
       );
     },
-    [push, query, onReviewClick]
+    [onReviewClick]
   );
 
   if (!isLoading && reviews.length < 1) {
