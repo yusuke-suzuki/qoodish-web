@@ -174,7 +174,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
           ...query,
           lat: currentPlace.location.lat(),
           lng: currentPlace.location.lng(),
-          zoom: googleMap.getZoom()
+          zoom: 17
         }
       },
       undefined,

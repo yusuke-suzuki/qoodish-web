@@ -39,10 +39,6 @@ export default memo(function Timeline() {
     });
   }, []);
 
-  const handleCardClick = useCallback((review: Review) => {
-    // TODO: Implement review detail page
-  }, []);
-
   return (
     <>
       {isEmpty && !isLoadingMore && (
@@ -53,17 +49,20 @@ export default memo(function Timeline() {
       )}
 
       <Box sx={{ display: 'grid', gap: 3 }}>
-        {data?.map((reviews) => (
-          <Box key={reviews[0].id} sx={{ display: 'grid', gap: 3 }}>
-            {reviews.map((review) => (
-              <TimelineReviewCard
-                key={review.id}
-                review={review}
-                onReportClick={handleReportClick}
-              />
-            ))}
-          </Box>
-        ))}
+        {data?.map(
+          (reviews) =>
+            reviews.length > 0 && (
+              <Box key={reviews[0].id} sx={{ display: 'grid', gap: 3 }}>
+                {reviews.map((review) => (
+                  <TimelineReviewCard
+                    key={review.id}
+                    review={review}
+                    onReportClick={handleReportClick}
+                  />
+                ))}
+              </Box>
+            )
+        )}
       </Box>
 
       {isLoadingMore && (

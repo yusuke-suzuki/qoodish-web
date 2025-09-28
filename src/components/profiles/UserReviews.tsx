@@ -26,9 +26,16 @@ export default memo(function UserReviews({ id }: Props) {
       )}
 
       <Box sx={{ display: 'grid', gap: 1 }}>
-        {data.map((reviews, index) => (
-          <ReviewGridList key={reviews[0].id} reviews={reviews} hideSkeleton />
-        ))}
+        {data.map(
+          (reviews) =>
+            reviews.length > 0 && (
+              <ReviewGridList
+                key={reviews[0].id}
+                reviews={reviews}
+                hideSkeleton
+              />
+            )
+        )}
       </Box>
 
       {isLoadingMore && (
