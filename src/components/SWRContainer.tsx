@@ -1,6 +1,6 @@
-import { User } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 import { enqueueSnackbar } from 'notistack';
-import { ReactNode, memo, useCallback } from 'react';
+import { type ReactNode, memo, useCallback } from 'react';
 import { SWRConfig } from 'swr';
 
 type Props = {

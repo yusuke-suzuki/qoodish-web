@@ -1,6 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
-import { ReactNode, memo, useCallback, useEffect, useState } from 'react';
+import { type User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 
 type Props = {

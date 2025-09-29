@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import AuthorAvatar from '../common/AuthorAvatar';
 import NoContents from '../common/NoContents';
@@ -22,15 +22,18 @@ type Props = {
 
 function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
   const dictionary = useDictionary();
+  const { push, query } = useRouter();
 
-  const router = useRouter();
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: query and push are intentionally omitted to prevent infinite loops.
   const handleClick = useCallback(
     (review: Review) => {
-      router.push(
+      if (onReviewClick) {
+        onReviewClick(review);
+      }
+      push(
         {
           query: {
-            ...router.query,
+            ...query,
             lat: review.latitude,
             lng: review.longitude,
             zoom: 17
@@ -41,10 +44,6 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
           shallow: true
         }
       );
-
-      if (onReviewClick) {
-        onReviewClick(review);
-      }
     },
     [onReviewClick]
   );
@@ -62,7 +61,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
           <ListItemButton
             key={review ? review.id : i}
             divider
-            onClick={() => handleClick(review)}
+            onClick={() => review && handleClick(review)}
             disableGutters
           >
             <ListItemAvatar>

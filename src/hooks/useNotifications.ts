@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import useSWR from 'swr';
-import { Notification } from '../../types';
+import type { Notification } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useNotifications() {

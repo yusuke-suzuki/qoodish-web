@@ -1,7 +1,7 @@
 import { Loader } from '@googlemaps/js-api-loader';
-import { Box, SxProps, useMediaQuery, useTheme } from '@mui/material';
+import { Box, type SxProps, useMediaQuery, useTheme } from '@mui/material';
 import {
-  ReactNode,
+  type ReactNode,
   memo,
   useCallback,
   useEffect,
@@ -51,12 +51,12 @@ function GoogleMaps({
       return;
     }
 
-    const { Map } = await loader.importLibrary('maps');
+    const { Map: GoogleMap } = await loader.importLibrary('maps');
     const { ControlPosition } = await loader.importLibrary('core');
 
-    const map = new Map(mapRef.current, {
+    const map = new GoogleMap(mapRef.current as HTMLElement, {
       zoom: 17,
-      zoomControl: mdUp ? true : false,
+      zoomControl: !!mdUp,
       zoomControlOptions: {
         position: ControlPosition.LEFT_BOTTOM
       },

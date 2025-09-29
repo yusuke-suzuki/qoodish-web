@@ -1,6 +1,6 @@
 import { Avatar, AvatarGroup, Skeleton } from '@mui/material';
 import { memo } from 'react';
-import { AppMap, Follower } from '../../../types';
+import type { AppMap, Follower } from '../../../types';
 import { useMapFollowers } from '../../hooks/useMapFollowers';
 
 type FollowersProps = {
@@ -17,14 +17,18 @@ function Followers({ map }: FollowersProps) {
           follower ? (
             <Avatar
               key={follower.id}
-              src={follower.profile_image_url}
               alt={follower.name}
-              imgProps={{
-                loading: 'lazy'
-              }}
+              src={follower.profile_image_url}
+              sx={{ width: 40, height: 40 }}
             />
           ) : (
-            <Skeleton variant="circular" width={40} height={40} key={i} />
+            <Skeleton
+              variant="circular"
+              width={40}
+              height={40}
+              // biome-ignore lint/suspicious/noArrayIndexKey: The list is static and does not require a unique key.
+              key={`skeleton-follower-${i}`}
+            />
           )
       )}
     </AvatarGroup>

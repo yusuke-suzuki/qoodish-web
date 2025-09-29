@@ -14,14 +14,14 @@ import {
 import debounce from 'lodash.debounce';
 import { useRouter } from 'next/router';
 import {
-  ChangeEvent,
+  type ChangeEvent,
   memo,
   useCallback,
   useEffect,
   useMemo,
   useState
 } from 'react';
-import { AppMap } from '../../../types';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapPredictions } from '../../hooks/useMapPredictions';
 import AutocompleteListItem from '../common/AutocompleteListItem';
@@ -35,7 +35,7 @@ type Props = {
 const SearchDialog = ({ open, onClose }: Props) => {
   const dictionary = useDictionary();
 
-  const router = useRouter();
+  const { push } = useRouter();
 
   const [requestInput, setRequestInput] = useState('');
   const [inputValue, setInputValue] = useState('');
@@ -57,9 +57,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const handleMapClick = useCallback(
     (option: AppMap) => {
       onClose();
-      router.push(`/maps/${option.id}`);
+      push(`/maps/${option.id}`);
     },
-    [onClose]
+    [onClose, push]
   );
 
   const handleExited = useCallback(() => {

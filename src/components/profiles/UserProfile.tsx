@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 import {
-  SyntheticEvent,
+  type SyntheticEvent,
   memo,
   startTransition,
   useCallback,

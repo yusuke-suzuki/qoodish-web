@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import useSWRInfinite from 'swr/infinite';
-import { Review } from '../../types';
+import type { Review } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useUserReviewsInfinite(id: number) {
@@ -13,9 +13,8 @@ export function useUserReviewsInfinite(id: number) {
 
     if (currentUser) {
       return `/users/${id}/reviews`;
-    } else {
-      return `/guest/users/${id}/reviews`;
     }
+    return `/guest/users/${id}/reviews`;
   }, [currentUser, isAuthLoading, id]);
 
   const { data, size, setSize, error, mutate, isLoading } = useSWRInfinite<

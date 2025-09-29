@@ -1,7 +1,7 @@
 import { getApp } from 'firebase/app';
 import {
-  UploadResult,
-  UploadTask,
+  type UploadResult,
+  type UploadTask,
   getStorage,
   ref,
   uploadBytesResumable,

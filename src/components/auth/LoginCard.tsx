@@ -6,13 +6,13 @@ import SignInButtons from './SignInButtons';
 
 export default memo(function LoginCard() {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { push } = useRouter();
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleSignInSuccess = useCallback(() => {
-    router.push('/discover');
-  }, []);
+    push('/discover');
+  }, [push]);
 
   return (
     <Stack spacing={2}>

@@ -1,7 +1,7 @@
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Stack } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useReviewsInfinite } from '../../hooks/useReviewsInfinite';
 import IssueDialog from '../common/IssueDialog';
@@ -49,17 +49,20 @@ export default memo(function Timeline() {
       )}
 
       <Box sx={{ display: 'grid', gap: 3 }}>
-        {data.map((reviews, index) => (
-          <Box key={index} sx={{ display: 'grid', gap: 3 }}>
-            {reviews.map((review) => (
-              <TimelineReviewCard
-                key={review.id}
-                review={review}
-                onReportClick={handleReportClick}
-              />
-            ))}
-          </Box>
-        ))}
+        {data?.map(
+          (reviews) =>
+            reviews.length > 0 && (
+              <Box key={reviews[0].id} sx={{ display: 'grid', gap: 3 }}>
+                {reviews.map((review) => (
+                  <TimelineReviewCard
+                    key={review.id}
+                    review={review}
+                    onReportClick={handleReportClick}
+                  />
+                ))}
+              </Box>
+            )
+        )}
       </Box>
 
       {isLoadingMore && (

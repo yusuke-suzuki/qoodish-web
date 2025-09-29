@@ -1,12 +1,12 @@
 import { Box, CircularProgress, List } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import NotificationList from '../../components/notifications/NotificationList';
 import useDictionary from '../../hooks/useDictionary';
 import { useNotifications } from '../../hooks/useNotifications';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const NotificationsPage: NextPageWithLayout = () => {
   const router = useRouter();

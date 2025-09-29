@@ -1,14 +1,14 @@
 import { HistoryEdu } from '@mui/icons-material';
 import { Avatar, Fab, Tooltip, Typography, useTheme } from '@mui/material';
 import {
-  MutableRefObject,
+  type MutableRefObject,
   memo,
   useCallback,
   useEffect,
   useRef,
   useState
 } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import MarkerView from './MarkerView';
 

@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 import { memo } from 'react';
-import { AppMap, Profile } from '../../../types';
+import type { AppMap, Profile } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapReviews } from '../../hooks/useMapReviews';
 import FollowButton from './FollowButton';

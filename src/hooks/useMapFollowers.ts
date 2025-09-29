@@ -1,7 +1,7 @@
 import { User } from 'firebase/auth';
 import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
-import { Follower } from '../../types';
+import type { Follower } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useMapFollowers(mapId: number | null) {
@@ -14,9 +14,8 @@ export function useMapFollowers(mapId: number | null) {
 
     if (currentUser) {
       return `/maps/${mapId}/collaborators`;
-    } else {
-      return `/guest/maps/${mapId}/collaborators`;
     }
+    return `/guest/maps/${mapId}/collaborators`;
   }, [currentUser, isLoading, mapId]);
 
   const { data, error, mutate } = useSWR<Follower[]>(

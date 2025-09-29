@@ -2,7 +2,7 @@ import { Search } from '@mui/icons-material';
 import { InputAdornment, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import {
-  MutableRefObject,
+  type MutableRefObject,
   forwardRef,
   memo,
   useCallback,

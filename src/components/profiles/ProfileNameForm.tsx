@@ -48,7 +48,7 @@ function ProfileNameForm({ onChange, defaultValue }: Props) {
     <TextField
       label={dictionary.name}
       onChange={handleChange}
-      error={error ? true : false}
+      error={!!error}
       helperText={error}
       fullWidth
       value={name}

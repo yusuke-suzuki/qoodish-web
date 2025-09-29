@@ -50,7 +50,7 @@ export default memo(function MapDescriptionForm({
     <TextField
       label={dictionary.description}
       onChange={handleDescriptionChange}
-      error={error ? true : false}
+      error={!!error}
       helperText={error}
       fullWidth
       value={description}

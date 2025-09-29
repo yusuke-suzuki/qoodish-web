@@ -48,7 +48,7 @@ function ReviewDescriptionForm({ onChange, defaultValue }: Props) {
     <TextField
       label={dictionary.description}
       onChange={handleCommentChange}
-      error={error ? true : false}
+      error={!!error}
       helperText={error}
       fullWidth
       value={comment}

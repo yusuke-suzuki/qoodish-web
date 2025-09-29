@@ -1,6 +1,6 @@
 import { useContext, useMemo } from 'react';
 import useSWR from 'swr';
-import { AppMap } from '../../types';
+import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useUserMaps(id: number | null) {
@@ -13,9 +13,8 @@ export function useUserMaps(id: number | null) {
 
     if (currentUser) {
       return `/users/${id}/maps`;
-    } else {
-      return `/guest/users/${id}/maps`;
     }
+    return `/guest/users/${id}/maps`;
   }, [currentUser, isLoading, id]);
 
   const { data, error, mutate } = useSWR<AppMap[]>(

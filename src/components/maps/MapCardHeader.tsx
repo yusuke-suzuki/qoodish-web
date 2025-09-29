@@ -8,8 +8,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactNode, memo } from 'react';
-import { AppMap } from '../../../types';
+import { type ReactNode, memo } from 'react';
+import type { AppMap } from '../../../types';
 import AuthorAvatar from '../common/AuthorAvatar';
 
 type Props = {

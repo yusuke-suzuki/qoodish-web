@@ -24,7 +24,7 @@ import {
   useRef,
   useState
 } from 'react';
-import { Profile, Review } from '../../../types';
+import type { Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -50,15 +50,14 @@ export default memo(function ReviewMenuButton({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const router = useRouter();
+  const { push, locale, defaultLocale } = useRouter();
   const dictionary = useDictionary();
 
   const isAuthor = useMemo(() => {
     return currentProfile?.id === review?.author.id;
   }, [review, currentProfile]);
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const basePath = locale === defaultLocale ? '' : `/${locale}`;
   const url = `${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review?.map.id}/reports/${review?.id}`;
 
   const handleCopyClick = useCallback(async () => {
@@ -99,8 +98,8 @@ export default memo(function ReviewMenuButton({
   const handleDetailClick = useCallback(() => {
     setAnchorEl(null);
 
-    router.push(`/maps/${review?.map.id}/reports/${review?.id}`);
-  }, [review]);
+    push(`/maps/${review?.map.id}/reports/${review?.id}`);
+  }, [review, push]);
 
   return (
     <>

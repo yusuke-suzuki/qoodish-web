@@ -40,14 +40,14 @@ clientsClaim();
 googleAnalytics.initialize();
 
 registerRoute(
-  new RegExp('https://fonts.googleapis.com'),
+  /https:\/\/fonts.googleapis.com/,
   new StaleWhileRevalidate({
     cacheName: 'google-fonts-stylesheets'
   })
 );
 
 registerRoute(
-  new RegExp('https://storage.googleapis.com'),
+  /https:\/\/storage.googleapis.com/,
   new CacheFirst({
     cacheName: 'storage-googleapis-images',
     plugins: [
@@ -103,9 +103,8 @@ const eventToPayload = (e) => {
   if (e?.data) {
     console.log(e.data);
     return e.data.json();
-  } else {
-    return null;
   }
+  return null;
 };
 
 const notificationTitle = (_data) => {

@@ -12,12 +12,12 @@ import {
 } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import LoginCard from '../../components/auth/LoginCard';
 import Footer from '../../components/layouts/Footer';
 import useDictionary from '../../hooks/useDictionary';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const LoginPage: NextPageWithLayout = () => {
   const dictionary = useDictionary();

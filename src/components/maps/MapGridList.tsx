@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import { AppMap } from '../../../types';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {

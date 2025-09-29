@@ -104,7 +104,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   return {
     subscribe: subscribe,
     unsubscribe: unsubscribe,
-    isSubscribed: subscription ? true : false,
+    isSubscribed: !!subscription,
     registrationToken: registrationToken
   };
 }

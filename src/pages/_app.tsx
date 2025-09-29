@@ -2,8 +2,8 @@ import { getAnalytics, logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import {
-  ReactElement,
-  ReactNode,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -11,7 +11,7 @@ import {
 } from 'react';
 import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
-import { CacheProvider, EmotionCache, css } from '@emotion/react';
+import { CacheProvider, type EmotionCache, css } from '@emotion/react';
 import {
   Button,
   CssBaseline,
@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
-import { NextPage } from 'next';
+import type { NextPage } from 'next';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import createEmotionCache from '../../createEmotionCache';
 import SWRContainer from '../components/SWRContainer';
@@ -39,7 +39,7 @@ const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 
 const clientSideEmotionCache = createEmotionCache();
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 

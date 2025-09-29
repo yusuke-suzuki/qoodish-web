@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   Slide,
-  SlideProps
+  type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
@@ -18,7 +18,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';

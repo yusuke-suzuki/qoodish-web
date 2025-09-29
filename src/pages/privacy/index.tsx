@@ -1,11 +1,11 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { Typography } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import useDictionary from '../../hooks/useDictionary';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const PrivacyPage: NextPageWithLayout = () => {
   const dictionary = useDictionary();

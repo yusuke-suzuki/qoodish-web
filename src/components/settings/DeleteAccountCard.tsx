@@ -14,7 +14,7 @@ import DeleteAccountDialog from './DeleteAccountDialog';
 
 function DeleteAccountCard() {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { push } = useRouter();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -24,8 +24,8 @@ function DeleteAccountCard() {
     const auth = getAuth();
     await signOut(auth);
 
-    router.push('/login');
-  }, []);
+    push('/login');
+  }, [push]);
 
   return (
     <>

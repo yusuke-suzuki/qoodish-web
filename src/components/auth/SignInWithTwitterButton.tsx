@@ -1,5 +1,5 @@
 import { Twitter } from '@mui/icons-material';
-import { AuthError, TwitterAuthProvider } from 'firebase/auth';
+import { type AuthError, TwitterAuthProvider } from 'firebase/auth';
 import { memo, useMemo } from 'react';
 import SignInWithProviderButton from './SignInWithProviderButton';
 

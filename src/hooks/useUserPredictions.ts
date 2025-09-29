@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import useSWR from 'swr';
-import { PublicUser } from '../../types';
+import type { PublicUser } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useUserPredictions(input: string | null | undefined) {

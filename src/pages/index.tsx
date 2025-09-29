@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement, useContext } from 'react';
+import { type ReactElement, useContext } from 'react';
 import Layout from '../components/Layout';
 import Timeline from '../components/home/Timeline';
 import TrendingReviews from '../components/home/TrendingReviews';
 import AuthContext from '../context/AuthContext';
 import useDictionary from '../hooks/useDictionary';
-import { NextPageWithLayout } from './_app';
+import type { NextPageWithLayout } from './_app';
 
 const HomePage: NextPageWithLayout = () => {
   const dictionary = useDictionary();

@@ -1,41 +1,28 @@
-FROM node:20-alpine AS deps
-
-RUN apk add --no-cache libc6-compat
-
+FROM node:22-slim AS base
+ENV PNPM_HOME "/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
 
+FROM base AS deps
 COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN corepack enable && corepack prepare pnpm@8.7.6 --activate
-
-RUN pnpm install
-
-
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-RUN corepack enable && corepack prepare pnpm@8.7.6 --activate
-
+FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN pnpm run build
 
-RUN pnpm build
-
-
-FROM gcr.io/distroless/nodejs20-debian12 AS runner
-
+FROM gcr.io/distroless/nodejs22-debian12 AS runner
 WORKDIR /app
-
-ENV NODE_ENV=production
+ENV NODE_ENV production
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 8080
-
 ENV PORT 8080
 ENV HOSTNAME 0.0.0.0
 
-CMD ["/app/server.js"]
+CMD ["server.js"]

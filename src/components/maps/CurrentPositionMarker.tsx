@@ -17,7 +17,7 @@ import {
   styled
 } from '@mui/material';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Profile } from '../../../types';
+import type { Profile } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import ProfileAvatar from '../common/ProfileAvatar';

@@ -1,7 +1,7 @@
 import { DragHandle } from '@mui/icons-material';
-import { Avatar, Box, CardHeader, Skeleton, SxProps } from '@mui/material';
-import { ReactNode, memo } from 'react';
-import { AppMap, Review } from '../../../types';
+import { Avatar, Box, CardHeader, Skeleton, type SxProps } from '@mui/material';
+import { type ReactNode, memo } from 'react';
+import type { AppMap, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import PrivateMapChip from './PrivateMapChip';
 
@@ -50,7 +50,6 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
           map ? (
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               {reviews.length} {dictionary['spots count']}
-
               {map.private && <PrivateMapChip />}
             </Box>
           ) : (

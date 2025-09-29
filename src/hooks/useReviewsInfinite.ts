@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import useSWRInfinite from 'swr/infinite';
-import { Review } from '../../types';
+import type { Review } from '../../types';
 import AuthContext from '../context/AuthContext';
 
 export function useReviewsInfinite() {

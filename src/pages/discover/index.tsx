@@ -2,7 +2,7 @@ import { Explore, FiberNew, Whatshot } from '@mui/icons-material';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
 import PickUpMap from '../../components/discover/PickUpMap';
 import MapGridList from '../../components/maps/MapGridList';
@@ -11,7 +11,7 @@ import { useActiveMaps } from '../../hooks/useActiveMaps';
 import useDictionary from '../../hooks/useDictionary';
 import { useRecentMaps } from '../../hooks/useRecentMaps';
 import { useRecentReviews } from '../../hooks/useRecentReviews';
-import { NextPageWithLayout } from '../_app';
+import type { NextPageWithLayout } from '../_app';
 
 const DiscoverPage: NextPageWithLayout = () => {
   const router = useRouter();

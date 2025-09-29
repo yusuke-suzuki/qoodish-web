@@ -7,7 +7,7 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useCallback, useContext, useState } from 'react';
-import { Review } from '../../../types';
+import type { Review } from '../../../types';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewMenuButton from '../reviews/ReviewMenuButton';
 

@@ -12,7 +12,7 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { memo, useCallback, useContext, useEffect } from 'react';
-import { Notification } from '../../../types';
+import type { Notification } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import sleep from '../../utils/sleep';

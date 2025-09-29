@@ -23,7 +23,8 @@ const SkeletonTrendingList = () => {
           }
         >
           {Array.from(new Array(10)).map((_v, i) => (
-            <ListItem key={i}>
+            // biome-ignore lint/suspicious/noArrayIndexKey: The list is static and does not require a unique key.
+            <ListItem key={`skeleton-trending-${i}`}>
               <ListItemAvatar>
                 <Skeleton variant="circular" width={40} height={40} />
               </ListItemAvatar>
