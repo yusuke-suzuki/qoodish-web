@@ -1,6 +1,6 @@
-# Gemini Code Assist Context for Qoodish-Web
+# Claude Code Context for Qoodish-Web
 
-This document provides essential context for Gemini Code Assist to understand the Qoodish-Web project. Please use this information to generate code that is consistent with the existing architecture, conventions, and dependencies.
+This document provides essential context for Claude Code to understand the Qoodish-Web project. Please use this information to generate code that is consistent with the existing architecture, conventions, and dependencies.
 
 ## 1. Project Overview
 
@@ -54,4 +54,4 @@ When generating commit messages, please follow these rules:
 - Ensure each line in the body does not exceed 72 characters by inserting line breaks where necessary, including within sentences.
 - Separate distinct paragraphs with a blank line.
 - Use the body to explain what and why vs. how.
-- Reference pull requests.
+- Reference pull requests if needed.
