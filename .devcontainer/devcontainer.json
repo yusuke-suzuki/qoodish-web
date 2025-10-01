@@ -4,9 +4,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "google.geminicodeassist",
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
+        "anthropic.claude-code",
         "redhat.vscode-yaml",
         "biomejs.biome",
         "hoovercj.vscode-power-mode"
@@ -14,6 +12,7 @@
     }
   },
   "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {}
   }
