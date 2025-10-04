@@ -98,16 +98,22 @@ export default function CustomApp({
 
   const initServiceWorker = useCallback(async () => {
     try {
-      const { Workbox } = await import('workbox-window');
-      const wb = new Workbox('/sw.js');
-      const reg = await wb.register();
+      const { Serwist } = await import('@serwist/window');
+      const serwist = new Serwist('/sw.js', { scope: '/', type: 'classic' });
 
+      serwist.addEventListener('installed', () => {
+        console.log('ServiceWorker installed');
+      });
+
+      const reg = await serwist.register();
       console.log(
         'ServiceWorker registration successful with scope: ',
-        reg.scope
+        reg?.scope
       );
 
-      setRegistration(reg);
+      if (reg) {
+        setRegistration(reg);
+      }
     } catch (error) {
       console.log('ServiceWorker registration failed: ', error);
     }
