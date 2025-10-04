@@ -38,6 +38,7 @@ This document provides essential context for Claude Code to understand the Qoodi
 - When creating components, use MUI components (`<Button>`, `<Card>`, `<Typography>`, etc.) as the base.
 - Ensure all new code is strongly typed with TypeScript.
 - For user-facing text, always use the i18n dictionaries and the `useDictionary` hook. Do not hardcode strings in English or Japanese.
+- **IMPORTANT:** Before pushing code, always run `pnpm biome ci ./src` to verify code quality and formatting. All checks must pass.
 
 ## 5. Commit Message Generation Rules
 
@@ -49,9 +50,18 @@ When generating commit messages, please follow these rules:
 - Write in English.
 - Use imperative mood.
 - Use the present tense.
-- Limit the first line to 50 characters or less.
+- **Limit the first line to 50 characters or less (STRICT).**
+  - **VALIDATION REQUIRED:** Before finalizing any commit message,
+    count the characters in the subject line to ensure it does
+    not exceed 50. If it does, revise to shorten it.
+  - Example: "refactor: migrate PWA from Workbox to Serwist"
+    (46 chars) is acceptable.
+  - Counter-example: "refactor: migrate PWA implementation from
+    Workbox to Serwist" (61 chars) is TOO LONG.
 - Separate the subject from the body with a blank line.
-- Ensure each line in the body does not exceed 72 characters by inserting line breaks where necessary, including within sentences.
+- Ensure each line in the body does not exceed 72 characters
+  by inserting line breaks where necessary, including within
+  sentences.
 - Separate distinct paragraphs with a blank line.
 - Use the body to explain what and why vs. how.
 - Reference pull requests if needed.
