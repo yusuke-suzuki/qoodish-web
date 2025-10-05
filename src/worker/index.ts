@@ -1,21 +1,21 @@
-import { clientsClaim } from 'workbox-core';
-import { ExpirationPlugin } from 'workbox-expiration';
-import * as googleAnalytics from 'workbox-google-analytics';
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import type { PrecacheEntry, RuntimeCaching } from 'serwist';
+import {
+  CacheFirst,
+  ExpirationPlugin,
+  Serwist,
+  StaleWhileRevalidate
+} from 'serwist';
+import en from '../dictionaries/en.json';
+import ja from '../dictionaries/ja.json';
 
-declare const self: ServiceWorkerGlobalScope;
-
-precacheAndRoute(self.__WB_MANIFEST);
-
-const en = require('../dictionaries/en.json');
-const ja = require('../dictionaries/ja.json');
+declare const self: ServiceWorkerGlobalScope & {
+  __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+};
 
 const I18n = {
   _locale: 'en',
 
-  set locale(locale) {
+  set locale(locale: string) {
     this._locale = locale;
   },
 
@@ -23,59 +23,85 @@ const I18n = {
     return this._locale;
   },
 
-  t(key) {
+  t(key: string): string {
     switch (this._locale) {
       case 'ja':
       case 'ja-JP':
       case 'ja-jp':
-        return ja[key];
+        return ja[key] || en[key] || key;
       default:
-        return en[key];
+        return en[key] || key;
     }
   }
 };
 
-clientsClaim();
+// Push notification handlers
+interface NotificationData {
+  key: string;
+  notifiable_type: string;
+  notifier_name: string;
+  notifier_id: string;
+  notifiable_id: string;
+  notification_id: string;
+  icon: string;
+  click_action: string;
+}
 
-googleAnalytics.initialize();
+interface PushEventPayload {
+  data: NotificationData;
+}
 
-registerRoute(
-  /https:\/\/fonts.googleapis.com/,
-  new StaleWhileRevalidate({
-    cacheName: 'google-fonts-stylesheets'
-  })
-);
+// Define runtime caching
+const runtimeCaching: RuntimeCaching[] = [
+  {
+    matcher: /^https:\/\/fonts\.googleapis\.com\/.*/,
+    handler: new StaleWhileRevalidate({
+      cacheName: 'google-fonts-stylesheets'
+    })
+  },
+  {
+    matcher: /^https:\/\/storage\.googleapis\.com\/.*/,
+    handler: new CacheFirst({
+      cacheName: 'storage-googleapis-images',
+      plugins: [
+        new ExpirationPlugin({
+          maxEntries: 60,
+          maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
+        })
+      ]
+    })
+  }
+];
 
-registerRoute(
-  /https:\/\/storage.googleapis.com/,
-  new CacheFirst({
-    cacheName: 'storage-googleapis-images',
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 60,
-        maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
-      })
-    ]
-  })
-);
+// Push notification event handlers and helper functions
+const eventToPayload = (e: PushEvent): PushEventPayload | null => {
+  if (e?.data) {
+    return e.data.json();
+  }
 
-self.addEventListener('install', (e) => {
-  console.log('[ServiceWorker] Install');
+  return null;
+};
 
-  e.waitUntil(self.skipWaiting());
-});
+const notificationTitle = (_data: NotificationData): string => {
+  return 'Qoodish';
+};
 
-self.addEventListener('activate', (e) => {
-  console.log('[ServiceWorker] Activate');
+const notificationBody = (data: NotificationData): string => {
+  const message = I18n.t(`${data.key} ${data.notifiable_type}`);
+  return `${data.notifier_name} ${message}`;
+};
 
-  cleanupOutdatedCaches();
-});
+const notificationOptions = (data: NotificationData): NotificationOptions => {
+  return {
+    body: notificationBody(data),
+    icon: data.icon,
+    data: {
+      click_action: data.click_action
+    }
+  };
+};
 
-self.addEventListener('fetch', (e) => {
-  // console.log(e.request.url);
-});
-
-self.addEventListener('push', (e) => {
+self.addEventListener('push', (e: PushEvent) => {
   console.log('[ServiceWorker] Push message received:', e);
 
   const currentLocale = self.navigator.language;
@@ -85,44 +111,30 @@ self.addEventListener('push', (e) => {
 
   const payload = eventToPayload(e);
 
-  self.registration.showNotification(
-    notificationTitle(payload.data),
-    notificationOptions(payload.data)
-  );
+  if (payload?.data) {
+    e.waitUntil(
+      self.registration.showNotification(
+        notificationTitle(payload.data),
+        notificationOptions(payload.data)
+      )
+    );
+  }
 });
 
-self.addEventListener('notificationclick', (e) => {
+self.addEventListener('notificationclick', (e: NotificationEvent) => {
   e.notification.close();
-  const clickAction = e.notification.data.click_action;
+  const clickAction = e.notification.data?.click_action;
   if (clickAction) {
     e.waitUntil(self.clients.openWindow(clickAction));
   }
 });
 
-const eventToPayload = (e) => {
-  if (e?.data) {
-    console.log(e.data);
-    return e.data.json();
-  }
-  return null;
-};
+const serwist = new Serwist({
+  precacheEntries: self.__SW_MANIFEST,
+  skipWaiting: true,
+  clientsClaim: true,
+  navigationPreload: false,
+  runtimeCaching
+});
 
-const notificationTitle = (_data) => {
-  return 'Qoodish';
-};
-
-const notificationOptions = (data) => {
-  return {
-    body: notificationBody(data),
-    icon: data.icon,
-    color: '#ffc107',
-    data: {
-      click_action: data.click_action
-    }
-  };
-};
-
-const notificationBody = (data) => {
-  const message = I18n.t(`${data.key} ${data.notifiable_type}`);
-  return `${data.notifier_name} ${message}`;
-};
+serwist.addEventListeners();
