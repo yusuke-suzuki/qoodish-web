@@ -47,7 +47,37 @@
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**I. TypeScript-First Development**
+- [ ] All code strongly typed (no `any` without justification)
+- [ ] Components, hooks, utilities have explicit type definitions
+- [ ] TypeScript strict mode compliance verified
+
+**II. Component Architecture**
+- [ ] React functional components in `.tsx` format
+- [ ] MUI components used as UI base
+- [ ] Custom hooks in `src/hooks/` for business logic
+- [ ] SWR for server state management
+- [ ] Directory structure follows `src/components/`, `src/hooks/`, `src/context/`
+
+**III. Internationalization (i18n)**
+- [ ] No hardcoded user-facing strings
+- [ ] `useDictionary` hook used for all UI text
+- [ ] English and Japanese translations provided
+
+**IV. Code Quality Standards**
+- [ ] `pnpm biome ci ./src` passes with zero errors
+- [ ] No ESLint errors or warnings
+- [ ] Biome formatting rules followed
+
+**V. Commit Message Discipline**
+- [ ] Subject line ≤ 50 characters
+- [ ] Body lines ≤ 72 characters
+- [ ] Conventional commit format (`type: subject`)
+
+**VI. Standard APIs First**
+- [ ] Web standard APIs or Node.js APIs used when available
+- [ ] New dependencies justified (standard API insufficient)
+- [ ] Framework-required libraries documented
 
 ## Project Structure
 
@@ -216,4 +246,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v2.1.1 - See `/memory/constitution.md`*
+*Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*
