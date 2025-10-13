@@ -1,7 +1,17 @@
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getApps, initializeApp } from 'firebase/app';
-import { type User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  type User,
+  getAuth,
+  isSignInWithEmailLink,
+  onAuthStateChanged,
+  signInWithEmailLink
+} from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { enqueueSnackbar } from 'notistack';
 import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
   children: ReactNode;
@@ -11,6 +21,9 @@ function AuthProvider({ children }: Props) {
   const [currentUser, setCurrentUser] = useState<User>(null);
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
+
+  const router = useRouter();
+  const dictionary = useDictionary();
 
   const initFirebase = useCallback(() => {
     initializeApp({
@@ -76,6 +89,40 @@ function AuthProvider({ children }: Props) {
 
     return () => unsubscribe();
   }, [initFirebase, handleAuthStateChanged]);
+
+  useEffect(() => {
+    if (!router.isReady || !getApps().length) return;
+
+    const auth = getAuth();
+    const currentUrl = `${window.location.origin}${router.asPath}`;
+
+    if (!isSignInWithEmailLink(auth, currentUrl)) return;
+
+    let emailForSignIn = window.localStorage.getItem('emailForSignIn');
+
+    if (!emailForSignIn) {
+      emailForSignIn = window.prompt(dictionary['email link email']);
+    }
+
+    if (!emailForSignIn) return;
+
+    signInWithEmailLink(auth, emailForSignIn, currentUrl)
+      .then(() => {
+        window.localStorage.removeItem('emailForSignIn');
+        enqueueSnackbar(dictionary['sign in success'], {
+          variant: 'success'
+        });
+
+        const analytics = getAnalytics();
+        logEvent(analytics, 'login', { provider: 'email_link' });
+      })
+      .catch((err) => {
+        console.error(err);
+        enqueueSnackbar(dictionary['an error occured'], {
+          variant: 'error'
+        });
+      });
+  }, [router.isReady, router.asPath, dictionary]);
 
   return (
     <AuthContext.Provider
