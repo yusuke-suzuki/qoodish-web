@@ -113,7 +113,40 @@ const LoginPage: NextPageWithLayout = () => {
           }}
         >
           <Container maxWidth="md">
-            <LoginCard />
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs={12}
+                sm={7}
+                md={8}
+                lg={8}
+                alignContent={smUp ? 'center' : 'flex-end'}
+              >
+                <Stack spacing={2}>
+                  <Typography
+                    variant={mdUp ? 'h3' : 'h4'}
+                    component="h1"
+                    color="white"
+                    align="center"
+                  >
+                    {dictionary['create map together']}
+                  </Typography>
+
+                  <Typography
+                    variant={mdUp ? 'subtitle1' : 'subtitle2'}
+                    component="p"
+                    color="white"
+                    align="center"
+                  >
+                    {dictionary['start new adventure']}
+                  </Typography>
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} sm={5} md={4} lg={4}>
+                <LoginCard />
+              </Grid>
+            </Grid>
           </Container>
         </Box>
       </Box>

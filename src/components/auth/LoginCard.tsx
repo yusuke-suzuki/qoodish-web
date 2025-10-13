@@ -1,4 +1,12 @@
-import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
@@ -15,33 +23,27 @@ export default memo(function LoginCard() {
   }, [push]);
 
   return (
-    <Stack spacing={2}>
-      <Typography
-        variant={mdUp ? 'h3' : 'h4'}
-        component="h1"
-        color="white"
-        align="center"
-      >
-        {dictionary['create map together']}
-      </Typography>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <Typography
+            align="center"
+            variant={mdUp ? 'h5' : 'h6'}
+            component="div"
+          >
+            {dictionary.login}
+          </Typography>
 
-      <Typography
-        variant={mdUp ? 'subtitle1' : 'subtitle2'}
-        component="p"
-        color="white"
-        align="center"
-      >
-        {dictionary['start new adventure']}
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-      >
-        <SignInButtons onSignInSuccess={handleSignInSuccess} />
-      </Box>
-    </Stack>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <SignInButtons onSignInSuccess={handleSignInSuccess} />
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 });

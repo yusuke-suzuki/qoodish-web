@@ -31,6 +31,13 @@ This document provides essential context for Claude Code to understand the Qoodi
 - **Data Fetching:** Use SWR hooks for all interactions with the backend. Custom hooks in `src/hooks` are the preferred way to abstract this logic.
 - **State Management:** For global state, React Context is used. For server state, SWR is the source of truth.
 - **Internationalization (i18n):** The app supports English and Japanese. Text displayed to the user should be retrieved via the `useDictionary` hook.
+- **Authentication Flow:** The app uses a unified sign-in/sign-up pattern:
+    - Firebase Authentication handles authentication (Google OAuth, Email Link)
+    - After successful Firebase auth, `AuthProvider` listens via `onAuthStateChanged`
+    - `AuthProvider.signIn(user)` calls backend `POST /users` (Rails API determines if user is new or existing)
+    - Backend response sets `currentUser` in AuthContext
+    - Supported methods: Google OAuth (`signInWithPopup`), Email Link (`sendSignInLinkToEmail`)
+    - Facebook and Twitter authentication have been removed as of feature 001-facebook-twitter
 
 ## 4. Code Generation & Modification Guidelines
 

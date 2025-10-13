@@ -226,5 +226,16 @@
   "back to map": "Back to the map",
   "user not found": "User Not Found",
   "places": "Places",
-  "select place": "Click to search places"
+  "select place": "Click to search places",
+  "or": "or",
+  "email link email": "Email",
+  "email link send": "Send sign-in link",
+  "email link sent": "Sign-in link has been sent. Please check your email.",
+  "email link sent description": "Click the link in the email to sign in. The link will expire in 60 minutes.",
+  "email link error invalid email": "Invalid email format",
+  "email link error too many requests": "Too many attempts. Please try again later.",
+  "email link error operation not allowed": "Email link authentication is not enabled",
+  "email link error expired": "This sign-in link has expired. Please request a new one.",
+  "email link error invalid link": "This sign-in link is invalid or has already been used.",
+  "email link error network request failed": "Network error. Please check your connection and try again"
 }
