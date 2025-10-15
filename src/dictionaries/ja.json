@@ -226,5 +226,16 @@
   "back to map": "マップに戻る",
   "user not found": "ユーザーが見つかりません",
   "places": "場所",
-  "select place": "クリックして場所を検索"
+  "select place": "クリックして場所を検索",
+  "or": "または",
+  "email link email": "メールアドレス",
+  "email link send": "ログインリンクを送信",
+  "email link sent": "ログインリンクを送信しました。メールをご確認ください。",
+  "email link sent description": "メール内のリンクをクリックしてログインしてください。リンクは 60 分で期限切れになります。",
+  "email link error invalid email": "メールアドレスの形式が正しくありません",
+  "email link error too many requests": "試行回数が多すぎます。しばらくしてから再度お試しください。",
+  "email link error operation not allowed": "メールリンク認証が有効化されていません",
+  "email link error expired": "このログインリンクは期限切れです。新しいリンクをリクエストしてください。",
+  "email link error invalid link": "このログインリンクは無効か、すでに使用されています。",
+  "email link error network request failed": "ネットワークエラーが発生しました。接続を確認して再度お試しください"
 }
