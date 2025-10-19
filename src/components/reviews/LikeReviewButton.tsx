@@ -68,7 +68,7 @@ export default memo(function LikeReviewButton({ review, onSaved }: Props) {
           enqueueSnackbar(body.detail, { variant: 'error' });
         }
       } catch (error) {
-        enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
     },
     [currentUser, review, setSignInRequired, dictionary, onSaved]

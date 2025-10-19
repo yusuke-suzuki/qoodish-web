@@ -148,7 +148,7 @@ export default memo(function CreateReviewDialog({
         enqueueSnackbar(body.detail, { variant: 'error' });
       }
     } catch (error) {
-      enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }

@@ -35,7 +35,7 @@ function SignInWithEmailLinkButton({ onSignInError }: Props) {
         case 'auth/network-request-failed':
           return dictionary['email link error network request failed'];
         default:
-          return dictionary['an error occured'];
+          return dictionary['an error occurred'];
       }
     },
     [dictionary]

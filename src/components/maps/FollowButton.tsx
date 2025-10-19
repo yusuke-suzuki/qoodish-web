@@ -55,7 +55,7 @@ function FollowButton({ map, onSaved }: Props) {
         enqueueSnackbar(body.detail, { variant: 'error' });
       }
     } catch (error) {
-      enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
