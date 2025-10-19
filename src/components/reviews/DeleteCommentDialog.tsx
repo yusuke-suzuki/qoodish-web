@@ -62,7 +62,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
       }
     } catch (error) {
       console.error(error);
-      enqueueSnackbar(dictionary['an error occured'], { variant: 'error' });
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }

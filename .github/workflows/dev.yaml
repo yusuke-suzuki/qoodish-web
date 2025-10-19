@@ -93,6 +93,12 @@ jobs:
           service_account: github-actions@qoodish-common.iam.gserviceaccount.com
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
+      - name: Normalize branch name for Cloud Run tag
+        id: normalize
+        run: |
+          NORMALIZED_TAG=$(echo "${{ env.BRANCH_NAME }}" | sed 's/[.\_/]/-/g')
+          echo "tag=$NORMALIZED_TAG" >> $GITHUB_OUTPUT
+          echo "Normalized tag: $NORMALIZED_TAG"
       - name: Deploy revision
         env:
           CLOUDSDK_CORE_DISABLE_PROMPTS: 1
@@ -111,7 +117,7 @@ jobs:
             --ingress=all \
             --allow-unauthenticated \
             --execution-environment=gen2 \
-            --tag=$BRANCH_NAME \
+            --tag=${{ steps.normalize.outputs.tag }} \
             --image=$ARTIFACT_REGISTRY/$PROJECT_ID/$SERVICE_NAME/$SERVICE_NAME:$GITHUB_SHA \
             --set-env-vars "NODE_ENV=production" \
             --set-env-vars "API_ENDPOINT=https://api-dev.qoodish.com"

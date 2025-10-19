@@ -118,7 +118,7 @@ function AuthProvider({ children }: Props) {
       })
       .catch((err) => {
         console.error(err);
-        enqueueSnackbar(dictionary['an error occured'], {
+        enqueueSnackbar(dictionary['an error occurred'], {
           variant: 'error'
         });
       });
