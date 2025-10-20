@@ -39,6 +39,8 @@ function LinkAccountDialog({ currentAuthError, onSignInSuccess }: Props) {
   }, []);
 
   const handleLinkClick = useCallback(async () => {
+    if (!currentAuthError) return;
+
     setLoading(true);
 
     try {

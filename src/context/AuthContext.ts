@@ -2,8 +2,8 @@ import type { User } from 'firebase/auth';
 import { createContext } from 'react';
 
 type ContextProps = {
-  currentUser: User;
-  setCurrentUser: (user: User) => void;
+  currentUser: User | null;
+  setCurrentUser: (user: User | null) => void;
   isLoading: boolean;
   signInRequired: boolean;
   setSignInRequired: (value: boolean) => void;
