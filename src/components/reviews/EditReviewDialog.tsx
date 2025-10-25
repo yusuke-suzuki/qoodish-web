@@ -10,14 +10,7 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import {
-  forwardRef,
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import type { Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -28,9 +21,12 @@ import PositionForm from '../maps/PositionForm';
 import ReviewDescriptionForm from './ReviewDescriptionForm';
 import ReviewNameForm from './ReviewNameForm';
 
-const Transition = forwardRef(function Transition(props: SlideProps, ref) {
+function Transition({
+  ref,
+  ...props
+}: SlideProps & { ref?: React.Ref<unknown> }) {
   return <Slide direction="up" ref={ref} {...props} />;
-});
+}
 
 type Props = {
   open: boolean;

@@ -162,6 +162,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
       undefined,
       { shallow: true }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleMap, map]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: query and replace are intentionally omitted to prevent infinite loops.
@@ -180,6 +181,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
       undefined,
       { shallow: true }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleMap, currentPlace]);
 
   const popoverOpen = Boolean(popoverAnchorEl);
