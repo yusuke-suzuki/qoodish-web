@@ -14,15 +14,13 @@
   "features": {
     "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/python:1": {}
+    "ghcr.io/devcontainers/features/node:1": {}
   },
   "mounts": [
     "source=node_modules_cache,target=${containerWorkspaceFolder}/node_modules,type=volume",
     "source=next_cache,target=${containerWorkspaceFolder}/.next,type=volume",
     "source=pnpm_cache,target=/home/node/.local/share/pnpm,type=volume"
   ],
-  "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git",
   "remoteEnv": {
     "NEXT_TELEMETRY_DISABLED": "1"
   }
