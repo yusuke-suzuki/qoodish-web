@@ -13,14 +13,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import {
-  forwardRef,
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import type { Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -29,9 +22,12 @@ import AddPhotoButton from '../common/AddPhotoButton';
 import BiographyForm from './BiographyForm';
 import ProfileNameForm from './ProfileNameForm';
 
-const Transition = forwardRef(function Transition(props: SlideProps, ref) {
+function Transition({
+  ref,
+  ...props
+}: SlideProps & { ref?: React.Ref<unknown> }) {
   return <Slide direction="up" ref={ref} {...props} />;
-});
+}
 
 type Props = {
   currentProfile: Profile | null;

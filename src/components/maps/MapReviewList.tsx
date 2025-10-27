@@ -45,6 +45,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
         }
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onReviewClick]
   );
 

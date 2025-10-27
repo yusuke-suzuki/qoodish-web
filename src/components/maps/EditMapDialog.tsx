@@ -13,14 +13,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import {
-  forwardRef,
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -31,9 +24,12 @@ import MapNameForm from './MapNameForm';
 import MapOptions from './MapOptions';
 import PositionForm from './PositionForm';
 
-const Transition = forwardRef(function Transition(props: SlideProps, ref) {
+function Transition({
+  ref,
+  ...props
+}: SlideProps & { ref?: React.Ref<unknown> }) {
   return <Slide direction="up" ref={ref} {...props} />;
-});
+}
 
 type Props = {
   open: boolean;

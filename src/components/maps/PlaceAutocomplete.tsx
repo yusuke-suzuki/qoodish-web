@@ -3,7 +3,6 @@ import { InputAdornment, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import {
   type MutableRefObject,
-  forwardRef,
   memo,
   useCallback,
   useEffect,
@@ -12,14 +11,12 @@ import {
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 
 type Props = {
+  ref: MutableRefObject<HTMLInputElement>;
   onChange: (place: google.maps.places.Place) => void;
   label?: string;
 };
 
-const PlaceAutocomplete = forwardRef(function PlaceAutocomplete(
-  { onChange, label }: Props,
-  ref: MutableRefObject<HTMLInputElement>
-) {
+function PlaceAutocomplete({ ref, onChange, label }: Props) {
   const router = useRouter();
 
   const { loader } = useGoogleMap();
@@ -97,6 +94,6 @@ const PlaceAutocomplete = forwardRef(function PlaceAutocomplete(
       }}
     />
   );
-});
+}
 
 export default memo(PlaceAutocomplete);
