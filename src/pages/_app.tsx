@@ -11,7 +11,7 @@ import {
 } from 'react';
 import ServiceWorkerContext from '../context/ServiceWorkerContext';
 
-import { CacheProvider, type EmotionCache, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import {
   Button,
   CssBaseline,
@@ -19,11 +19,11 @@ import {
   ThemeProvider,
   createTheme
 } from '@mui/material';
+import { AppCacheProvider } from '@mui/material-nextjs/v15-pagesRouter';
 import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
 import type { NextPage } from 'next';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
-import createEmotionCache from '../../createEmotionCache';
 import SWRContainer from '../components/SWRContainer';
 import AuthProvider from '../components/auth/AuthProvider';
 import useDictionary from '../hooks/useDictionary';
@@ -37,20 +37,16 @@ const globalStyles = css`
 
 const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 
-const clientSideEmotionCache = createEmotionCache();
-
 export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
-  emotionCache?: EmotionCache;
 };
 
 export default function CustomApp({
   Component,
-  emotionCache = clientSideEmotionCache,
   pageProps
 }: AppPropsWithLayout) {
   const [registration, setRegistration] =
@@ -136,7 +132,7 @@ export default function CustomApp({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <CacheProvider value={emotionCache}>
+    <AppCacheProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {inputGlobalStyles}
@@ -161,6 +157,6 @@ export default function CustomApp({
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>
-    </CacheProvider>
+    </AppCacheProvider>
   );
 }
