@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -239,7 +238,7 @@ export default memo(function CreateMapDialog({
         <Button onClick={onClose} disabled={loading} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleCreateButtonClick}
           color="secondary"
@@ -247,7 +246,7 @@ export default memo(function CreateMapDialog({
           loading={loading}
         >
           {dictionary.save}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

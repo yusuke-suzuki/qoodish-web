@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -109,13 +108,9 @@ function LinkAccountDialog({ currentAuthError, onSignInSuccess }: Props) {
         <Button onClick={handleClose} disabled={loading} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
-          onClick={handleLinkClick}
-          color="secondary"
-          loading={loading}
-        >
+        <Button onClick={handleLinkClick} color="secondary" loading={loading}>
           {dictionary.link}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

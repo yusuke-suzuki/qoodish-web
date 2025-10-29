@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -226,7 +225,7 @@ export default memo(function EditReviewDialog({
           <Button onClick={onClose} disabled={loading} color="inherit">
             {dictionary.cancel}
           </Button>
-          <LoadingButton
+          <Button
             variant="contained"
             onClick={handleSaveClick}
             color="secondary"
@@ -234,7 +233,7 @@ export default memo(function EditReviewDialog({
             loading={loading}
           >
             {dictionary.save}
-          </LoadingButton>
+          </Button>
         </Box>
       </DialogActions>
     </Dialog>
