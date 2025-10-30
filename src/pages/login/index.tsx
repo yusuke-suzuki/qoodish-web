@@ -115,11 +115,12 @@ const LoginPage: NextPageWithLayout = () => {
           <Container maxWidth="md">
             <Grid container spacing={2}>
               <Grid
-                item
-                xs={12}
-                sm={7}
-                md={8}
-                lg={8}
+                size={{
+                  xs: 12,
+                  sm: 7,
+                  md: 8,
+                  lg: 8
+                }}
                 alignContent={smUp ? 'center' : 'flex-end'}
               >
                 <Stack spacing={2}>
@@ -143,7 +144,7 @@ const LoginPage: NextPageWithLayout = () => {
                 </Stack>
               </Grid>
 
-              <Grid item xs={12} sm={5} md={4} lg={4}>
+              <Grid size={{ xs: 12, sm: 5, md: 4, lg: 4 }}>
                 <LoginCard />
               </Grid>
             </Grid>
@@ -153,7 +154,7 @@ const LoginPage: NextPageWithLayout = () => {
 
       <Container maxWidth="md" sx={{ my: 4 }}>
         <Grid container spacing={10}>
-          <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
             <Stack alignItems="center" spacing={2}>
               <Place
                 color="primary"
@@ -190,7 +191,7 @@ const LoginPage: NextPageWithLayout = () => {
             </Stack>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={12} lg={12}>
+          <Grid size={{ xs: 12, sm: 12, md: 12, lg: 12 }}>
             <Stack alignItems="center" spacing={2}>
               <Explore
                 color="primary"

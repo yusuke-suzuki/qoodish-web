@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -131,7 +130,7 @@ const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{dictionary.cancel}</Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleSendButtonClick}
           color="primary"
@@ -139,7 +138,7 @@ const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
           disabled={!reason}
         >
           {dictionary.send}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

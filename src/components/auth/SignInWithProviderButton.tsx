@@ -1,5 +1,4 @@
-import { LoadingButton } from '@mui/lab';
-import type { SxProps } from '@mui/material';
+import { Button, type SxProps } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
   type AuthError,
@@ -65,7 +64,7 @@ function SignInWithProviderButton({
   }, [provider, router.locale, onSignInError, onSignInSuccess, dictionary]);
 
   return (
-    <LoadingButton
+    <Button
       loading={loading}
       variant="contained"
       fullWidth
@@ -74,7 +73,7 @@ function SignInWithProviderButton({
       startIcon={startIcon}
     >
       {text}
-    </LoadingButton>
+    </Button>
   );
 }
 

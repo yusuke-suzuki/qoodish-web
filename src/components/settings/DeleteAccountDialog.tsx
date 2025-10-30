@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Checkbox,
@@ -109,7 +108,7 @@ function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
         <Button onClick={onClose} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleDeleteButtonClick}
           color="error"
@@ -117,7 +116,7 @@ function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
           loading={loading}
         >
           {dictionary.delete}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

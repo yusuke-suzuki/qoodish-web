@@ -23,10 +23,10 @@ export default memo(function MapAutocompleteOption({
 
   return (
     <Grid container alignItems="center" data-test="map-item">
-      <Grid item>
+      <Grid>
         <MapIcon color="primary" />
       </Grid>
-      <Grid item xs>
+      <Grid size="grow">
         {parts.map((part, index) => (
           <span
             key={`${part.text}-${index}`}

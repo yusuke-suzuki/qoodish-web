@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { AppMap } from '../../../types';
@@ -62,7 +62,7 @@ function FollowButton({ map, onSaved }: Props) {
   }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
 
   return (
-    <LoadingButton
+    <Button
       loading={loading}
       variant="contained"
       color="secondary"
@@ -72,7 +72,7 @@ function FollowButton({ map, onSaved }: Props) {
       onClick={handleClick}
     >
       {dictionary.follow}
-    </LoadingButton>
+    </Button>
   );
 }
 

@@ -1,5 +1,5 @@
-import { LoadingButton } from '@mui/lab';
 import {
+  Button,
   Card,
   CardActions,
   CardContent,
@@ -193,14 +193,14 @@ function PushNotificationsCard() {
         </FormControl>
       </CardContent>
       <CardActions>
-        <LoadingButton
+        <Button
           loading={loading}
           variant="contained"
           onClick={handleSave}
           color="secondary"
         >
           {dictionary.save}
-        </LoadingButton>
+        </Button>
       </CardActions>
     </Card>
   );

@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -80,13 +79,13 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
         <Button onClick={onClose} disabled={loading} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           onClick={handleDeleteButtonClick}
           color="error"
           loading={loading}
         >
           {dictionary.delete}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );
