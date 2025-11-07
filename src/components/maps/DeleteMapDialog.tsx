@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Checkbox,
@@ -86,8 +85,10 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
       open={open}
       onClose={onClose}
       fullWidth
-      TransitionProps={{
-        onExited: handleExited
+      slotProps={{
+        transition: {
+          onExited: handleExited
+        }
       }}
     >
       <DialogTitle>{dictionary['sure to delete map']}</DialogTitle>
@@ -111,7 +112,7 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
         <Button onClick={onClose} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleDeleteButtonClick}
           color="error"
@@ -119,7 +120,7 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
           loading={loading}
         >
           {dictionary.delete}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

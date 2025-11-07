@@ -76,10 +76,12 @@ function ReviewMarker({ review, onClick }: Props) {
           </Typography>
         }
         open={open}
-        PopperProps={{
-          disablePortal: true
-        }}
         arrow
+        slotProps={{
+          popper: {
+            disablePortal: true
+          }
+        }}
       >
         <Fab
           size="small"
@@ -91,14 +93,16 @@ function ReviewMarker({ review, onClick }: Props) {
           {review.images.length > 0 ? (
             <Avatar
               src={review.images[0].thumbnail_url}
-              imgProps={{
-                alt: review.name,
-                loading: 'lazy'
-              }}
               sx={{
                 width: theme.spacing(4),
                 height: theme.spacing(4),
                 bgcolor: 'transparent'
+              }}
+              slotProps={{
+                img: {
+                  alt: review.name,
+                  loading: 'lazy'
+                }
               }}
             />
           ) : (

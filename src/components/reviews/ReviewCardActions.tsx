@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import { Box, Button, CardActions, Stack, TextField } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
@@ -95,13 +94,15 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
             <TextField
               fullWidth
               placeholder={dictionary['add comment']}
-              InputProps={{
-                disableUnderline: true
-              }}
               onFocus={() => setCommentFormActive(true)}
               autoFocus={commentFormActive}
               multiline={commentFormActive}
               onChange={(e) => setComment(e.target.value)}
+              slotProps={{
+                input: {
+                  disableUnderline: true
+                }
+              }}
             />
           </Box>
 
@@ -123,7 +124,7 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
               {dictionary.cancel}
             </Button>
 
-            <LoadingButton
+            <Button
               onClick={handleSendClick}
               color="secondary"
               disabled={!comment}
@@ -131,7 +132,7 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
               variant="contained"
             >
               {dictionary.post}
-            </LoadingButton>
+            </Button>
           </Box>
         )}
       </Stack>

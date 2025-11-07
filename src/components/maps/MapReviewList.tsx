@@ -87,11 +87,14 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
             <ListItemText
               primary={review ? review.name : <Skeleton />}
               secondary={review ? review.comment : <Skeleton />}
-              primaryTypographyProps={{
-                noWrap: true
-              }}
-              secondaryTypographyProps={{
-                noWrap: true
+              slotProps={{
+                primary: {
+                  noWrap: true
+                },
+
+                secondary: {
+                  noWrap: true
+                }
               }}
             />
             {review && (

@@ -80,17 +80,20 @@ function PlaceAutocomplete({ ref, onChange, label }: Props) {
       autoFocus
       type="search"
       size="small"
-      inputProps={{
-        ref: ref,
-        placeholder: label
-      }}
-      InputProps={{
-        margin: 'none',
-        startAdornment: (
-          <InputAdornment position="start">
-            <Search />
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          margin: 'none',
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          )
+        },
+
+        htmlInput: {
+          ref: ref,
+          placeholder: label
+        }
       }}
     />
   );

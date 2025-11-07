@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -179,11 +178,14 @@ export default memo(function CreateMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['create new map']}</DialogTitle>
-
       <DialogContent dividers>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           {dictionary.thumbnail}
@@ -234,12 +236,11 @@ export default memo(function CreateMapDialog({
           <MapOptions onChange={handleMapOptionsChange} />
         </Box>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} disabled={loading} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleCreateButtonClick}
           color="secondary"
@@ -247,7 +248,7 @@ export default memo(function CreateMapDialog({
           loading={loading}
         >
           {dictionary.save}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

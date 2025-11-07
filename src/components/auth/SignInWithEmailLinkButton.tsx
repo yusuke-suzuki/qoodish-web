@@ -1,5 +1,4 @@
-import { LoadingButton } from '@mui/lab';
-import { Alert, Stack, TextField } from '@mui/material';
+import { Alert, Button, Stack, TextField } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -106,7 +105,7 @@ function SignInWithEmailLinkButton({ onSignInError }: Props) {
         variant="outlined"
       />
 
-      <LoadingButton
+      <Button
         type="submit"
         loading={loading}
         variant="contained"
@@ -114,7 +113,7 @@ function SignInWithEmailLinkButton({ onSignInError }: Props) {
         disabled={!email}
       >
         {dictionary['email link send']}
-      </LoadingButton>
+      </Button>
     </Stack>
   );
 }

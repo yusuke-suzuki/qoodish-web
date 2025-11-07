@@ -29,11 +29,13 @@ function ProfileAvatar({ profile, size, variant }: Props) {
     <Avatar
       src={profile.thumbnail_url_400}
       alt={profile.name}
-      imgProps={{
-        loading: 'lazy'
-      }}
       sx={avatarStyle}
       variant={variant || 'circular'}
+      slotProps={{
+        img: {
+          loading: 'lazy'
+        }
+      }}
     />
   );
 }

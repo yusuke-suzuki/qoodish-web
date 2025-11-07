@@ -109,7 +109,6 @@ export default memo(function ReviewMenuButton({
       >
         <MoreVert />
       </IconButton>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -153,8 +152,10 @@ export default memo(function ReviewMenuButton({
             </ListItemIcon>
             <ListItemText
               primary={dictionary.delete}
-              primaryTypographyProps={{
-                color: 'error'
+              slotProps={{
+                primary: {
+                  color: 'error'
+                }
               }}
             />
           </MenuItem>

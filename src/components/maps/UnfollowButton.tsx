@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import type { AppMap, Profile } from '../../../types';
@@ -67,16 +67,17 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
   }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
 
   return (
-    <LoadingButton
+    <Button
       variant="outlined"
       color="inherit"
       size="medium"
       fullWidth
       disabled={!map || !map.following || isAuthor}
       onClick={handleClick}
+      loading={loading}
     >
       {dictionary.unfollow}
-    </LoadingButton>
+    </Button>
   );
 }
 

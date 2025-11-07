@@ -19,10 +19,12 @@ export default memo(function AuthorAvatar({ author, sx }: Props) {
       <Avatar
         src={author.profile_image_url}
         alt={author.name}
-        imgProps={{
-          loading: 'lazy'
-        }}
         sx={sx}
+        slotProps={{
+          img: {
+            loading: 'lazy'
+          }
+        }}
       />
     </MuiLink>
   );

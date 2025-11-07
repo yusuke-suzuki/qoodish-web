@@ -101,7 +101,6 @@ export default memo(function MapMenuButton({
       >
         <MoreVert />
       </IconButton>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -141,8 +140,10 @@ export default memo(function MapMenuButton({
             </ListItemIcon>
             <ListItemText
               primary={dictionary.delete}
-              primaryTypographyProps={{
-                color: 'error'
+              slotProps={{
+                primary: {
+                  color: 'error'
+                }
               }}
             />
           </MenuItem>

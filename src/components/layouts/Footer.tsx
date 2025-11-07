@@ -26,10 +26,10 @@ export default memo(function Footer() {
       >
         <Container>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
               <FbPage />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Grid size={{ xs: 12, sm: 12, md: 6, lg: 6 }}>
               <Stack>
                 <MuiLink
                   href="/terms"

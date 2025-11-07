@@ -165,9 +165,7 @@ export default memo(function MobileDrawer({
           </>
         )}
       </List>
-
       <Divider />
-
       <Box sx={{ p: 2 }}>
         <Fab
           onClick={handleCreateMapClick}
@@ -178,13 +176,14 @@ export default memo(function MobileDrawer({
           {dictionary['create new map']}
         </Fab>
       </Box>
-
       <List disablePadding component="nav">
         {currentUser ? (
           <ListItemButton dense onClick={handleSignOutClick}>
             <ListItemText
               primary={dictionary.logout}
-              primaryTypographyProps={{ color: 'text.secondary' }}
+              slotProps={{
+                primary: { color: 'text.secondary' }
+              }}
             />
           </ListItemButton>
         ) : (
@@ -200,7 +199,9 @@ export default memo(function MobileDrawer({
             </ListItemIcon>
             <ListItemText
               primary={dictionary.login}
-              primaryTypographyProps={{ color: 'text.secondary' }}
+              slotProps={{
+                primary: { color: 'text.secondary' }
+              }}
             />
           </ListItemButton>
         )}
@@ -213,7 +214,9 @@ export default memo(function MobileDrawer({
         >
           <ListItemText
             primary={dictionary['terms of service']}
-            primaryTypographyProps={{ color: 'text.secondary' }}
+            slotProps={{
+              primary: { color: 'text.secondary' }
+            }}
           />
         </ListItemButton>
         <ListItemButton
@@ -225,7 +228,9 @@ export default memo(function MobileDrawer({
         >
           <ListItemText
             primary={dictionary['privacy policy']}
-            primaryTypographyProps={{ color: 'text.secondary' }}
+            slotProps={{
+              primary: { color: 'text.secondary' }
+            }}
           />
         </ListItemButton>
       </List>

@@ -23,7 +23,6 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
           {<DragHandle fontSize="small" color="disabled" />}
         </Box>
       )}
-
       <CardHeader
         sx={sx}
         avatar={
@@ -39,13 +38,6 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
           )
         }
         title={map ? map.name : <Skeleton width="100%" />}
-        titleTypographyProps={{
-          variant: 'subtitle1',
-          component: 'h1',
-          fontWeight: 600,
-          noWrap: true,
-          width: 'calc(100dvw - 112px)'
-        }}
         subheader={
           map ? (
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -56,14 +48,24 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
             <Skeleton width="50%" />
           )
         }
-        subheaderTypographyProps={{
-          variant: 'body2',
-          component: 'div',
-          noWrap: true,
-          color: 'text.secondary',
-          width: 'calc(100dvw - 112px)'
-        }}
         action={action || null}
+        slotProps={{
+          title: {
+            variant: 'subtitle1',
+            component: 'h1',
+            fontWeight: 600,
+            noWrap: true,
+            width: 'calc(100dvw - 112px)'
+          },
+
+          subheader: {
+            variant: 'body2',
+            component: 'div',
+            noWrap: true,
+            color: 'text.secondary',
+            width: 'calc(100dvw - 112px)'
+          }
+        }}
       />
     </>
   );

@@ -191,18 +191,19 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
         >
           <Grid container spacing={fullWidth ? 0 : 4}>
             <Grid
-              item
-              xs={12}
-              sm={12}
-              md={fullWidth ? 12 : 8}
-              lg={fullWidth ? 12 : 8}
-              xl={fullWidth ? 12 : 8}
+              size={{
+                xs: 12,
+                sm: 12,
+                md: fullWidth ? 12 : 8,
+                lg: fullWidth ? 12 : 8,
+                xl: fullWidth ? 12 : 8
+              }}
             >
               {children}
             </Grid>
 
             {mdUp && !fullWidth && (
-              <Grid item md={4} lg={4} xl={4}>
+              <Grid size={{ md: 4, lg: 4, xl: 4 }}>
                 <Stack spacing={2}>
                   <RecommendMaps />
 

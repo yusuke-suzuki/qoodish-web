@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -203,11 +202,14 @@ export default memo(function CreateReviewDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['create new post']}</DialogTitle>
-
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
           <PositionForm
@@ -226,7 +228,6 @@ export default memo(function CreateReviewDialog({
 
         <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
       </DialogContent>
-
       <DialogActions
         sx={{
           display: 'grid',
@@ -249,7 +250,7 @@ export default memo(function CreateReviewDialog({
           <Button onClick={onClose} disabled={loading} color="inherit">
             {dictionary.cancel}
           </Button>
-          <LoadingButton
+          <Button
             variant="contained"
             onClick={handleCreateButtonClick}
             color="secondary"
@@ -257,7 +258,7 @@ export default memo(function CreateReviewDialog({
             loading={loading}
           >
             {dictionary.save}
-          </LoadingButton>
+          </Button>
         </Box>
       </DialogActions>
     </Dialog>

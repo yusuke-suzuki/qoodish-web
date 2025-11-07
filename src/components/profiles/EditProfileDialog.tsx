@@ -1,4 +1,3 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -152,11 +151,14 @@ export default memo(function EditProfileDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onEnter: setCurrentThumbnail, onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onEnter: setCurrentThumbnail, onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['edit profile']}</DialogTitle>
-
       <DialogContent dividers>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           {dictionary.thumbnail}
@@ -203,12 +205,11 @@ export default memo(function EditProfileDialog({
           defaultValue={currentProfile?.biography}
         />
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} disabled={loading} color="inherit">
           {dictionary.cancel}
         </Button>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={handleEditButtonClick}
           color="secondary"
@@ -216,7 +217,7 @@ export default memo(function EditProfileDialog({
           loading={loading}
         >
           {dictionary.save}
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );
