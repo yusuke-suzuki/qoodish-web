@@ -68,10 +68,12 @@ function MobileMapDrawer({
         ModalProps={{
           keepMounted: true
         }}
-        PaperProps={{
-          sx: {
-            height: `calc(100% - ${drawerBleeding}px)`,
-            overflow: 'visible'
+        slotProps={{
+          paper: {
+            sx: {
+              height: `calc(100% - ${drawerBleeding}px)`,
+              overflow: 'visible'
+            }
           }
         }}
       >

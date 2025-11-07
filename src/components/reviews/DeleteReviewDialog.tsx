@@ -85,8 +85,10 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
       open={open}
       onClose={onClose}
       fullWidth
-      TransitionProps={{
-        onExited: handleExited
+      slotProps={{
+        transition: {
+          onExited: handleExited
+        }
       }}
     >
       <DialogTitle>{dictionary['sure to delete report']}</DialogTitle>

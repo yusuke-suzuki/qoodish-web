@@ -202,11 +202,14 @@ export default memo(function CreateReviewDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['create new post']}</DialogTitle>
-
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
           <PositionForm
@@ -225,7 +228,6 @@ export default memo(function CreateReviewDialog({
 
         <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
       </DialogContent>
-
       <DialogActions
         sx={{
           display: 'grid',

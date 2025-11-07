@@ -145,10 +145,12 @@ function CurrentPositionMarker({
             </Typography>
           }
           open={open}
-          PopperProps={{
-            disablePortal: true
-          }}
           arrow
+          slotProps={{
+            popper: {
+              disablePortal: true
+            }
+          }}
         >
           <Fab
             size="small"
@@ -170,7 +172,6 @@ function CurrentPositionMarker({
           </Fab>
         </Tooltip>
       </MarkerView>
-
       <Popover
         id={popoverId}
         open={popoverOpen}
@@ -198,8 +199,10 @@ function CurrentPositionMarker({
           }
           title={profile?.name}
           subheader={profile?.biography}
-          titleTypographyProps={{
-            fontWeight: 600
+          slotProps={{
+            title: {
+              fontWeight: 600
+            }
           }}
         />
         <Divider />

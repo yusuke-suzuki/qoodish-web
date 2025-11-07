@@ -58,12 +58,14 @@ export default memo(function MiniDrawer({
       <Drawer
         variant="permanent"
         open={true}
-        PaperProps={{
-          sx: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexDirection: 'column',
-            backgroundColor: 'primary.main'
+        slotProps={{
+          paper: {
+            sx: {
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'column',
+              backgroundColor: 'primary.main'
+            }
           }
         }}
       >
@@ -196,7 +198,6 @@ export default memo(function MiniDrawer({
           <AccountMenuButton />
         </List>
       </Drawer>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

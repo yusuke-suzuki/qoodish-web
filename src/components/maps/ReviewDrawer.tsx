@@ -79,8 +79,10 @@ function ReviewDrawer({
             }
           }
         }}
-        SlideProps={{
-          onExited
+        slotProps={{
+          transition: {
+            onExited
+          }
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -151,21 +153,18 @@ function ReviewDrawer({
           )}
         </CardActions>
       </SwipeableDrawer>
-
       <EditReviewDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentReview={review}
         onSaved={handleReviewSaved}
       />
-
       <DeleteReviewDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         review={review}
         onDeleted={handleReviewDeleted}
       />
-
       <IssueDialog
         open={issueDialogOpen}
         onClose={() => setIssueDialogOpen(false)}

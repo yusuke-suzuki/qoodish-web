@@ -129,10 +129,12 @@ const NotificationList = ({
             <IconButton href={notification.click_action} LinkComponent={Link}>
               <Avatar
                 src={notification.notifiable.thumbnail_url}
-                imgProps={{
-                  loading: 'lazy'
-                }}
                 variant="rounded"
+                slotProps={{
+                  img: {
+                    loading: 'lazy'
+                  }
+                }}
               />
             </IconButton>
           )}

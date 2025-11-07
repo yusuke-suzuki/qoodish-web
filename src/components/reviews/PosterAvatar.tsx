@@ -19,9 +19,11 @@ export default memo(function PosterAvatar() {
     return (
       <Avatar
         src={profile.thumbnail_url}
-        imgProps={{
-          alt: profile.name,
-          loading: 'lazy'
+        slotProps={{
+          img: {
+            alt: profile.name,
+            loading: 'lazy'
+          }
         }}
       />
     );

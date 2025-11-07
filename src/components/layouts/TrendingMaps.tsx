@@ -46,8 +46,10 @@ const TrendingMaps = () => {
             <Avatar
               src={map.thumbnail_url}
               alt={map.name}
-              imgProps={{
-                loading: 'lazy'
+              slotProps={{
+                img: {
+                  loading: 'lazy'
+                }
               }}
             />
           </ListItemAvatar>

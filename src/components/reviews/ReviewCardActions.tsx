@@ -94,13 +94,15 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
             <TextField
               fullWidth
               placeholder={dictionary['add comment']}
-              InputProps={{
-                disableUnderline: true
-              }}
               onFocus={() => setCommentFormActive(true)}
               autoFocus={commentFormActive}
               multiline={commentFormActive}
               onChange={(e) => setComment(e.target.value)}
+              slotProps={{
+                input: {
+                  disableUnderline: true
+                }
+              }}
             />
           </Box>
 

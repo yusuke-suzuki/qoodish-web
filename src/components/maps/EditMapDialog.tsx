@@ -189,11 +189,14 @@ export default memo(function EditMapDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onEnter: setCurrentThumbnail, onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onEnter: setCurrentThumbnail, onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['edit map']}</DialogTitle>
-
       <DialogContent dividers>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           {dictionary.thumbnail}
@@ -250,7 +253,6 @@ export default memo(function EditMapDialog({
           />
         </Box>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} disabled={loading} color="inherit">
           {dictionary.cancel}

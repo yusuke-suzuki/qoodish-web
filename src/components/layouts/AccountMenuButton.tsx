@@ -53,7 +53,6 @@ export default memo(function AccountMenuButton() {
           <ProfileAvatar profile={profile} size={30} />
         </ListItemAvatar>
       </ListItemButton>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -123,7 +122,9 @@ export default memo(function AccountMenuButton() {
         >
           <ListItemText
             primary={dictionary['terms of service']}
-            primaryTypographyProps={{ color: 'text.secondary' }}
+            slotProps={{
+              primary: { color: 'text.secondary' }
+            }}
           />
         </ListItemButton>
 
@@ -136,7 +137,9 @@ export default memo(function AccountMenuButton() {
         >
           <ListItemText
             primary={dictionary['privacy policy']}
-            primaryTypographyProps={{ color: 'text.secondary' }}
+            slotProps={{
+              primary: { color: 'text.secondary' }
+            }}
           />
         </ListItemButton>
       </Menu>

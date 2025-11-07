@@ -183,11 +183,14 @@ export default memo(function EditReviewDialog({
       }}
       disableEscapeKeyDown
       fullWidth
-      TransitionComponent={Transition}
-      TransitionProps={{ onEnter: setCurrentImages, onExited: handleExited }}
+      slots={{
+        transition: Transition
+      }}
+      slotProps={{
+        transition: { onEnter: setCurrentImages, onExited: handleExited }
+      }}
     >
       <DialogTitle>{dictionary['edit post']}</DialogTitle>
-
       <DialogContent dividers>
         <Box sx={{ mb: 2 }}>
           <PositionForm onChange={setPosition} defaultValue={defaultPosition} />
@@ -202,7 +205,6 @@ export default memo(function EditReviewDialog({
 
         <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
       </DialogContent>
-
       <DialogActions
         sx={{
           display: 'grid',

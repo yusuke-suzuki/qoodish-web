@@ -23,9 +23,11 @@ function SignInRequiredDialog() {
       anchor="bottom"
       onClose={() => setSignInRequired(false)}
       variant="temporary"
-      PaperProps={{
-        sx: {
-          zIndex: 1201
+      slotProps={{
+        paper: {
+          sx: {
+            zIndex: 1201
+          }
         }
       }}
     >
@@ -36,9 +38,7 @@ function SignInRequiredDialog() {
           <Close />
         </IconButton>
       </Toolbar>
-
       <Divider />
-
       <Container maxWidth="md" sx={{ py: 2 }}>
         <Typography variant="subtitle1" gutterBottom>
           {dictionary.login}

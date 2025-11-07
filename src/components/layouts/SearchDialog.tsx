@@ -73,8 +73,10 @@ const SearchDialog = ({ open, onClose }: Props) => {
       onClose={onClose}
       fullWidth
       maxWidth="md"
-      TransitionProps={{
-        onExited: handleExited
+      slotProps={{
+        transition: {
+          onExited: handleExited
+        }
       }}
     >
       <AppBar color="transparent" position="relative" elevation={0}>
@@ -85,20 +87,22 @@ const SearchDialog = ({ open, onClose }: Props) => {
             type="search"
             fullWidth
             autoFocus
-            InputProps={{
-              margin: 'none',
-              disableUnderline: true,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search color="primary" />
-                </InputAdornment>
-              )
-            }}
             onChange={(e) => {
               setInputValue(e.target.value);
               debouncedHandleChange(e);
             }}
             value={inputValue}
+            slotProps={{
+              input: {
+                margin: 'none',
+                disableUnderline: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="primary" />
+                  </InputAdornment>
+                )
+              }
+            }}
           />
         </Toolbar>
       </AppBar>
