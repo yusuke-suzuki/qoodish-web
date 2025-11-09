@@ -27,7 +27,9 @@ Intelligently handle the PR workflow based on the current git state:
 1. If there are new changes:
    - Ask user: "Add new commit or amend last commit?"
    - New commit: Create new commit following CLAUDE.md
-   - Amend: Check authorship and verify not pushed, then amend
+   - Amend: Check authorship matches current user with
+     `git log -1 --format='%an %ae'` and `git config user.name/email`,
+     verify not pushed, then amend with updated commit message
 2. Push to remote repository
 3. Create a PR using `gh pr create`
 
@@ -35,9 +37,12 @@ Intelligently handle the PR workflow based on the current git state:
 1. If there are new changes:
    - Ask user: "Add new commit or amend last commit?"
    - New commit: Create new commit following CLAUDE.md
-   - Amend: Check authorship and verify not pushed, then amend
-2. Push to remote repository (PR updates automatically)
-3. Show PR URL for reference
+   - Amend: Check authorship matches current user with
+     `git log -1 --format='%an %ae'` and `git config user.name/email`,
+     verify not pushed, then amend with updated commit message
+2. Push to remote repository with `--force-with-lease` if amended
+3. Update PR description with `gh pr edit` to reflect all commits
+4. Show PR URL for reference
 
 **Case E: On feature branch, but changes are unrelated to PR**
 1. Switch to master branch
