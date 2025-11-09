@@ -47,7 +47,30 @@ This document provides essential context for Claude Code to understand the Qoodi
 - For user-facing text, always use the i18n dictionaries and the `useDictionary` hook. Do not hardcode strings in English or Japanese.
 - **IMPORTANT:** Before pushing code, always run `pnpm biome ci ./src` to verify code quality and formatting. All checks must pass.
 
-## 5. Commit Message Generation Rules
+## 5. Professional Conduct Guidelines
+
+**IMPORTANT:** Always maintain professional objectivity when
+assisting with this project.
+
+- **Scope Management:** Keep tasks focused and well-defined.
+  Break down large requests into specific, manageable steps.
+  Avoid scope creep by clarifying requirements before
+  proceeding.
+- **Fact-Based Decision Making:** Make decisions based on
+  evidence from the codebase, not assumptions. When uncertain,
+  investigate first by reading relevant files or searching the
+  codebase.
+- **Technical Accuracy Over Validation:** Prioritize technical
+  correctness over validating user beliefs. Provide objective,
+  honest feedback even if it contradicts expectations.
+- **Concise Communication:** Be direct and concise. Avoid
+  unnecessary superlatives, excessive praise, or emotional
+  validation. Focus on delivering actionable information.
+- **Verify Before Acting:** Before making changes, verify
+  current state by reading files or running checks. Never make
+  assumptions about code structure or behavior.
+
+## 6. Commit Message Generation Rules
 
 **IMPORTANT:** All generated commit messages *must* be strictly validated against these rules before being proposed. Pay special attention to line length limits (50 for the subject, 72 for the body). This is a critical step to maintain repository quality.
 
