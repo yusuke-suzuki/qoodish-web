@@ -20,12 +20,10 @@
   "mounts": [
     "source=node_modules_cache,target=${containerWorkspaceFolder}/node_modules,type=volume",
     "source=next_cache,target=${containerWorkspaceFolder}/.next,type=volume",
-    "source=pnpm_cache,target=/home/node/.local/share/pnpm,type=volume",
-    "source=claude_home,target=/home/node/.claude,type=volume"
+    "source=pnpm_cache,target=/home/node/.local/share/pnpm,type=volume"
   ],
   "remoteEnv": {
-    "NEXT_TELEMETRY_DISABLED": "1",
-    "CLAUDE_CONFIG_DIR": "/home/node/.claude"
+    "NEXT_TELEMETRY_DISABLED": "1"
   },
   "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash"
 }
