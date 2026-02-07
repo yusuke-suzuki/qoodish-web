@@ -1,9 +1,11 @@
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getApps, initializeApp } from 'firebase/app';
 import {
+  EmailAuthProvider,
   type User,
   getAuth,
   isSignInWithEmailLink,
+  linkWithCredential,
   onAuthStateChanged,
   signInWithEmailLink
 } from 'firebase/auth';
@@ -91,12 +93,52 @@ function AuthProvider({ children }: Props) {
   }, [initFirebase, handleAuthStateChanged]);
 
   useEffect(() => {
+    if (!currentUser || !router.isReady || !getApps().length) return;
+
+    const auth = getAuth();
+    const currentUrl = `${window.location.origin}${router.asPath}`;
+
+    if (!isSignInWithEmailLink(auth, currentUrl)) return;
+
+    const isLinkOperation =
+      window.localStorage.getItem('linkProvider') === 'true';
+    if (!isLinkOperation) return;
+
+    const emailForLink = window.localStorage.getItem('emailForLink');
+    if (!emailForLink) return;
+
+    const credential = EmailAuthProvider.credentialWithLink(
+      emailForLink,
+      currentUrl
+    );
+    linkWithCredential(currentUser, credential)
+      .then(() => {
+        window.localStorage.removeItem('emailForLink');
+        window.localStorage.removeItem('linkProvider');
+        enqueueSnackbar(dictionary['link provider success'], {
+          variant: 'success'
+        });
+
+        const analytics = getAnalytics();
+        logEvent(analytics, 'link_provider', { provider: 'email_link' });
+      })
+      .catch((err) => {
+        console.error(err);
+        window.localStorage.removeItem('emailForLink');
+        window.localStorage.removeItem('linkProvider');
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      });
+  }, [currentUser, router.isReady, router.asPath, dictionary]);
+
+  useEffect(() => {
     if (!router.isReady || !getApps().length) return;
 
     const auth = getAuth();
     const currentUrl = `${window.location.origin}${router.asPath}`;
 
     if (!isSignInWithEmailLink(auth, currentUrl)) return;
+
+    if (window.localStorage.getItem('linkProvider') === 'true') return;
 
     let emailForSignIn = window.localStorage.getItem('emailForSignIn');
 
