@@ -149,6 +149,8 @@
   "push for invited": "Invited to map",
   "push for comment": "New comment on your post",
   "push update success": "Push notification updated successfully.",
+  "link providers": "Link Authentication Provider",
+  "link providers detail": "Existing Qoodish account found. By linking the authentication provider to an existing account, you can log in to Qoodish using multiple authentication providers. Regardless of the authentication provider you used to log in, it is identified as the same Qoodish user.",
   "unlink": "Unlink",
   "link": "Link",
   "link provider success": "Successfully linked auth provider!",
