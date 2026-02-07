@@ -2,9 +2,7 @@ import { Button, type SxProps } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
   type AuthError,
-  type FacebookAuthProvider,
   type GoogleAuthProvider,
-  type TwitterAuthProvider,
   getAuth,
   signInWithPopup
 } from 'firebase/auth';
@@ -14,7 +12,7 @@ import { type ReactNode, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
-  provider: GoogleAuthProvider | FacebookAuthProvider | TwitterAuthProvider;
+  provider: GoogleAuthProvider;
   onSignInSuccess: () => void;
   onSignInError: (error: AuthError) => void;
   sx: SxProps;
