@@ -14,7 +14,6 @@ import useDictionary from '../../hooks/useDictionary';
 type Props = {
   provider: GoogleAuthProvider;
   onSignInSuccess: () => void;
-  onSignInError: (error: AuthError) => void;
   sx: SxProps;
   startIcon: ReactNode;
   text: string;
@@ -23,7 +22,6 @@ type Props = {
 function SignInWithProviderButton({
   provider,
   onSignInSuccess,
-  onSignInError,
   sx,
   startIcon,
   text
@@ -55,11 +53,17 @@ function SignInWithProviderButton({
     } catch (error) {
       console.error(error);
 
-      onSignInError(error);
+      const errorCode = (error as AuthError).code;
+
+      if (errorCode !== 'auth/popup-closed-by-user') {
+        enqueueSnackbar(dictionary['an error occurred'], {
+          variant: 'error'
+        });
+      }
     } finally {
       setLoading(false);
     }
-  }, [provider, router.locale, onSignInError, onSignInSuccess, dictionary]);
+  }, [provider, router.locale, onSignInSuccess, dictionary]);
 
   return (
     <Button

@@ -1,14 +1,13 @@
 import { SvgIcon } from '@mui/material';
-import { type AuthError, GoogleAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 import { memo, useMemo } from 'react';
 import SignInWithProviderButton from './SignInWithProviderButton';
 
 type Props = {
   onSignInSuccess: () => void;
-  onSignInError: (authError: AuthError) => void;
 };
 
-function SignInWithGoogleButton({ onSignInSuccess, onSignInError }: Props) {
+function SignInWithGoogleButton({ onSignInSuccess }: Props) {
   const provider = useMemo(() => {
     return new GoogleAuthProvider();
   }, []);
@@ -17,7 +16,6 @@ function SignInWithGoogleButton({ onSignInSuccess, onSignInError }: Props) {
     <SignInWithProviderButton
       provider={provider}
       onSignInSuccess={onSignInSuccess}
-      onSignInError={onSignInError}
       sx={{
         textTransform: 'none',
         backgroundColor: '#4285F4',
@@ -35,7 +33,7 @@ function SignInWithGoogleButton({ onSignInSuccess, onSignInError }: Props) {
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect width="40" height="40" rx="4" fill="white" />
-          <g clip-path="url(#clip0_710_6227)">
+          <g clipPath="url(#clip0_710_6227)">
             <path
               d="M29.6 20.2273C29.6 19.5182 29.5364 18.8364 29.4182 18.1818H20V22.05H25.3818C25.15 23.3 24.4455 24.3591 23.3864 25.0682V27.5773H26.6182C28.5091 25.8364 29.6 23.2727 29.6 20.2273Z"
               fill="#4285F4"

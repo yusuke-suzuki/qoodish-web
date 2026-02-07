@@ -1,6 +1,5 @@
 import { Divider, Stack } from '@mui/material';
-import type { AuthError } from 'firebase/auth';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import SignInWithEmailLinkButton from './SignInWithEmailLinkButton';
 import SignInWithGoogleButton from './SignInWithGoogleButton';
@@ -10,18 +9,13 @@ type Props = {
 };
 
 function SignInButtons({ onSignInSuccess }: Props) {
-  const [, setCurrentAuthError] = useState<AuthError | null>(null);
-
   const dictionary = useDictionary();
 
   return (
     <Stack spacing={2}>
-      <SignInWithGoogleButton
-        onSignInSuccess={onSignInSuccess}
-        onSignInError={setCurrentAuthError}
-      />
+      <SignInWithGoogleButton onSignInSuccess={onSignInSuccess} />
       <Divider>{dictionary.or}</Divider>
-      <SignInWithEmailLinkButton onSignInError={setCurrentAuthError} />
+      <SignInWithEmailLinkButton />
     </Stack>
   );
 }
