@@ -55,15 +55,6 @@ function SignInWithProviderButton({
     } catch (error) {
       console.error(error);
 
-      if (
-        (error as AuthError).code ===
-        'auth/account-exists-with-different-credential'
-      ) {
-        enqueueSnackbar(dictionary['account exists with different provider'], {
-          variant: 'error'
-        });
-      }
-
       onSignInError(error);
     } finally {
       setLoading(false);

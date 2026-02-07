@@ -235,20 +235,5 @@
   "email link error operation not allowed": "メールリンク認証が有効化されていません",
   "email link error expired": "このログインリンクは期限切れです。新しいリンクをリクエストしてください。",
   "email link error invalid link": "このログインリンクは無効か、すでに使用されています。",
-  "email link error network request failed": "ネットワークエラーが発生しました。接続を確認して再度お試しください",
-  "authentication providers": "認証プロバイダ",
-  "authentication providers detail": "アカウントにリンクされている認証プロバイダを管理します。サインインするには少なくとも 1 つのプロバイダが必要です。",
-  "google": "Google",
-  "email link provider": "Email Link",
-  "not linked": "未リンク",
-  "link google": "Google アカウントをリンク",
-  "link email": "Email Link をリンク",
-  "link email detail": "リンクするメールアドレスを入力してください。メールアドレスを確認するためのサインインリンクが送信されます。",
-  "link email sent": "メールアドレスにリンクを送信しました。リンクをクリックしてプロバイダのリンクを完了してください。",
-  "send link": "リンクを送信",
-  "unlink provider": "プロバイダのリンク解除",
-  "unlink provider detail": "このプロバイダのリンクを解除しますか？このプロバイダでサインインできなくなります。",
-  "link google error already in use": "この Google アカウントは既に別の Qoodish アカウントにリンクされています。",
-  "link google error popup closed": "サインインポップアップが完了前に閉じられました。",
-  "account exists with different provider": "このメールアドレスのアカウントは既に存在します。元の方法でサインインしてから、設定画面でプロバイダをリンクしてください。"
+  "email link error network request failed": "ネットワークエラーが発生しました。接続を確認して再度お試しください"
 }
