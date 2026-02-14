@@ -1,15 +1,11 @@
 import { Alert, Button, Stack, TextField } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
-import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
+import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { type FormEvent, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
-type Props = {
-  onSignInError: (error: AuthError) => void;
-};
-
-function SignInWithEmailLinkButton({ onSignInError }: Props) {
+function SignInWithEmailLinkButton() {
   const router = useRouter();
   const dictionary = useDictionary();
 
@@ -64,14 +60,13 @@ function SignInWithEmailLinkButton({ onSignInError }: Props) {
         logEvent(analytics, 'email_link_sent');
       } catch (err) {
         console.error(err);
-        const errorMessage = getErrorMessage((err as AuthError).code);
+        const errorMessage = getErrorMessage((err as { code: string }).code);
         setError(errorMessage);
-        onSignInError(err as AuthError);
       } finally {
         setLoading(false);
       }
     },
-    [email, router.locale, onSignInError, getErrorMessage]
+    [email, router.locale, getErrorMessage]
   );
 
   if (sent) {
