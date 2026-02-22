@@ -9,7 +9,6 @@ import {
   Paper,
   Stack,
   Typography,
-  useMediaQuery,
   useTheme
 } from '@mui/material';
 import Link from 'next/link';
@@ -44,9 +43,6 @@ type Props = {
 
 function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
   const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-  const mdDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const dictionary = useDictionary();
 
@@ -108,64 +104,46 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
         onSaved={handleCreatedMap}
       />
 
-      {mdDown && (
-        <>
-          <MobileAppBar
-            showBackButton={showBackButton}
-            onSearchOpen={() => setSearchOpen(true)}
-            onCreateMapClick={handleCreateMapClick}
-          />
+      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+        <MobileAppBar
+          showBackButton={showBackButton}
+          onSearchOpen={() => setSearchOpen(true)}
+          onCreateMapClick={handleCreateMapClick}
+        />
 
+        {currentUser && !hideBottomNav && (
           <Box
             sx={{
               position: 'fixed',
-              top: smUp ? theme.spacing(8) : theme.spacing(7),
-              zIndex: 1101,
-              width: '100%',
-              display: loading ? 'block' : 'none',
-              alignItems: 'center'
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1
             }}
           >
-            <LinearProgress color="secondary" />
+            <BottomNav onCreateMapClick={handleCreateMapClick} />
           </Box>
+        )}
+      </Box>
 
-          {currentUser && !hideBottomNav && (
-            <Box
-              sx={{
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                zIndex: 1
-              }}
-            >
-              <BottomNav onCreateMapClick={handleCreateMapClick} />
-            </Box>
-          )}
-        </>
-      )}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <MiniDrawer
+          onSearchOpen={() => setSearchOpen(true)}
+          onCreateMapClick={handleCreateMapClick}
+        />
+      </Box>
 
-      {mdUp && (
-        <>
-          <MiniDrawer
-            onSearchOpen={() => setSearchOpen(true)}
-            onCreateMapClick={handleCreateMapClick}
-          />
-
-          <Box
-            sx={{
-              position: 'fixed',
-              top: 0,
-              zIndex: 1201,
-              width: '100%',
-              display: loading ? 'block' : 'none',
-              alignItems: 'center'
-            }}
-          >
-            <LinearProgress color="secondary" />
-          </Box>
-        </>
-      )}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: { xs: theme.spacing(7), sm: theme.spacing(8), md: 0 },
+          zIndex: { xs: 1101, md: 1201 },
+          width: '100%',
+          display: loading ? 'block' : 'none'
+        }}
+      >
+        <LinearProgress color="secondary" />
+      </Box>
 
       <Box
         sx={{
@@ -202,8 +180,11 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
               {children}
             </Grid>
 
-            {mdUp && !fullWidth && (
-              <Grid size={{ md: 4, lg: 4, xl: 4 }}>
+            {!fullWidth && (
+              <Grid
+                size={{ md: 4, lg: 4, xl: 4 }}
+                sx={{ display: { xs: 'none', md: 'block' } }}
+              >
                 <Stack spacing={2}>
                   <RecommendMaps />
 
