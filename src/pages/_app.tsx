@@ -1,3 +1,4 @@
+import type { EmotionCache } from '@emotion/cache';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
@@ -47,8 +48,9 @@ type AppPropsWithLayout = AppProps & {
 
 export default function CustomApp({
   Component,
-  pageProps
-}: AppPropsWithLayout) {
+  pageProps,
+  emotionCache
+}: AppPropsWithLayout & { emotionCache?: EmotionCache }) {
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration>(null);
 
@@ -132,7 +134,7 @@ export default function CustomApp({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <AppCacheProvider>
+    <AppCacheProvider emotionCache={emotionCache}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {inputGlobalStyles}

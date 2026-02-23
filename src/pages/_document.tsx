@@ -100,7 +100,6 @@ export default class CustomDocument extends Document<
             <meta name="googlebot" content="noindex" />
           )}
 
-          <meta name="emotion-insertion-point" content="" />
           <DocumentHeadTags {...this.props} />
         </Head>
         <body>
