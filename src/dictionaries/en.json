@@ -250,5 +250,20 @@
   "unlink provider": "Unlink Provider",
   "unlink provider detail": "Are you sure you want to unlink this provider? You will no longer be able to sign in with this provider.",
   "link google error already in use": "This Google account is already linked to another Qoodish account.",
-  "link google error popup closed": "The sign-in popup was closed before completing."
+  "link google error popup closed": "The sign-in popup was closed before completing.",
+  "account email": "Account Email",
+  "account email detail": "Your primary account email address. Used for account-related communications.",
+  "change email": "Change Email",
+  "send verification email": "Send Verification Email",
+  "change email detail": "Enter your new email address. A verification link will be sent to confirm the change.",
+  "change email sent": "A verification link has been sent to your new email address. Please check your email to complete the change.",
+  "change email sent description": "Click the link in the email to confirm your new email address. The link will expire in 60 minutes.",
+  "change email error invalid email": "Invalid email format",
+  "change email error requires recent login": "This operation requires recent authentication. Please sign in again.",
+  "change email error email already in use": "This email address is already in use by another account.",
+  "reauth required detail": "For security, re-authentication is required to complete this action. Please sign in again to continue.",
+  "sign in again": "Sign In",
+  "send reauth link": "Send Link",
+  "reauth email link sent": "Authentication link sent to your current email address.",
+  "reauth email link sent description": "Click the link in the email to re-authenticate. You will then receive a verification email to confirm your new address."
 }

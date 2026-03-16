@@ -7,7 +7,9 @@ import {
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
-  signInWithEmailLink
+  reauthenticateWithCredential,
+  signInWithEmailLink,
+  verifyBeforeUpdateEmail
 } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { enqueueSnackbar } from 'notistack';
@@ -57,6 +59,37 @@ async function linkEmailProvider(
   }
 }
 
+async function reauthAndChangeEmail(
+  currentUser: User,
+  currentUrl: string,
+  dictionary: Dictionary
+) {
+  const emailForReauth = window.localStorage.getItem('emailForReauth');
+  const pendingEmailChange = window.localStorage.getItem('pendingEmailChange');
+
+  window.localStorage.removeItem('emailForReauth');
+  window.localStorage.removeItem('pendingEmailChange');
+  window.localStorage.removeItem('reauthForEmailChange');
+
+  if (!emailForReauth || !pendingEmailChange) return;
+
+  try {
+    const credential = EmailAuthProvider.credentialWithLink(
+      emailForReauth,
+      currentUrl
+    );
+    await reauthenticateWithCredential(currentUser, credential);
+    await verifyBeforeUpdateEmail(currentUser, pendingEmailChange, {
+      url: `${window.location.origin}/login`,
+      handleCodeInApp: false
+    });
+    enqueueSnackbar(dictionary['change email sent'], { variant: 'success' });
+  } catch (err) {
+    console.error(err);
+    enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+  }
+}
+
 async function completeEmailSignIn(
   auth: Auth,
   currentUrl: string,
@@ -101,7 +134,12 @@ export default function useEmailLinkHandler({
 
     if (!isSignInWithEmailLink(auth, currentUrl)) return;
 
-    if (window.localStorage.getItem('linkProvider') === 'true') {
+    if (window.localStorage.getItem('reauthForEmailChange') === 'true') {
+      if (currentUser) {
+        handledRef.current = true;
+        reauthAndChangeEmail(currentUser, currentUrl, dictionary);
+      }
+    } else if (window.localStorage.getItem('linkProvider') === 'true') {
       if (currentUser) {
         handledRef.current = true;
         linkEmailProvider(
