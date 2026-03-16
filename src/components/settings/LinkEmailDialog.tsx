@@ -5,13 +5,13 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  TextField
+  DialogTitle
 } from '@mui/material';
 import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import EmailField from '../common/EmailField';
 
 type Props = {
   open: boolean;
@@ -23,9 +23,15 @@ function LinkEmailDialog({ open, onClose }: Props) {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleEmailChange = useCallback((value: string, isValid: boolean) => {
+    setEmail(value);
+    setEmailValid(isValid);
+  }, []);
 
   const getErrorMessage = useCallback(
     (errorCode: string): string => {
@@ -73,6 +79,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
 
   const handleExited = useCallback(() => {
     setEmail('');
+    setEmailValid(true);
     setSent(false);
     setError(null);
   }, []);
@@ -111,15 +118,10 @@ function LinkEmailDialog({ open, onClose }: Props) {
               </Alert>
             )}
 
-            <TextField
-              label={dictionary['email link email']}
-              type="email"
+            <EmailField
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              fullWidth
+              onChange={handleEmailChange}
               disabled={loading}
-              variant="outlined"
             />
           </>
         )}
@@ -133,7 +135,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
             variant="contained"
             onClick={handleSend}
             color="secondary"
-            disabled={!email}
+            disabled={!email || !emailValid}
             loading={loading}
           >
             {dictionary['send link']}
