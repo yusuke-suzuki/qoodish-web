@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
 import Layout from '../../components/Layout';
+import AccountEmailCard from '../../components/settings/AccountEmailCard';
 import DeleteAccountCard from '../../components/settings/DeleteAccountCard';
 import ProvidersCard from '../../components/settings/ProvidersCard';
 import PushNotificationsCard from '../../components/settings/PushNotificationsCard';
@@ -68,6 +69,7 @@ const SettingsPage: NextPageWithLayout = () => {
       </Head>
 
       <Stack spacing={3}>
+        <AccountEmailCard />
         <PushNotificationsCard />
         <ProvidersCard />
         <DeleteAccountCard />

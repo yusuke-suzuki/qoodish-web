@@ -37,7 +37,7 @@ import UnlinkProviderDialog from './UnlinkProviderDialog';
 function ProvidersCard() {
   const dictionary = useDictionary();
   const router = useRouter();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
   const [unlinkDialogOpen, setUnlinkDialogOpen] = useState(false);
@@ -123,7 +123,8 @@ function ProvidersCard() {
     try {
       await unlink(currentUser, unlinkTargetProviderId);
       await currentUser.reload();
-      setProviderData([...currentUser.providerData]);
+      const auth = getAuth();
+      setCurrentUser(auth.currentUser);
 
       enqueueSnackbar(dictionary['unlink provider success'], {
         variant: 'success'
@@ -137,7 +138,7 @@ function ProvidersCard() {
       console.error(error);
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [currentUser, unlinkTargetProviderId, dictionary]);
+  }, [currentUser, unlinkTargetProviderId, dictionary, setCurrentUser]);
 
   return (
     <>

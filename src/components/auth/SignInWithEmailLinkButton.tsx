@@ -1,16 +1,23 @@
-import { Alert, Button, Stack, TextField } from '@mui/material';
+import { Alert, Button, Stack } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { type FormEvent, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import EmailField from '../common/EmailField';
 
 function SignInWithEmailLinkButton() {
   const router = useRouter();
   const dictionary = useDictionary();
 
   const [email, setEmail] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const handleEmailChange = useCallback((value: string, isValid: boolean) => {
+    setEmail(value);
+    setEmailValid(isValid);
+  }, []);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,15 +96,10 @@ function SignInWithEmailLinkButton() {
     >
       {error && <Alert severity="error">{error}</Alert>}
 
-      <TextField
-        label={dictionary['email link email']}
-        type="email"
+      <EmailField
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        fullWidth
+        onChange={handleEmailChange}
         disabled={loading}
-        variant="outlined"
       />
 
       <Button
@@ -105,7 +107,7 @@ function SignInWithEmailLinkButton() {
         loading={loading}
         variant="contained"
         fullWidth
-        disabled={!email}
+        disabled={!email || !emailValid}
       >
         {dictionary['email link send']}
       </Button>

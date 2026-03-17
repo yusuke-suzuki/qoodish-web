@@ -250,5 +250,20 @@
   "unlink provider": "プロバイダのリンク解除",
   "unlink provider detail": "このプロバイダのリンクを解除しますか？このプロバイダでサインインできなくなります。",
   "link google error already in use": "この Google アカウントは既に別の Qoodish アカウントにリンクされています。",
-  "link google error popup closed": "サインインポップアップが完了前に閉じられました。"
+  "link google error popup closed": "サインインポップアップが完了前に閉じられました。",
+  "account email": "アカウントメールアドレス",
+  "account email detail": "アカウントのプライマリメールアドレスです。アカウントに関する連絡に使用されます。",
+  "change email": "メールアドレスを変更",
+  "send verification email": "メールを送信",
+  "change email detail": "新しいメールアドレスを入力してください。変更を確認するための確認リンクが送信されます。",
+  "change email sent": "新しいメールアドレスに確認リンクを送信しました。メールを確認して変更を完了してください。",
+  "change email sent description": "メール内のリンクをクリックして新しいメールアドレスを確認してください。リンクは 60 分で期限切れになります。",
+  "change email error invalid email": "メールアドレスの形式が正しくありません",
+  "change email error requires recent login": "この操作には最近の認証が必要です。再度サインインしてください。",
+  "change email error email already in use": "このメールアドレスは既に別のアカウントで使用されています。",
+  "reauth required detail": "セキュリティのため、この操作を完了するには再認証が必要です。続行するには再度サインインしてください。",
+  "sign in again": "サインイン",
+  "send reauth link": "リンクを送信",
+  "reauth email link sent": "現在のメールアドレスに認証リンクを送信しました。",
+  "reauth email link sent description": "メールのリンクをクリックして再認証してください。その後、新しいメールアドレスの確認メールが届きます。"
 }
