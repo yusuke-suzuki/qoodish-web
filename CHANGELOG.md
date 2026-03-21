@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.1](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.0...v4.0.1) (2026-03-21)
+
+
+### Bug Fixes
+
+* exclude component name from release tag ([7f80afe](https://github.com/yusuke-suzuki/qoodish-web/commit/7f80afe192e9f2c23655f3245447674840839fa3))
+* prevent duplicate snackbar messages ([18f1cf5](https://github.com/yusuke-suzuki/qoodish-web/commit/18f1cf565e8840d989f9576e674ff14ff292ced5))
+* show localized message for SWR timeout ([3f544a1](https://github.com/yusuke-suzuki/qoodish-web/commit/3f544a1194ba189de5419503eedf05d8a021c6e9))
+
 ## [4.0.0](https://github.com/yusuke-suzuki/qoodish-web/compare/qoodish-v3.3.0...qoodish-v4.0.0) (2026-03-18)
 
 
