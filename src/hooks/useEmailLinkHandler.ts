@@ -62,6 +62,7 @@ async function linkEmailProvider(
 async function reauthAndChangeEmail(
   currentUser: User,
   currentUrl: string,
+  basePath: string,
   dictionary: Dictionary
 ) {
   const emailForReauth = window.localStorage.getItem('emailForReauth');
@@ -80,7 +81,7 @@ async function reauthAndChangeEmail(
     );
     await reauthenticateWithCredential(currentUser, credential);
     await verifyBeforeUpdateEmail(currentUser, pendingEmailChange, {
-      url: `${window.location.origin}/login`,
+      url: `${window.location.origin}${basePath}/login`,
       handleCodeInApp: false
     });
     enqueueSnackbar(dictionary['change email sent'], { variant: 'success' });
@@ -125,6 +126,9 @@ export default function useEmailLinkHandler({
   const dictionary = useDictionary();
   const handledRef = useRef(false);
 
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   useEffect(() => {
     if (!router.isReady || !getApps().length) return;
     if (handledRef.current) return;
@@ -137,7 +141,7 @@ export default function useEmailLinkHandler({
     if (window.localStorage.getItem('reauthForEmailChange') === 'true') {
       if (currentUser) {
         handledRef.current = true;
-        reauthAndChangeEmail(currentUser, currentUrl, dictionary);
+        reauthAndChangeEmail(currentUser, currentUrl, basePath, dictionary);
       }
     } else if (window.localStorage.getItem('linkProvider') === 'true') {
       if (currentUser) {
@@ -154,5 +158,12 @@ export default function useEmailLinkHandler({
       handledRef.current = true;
       completeEmailSignIn(auth, currentUrl, dictionary);
     }
-  }, [currentUser, setCurrentUser, router.isReady, router.asPath, dictionary]);
+  }, [
+    currentUser,
+    setCurrentUser,
+    router.isReady,
+    router.asPath,
+    basePath,
+    dictionary
+  ]);
 }

@@ -28,6 +28,9 @@ function LinkEmailDialog({ open, onClose }: Props) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   const handleEmailChange = useCallback((value: string, isValid: boolean) => {
     setEmail(value);
     setEmailValid(isValid);
@@ -59,7 +62,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
     auth.languageCode = router.locale;
 
     const actionCodeSettings = {
-      url: `${window.location.origin}/settings`,
+      url: `${window.location.origin}${basePath}/settings`,
       handleCodeInApp: true,
       linkDomain: window.location.hostname
     };
@@ -75,7 +78,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [email, router.locale, getErrorMessage]);
+  }, [email, router.locale, basePath, getErrorMessage]);
 
   const handleExited = useCallback(() => {
     setEmail('');
