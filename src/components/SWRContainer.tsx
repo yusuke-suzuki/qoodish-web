@@ -2,18 +2,13 @@ import type { User } from 'firebase/auth';
 import { enqueueSnackbar } from 'notistack';
 import { type ReactNode, memo, useCallback } from 'react';
 import { SWRConfig } from 'swr';
+import useDictionary from '../hooks/useDictionary';
 
 type Props = {
   children: ReactNode;
 };
 
 const fetcher = async ([url, currentUser = null]: [string, User | null]) => {
-  const abortController = new AbortController();
-
-  setTimeout(() => {
-    abortController.abort();
-  }, 10000);
-
   const headers = new Headers({
     Accept: 'application/json',
     'Accept-Language': window.navigator.language,
@@ -28,7 +23,7 @@ const fetcher = async ([url, currentUser = null]: [string, User | null]) => {
   const request = new Request(url, {
     method: 'GET',
     headers: headers,
-    signal: abortController.signal
+    signal: AbortSignal.timeout(10000)
   });
 
   const res = await fetch(request);
@@ -44,10 +39,23 @@ const fetcher = async ([url, currentUser = null]: [string, User | null]) => {
 };
 
 export default memo(function SWRContainer({ children }: Props) {
-  const handleError = useCallback((error, _key) => {
-    console.error(error);
-    enqueueSnackbar(error.message, { variant: 'error' });
-  }, []);
+  const dictionary = useDictionary();
+
+  const handleError = useCallback(
+    (error: Error, _key: string) => {
+      console.error(error);
+
+      if (error.name === 'TimeoutError') {
+        enqueueSnackbar(dictionary['request timed out'], {
+          variant: 'warning'
+        });
+        return;
+      }
+
+      enqueueSnackbar(error.message, { variant: 'error' });
+    },
+    [dictionary]
+  );
 
   return (
     <SWRConfig
