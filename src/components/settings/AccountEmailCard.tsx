@@ -21,7 +21,7 @@ function AccountEmailCard() {
     <>
       <Card elevation={0}>
         <CardContent>
-          <Typography variant="h6" component="h2" gutterBottom>
+          <Typography variant="h5" component="h2" gutterBottom>
             {dictionary['account email']}
           </Typography>
           <Typography component="p" color="text.secondary" gutterBottom>
