@@ -176,6 +176,7 @@
   "push successfully disabled": "プッシュ通知が無効化されました。",
   "push unavailable": "※ このブラウザではプッシュ通知がサポートされていません。",
   "an error occurred": "エラーが発生しました。",
+  "request timed out": "リクエストがタイムアウトしました。時間をおいて再度お試しください。",
   "send feedback": "フィードバックを送信",
   "feedback negative": "Qoodish の改善すべきと思った点を教えてください。",
   "feedback positive": "Qoodish の良いと思った点を教えてください。",
