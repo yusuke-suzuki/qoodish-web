@@ -139,6 +139,7 @@ export default function CustomApp({
         <CssBaseline />
         {inputGlobalStyles}
         <SnackbarProvider
+          preventDuplicate
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           action={(snackbarId) => (
             <Button onClick={() => closeSnackbar(snackbarId)}>
