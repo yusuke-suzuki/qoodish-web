@@ -21,6 +21,9 @@ function SignInWithEmailLinkButton() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   const getErrorMessage = useCallback(
     (errorCode: string): string => {
       switch (errorCode) {
@@ -53,7 +56,7 @@ function SignInWithEmailLinkButton() {
       auth.languageCode = router.locale;
 
       const actionCodeSettings = {
-        url: window.location.origin,
+        url: `${window.location.origin}${basePath}`,
         handleCodeInApp: true,
         linkDomain: window.location.hostname
       };
@@ -73,7 +76,7 @@ function SignInWithEmailLinkButton() {
         setLoading(false);
       }
     },
-    [email, router.locale, getErrorMessage]
+    [email, router.locale, basePath, getErrorMessage]
   );
 
   if (sent) {

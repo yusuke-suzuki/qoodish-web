@@ -73,6 +73,9 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     [dictionary]
   );
 
+  const basePath =
+    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+
   const attemptEmailUpdate = useCallback(async () => {
     if (!currentUser) return;
 
@@ -80,11 +83,11 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     auth.languageCode = router.locale;
 
     await verifyBeforeUpdateEmail(currentUser, email, {
-      url: `${window.location.origin}/login`,
+      url: `${window.location.origin}${basePath}/login`,
       handleCodeInApp: false
     });
     setSent(true);
-  }, [currentUser, email, router.locale]);
+  }, [currentUser, email, router.locale, basePath]);
 
   const handleSend = useCallback(async () => {
     setLoading(true);
@@ -145,7 +148,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
       window.localStorage.setItem('reauthForEmailChange', 'true');
 
       await sendSignInLinkToEmail(auth, currentUser.email, {
-        url: `${window.location.origin}/settings`,
+        url: `${window.location.origin}${basePath}/settings`,
         handleCodeInApp: true
       });
       setReauthStep('emailLinkSent');
@@ -158,7 +161,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, email, router.locale, getErrorMessage]);
+  }, [currentUser, email, router.locale, basePath, getErrorMessage]);
 
   const handleExited = useCallback(() => {
     setEmail('');
