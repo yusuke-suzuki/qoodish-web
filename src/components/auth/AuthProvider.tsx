@@ -1,13 +1,11 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { type User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import {
-  type ReactNode,
-  memo,
-  useCallback,
-  useEffect,
-  useReducer,
-  useState
-} from 'react';
+  type User,
+  type UserInfo,
+  getAuth,
+  onAuthStateChanged
+} from 'firebase/auth';
+import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useEmailLinkHandler from '../../hooks/useEmailLinkHandler';
 
@@ -17,10 +15,15 @@ type Props = {
 
 function AuthProvider({ children }: Props) {
   const [currentUser, setCurrentUser] = useState<User>(null);
+  const [providerData, setProviderData] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
 
-  useEmailLinkHandler({ currentUser, setCurrentUser });
+  useEffect(() => {
+    setProviderData([...(currentUser?.providerData ?? [])]);
+  }, [currentUser]);
+
+  useEmailLinkHandler({ currentUser, setProviderData });
 
   const initFirebase = useCallback(() => {
     initializeApp({
@@ -92,6 +95,8 @@ function AuthProvider({ children }: Props) {
       value={{
         currentUser: currentUser,
         setCurrentUser: setCurrentUser,
+        providerData: providerData,
+        setProviderData: setProviderData,
         isLoading: loading,
         signInRequired: signInRequired,
         setSignInRequired: setSignInRequired

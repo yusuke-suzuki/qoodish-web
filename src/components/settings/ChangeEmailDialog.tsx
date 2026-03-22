@@ -31,7 +31,7 @@ type ReauthStep = 'idle' | 'google' | 'emailLink' | 'emailLinkSent';
 function ChangeEmailDialog({ open, onClose }: Props) {
   const dictionary = useDictionary();
   const router = useRouter();
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, providerData } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
@@ -42,10 +42,8 @@ function ChangeEmailDialog({ open, onClose }: Props) {
 
   const hasGoogleProvider = useMemo(
     () =>
-      currentUser?.providerData.some(
-        (p) => p.providerId === GoogleAuthProvider.PROVIDER_ID
-      ) ?? false,
-    [currentUser]
+      providerData.some((p) => p.providerId === GoogleAuthProvider.PROVIDER_ID),
+    [providerData]
   );
 
   const handleEmailChange = useCallback((value: string, isValid: boolean) => {

@@ -21,14 +21,7 @@ import {
 } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { enqueueSnackbar } from 'notistack';
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import LinkEmailDialog from './LinkEmailDialog';
@@ -37,7 +30,8 @@ import UnlinkProviderDialog from './UnlinkProviderDialog';
 function ProvidersCard() {
   const dictionary = useDictionary();
   const router = useRouter();
-  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, providerData, setProviderData } =
+    useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
   const [unlinkDialogOpen, setUnlinkDialogOpen] = useState(false);
@@ -45,13 +39,6 @@ function ProvidersCard() {
     string | null
   >(null);
   const [linkEmailDialogOpen, setLinkEmailDialogOpen] = useState(false);
-  const [providerData, setProviderData] = useState(
-    currentUser?.providerData ?? []
-  );
-
-  useEffect(() => {
-    setProviderData(currentUser?.providerData ?? []);
-  }, [currentUser]);
 
   const googleProvider = useMemo(
     () =>
@@ -110,7 +97,7 @@ function ProvidersCard() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, router.locale, dictionary]);
+  }, [currentUser, router.locale, dictionary, setProviderData]);
 
   const handleOpenUnlinkDialog = useCallback((providerId: string) => {
     setUnlinkTargetProviderId(providerId);
@@ -123,8 +110,7 @@ function ProvidersCard() {
     try {
       await unlink(currentUser, unlinkTargetProviderId);
       await currentUser.reload();
-      const auth = getAuth();
-      setCurrentUser(auth.currentUser);
+      setProviderData([...currentUser.providerData]);
 
       enqueueSnackbar(dictionary['unlink provider success'], {
         variant: 'success'
@@ -138,7 +124,7 @@ function ProvidersCard() {
       console.error(error);
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [currentUser, unlinkTargetProviderId, dictionary, setCurrentUser]);
+  }, [currentUser, unlinkTargetProviderId, dictionary, setProviderData]);
 
   return (
     <>
