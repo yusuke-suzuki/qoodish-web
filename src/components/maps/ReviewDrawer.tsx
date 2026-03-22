@@ -72,6 +72,7 @@ function ReviewDrawer({
         onOpen={onOpen}
         onClose={onClose}
         disableSwipeToOpen
+        sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}
         ModalProps={{
           slotProps: {
             backdrop: {
