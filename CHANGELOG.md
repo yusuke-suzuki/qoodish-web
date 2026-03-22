@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.0.1](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.0...v4.0.1) (2026-03-22)
+
+
+### Bug Fixes
+
+* exclude component name from release tag ([7f80afe](https://github.com/yusuke-suzuki/qoodish-web/commit/7f80afe192e9f2c23655f3245447674840839fa3))
+* include locale in Firebase email action URLs ([d35a720](https://github.com/yusuke-suzuki/qoodish-web/commit/d35a7201ac0b3c66072b354ffe5340223c356183))
+* lower map drawer z-index below AppBar ([377ad63](https://github.com/yusuke-suzuki/qoodish-web/commit/377ad636afa135307e7521e014885e62d1d3aeb0))
+* prevent duplicate snackbar messages ([18f1cf5](https://github.com/yusuke-suzuki/qoodish-web/commit/18f1cf565e8840d989f9576e674ff14ff292ced5))
+* prevent stale mapId on map navigation ([519f0d6](https://github.com/yusuke-suzuki/qoodish-web/commit/519f0d6231cd5e9bef936d28602178287ec2c3ee))
+* show localized message for SWR timeout ([3f544a1](https://github.com/yusuke-suzuki/qoodish-web/commit/3f544a1194ba189de5419503eedf05d8a021c6e9))
+* sync provider list immediately after link/unlink ([63d220d](https://github.com/yusuke-suzuki/qoodish-web/commit/63d220db3e46b374303aef64f5b70d7d3d95418c))
+
 ## [4.0.0](https://github.com/yusuke-suzuki/qoodish-web/compare/qoodish-v3.3.0...qoodish-v4.0.0) (2026-03-18)
 
 
