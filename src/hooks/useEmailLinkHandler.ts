@@ -4,6 +4,7 @@ import {
   type Auth,
   EmailAuthProvider,
   type User,
+  type UserInfo,
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
@@ -20,14 +21,13 @@ type Dictionary = { [key: string]: string };
 
 type Args = {
   currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
+  setProviderData: (data: UserInfo[]) => void;
 };
 
 async function linkEmailProvider(
   currentUser: User,
-  auth: Auth,
   currentUrl: string,
-  setCurrentUser: (user: User | null) => void,
+  setProviderData: (data: UserInfo[]) => void,
   dictionary: Dictionary
 ) {
   const emailForLink = window.localStorage.getItem('emailForLink');
@@ -40,7 +40,7 @@ async function linkEmailProvider(
     );
     await linkWithCredential(currentUser, credential);
     await currentUser.reload();
-    setCurrentUser(auth.currentUser);
+    setProviderData([...currentUser.providerData]);
 
     window.localStorage.removeItem('emailForLink');
     window.localStorage.removeItem('linkProvider');
@@ -120,7 +120,7 @@ async function completeEmailSignIn(
 
 export default function useEmailLinkHandler({
   currentUser,
-  setCurrentUser
+  setProviderData
 }: Args) {
   const router = useRouter();
   const dictionary = useDictionary();
@@ -146,13 +146,7 @@ export default function useEmailLinkHandler({
     } else if (window.localStorage.getItem('linkProvider') === 'true') {
       if (currentUser) {
         handledRef.current = true;
-        linkEmailProvider(
-          currentUser,
-          auth,
-          currentUrl,
-          setCurrentUser,
-          dictionary
-        );
+        linkEmailProvider(currentUser, currentUrl, setProviderData, dictionary);
       }
     } else {
       handledRef.current = true;
@@ -160,7 +154,7 @@ export default function useEmailLinkHandler({
     }
   }, [
     currentUser,
-    setCurrentUser,
+    setProviderData,
     router.isReady,
     router.asPath,
     basePath,
