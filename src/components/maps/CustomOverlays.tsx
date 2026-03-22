@@ -53,7 +53,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser ? currentUser.uid : null);
 
-  const { replace, query } = useRouter();
+  const { replace } = useRouter();
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -146,14 +146,14 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     };
   }, [googleMap, handleIdle, handleMapClick, handleMapRightClick]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: query and replace are intentionally omitted to prevent infinite loops.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: replace is intentionally omitted to prevent infinite loops.
   useEffect(() => {
     if (!googleMap || !map) return;
 
     replace(
       {
         query: {
-          ...query,
+          mapId: map.id,
           lat: map.latitude,
           lng: map.longitude,
           zoom: 17
@@ -165,14 +165,14 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleMap, map]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: query and replace are intentionally omitted to prevent infinite loops.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: replace is intentionally omitted to prevent infinite loops.
   useEffect(() => {
-    if (!googleMap || !currentPlace) return;
+    if (!googleMap || !map || !currentPlace) return;
 
     replace(
       {
         query: {
-          ...query,
+          mapId: map.id,
           lat: currentPlace.location.lat(),
           lng: currentPlace.location.lng(),
           zoom: 17
@@ -182,7 +182,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
       { shallow: true }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [googleMap, currentPlace]);
+  }, [googleMap, map, currentPlace]);
 
   const popoverOpen = Boolean(popoverAnchorEl);
 

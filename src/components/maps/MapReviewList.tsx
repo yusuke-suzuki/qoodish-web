@@ -22,9 +22,8 @@ type Props = {
 
 function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
   const dictionary = useDictionary();
-  const { push, query } = useRouter();
+  const { push } = useRouter();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: query and push are intentionally omitted to prevent infinite loops.
   const handleClick = useCallback(
     (review: Review) => {
       if (onReviewClick) {
@@ -33,7 +32,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
       push(
         {
           query: {
-            ...query,
+            mapId: review.map.id,
             lat: review.latitude,
             lng: review.longitude,
             zoom: 17
@@ -45,8 +44,7 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
         }
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onReviewClick]
+    [onReviewClick, push]
   );
 
   if (!isLoading && reviews.length < 1) {
