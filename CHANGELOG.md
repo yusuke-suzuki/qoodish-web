@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.2](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.1...v4.0.2) (2026-03-23)
+
+
+### Bug Fixes
+
+* make bottom review item tappable in drawer ([3848db6](https://github.com/yusuke-suzuki/qoodish-web/commit/3848db6f8d0958e4f6dae20c1df4078794483173))
+
 ## [4.0.1](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.0...v4.0.1) (2026-03-22)
 
 
