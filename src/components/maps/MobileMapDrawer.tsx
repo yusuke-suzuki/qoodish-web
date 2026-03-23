@@ -66,6 +66,9 @@ function MobileMapDrawer({
         onClose={() => setOpen(false)}
         swipeAreaWidth={drawerBleeding}
         sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}
+        SwipeAreaProps={{
+          sx: { zIndex: (theme) => theme.zIndex.appBar - 2 }
+        }}
         ModalProps={{
           keepMounted: true
         }}
@@ -73,7 +76,9 @@ function MobileMapDrawer({
           paper: {
             sx: {
               height: `calc(100% - ${drawerBleeding}px)`,
-              overflow: 'visible'
+              overflow: 'visible',
+              display: 'flex',
+              flexDirection: 'column'
             }
           }
         }}
@@ -97,7 +102,7 @@ function MobileMapDrawer({
           />
         </Box>
         <Divider />
-        <Box sx={{ overflowY: 'auto' }}>
+        <Box sx={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
           <MapCardHeader
             map={map}
             action={
