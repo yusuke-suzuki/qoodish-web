@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 type Dictionary = { [key: string]: string };
 
@@ -11,7 +11,7 @@ const dictionaries: { [locale: string]: Dictionary } = {
 };
 
 export default function useDictionary(): Dictionary {
-  const router = useRouter();
+  const params = useParams<{ lang: string }>();
 
-  return dictionaries[router.locale];
+  return dictionaries[params?.lang] ?? dictionaries.en;
 }

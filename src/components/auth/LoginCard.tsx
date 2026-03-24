@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import SignInButtons from './SignInButtons';

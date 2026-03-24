@@ -6,7 +6,7 @@ import {
   getAuth,
   signInWithPopup
 } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { type ReactNode, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
@@ -26,7 +26,7 @@ function SignInWithProviderButton({
   startIcon,
   text
 }: Props) {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ function SignInWithProviderButton({
     setLoading(true);
 
     const auth = getAuth();
-    auth.languageCode = router.locale;
+    auth.languageCode = lang;
 
     try {
       await signInWithPopup(auth, provider);
@@ -63,7 +63,7 @@ function SignInWithProviderButton({
     } finally {
       setLoading(false);
     }
-  }, [provider, router.locale, onSignInSuccess, dictionary]);
+  }, [provider, lang, onSignInSuccess, dictionary]);
 
   return (
     <Button

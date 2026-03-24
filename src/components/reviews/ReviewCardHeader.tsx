@@ -8,7 +8,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { type ReactNode, memo } from 'react';
 import type { Review } from '../../../types';
 import AuthorAvatar from '../common/AuthorAvatar';
@@ -21,7 +21,7 @@ type Props = {
 };
 
 function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
 
   return (
     <CardHeader
@@ -51,7 +51,7 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
               {review &&
                 formatDistanceToNow(new Date(review.created_at), {
                   addSuffix: true,
-                  locale: router.locale === 'ja' ? ja : enUS
+                  locale: lang === 'ja' ? ja : enUS
                 })}
             </Typography>
           )}
@@ -63,7 +63,7 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
             {review &&
               formatDistanceToNow(new Date(review.created_at), {
                 addSuffix: true,
-                locale: router.locale === 'ja' ? ja : enUS
+                locale: lang === 'ja' ? ja : enUS
               })}
           </Typography>
         ) : (

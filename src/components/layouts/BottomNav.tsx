@@ -12,7 +12,7 @@ import {
   Paper
 } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { memo, useContext, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -38,25 +38,19 @@ export default memo(function BottomNav({ onCreateMapClick }: Props) {
   );
 
   const dictionary = useDictionary();
-  const router = useRouter();
-  const { pathname } = router;
+  const pathname = usePathname();
 
   useEffect(() => {
-    switch (pathname) {
-      case '/':
-        setBottomNavValue(0);
-        break;
-      case '/discover':
-        setBottomNavValue(1);
-        break;
-      case '/notifications':
-        setBottomNavValue(3);
-        break;
-      case '/users/[userId]':
-        setBottomNavValue(4);
-        break;
-      default:
-        setBottomNavValue(0);
+    if (/^\/[a-z]+\/?$/.test(pathname)) {
+      setBottomNavValue(0);
+    } else if (pathname.endsWith('/discover')) {
+      setBottomNavValue(1);
+    } else if (pathname.endsWith('/notifications')) {
+      setBottomNavValue(3);
+    } else if (pathname.includes('/users/')) {
+      setBottomNavValue(4);
+    } else {
+      setBottomNavValue(0);
     }
   }, [pathname]);
 

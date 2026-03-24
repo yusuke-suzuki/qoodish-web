@@ -10,7 +10,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useEffect } from 'react';
 import type { Notification } from '../../../types';
 import AuthContext from '../../context/AuthContext';
@@ -30,7 +30,7 @@ const NotificationList = ({
   onReadNotifications,
   onNotificationClick
 }: Props) => {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
   const { currentUser } = useContext(AuthContext);
@@ -119,7 +119,7 @@ const NotificationList = ({
               <Typography variant="subtitle1" color="text.secondary">
                 {formatDistanceToNow(new Date(notification.created_at), {
                   addSuffix: true,
-                  locale: router.locale === 'ja' ? ja : enUS
+                  locale: lang === 'ja' ? ja : enUS
                 })}
               </Typography>
             }

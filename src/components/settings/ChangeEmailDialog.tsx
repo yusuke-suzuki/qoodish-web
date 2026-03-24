@@ -15,7 +15,7 @@ import {
   sendSignInLinkToEmail,
   verifyBeforeUpdateEmail
 } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -30,7 +30,7 @@ type ReauthStep = 'idle' | 'google' | 'emailLink' | 'emailLinkSent';
 
 function ChangeEmailDialog({ open, onClose }: Props) {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const { currentUser, providerData } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
@@ -71,21 +71,20 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     [dictionary]
   );
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const basePath = `/${lang ?? 'en'}`;
 
   const attemptEmailUpdate = useCallback(async () => {
     if (!currentUser) return;
 
     const auth = getAuth();
-    auth.languageCode = router.locale;
+    auth.languageCode = lang;
 
     await verifyBeforeUpdateEmail(currentUser, email, {
       url: `${window.location.origin}${basePath}/login`,
       handleCodeInApp: false
     });
     setSent(true);
-  }, [currentUser, email, router.locale, basePath]);
+  }, [currentUser, email, lang, basePath]);
 
   const handleSend = useCallback(async () => {
     setLoading(true);
@@ -113,7 +112,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     setError(null);
 
     const auth = getAuth();
-    auth.languageCode = router.locale;
+    auth.languageCode = lang;
 
     try {
       await reauthenticateWithPopup(currentUser, new GoogleAuthProvider());
@@ -129,7 +128,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, router.locale, attemptEmailUpdate, getErrorMessage]);
+  }, [currentUser, lang, attemptEmailUpdate, getErrorMessage]);
 
   const handleSendReauthLink = useCallback(async () => {
     if (!currentUser?.email) return;
@@ -138,7 +137,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     setError(null);
 
     const auth = getAuth();
-    auth.languageCode = router.locale;
+    auth.languageCode = lang;
 
     try {
       window.localStorage.setItem('emailForReauth', currentUser.email);
@@ -159,7 +158,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, email, router.locale, basePath, getErrorMessage]);
+  }, [currentUser, email, lang, basePath, getErrorMessage]);
 
   const handleExited = useCallback(() => {
     setEmail('');

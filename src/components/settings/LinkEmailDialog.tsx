@@ -8,7 +8,7 @@ import {
   DialogTitle
 } from '@mui/material';
 import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import EmailField from '../common/EmailField';
@@ -20,7 +20,7 @@ type Props = {
 
 function LinkEmailDialog({ open, onClose }: Props) {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
 
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
@@ -28,8 +28,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const basePath = `/${lang ?? 'en'}`;
 
   const handleEmailChange = useCallback((value: string, isValid: boolean) => {
     setEmail(value);
@@ -59,7 +58,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
     setError(null);
 
     const auth = getAuth();
-    auth.languageCode = router.locale;
+    auth.languageCode = lang;
 
     const actionCodeSettings = {
       url: `${window.location.origin}${basePath}/settings`,
@@ -78,7 +77,7 @@ function LinkEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [email, router.locale, basePath, getErrorMessage]);
+  }, [email, lang, basePath, getErrorMessage]);
 
   const handleExited = useCallback(() => {
     setEmail('');

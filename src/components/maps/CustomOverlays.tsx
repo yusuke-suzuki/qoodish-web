@@ -1,5 +1,5 @@
 import { useMediaQuery, useTheme } from '@mui/material';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   type MutableRefObject,
   memo,
@@ -54,6 +54,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const { profile } = useProfile(currentUser ? currentUser.uid : null);
 
   const { replace } = useRouter();
+  const pathname = usePathname();
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -150,18 +151,9 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   useEffect(() => {
     if (!googleMap || !map) return;
 
-    replace(
-      {
-        query: {
-          mapId: map.id,
-          lat: map.latitude,
-          lng: map.longitude,
-          zoom: 17
-        }
-      },
-      undefined,
-      { shallow: true }
-    );
+    replace(`${pathname}?lat=${map.latitude}&lng=${map.longitude}&zoom=17`, {
+      scroll: false
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleMap, map]);
 
@@ -170,16 +162,8 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     if (!googleMap || !map || !currentPlace) return;
 
     replace(
-      {
-        query: {
-          mapId: map.id,
-          lat: currentPlace.location.lat(),
-          lng: currentPlace.location.lng(),
-          zoom: 17
-        }
-      },
-      undefined,
-      { shallow: true }
+      `${pathname}?lat=${currentPlace.location.lat()}&lng=${currentPlace.location.lng()}&zoom=17`,
+      { scroll: false }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleMap, map, currentPlace]);

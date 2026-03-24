@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import debounce from 'lodash.debounce';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import {
   type ChangeEvent,
   memo,

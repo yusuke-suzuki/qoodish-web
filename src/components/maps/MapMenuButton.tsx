@@ -13,7 +13,7 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import {
   memo,
@@ -47,16 +47,14 @@ export default memo(function MapMenuButton({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
   const isAuthor = useMemo(() => {
     return currentProfile?.id === map?.owner.id;
   }, [map, currentProfile]);
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
-  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${map?.id}`;
+  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}/${lang}/maps/${map?.id}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {

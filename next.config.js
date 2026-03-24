@@ -11,9 +11,5 @@ const withSerwist = withSerwistInit({
  * @type {import('next').NextConfig}
  */
 module.exports = withSerwist({
-  output: 'standalone',
-  i18n: {
-    locales: ['en', 'ja'],
-    defaultLocale: 'en'
-  }
+  output: 'standalone'
 });

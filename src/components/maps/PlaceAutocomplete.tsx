@@ -1,6 +1,6 @@
 import { Search } from '@mui/icons-material';
 import { InputAdornment, TextField } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import {
   type MutableRefObject,
   memo,
@@ -17,7 +17,7 @@ type Props = {
 };
 
 function PlaceAutocomplete({ ref, onChange, label }: Props) {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
 
   const { loader } = useGoogleMap();
 
@@ -41,7 +41,7 @@ function PlaceAutocomplete({ ref, onChange, label }: Props) {
 
     const place = new Place({
       id: placeResult.place_id,
-      requestedLanguage: router.locale
+      requestedLanguage: lang
     });
 
     const data = await place.fetchFields({
@@ -49,7 +49,7 @@ function PlaceAutocomplete({ ref, onChange, label }: Props) {
     });
 
     setPlace(data.place);
-  }, [pac, loader, router.locale]);
+  }, [pac, loader, lang]);
 
   useEffect(() => {
     if (!pac) {
