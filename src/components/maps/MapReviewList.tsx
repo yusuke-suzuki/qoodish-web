@@ -7,7 +7,7 @@ import {
   ListItemText,
   Skeleton
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { memo, useCallback } from 'react';
 import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
@@ -23,6 +23,7 @@ type Props = {
 function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
   const dictionary = useDictionary();
   const { push } = useRouter();
+  const pathname = usePathname();
 
   const handleClick = useCallback(
     (review: Review) => {
@@ -30,21 +31,11 @@ function MapReviewList({ reviews, isLoading, onReviewClick }: Props) {
         onReviewClick(review);
       }
       push(
-        {
-          query: {
-            mapId: review.map.id,
-            lat: review.latitude,
-            lng: review.longitude,
-            zoom: 17
-          }
-        },
-        undefined,
-        {
-          shallow: true
-        }
+        `${pathname}?lat=${review.latitude}&lng=${review.longitude}&zoom=17`,
+        { scroll: false }
       );
     },
-    [onReviewClick, push]
+    [onReviewClick, push, pathname]
   );
 
   if (!isLoading && reviews.length < 1) {

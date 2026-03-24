@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { memo, useCallback, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -46,7 +46,8 @@ export default memo(function MobileDrawer({
   onClose,
   onCreateMapClick
 }: Props) {
-  const { push, pathname } = useRouter();
+  const { push } = useRouter();
+  const pathname = usePathname();
   const dictionary = useDictionary();
 
   const { currentUser } = useContext(AuthContext);
@@ -100,7 +101,7 @@ export default memo(function MobileDrawer({
         </Box>
 
         <ListItemButton
-          selected={pathname === '/'}
+          selected={/^\/[a-z]+\/?$/.test(pathname)}
           onClick={onClose}
           LinkComponent={Link}
           href="/"
@@ -112,7 +113,7 @@ export default memo(function MobileDrawer({
           <ListItemText primary={dictionary.home} />
         </ListItemButton>
         <ListItemButton
-          selected={pathname === '/discover'}
+          selected={pathname.endsWith('/discover')}
           onClick={onClose}
           LinkComponent={Link}
           href="/discover"
@@ -127,7 +128,7 @@ export default memo(function MobileDrawer({
         {currentUser && (
           <>
             <ListItemButton
-              selected={pathname === '/users/[userId]'}
+              selected={pathname.includes('/users/')}
               onClick={onClose}
               LinkComponent={Link}
               href={`/users/${profile?.id}`}
@@ -139,7 +140,7 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.account} />
             </ListItemButton>
             <ListItemButton
-              selected={pathname === '/notifications'}
+              selected={pathname.endsWith('/notifications')}
               onClick={onClose}
               LinkComponent={Link}
               href="/notifications"
@@ -151,7 +152,7 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.notifications} />
             </ListItemButton>
             <ListItemButton
-              selected={pathname === '/settings'}
+              selected={pathname.endsWith('/settings')}
               onClick={onClose}
               LinkComponent={Link}
               href="/settings"

@@ -20,7 +20,7 @@ import {
   Menu
 } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { memo, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -40,7 +40,7 @@ export default memo(function MiniDrawer({
   onCreateMapClick
 }: Props) {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const pathname = usePathname();
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
   const { notifications, mutate } = useNotifications();
@@ -86,7 +86,7 @@ export default memo(function MiniDrawer({
 
         <List component="nav">
           <ListItemButton
-            selected={router.pathname === '/'}
+            selected={/^\/[a-z]+\/?$/.test(pathname)}
             LinkComponent={Link}
             title={dictionary.home}
             href="/"
@@ -95,7 +95,7 @@ export default memo(function MiniDrawer({
             }}
           >
             <ListItemIcon sx={{ minWidth: 0 }}>
-              {router.pathname === '/' ? (
+              {/^\/[a-z]+\/?$/.test(pathname) ? (
                 <Home sx={{ color: 'primary.contrastText' }} />
               ) : (
                 <HomeOutlined sx={{ color: 'primary.contrastText' }} />
@@ -104,7 +104,7 @@ export default memo(function MiniDrawer({
           </ListItemButton>
 
           <ListItemButton
-            selected={router.pathname === '/discover'}
+            selected={pathname.endsWith('/discover')}
             LinkComponent={Link}
             title={dictionary.discover}
             href="/discover"
@@ -113,7 +113,7 @@ export default memo(function MiniDrawer({
             }}
           >
             <ListItemIcon sx={{ minWidth: 0 }}>
-              {router.pathname === '/discover' ? (
+              {pathname.endsWith('/discover') ? (
                 <Explore sx={{ color: 'primary.contrastText' }} />
               ) : (
                 <ExploreOutlined sx={{ color: 'primary.contrastText' }} />
@@ -123,7 +123,7 @@ export default memo(function MiniDrawer({
 
           {currentUser && (
             <ListItemButton
-              selected={router.asPath === `/users/${profile?.id}`}
+              selected={pathname.endsWith(`/users/${profile?.id}`)}
               LinkComponent={Link}
               href={`/users/${profile?.id}`}
               title={dictionary.account}
@@ -132,7 +132,7 @@ export default memo(function MiniDrawer({
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
-                {router.asPath === `/users/${profile?.id}` ? (
+                {pathname.endsWith(`/users/${profile?.id}`) ? (
                   <AccountCircle sx={{ color: 'primary.contrastText' }} />
                 ) : (
                   <AccountCircleOutlined

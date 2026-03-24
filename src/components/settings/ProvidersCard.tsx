@@ -19,7 +19,7 @@ import {
   linkWithPopup,
   unlink
 } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
@@ -29,7 +29,7 @@ import UnlinkProviderDialog from './UnlinkProviderDialog';
 
 function ProvidersCard() {
   const dictionary = useDictionary();
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const { currentUser, providerData, setProviderData } =
     useContext(AuthContext);
 
@@ -61,7 +61,7 @@ function ProvidersCard() {
 
     try {
       const auth = getAuth();
-      auth.languageCode = router.locale;
+      auth.languageCode = lang;
 
       const provider = new GoogleAuthProvider();
       await linkWithPopup(currentUser, provider);
@@ -97,7 +97,7 @@ function ProvidersCard() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, router.locale, dictionary, setProviderData]);
+  }, [currentUser, lang, dictionary, setProviderData]);
 
   const handleOpenUnlinkDialog = useCallback((providerId: string) => {
     setUnlinkTargetProviderId(providerId);

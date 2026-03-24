@@ -14,7 +14,7 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar, useSnackbar } from 'notistack';
 import {
   memo,
@@ -50,15 +50,15 @@ export default memo(function ReviewMenuButton({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const { push, locale, defaultLocale } = useRouter();
+  const { push } = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
   const isAuthor = useMemo(() => {
     return currentProfile?.id === review?.author.id;
   }, [review, currentProfile]);
 
-  const basePath = locale === defaultLocale ? '' : `/${locale}`;
-  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}${basePath}/maps/${review?.map.id}/reports/${review?.id}`;
+  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}/${lang}/maps/${review?.map.id}/reports/${review?.id}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {

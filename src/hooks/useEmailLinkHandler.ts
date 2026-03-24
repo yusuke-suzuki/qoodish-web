@@ -12,7 +12,7 @@ import {
   signInWithEmailLink,
   verifyBeforeUpdateEmail
 } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useRef } from 'react';
 import useDictionary from './useDictionary';
@@ -122,19 +122,19 @@ export default function useEmailLinkHandler({
   currentUser,
   setProviderData
 }: Args) {
-  const router = useRouter();
+  const params = useParams<{ lang: string }>();
   const dictionary = useDictionary();
   const handledRef = useRef(false);
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const lang = params?.lang ?? 'en';
+  const basePath = `/${lang}`;
 
   useEffect(() => {
-    if (!router.isReady || !getApps().length) return;
+    if (!getApps().length) return;
     if (handledRef.current) return;
 
     const auth = getAuth();
-    const currentUrl = `${window.location.origin}${router.asPath}`;
+    const currentUrl = window.location.href;
 
     if (!isSignInWithEmailLink(auth, currentUrl)) return;
 
@@ -152,12 +152,5 @@ export default function useEmailLinkHandler({
       handledRef.current = true;
       completeEmailSignIn(auth, currentUrl, dictionary);
     }
-  }, [
-    currentUser,
-    setProviderData,
-    router.isReady,
-    router.asPath,
-    basePath,
-    dictionary
-  ]);
+  }, [currentUser, setProviderData, basePath, dictionary]);
 }

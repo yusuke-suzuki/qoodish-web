@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { memo, useCallback, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';

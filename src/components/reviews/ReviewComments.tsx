@@ -11,7 +11,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { Comment } from '../../../types';
 import AuthContext from '../../context/AuthContext';
@@ -27,7 +27,7 @@ type Props = {
 };
 
 const ReviewComments = ({ comments, onDeleted }: Props) => {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
 
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
@@ -76,7 +76,7 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
                   <Typography variant="body2" color="text.secondary">
                     {formatDistanceToNow(new Date(comment.created_at), {
                       addSuffix: true,
-                      locale: router.locale === 'ja' ? ja : enUS
+                      locale: lang === 'ja' ? ja : enUS
                     })}
                   </Typography>
                 </Box>

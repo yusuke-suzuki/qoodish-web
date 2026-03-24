@@ -4,7 +4,6 @@ import {
   Container,
   Divider,
   Grid,
-  LinearProgress,
   Link as MuiLink,
   Paper,
   Stack,
@@ -12,15 +11,8 @@ import {
   useTheme
 } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import {
-  type ReactNode,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState
-} from 'react';
+import { useRouter } from 'next/navigation';
+import { type ReactNode, memo, useCallback, useContext, useState } from 'react';
 import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
 import useDictionary from '../hooks/useDictionary';
@@ -46,11 +38,10 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
 
   const dictionary = useDictionary();
 
-  const { push, events } = useRouter();
+  const { push } = useRouter();
 
   const { currentUser, setSignInRequired } = useContext(AuthContext);
 
-  const [loading, setLoading] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapDialogOpen, setCreateMapDialogOpen] = useState(false);
 
@@ -71,28 +62,6 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
     },
     [push]
   );
-
-  const showProgress = useCallback((_url, { shallow }) => {
-    if (shallow) return;
-
-    setLoading(true);
-  }, []);
-
-  const hideProgress = useCallback(() => {
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    events.on('routeChangeStart', showProgress);
-    events.on('routeChangeComplete', hideProgress);
-    events.on('routeChangeError', hideProgress);
-
-    return () => {
-      events.off('routeChangeStart', showProgress);
-      events.off('routeChangeComplete', hideProgress);
-      events.off('routeChangeError', hideProgress);
-    };
-  }, [showProgress, hideProgress, events]);
 
   return (
     <>
@@ -131,18 +100,6 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
           onSearchOpen={() => setSearchOpen(true)}
           onCreateMapClick={handleCreateMapClick}
         />
-      </Box>
-
-      <Box
-        sx={{
-          position: 'fixed',
-          top: { xs: theme.spacing(7), sm: theme.spacing(8), md: 0 },
-          zIndex: { xs: 1101, md: 1201 },
-          width: '100%',
-          display: loading ? 'block' : 'none'
-        }}
-      >
-        <LinearProgress color="secondary" />
       </Box>
 
       <Box

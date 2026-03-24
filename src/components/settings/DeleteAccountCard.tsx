@@ -6,7 +6,7 @@ import {
   Typography
 } from '@mui/material';
 import { getAuth, signOut } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { memo, useCallback, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';

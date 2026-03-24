@@ -1,13 +1,13 @@
 import { Alert, Button, Stack } from '@mui/material';
 import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { type FormEvent, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import EmailField from '../common/EmailField';
 
 function SignInWithEmailLinkButton() {
-  const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
   const [email, setEmail] = useState('');
@@ -21,8 +21,7 @@ function SignInWithEmailLinkButton() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const basePath =
-    router.locale === router.defaultLocale ? '' : `/${router.locale}`;
+  const basePath = `/${lang ?? 'en'}`;
 
   const getErrorMessage = useCallback(
     (errorCode: string): string => {
@@ -53,7 +52,7 @@ function SignInWithEmailLinkButton() {
       setError(null);
 
       const auth = getAuth();
-      auth.languageCode = router.locale;
+      auth.languageCode = lang;
 
       const actionCodeSettings = {
         url: `${window.location.origin}${basePath}`,
@@ -76,7 +75,7 @@ function SignInWithEmailLinkButton() {
         setLoading(false);
       }
     },
-    [email, router.locale, basePath, getErrorMessage]
+    [email, lang, basePath, getErrorMessage]
   );
 
   if (sent) {
