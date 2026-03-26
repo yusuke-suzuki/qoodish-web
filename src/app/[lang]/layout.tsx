@@ -84,12 +84,6 @@ export default async function RootLayout({ children, params }: Props) {
           href="https://storage.googleapis.com"
           rel="preconnect dns-prefetch"
         />
-        <link
-          rel="stylesheet preconnect dns-prefetch"
-          href="https://unpkg.com/react-spring-bottom-sheet/dist/style.css"
-          crossOrigin="anonymous"
-        />
-
         <meta name="theme-color" content="#ffc107" />
 
         {process.env.NEXT_PUBLIC_ENDPOINT?.includes('dev') && (
