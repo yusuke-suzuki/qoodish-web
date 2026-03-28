@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { getActiveMaps, getMap, getRecentMaps } from '../../../lib/maps';
+import { getRecentReviews } from '../../../lib/reviews';
 import { getDictionary } from '../../../utils/getDictionary';
 import DiscoverPageClient from './DiscoverPageClient';
 
@@ -44,6 +46,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function DiscoverPage() {
-  return <DiscoverPageClient />;
+export default async function DiscoverPage({ params }: Props) {
+  const { lang } = await params;
+  const mapId = process.env.NEXT_PUBLIC_PICKED_UP_MAP_ID;
+  const [recentReviews, activeMaps, recentMaps, pickUpMap] = await Promise.all([
+    getRecentReviews(lang),
+    getActiveMaps(lang),
+    getRecentMaps(lang),
+    mapId ? getMap(mapId, lang) : Promise.resolve(null)
+  ]);
+
+  return (
+    <DiscoverPageClient
+      recentReviews={recentReviews}
+      activeMaps={activeMaps}
+      recentMaps={recentMaps}
+      pickUpMap={pickUpMap}
+    />
+  );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getProfile } from '../../../../lib/users';
 import { getDictionary } from '../../../../utils/getDictionary';
 import UserPageClient from './UserPageClient';
 
@@ -44,6 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function UserPage() {
-  return <UserPageClient />;
+export default async function UserPage({ params }: Props) {
+  const { lang, userId } = await params;
+  const profile = await getProfile(userId, lang);
+
+  return <UserPageClient profile={profile} />;
 }

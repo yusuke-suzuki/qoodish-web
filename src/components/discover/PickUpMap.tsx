@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ButtonBase,
   Card,
@@ -13,15 +15,15 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import { usePublicMap } from '../../hooks/usePublicMap';
+import type { AppMap } from '../../../types';
 
-function PickUpMap() {
+type Props = {
+  map: AppMap | null;
+};
+
+function PickUpMap({ map }: Props) {
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-
-  const { map } = usePublicMap(
-    Number(process.env.NEXT_PUBLIC_PICKED_UP_MAP_ID)
-  );
 
   return (
     <ImageList cols={1} rowHeight={240} gap={0} sx={{ m: 0 }}>
