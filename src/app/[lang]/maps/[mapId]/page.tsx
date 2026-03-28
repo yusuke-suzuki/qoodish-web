@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import type { AppMap } from '../../../../../types';
+import { getMap } from '../../../../lib/maps';
 import { getDictionary } from '../../../../utils/getDictionary';
 import MapPageClient from './MapPageClient';
 
@@ -8,30 +8,10 @@ type Props = {
   params: Promise<{ lang: string; mapId: string }>;
 };
 
-async function fetchMap(mapId: string, lang: string): Promise<AppMap | null> {
-  try {
-    const response = await fetch(
-      `${process.env.API_ENDPOINT}/guest/maps/${mapId}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Accept-Language': lang,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 }
-      }
-    );
-    if (!response.ok) return null;
-    return response.json();
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, mapId } = await params;
   const dict = getDictionary(lang);
-  const map = await fetchMap(mapId, lang);
+  const map = await getMap(mapId, lang);
 
   const title = map ? `${map.name} | Qoodish` : 'Qoodish';
   const description = map ? map.description : dict['meta description'];
@@ -74,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
-  const initialMap = await fetchMap(mapId, lang);
+  const initialMap = await getMap(mapId, lang);
 
   return (
     <Suspense>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import type { Review } from '../../../../../../../types';
+import { getReview } from '../../../../../../lib/reviews';
 import { getDictionary } from '../../../../../../utils/getDictionary';
 import ReviewPageClient from './ReviewPageClient';
 
@@ -8,33 +8,10 @@ type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;
 };
 
-async function fetchReview(
-  reviewId: string,
-  lang: string
-): Promise<Review | null> {
-  try {
-    const response = await fetch(
-      `${process.env.API_ENDPOINT}/guest/reviews/${reviewId}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Accept-Language': lang,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 }
-      }
-    );
-    if (!response.ok) return null;
-    return response.json();
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, mapId, reviewId } = await params;
   const dict = getDictionary(lang);
-  const review = await fetchReview(reviewId, lang);
+  const review = await getReview(reviewId, lang);
 
   const title = review
     ? `${review.name} - ${review.map.name} | Qoodish`
@@ -82,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ReviewPage({ params }: Props) {
   const { lang, reviewId } = await params;
-  const initialReview = await fetchReview(reviewId, lang);
+  const initialReview = await getReview(reviewId, lang);
 
   return (
     <Suspense>

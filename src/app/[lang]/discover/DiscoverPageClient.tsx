@@ -2,20 +2,27 @@
 
 import { Explore, FiberNew, Whatshot } from '@mui/icons-material';
 import { Box, Divider, Stack, Typography } from '@mui/material';
+import type { AppMap, Review } from '../../../../types';
 import Layout from '../../../components/Layout';
 import PickUpMap from '../../../components/discover/PickUpMap';
 import MapGridList from '../../../components/maps/MapGridList';
 import ReviewGridList from '../../../components/reviews/ReviewGridList';
-import { useActiveMaps } from '../../../hooks/useActiveMaps';
 import useDictionary from '../../../hooks/useDictionary';
-import { useRecentMaps } from '../../../hooks/useRecentMaps';
-import { useRecentReviews } from '../../../hooks/useRecentReviews';
 
-export default function DiscoverPageClient() {
+type Props = {
+  recentReviews: Review[];
+  activeMaps: AppMap[];
+  recentMaps: AppMap[];
+  pickUpMap: AppMap | null;
+};
+
+export default function DiscoverPageClient({
+  recentReviews,
+  activeMaps,
+  recentMaps,
+  pickUpMap
+}: Props) {
   const dictionary = useDictionary();
-  const { reviews: recentReviews } = useRecentReviews();
-  const { maps: activeMaps } = useActiveMaps();
-  const { maps: recentMaps } = useRecentMaps();
 
   return (
     <Layout>
@@ -26,7 +33,7 @@ export default function DiscoverPageClient() {
             <Typography variant="subtitle1">{dictionary['pick up']}</Typography>
           </Box>
 
-          <PickUpMap />
+          <PickUpMap map={pickUpMap} />
         </Box>
 
         <Box component="section">
