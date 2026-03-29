@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { type ReactNode, memo, useCallback, useContext, useState } from 'react';
 import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
+import PopularMapsContext from '../context/PopularMapsContext';
 import useDictionary from '../hooks/useDictionary';
 import SignInRequiredDialog from './auth/SignInRequiredDialog';
 import BottomNav from './layouts/BottomNav';
@@ -41,6 +42,7 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
   const { push } = useRouter();
 
   const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { popularMaps } = useContext(PopularMapsContext);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapDialogOpen, setCreateMapDialogOpen] = useState(false);
@@ -147,7 +149,7 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
 
                   <Divider />
 
-                  <TrendingMaps />
+                  <TrendingMaps maps={popularMaps} />
 
                   <Paper elevation={0}>
                     <CardContent>

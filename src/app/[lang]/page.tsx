@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { getServerAuthState } from '../../lib/auth';
+import { getPopularReviews } from '../../lib/reviews';
 import { getDictionary } from '../../utils/getDictionary';
 import HomePageClient from './HomePageClient';
 
@@ -44,6 +46,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function HomePage() {
-  return <HomePageClient />;
+export default async function HomePage({ params }: Props) {
+  const { lang } = await params;
+  const { authenticated } = await getServerAuthState();
+  const popularReviews = authenticated ? [] : await getPopularReviews(lang);
+
+  return <HomePageClient popularReviews={popularReviews} />;
 }

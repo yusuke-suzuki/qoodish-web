@@ -11,13 +11,16 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { usePopularMaps } from '../../hooks/usePopularMaps';
 import SkeletonTrendingList from './SkeletonTrendingList';
 
-const TrendingMaps = () => {
+type Props = {
+  maps: AppMap[];
+};
+
+const TrendingMaps = ({ maps }: Props) => {
   const dictionary = useDictionary();
-  const { maps } = usePopularMaps();
 
   return maps.length < 1 ? (
     <SkeletonTrendingList />
