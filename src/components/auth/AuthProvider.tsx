@@ -3,7 +3,7 @@ import {
   type User,
   type UserInfo,
   getAuth,
-  onAuthStateChanged
+  onIdTokenChanged
 } from 'firebase/auth';
 import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
@@ -37,29 +37,41 @@ function AuthProvider({ children }: Props) {
 
   useEmailLinkHandler({ currentUser, setProviderData });
 
-  const signIn = useCallback(async (user: User) => {
-    const accessToken = await user.getIdToken();
-
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${accessToken}`);
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`,
-      {
-        method: 'POST',
-        headers: headers
-      }
-    );
-
-    const res = await fetch(request);
-
-    if (res.ok) {
-      setCurrentUser(user);
-      setLoading(false);
-    }
+  const syncSessionCookie = useCallback(async (idToken: string | null) => {
+    await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken })
+    });
   }, []);
 
-  const handleAuthStateChanged = useCallback(
+  const signIn = useCallback(
+    async (user: User) => {
+      const accessToken = await user.getIdToken();
+
+      const headers = new Headers();
+      headers.append('Authorization', `Bearer ${accessToken}`);
+
+      const request = new Request(
+        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`,
+        {
+          method: 'POST',
+          headers: headers
+        }
+      );
+
+      const res = await fetch(request);
+
+      if (res.ok) {
+        await syncSessionCookie(accessToken);
+        setCurrentUser(user);
+        setLoading(false);
+      }
+    },
+    [syncSessionCookie]
+  );
+
+  const handleIdTokenChanged = useCallback(
     async (user: User) => {
       if (user) {
         if (user.isAnonymous) {
@@ -71,18 +83,19 @@ function AuthProvider({ children }: Props) {
           await signIn(user);
         }
       } else {
+        await syncSessionCookie(null);
         setCurrentUser(null);
         setLoading(false);
       }
     },
-    [signIn]
+    [signIn, syncSessionCookie]
   );
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, handleAuthStateChanged);
+    const unsubscribe = onIdTokenChanged(auth, handleIdTokenChanged);
     return () => unsubscribe();
-  }, [handleAuthStateChanged]);
+  }, [handleIdTokenChanged]);
 
   return (
     <AuthContext.Provider

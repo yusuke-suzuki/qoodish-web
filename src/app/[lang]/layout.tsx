@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { getPopularMaps } from '../../lib/maps';
 import Providers from './Providers';
 
 type Props = {
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
+  const popularMaps = await getPopularMaps(lang);
 
   return (
     <html lang={lang}>
@@ -91,7 +93,9 @@ export default async function RootLayout({ children, params }: Props) {
         )}
       </head>
       <body>
-        <Providers lang={lang}>{children}</Providers>
+        <Providers lang={lang} popularMaps={popularMaps}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,22 +1,18 @@
 import { Reviews } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
+import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { usePopularReviews } from '../../hooks/usePopularReviews';
 import NoContents from '../common/NoContents';
 import TimelineReviewCard from './TimelineReviewCard';
 
-export default memo(function TrendingReviews() {
-  const dictionary = useDictionary();
+type Props = {
+  reviews: Review[];
+};
 
-  const { reviews, isLoading } = usePopularReviews();
+export default memo(function TrendingReviews({ reviews }: Props) {
+  const dictionary = useDictionary();
 
   return (
     <>
@@ -29,7 +25,7 @@ export default memo(function TrendingReviews() {
         {dictionary['trending reviews']}
       </Typography>
 
-      {reviews.length < 1 && !isLoading && (
+      {reviews.length < 1 && (
         <NoContents
           message={dictionary['reports will see here']}
           icon={Reviews}
@@ -41,17 +37,6 @@ export default memo(function TrendingReviews() {
           <TimelineReviewCard key={review.id} review={review} />
         ))}
       </Box>
-
-      {isLoading && (
-        <Box
-          sx={{
-            display: 'grid',
-            placeItems: 'center'
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
         <Link href="/discover" passHref>

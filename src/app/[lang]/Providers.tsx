@@ -19,8 +19,10 @@ import {
   useMemo,
   useState
 } from 'react';
+import type { AppMap } from '../../../types';
 import SWRContainer from '../../components/SWRContainer';
 import AuthProvider from '../../components/auth/AuthProvider';
+import PopularMapsContext from '../../context/PopularMapsContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
@@ -37,9 +39,10 @@ const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 type Props = {
   children: ReactNode;
   lang: string;
+  popularMaps?: AppMap[];
 };
 
-function ProvidersInner({ children, lang }: Props) {
+function ProvidersInner({ children, lang, popularMaps }: Props) {
   const dictionary = useDictionary();
 
   const [registration, setRegistration] =
@@ -117,22 +120,28 @@ function ProvidersInner({ children, lang }: Props) {
         )}
       >
         <AuthProvider>
-          <ServiceWorkerContext.Provider value={{ registration }}>
-            <SWRContainer>
-              <AnalyticsTracker />
-              {children}
-            </SWRContainer>
-          </ServiceWorkerContext.Provider>
+          <PopularMapsContext.Provider
+            value={{ popularMaps: popularMaps ?? [] }}
+          >
+            <ServiceWorkerContext.Provider value={{ registration }}>
+              <SWRContainer>
+                <AnalyticsTracker />
+                {children}
+              </SWRContainer>
+            </ServiceWorkerContext.Provider>
+          </PopularMapsContext.Provider>
         </AuthProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );
 }
 
-export default function Providers({ children, lang }: Props) {
+export default function Providers({ children, lang, popularMaps }: Props) {
   return (
     <AppRouterCacheProvider>
-      <ProvidersInner lang={lang}>{children}</ProvidersInner>
+      <ProvidersInner lang={lang} popularMaps={popularMaps}>
+        {children}
+      </ProvidersInner>
     </AppRouterCacheProvider>
   );
 }
