@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPopularMaps } from '../../../../lib/maps';
 import { getProfile } from '../../../../lib/users';
 import { getDictionary } from '../../../../utils/getDictionary';
 import UserPageClient from './UserPageClient';
@@ -47,7 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function UserPage({ params }: Props) {
   const { lang, userId } = await params;
-  const profile = await getProfile(userId, lang);
+  const [profile, popularMaps] = await Promise.all([
+    getProfile(userId, lang),
+    getPopularMaps(lang)
+  ]);
 
-  return <UserPageClient profile={profile} />;
+  return <UserPageClient profile={profile} popularMaps={popularMaps} />;
 }

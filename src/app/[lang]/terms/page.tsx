@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPopularMaps } from '../../../lib/maps';
 import { getDictionary } from '../../../utils/getDictionary';
 import TermsPageClient from './TermsPageClient';
 
@@ -44,6 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function TermsPage() {
-  return <TermsPageClient />;
+export default async function TermsPage({ params }: Props) {
+  const { lang } = await params;
+  const popularMaps = await getPopularMaps(lang);
+
+  return <TermsPageClient popularMaps={popularMaps} />;
 }

@@ -5,6 +5,7 @@ import { Alert, AlertTitle, Button } from '@mui/material';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Layout from '../../components/Layout';
+import Sidebar from '../../components/layouts/Sidebar';
 import useDictionary from '../../hooks/useDictionary';
 
 export default function NotFound() {
@@ -12,7 +13,7 @@ export default function NotFound() {
   const { lang } = useParams<{ lang: string }>();
 
   return (
-    <Layout>
+    <Layout sidebar={<Sidebar />}>
       <Alert severity="warning">
         <AlertTitle>{dictionary['page not found']}</AlertTitle>
         {dictionary['page not found description']}

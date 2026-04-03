@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPopularMaps } from '../../../lib/maps';
 import { getDictionary } from '../../../utils/getDictionary';
 import PrivacyPageClient from './PrivacyPageClient';
 
@@ -44,6 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function PrivacyPage() {
-  return <PrivacyPageClient />;
+export default async function PrivacyPage({ params }: Props) {
+  const { lang } = await params;
+  const popularMaps = await getPopularMaps(lang);
+
+  return <PrivacyPageClient popularMaps={popularMaps} />;
 }

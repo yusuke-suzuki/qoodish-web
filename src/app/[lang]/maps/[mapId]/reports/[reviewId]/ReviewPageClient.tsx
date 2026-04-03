@@ -14,9 +14,10 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
-import type { Review } from '../../../../../../../types';
+import type { AppMap, Review } from '../../../../../../../types';
 import Layout from '../../../../../../components/Layout';
 import IssueDialog from '../../../../../../components/common/IssueDialog';
+import Sidebar from '../../../../../../components/layouts/Sidebar';
 import DeleteReviewDialog from '../../../../../../components/reviews/DeleteReviewDialog';
 import EditReviewDialog from '../../../../../../components/reviews/EditReviewDialog';
 import ReviewCardActions from '../../../../../../components/reviews/ReviewCardActions';
@@ -31,9 +32,13 @@ import { useReview } from '../../../../../../hooks/useReview';
 
 type Props = {
   initialReview: Review | null;
+  popularMaps: AppMap[];
 };
 
-export default function ReviewPageClient({ initialReview }: Props) {
+export default function ReviewPageClient({
+  initialReview,
+  popularMaps
+}: Props) {
   const dictionary = useDictionary();
 
   const { lang, mapId, reviewId } = useParams<{
@@ -60,7 +65,7 @@ export default function ReviewPageClient({ initialReview }: Props) {
 
   if (!review && !isLoading) {
     return (
-      <Layout hideBottomNav>
+      <Layout hideBottomNav sidebar={<Sidebar popularMaps={popularMaps} />}>
         <Alert severity="warning">
           <AlertTitle>{dictionary['page not found']}</AlertTitle>
           {dictionary['page not found description']}
@@ -75,7 +80,7 @@ export default function ReviewPageClient({ initialReview }: Props) {
   }
 
   return (
-    <Layout hideBottomNav>
+    <Layout hideBottomNav sidebar={<Sidebar popularMaps={popularMaps} />}>
       {isLoading ? (
         <Box
           sx={{

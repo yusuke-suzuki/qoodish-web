@@ -19,10 +19,8 @@ import {
   useMemo,
   useState
 } from 'react';
-import type { AppMap } from '../../../types';
 import SWRContainer from '../../components/SWRContainer';
 import AuthProvider from '../../components/auth/AuthProvider';
-import PopularMapsContext from '../../context/PopularMapsContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
@@ -39,10 +37,9 @@ const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 type Props = {
   children: ReactNode;
   lang: string;
-  popularMaps?: AppMap[];
 };
 
-function ProvidersInner({ children, lang, popularMaps }: Props) {
+export default function Providers({ children, lang }: Props) {
   const dictionary = useDictionary();
 
   const [registration, setRegistration] =
@@ -107,41 +104,29 @@ function ProvidersInner({ children, lang, popularMaps }: Props) {
   }, [initServiceWorker]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {inputGlobalStyles}
-      <SnackbarProvider
-        preventDuplicate
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        action={(snackbarId) => (
-          <Button onClick={() => closeSnackbar(snackbarId)}>
-            {dictionary.close}
-          </Button>
-        )}
-      >
-        <AuthProvider>
-          <PopularMapsContext.Provider
-            value={{ popularMaps: popularMaps ?? [] }}
-          >
+    <AppRouterCacheProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {inputGlobalStyles}
+        <SnackbarProvider
+          preventDuplicate
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          action={(snackbarId) => (
+            <Button onClick={() => closeSnackbar(snackbarId)}>
+              {dictionary.close}
+            </Button>
+          )}
+        >
+          <AuthProvider>
             <ServiceWorkerContext.Provider value={{ registration }}>
               <SWRContainer>
                 <AnalyticsTracker />
                 {children}
               </SWRContainer>
             </ServiceWorkerContext.Provider>
-          </PopularMapsContext.Provider>
-        </AuthProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
-  );
-}
-
-export default function Providers({ children, lang, popularMaps }: Props) {
-  return (
-    <AppRouterCacheProvider>
-      <ProvidersInner lang={lang} popularMaps={popularMaps}>
-        {children}
-      </ProvidersInner>
+          </AuthProvider>
+        </SnackbarProvider>
+      </ThemeProvider>
     </AppRouterCacheProvider>
   );
 }
