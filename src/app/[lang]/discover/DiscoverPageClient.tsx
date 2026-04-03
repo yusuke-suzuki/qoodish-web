@@ -5,6 +5,7 @@ import { Box, Divider, Stack, Typography } from '@mui/material';
 import type { AppMap, Review } from '../../../../types';
 import Layout from '../../../components/Layout';
 import PickUpMap from '../../../components/discover/PickUpMap';
+import Sidebar from '../../../components/layouts/Sidebar';
 import MapGridList from '../../../components/maps/MapGridList';
 import ReviewGridList from '../../../components/reviews/ReviewGridList';
 import useDictionary from '../../../hooks/useDictionary';
@@ -13,6 +14,7 @@ type Props = {
   recentReviews: Review[];
   activeMaps: AppMap[];
   recentMaps: AppMap[];
+  popularMaps: AppMap[];
   pickUpMap: AppMap | null;
 };
 
@@ -20,12 +22,13 @@ export default function DiscoverPageClient({
   recentReviews,
   activeMaps,
   recentMaps,
+  popularMaps,
   pickUpMap
 }: Props) {
   const dictionary = useDictionary();
 
   return (
-    <Layout>
+    <Layout sidebar={<Sidebar popularMaps={popularMaps} />}>
       <Stack spacing={4} divider={<Divider />}>
         <Box component="section">
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>

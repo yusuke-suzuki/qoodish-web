@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPopularMaps } from '../../../lib/maps';
 import { getDictionary } from '../../../utils/getDictionary';
 import AssetsPageClient from './AssetsPageClient';
 
@@ -43,6 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function AssetsPage() {
-  return <AssetsPageClient />;
+export default async function AssetsPage({ params }: Props) {
+  const { lang } = await params;
+  const popularMaps = await getPopularMaps(lang);
+
+  return <AssetsPageClient popularMaps={popularMaps} />;
 }

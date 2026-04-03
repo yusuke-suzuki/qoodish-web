@@ -1,11 +1,17 @@
 'use client';
 
 import { Typography } from '@mui/material';
+import type { AppMap } from '../../../../types';
 import Layout from '../../../components/Layout';
+import Sidebar from '../../../components/layouts/Sidebar';
 
-export default function PrivacyPageClient() {
+type Props = {
+  popularMaps: AppMap[];
+};
+
+export default function PrivacyPageClient({ popularMaps }: Props) {
   return (
-    <Layout hideBottomNav>
+    <Layout hideBottomNav sidebar={<Sidebar popularMaps={popularMaps} />}>
       <Typography variant="h4" gutterBottom>
         プライバシーポリシー
       </Typography>

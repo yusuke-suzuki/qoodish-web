@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { getPopularMaps } from '../../../../../../lib/maps';
 import { getReview } from '../../../../../../lib/reviews';
 import { getDictionary } from '../../../../../../utils/getDictionary';
 import ReviewPageClient from './ReviewPageClient';
@@ -59,11 +60,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ReviewPage({ params }: Props) {
   const { lang, reviewId } = await params;
-  const initialReview = await getReview(reviewId, lang);
+  const [initialReview, popularMaps] = await Promise.all([
+    getReview(reviewId, lang),
+    getPopularMaps(lang)
+  ]);
 
   return (
     <Suspense>
-      <ReviewPageClient initialReview={initialReview} />
+      <ReviewPageClient
+        initialReview={initialReview}
+        popularMaps={popularMaps}
+      />
     </Suspense>
   );
 }

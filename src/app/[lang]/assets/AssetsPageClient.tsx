@@ -5,10 +5,16 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import html2canvas from 'html2canvas';
 import { useParams } from 'next/navigation';
 import { type RefObject, useCallback, useRef } from 'react';
+import type { AppMap } from '../../../../types';
 import Layout from '../../../components/Layout';
+import Sidebar from '../../../components/layouts/Sidebar';
 import useDictionary from '../../../hooks/useDictionary';
 
-export default function AssetsPageClient() {
+type Props = {
+  popularMaps: AppMap[];
+};
+
+export default function AssetsPageClient({ popularMaps }: Props) {
   const iconRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const { lang } = useParams<{ lang: string }>();
@@ -32,7 +38,7 @@ export default function AssetsPageClient() {
   );
 
   return (
-    <Layout>
+    <Layout sidebar={<Sidebar popularMaps={popularMaps} />}>
       <Box>
         <Stack spacing={2}>
           <Box

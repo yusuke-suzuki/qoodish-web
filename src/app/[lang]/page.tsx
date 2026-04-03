@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getServerAuthState } from '../../lib/auth';
+import { getPopularMaps } from '../../lib/maps';
 import { getPopularReviews } from '../../lib/reviews';
 import { getDictionary } from '../../utils/getDictionary';
 import HomePageClient from './HomePageClient';
@@ -49,7 +50,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
   const { lang } = await params;
   const { authenticated } = await getServerAuthState();
-  const popularReviews = authenticated ? [] : await getPopularReviews(lang);
+  const [popularMaps, popularReviews] = await Promise.all([
+    getPopularMaps(lang),
+    authenticated ? Promise.resolve([]) : getPopularReviews(lang)
+  ]);
 
-  return <HomePageClient popularReviews={popularReviews} />;
+  return (
+    <HomePageClient popularMaps={popularMaps} popularReviews={popularReviews} />
+  );
 }

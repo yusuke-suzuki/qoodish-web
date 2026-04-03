@@ -1,40 +1,31 @@
-import {
-  Box,
-  CardContent,
-  Container,
-  Divider,
-  Grid,
-  Link as MuiLink,
-  Paper,
-  Stack,
-  Typography,
-  useTheme
-} from '@mui/material';
-import Link from 'next/link';
+import { Box, Container, Grid, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { type ReactNode, memo, useCallback, useContext, useState } from 'react';
 import type { AppMap } from '../../types';
 import AuthContext from '../context/AuthContext';
-import PopularMapsContext from '../context/PopularMapsContext';
 import useDictionary from '../hooks/useDictionary';
 import SignInRequiredDialog from './auth/SignInRequiredDialog';
 import BottomNav from './layouts/BottomNav';
-import FbPage from './layouts/FbPage';
 import MiniDrawer from './layouts/MiniDrawer';
 import MobileAppBar from './layouts/MobileAppBar';
-import RecommendMaps from './layouts/RecommendMaps';
 import SearchDialog from './layouts/SearchDialog';
-import TrendingMaps from './layouts/TrendingMaps';
 import CreateMapDialog from './maps/CreateMapDialog';
 
 type Props = {
   children: ReactNode;
+  sidebar?: ReactNode;
   fullWidth?: boolean;
   hideBottomNav?: boolean;
   showBackButton?: boolean;
 };
 
-function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
+function Layout({
+  children,
+  sidebar,
+  fullWidth,
+  hideBottomNav,
+  showBackButton
+}: Props) {
   const theme = useTheme();
 
   const dictionary = useDictionary();
@@ -42,7 +33,6 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
   const { push } = useRouter();
 
   const { currentUser, setSignInRequired } = useContext(AuthContext);
-  const { popularMaps } = useContext(PopularMapsContext);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapDialogOpen, setCreateMapDialogOpen] = useState(false);
@@ -139,56 +129,12 @@ function Layout({ children, fullWidth, hideBottomNav, showBackButton }: Props) {
               {children}
             </Grid>
 
-            {!fullWidth && (
+            {!fullWidth && sidebar && (
               <Grid
                 size={{ md: 4, lg: 4, xl: 4 }}
                 sx={{ display: { xs: 'none', md: 'block' } }}
               >
-                <Stack spacing={2}>
-                  <RecommendMaps />
-
-                  <Divider />
-
-                  <TrendingMaps maps={popularMaps} />
-
-                  <Paper elevation={0}>
-                    <CardContent>
-                      <Stack spacing={1}>
-                        <MuiLink
-                          href="/terms"
-                          underline="hover"
-                          color="inherit"
-                          component={Link}
-                          title={dictionary['terms of service']}
-                        >
-                          {dictionary['terms of service']}
-                        </MuiLink>
-                        <MuiLink
-                          href="/privacy"
-                          underline="hover"
-                          color="inherit"
-                          component={Link}
-                          title={dictionary['privacy policy']}
-                        >
-                          {dictionary['privacy policy']}
-                        </MuiLink>
-                        <Typography variant="caption">
-                          © 2023 Qoodish, All rights reserved.
-                        </Typography>
-                      </Stack>
-                    </CardContent>
-                  </Paper>
-
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      width: '100%'
-                    }}
-                  >
-                    <FbPage />
-                  </Box>
-                </Stack>
+                {sidebar}
               </Grid>
             )}
           </Grid>
