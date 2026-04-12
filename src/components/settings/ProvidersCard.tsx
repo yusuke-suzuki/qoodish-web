@@ -1,3 +1,5 @@
+'use client';
+
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
 import Google from '@mui/icons-material/Google';
 import {

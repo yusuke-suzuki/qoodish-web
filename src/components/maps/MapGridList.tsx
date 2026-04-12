@@ -1,3 +1,5 @@
+'use client';
+
 import { Lock, Map as MapIcon } from '@mui/icons-material';
 import {
   ButtonBase,

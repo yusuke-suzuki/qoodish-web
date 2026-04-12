@@ -2,16 +2,22 @@ import type { AppMap } from '../../types';
 
 export async function getMap(
   mapId: string,
-  lang: string
+  lang: string,
+  token?: string
 ): Promise<AppMap | null> {
   try {
-    const res = await fetch(`${process.env.API_ENDPOINT}/guest/maps/${mapId}`, {
-      headers: {
-        Accept: 'application/json',
-        'Accept-Language': lang,
-        'Content-Type': 'application/json'
-      },
-      next: { revalidate: 300 }
+    const path = token ? `/maps/${mapId}` : `/guest/maps/${mapId}`;
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
+      'Accept-Language': lang,
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    const res = await fetch(`${process.env.API_ENDPOINT}${path}`, {
+      headers,
+      next: { revalidate: token ? 0 : 300 }
     });
     if (!res.ok) {
       console.error(`Failed to fetch map ${mapId}: ${res.status}`);

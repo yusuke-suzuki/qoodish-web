@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import { getPopularMaps } from '../../../../lib/maps';
-import { getProfile } from '../../../../lib/users';
-import { getDictionary } from '../../../../utils/getDictionary';
-import UserPageClient from './UserPageClient';
+import { notFound } from 'next/navigation';
+import UserProfile from '../../../../../components/profiles/UserProfile';
+import { getProfile } from '../../../../../lib/users';
+import { getDictionary } from '../../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string; userId: string }>;
@@ -48,10 +48,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function UserPage({ params }: Props) {
   const { lang, userId } = await params;
-  const [profile, popularMaps] = await Promise.all([
-    getProfile(userId, lang),
-    getPopularMaps(lang)
-  ]);
+  const profile = await getProfile(userId, lang);
 
-  return <UserPageClient profile={profile} popularMaps={popularMaps} />;
+  if (!profile) {
+    notFound();
+  }
+
+  return <UserProfile id={Number(userId)} />;
 }

@@ -1,5 +1,10 @@
+import { Box } from '@mui/material';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import MiniDrawer from '../../components/layouts/MiniDrawer';
+import MobileAppBar from '../../components/layouts/MobileAppBar';
+import ShellProvider from '../../components/layouts/ShellProvider';
+import { getDictionary } from '../../utils/getDictionary';
 import Providers from './Providers';
 
 type Props = {
@@ -7,14 +12,38 @@ type Props = {
   params: Promise<{ lang: string }>;
 };
 
-export const metadata: Metadata = {
-  other: {
-    'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID ?? '',
-    'og:type': 'website',
-    'og:site_name': 'Qoodish',
-    'twitter:domain': 'qoodish.com'
-  }
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const dict = getDictionary(lang);
+  const defaultThumbnailUrl =
+    lang === 'en'
+      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
+      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+
+  return {
+    title: 'Qoodish',
+    description: dict['meta description'],
+    robots: process.env.NEXT_PUBLIC_ENDPOINT?.includes('dev')
+      ? 'noindex'
+      : undefined,
+    openGraph: {
+      title: 'Qoodish',
+      description: dict['meta description'],
+      siteName: 'Qoodish',
+      images: [{ url: defaultThumbnailUrl }],
+      locale: lang === 'en' ? 'en_US' : 'ja_JP'
+    },
+    twitter: {
+      card: 'summary_large_image'
+    },
+    other: {
+      'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID ?? '',
+      'og:type': 'website',
+      'og:site_name': 'Qoodish',
+      'twitter:domain': 'qoodish.com'
+    }
+  };
+}
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
@@ -85,13 +114,27 @@ export default async function RootLayout({ children, params }: Props) {
           rel="preconnect dns-prefetch"
         />
         <meta name="theme-color" content="#ffc107" />
-
-        {process.env.NEXT_PUBLIC_ENDPOINT?.includes('dev') && (
-          <meta name="googlebot" content="noindex" />
-        )}
       </head>
       <body>
-        <Providers lang={lang}>{children}</Providers>
+        <Providers lang={lang}>
+          <ShellProvider>
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <MobileAppBar />
+            </Box>
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <MiniDrawer />
+            </Box>
+            <Box
+              component="main"
+              sx={{
+                pl: { md: 8 },
+                pt: { xs: 7, sm: 8, md: 0 }
+              }}
+            >
+              {children}
+            </Box>
+          </ShellProvider>
+        </Providers>
       </body>
     </html>
   );

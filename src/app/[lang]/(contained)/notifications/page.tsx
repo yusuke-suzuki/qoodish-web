@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { getDictionary } from '../../../utils/getDictionary';
-import NotificationsPageClient from './NotificationsPageClient';
+import NotificationsFeed from '../../../../components/notifications/NotificationsFeed';
+import { getDictionary } from '../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -45,5 +45,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function NotificationsPage() {
-  return <NotificationsPageClient />;
+  return <NotificationsFeed />;
 }

@@ -1,43 +1,29 @@
 'use client';
 
-import { KeyboardArrowLeft } from '@mui/icons-material';
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  Button,
-  Container,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
-import Link from 'next/link';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import type { AppMap, Review } from '../../../../../types';
-import Layout from '../../../../components/Layout';
-import IssueDialog from '../../../../components/common/IssueDialog';
-import CustomOverlays from '../../../../components/maps/CustomOverlays';
-import DeleteMapDialog from '../../../../components/maps/DeleteMapDialog';
-import EditMapDialog from '../../../../components/maps/EditMapDialog';
-import GoogleMaps from '../../../../components/maps/GoogleMaps';
-import MapSummaryCard from '../../../../components/maps/MapSummaryCard';
-import MobileMapDrawer from '../../../../components/maps/MobileMapDrawer';
-import ReviewDrawer from '../../../../components/maps/ReviewDrawer';
-import AuthContext from '../../../../context/AuthContext';
-import useDictionary from '../../../../hooks/useDictionary';
-import { useMap } from '../../../../hooks/useMap';
-import { useMapReviews } from '../../../../hooks/useMapReviews';
-import { useProfile } from '../../../../hooks/useProfile';
+import type { AppMap, Review } from '../../../types';
+import AuthContext from '../../context/AuthContext';
+import { useMapReviews } from '../../hooks/useMapReviews';
+import { useProfile } from '../../hooks/useProfile';
+import IssueDialog from '../common/IssueDialog';
+import CustomOverlays from './CustomOverlays';
+import DeleteMapDialog from './DeleteMapDialog';
+import EditMapDialog from './EditMapDialog';
+import GoogleMaps from './GoogleMaps';
+import MapSummaryCard from './MapSummaryCard';
+import MobileMapDrawer from './MobileMapDrawer';
+import ReviewDrawer from './ReviewDrawer';
 
 const bottomSheetHeight = 105;
 const summaryCardHeight = 360;
 
 type Props = {
-  initialMap: AppMap | null;
+  map: AppMap;
 };
 
-export default function MapPageClient({ initialMap }: Props) {
-  const dictionary = useDictionary();
+export default function MapDetailView({ map }: Props) {
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -56,14 +42,7 @@ export default function MapPageClient({ initialMap }: Props) {
   const { currentUser } = useContext(AuthContext);
   const { profile } = useProfile(currentUser?.uid);
 
-  const {
-    map: clientMap,
-    mutate: mutateMap,
-    isLoading
-  } = useMap(Number(mapId));
   const { reviews, mutate: mutateReviews } = useMapReviews(Number(mapId));
-
-  const map = clientMap || initialMap;
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -72,9 +51,9 @@ export default function MapPageClient({ initialMap }: Props) {
   const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
 
   const handleReviewSaved = useCallback(() => {
-    mutateMap();
+    router.refresh();
     mutateReviews();
-  }, [mutateMap, mutateReviews]);
+  }, [router, mutateReviews]);
 
   const handleReviewClick = useCallback((review: Review) => {
     setCurrentReview(review);
@@ -96,30 +75,8 @@ export default function MapPageClient({ initialMap }: Props) {
     }
   }, [zoom]);
 
-  if (!map && !isLoading) {
-    return (
-      <Layout hideBottomNav fullWidth>
-        <Container
-          sx={{
-            py: { xs: 2, md: 4 }
-          }}
-        >
-          <Alert severity="warning">
-            <AlertTitle>{dictionary['page not found']}</AlertTitle>
-            {dictionary['page not found description']}
-          </Alert>
-          <Link href={`/${lang}/discover`} passHref>
-            <Button color="primary" startIcon={<KeyboardArrowLeft />}>
-              {dictionary['back to our site']}
-            </Button>
-          </Link>
-        </Container>
-      </Layout>
-    );
-  }
-
   return (
-    <Layout hideBottomNav fullWidth>
+    <>
       {mdDown && (
         <MobileMapDrawer
           map={map}
@@ -127,7 +84,7 @@ export default function MapPageClient({ initialMap }: Props) {
           onEditClick={() => setEditDialogOpen(true)}
           onDeleteClick={() => setDeleteDialogOpen(true)}
           onReportClick={() => setIssueDialogOpen(true)}
-          onSaved={mutateMap}
+          onSaved={router.refresh}
           onReviewClick={handleReviewClick}
           reviewDrawerOpen={reviewDrawerOpen}
         />
@@ -154,7 +111,7 @@ export default function MapPageClient({ initialMap }: Props) {
               onEditClick={() => setEditDialogOpen(true)}
               onDeleteClick={() => setDeleteDialogOpen(true)}
               onReportClick={() => setIssueDialogOpen(true)}
-              onSaved={mutateMap}
+              onSaved={router.refresh}
             />
           </Box>
         )}
@@ -176,7 +133,7 @@ export default function MapPageClient({ initialMap }: Props) {
           locale={lang}
         >
           <CustomOverlays
-            map={clientMap}
+            map={map}
             reviews={reviews}
             onReviewSaved={handleReviewSaved}
             onReviewClick={handleReviewClick}
@@ -188,7 +145,7 @@ export default function MapPageClient({ initialMap }: Props) {
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentMap={map}
-        onSaved={mutateMap}
+        onSaved={router.refresh}
       />
 
       <DeleteMapDialog
@@ -202,8 +159,8 @@ export default function MapPageClient({ initialMap }: Props) {
         open={issueDialogOpen}
         onClose={() => setIssueDialogOpen(false)}
         contentType="map"
-        contentId={map ? map.id : null}
+        contentId={map.id}
       />
-    </Layout>
+    </>
   );
 }

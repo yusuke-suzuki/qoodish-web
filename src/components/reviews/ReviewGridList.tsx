@@ -1,3 +1,5 @@
+'use client';
+
 import { PhotoLibrary, Place } from '@mui/icons-material';
 import {
   ButtonBase,
