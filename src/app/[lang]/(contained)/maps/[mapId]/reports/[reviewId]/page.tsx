@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { getPopularMaps } from '../../../../../../lib/maps';
-import { getReview } from '../../../../../../lib/reviews';
-import { getDictionary } from '../../../../../../utils/getDictionary';
-import ReviewPageClient from './ReviewPageClient';
+import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail';
+import { getServerAuthState } from '../../../../../../../lib/auth';
+import { getReview } from '../../../../../../../lib/reviews';
+import { getDictionary } from '../../../../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;
@@ -59,18 +60,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ReviewPage({ params }: Props) {
-  const { lang, reviewId } = await params;
-  const [initialReview, popularMaps] = await Promise.all([
-    getReview(reviewId, lang),
-    getPopularMaps(lang)
-  ]);
+  const { lang, mapId, reviewId } = await params;
+  const { token } = await getServerAuthState();
+  const review = await getReview(reviewId, lang, token, mapId);
+
+  if (!review) {
+    notFound();
+  }
 
   return (
     <Suspense>
-      <ReviewPageClient
-        initialReview={initialReview}
-        popularMaps={popularMaps}
-      />
+      <ReviewDetail review={review} />
     </Suspense>
   );
 }

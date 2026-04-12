@@ -1,7 +1,10 @@
+import { Stack } from '@mui/material';
 import type { Metadata } from 'next';
-import { getPopularMaps } from '../../../lib/maps';
-import { getDictionary } from '../../../utils/getDictionary';
-import AssetsPageClient from './AssetsPageClient';
+import AccountEmailCard from '../../../../components/settings/AccountEmailCard';
+import DeleteAccountCard from '../../../../components/settings/DeleteAccountCard';
+import ProvidersCard from '../../../../components/settings/ProvidersCard';
+import PushNotificationsCard from '../../../../components/settings/PushNotificationsCard';
+import { getDictionary } from '../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -10,6 +13,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
+  const title = `${dict.settings} | Qoodish`;
   const description = dict['meta description'];
   const thumbnailUrl =
     lang === 'en'
@@ -18,22 +22,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
 
   return {
-    title: 'Assets | Qoodish',
+    title,
     description,
     keywords:
       'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip',
     alternates: {
-      canonical: `${endpoint}/${lang}/assets`,
+      canonical: `${endpoint}/${lang}/settings`,
       languages: {
-        en: `${endpoint}/en/assets`,
-        ja: `${endpoint}/ja/assets`,
-        'x-default': `${endpoint}/en/assets`
+        en: `${endpoint}/en/settings`,
+        ja: `${endpoint}/ja/settings`,
+        'x-default': `${endpoint}/en/settings`
       }
     },
     openGraph: {
-      title: 'Assets | Qoodish',
+      title,
       description,
-      url: `${endpoint}/${lang}/assets`,
+      url: `${endpoint}/${lang}/settings`,
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
@@ -44,9 +48,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function AssetsPage({ params }: Props) {
+export default async function SettingsPage({ params }: Props) {
   const { lang } = await params;
-  const popularMaps = await getPopularMaps(lang);
 
-  return <AssetsPageClient popularMaps={popularMaps} />;
+  return (
+    <Stack spacing={3}>
+      <AccountEmailCard />
+      <PushNotificationsCard />
+      <ProvidersCard />
+      <DeleteAccountCard />
+    </Stack>
+  );
 }

@@ -15,6 +15,7 @@ const firebaseConfig = {
 type ServerAuthState = {
   authenticated: boolean;
   uid?: string;
+  token?: string;
 };
 
 export async function getServerAuthState(): Promise<ServerAuthState> {
@@ -34,7 +35,7 @@ export async function getServerAuthState(): Promise<ServerAuthState> {
     const user = auth.currentUser;
 
     if (user) {
-      return { authenticated: true, uid: user.uid };
+      return { authenticated: true, uid: user.uid, token: idToken };
     }
 
     return { authenticated: false };

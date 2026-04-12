@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import MapDetailView from '../../../../components/maps/MapDetailView';
+import { getServerAuthState } from '../../../../lib/auth';
 import { getMap } from '../../../../lib/maps';
 import { getDictionary } from '../../../../utils/getDictionary';
-import MapPageClient from './MapPageClient';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;
@@ -54,11 +56,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
-  const initialMap = await getMap(mapId, lang);
+  const { token } = await getServerAuthState();
+  const map = await getMap(mapId, lang, token);
+
+  if (!map) {
+    notFound();
+  }
 
   return (
     <Suspense>
-      <MapPageClient initialMap={initialMap} />
+      <MapDetailView map={map} />
     </Suspense>
   );
 }

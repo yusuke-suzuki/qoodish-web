@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AccountCircle,
   AccountCircleOutlined,
@@ -23,6 +25,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useProfile } from '../../hooks/useProfile';
@@ -30,15 +33,8 @@ import NotificationList from '../notifications/NotificationList';
 import AccountMenuButton from './AccountMenuButton';
 import LogoAvatar from './LogoAvatar';
 
-type Props = {
-  onSearchOpen: () => void;
-  onCreateMapClick: () => void;
-};
-
-export default memo(function MiniDrawer({
-  onSearchOpen,
-  onCreateMapClick
-}: Props) {
+export default memo(function MiniDrawer() {
+  const { openSearch, openCreateMap } = useContext(ShellContext);
   const dictionary = useDictionary();
   const pathname = usePathname();
   const { currentUser } = useContext(AuthContext);
@@ -171,7 +167,7 @@ export default memo(function MiniDrawer({
 
           <ListItemButton
             title={dictionary.search}
-            onClick={onSearchOpen}
+            onClick={openSearch}
             sx={{
               justifyContent: 'center'
             }}
@@ -183,7 +179,7 @@ export default memo(function MiniDrawer({
 
           <ListItemButton
             title={dictionary['create new map']}
-            onClick={onCreateMapClick}
+            onClick={openCreateMap}
             sx={{
               justifyContent: 'center'
             }}

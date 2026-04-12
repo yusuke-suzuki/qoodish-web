@@ -1,3 +1,5 @@
+'use client';
+
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
 import {
   Box,

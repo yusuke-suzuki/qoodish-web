@@ -1,3 +1,5 @@
+'use client';
+
 import { Notifications } from '@mui/icons-material';
 import {
   Avatar,

@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
-import { getServerAuthState } from '../../lib/auth';
-import { getPopularMaps } from '../../lib/maps';
-import { getPopularReviews } from '../../lib/reviews';
-import { getDictionary } from '../../utils/getDictionary';
-import HomePageClient from './HomePageClient';
+import AssetGenerator from '../../../../components/assets/AssetGenerator';
+import { getDictionary } from '../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -12,7 +9,6 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const title = 'Qoodish';
   const description = dict['meta description'];
   const thumbnailUrl =
     lang === 'en'
@@ -21,22 +17,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
 
   return {
-    title,
+    title: 'Assets | Qoodish',
     description,
     keywords:
       'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip',
     alternates: {
-      canonical: `${endpoint}/${lang}`,
+      canonical: `${endpoint}/${lang}/assets`,
       languages: {
-        en: `${endpoint}/en`,
-        ja: `${endpoint}/ja`,
-        'x-default': `${endpoint}/en`
+        en: `${endpoint}/en/assets`,
+        ja: `${endpoint}/ja/assets`,
+        'x-default': `${endpoint}/en/assets`
       }
     },
     openGraph: {
-      title,
+      title: 'Assets | Qoodish',
       description,
-      url: `${endpoint}/${lang}`,
+      url: `${endpoint}/${lang}/assets`,
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
@@ -47,15 +43,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function HomePage({ params }: Props) {
+export default async function AssetsPage({ params }: Props) {
   const { lang } = await params;
-  const { authenticated } = await getServerAuthState();
-  const [popularMaps, popularReviews] = await Promise.all([
-    getPopularMaps(lang),
-    authenticated ? Promise.resolve([]) : getPopularReviews(lang)
-  ]);
+  const dict = getDictionary(lang);
 
-  return (
-    <HomePageClient popularMaps={popularMaps} popularReviews={popularReviews} />
-  );
+  return <AssetGenerator lang={lang} tagline={dict['create map together']} />;
 }

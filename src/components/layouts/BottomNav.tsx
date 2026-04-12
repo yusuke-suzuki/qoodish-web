@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AccountCircle,
   AddBox,
@@ -9,22 +11,21 @@ import {
   Badge,
   BottomNavigation,
   BottomNavigationAction,
+  Box,
   Paper
 } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useProfile } from '../../hooks/useProfile';
 
-type Props = {
-  onCreateMapClick: () => void;
-};
-
-export default memo(function BottomNav({ onCreateMapClick }: Props) {
+export default memo(function BottomNav() {
   const { currentUser } = useContext(AuthContext);
+  const { openCreateMap } = useContext(ShellContext);
 
   const { profile } = useProfile(currentUser?.uid);
   const { notifications } = useNotifications();
@@ -54,43 +55,59 @@ export default memo(function BottomNav({ onCreateMapClick }: Props) {
     }
   }, [pathname]);
 
+  if (!currentUser) return null;
+
   return (
-    <Paper>
-      <BottomNavigation value={bottomNavValue}>
-        <BottomNavigationAction
-          title={dictionary.home}
-          icon={<Home />}
-          LinkComponent={Link}
-          href="/"
-        />
-        <BottomNavigationAction
-          title={dictionary.discover}
-          icon={<Explore />}
-          LinkComponent={Link}
-          href="/discover"
-        />
-        <BottomNavigationAction
-          title={dictionary['create new map']}
-          icon={<AddBox color="secondary" />}
-          onClick={onCreateMapClick}
-        />
-        <BottomNavigationAction
-          title={dictionary.notice}
-          icon={
-            <Badge badgeContent={unreadNotifications.length} color="secondary">
-              <Notifications />
-            </Badge>
-          }
-          LinkComponent={Link}
-          href="/notifications"
-        />
-        <BottomNavigationAction
-          title={dictionary.account}
-          icon={<AccountCircle />}
-          LinkComponent={Link}
-          href={`/users/${profile?.id}`}
-        />
-      </BottomNavigation>
-    </Paper>
+    <Box
+      sx={{
+        display: { xs: 'block', md: 'none' },
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1
+      }}
+    >
+      <Paper>
+        <BottomNavigation value={bottomNavValue}>
+          <BottomNavigationAction
+            title={dictionary.home}
+            icon={<Home />}
+            LinkComponent={Link}
+            href="/"
+          />
+          <BottomNavigationAction
+            title={dictionary.discover}
+            icon={<Explore />}
+            LinkComponent={Link}
+            href="/discover"
+          />
+          <BottomNavigationAction
+            title={dictionary['create new map']}
+            icon={<AddBox color="secondary" />}
+            onClick={openCreateMap}
+          />
+          <BottomNavigationAction
+            title={dictionary.notice}
+            icon={
+              <Badge
+                badgeContent={unreadNotifications.length}
+                color="secondary"
+              >
+                <Notifications />
+              </Badge>
+            }
+            LinkComponent={Link}
+            href="/notifications"
+          />
+          <BottomNavigationAction
+            title={dictionary.account}
+            icon={<AccountCircle />}
+            LinkComponent={Link}
+            href={`/users/${profile?.id}`}
+          />
+        </BottomNavigation>
+      </Paper>
+    </Box>
   );
 });
