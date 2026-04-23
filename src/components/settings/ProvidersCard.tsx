@@ -17,13 +17,22 @@ import {
   type AuthError,
   EmailAuthProvider,
   GoogleAuthProvider,
+  type UserInfo,
   getAuth,
   linkWithPopup,
+  onIdTokenChanged,
   unlink
 } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import LinkEmailDialog from './LinkEmailDialog';
@@ -32,8 +41,16 @@ import UnlinkProviderDialog from './UnlinkProviderDialog';
 function ProvidersCard() {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
-  const { currentUser, providerData, setProviderData } =
-    useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
+  const [providerData, setProviderData] = useState<UserInfo[]>([]);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onIdTokenChanged(auth, (user) => {
+      setProviderData([...(user?.providerData ?? [])]);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [unlinkDialogOpen, setUnlinkDialogOpen] = useState(false);
@@ -57,7 +74,8 @@ function ProvidersCard() {
   const canUnlink = [googleProvider, emailProvider].filter(Boolean).length > 1;
 
   const handleLinkGoogle = useCallback(async () => {
-    if (!currentUser) return;
+    const firebaseUser = getAuth().currentUser;
+    if (!firebaseUser) return;
 
     setLoading(true);
 
@@ -66,9 +84,9 @@ function ProvidersCard() {
       auth.languageCode = lang;
 
       const provider = new GoogleAuthProvider();
-      await linkWithPopup(currentUser, provider);
-      await currentUser.reload();
-      setProviderData([...currentUser.providerData]);
+      await linkWithPopup(firebaseUser, provider);
+      await firebaseUser.reload();
+      setProviderData([...firebaseUser.providerData]);
 
       enqueueSnackbar(dictionary['link provider success'], {
         variant: 'success'
@@ -99,7 +117,7 @@ function ProvidersCard() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, lang, dictionary, setProviderData]);
+  }, [lang, dictionary]);
 
   const handleOpenUnlinkDialog = useCallback((providerId: string) => {
     setUnlinkTargetProviderId(providerId);
@@ -107,12 +125,13 @@ function ProvidersCard() {
   }, []);
 
   const handleUnlink = useCallback(async () => {
-    if (!currentUser || !unlinkTargetProviderId) return;
+    const firebaseUser = getAuth().currentUser;
+    if (!firebaseUser || !unlinkTargetProviderId) return;
 
     try {
-      await unlink(currentUser, unlinkTargetProviderId);
-      await currentUser.reload();
-      setProviderData([...currentUser.providerData]);
+      await unlink(firebaseUser, unlinkTargetProviderId);
+      await firebaseUser.reload();
+      setProviderData([...firebaseUser.providerData]);
 
       enqueueSnackbar(dictionary['unlink provider success'], {
         variant: 'success'
@@ -126,7 +145,7 @@ function ProvidersCard() {
       console.error(error);
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [currentUser, unlinkTargetProviderId, dictionary, setProviderData]);
+  }, [unlinkTargetProviderId, dictionary]);
 
   return (
     <>
@@ -158,7 +177,7 @@ function ProvidersCard() {
                   onClick={() =>
                     handleOpenUnlinkDialog(GoogleAuthProvider.PROVIDER_ID)
                   }
-                  disabled={!canUnlink || loading || !currentUser}
+                  disabled={!canUnlink || loading || !authenticated}
                 >
                   {dictionary.unlink}
                 </Button>
@@ -169,7 +188,7 @@ function ProvidersCard() {
                   size="small"
                   sx={{ flexShrink: 0 }}
                   onClick={handleLinkGoogle}
-                  disabled={loading || !currentUser}
+                  disabled={loading || !authenticated}
                 >
                   {dictionary.link}
                 </Button>
@@ -194,7 +213,7 @@ function ProvidersCard() {
                   onClick={() =>
                     handleOpenUnlinkDialog(EmailAuthProvider.PROVIDER_ID)
                   }
-                  disabled={!canUnlink || loading || !currentUser}
+                  disabled={!canUnlink || loading || !authenticated}
                 >
                   {dictionary.unlink}
                 </Button>
@@ -205,7 +224,7 @@ function ProvidersCard() {
                   size="small"
                   sx={{ flexShrink: 0 }}
                   onClick={() => setLinkEmailDialogOpen(true)}
-                  disabled={loading || !currentUser}
+                  disabled={loading || !authenticated}
                 >
                   {dictionary.link}
                 </Button>

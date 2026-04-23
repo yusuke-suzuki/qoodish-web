@@ -8,9 +8,8 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
-import type { AppMap, Profile, Review } from '../../../types';
+import type { AppMap, Follower, Profile, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { useMapReviews } from '../../hooks/useMapReviews';
 import FollowButton from './FollowButton';
 import Followers from './Followers';
 import MapCardHeader from './MapCardHeader';
@@ -23,6 +22,8 @@ const drawerBleeding = 105;
 
 type Props = {
   map: AppMap | null;
+  reviews: Review[];
+  followers: Follower[];
   currentProfile: Profile | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -34,6 +35,8 @@ type Props = {
 
 function MobileMapDrawer({
   map,
+  reviews,
+  followers,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -45,7 +48,6 @@ function MobileMapDrawer({
   const [open, setOpen] = useState(false);
 
   const dictionary = useDictionary();
-  const { reviews, isLoading } = useMapReviews(map ? map.id : null);
 
   const handleReviewClick = useCallback(
     (review: Review) => {
@@ -145,7 +147,7 @@ function MobileMapDrawer({
               {dictionary.followers}
             </Typography>
             <Box sx={{ display: 'flex' }}>
-              <Followers map={map} />
+              <Followers followers={followers} />
             </Box>
           </CardContent>
           <Divider />
@@ -172,7 +174,6 @@ function MobileMapDrawer({
 
             <MapReviewList
               reviews={reviews}
-              isLoading={isLoading}
               onReviewClick={handleReviewClick}
             />
           </CardContent>

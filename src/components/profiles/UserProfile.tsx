@@ -6,11 +6,11 @@ import {
   Card,
   CardContent,
   Divider,
-  Skeleton,
   Stack,
   Tab,
   Typography
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import {
   type SyntheticEvent,
   memo,
@@ -19,21 +19,22 @@ import {
   useContext,
   useState
 } from 'react';
+import type { Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useProfile } from '../../hooks/useProfile';
 import ProfileAvatar from '../common/ProfileAvatar';
 import EditProfileDialog from './EditProfileDialog';
 import UserMaps from './UserMaps';
 import UserReviews from './UserReviews';
 
 type Props = {
-  id: number | null;
+  profile: Profile;
+  initialReviews: Review[];
 };
 
-function UserProfile({ id }: Props) {
-  const { currentUser } = useContext(AuthContext);
-  const { profile, mutate, isLoading } = useProfile(id);
+function UserProfile({ profile, initialReviews }: Props) {
+  const { uid } = useContext(AuthContext);
+  const router = useRouter();
 
   const [tabValue, setTabValue] = useState('1');
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -49,6 +50,10 @@ function UserProfile({ id }: Props) {
     []
   );
 
+  const handleProfileSaved = useCallback(() => {
+    router.refresh();
+  }, [router]);
+
   return (
     <>
       <TabContext value={tabValue}>
@@ -60,44 +65,30 @@ function UserProfile({ id }: Props) {
                 placeItems: 'center'
               }}
             >
-              {!profile ? (
-                <>
-                  <Skeleton variant="circular" width={100} height={100} />
+              <ProfileAvatar size={100} profile={profile} />
 
-                  <Skeleton width="50%" height={40} />
+              <Typography
+                variant="h5"
+                align="center"
+                gutterBottom
+                fontWeight={600}
+              >
+                {profile.name}
+              </Typography>
 
-                  <Skeleton width="100%" />
-                  <Skeleton width="100%" />
-                </>
-              ) : (
-                <>
-                  <ProfileAvatar size={100} profile={profile} />
+              <Typography variant="body1" align="center" gutterBottom>
+                {profile.biography}
+              </Typography>
 
-                  <Typography
-                    variant="h5"
-                    align="center"
-                    gutterBottom
-                    fontWeight={600}
-                  >
-                    {profile?.name}
-                  </Typography>
-
-                  <Typography variant="body1" align="center" gutterBottom>
-                    {profile?.biography}
-                  </Typography>
-
-                  {currentUser?.uid === profile?.uid && (
-                    <Button
-                      variant="contained"
-                      disableElevation
-                      color="inherit"
-                      onClick={() => setEditDialogOpen(true)}
-                      disabled={isLoading || !profile || !currentUser}
-                    >
-                      {dictionary['edit profile']}
-                    </Button>
-                  )}
-                </>
+              {uid === profile.uid && (
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="inherit"
+                  onClick={() => setEditDialogOpen(true)}
+                >
+                  {dictionary['edit profile']}
+                </Button>
               )}
 
               <Stack
@@ -107,7 +98,7 @@ function UserProfile({ id }: Props) {
               >
                 <Stack justifyContent="center">
                   <Typography variant="h6" fontWeight="bold" align="center">
-                    {profile?.reviews_count ? profile.reviews_count : 0}
+                    {profile.reviews_count ?? 0}
                   </Typography>
                   <Typography
                     variant="subtitle2"
@@ -120,7 +111,7 @@ function UserProfile({ id }: Props) {
 
                 <Stack justifyContent="center">
                   <Typography variant="h6" fontWeight="bold" align="center">
-                    {profile?.maps_count ? profile.maps_count : 0}
+                    {profile.maps_count ?? 0}
                   </Typography>
                   <Typography
                     variant="subtitle2"
@@ -141,10 +132,10 @@ function UserProfile({ id }: Props) {
         </Card>
 
         <TabPanel value="1" sx={{ px: 0 }}>
-          <UserReviews id={id} />
+          <UserReviews userId={profile.id} initialReviews={initialReviews} />
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>
-          <UserMaps id={id} />
+          <UserMaps userId={profile.id} />
         </TabPanel>
       </TabContext>
 
@@ -152,7 +143,7 @@ function UserProfile({ id }: Props) {
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentProfile={profile}
-        onSaved={mutate}
+        onSaved={handleProfileSaved}
       />
     </>
   );

@@ -6,9 +6,8 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
 import type { Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useProfile } from '../../hooks/useProfile';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from './DeleteReviewDialog';
 import EditReviewDialog from './EditReviewDialog';
@@ -31,8 +30,7 @@ export default function ReviewDetail({ review }: Props) {
   }>();
   const router = useRouter();
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
+  const profile = useContext(ProfileContext);
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);

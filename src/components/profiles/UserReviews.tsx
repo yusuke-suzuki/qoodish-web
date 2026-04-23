@@ -1,24 +1,46 @@
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Stack } from '@mui/material';
-import { memo } from 'react';
+import { memo, useCallback, useState, useTransition } from 'react';
+import type { Review } from '../../../types';
+import { fetchMoreUserReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import { useUserReviewsInfinite } from '../../hooks/useUserReviewsInfinite';
 import NoContents from '../common/NoContents';
 import ReviewGridList from '../reviews/ReviewGridList';
 
 type Props = {
-  id: number | null;
+  userId: number;
+  initialReviews: Review[];
 };
 
-export default memo(function UserReviews({ id }: Props) {
-  const { data, size, setSize, noMoreResults, isLoadingMore, isEmpty } =
-    useUserReviewsInfinite(id);
-
+export default memo(function UserReviews({ userId, initialReviews }: Props) {
   const dictionary = useDictionary();
+
+  const [reviews, setReviews] = useState(initialReviews);
+  const [noMoreResults, setNoMoreResults] = useState(initialReviews.length < 1);
+  const [isPending, startTransition] = useTransition();
+
+  const loadMore = useCallback(() => {
+    if (noMoreResults || isPending) return;
+
+    const lastReview = reviews[reviews.length - 1];
+    if (!lastReview) {
+      setNoMoreResults(true);
+      return;
+    }
+
+    startTransition(async () => {
+      const moreReviews = await fetchMoreUserReviews(
+        userId,
+        lastReview.created_at
+      );
+      setReviews((prev) => [...prev, ...moreReviews]);
+      setNoMoreResults(moreReviews.length < 1);
+    });
+  }, [userId, reviews, noMoreResults, isPending]);
 
   return (
     <>
-      {isEmpty && !isLoadingMore && (
+      {reviews.length < 1 && !isPending && (
         <NoContents
           message={dictionary['reports will see here']}
           icon={Reviews}
@@ -26,19 +48,12 @@ export default memo(function UserReviews({ id }: Props) {
       )}
 
       <Box sx={{ display: 'grid', gap: 1 }}>
-        {data.map(
-          (reviews) =>
-            reviews.length > 0 && (
-              <ReviewGridList
-                key={reviews[0].id}
-                reviews={reviews}
-                hideSkeleton
-              />
-            )
+        {reviews.length > 0 && (
+          <ReviewGridList reviews={reviews} hideSkeleton />
         )}
       </Box>
 
-      {isLoadingMore && (
+      {isPending && (
         <Box
           sx={{
             display: 'grid',
@@ -51,12 +66,8 @@ export default memo(function UserReviews({ id }: Props) {
       )}
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
-        {!isLoadingMore && !noMoreResults && size > 0 && (
-          <Button
-            onClick={() => setSize((currentState) => currentState + 1)}
-            color="secondary"
-            disabled={noMoreResults}
-          >
+        {!isPending && !noMoreResults && reviews.length > 0 && (
+          <Button onClick={loadMore} color="secondary">
             {dictionary['load more']}
           </Button>
         )}

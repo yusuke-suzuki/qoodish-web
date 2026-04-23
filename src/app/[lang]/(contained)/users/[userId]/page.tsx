@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import UserProfile from '../../../../../components/profiles/UserProfile';
-import { getProfile } from '../../../../../lib/users';
+import { getProfile, getUserReviews } from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
 
 type Props = {
@@ -48,11 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function UserPage({ params }: Props) {
   const { lang, userId } = await params;
-  const profile = await getProfile(userId, lang);
+  const cookieStore = await cookies();
+  const token = cookieStore.get('__session')?.value;
+  const profile = await getProfile(userId, lang, token);
 
   if (!profile) {
     notFound();
   }
 
-  return <UserProfile id={Number(userId)} />;
+  const initialReviews = await getUserReviews(userId, lang);
+
+  return <UserProfile profile={profile} initialReviews={initialReviews} />;
 }

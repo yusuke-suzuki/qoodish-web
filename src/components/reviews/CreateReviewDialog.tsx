@@ -9,9 +9,9 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';
 import AddPhotoButton from '../common/AddPhotoButton';
@@ -48,7 +48,6 @@ export default memo(function CreateReviewDialog({
   currentPosition,
   pinnedPosition
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -93,45 +92,25 @@ export default memo(function CreateReviewDialog({
   const handleCreateButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const photos = [];
-
-    for (const dataUrl of dataUrls) {
-      const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-      const url = await uploadToStorage(dataUrl, fileName, 'data_url');
-
-      photos.push({ url: url });
-    }
-
-    const params = {
-      name: name,
-      comment: comment,
-      latitude: position.lat,
-      longitude: position.lng,
-      images: photos
-    };
-
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps/${map?.id}/reviews`,
-      {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(params)
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const photos = [];
 
-      if (res.ok) {
+      for (const dataUrl of dataUrls) {
+        const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+        const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+
+        photos.push({ url: url });
+      }
+
+      const result = await createReview(map?.id, {
+        name,
+        comment,
+        latitude: position.lat,
+        longitude: position.lng,
+        images: photos
+      });
+
+      if (result.success) {
         enqueueSnackbar(dictionary['create review success'], {
           variant: 'success'
         });
@@ -139,25 +118,14 @@ export default memo(function CreateReviewDialog({
         onClose();
         onSaved();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [
-    currentUser,
-    map,
-    name,
-    comment,
-    position,
-    dataUrls,
-    onClose,
-    onSaved,
-    dictionary
-  ]);
+  }, [map, name, comment, position, dataUrls, onClose, onSaved, dictionary]);
 
   const defaultPositionFromPlace = useMemo(() => {
     if (!place) {

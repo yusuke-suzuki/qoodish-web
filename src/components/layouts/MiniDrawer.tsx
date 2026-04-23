@@ -22,13 +22,13 @@ import {
   Menu
 } from '@mui/material';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { memo, useContext, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { memo, useCallback, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import NotificationsContext from '../../context/NotificationsContext';
+import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useNotifications } from '../../hooks/useNotifications';
-import { useProfile } from '../../hooks/useProfile';
 import NotificationList from '../notifications/NotificationList';
 import AccountMenuButton from './AccountMenuButton';
 import LogoAvatar from './LogoAvatar';
@@ -37,9 +37,14 @@ export default memo(function MiniDrawer() {
   const { openSearch, openCreateMap } = useContext(ShellContext);
   const dictionary = useDictionary();
   const pathname = usePathname();
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
-  const { notifications, mutate } = useNotifications();
+  const router = useRouter();
+  const { authenticated, uid } = useContext(AuthContext);
+  const profile = useContext(ProfileContext);
+  const notifications = useContext(NotificationsContext);
+
+  const refreshNotifications = useCallback(() => {
+    router.refresh();
+  }, [router]);
 
   const unreadNotifications = notifications.filter((notification) => {
     return notification.read === false;
@@ -117,7 +122,7 @@ export default memo(function MiniDrawer() {
             </ListItemIcon>
           </ListItemButton>
 
-          {currentUser && (
+          {authenticated && (
             <ListItemButton
               selected={pathname.endsWith(`/users/${profile?.id}`)}
               LinkComponent={Link}
@@ -139,7 +144,7 @@ export default memo(function MiniDrawer() {
             </ListItemButton>
           )}
 
-          {currentUser && (
+          {authenticated && (
             <ListItemButton
               title={dictionary.notifications}
               ref={buttonRef}
@@ -201,7 +206,7 @@ export default memo(function MiniDrawer() {
       >
         <NotificationList
           notifications={notifications}
-          onReadNotifications={mutate}
+          onReadNotifications={refreshNotifications}
           onNotificationClick={() => setAnchorEl(null)}
         />
       </Menu>

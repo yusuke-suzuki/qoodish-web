@@ -2,7 +2,8 @@ import { Box, Container, Grid } from '@mui/material';
 import type { ReactNode } from 'react';
 import BottomNav from '../../../components/layouts/BottomNav';
 import Sidebar from '../../../components/layouts/Sidebar';
-import { getPopularMaps } from '../../../lib/maps';
+import { getServerAuthState } from '../../../lib/auth';
+import { getPopularMaps, getRecommendMaps } from '../../../lib/maps';
 
 type Props = {
   children: ReactNode;
@@ -11,7 +12,11 @@ type Props = {
 
 export default async function ContainedLayout({ children, params }: Props) {
   const { lang } = await params;
-  const popularMaps = await getPopularMaps(lang);
+  const { token } = await getServerAuthState();
+  const [popularMaps, recommendMaps] = await Promise.all([
+    getPopularMaps(lang),
+    getRecommendMaps(lang, token)
+  ]);
 
   return (
     <>
@@ -26,7 +31,10 @@ export default async function ContainedLayout({ children, params }: Props) {
               size={{ md: 4, lg: 4, xl: 4 }}
               sx={{ display: { xs: 'none', md: 'block' } }}
             >
-              <Sidebar popularMaps={popularMaps} />
+              <Sidebar
+                popularMaps={popularMaps}
+                recommendMaps={recommendMaps}
+              />
             </Grid>
           </Grid>
         </Container>

@@ -1,16 +1,21 @@
 import { getApps, initializeApp } from 'firebase/app';
+import { type User, getAuth, onIdTokenChanged } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 import {
-  type User,
-  type UserInfo,
-  getAuth,
-  onIdTokenChanged
-} from 'firebase/auth';
-import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
+  type ReactNode,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import AuthContext from '../../context/AuthContext';
 import useEmailLinkHandler from '../../hooks/useEmailLinkHandler';
 
 type Props = {
   children: ReactNode;
+  serverAuthenticated: boolean;
+  serverUid: string | null;
 };
 
 if (!getApps().length) {
@@ -25,17 +30,15 @@ if (!getApps().length) {
   });
 }
 
-function AuthProvider({ children }: Props) {
-  const [currentUser, setCurrentUser] = useState<User>(null);
-  const [providerData, setProviderData] = useState<UserInfo[]>([]);
+function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(serverAuthenticated);
+  const [uid, setUid] = useState<string | null>(serverUid);
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
+  const authStateRef = useRef(serverAuthenticated);
 
-  useEffect(() => {
-    setProviderData([...(currentUser?.providerData ?? [])]);
-  }, [currentUser]);
-
-  useEmailLinkHandler({ currentUser, setProviderData });
+  useEmailLinkHandler({ isLoading: loading });
 
   const syncSessionCookie = useCallback(async (idToken: string | null) => {
     await fetch('/api/auth/session', {
@@ -45,50 +48,48 @@ function AuthProvider({ children }: Props) {
     });
   }, []);
 
-  const signIn = useCallback(
-    async (user: User) => {
-      const accessToken = await user.getIdToken();
-
-      const headers = new Headers();
-      headers.append('Authorization', `Bearer ${accessToken}`);
-
-      const request = new Request(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users`,
-        {
-          method: 'POST',
-          headers: headers
-        }
-      );
-
-      const res = await fetch(request);
-
-      if (res.ok) {
-        await syncSessionCookie(accessToken);
-        setCurrentUser(user);
-        setLoading(false);
-      }
-    },
-    [syncSessionCookie]
-  );
-
   const handleIdTokenChanged = useCallback(
-    async (user: User) => {
+    async (user: User | null) => {
       if (user) {
         if (user.isAnonymous) {
           await user.delete();
 
-          setCurrentUser(null);
+          setAuthenticated(false);
+          setUid(null);
           setLoading(false);
+
+          if (authStateRef.current) {
+            authStateRef.current = false;
+            router.refresh();
+          }
         } else {
-          await signIn(user);
+          const accessToken = await user.getIdToken();
+          await syncSessionCookie(accessToken);
+
+          if (!authStateRef.current) {
+            await fetch('/api/v1/users', { method: 'POST' });
+            authStateRef.current = true;
+            router.refresh();
+          }
+
+          setAuthenticated(true);
+          setUid(user.uid);
+          setLoading(false);
         }
       } else {
         await syncSessionCookie(null);
-        setCurrentUser(null);
+
+        setAuthenticated(false);
+        setUid(null);
         setLoading(false);
+
+        if (authStateRef.current) {
+          authStateRef.current = false;
+          router.refresh();
+        }
       }
     },
-    [signIn, syncSessionCookie]
+    [syncSessionCookie, router]
   );
 
   useEffect(() => {
@@ -100,13 +101,11 @@ function AuthProvider({ children }: Props) {
   return (
     <AuthContext.Provider
       value={{
-        currentUser: currentUser,
-        setCurrentUser: setCurrentUser,
-        providerData: providerData,
-        setProviderData: setProviderData,
+        authenticated,
+        uid,
         isLoading: loading,
-        signInRequired: signInRequired,
-        setSignInRequired: setSignInRequired
+        signInRequired,
+        setSignInRequired
       }}
     >
       {children}

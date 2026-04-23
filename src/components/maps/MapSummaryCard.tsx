@@ -10,9 +10,8 @@ import {
   Typography
 } from '@mui/material';
 import { memo } from 'react';
-import type { AppMap, Profile } from '../../../types';
+import type { AppMap, Follower, Profile, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { useMapReviews } from '../../hooks/useMapReviews';
 import FollowButton from './FollowButton';
 import Followers from './Followers';
 import MapCardHeader from './MapCardHeader';
@@ -23,6 +22,8 @@ import UnfollowButton from './UnfollowButton';
 
 type Props = {
   map: AppMap | null;
+  reviews: Review[];
+  followers: Follower[];
   currentProfile: Profile | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -32,6 +33,8 @@ type Props = {
 
 export default memo(function MapSummaryCard({
   map,
+  reviews,
+  followers,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -39,7 +42,6 @@ export default memo(function MapSummaryCard({
   onSaved
 }: Props) {
   const dictionary = useDictionary();
-  const { reviews, isLoading } = useMapReviews(map ? map.id : null);
 
   return (
     <Card sx={{ height: '100%', width: '100%', overflowY: 'auto' }}>
@@ -124,7 +126,7 @@ export default memo(function MapSummaryCard({
           {dictionary.followers}
         </Typography>
         <Box sx={{ display: 'flex' }}>
-          <Followers map={map} />
+          <Followers followers={followers} />
         </Box>
       </CardContent>
       <Divider />
@@ -149,7 +151,7 @@ export default memo(function MapSummaryCard({
           </Typography>
         </Box>
 
-        <MapReviewList reviews={reviews} isLoading={isLoading} />
+        <MapReviewList reviews={reviews} />
       </CardContent>
     </Card>
   );

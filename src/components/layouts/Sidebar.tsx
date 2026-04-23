@@ -18,14 +18,15 @@ import TrendingMaps from './TrendingMaps';
 
 type Props = {
   popularMaps?: AppMap[];
+  recommendMaps?: AppMap[];
 };
 
-function Sidebar({ popularMaps }: Props) {
+function Sidebar({ popularMaps, recommendMaps }: Props) {
   const dictionary = useDictionary();
 
   return (
     <Stack spacing={2}>
-      <RecommendMaps />
+      <RecommendMaps maps={recommendMaps} />
 
       <Divider />
 

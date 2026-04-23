@@ -9,9 +9,9 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import type { Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';
 import AddPhotoButton from '../common/AddPhotoButton';
@@ -40,8 +40,6 @@ export default memo(function EditReviewDialog({
   onSaved,
   currentReview
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
-
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -81,52 +79,31 @@ export default memo(function EditReviewDialog({
   const handleSaveClick = useCallback(async () => {
     setLoading(true);
 
-    const photos = [];
-
-    for (const dataUrl of dataUrls) {
-      const url = new URL(dataUrl);
-
-      if (url.protocol === 'data:') {
-        const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-        const url = await uploadToStorage(dataUrl, fileName, 'data_url');
-
-        photos.push({ url: url });
-      } else {
-        // Do nothing
-        photos.push({ url: dataUrl });
-      }
-    }
-
-    const params = {
-      name: name,
-      comment: comment,
-      latitude: position.lat,
-      longitude: position.lng,
-      images: photos
-    };
-
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/reviews/${currentReview?.id}`,
-      {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(params)
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const photos = [];
 
-      if (res.ok) {
+      for (const dataUrl of dataUrls) {
+        const url = new URL(dataUrl);
+
+        if (url.protocol === 'data:') {
+          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+
+          photos.push({ url: url });
+        } else {
+          photos.push({ url: dataUrl });
+        }
+      }
+
+      const result = await updateReview(currentReview?.id, {
+        name,
+        comment,
+        latitude: position.lat,
+        longitude: position.lng,
+        images: photos
+      });
+
+      if (result.success) {
         enqueueSnackbar(dictionary['edit review success'], {
           variant: 'success'
         });
@@ -134,8 +111,7 @@ export default memo(function EditReviewDialog({
         onClose();
         onSaved();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
@@ -143,7 +119,6 @@ export default memo(function EditReviewDialog({
       setLoading(false);
     }
   }, [
-    currentUser,
     name,
     comment,
     dataUrls,

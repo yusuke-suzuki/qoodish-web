@@ -28,8 +28,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo, useCallback, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
+import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useProfile } from '../../hooks/useProfile';
 import ProfileAvatar from '../common/ProfileAvatar';
 import Logo from './Logo';
 
@@ -50,8 +50,8 @@ export default memo(function MobileDrawer({
   const pathname = usePathname();
   const dictionary = useDictionary();
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
+  const { authenticated, uid } = useContext(AuthContext);
+  const profile = useContext(ProfileContext);
 
   const handleSignOutClick = useCallback(async () => {
     onClose();
@@ -89,7 +89,7 @@ export default memo(function MobileDrawer({
                 </Typography>
 
                 <Typography variant="subtitle2" color="text.secondary">
-                  {currentUser?.email}
+                  {getAuth().currentUser?.email}
                 </Typography>
               </Box>
             ) : (
@@ -125,7 +125,7 @@ export default memo(function MobileDrawer({
           <ListItemText primary={dictionary.discover} />
         </ListItemButton>
 
-        {currentUser && (
+        {authenticated && (
           <>
             <ListItemButton
               selected={pathname.includes('/users/')}
@@ -178,7 +178,7 @@ export default memo(function MobileDrawer({
         </Fab>
       </Box>
       <List disablePadding component="nav">
-        {currentUser ? (
+        {authenticated ? (
           <ListItemButton dense onClick={handleSignOutClick}>
             <ListItemText
               primary={dictionary.logout}

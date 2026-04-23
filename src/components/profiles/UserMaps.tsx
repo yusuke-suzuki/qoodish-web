@@ -1,18 +1,38 @@
 import { Map as MapIcon } from '@mui/icons-material';
-import { memo } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { useUserMaps } from '../../hooks/useUserMaps';
 import NoContents from '../common/NoContents';
 import MapGridList from '../maps/MapGridList';
 
 type Props = {
-  id: number | null;
+  userId: number;
 };
 
-export default memo(function UserMaps({ id }: Props) {
-  const { maps, isLoading } = useUserMaps(id);
+export default memo(function UserMaps({ userId }: Props) {
+  const [maps, setMaps] = useState<AppMap[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dictionary = useDictionary();
+
+  const loadMaps = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`/api/v1/users/${userId}/maps`);
+
+      if (res.ok) {
+        const data: AppMap[] = await res.json();
+        setMaps(data);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    loadMaps();
+  }, [loadMaps]);
 
   if (!isLoading && maps.length < 1) {
     return (

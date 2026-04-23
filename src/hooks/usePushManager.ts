@@ -1,11 +1,12 @@
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { registerDevice } from '../actions/devices';
 import AuthContext from '../context/AuthContext';
 
 export function usePushManager(registration: ServiceWorkerRegistration | null) {
   const [subscription, setSubscription] = useState<PushSubscription>(null);
 
-  const { currentUser, isLoading } = useContext(AuthContext);
+  const { authenticated, isLoading } = useContext(AuthContext);
 
   const [registrationToken, setRegistrationToken] = useState(null);
 
@@ -17,28 +18,11 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
   const persistRegistrationToken = useCallback(async () => {
     try {
-      const token = await currentUser.getIdToken();
-
-      const request = new Request(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/devices/${registrationToken}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      const res = await fetch(request);
-
-      if (!res.ok) {
-        const data = await res.json();
-        console.error('Failed to send registration token', data);
-      }
+      await registerDevice(registrationToken);
     } catch (error) {
       console.error('Failed to send registration token', error);
     }
-  }, [registrationToken, currentUser]);
+  }, [registrationToken]);
 
   const subscribe = useCallback(async () => {
     const sub = await registration.pushManager.subscribe({
@@ -77,11 +61,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   }, [registration]);
 
   useEffect(() => {
-    if (!currentUser && !isLoading) {
-      // When signed out, unsubscribe from push notifications
+    if (!authenticated && !isLoading) {
       unsubscribe();
     }
-  }, [currentUser, isLoading, unsubscribe]);
+  }, [authenticated, isLoading, unsubscribe]);
 
   useEffect(() => {
     if (registrationToken) {
@@ -96,10 +79,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   }, [subscription, getRegistrationToken]);
 
   useEffect(() => {
-    if (registration && currentUser) {
+    if (registration && authenticated) {
       initPushStatus();
     }
-  }, [registration, currentUser, initPushStatus]);
+  }, [registration, authenticated, initPushStatus]);
 
   return {
     subscribe: subscribe,

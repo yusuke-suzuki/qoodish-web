@@ -12,9 +12,9 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';
 import AddPhotoButton from '../common/AddPhotoButton';
@@ -41,7 +41,6 @@ export default memo(function CreateMapDialog({
   onClose,
   onSaved
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -78,61 +77,37 @@ export default memo(function CreateMapDialog({
   const handleCreateButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const params = {
-      name: name,
-      description: description,
-      latitude: position.lat,
-      longitude: position.lng,
-      private: isPrivate,
-      invitable: false,
-      shared: isShared
-    };
+    try {
+      let imageUrl: string | undefined;
 
-    if (thumbnailDataUrl) {
-      const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
-      const imageUrl = await uploadToStorage(
-        thumbnailDataUrl,
-        fileName,
-        'data_url'
-      );
+      if (thumbnailDataUrl) {
+        const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
+        imageUrl = await uploadToStorage(
+          thumbnailDataUrl,
+          fileName,
+          'data_url'
+        );
+      }
 
-      Object.assign(params, {
+      const result = await createMap({
+        name,
+        description,
+        latitude: position.lat,
+        longitude: position.lng,
+        private: isPrivate,
+        shared: isShared,
         image_url: imageUrl
       });
-    }
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps`,
-      {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(params)
-      }
-    );
-
-    try {
-      const res = await fetch(request);
-
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['create map success'], {
           variant: 'success'
         });
-        const body = await res.json();
 
         onClose();
-        onSaved(body);
+        onSaved(result.data);
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
@@ -140,7 +115,6 @@ export default memo(function CreateMapDialog({
       setLoading(false);
     }
   }, [
-    currentUser,
     name,
     description,
     thumbnailDataUrl,

@@ -1,103 +1,84 @@
-import type { AppMap } from '../../types';
+import type { AppMap, Follower, Review } from '../../types';
+import { apiFetch } from './api';
 
 export async function getMap(
   mapId: string,
   lang: string,
   token?: string
 ): Promise<AppMap | null> {
-  try {
-    const path = token ? `/maps/${mapId}` : `/guest/maps/${mapId}`;
-    const headers: Record<string, string> = {
-      Accept: 'application/json',
-      'Accept-Language': lang,
-      'Content-Type': 'application/json'
-    };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-    const res = await fetch(`${process.env.API_ENDPOINT}${path}`, {
-      headers,
-      next: { revalidate: token ? 0 : 300 }
-    });
-    if (!res.ok) {
-      console.error(`Failed to fetch map ${mapId}: ${res.status}`);
-      return null;
-    }
-    return res.json();
-  } catch (error) {
-    console.error('Error in getMap:', error);
-    return null;
-  }
+  const guest = !token;
+  const { data } = await apiFetch<AppMap>(`/maps/${mapId}`, {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0 }
+  });
+  return data;
+}
+
+export async function getMapReviews(
+  mapId: string,
+  lang: string,
+  token?: string
+): Promise<Review[]> {
+  const guest = !token;
+  const { data } = await apiFetch<Review[]>(`/maps/${mapId}/reviews`, {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0 }
+  });
+  return data ?? [];
+}
+
+export async function getMapFollowers(
+  mapId: string,
+  lang: string,
+  token?: string
+): Promise<Follower[]> {
+  const guest = !token;
+  const { data } = await apiFetch<Follower[]>(`/maps/${mapId}/collaborators`, {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0 }
+  });
+  return data ?? [];
 }
 
 export async function getActiveMaps(lang: string): Promise<AppMap[]> {
-  try {
-    const res = await fetch(
-      `${process.env.API_ENDPOINT}/guest/maps?active=true`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Accept-Language': lang,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 }
-      }
-    );
-    if (!res.ok) {
-      console.error(`Failed to fetch active maps: ${res.status}`);
-      return [];
-    }
-    return res.json();
-  } catch (error) {
-    console.error('Error in getActiveMaps:', error);
-    return [];
-  }
+  const { data } = await apiFetch<AppMap[]>('/maps?active=true', {
+    lang,
+    guest: true,
+    next: { revalidate: 300 }
+  });
+  return data ?? [];
 }
 
 export async function getPopularMaps(lang: string): Promise<AppMap[]> {
-  try {
-    const res = await fetch(
-      `${process.env.API_ENDPOINT}/guest/maps?popular=true`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Accept-Language': lang,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 }
-      }
-    );
-    if (!res.ok) {
-      console.error(`Failed to fetch popular maps: ${res.status}`);
-      return [];
-    }
-    return res.json();
-  } catch (error) {
-    console.error('Error in getPopularMaps:', error);
-    return [];
-  }
+  const { data } = await apiFetch<AppMap[]>('/maps?popular=true', {
+    lang,
+    guest: true,
+    next: { revalidate: 300 }
+  });
+  return data ?? [];
 }
 
 export async function getRecentMaps(lang: string): Promise<AppMap[]> {
-  try {
-    const res = await fetch(
-      `${process.env.API_ENDPOINT}/guest/maps?recent=true`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Accept-Language': lang,
-          'Content-Type': 'application/json'
-        },
-        next: { revalidate: 300 }
-      }
-    );
-    if (!res.ok) {
-      console.error(`Failed to fetch recent maps: ${res.status}`);
-      return [];
-    }
-    return res.json();
-  } catch (error) {
-    console.error('Error in getRecentMaps:', error);
-    return [];
-  }
+  const { data } = await apiFetch<AppMap[]>('/maps?recent=true', {
+    lang,
+    guest: true,
+    next: { revalidate: 300 }
+  });
+  return data ?? [];
+}
+
+export async function getRecommendMaps(
+  lang: string,
+  token?: string
+): Promise<AppMap[]> {
+  const guest = !token;
+  const { data } = await apiFetch<AppMap[]>('/maps?recommend=true', {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0 }
+  });
+  return data ?? [];
 }

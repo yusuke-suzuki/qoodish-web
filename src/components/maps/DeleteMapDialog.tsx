@@ -9,9 +9,9 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { AppMap } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { deleteMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
@@ -23,7 +23,6 @@ type Props = {
 
 const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
-  const { currentUser } = useContext(AuthContext);
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -42,27 +41,10 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
   const handleDeleteButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps/${map?.id}`,
-      {
-        method: 'DELETE',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await deleteMap(map?.id);
 
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['delete map success'], {
           variant: 'success'
         });
@@ -70,15 +52,14 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
         onClose();
         onDeleted();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['delete map failed'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [currentUser, map, onClose, onDeleted, dictionary]);
+  }, [map, onClose, onDeleted, dictionary]);
 
   return (
     <Dialog

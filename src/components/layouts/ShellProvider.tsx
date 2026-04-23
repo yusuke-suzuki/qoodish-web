@@ -15,18 +15,18 @@ type Props = {
 
 export default function ShellProvider({ children }: Props) {
   const { push } = useRouter();
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapOpen, setCreateMapOpen] = useState(false);
 
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const openCreateMap = useCallback(() => {
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
       return;
     }
     setCreateMapOpen(true);
-  }, [currentUser, setSignInRequired]);
+  }, [authenticated, setSignInRequired]);
 
   const handleCreatedMap = useCallback(
     (map: AppMap) => {

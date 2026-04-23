@@ -9,6 +9,7 @@ import {
   useState
 } from 'react';
 import type { Review } from '../../../types';
+import { likeReview, unlikeReview } from '../../actions/reviewLikes';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -18,14 +19,14 @@ type Props = {
 };
 
 export default memo(function LikeReviewButton({ review, onSaved }: Props) {
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const [checked, setChecked] = useState(review.liked);
 
   const dictionary = useDictionary();
 
   const handleChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      if (!currentUser) {
+      if (!authenticated) {
         setSignInRequired(true);
 
         return;
@@ -33,29 +34,12 @@ export default memo(function LikeReviewButton({ review, onSaved }: Props) {
 
       setChecked(event.target.checked);
 
-      const action = event.target.checked ? 'POST' : 'DELETE';
-
-      const token = await currentUser.getIdToken();
-
-      const headers = new Headers({
-        Accept: 'application/json',
-        'Accept-Language': window.navigator.language,
-        'Content-Type': 'application/json; charset=UTF-8',
-        Authorization: `Bearer ${token}`
-      });
-
-      const request = new Request(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/reviews/${review.id}/like`,
-        {
-          method: action,
-          headers: headers
-        }
-      );
-
       try {
-        const res = await fetch(request);
+        const result = event.target.checked
+          ? await likeReview(review.id)
+          : await unlikeReview(review.id);
 
-        if (res.ok) {
+        if (result.success) {
           const message = event.target.checked ? 'liked!' : 'unliked';
 
           enqueueSnackbar(dictionary[message], { variant: 'info' });
@@ -64,14 +48,13 @@ export default memo(function LikeReviewButton({ review, onSaved }: Props) {
             onSaved();
           }
         } else {
-          const body = await res.json();
-          enqueueSnackbar(body.detail, { variant: 'error' });
+          enqueueSnackbar(result.error, { variant: 'error' });
         }
       } catch (error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
     },
-    [currentUser, review, setSignInRequired, dictionary, onSaved]
+    [authenticated, review, setSignInRequired, dictionary, onSaved]
   );
 
   return (

@@ -7,12 +7,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
 import type { AppMap, Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import ProfileContext from '../../context/ProfileContext';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { useProfile } from '../../hooks/useProfile';
 import CreateReviewDialog from '../reviews/CreateReviewDialog';
 import CurrentPositionMarker from './CurrentPositionMarker';
 import CustomMapControls from './CustomMapControls';
@@ -50,8 +50,7 @@ function positionInBounds(
 function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser ? currentUser.uid : null);
+  const profile = useContext(ProfileContext);
 
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -147,10 +146,14 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     };
   }, [googleMap, handleIdle, handleMapClick, handleMapRightClick]);
 
+  const initializedRef = useRef(false);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: replace is intentionally omitted to prevent infinite loops.
   useEffect(() => {
     if (!googleMap || !map) return;
+    if (initializedRef.current) return;
 
+    initializedRef.current = true;
     replace(`${pathname}?lat=${map.latitude}&lng=${map.longitude}&zoom=17`, {
       scroll: false
     });
@@ -199,6 +202,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
           popoverId={reviewPopoverId}
           popoverOpen={popoverOpen}
           onPopoverClose={() => setPopoverAnchorEl(null)}
+          onSaved={onReviewSaved}
           onDeleted={handleReviewDeleted}
         />
       )}

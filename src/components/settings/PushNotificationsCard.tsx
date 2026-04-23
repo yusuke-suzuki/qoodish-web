@@ -21,10 +21,11 @@ import {
   useEffect,
   useState
 } from 'react';
+import { updatePushNotification } from '../../actions/users';
 import AuthContext from '../../context/AuthContext';
+import ProfileContext from '../../context/ProfileContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useProfile } from '../../hooks/useProfile';
 import { usePushManager } from '../../hooks/usePushManager';
 
 function PushNotificationsCard() {
@@ -34,8 +35,8 @@ function PushNotificationsCard() {
 
   const { isSubscribed, subscribe, unsubscribe } = usePushManager(registration);
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser ? currentUser.uid : null);
+  const { uid } = useContext(AuthContext);
+  const profile = useContext(ProfileContext);
 
   const [loading, setLoading] = useState(false);
   const [likedEnabled, setLikedEnabled] = useState(false);
@@ -66,47 +67,26 @@ function PushNotificationsCard() {
   const handleSave = useCallback(async () => {
     setLoading(true);
 
-    const params = {
-      liked: likedEnabled,
-      followed: followedEnabled,
-      comment: commentEnabled
-    };
-
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${currentUser.uid}/push_notification`,
-      {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(params)
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await updatePushNotification(uid, {
+        liked: likedEnabled,
+        followed: followedEnabled,
+        comment: commentEnabled
+      });
 
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['push update success'], {
           variant: 'success'
         });
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [currentUser, likedEnabled, followedEnabled, commentEnabled, dictionary]);
+  }, [uid, likedEnabled, followedEnabled, commentEnabled, dictionary]);
 
   useEffect(() => {
     if (profile?.push_notification) {

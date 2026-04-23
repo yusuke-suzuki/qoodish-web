@@ -1,13 +1,15 @@
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
+import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { useRecommendMaps } from '../../hooks/useRecommendMaps';
 import MapGridList from '../maps/MapGridList';
 
-function RecommendMaps() {
-  const { maps } = useRecommendMaps();
+type Props = {
+  maps?: AppMap[];
+};
 
+function RecommendMaps({ maps }: Props) {
   const dictionary = useDictionary();
 
   return (
@@ -27,7 +29,7 @@ function RecommendMaps() {
         </Button>
       </Box>
 
-      <MapGridList maps={maps} skeletonSize={2} cols={1} />
+      <MapGridList maps={maps ?? []} skeletonSize={2} cols={1} />
     </>
   );
 }

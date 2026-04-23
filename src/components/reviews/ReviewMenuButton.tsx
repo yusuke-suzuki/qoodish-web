@@ -45,7 +45,7 @@ export default memo(function ReviewMenuButton({
   onReportClick,
   hideDetail
 }: Props) {
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -75,13 +75,13 @@ export default memo(function ReviewMenuButton({
   const handleReportClick = useCallback(() => {
     setAnchorEl(null);
 
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
       return;
     }
 
     onReportClick(review);
-  }, [currentUser, review, onReportClick, setSignInRequired]);
+  }, [authenticated, review, onReportClick, setSignInRequired]);
 
   const handleEditClick = useCallback(() => {
     setAnchorEl(null);

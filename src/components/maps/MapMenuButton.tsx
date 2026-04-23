@@ -42,7 +42,7 @@ export default memo(function MapMenuButton({
   onDeleteClick,
   onReportClick
 }: Props) {
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -71,13 +71,13 @@ export default memo(function MapMenuButton({
   const handleReportClick = useCallback(() => {
     setAnchorEl(null);
 
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
       return;
     }
 
     onReportClick();
-  }, [currentUser, setSignInRequired, onReportClick]);
+  }, [authenticated, setSignInRequired, onReportClick]);
 
   const handleEditClick = useCallback(() => {
     setAnchorEl(null);

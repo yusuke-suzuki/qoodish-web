@@ -11,19 +11,11 @@ import {
   Toolbar,
   Typography
 } from '@mui/material';
-import debounce from 'lodash.debounce';
 import { useRouter } from 'next/navigation';
-import {
-  type ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { useMapPredictions } from '../../hooks/useMapPredictions';
+import { useMapSearch } from '../../hooks/useMapSearch';
 import AutocompleteListItem from '../common/AutocompleteListItem';
 import NoContents from '../common/NoContents';
 
@@ -37,22 +29,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
 
   const { push } = useRouter();
 
-  const [requestInput, setRequestInput] = useState('');
   const [inputValue, setInputValue] = useState('');
 
-  const { options } = useMapPredictions(requestInput);
-
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setRequestInput(e.target.value);
-    },
-    []
-  );
-
-  const debouncedHandleChange = useMemo(
-    () => debounce(handleChange, 500),
-    [handleChange]
-  );
+  const { options } = useMapSearch(inputValue);
 
   const handleMapClick = useCallback(
     (option: AppMap) => {
@@ -63,7 +42,6 @@ const SearchDialog = ({ open, onClose }: Props) => {
   );
 
   const handleExited = useCallback(() => {
-    setRequestInput('');
     setInputValue('');
   }, []);
 
@@ -89,7 +67,6 @@ const SearchDialog = ({ open, onClose }: Props) => {
             autoFocus
             onChange={(e) => {
               setInputValue(e.target.value);
-              debouncedHandleChange(e);
             }}
             value={inputValue}
             slotProps={{
