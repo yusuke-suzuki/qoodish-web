@@ -6,7 +6,7 @@ import {
   Popover,
   Typography
 } from '@mui/material';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 import type { Review } from '../../../types';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewMenuButton from '../reviews/ReviewMenuButton';
@@ -17,9 +17,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import AuthContext from '../../context/AuthContext';
-import { useProfile } from '../../hooks/useProfile';
-import { useReview } from '../../hooks/useReview';
+import ProfileContext from '../../context/ProfileContext';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
 import EditReviewDialog from '../reviews/EditReviewDialog';
@@ -31,6 +29,7 @@ type Props = {
   popoverId: string | undefined;
   popoverOpen: boolean;
   onPopoverClose: () => void;
+  onSaved: () => void;
   onDeleted: () => void;
 };
 
@@ -40,28 +39,16 @@ function ReviewPopover({
   popoverId,
   popoverOpen,
   onPopoverClose,
+  onSaved,
   onDeleted
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
-  const { review: mutableReview, mutate } = useReview(
-    currentReview?.map.id,
-    currentReview?.id
-  );
+  const profile = useContext(ProfileContext);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
 
-  const handleReviewSaved = useCallback(() => {
-    mutate();
-  }, [mutate]);
-
-  const handleReviewDeleted = useCallback(() => {
-    onDeleted();
-  }, [onDeleted]);
-
-  const review: Review = mutableReview || currentReview;
+  const review = currentReview;
 
   return (
     <>
@@ -122,9 +109,7 @@ function ReviewPopover({
           </Typography>
         </CardContent>
         <CardActions>
-          {review && (
-            <LikeReviewButton review={review} onSaved={handleReviewSaved} />
-          )}
+          {review && <LikeReviewButton review={review} onSaved={onSaved} />}
 
           <IconButton
             LinkComponent={Link}
@@ -140,14 +125,14 @@ function ReviewPopover({
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentReview={review}
-        onSaved={handleReviewSaved}
+        onSaved={onSaved}
       />
 
       <DeleteReviewDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         review={review}
-        onDeleted={handleReviewDeleted}
+        onDeleted={onDeleted}
       />
 
       <IssueDialog

@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { AppMap } from '../../../types';
+import { followMap } from '../../actions/mapFollowers';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -12,11 +13,11 @@ type Props = {
 
 function FollowButton({ map, onSaved }: Props) {
   const [loading, setLoading] = useState(false);
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const handleClick = useCallback(async () => {
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
 
       return;
@@ -24,42 +25,24 @@ function FollowButton({ map, onSaved }: Props) {
 
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps/${map?.id}/follow`,
-      {
-        method: 'POST',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await followMap(map?.id);
 
-      if (res.ok) {
+      if (result.success) {
         onSaved();
 
         enqueueSnackbar(dictionary['follow map success'], {
           variant: 'success'
         });
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
+  }, [map, authenticated, setSignInRequired, dictionary, onSaved]);
 
   return (
     <Button

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import NotificationsFeed from '../../../../components/notifications/NotificationsFeed';
+import { getNotifications } from '../../../../lib/users';
 import { getDictionary } from '../../../../utils/getDictionary';
 
 type Props = {
@@ -44,6 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function NotificationsPage() {
-  return <NotificationsFeed />;
+export default async function NotificationsPage({ params }: Props) {
+  const { lang } = await params;
+  const notifications = await getNotifications(lang);
+
+  return <NotificationsFeed initialNotifications={notifications} />;
 }

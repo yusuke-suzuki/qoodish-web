@@ -7,9 +7,9 @@ import {
   DialogTitle
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { Comment } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { deleteComment } from '../../actions/comments';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
@@ -20,7 +20,6 @@ type Props = {
 };
 
 const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
-  const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -28,27 +27,10 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
   const handleDeleteButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/reviews/${comment?.review_id}/comments/${comment?.id}`,
-      {
-        method: 'DELETE',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await deleteComment(comment?.review_id, comment?.id);
 
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['delete comment success'], {
           variant: 'success'
         });
@@ -56,8 +38,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
         onClose();
         onDeleted();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       console.error(error);
@@ -65,7 +46,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, comment, onClose, onDeleted, dictionary]);
+  }, [comment, onClose, onDeleted, dictionary]);
 
   return (
     <Dialog open={open} onClose={onClose}>

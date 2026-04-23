@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Timeline from '../../../components/home/Timeline';
 import TrendingReviews from '../../../components/home/TrendingReviews';
 import { getServerAuthState } from '../../../lib/auth';
-import { getPopularReviews } from '../../../lib/reviews';
+import { getPopularReviews, getTimelineReviews } from '../../../lib/reviews';
 import { getDictionary } from '../../../utils/getDictionary';
 
 type Props = {
@@ -50,11 +50,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
   const { lang } = await params;
   const { authenticated } = await getServerAuthState();
-  const popularReviews = authenticated ? [] : await getPopularReviews(lang);
 
-  return authenticated ? (
-    <Timeline />
-  ) : (
-    <TrendingReviews reviews={popularReviews} />
-  );
+  if (authenticated) {
+    const initialReviews = await getTimelineReviews();
+    return <Timeline initialReviews={initialReviews} />;
+  }
+
+  const popularReviews = await getPopularReviews(lang);
+  return <TrendingReviews reviews={popularReviews} />;
 }

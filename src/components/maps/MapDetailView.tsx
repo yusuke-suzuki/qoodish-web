@@ -2,11 +2,8 @@
 
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import type { AppMap, Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import { useMapReviews } from '../../hooks/useMapReviews';
-import { useProfile } from '../../hooks/useProfile';
+import { useCallback, useEffect, useState } from 'react';
+import type { AppMap, Follower, Profile, Review } from '../../../types';
 import IssueDialog from '../common/IssueDialog';
 import CustomOverlays from './CustomOverlays';
 import DeleteMapDialog from './DeleteMapDialog';
@@ -21,9 +18,17 @@ const summaryCardHeight = 360;
 
 type Props = {
   map: AppMap;
+  reviews: Review[];
+  followers: Follower[];
+  currentProfile: Profile | null;
 };
 
-export default function MapDetailView({ map }: Props) {
+export default function MapDetailView({
+  map,
+  reviews,
+  followers,
+  currentProfile
+}: Props) {
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
   const mdDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -39,11 +44,6 @@ export default function MapDetailView({ map }: Props) {
   const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [currentZoom, setCurrentZoom] = useState(17);
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
-
-  const { reviews, mutate: mutateReviews } = useMapReviews(Number(mapId));
-
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -52,8 +52,7 @@ export default function MapDetailView({ map }: Props) {
 
   const handleReviewSaved = useCallback(() => {
     router.refresh();
-    mutateReviews();
-  }, [router, mutateReviews]);
+  }, [router]);
 
   const handleReviewClick = useCallback((review: Review) => {
     setCurrentReview(review);
@@ -80,7 +79,9 @@ export default function MapDetailView({ map }: Props) {
       {mdDown && (
         <MobileMapDrawer
           map={map}
-          currentProfile={profile}
+          reviews={reviews}
+          followers={followers}
+          currentProfile={currentProfile}
           onEditClick={() => setEditDialogOpen(true)}
           onDeleteClick={() => setDeleteDialogOpen(true)}
           onReportClick={() => setIssueDialogOpen(true)}
@@ -107,7 +108,9 @@ export default function MapDetailView({ map }: Props) {
           <Box sx={{ width: summaryCardHeight, zIndex: 1, height: '100dvh' }}>
             <MapSummaryCard
               map={map}
-              currentProfile={profile}
+              reviews={reviews}
+              followers={followers}
+              currentProfile={currentProfile}
               onEditClick={() => setEditDialogOpen(true)}
               onDeleteClick={() => setDeleteDialogOpen(true)}
               onReportClick={() => setIssueDialogOpen(true)}

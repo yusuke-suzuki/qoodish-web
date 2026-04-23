@@ -13,13 +13,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useProfile } from '../../hooks/useProfile';
 import ProfileAvatar from '../common/ProfileAvatar';
 
 export default memo(function AccountMenuButton() {
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
+  const { authenticated, uid } = useContext(AuthContext);
+  const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const { push } = useRouter();
 
@@ -69,13 +69,13 @@ export default memo(function AccountMenuButton() {
 
           <ListItemText
             primary={profile ? profile.name : dictionary['anonymous user']}
-            secondary={currentUser?.email}
+            secondary={getAuth().currentUser?.email}
           />
         </ListItemButton>
 
         <Divider />
 
-        {currentUser && [
+        {authenticated && [
           <ListItemButton
             LinkComponent={Link}
             key="settings"
@@ -90,7 +90,7 @@ export default memo(function AccountMenuButton() {
           </ListItemButton>
         ]}
 
-        {currentUser ? (
+        {authenticated ? (
           <ListItemButton onClick={handleSignOutClick}>
             <ListItemIcon>
               <Logout fontSize="small" />

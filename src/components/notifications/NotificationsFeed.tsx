@@ -1,27 +1,27 @@
 'use client';
 
-import { Box, CircularProgress, List } from '@mui/material';
-import { useNotifications } from '../../hooks/useNotifications';
+import { List } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import type { Notification } from '../../../types';
 import NotificationList from './NotificationList';
 
-export default function NotificationsFeed() {
-  const { notifications, isLoading, mutate } = useNotifications();
+type Props = {
+  initialNotifications: Notification[];
+};
 
-  return isLoading ? (
-    <Box
-      sx={{
-        display: 'grid',
-        placeItems: 'center',
-        my: 2
-      }}
-    >
-      <CircularProgress />
-    </Box>
-  ) : (
+export default function NotificationsFeed({ initialNotifications }: Props) {
+  const router = useRouter();
+
+  const handleReadNotifications = useCallback(() => {
+    router.refresh();
+  }, [router]);
+
+  return (
     <List>
       <NotificationList
-        notifications={notifications}
-        onReadNotifications={mutate}
+        notifications={initialNotifications}
+        onReadNotifications={handleReadNotifications}
       />
     </List>
   );

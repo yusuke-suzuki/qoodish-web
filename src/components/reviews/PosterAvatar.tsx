@@ -2,13 +2,13 @@ import { Person } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { memo, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
-import { useProfile } from '../../hooks/useProfile';
+import ProfileContext from '../../context/ProfileContext';
 
 export default memo(function PosterAvatar() {
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
+  const { authenticated } = useContext(AuthContext);
+  const profile = useContext(ProfileContext);
 
-  if (!currentUser || !profile) {
+  if (!authenticated || !profile) {
     return (
       <Avatar>
         <Person />

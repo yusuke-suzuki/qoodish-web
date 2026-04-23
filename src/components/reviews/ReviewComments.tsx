@@ -14,8 +14,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { Comment } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import { useProfile } from '../../hooks/useProfile';
+import ProfileContext from '../../context/ProfileContext';
 import AuthorAvatar from '../common/AuthorAvatar';
 import IssueDialog from '../common/IssueDialog';
 import CommentMenuButton from './CommentMenuButton';
@@ -29,8 +28,7 @@ type Props = {
 const ReviewComments = ({ comments, onDeleted }: Props) => {
   const { lang } = useParams<{ lang: string }>();
 
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
+  const profile = useContext(ProfileContext);
 
   const [currentComment, setCurrentComment] = useState<Comment | null>(null);
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);

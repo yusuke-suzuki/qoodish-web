@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState } from 'react';
+import { deleteAccount } from '../../actions/users';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -21,7 +22,7 @@ type Props = {
 
 function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
   const dictionary = useDictionary();
-  const { currentUser } = useContext(AuthContext);
+  const { uid } = useContext(AuthContext);
 
   const [check, setCheck] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -40,27 +41,10 @@ function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
   const handleDeleteButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${currentUser.uid}`,
-      {
-        method: 'DELETE',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await deleteAccount(uid);
 
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['delete account success'], {
           variant: 'success'
         });
@@ -68,15 +52,14 @@ function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
         onClose();
         onDeleted();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [currentUser, dictionary, onClose, onDeleted]);
+  }, [uid, dictionary, onClose, onDeleted]);
 
   return (
     <Dialog

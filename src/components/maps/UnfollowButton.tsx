@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import type { AppMap, Profile } from '../../../types';
+import { unfollowMap } from '../../actions/mapFollowers';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -13,7 +14,7 @@ type Props = {
 
 function UnfollowButton({ map, currentProfile, onSaved }: Props) {
   const [loading, setLoading] = useState(false);
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const isAuthor = useMemo(() => {
@@ -21,7 +22,7 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
   }, [map, currentProfile]);
 
   const handleClick = useCallback(async () => {
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
 
       return;
@@ -29,42 +30,24 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
 
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/maps/${map?.id}/follow`,
-      {
-        method: 'DELETE',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await unfollowMap(map?.id);
 
-      if (res.ok) {
+      if (result.success) {
         onSaved();
 
         enqueueSnackbar(dictionary['unfollow map success'], {
           variant: 'success'
         });
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [map, currentUser, setSignInRequired, dictionary, onSaved]);
+  }, [map, authenticated, setSignInRequired, dictionary, onSaved]);
 
   return (
     <Button

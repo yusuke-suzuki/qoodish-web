@@ -9,6 +9,7 @@ import {
   CardContent,
   Typography
 } from '@mui/material';
+import { getAuth } from 'firebase/auth';
 import { memo, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -16,7 +17,7 @@ import ChangeEmailDialog from './ChangeEmailDialog';
 
 function AccountEmailCard() {
   const dictionary = useDictionary();
-  const { currentUser } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
   const [changeEmailDialogOpen, setChangeEmailDialogOpen] = useState(false);
 
   return (
@@ -38,7 +39,7 @@ function AccountEmailCard() {
               noWrap
               sx={{ flex: 1 }}
             >
-              {currentUser?.email ?? dictionary['not set']}
+              {getAuth().currentUser?.email ?? dictionary['not set']}
             </Typography>
           </Box>
         </CardContent>
@@ -48,7 +49,7 @@ function AccountEmailCard() {
             color="secondary"
             size="small"
             onClick={() => setChangeEmailDialogOpen(true)}
-            disabled={!currentUser}
+            disabled={!authenticated}
           >
             {dictionary['change email']}
           </Button>

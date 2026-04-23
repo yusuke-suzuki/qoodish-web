@@ -11,9 +11,7 @@ import {
 import Link from 'next/link';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import { useProfile } from '../../hooks/useProfile';
-import { useReview } from '../../hooks/useReview';
+import ProfileContext from '../../context/ProfileContext';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
 import EditReviewDialog from '../reviews/EditReviewDialog';
@@ -40,28 +38,18 @@ function ReviewDrawer({
   onSaved,
   onDeleted
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
-  const { profile } = useProfile(currentUser?.uid);
-  const { review: mutableReview, mutate } = useReview(
-    currentReview?.map.id,
-    currentReview?.id
-  );
+  const profile = useContext(ProfileContext);
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleReviewSaved = useCallback(() => {
-    mutate();
-    onSaved();
-  }, [mutate, onSaved]);
 
   const handleReviewDeleted = useCallback(() => {
     onClose();
     onDeleted();
   }, [onClose, onDeleted]);
 
-  const review = mutableReview || currentReview;
+  const review = currentReview;
 
   return (
     <>
@@ -158,7 +146,7 @@ function ReviewDrawer({
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentReview={review}
-        onSaved={handleReviewSaved}
+        onSaved={onSaved}
       />
       <DeleteReviewDialog
         open={deleteDialogOpen}

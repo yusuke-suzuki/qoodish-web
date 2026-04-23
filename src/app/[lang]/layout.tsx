@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import MiniDrawer from '../../components/layouts/MiniDrawer';
 import MobileAppBar from '../../components/layouts/MobileAppBar';
 import ShellProvider from '../../components/layouts/ShellProvider';
+import { getServerAuthState } from '../../lib/auth';
+import { getNotifications, getProfile } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
 import Providers from './Providers';
 
@@ -47,6 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
+  const { authenticated, uid, token } = await getServerAuthState();
+  const [profile, notifications] = await Promise.all([
+    authenticated && uid ? getProfile(uid, lang, token) : Promise.resolve(null),
+    authenticated ? getNotifications(lang) : Promise.resolve([])
+  ]);
 
   return (
     <html lang={lang}>
@@ -116,7 +123,13 @@ export default async function RootLayout({ children, params }: Props) {
         <meta name="theme-color" content="#ffc107" />
       </head>
       <body>
-        <Providers lang={lang}>
+        <Providers
+          lang={lang}
+          serverAuthenticated={authenticated}
+          serverUid={uid}
+          serverProfile={profile}
+          serverNotifications={notifications}
+        >
           <ShellProvider>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
               <MobileAppBar />

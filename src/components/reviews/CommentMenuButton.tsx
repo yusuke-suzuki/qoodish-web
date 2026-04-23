@@ -31,7 +31,7 @@ export default memo(function CommentMenuButton({
   currentProfile,
   onDeleteClick
 }: Props) {
-  const { currentUser, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -46,13 +46,13 @@ export default memo(function CommentMenuButton({
   const handleReportClick = useCallback(() => {
     setAnchorEl(null);
 
-    if (!currentUser) {
+    if (!authenticated) {
       setSignInRequired(true);
       return;
     }
 
     onReportClick(comment);
-  }, [currentUser, comment, onReportClick, setSignInRequired]);
+  }, [authenticated, comment, onReportClick, setSignInRequired]);
 
   const handleDeleteClick = useCallback(() => {
     setAnchorEl(null);

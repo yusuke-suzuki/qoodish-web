@@ -18,17 +18,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useEffect, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
+import NotificationsContext from '../../context/NotificationsContext';
+import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
-import { useNotifications } from '../../hooks/useNotifications';
-import { useProfile } from '../../hooks/useProfile';
 
 export default memo(function BottomNav() {
-  const { currentUser } = useContext(AuthContext);
+  const { authenticated, uid } = useContext(AuthContext);
   const { openCreateMap } = useContext(ShellContext);
 
-  const { profile } = useProfile(currentUser?.uid);
-  const { notifications } = useNotifications();
+  const profile = useContext(ProfileContext);
+  const notifications = useContext(NotificationsContext);
 
   const unreadNotifications = notifications.filter((notification) => {
     return notification.read === false;
@@ -55,7 +55,7 @@ export default memo(function BottomNav() {
     }
   }, [pathname]);
 
-  if (!currentUser) return null;
+  if (!authenticated) return null;
 
   return (
     <Box

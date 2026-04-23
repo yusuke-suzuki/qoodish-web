@@ -2,30 +2,51 @@
 
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Stack } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
+import { fetchMoreTimelineReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import { useReviewsInfinite } from '../../hooks/useReviewsInfinite';
 import IssueDialog from '../common/IssueDialog';
 import NoContents from '../common/NoContents';
 import TimelineReviewCard from './TimelineReviewCard';
+
+type Props = {
+  initialReviews: Review[];
+};
 
 type IssueReportOptions = {
   contentId: number | null;
   dialogOpen: boolean;
 };
 
-export default memo(function Timeline() {
+export default memo(function Timeline({ initialReviews }: Props) {
   const dictionary = useDictionary();
 
-  const { data, size, setSize, noMoreResults, isLoadingMore, isEmpty } =
-    useReviewsInfinite();
+  const [reviews, setReviews] = useState(initialReviews);
+  const [noMoreResults, setNoMoreResults] = useState(initialReviews.length < 1);
+  const [isPending, startTransition] = useTransition();
 
   const [issueReportOptions, setIssueReportOptions] =
     useState<IssueReportOptions>({
       contentId: null,
       dialogOpen: false
     });
+
+  const loadMore = useCallback(() => {
+    if (noMoreResults || isPending) return;
+
+    const lastReview = reviews[reviews.length - 1];
+    if (!lastReview) {
+      setNoMoreResults(true);
+      return;
+    }
+
+    startTransition(async () => {
+      const moreReviews = await fetchMoreTimelineReviews(lastReview.created_at);
+      setReviews((prev) => [...prev, ...moreReviews]);
+      setNoMoreResults(moreReviews.length < 1);
+    });
+  }, [reviews, noMoreResults, isPending]);
 
   const handleReportClick = useCallback((review: Review) => {
     setIssueReportOptions({
@@ -43,7 +64,7 @@ export default memo(function Timeline() {
 
   return (
     <>
-      {isEmpty && !isLoadingMore && (
+      {reviews.length < 1 && !isPending && (
         <NoContents
           message={dictionary['reports will see here']}
           icon={Reviews}
@@ -51,23 +72,16 @@ export default memo(function Timeline() {
       )}
 
       <Box sx={{ display: 'grid', gap: 3 }}>
-        {data?.map(
-          (reviews) =>
-            reviews.length > 0 && (
-              <Box key={reviews[0].id} sx={{ display: 'grid', gap: 3 }}>
-                {reviews.map((review) => (
-                  <TimelineReviewCard
-                    key={review.id}
-                    review={review}
-                    onReportClick={handleReportClick}
-                  />
-                ))}
-              </Box>
-            )
-        )}
+        {reviews.map((review) => (
+          <TimelineReviewCard
+            key={review.id}
+            review={review}
+            onReportClick={handleReportClick}
+          />
+        ))}
       </Box>
 
-      {isLoadingMore && (
+      {isPending && (
         <Box
           sx={{
             display: 'grid',
@@ -80,11 +94,8 @@ export default memo(function Timeline() {
       )}
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
-        {!isLoadingMore && !noMoreResults && size > 0 && (
-          <Button
-            onClick={() => setSize((currentState) => currentState + 1)}
-            color="secondary"
-          >
+        {!isPending && !noMoreResults && reviews.length > 0 && (
+          <Button onClick={loadMore} color="secondary">
             {dictionary['load more']}
           </Button>
         )}

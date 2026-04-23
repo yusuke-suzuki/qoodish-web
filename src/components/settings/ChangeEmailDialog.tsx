@@ -31,7 +31,7 @@ type ReauthStep = 'idle' | 'google' | 'emailLink' | 'emailLinkSent';
 function ChangeEmailDialog({ open, onClose }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
-  const { currentUser, providerData } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(true);
@@ -40,10 +40,14 @@ function ChangeEmailDialog({ open, onClose }: Props) {
   const [reauthStep, setReauthStep] = useState<ReauthStep>('idle');
   const [error, setError] = useState<string | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: authenticated triggers re-read of getAuth().currentUser
   const hasGoogleProvider = useMemo(
     () =>
-      providerData.some((p) => p.providerId === GoogleAuthProvider.PROVIDER_ID),
-    [providerData]
+      (getAuth().currentUser?.providerData ?? []).some(
+        (p) => p.providerId === GoogleAuthProvider.PROVIDER_ID
+      ),
+    [authenticated]
   );
 
   const handleEmailChange = useCallback((value: string, isValid: boolean) => {
@@ -74,17 +78,18 @@ function ChangeEmailDialog({ open, onClose }: Props) {
   const basePath = `/${lang ?? 'en'}`;
 
   const attemptEmailUpdate = useCallback(async () => {
-    if (!currentUser) return;
+    const firebaseUser = getAuth().currentUser;
+    if (!firebaseUser) return;
 
     const auth = getAuth();
     auth.languageCode = lang;
 
-    await verifyBeforeUpdateEmail(currentUser, email, {
+    await verifyBeforeUpdateEmail(firebaseUser, email, {
       url: `${window.location.origin}${basePath}/login`,
       handleCodeInApp: false
     });
     setSent(true);
-  }, [currentUser, email, lang, basePath]);
+  }, [email, lang, basePath]);
 
   const handleSend = useCallback(async () => {
     setLoading(true);
@@ -106,7 +111,8 @@ function ChangeEmailDialog({ open, onClose }: Props) {
   }, [attemptEmailUpdate, getErrorMessage, hasGoogleProvider]);
 
   const handleReauth = useCallback(async () => {
-    if (!currentUser) return;
+    const firebaseUser = getAuth().currentUser;
+    if (!firebaseUser) return;
 
     setLoading(true);
     setError(null);
@@ -115,7 +121,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     auth.languageCode = lang;
 
     try {
-      await reauthenticateWithPopup(currentUser, new GoogleAuthProvider());
+      await reauthenticateWithPopup(firebaseUser, new GoogleAuthProvider());
       setReauthStep('idle');
       await attemptEmailUpdate();
     } catch (err) {
@@ -128,10 +134,11 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, lang, attemptEmailUpdate, getErrorMessage]);
+  }, [lang, attemptEmailUpdate, getErrorMessage]);
 
   const handleSendReauthLink = useCallback(async () => {
-    if (!currentUser?.email) return;
+    const currentEmail = getAuth().currentUser?.email;
+    if (!currentEmail) return;
 
     setLoading(true);
     setError(null);
@@ -140,11 +147,11 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     auth.languageCode = lang;
 
     try {
-      window.localStorage.setItem('emailForReauth', currentUser.email);
+      window.localStorage.setItem('emailForReauth', currentEmail);
       window.localStorage.setItem('pendingEmailChange', email);
       window.localStorage.setItem('reauthForEmailChange', 'true');
 
-      await sendSignInLinkToEmail(auth, currentUser.email, {
+      await sendSignInLinkToEmail(auth, currentEmail, {
         url: `${window.location.origin}${basePath}/settings`,
         handleCodeInApp: true
       });
@@ -158,7 +165,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, email, lang, basePath, getErrorMessage]);
+  }, [email, lang, basePath, getErrorMessage]);
 
   const handleExited = useCallback(() => {
     setEmail('');
@@ -262,7 +269,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
             variant="contained"
             onClick={handleSend}
             color="secondary"
-            disabled={!email || !emailValid || !currentUser}
+            disabled={!email || !emailValid || !authenticated}
             loading={loading}
           >
             {dictionary['send verification email']}

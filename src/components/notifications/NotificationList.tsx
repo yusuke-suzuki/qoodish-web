@@ -13,8 +13,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useCallback, useContext, useEffect } from 'react';
+import { memo, useContext, useEffect, useMemo, useRef } from 'react';
 import type { Notification } from '../../../types';
+import { markNotificationAsRead } from '../../actions/notifications';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import sleep from '../../utils/sleep';
@@ -35,53 +36,35 @@ const NotificationList = ({
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
-  const { currentUser } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
 
-  const unreadNotifications = notifications.filter((notification) => {
-    return notification.read === false;
-  });
+  const unreadNotifications = useMemo(
+    () => notifications.filter((notification) => !notification.read),
+    [notifications]
+  );
 
-  const handleReadNotification = useCallback(async () => {
-    for (const notification of unreadNotifications) {
-      const token = await currentUser.getIdToken();
-
-      const headers = new Headers({
-        Accept: 'application/json',
-        'Accept-Language': window.navigator.language,
-        'Content-Type': 'application/json; charset=UTF-8',
-        Authorization: `Bearer ${token}`
-      });
-
-      const request = new Request(
-        `${process.env.NEXT_PUBLIC_API_ENDPOINT}/notifications/${notification.id}`,
-        {
-          method: 'PUT',
-          headers: headers,
-          body: JSON.stringify({
-            read: true
-          })
-        }
-      );
-
-      await fetch(request);
-
-      await sleep(3000);
-    }
-
-    onReadNotifications();
-  }, [unreadNotifications, currentUser, onReadNotifications]);
+  const didMarkRef = useRef(false);
 
   useEffect(() => {
-    if (!currentUser) {
+    if (
+      !authenticated ||
+      unreadNotifications.length < 1 ||
+      didMarkRef.current
+    ) {
       return;
     }
 
-    if (unreadNotifications.length < 1) {
-      return;
-    }
+    didMarkRef.current = true;
 
-    handleReadNotification();
-  }, [currentUser, unreadNotifications, handleReadNotification]);
+    (async () => {
+      for (const notification of unreadNotifications) {
+        await markNotificationAsRead(notification.id);
+        await sleep(3000);
+      }
+
+      onReadNotifications();
+    })();
+  }, [authenticated, unreadNotifications, onReadNotifications]);
 
   if (notifications.length < 1) {
     return (

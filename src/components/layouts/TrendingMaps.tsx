@@ -13,20 +13,16 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { usePopularMaps } from '../../hooks/usePopularMaps';
 import SkeletonTrendingList from './SkeletonTrendingList';
 
 type Props = {
   maps?: AppMap[];
 };
 
-const TrendingMaps = ({ maps: mapsProp }: Props) => {
+const TrendingMaps = ({ maps }: Props) => {
   const dictionary = useDictionary();
-  const { maps: swrMaps } = usePopularMaps();
 
-  const maps = mapsProp ?? swrMaps;
-
-  return maps.length < 1 ? (
+  return !maps || maps.length < 1 ? (
     <SkeletonTrendingList />
   ) : (
     <List

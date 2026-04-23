@@ -19,8 +19,10 @@ import {
   useMemo,
   useState
 } from 'react';
-import SWRContainer from '../../components/SWRContainer';
+import type { Notification, Profile } from '../../../types';
 import AuthProvider from '../../components/auth/AuthProvider';
+import NotificationsContext from '../../context/NotificationsContext';
+import ProfileContext from '../../context/ProfileContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
@@ -37,9 +39,20 @@ const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 type Props = {
   children: ReactNode;
   lang: string;
+  serverAuthenticated: boolean;
+  serverUid?: string;
+  serverProfile?: Profile | null;
+  serverNotifications?: Notification[];
 };
 
-export default function Providers({ children, lang }: Props) {
+export default function Providers({
+  children,
+  lang,
+  serverAuthenticated,
+  serverUid,
+  serverProfile,
+  serverNotifications
+}: Props) {
   const dictionary = useDictionary();
 
   const [registration, setRegistration] =
@@ -117,13 +130,18 @@ export default function Providers({ children, lang }: Props) {
             </Button>
           )}
         >
-          <AuthProvider>
-            <ServiceWorkerContext.Provider value={{ registration }}>
-              <SWRContainer>
-                <AnalyticsTracker />
-                {children}
-              </SWRContainer>
-            </ServiceWorkerContext.Provider>
+          <AuthProvider
+            serverAuthenticated={serverAuthenticated}
+            serverUid={serverUid ?? null}
+          >
+            <ProfileContext.Provider value={serverProfile ?? null}>
+              <NotificationsContext.Provider value={serverNotifications ?? []}>
+                <ServiceWorkerContext.Provider value={{ registration }}>
+                  <AnalyticsTracker />
+                  {children}
+                </ServiceWorkerContext.Provider>
+              </NotificationsContext.Provider>
+            </ProfileContext.Provider>
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>

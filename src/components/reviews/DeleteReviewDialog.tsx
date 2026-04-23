@@ -9,9 +9,9 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { deleteReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
@@ -22,7 +22,6 @@ type Props = {
 };
 
 const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
-  const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const [check, setCheck] = useState(false);
@@ -42,27 +41,10 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
   const handleDeleteButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/reviews/${review?.id}`,
-      {
-        method: 'DELETE',
-        headers: headers
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      const result = await deleteReview(review?.id);
 
-      if (res.ok) {
+      if (result.success) {
         enqueueSnackbar(dictionary['delete report success'], {
           variant: 'success'
         });
@@ -70,15 +52,14 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
         onClose();
         onDeleted();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
     } finally {
       setLoading(false);
     }
-  }, [currentUser, review, onClose, onDeleted, dictionary]);
+  }, [review, onClose, onDeleted, dictionary]);
 
   return (
     <Dialog

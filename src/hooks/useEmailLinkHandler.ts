@@ -4,7 +4,6 @@ import {
   type Auth,
   EmailAuthProvider,
   type User,
-  type UserInfo,
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
@@ -20,14 +19,12 @@ import useDictionary from './useDictionary';
 type Dictionary = { [key: string]: string };
 
 type Args = {
-  currentUser: User | null;
-  setProviderData: (data: UserInfo[]) => void;
+  isLoading: boolean;
 };
 
 async function linkEmailProvider(
-  currentUser: User,
+  user: User,
   currentUrl: string,
-  setProviderData: (data: UserInfo[]) => void,
   dictionary: Dictionary
 ) {
   const emailForLink = window.localStorage.getItem('emailForLink');
@@ -38,9 +35,8 @@ async function linkEmailProvider(
       emailForLink,
       currentUrl
     );
-    await linkWithCredential(currentUser, credential);
-    await currentUser.reload();
-    setProviderData([...currentUser.providerData]);
+    await linkWithCredential(user, credential);
+    await user.reload();
 
     window.localStorage.removeItem('emailForLink');
     window.localStorage.removeItem('linkProvider');
@@ -60,7 +56,7 @@ async function linkEmailProvider(
 }
 
 async function reauthAndChangeEmail(
-  currentUser: User,
+  user: User,
   currentUrl: string,
   basePath: string,
   dictionary: Dictionary
@@ -79,8 +75,8 @@ async function reauthAndChangeEmail(
       emailForReauth,
       currentUrl
     );
-    await reauthenticateWithCredential(currentUser, credential);
-    await verifyBeforeUpdateEmail(currentUser, pendingEmailChange, {
+    await reauthenticateWithCredential(user, credential);
+    await verifyBeforeUpdateEmail(user, pendingEmailChange, {
       url: `${window.location.origin}${basePath}/login`,
       handleCodeInApp: false
     });
@@ -118,10 +114,7 @@ async function completeEmailSignIn(
   }
 }
 
-export default function useEmailLinkHandler({
-  currentUser,
-  setProviderData
-}: Args) {
+export default function useEmailLinkHandler({ isLoading }: Args) {
   const params = useParams<{ lang: string }>();
   const dictionary = useDictionary();
   const handledRef = useRef(false);
@@ -130,6 +123,7 @@ export default function useEmailLinkHandler({
   const basePath = `/${lang}`;
 
   useEffect(() => {
+    if (isLoading) return;
     if (!getApps().length) return;
     if (handledRef.current) return;
 
@@ -138,19 +132,21 @@ export default function useEmailLinkHandler({
 
     if (!isSignInWithEmailLink(auth, currentUrl)) return;
 
+    const firebaseUser = auth.currentUser;
+
     if (window.localStorage.getItem('reauthForEmailChange') === 'true') {
-      if (currentUser) {
+      if (firebaseUser) {
         handledRef.current = true;
-        reauthAndChangeEmail(currentUser, currentUrl, basePath, dictionary);
+        reauthAndChangeEmail(firebaseUser, currentUrl, basePath, dictionary);
       }
     } else if (window.localStorage.getItem('linkProvider') === 'true') {
-      if (currentUser) {
+      if (firebaseUser) {
         handledRef.current = true;
-        linkEmailProvider(currentUser, currentUrl, setProviderData, dictionary);
+        linkEmailProvider(firebaseUser, currentUrl, dictionary);
       }
     } else {
       handledRef.current = true;
       completeEmailSignIn(auth, currentUrl, dictionary);
     }
-  }, [currentUser, setProviderData, basePath, dictionary]);
+  }, [isLoading, basePath, dictionary]);
 }

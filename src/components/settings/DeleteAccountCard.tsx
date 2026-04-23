@@ -18,7 +18,7 @@ function DeleteAccountCard() {
   const dictionary = useDictionary();
   const { push } = useRouter();
 
-  const { currentUser } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -44,7 +44,7 @@ function DeleteAccountCard() {
           <Button
             variant="outlined"
             onClick={() => setDeleteDialogOpen(true)}
-            disabled={!currentUser}
+            disabled={!authenticated}
             color="error"
           >
             {dictionary.delete}

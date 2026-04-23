@@ -12,9 +12,9 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import type { Profile } from '../../../types';
-import AuthContext from '../../context/AuthContext';
+import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
 import uploadToStorage from '../../utils/uploadToStorage';
 import AddPhotoButton from '../common/AddPhotoButton';
@@ -32,7 +32,7 @@ type Props = {
   currentProfile: Profile | null;
   open: boolean;
   onClose: () => void;
-  onSaved: (profile: Profile) => void;
+  onSaved: () => void;
 };
 
 export default memo(function EditProfileDialog({
@@ -41,7 +41,6 @@ export default memo(function EditProfileDialog({
   onClose,
   onSaved
 }: Props) {
-  const { currentUser } = useContext(AuthContext);
   const dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
@@ -62,54 +61,35 @@ export default memo(function EditProfileDialog({
   const handleEditButtonClick = useCallback(async () => {
     setLoading(true);
 
-    const params = {
-      name: name,
-      biography: biography
-    };
-
-    const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
-
-    if (url && url.protocol === 'data:') {
-      const fileName = `profile/${self.crypto.randomUUID()}.jpg`;
-      const url = await uploadToStorage(thumbnailDataUrl, fileName, 'data_url');
-
-      Object.assign(params, {
-        image_path: url
-      });
-    }
-
-    const token = await currentUser.getIdToken();
-
-    const headers = new Headers({
-      Accept: 'application/json',
-      'Accept-Language': window.navigator.language,
-      'Content-Type': 'application/json; charset=UTF-8',
-      Authorization: `Bearer ${token}`
-    });
-
-    const request = new Request(
-      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${currentProfile?.id}`,
-      {
-        method: 'PUT',
-        headers: headers,
-        body: JSON.stringify(params)
-      }
-    );
-
     try {
-      const res = await fetch(request);
+      let imagePath: string | undefined;
 
-      if (res.ok) {
+      const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
+
+      if (url && url.protocol === 'data:') {
+        const fileName = `profile/${self.crypto.randomUUID()}.jpg`;
+        imagePath = await uploadToStorage(
+          thumbnailDataUrl,
+          fileName,
+          'data_url'
+        );
+      }
+
+      const result = await updateProfile(currentProfile?.id, {
+        name,
+        biography,
+        image_path: imagePath
+      });
+
+      if (result.success) {
         enqueueSnackbar(dictionary['edit profile success'], {
           variant: 'success'
         });
-        const body = await res.json();
 
         onClose();
-        onSaved(body);
+        onSaved();
       } else {
-        const body = await res.json();
-        enqueueSnackbar(body.detail, { variant: 'error' });
+        enqueueSnackbar(result.error, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
@@ -121,7 +101,6 @@ export default memo(function EditProfileDialog({
     name,
     biography,
     thumbnailDataUrl,
-    currentUser,
     onClose,
     onSaved,
     dictionary
