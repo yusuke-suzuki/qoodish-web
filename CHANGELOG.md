@@ -1,5 +1,28 @@
 # Changelog
 
+## [5.0.0](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.2...v5.0.0) (2026-04-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* AuthContext no longer exposes currentUser, setCurrentUser, providerData, or setProviderData.
+
+### Features
+
+* add server-side auth and data fetching ([6b04c65](https://github.com/yusuke-suzuki/qoodish-web/commit/6b04c650e362850a1027201099a8df89163e1d19))
+* migrate guest fetching to Server Components ([63d06e3](https://github.com/yusuke-suzuki/qoodish-web/commit/63d06e389dedce992e0937da4854d1dcf0959107)), closes [#1044](https://github.com/yusuke-suzuki/qoodish-web/issues/1044)
+* migrate Pages Router to App Router ([041e55a](https://github.com/yusuke-suzuki/qoodish-web/commit/041e55a6edaa29e5cb3d047182280e2f3b7019c1))
+
+
+### Bug Fixes
+
+* init Firebase at module load in AuthProvider ([d7eacca](https://github.com/yusuke-suzuki/qoodish-web/commit/d7eaccadcf581da555de599663c881c4f1b640fe)), closes [#1040](https://github.com/yusuke-suzuki/qoodish-web/issues/1040)
+
+
+### Code Refactoring
+
+* replace SWR with BFF pattern ([d5ea860](https://github.com/yusuke-suzuki/qoodish-web/commit/d5ea8608716e8db4f37b4f5c5b56ec26e3157482))
+
 ## [4.0.2](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.1...v4.0.2) (2026-03-23)
 
 
