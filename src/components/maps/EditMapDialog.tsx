@@ -12,7 +12,14 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState, useTransition } from 'react';
+import {
+  memo,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import type { AppMap } from '../../../types';
 import { updateMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -37,6 +44,9 @@ type Props = {
   currentMap: AppMap | null;
 };
 
+type FormState = { error: string | null };
+const initialState: FormState = { error: null };
+
 export default memo(function EditMapDialog({
   open,
   onClose,
@@ -45,7 +55,6 @@ export default memo(function EditMapDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -76,8 +85,12 @@ export default memo(function EditMapDialog({
     []
   );
 
-  const handleEditButtonClick = useCallback(() => {
-    startTransition(async () => {
+  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+    async (_prevState, _formData) => {
+      if (!currentMap || !position) {
+        return { error: dictionary['an error occurred'] };
+      }
+
       try {
         let imageUrl: string | undefined;
 
@@ -92,7 +105,7 @@ export default memo(function EditMapDialog({
           );
         }
 
-        const result = await updateMap(currentMap?.id, {
+        const result = await updateMap(currentMap.id, {
           name,
           description,
           latitude: position.lat,
@@ -109,25 +122,22 @@ export default memo(function EditMapDialog({
 
           onClose();
           onSaved(result.data);
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
+          return { error: null };
         }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+
+        return { error: result.error ?? dictionary['an error occurred'] };
+      } catch (_error) {
+        return { error: dictionary['an error occurred'] };
       }
-    });
-  }, [
-    name,
-    description,
-    thumbnailDataUrl,
-    position,
-    isPrivate,
-    isShared,
-    currentMap,
-    onClose,
-    onSaved,
-    dictionary
-  ]);
+    },
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.error) {
+      enqueueSnackbar(state.error, { variant: 'error' });
+    }
+  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);
@@ -174,73 +184,80 @@ export default memo(function EditMapDialog({
         transition: { onEnter: setCurrentThumbnail, onExited: handleExited }
       }}
     >
-      <DialogTitle>{dictionary['edit map']}</DialogTitle>
-      <DialogContent dividers>
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {dictionary.thumbnail}
-        </Typography>
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['edit map']}</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+            {dictionary.thumbnail}
+          </Typography>
 
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          width="fit-content"
-          position="relative"
-          sx={{
-            mb: 2
-          }}
-        >
-          {thumbnailDataUrl ? (
-            <CardMedia
-              sx={{ width: 160, height: 160 }}
-              image={thumbnailDataUrl}
-            />
-          ) : (
-            <Skeleton
-              sx={{ width: 160, height: 160 }}
-              variant="rectangular"
-              animation={false}
-            />
-          )}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width="fit-content"
+            position="relative"
+            sx={{
+              mb: 2
+            }}
+          >
+            {thumbnailDataUrl ? (
+              <CardMedia
+                sx={{ width: 160, height: 160 }}
+                image={thumbnailDataUrl}
+              />
+            ) : (
+              <Skeleton
+                sx={{ width: 160, height: 160 }}
+                variant="rectangular"
+                animation={false}
+              />
+            )}
 
-          <Box position="absolute">
-            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            <Box position="absolute">
+              <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            </Box>
           </Box>
-        </Box>
 
-        <MapNameForm onChange={setName} defaultValue={currentMap?.name} />
-        <MapDescriptionForm
-          onChange={setDescription}
-          defaultValue={currentMap?.description}
-        />
-
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {dictionary['center of map']}
-        </Typography>
-
-        <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
-
-        <Box>
-          <MapOptions
-            currentMap={currentMap}
-            onChange={handleMapOptionsChange}
+          <MapNameForm onChange={setName} defaultValue={currentMap?.name} />
+          <MapDescriptionForm
+            onChange={setDescription}
+            defaultValue={currentMap?.description}
           />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isPending} color="inherit">
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleEditButtonClick}
-          color="secondary"
-          disabled={disabled}
-          loading={isPending}
-        >
-          {dictionary.save}
-        </Button>
-      </DialogActions>
+
+          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+            {dictionary['center of map']}
+          </Typography>
+
+          <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
+
+          <Box>
+            <MapOptions
+              currentMap={currentMap}
+              onChange={handleMapOptionsChange}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={onClose}
+            disabled={isPending}
+            color="inherit"
+          >
+            {dictionary.cancel}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={disabled}
+            loading={isPending}
+          >
+            {dictionary.save}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 });

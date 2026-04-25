@@ -12,7 +12,14 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState, useTransition } from 'react';
+import {
+  memo,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import type { Profile } from '../../../types';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
@@ -35,6 +42,9 @@ type Props = {
   onSaved: () => void;
 };
 
+type FormState = { error: string | null };
+const initialState: FormState = { error: null };
+
 export default memo(function EditProfileDialog({
   currentProfile,
   open,
@@ -43,7 +53,6 @@ export default memo(function EditProfileDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -58,8 +67,12 @@ export default memo(function EditProfileDialog({
     }
   }, []);
 
-  const handleEditButtonClick = useCallback(() => {
-    startTransition(async () => {
+  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+    async (_prevState, _formData) => {
+      if (!currentProfile) {
+        return { error: dictionary['an error occurred'] };
+      }
+
       try {
         let imagePath: string | undefined;
 
@@ -74,7 +87,7 @@ export default memo(function EditProfileDialog({
           );
         }
 
-        const result = await updateProfile(currentProfile?.id, {
+        const result = await updateProfile(currentProfile.id, {
           name,
           biography,
           image_path: imagePath
@@ -87,22 +100,22 @@ export default memo(function EditProfileDialog({
 
           onClose();
           onSaved();
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
+          return { error: null };
         }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+
+        return { error: result.error ?? dictionary['an error occurred'] };
+      } catch (_error) {
+        return { error: dictionary['an error occurred'] };
       }
-    });
-  }, [
-    currentProfile,
-    name,
-    biography,
-    thumbnailDataUrl,
-    onClose,
-    onSaved,
-    dictionary
-  ]);
+    },
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.error) {
+      enqueueSnackbar(state.error, { variant: 'error' });
+    }
+  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);
@@ -135,63 +148,70 @@ export default memo(function EditProfileDialog({
         transition: { onEnter: setCurrentThumbnail, onExited: handleExited }
       }}
     >
-      <DialogTitle>{dictionary['edit profile']}</DialogTitle>
-      <DialogContent dividers>
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {dictionary.thumbnail}
-        </Typography>
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['edit profile']}</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+            {dictionary.thumbnail}
+          </Typography>
 
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          width="fit-content"
-          position="relative"
-          sx={{
-            mb: 2
-          }}
-        >
-          {thumbnailDataUrl ? (
-            <CardMedia
-              sx={{ width: 160, height: 160 }}
-              image={thumbnailDataUrl}
-            />
-          ) : (
-            <Skeleton
-              sx={{ width: 160, height: 160 }}
-              variant="rectangular"
-              animation={false}
-            />
-          )}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width="fit-content"
+            position="relative"
+            sx={{
+              mb: 2
+            }}
+          >
+            {thumbnailDataUrl ? (
+              <CardMedia
+                sx={{ width: 160, height: 160 }}
+                image={thumbnailDataUrl}
+              />
+            ) : (
+              <Skeleton
+                sx={{ width: 160, height: 160 }}
+                variant="rectangular"
+                animation={false}
+              />
+            )}
 
-          <Box position="absolute">
-            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            <Box position="absolute">
+              <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            </Box>
           </Box>
-        </Box>
 
-        <ProfileNameForm
-          onChange={setName}
-          defaultValue={currentProfile?.name}
-        />
-        <BiographyForm
-          onChange={setBiography}
-          defaultValue={currentProfile?.biography}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isPending} color="inherit">
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleEditButtonClick}
-          color="secondary"
-          disabled={disabled}
-          loading={isPending}
-        >
-          {dictionary.save}
-        </Button>
-      </DialogActions>
+          <ProfileNameForm
+            onChange={setName}
+            defaultValue={currentProfile?.name}
+          />
+          <BiographyForm
+            onChange={setBiography}
+            defaultValue={currentProfile?.biography}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={onClose}
+            disabled={isPending}
+            color="inherit"
+          >
+            {dictionary.cancel}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={disabled}
+            loading={isPending}
+          >
+            {dictionary.save}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 });
