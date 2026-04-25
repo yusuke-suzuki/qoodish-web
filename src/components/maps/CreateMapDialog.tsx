@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition } from 'react';
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -43,7 +43,7 @@ export default memo(function CreateMapDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -74,46 +74,44 @@ export default memo(function CreateMapDialog({
     []
   );
 
-  const handleCreateButtonClick = useCallback(async () => {
-    setLoading(true);
+  const handleCreateButtonClick = useCallback(() => {
+    startTransition(async () => {
+      try {
+        let imageUrl: string | undefined;
 
-    try {
-      let imageUrl: string | undefined;
+        if (thumbnailDataUrl) {
+          const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
+          imageUrl = await uploadToStorage(
+            thumbnailDataUrl,
+            fileName,
+            'data_url'
+          );
+        }
 
-      if (thumbnailDataUrl) {
-        const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
-        imageUrl = await uploadToStorage(
-          thumbnailDataUrl,
-          fileName,
-          'data_url'
-        );
-      }
-
-      const result = await createMap({
-        name,
-        description,
-        latitude: position.lat,
-        longitude: position.lng,
-        private: isPrivate,
-        shared: isShared,
-        image_url: imageUrl
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['create map success'], {
-          variant: 'success'
+        const result = await createMap({
+          name,
+          description,
+          latitude: position.lat,
+          longitude: position.lng,
+          private: isPrivate,
+          shared: isShared,
+          image_url: imageUrl
         });
 
-        onClose();
-        onSaved(result.data);
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+        if (result.success) {
+          enqueueSnackbar(dictionary['create map success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved(result.data);
+        } else {
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [
     name,
     description,
@@ -189,11 +187,7 @@ export default memo(function CreateMapDialog({
           )}
 
           <Box position="absolute">
-            <AddPhotoButton
-              id="map-thumbnail-input"
-              onChange={handleImagesChange}
-              color="inherit"
-            />
+            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
           </Box>
         </Box>
 
@@ -211,7 +205,7 @@ export default memo(function CreateMapDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
+        <Button onClick={onClose} disabled={isPending} color="inherit">
           {dictionary.cancel}
         </Button>
         <Button
@@ -219,7 +213,7 @@ export default memo(function CreateMapDialog({
           onClick={handleCreateButtonClick}
           color="secondary"
           disabled={disabled}
-          loading={loading}
+          loading={isPending}
         >
           {dictionary.save}
         </Button>

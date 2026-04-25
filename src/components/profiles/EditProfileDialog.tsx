@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition } from 'react';
 import type { Profile } from '../../../types';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
@@ -43,7 +43,7 @@ export default memo(function EditProfileDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -58,44 +58,42 @@ export default memo(function EditProfileDialog({
     }
   }, []);
 
-  const handleEditButtonClick = useCallback(async () => {
-    setLoading(true);
+  const handleEditButtonClick = useCallback(() => {
+    startTransition(async () => {
+      try {
+        let imagePath: string | undefined;
 
-    try {
-      let imagePath: string | undefined;
+        const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
 
-      const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
+        if (url && url.protocol === 'data:') {
+          const fileName = `profile/${self.crypto.randomUUID()}.jpg`;
+          imagePath = await uploadToStorage(
+            thumbnailDataUrl,
+            fileName,
+            'data_url'
+          );
+        }
 
-      if (url && url.protocol === 'data:') {
-        const fileName = `profile/${self.crypto.randomUUID()}.jpg`;
-        imagePath = await uploadToStorage(
-          thumbnailDataUrl,
-          fileName,
-          'data_url'
-        );
-      }
-
-      const result = await updateProfile(currentProfile?.id, {
-        name,
-        biography,
-        image_path: imagePath
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['edit profile success'], {
-          variant: 'success'
+        const result = await updateProfile(currentProfile?.id, {
+          name,
+          biography,
+          image_path: imagePath
         });
 
-        onClose();
-        onSaved();
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+        if (result.success) {
+          enqueueSnackbar(dictionary['edit profile success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved();
+        } else {
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [
     currentProfile,
     name,
@@ -167,11 +165,7 @@ export default memo(function EditProfileDialog({
           )}
 
           <Box position="absolute">
-            <AddPhotoButton
-              id="profile-thumbnail-input"
-              onChange={handleImagesChange}
-              color="inherit"
-            />
+            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
           </Box>
         </Box>
 
@@ -185,7 +179,7 @@ export default memo(function EditProfileDialog({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
+        <Button onClick={onClose} disabled={isPending} color="inherit">
           {dictionary.cancel}
         </Button>
         <Button
@@ -193,7 +187,7 @@ export default memo(function EditProfileDialog({
           onClick={handleEditButtonClick}
           color="secondary"
           disabled={disabled}
-          loading={loading}
+          loading={isPending}
         >
           {dictionary.save}
         </Button>

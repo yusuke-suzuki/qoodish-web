@@ -6,7 +6,8 @@ import {
   memo,
   useCallback,
   useContext,
-  useState
+  useState,
+  useTransition
 } from 'react';
 import type { Review } from '../../../types';
 import { likeReview, unlikeReview } from '../../actions/reviewLikes';
@@ -20,53 +21,58 @@ type Props = {
 
 export default memo(function LikeReviewButton({ review, onSaved }: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
-  const [checked, setChecked] = useState(review.liked);
-
   const dictionary = useDictionary();
 
+  const [checked, setChecked] = useState(review.liked);
+  const [isPending, startTransition] = useTransition();
+
   const handleChange = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       if (!authenticated) {
         setSignInRequired(true);
-
         return;
       }
 
-      setChecked(event.target.checked);
+      const next = event.target.checked;
+      setChecked(next);
 
-      try {
-        const result = event.target.checked
-          ? await likeReview(review.id)
-          : await unlikeReview(review.id);
+      startTransition(async () => {
+        try {
+          const result = next
+            ? await likeReview(review.id)
+            : await unlikeReview(review.id);
 
-        if (result.success) {
-          const message = event.target.checked ? 'liked!' : 'unliked';
+          if (result.success) {
+            const message = next ? 'liked!' : 'unliked';
+            enqueueSnackbar(dictionary[message], { variant: 'info' });
 
-          enqueueSnackbar(dictionary[message], { variant: 'info' });
-
-          if (onSaved) {
-            onSaved();
+            if (onSaved) {
+              onSaved();
+            }
+          } else {
+            setChecked(!next);
+            enqueueSnackbar(result.error, { variant: 'error' });
           }
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
+        } catch (_error) {
+          setChecked(!next);
+          enqueueSnackbar(dictionary['an error occurred'], {
+            variant: 'error'
+          });
         }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      }
+      });
     },
     [authenticated, review, setSignInRequired, dictionary, onSaved]
   );
 
   return (
     <Tooltip
-      title={
-        review.liked ? dictionary['button unlike'] : dictionary['button like']
-      }
+      title={checked ? dictionary['button unlike'] : dictionary['button like']}
     >
       <Checkbox
         icon={<FavoriteBorder />}
         checkedIcon={<Favorite />}
         checked={checked}
+        disabled={isPending}
         onChange={handleChange}
       />
     </Tooltip>

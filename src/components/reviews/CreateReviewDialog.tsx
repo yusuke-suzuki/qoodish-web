@@ -9,7 +9,7 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition } from 'react';
 import type { AppMap } from '../../../types';
 import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -50,7 +50,7 @@ export default memo(function CreateReviewDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
@@ -89,42 +89,40 @@ export default memo(function CreateReviewDialog({
     [dataUrls]
   );
 
-  const handleCreateButtonClick = useCallback(async () => {
-    setLoading(true);
+  const handleCreateButtonClick = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const photos = [];
 
-    try {
-      const photos = [];
+        for (const dataUrl of dataUrls) {
+          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
 
-      for (const dataUrl of dataUrls) {
-        const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-        const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+          photos.push({ url: url });
+        }
 
-        photos.push({ url: url });
-      }
-
-      const result = await createReview(map?.id, {
-        name,
-        comment,
-        latitude: position.lat,
-        longitude: position.lng,
-        images: photos
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['create review success'], {
-          variant: 'success'
+        const result = await createReview(map?.id, {
+          name,
+          comment,
+          latitude: position.lat,
+          longitude: position.lng,
+          images: photos
         });
 
-        onClose();
-        onSaved();
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+        if (result.success) {
+          enqueueSnackbar(dictionary['create review success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved();
+        } else {
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [map, name, comment, position, dataUrls, onClose, onSaved, dictionary]);
 
   const defaultPositionFromPlace = useMemo(() => {
@@ -202,11 +200,7 @@ export default memo(function CreateReviewDialog({
           gridTemplateColumns: '1fr auto'
         }}
       >
-        <AddPhotoButton
-          id="review-image-input"
-          onChange={handleImagesChange}
-          multiple
-        />
+        <AddPhotoButton onChange={handleImagesChange} multiple />
 
         <Box
           sx={{
@@ -215,7 +209,7 @@ export default memo(function CreateReviewDialog({
             gap: 1
           }}
         >
-          <Button onClick={onClose} disabled={loading} color="inherit">
+          <Button onClick={onClose} disabled={isPending} color="inherit">
             {dictionary.cancel}
           </Button>
           <Button
@@ -223,7 +217,7 @@ export default memo(function CreateReviewDialog({
             onClick={handleCreateButtonClick}
             color="secondary"
             disabled={disabled}
-            loading={loading}
+            loading={isPending}
           >
             {dictionary.save}
           </Button>

@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useContext, useState, useTransition } from 'react';
 import type { AppMap } from '../../../types';
 import { followMap } from '../../actions/mapFollowers';
 import AuthContext from '../../context/AuthContext';
@@ -12,46 +12,49 @@ type Props = {
 };
 
 function FollowButton({ map, onSaved }: Props) {
-  const [loading, setLoading] = useState(false);
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
-  const handleClick = useCallback(async () => {
+  const [following, setFollowing] = useState(map?.following ?? false);
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = useCallback(() => {
     if (!authenticated) {
       setSignInRequired(true);
-
       return;
     }
 
-    setLoading(true);
+    setFollowing(true);
 
-    try {
-      const result = await followMap(map?.id);
+    startTransition(async () => {
+      try {
+        const result = await followMap(map?.id);
 
-      if (result.success) {
-        onSaved();
+        if (result.success) {
+          onSaved();
 
-        enqueueSnackbar(dictionary['follow map success'], {
-          variant: 'success'
-        });
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+          enqueueSnackbar(dictionary['follow map success'], {
+            variant: 'success'
+          });
+        } else {
+          setFollowing(false);
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (_error) {
+        setFollowing(false);
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [map, authenticated, setSignInRequired, dictionary, onSaved]);
 
   return (
     <Button
-      loading={loading}
+      loading={isPending}
       variant="contained"
       color="secondary"
       size="medium"
       fullWidth
-      disabled={!map || map.following}
+      disabled={!map || following}
       onClick={handleClick}
     >
       {dictionary.follow}
