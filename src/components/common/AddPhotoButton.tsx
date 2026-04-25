@@ -1,10 +1,9 @@
 import { AddAPhoto } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useId, useState } from 'react';
 import fileToDataUrl from '../../utils/fileToDataUrl';
 
 type Props = {
-  id: string;
   onChange: (dataUrls: string[]) => void;
   disabled?: boolean;
   multiple?: boolean;
@@ -12,12 +11,12 @@ type Props = {
 };
 
 export default memo(function AddPhotoButton({
-  id,
   onChange,
   disabled,
   multiple,
   color
 }: Props) {
+  const inputId = useId();
   const [dataUrls, setDataUrls] = useState<string[] | undefined>(undefined);
 
   const handleImageFilesChange = useCallback(async (e) => {
@@ -44,12 +43,12 @@ export default memo(function AddPhotoButton({
         accept="image/*"
         style={{ display: 'none' }}
         multiple={!!multiple}
-        id={id}
+        id={inputId}
         type="file"
         onChange={handleImageFilesChange}
       />
 
-      <label htmlFor={id}>
+      <label htmlFor={inputId}>
         <IconButton component="span" size="small" disabled={disabled}>
           <AddAPhoto color={color ? color : 'secondary'} />
         </IconButton>

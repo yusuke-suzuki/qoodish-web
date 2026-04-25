@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useDeferredValue, useState } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useMapSearch } from '../../hooks/useMapSearch';
@@ -30,8 +30,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const { push } = useRouter();
 
   const [inputValue, setInputValue] = useState('');
+  const deferredInputValue = useDeferredValue(inputValue);
 
-  const { options } = useMapSearch(inputValue);
+  const { options } = useMapSearch(deferredInputValue);
 
   const handleMapClick = useCallback(
     (option: AppMap) => {

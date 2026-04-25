@@ -9,7 +9,7 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -42,7 +42,7 @@ export default memo(function EditReviewDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [dataUrls, setDataUrls] = useState<string[]>([]);
@@ -76,48 +76,46 @@ export default memo(function EditReviewDialog({
     [dataUrls]
   );
 
-  const handleSaveClick = useCallback(async () => {
-    setLoading(true);
+  const handleSaveClick = useCallback(() => {
+    startTransition(async () => {
+      try {
+        const photos = [];
 
-    try {
-      const photos = [];
+        for (const dataUrl of dataUrls) {
+          const url = new URL(dataUrl);
 
-      for (const dataUrl of dataUrls) {
-        const url = new URL(dataUrl);
+          if (url.protocol === 'data:') {
+            const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+            const url = await uploadToStorage(dataUrl, fileName, 'data_url');
 
-        if (url.protocol === 'data:') {
-          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
-
-          photos.push({ url: url });
-        } else {
-          photos.push({ url: dataUrl });
+            photos.push({ url: url });
+          } else {
+            photos.push({ url: dataUrl });
+          }
         }
-      }
 
-      const result = await updateReview(currentReview?.id, {
-        name,
-        comment,
-        latitude: position.lat,
-        longitude: position.lng,
-        images: photos
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['edit review success'], {
-          variant: 'success'
+        const result = await updateReview(currentReview?.id, {
+          name,
+          comment,
+          latitude: position.lat,
+          longitude: position.lng,
+          images: photos
         });
 
-        onClose();
-        onSaved();
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+        if (result.success) {
+          enqueueSnackbar(dictionary['edit review success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved();
+        } else {
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [
     name,
     comment,
@@ -186,11 +184,7 @@ export default memo(function EditReviewDialog({
           gridTemplateColumns: '1fr auto'
         }}
       >
-        <AddPhotoButton
-          id="review-image-input"
-          onChange={handleImagesChange}
-          multiple
-        />
+        <AddPhotoButton onChange={handleImagesChange} multiple />
 
         <Box
           sx={{
@@ -199,7 +193,7 @@ export default memo(function EditReviewDialog({
             gap: 1
           }}
         >
-          <Button onClick={onClose} disabled={loading} color="inherit">
+          <Button onClick={onClose} disabled={isPending} color="inherit">
             {dictionary.cancel}
           </Button>
           <Button
@@ -207,7 +201,7 @@ export default memo(function EditReviewDialog({
             onClick={handleSaveClick}
             color="secondary"
             disabled={disabled}
-            loading={loading}
+            loading={isPending}
           >
             {dictionary.save}
           </Button>

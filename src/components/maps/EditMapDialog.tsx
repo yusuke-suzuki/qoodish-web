@@ -12,7 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition } from 'react';
 import type { AppMap } from '../../../types';
 import { updateMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -45,7 +45,7 @@ export default memo(function EditMapDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -76,46 +76,46 @@ export default memo(function EditMapDialog({
     []
   );
 
-  const handleEditButtonClick = useCallback(async () => {
-    setLoading(true);
+  const handleEditButtonClick = useCallback(() => {
+    startTransition(async () => {
+      try {
+        let imageUrl: string | undefined;
 
-    try {
-      let imageUrl: string | undefined;
+        const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
 
-      const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
+        if (url && url.protocol === 'data:') {
+          const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
+          imageUrl = await uploadToStorage(
+            thumbnailDataUrl,
+            fileName,
+            'data_url'
+          );
+        }
 
-      if (url && url.protocol === 'data:') {
-        const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
-        imageUrl = await uploadToStorage(
-          thumbnailDataUrl,
-          fileName,
-          'data_url'
-        );
+        const result = await updateMap(currentMap?.id, {
+          name,
+          description,
+          latitude: position.lat,
+          longitude: position.lng,
+          private: isPrivate,
+          shared: isShared,
+          image_url: imageUrl
+        });
+
+        if (result.success) {
+          enqueueSnackbar(dictionary['edit map success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved(result.data);
+        } else {
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-
-      const result = await updateMap(currentMap?.id, {
-        name,
-        description,
-        latitude: position.lat,
-        longitude: position.lng,
-        private: isPrivate,
-        shared: isShared,
-        image_url: imageUrl
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['edit map success'], { variant: 'success' });
-
-        onClose();
-        onSaved(result.data);
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
-      }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [
     name,
     description,
@@ -204,11 +204,7 @@ export default memo(function EditMapDialog({
           )}
 
           <Box position="absolute">
-            <AddPhotoButton
-              id="map-thumbnail-input"
-              onChange={handleImagesChange}
-              color="inherit"
-            />
+            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
           </Box>
         </Box>
 
@@ -232,7 +228,7 @@ export default memo(function EditMapDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
+        <Button onClick={onClose} disabled={isPending} color="inherit">
           {dictionary.cancel}
         </Button>
         <Button
@@ -240,7 +236,7 @@ export default memo(function EditMapDialog({
           onClick={handleEditButtonClick}
           color="secondary"
           disabled={disabled}
-          loading={loading}
+          loading={isPending}
         >
           {dictionary.save}
         </Button>

@@ -1,6 +1,13 @@
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  useTransition
+} from 'react';
 import type { AppMap, Profile } from '../../../types';
 import { unfollowMap } from '../../actions/mapFollowers';
 import AuthContext from '../../context/AuthContext';
@@ -13,40 +20,43 @@ type Props = {
 };
 
 function UnfollowButton({ map, currentProfile, onSaved }: Props) {
-  const [loading, setLoading] = useState(false);
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
+
+  const [following, setFollowing] = useState(map?.following ?? false);
+  const [isPending, startTransition] = useTransition();
 
   const isAuthor = useMemo(() => {
     return currentProfile?.id === map.owner.id;
   }, [map, currentProfile]);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(() => {
     if (!authenticated) {
       setSignInRequired(true);
-
       return;
     }
 
-    setLoading(true);
+    setFollowing(false);
 
-    try {
-      const result = await unfollowMap(map?.id);
+    startTransition(async () => {
+      try {
+        const result = await unfollowMap(map?.id);
 
-      if (result.success) {
-        onSaved();
+        if (result.success) {
+          onSaved();
 
-        enqueueSnackbar(dictionary['unfollow map success'], {
-          variant: 'success'
-        });
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+          enqueueSnackbar(dictionary['unfollow map success'], {
+            variant: 'success'
+          });
+        } else {
+          setFollowing(true);
+          enqueueSnackbar(result.error, { variant: 'error' });
+        }
+      } catch (_error) {
+        setFollowing(true);
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
+    });
   }, [map, authenticated, setSignInRequired, dictionary, onSaved]);
 
   return (
@@ -55,9 +65,9 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
       color="inherit"
       size="medium"
       fullWidth
-      disabled={!map || !map.following || isAuthor}
+      disabled={!map || !following || isAuthor}
       onClick={handleClick}
-      loading={loading}
+      loading={isPending}
     >
       {dictionary.unfollow}
     </Button>
