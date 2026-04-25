@@ -9,7 +9,14 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState, useTransition } from 'react';
+import {
+  memo,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -34,6 +41,9 @@ type Props = {
   currentReview: Review | null;
 };
 
+type FormState = { error: string | null };
+const initialState: FormState = { error: null };
+
 export default memo(function EditReviewDialog({
   open,
   onClose,
@@ -42,7 +52,6 @@ export default memo(function EditReviewDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [dataUrls, setDataUrls] = useState<string[]>([]);
@@ -53,6 +62,64 @@ export default memo(function EditReviewDialog({
   const disabled = useMemo(() => {
     return !(name && comment && position);
   }, [name, comment, position]);
+
+  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+    async (_prevState, _formData) => {
+      if (!currentReview || !position) {
+        return { error: dictionary['an error occurred'] };
+      }
+
+      try {
+        const photos = [];
+
+        for (const dataUrl of dataUrls) {
+          const url = new URL(dataUrl);
+
+          if (url.protocol === 'data:') {
+            const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+            const uploaded = await uploadToStorage(
+              dataUrl,
+              fileName,
+              'data_url'
+            );
+
+            photos.push({ url: uploaded });
+          } else {
+            photos.push({ url: dataUrl });
+          }
+        }
+
+        const result = await updateReview(currentReview.id, {
+          name,
+          comment,
+          latitude: position.lat,
+          longitude: position.lng,
+          images: photos
+        });
+
+        if (result.success) {
+          enqueueSnackbar(dictionary['edit review success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved();
+          return { error: null };
+        }
+
+        return { error: result.error ?? dictionary['an error occurred'] };
+      } catch (_error) {
+        return { error: dictionary['an error occurred'] };
+      }
+    },
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.error) {
+      enqueueSnackbar(state.error, { variant: 'error' });
+    }
+  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);
@@ -75,57 +142,6 @@ export default memo(function EditReviewDialog({
     },
     [dataUrls]
   );
-
-  const handleSaveClick = useCallback(() => {
-    startTransition(async () => {
-      try {
-        const photos = [];
-
-        for (const dataUrl of dataUrls) {
-          const url = new URL(dataUrl);
-
-          if (url.protocol === 'data:') {
-            const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-            const url = await uploadToStorage(dataUrl, fileName, 'data_url');
-
-            photos.push({ url: url });
-          } else {
-            photos.push({ url: dataUrl });
-          }
-        }
-
-        const result = await updateReview(currentReview?.id, {
-          name,
-          comment,
-          latitude: position.lat,
-          longitude: position.lng,
-          images: photos
-        });
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['edit review success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onSaved();
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
-        }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      }
-    });
-  }, [
-    name,
-    comment,
-    dataUrls,
-    currentReview,
-    position,
-    onClose,
-    onSaved,
-    dictionary
-  ]);
 
   const setCurrentImages = useCallback(async () => {
     if (!currentReview) {
@@ -163,50 +179,63 @@ export default memo(function EditReviewDialog({
         transition: { onEnter: setCurrentImages, onExited: handleExited }
       }}
     >
-      <DialogTitle>{dictionary['edit post']}</DialogTitle>
-      <DialogContent dividers>
-        <Box sx={{ mb: 2 }}>
-          <PositionForm onChange={setPosition} defaultValue={defaultPosition} />
-        </Box>
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['edit post']}</DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ mb: 2 }}>
+            <PositionForm
+              onChange={setPosition}
+              defaultValue={defaultPosition}
+            />
+          </Box>
 
-        <ReviewNameForm defaultValue={currentReview?.name} onChange={setName} />
+          <ReviewNameForm
+            defaultValue={currentReview?.name}
+            onChange={setName}
+          />
 
-        <ReviewDescriptionForm
-          defaultValue={currentReview?.comment}
-          onChange={setComment}
-        />
+          <ReviewDescriptionForm
+            defaultValue={currentReview?.comment}
+            onChange={setComment}
+          />
 
-        <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
-      </DialogContent>
-      <DialogActions
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr auto'
-        }}
-      >
-        <AddPhotoButton onChange={handleImagesChange} multiple />
-
-        <Box
+          <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
+        </DialogContent>
+        <DialogActions
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
+            display: 'grid',
+            gridTemplateColumns: '1fr auto'
           }}
         >
-          <Button onClick={onClose} disabled={isPending} color="inherit">
-            {dictionary.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSaveClick}
-            color="secondary"
-            disabled={disabled}
-            loading={isPending}
+          <AddPhotoButton onChange={handleImagesChange} multiple />
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
           >
-            {dictionary.save}
-          </Button>
-        </Box>
-      </DialogActions>
+            <Button
+              type="button"
+              onClick={onClose}
+              disabled={isPending}
+              color="inherit"
+            >
+              {dictionary.cancel}
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              disabled={disabled}
+              loading={isPending}
+            >
+              {dictionary.save}
+            </Button>
+          </Box>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 });

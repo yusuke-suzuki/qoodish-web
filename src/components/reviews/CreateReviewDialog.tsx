@@ -9,7 +9,14 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState, useTransition } from 'react';
+import {
+  memo,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import type { AppMap } from '../../../types';
 import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -38,6 +45,9 @@ type Props = {
   pinnedPosition?: google.maps.LatLng | null;
 };
 
+type FormState = { error: string | null };
+const initialState: FormState = { error: null };
+
 export default memo(function CreateReviewDialog({
   open,
   onClose,
@@ -50,8 +60,6 @@ export default memo(function CreateReviewDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [isPending, startTransition] = useTransition();
-
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [dataUrls, setDataUrls] = useState<string[]>([]);
@@ -62,6 +70,54 @@ export default memo(function CreateReviewDialog({
   const disabled = useMemo(() => {
     return !(name && comment && map && position);
   }, [name, comment, map, position]);
+
+  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+    async (_prevState, _formData) => {
+      if (!map || !position) {
+        return { error: dictionary['an error occurred'] };
+      }
+
+      try {
+        const photos = [];
+
+        for (const dataUrl of dataUrls) {
+          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
+          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+
+          photos.push({ url: url });
+        }
+
+        const result = await createReview(map.id, {
+          name,
+          comment,
+          latitude: position.lat,
+          longitude: position.lng,
+          images: photos
+        });
+
+        if (result.success) {
+          enqueueSnackbar(dictionary['create review success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onSaved();
+          return { error: null };
+        }
+
+        return { error: result.error ?? dictionary['an error occurred'] };
+      } catch (_error) {
+        return { error: dictionary['an error occurred'] };
+      }
+    },
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.error) {
+      enqueueSnackbar(state.error, { variant: 'error' });
+    }
+  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);
@@ -88,42 +144,6 @@ export default memo(function CreateReviewDialog({
     },
     [dataUrls]
   );
-
-  const handleCreateButtonClick = useCallback(() => {
-    startTransition(async () => {
-      try {
-        const photos = [];
-
-        for (const dataUrl of dataUrls) {
-          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
-
-          photos.push({ url: url });
-        }
-
-        const result = await createReview(map?.id, {
-          name,
-          comment,
-          latitude: position.lat,
-          longitude: position.lng,
-          images: photos
-        });
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['create review success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onSaved();
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
-        }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      }
-    });
-  }, [map, name, comment, position, dataUrls, onClose, onSaved, dictionary]);
 
   const defaultPositionFromPlace = useMemo(() => {
     if (!place) {
@@ -175,54 +195,64 @@ export default memo(function CreateReviewDialog({
         transition: { onExited: handleExited }
       }}
     >
-      <DialogTitle>{dictionary['create new post']}</DialogTitle>
-      <DialogContent dividers>
-        <Box sx={{ mb: 2 }}>
-          <PositionForm
-            defaultValue={
-              defaultPositionFromPlace ||
-              defaultPositionFromGeolocation ||
-              defaultPositionFromPinnedPosition
-            }
-            onChange={setPosition}
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['create new post']}</DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ mb: 2 }}>
+            <PositionForm
+              defaultValue={
+                defaultPositionFromPlace ||
+                defaultPositionFromGeolocation ||
+                defaultPositionFromPinnedPosition
+              }
+              onChange={setPosition}
+            />
+          </Box>
+
+          <ReviewNameForm
+            defaultValue={place?.displayName}
+            onChange={setName}
           />
-        </Box>
 
-        <ReviewNameForm defaultValue={place?.displayName} onChange={setName} />
+          <ReviewDescriptionForm onChange={setComment} />
 
-        <ReviewDescriptionForm onChange={setComment} />
-
-        <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
-      </DialogContent>
-      <DialogActions
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr auto'
-        }}
-      >
-        <AddPhotoButton onChange={handleImagesChange} multiple />
-
-        <Box
+          <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
+        </DialogContent>
+        <DialogActions
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1
+            display: 'grid',
+            gridTemplateColumns: '1fr auto'
           }}
         >
-          <Button onClick={onClose} disabled={isPending} color="inherit">
-            {dictionary.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleCreateButtonClick}
-            color="secondary"
-            disabled={disabled}
-            loading={isPending}
+          <AddPhotoButton onChange={handleImagesChange} multiple />
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
           >
-            {dictionary.save}
-          </Button>
-        </Box>
-      </DialogActions>
+            <Button
+              type="button"
+              onClick={onClose}
+              disabled={isPending}
+              color="inherit"
+            >
+              {dictionary.cancel}
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              disabled={disabled}
+              loading={isPending}
+            >
+              {dictionary.save}
+            </Button>
+          </Box>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 });

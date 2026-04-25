@@ -12,7 +12,14 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useMemo, useState, useTransition } from 'react';
+import {
+  memo,
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -36,6 +43,9 @@ type Props = {
   onSaved: (map: AppMap) => void;
 };
 
+type FormState = { error: string | null };
+const initialState: FormState = { error: null };
+
 export default memo(function CreateMapDialog({
   open,
   onClose,
@@ -43,7 +53,6 @@ export default memo(function CreateMapDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [isPending, startTransition] = useTransition();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
@@ -74,8 +83,12 @@ export default memo(function CreateMapDialog({
     []
   );
 
-  const handleCreateButtonClick = useCallback(() => {
-    startTransition(async () => {
+  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+    async (_prevState, _formData) => {
+      if (!position) {
+        return { error: dictionary['an error occurred'] };
+      }
+
       try {
         let imageUrl: string | undefined;
 
@@ -105,24 +118,22 @@ export default memo(function CreateMapDialog({
 
           onClose();
           onSaved(result.data);
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
+          return { error: null };
         }
-      } catch (error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+
+        return { error: result.error ?? dictionary['an error occurred'] };
+      } catch (_error) {
+        return { error: dictionary['an error occurred'] };
       }
-    });
-  }, [
-    name,
-    description,
-    thumbnailDataUrl,
-    position,
-    isPrivate,
-    isShared,
-    dictionary,
-    onClose,
-    onSaved
-  ]);
+    },
+    initialState
+  );
+
+  useEffect(() => {
+    if (state.error) {
+      enqueueSnackbar(state.error, { variant: 'error' });
+    }
+  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);
@@ -157,67 +168,74 @@ export default memo(function CreateMapDialog({
         transition: { onExited: handleExited }
       }}
     >
-      <DialogTitle>{dictionary['create new map']}</DialogTitle>
-      <DialogContent dividers>
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {dictionary.thumbnail}
-        </Typography>
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['create new map']}</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+            {dictionary.thumbnail}
+          </Typography>
 
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          width="fit-content"
-          position="relative"
-          sx={{
-            mb: 2
-          }}
-        >
-          {thumbnailDataUrl ? (
-            <CardMedia
-              sx={{ width: 160, height: 160 }}
-              image={thumbnailDataUrl}
-            />
-          ) : (
-            <Skeleton
-              sx={{ width: 160, height: 160 }}
-              variant="rectangular"
-              animation={false}
-            />
-          )}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width="fit-content"
+            position="relative"
+            sx={{
+              mb: 2
+            }}
+          >
+            {thumbnailDataUrl ? (
+              <CardMedia
+                sx={{ width: 160, height: 160 }}
+                image={thumbnailDataUrl}
+              />
+            ) : (
+              <Skeleton
+                sx={{ width: 160, height: 160 }}
+                variant="rectangular"
+                animation={false}
+              />
+            )}
 
-          <Box position="absolute">
-            <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            <Box position="absolute">
+              <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+            </Box>
           </Box>
-        </Box>
 
-        <MapNameForm onChange={setName} />
-        <MapDescriptionForm onChange={setDescription} />
+          <MapNameForm onChange={setName} />
+          <MapDescriptionForm onChange={setDescription} />
 
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {dictionary['center of map']}
-        </Typography>
+          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+            {dictionary['center of map']}
+          </Typography>
 
-        <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
+          <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
 
-        <Box>
-          <MapOptions onChange={handleMapOptionsChange} />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isPending} color="inherit">
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleCreateButtonClick}
-          color="secondary"
-          disabled={disabled}
-          loading={isPending}
-        >
-          {dictionary.save}
-        </Button>
-      </DialogActions>
+          <Box>
+            <MapOptions onChange={handleMapOptionsChange} />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={onClose}
+            disabled={isPending}
+            color="inherit"
+          >
+            {dictionary.cancel}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            disabled={disabled}
+            loading={isPending}
+          >
+            {dictionary.save}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 });

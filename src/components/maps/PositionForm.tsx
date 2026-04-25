@@ -56,6 +56,7 @@ function PositionForm({ onChange, defaultValue }: Props) {
 
       <Stack direction="row" spacing={1}>
         <Button
+          type="button"
           onClick={() => setEditPosition(false)}
           fullWidth
           variant="outlined"
@@ -65,6 +66,7 @@ function PositionForm({ onChange, defaultValue }: Props) {
           {dictionary.cancel}
         </Button>
         <Button
+          type="button"
           startIcon={<Done />}
           onClick={handleSave}
           fullWidth
