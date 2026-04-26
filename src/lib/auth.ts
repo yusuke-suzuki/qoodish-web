@@ -13,7 +13,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-type ServerAuthState = {
+export type ServerAuthState = {
   authenticated: boolean;
   uid?: string;
   token?: string;

@@ -26,6 +26,7 @@ import ProfileContext from '../../context/ProfileContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
+import type { ServerAuthState } from '../../lib/auth';
 import AnalyticsTracker from './AnalyticsTracker';
 
 type ProfileHydratorProps = {
@@ -96,8 +97,7 @@ const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
 type Props = {
   children: ReactNode;
   lang: string;
-  serverAuthenticated: boolean;
-  serverUid?: string;
+  authStatePromise: Promise<ServerAuthState>;
   profilePromise: Promise<Profile | null>;
   notificationsPromise: Promise<Notification[]>;
 };
@@ -105,8 +105,7 @@ type Props = {
 export default function Providers({
   children,
   lang,
-  serverAuthenticated,
-  serverUid,
+  authStatePromise,
   profilePromise,
   notificationsPromise
 }: Props) {
@@ -187,10 +186,7 @@ export default function Providers({
             </Button>
           )}
         >
-          <AuthProvider
-            serverAuthenticated={serverAuthenticated}
-            serverUid={serverUid ?? null}
-          >
+          <AuthProvider authStatePromise={authStatePromise}>
             <ProfileHydrator promise={profilePromise}>
               <NotificationsHydrator promise={notificationsPromise}>
                 <ServiceWorkerContext.Provider value={{ registration }}>
