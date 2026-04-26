@@ -28,6 +28,63 @@ import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
 import AnalyticsTracker from './AnalyticsTracker';
 
+type ProfileHydratorProps = {
+  promise: Promise<Profile | null>;
+  children: ReactNode;
+};
+
+function ProfileHydrator({ promise, children }: ProfileHydratorProps) {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    promise.then((value) => {
+      if (!cancelled) {
+        setProfile(value);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [promise]);
+
+  return (
+    <ProfileContext.Provider value={profile}>
+      {children}
+    </ProfileContext.Provider>
+  );
+}
+
+type NotificationsHydratorProps = {
+  promise: Promise<Notification[]>;
+  children: ReactNode;
+};
+
+function NotificationsHydrator({
+  promise,
+  children
+}: NotificationsHydratorProps) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    promise.then((value) => {
+      if (!cancelled) {
+        setNotifications(value);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [promise]);
+
+  return (
+    <NotificationsContext.Provider value={notifications}>
+      {children}
+    </NotificationsContext.Provider>
+  );
+}
+
 const globalStyles = css`
   .pac-container {
     z-index: 1300 !important;
@@ -41,8 +98,8 @@ type Props = {
   lang: string;
   serverAuthenticated: boolean;
   serverUid?: string;
-  serverProfile?: Profile | null;
-  serverNotifications?: Notification[];
+  profilePromise: Promise<Profile | null>;
+  notificationsPromise: Promise<Notification[]>;
 };
 
 export default function Providers({
@@ -50,8 +107,8 @@ export default function Providers({
   lang,
   serverAuthenticated,
   serverUid,
-  serverProfile,
-  serverNotifications
+  profilePromise,
+  notificationsPromise
 }: Props) {
   const dictionary = useDictionary();
 
@@ -134,14 +191,14 @@ export default function Providers({
             serverAuthenticated={serverAuthenticated}
             serverUid={serverUid ?? null}
           >
-            <ProfileContext.Provider value={serverProfile ?? null}>
-              <NotificationsContext.Provider value={serverNotifications ?? []}>
+            <ProfileHydrator promise={profilePromise}>
+              <NotificationsHydrator promise={notificationsPromise}>
                 <ServiceWorkerContext.Provider value={{ registration }}>
                   <AnalyticsTracker />
                   {children}
                 </ServiceWorkerContext.Provider>
-              </NotificationsContext.Provider>
-            </ProfileContext.Provider>
+              </NotificationsHydrator>
+            </ProfileHydrator>
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>

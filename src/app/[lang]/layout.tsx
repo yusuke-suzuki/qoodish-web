@@ -50,10 +50,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const { authenticated, uid, token } = await getServerAuthState();
-  const [profile, notifications] = await Promise.all([
-    authenticated && uid ? getProfile(uid, lang, token) : Promise.resolve(null),
-    authenticated ? getNotifications(lang) : Promise.resolve([])
-  ]);
+  const profilePromise =
+    authenticated && uid ? getProfile(uid, lang, token) : Promise.resolve(null);
+  const notificationsPromise = authenticated
+    ? getNotifications(lang)
+    : Promise.resolve([]);
 
   return (
     <html lang={lang}>
@@ -127,8 +128,8 @@ export default async function RootLayout({ children, params }: Props) {
           lang={lang}
           serverAuthenticated={authenticated}
           serverUid={uid}
-          serverProfile={profile}
-          serverNotifications={notifications}
+          profilePromise={profilePromise}
+          notificationsPromise={notificationsPromise}
         >
           <ShellProvider>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
