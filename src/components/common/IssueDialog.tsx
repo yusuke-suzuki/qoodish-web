@@ -16,7 +16,6 @@ import {
   memo,
   useActionState,
   useCallback,
-  useEffect,
   useId,
   useState
 } from 'react';
@@ -30,12 +29,6 @@ type Props = {
   contentType: string;
 };
 
-type IssueFormState = {
-  error: string | null;
-};
-
-const initialState: IssueFormState = { error: null };
-
 const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
   const dictionary = useDictionary();
   const formId = useId();
@@ -44,39 +37,37 @@ const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
 
   const [reason, setReason] = useState<string | undefined>(undefined);
 
-  const [state, submitAction, isPending] = useActionState<
-    IssueFormState,
-    FormData
-  >(async (_prevState, formData) => {
-    const submittedReason = formData.get(reasonFieldName)?.toString();
+  const [, submitAction, isPending] = useActionState<null, FormData>(
+    async (_prevState, formData) => {
+      const submittedReason = formData.get(reasonFieldName)?.toString();
 
-    try {
-      const result = await createIssue({
-        content_id: contentId,
-        content_type: contentType,
-        reason_id: Number(submittedReason)
-      });
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['create issue success'], {
-          variant: 'success'
+      try {
+        const result = await createIssue({
+          content_id: contentId,
+          content_type: contentType,
+          reason_id: Number(submittedReason)
         });
 
-        onClose();
-        return { error: null };
+        if (result.success) {
+          enqueueSnackbar(dictionary['create issue success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          return null;
+        }
+
+        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+        return null;
+      } catch (_error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+        return null;
       }
-
-      return { error: result.error ?? dictionary['an error occurred'] };
-    } catch (_error) {
-      return { error: dictionary['an error occurred'] };
-    }
-  }, initialState);
-
-  useEffect(() => {
-    if (state.error) {
-      enqueueSnackbar(state.error, { variant: 'error' });
-    }
-  }, [state]);
+    },
+    null
+  );
 
   const handleReasonChange = useCallback(
     (_event: ChangeEvent<HTMLInputElement>, value: string) => {
