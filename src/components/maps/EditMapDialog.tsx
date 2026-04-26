@@ -12,14 +12,7 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import {
-  memo,
-  useActionState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
 import { updateMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -43,9 +36,6 @@ type Props = {
   onSaved: (map: AppMap) => void;
   currentMap: AppMap | null;
 };
-
-type FormState = { error: string | null };
-const initialState: FormState = { error: null };
 
 export default memo(function EditMapDialog({
   open,
@@ -85,10 +75,11 @@ export default memo(function EditMapDialog({
     []
   );
 
-  const [state, submitAction, isPending] = useActionState<FormState, FormData>(
+  const [, submitAction, isPending] = useActionState<null, FormData>(
     async (_prevState, _formData) => {
       if (!currentMap || !position) {
-        return { error: dictionary['an error occurred'] };
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+        return null;
       }
 
       try {
@@ -122,22 +113,20 @@ export default memo(function EditMapDialog({
 
           onClose();
           onSaved(result.data);
-          return { error: null };
+          return null;
         }
 
-        return { error: result.error ?? dictionary['an error occurred'] };
+        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+        return null;
       } catch (_error) {
-        return { error: dictionary['an error occurred'] };
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+        return null;
       }
     },
-    initialState
+    null
   );
-
-  useEffect(() => {
-    if (state.error) {
-      enqueueSnackbar(state.error, { variant: 'error' });
-    }
-  }, [state]);
 
   const handleExited = useCallback(() => {
     setName(undefined);

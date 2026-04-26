@@ -9,7 +9,7 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useState } from 'react';
+import { memo, useActionState, useState } from 'react';
 import type { Review } from '../../../types';
 import { deleteReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -25,41 +25,42 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
 
   const [check, setCheck] = useState(false);
-  const [disabled, setDisabled] = useState(true);
-  const [loading, setLoading] = useState(false);
 
-  const handleCheckChange = useCallback(() => {
-    setCheck(!check);
-    setDisabled(!disabled);
-  }, [check, disabled]);
-
-  const handleExited = useCallback(() => {
-    setCheck(false);
-    setDisabled(true);
-  }, []);
-
-  const handleDeleteButtonClick = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const result = await deleteReview(review?.id);
-
-      if (result.success) {
-        enqueueSnackbar(dictionary['delete report success'], {
-          variant: 'success'
+  const [, submitAction, isPending] = useActionState<null, FormData>(
+    async (_prevState, _formData) => {
+      if (!review) {
+        enqueueSnackbar(dictionary['delete report failed'], {
+          variant: 'error'
         });
-
-        onClose();
-        onDeleted();
-      } else {
-        enqueueSnackbar(result.error, { variant: 'error' });
+        return null;
       }
-    } catch (error) {
-      enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  }, [review, onClose, onDeleted, dictionary]);
+
+      try {
+        const result = await deleteReview(review.id);
+
+        if (result.success) {
+          enqueueSnackbar(dictionary['delete report success'], {
+            variant: 'success'
+          });
+
+          onClose();
+          onDeleted();
+          return null;
+        }
+
+        enqueueSnackbar(result.error ?? dictionary['delete report failed'], {
+          variant: 'error'
+        });
+        return null;
+      } catch (_error) {
+        enqueueSnackbar(dictionary['delete report failed'], {
+          variant: 'error'
+        });
+        return null;
+      }
+    },
+    null
+  );
 
   return (
     <Dialog
@@ -68,41 +69,48 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
       fullWidth
       slotProps={{
         transition: {
-          onExited: handleExited
+          onExited: () => setCheck(false)
         }
       }}
     >
-      <DialogTitle>{dictionary['sure to delete report']}</DialogTitle>
-      <DialogContent>
-        <DialogContentText gutterBottom>
-          {dictionary['this cannot be undone']}
-        </DialogContentText>
+      <form action={submitAction}>
+        <DialogTitle>{dictionary['sure to delete report']}</DialogTitle>
+        <DialogContent>
+          <DialogContentText gutterBottom>
+            {dictionary['this cannot be undone']}
+          </DialogContentText>
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={check}
-              onChange={handleCheckChange}
-              color="success"
-            />
-          }
-          label={dictionary['understand this cannot be undone']}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="inherit" disabled={loading}>
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleDeleteButtonClick}
-          color="error"
-          disabled={disabled}
-          loading={loading}
-        >
-          {dictionary.delete}
-        </Button>
-      </DialogActions>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={check}
+                onChange={() => setCheck((prev) => !prev)}
+                color="success"
+              />
+            }
+            label={dictionary['understand this cannot be undone']}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            type="button"
+            onClick={onClose}
+            color="inherit"
+            disabled={isPending}
+          >
+            {dictionary.cancel}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="error"
+            disabled={!check}
+            loading={isPending}
+          >
+            {dictionary.delete}
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 };
