@@ -2,17 +2,14 @@
 
 import { PhotoLibrary, Place } from '@mui/icons-material';
 import {
+  Box,
   ButtonBase,
   Card,
   CardMedia,
-  ImageList,
-  ImageListItem,
   ImageListItemBar,
   Link as MuiLink,
   Paper,
-  Skeleton,
-  useMediaQuery,
-  useTheme
+  Skeleton
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
@@ -23,16 +20,24 @@ type Props = {
   hideSkeleton?: boolean;
 };
 
-function ReviewGridList({ reviews, hideSkeleton }: Props) {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
+const tileImageHeight = 180;
 
+function ReviewGridList({ reviews, hideSkeleton }: Props) {
   if (reviews.length < 1 && hideSkeleton) {
     return null;
   }
 
   return (
-    <ImageList cols={smUp ? 3 : 2} rowHeight={180} sx={{ m: 0 }} gap={8}>
+    <Box
+      sx={{
+        display: 'grid',
+        gap: 1,
+        gridTemplateColumns: {
+          xs: 'repeat(2, 1fr)',
+          sm: 'repeat(3, 1fr)'
+        }
+      }}
+    >
       {(!reviews.length ? Array.from(new Array(6)) : reviews).map(
         (review: Review | null, i) => (
           <MuiLink
@@ -43,7 +48,13 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
             component={Link}
             title={review?.name}
           >
-            <ImageListItem>
+            <Box
+              sx={{
+                position: 'relative',
+                height: tileImageHeight,
+                overflow: 'hidden'
+              }}
+            >
               {!review && <Skeleton variant="rectangular" height="100%" />}
 
               {review?.images.length > 0 && (
@@ -94,11 +105,11 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
                 title={review?.name}
                 subtitle={review?.map.name}
               />
-            </ImageListItem>
+            </Box>
           </MuiLink>
         )
       )}
-    </ImageList>
+    </Box>
   );
 }
 

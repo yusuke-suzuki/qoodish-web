@@ -67,9 +67,15 @@ function MobileMapDrawer({
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
         swipeAreaWidth={drawerBleeding}
-        sx={{ zIndex: (theme) => theme.zIndex.appBar - 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.appBar - 1,
+          display: { xs: 'block', md: 'none' }
+        }}
         SwipeAreaProps={{
-          sx: { zIndex: (theme) => theme.zIndex.appBar - 2 }
+          sx: {
+            zIndex: (theme) => theme.zIndex.appBar - 2,
+            display: { xs: 'block', md: 'none' }
+          }
         }}
         ModalProps={{
           keepMounted: true
