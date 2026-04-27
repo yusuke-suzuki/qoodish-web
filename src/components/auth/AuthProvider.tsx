@@ -11,11 +11,11 @@ import {
 } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useEmailLinkHandler from '../../hooks/useEmailLinkHandler';
+import type { ServerAuthState } from '../../lib/auth';
 
 type Props = {
   children: ReactNode;
-  serverAuthenticated: boolean;
-  serverUid: string | null;
+  authStatePromise: Promise<ServerAuthState>;
 };
 
 if (!getApps().length) {
@@ -30,13 +30,14 @@ if (!getApps().length) {
   });
 }
 
-function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
+function AuthProvider({ children, authStatePromise }: Props) {
   const router = useRouter();
-  const [authenticated, setAuthenticated] = useState(serverAuthenticated);
-  const [uid, setUid] = useState<string | null>(serverUid);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [uid, setUid] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
-  const authStateRef = useRef(serverAuthenticated);
+  const authStateRef = useRef(false);
+  const listenerFiredRef = useRef(false);
 
   useEmailLinkHandler({ isLoading: loading });
 
@@ -50,6 +51,8 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
 
   const handleIdTokenChanged = useCallback(
     async (user: User | null) => {
+      listenerFiredRef.current = true;
+
       if (user) {
         if (user.isAnonymous) {
           await user.delete();
@@ -91,6 +94,21 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
     },
     [syncSessionCookie, router]
   );
+
+  useEffect(() => {
+    let cancelled = false;
+    authStatePromise.then((state) => {
+      if (cancelled || listenerFiredRef.current) {
+        return;
+      }
+      authStateRef.current = state.authenticated;
+      setAuthenticated(state.authenticated);
+      setUid(state.uid ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [authStatePromise]);
 
   useEffect(() => {
     const auth = getAuth();

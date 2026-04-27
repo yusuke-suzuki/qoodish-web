@@ -1,5 +1,5 @@
 import { Box, Container, Grid } from '@mui/material';
-import type { ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
 import BottomNav from '../../../components/layouts/BottomNav';
 import Sidebar from '../../../components/layouts/Sidebar';
 import { getServerAuthState } from '../../../lib/auth';
@@ -10,13 +10,18 @@ type Props = {
   params: Promise<{ lang: string }>;
 };
 
-export default async function ContainedLayout({ children, params }: Props) {
-  const { lang } = await params;
+async function SidebarData({ lang }: { lang: string }) {
   const { token } = await getServerAuthState();
   const [popularMaps, recommendMaps] = await Promise.all([
     getPopularMaps(lang),
     getRecommendMaps(lang, token)
   ]);
+
+  return <Sidebar popularMaps={popularMaps} recommendMaps={recommendMaps} />;
+}
+
+export default async function ContainedLayout({ children, params }: Props) {
+  const { lang } = await params;
 
   return (
     <>
@@ -31,10 +36,9 @@ export default async function ContainedLayout({ children, params }: Props) {
               size={{ md: 4, lg: 4, xl: 4 }}
               sx={{ display: { xs: 'none', md: 'block' } }}
             >
-              <Sidebar
-                popularMaps={popularMaps}
-                recommendMaps={recommendMaps}
-              />
+              <Suspense fallback={<Sidebar />}>
+                <SidebarData lang={lang} />
+              </Suspense>
             </Grid>
           </Grid>
         </Container>

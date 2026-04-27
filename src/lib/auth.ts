@@ -1,6 +1,7 @@
 import { initializeServerApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,13 +13,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-type ServerAuthState = {
+export type ServerAuthState = {
   authenticated: boolean;
   uid?: string;
   token?: string;
 };
 
-export async function getServerAuthState(): Promise<ServerAuthState> {
+export const getServerAuthState = cache(async (): Promise<ServerAuthState> => {
   const cookieStore = await cookies();
   const idToken = cookieStore.get('__session')?.value;
 
@@ -42,4 +43,4 @@ export async function getServerAuthState(): Promise<ServerAuthState> {
   } catch {
     return { authenticated: false };
   }
-}
+});
