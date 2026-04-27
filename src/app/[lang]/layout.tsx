@@ -51,8 +51,8 @@ export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const { authenticated, uid, token } = await getServerAuthState();
   const [profile, notifications] = await Promise.all([
-    authenticated && uid ? getProfile(uid, lang, token) : Promise.resolve(null),
-    authenticated ? getNotifications(lang) : Promise.resolve([])
+    authenticated && uid ? getProfile(uid, lang, token) : null,
+    authenticated ? getNotifications(lang) : []
   ]);
 
   return (
@@ -127,8 +127,8 @@ export default async function RootLayout({ children, params }: Props) {
           lang={lang}
           serverAuthenticated={authenticated}
           serverUid={uid}
-          serverProfile={profile}
-          serverNotifications={notifications}
+          profile={profile}
+          notifications={notifications}
         >
           <ShellProvider>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>

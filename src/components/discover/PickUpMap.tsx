@@ -9,9 +9,7 @@ import {
   ImageListItemBar,
   Link as MuiLink,
   Skeleton,
-  Typography,
-  useMediaQuery,
-  useTheme
+  Typography
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
@@ -22,9 +20,6 @@ type Props = {
 };
 
 function PickUpMap({ map }: Props) {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
-
   return (
     <ImageList cols={1} rowHeight={240} gap={0} sx={{ m: 0 }}>
       <MuiLink
@@ -55,13 +50,16 @@ function PickUpMap({ map }: Props) {
           <ImageListItemBar
             position="bottom"
             title={
-              <Typography variant={smUp ? 'h4' : 'h5'} color="inherit">
+              <Typography
+                sx={{ typography: { xs: 'h5', sm: 'h4' } }}
+                color="inherit"
+              >
                 {map?.name}
               </Typography>
             }
             subtitle={
               <Typography
-                variant={smUp ? 'subtitle1' : 'subtitle2'}
+                sx={{ typography: { xs: 'subtitle2', sm: 'subtitle1' } }}
                 color="inherit"
               >
                 {map?.owner.name}

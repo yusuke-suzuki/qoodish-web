@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { AppMap, Follower, Profile, Review } from '../../../types';
@@ -30,8 +30,6 @@ export default function MapDetailView({
   currentProfile
 }: Props) {
   const theme = useTheme();
-  const mdUp = useMediaQuery(theme.breakpoints.up('md'));
-  const mdDown = useMediaQuery(theme.breakpoints.down('md'));
 
   const { lang, mapId } = useParams<{ lang: string; mapId: string }>();
   const searchParams = useSearchParams();
@@ -76,48 +74,48 @@ export default function MapDetailView({
 
   return (
     <>
-      {mdDown && (
-        <MobileMapDrawer
-          map={map}
-          reviews={reviews}
-          followers={followers}
-          currentProfile={currentProfile}
-          onEditClick={() => setEditDialogOpen(true)}
-          onDeleteClick={() => setDeleteDialogOpen(true)}
-          onReportClick={() => setIssueDialogOpen(true)}
-          onSaved={router.refresh}
-          onReviewClick={handleReviewClick}
-          reviewDrawerOpen={reviewDrawerOpen}
-        />
-      )}
-
-      {mdDown && (
-        <ReviewDrawer
-          currentReview={currentReview}
-          open={reviewDrawerOpen}
-          onOpen={() => setReviewDrawerOpen(true)}
-          onClose={() => setReviewDrawerOpen(false)}
-          onExited={() => setCurrentReview(null)}
-          onSaved={handleReviewSaved}
-          onDeleted={handleReviewSaved}
-        />
-      )}
+      <MobileMapDrawer
+        map={map}
+        reviews={reviews}
+        followers={followers}
+        currentProfile={currentProfile}
+        onEditClick={() => setEditDialogOpen(true)}
+        onDeleteClick={() => setDeleteDialogOpen(true)}
+        onReportClick={() => setIssueDialogOpen(true)}
+        onSaved={router.refresh}
+        onReviewClick={handleReviewClick}
+        reviewDrawerOpen={reviewDrawerOpen}
+      />
+      <ReviewDrawer
+        currentReview={currentReview}
+        open={reviewDrawerOpen}
+        onOpen={() => setReviewDrawerOpen(true)}
+        onClose={() => setReviewDrawerOpen(false)}
+        onExited={() => setCurrentReview(null)}
+        onSaved={handleReviewSaved}
+        onDeleted={handleReviewSaved}
+      />
 
       <Box sx={{ display: { xs: 'block', md: 'flex' } }}>
-        {mdUp && (
-          <Box sx={{ width: summaryCardHeight, zIndex: 1, height: '100dvh' }}>
-            <MapSummaryCard
-              map={map}
-              reviews={reviews}
-              followers={followers}
-              currentProfile={currentProfile}
-              onEditClick={() => setEditDialogOpen(true)}
-              onDeleteClick={() => setDeleteDialogOpen(true)}
-              onReportClick={() => setIssueDialogOpen(true)}
-              onSaved={router.refresh}
-            />
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            width: summaryCardHeight,
+            zIndex: 1,
+            height: '100dvh'
+          }}
+        >
+          <MapSummaryCard
+            map={map}
+            reviews={reviews}
+            followers={followers}
+            currentProfile={currentProfile}
+            onEditClick={() => setEditDialogOpen(true)}
+            onDeleteClick={() => setDeleteDialogOpen(true)}
+            onReportClick={() => setIssueDialogOpen(true)}
+            onSaved={router.refresh}
+          />
+        </Box>
 
         <GoogleMaps
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}

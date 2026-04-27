@@ -2,19 +2,16 @@
 
 import { Lock, Map as MapIcon } from '@mui/icons-material';
 import {
+  Box,
   ButtonBase,
   Card,
   CardMedia,
   Chip,
-  ImageList,
-  ImageListItem,
   ImageListItemBar,
   Link as MuiLink,
   Paper,
   Skeleton,
-  Typography,
-  useMediaQuery,
-  useTheme
+  Typography
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
@@ -27,18 +24,17 @@ type Props = {
   cols?: number;
 };
 
+const tileImageHeight = 240;
+
 function MapGridList({ maps, skeletonSize, cols }: Props) {
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'));
   const dictionary = useDictionary();
 
+  const gridTemplateColumns = cols
+    ? `repeat(${cols}, 1fr)`
+    : { xs: 'repeat(1, 1fr)', sm: 'repeat(3, 1fr)' };
+
   return (
-    <ImageList
-      cols={cols || (smUp ? 3 : 1)}
-      rowHeight={240}
-      gap={8}
-      sx={{ m: 0 }}
-    >
+    <Box sx={{ display: 'grid', gap: 1, gridTemplateColumns }}>
       {(!maps.length ? Array.from(new Array(skeletonSize || 6)) : maps).map(
         (map: AppMap | null, i) => (
           <MuiLink
@@ -49,7 +45,13 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
             component={Link}
             title={map?.name}
           >
-            <ImageListItem>
+            <Box
+              sx={{
+                position: 'relative',
+                height: tileImageHeight,
+                overflow: 'hidden'
+              }}
+            >
               {!map && <Skeleton variant="rectangular" height="100%" />}
 
               {map?.thumbnail_url && (
@@ -98,34 +100,34 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
                   background: 'transparent'
                 }}
               />
+            </Box>
 
-              <ImageListItemBar
-                position="below"
-                title={
-                  map ? (
-                    <Typography variant="subtitle2" fontWeight={600} noWrap>
-                      {map.name}
-                    </Typography>
-                  ) : (
-                    <Skeleton height={32} />
-                  )
-                }
-                subtitle={
-                  map ? (
-                    <Typography variant="caption" color="text.secondary">
-                      {map.owner.name}
-                    </Typography>
-                  ) : (
-                    <Skeleton width="60%" height={24} />
-                  )
-                }
-                sx={{ display: 'grid' }}
-              />
-            </ImageListItem>
+            <ImageListItemBar
+              position="below"
+              title={
+                map ? (
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
+                    {map.name}
+                  </Typography>
+                ) : (
+                  <Skeleton height={32} />
+                )
+              }
+              subtitle={
+                map ? (
+                  <Typography variant="caption" color="text.secondary">
+                    {map.owner.name}
+                  </Typography>
+                ) : (
+                  <Skeleton width="60%" height={24} />
+                )
+              }
+              sx={{ display: 'grid' }}
+            />
           </MuiLink>
         )
       )}
-    </ImageList>
+    </Box>
   );
 }
 

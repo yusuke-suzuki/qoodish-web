@@ -41,8 +41,8 @@ type Props = {
   lang: string;
   serverAuthenticated: boolean;
   serverUid?: string;
-  serverProfile?: Profile | null;
-  serverNotifications?: Notification[];
+  profile: Profile | null;
+  notifications: Notification[];
 };
 
 export default function Providers({
@@ -50,8 +50,8 @@ export default function Providers({
   lang,
   serverAuthenticated,
   serverUid,
-  serverProfile,
-  serverNotifications
+  profile,
+  notifications
 }: Props) {
   const dictionary = useDictionary();
 
@@ -134,8 +134,8 @@ export default function Providers({
             serverAuthenticated={serverAuthenticated}
             serverUid={serverUid ?? null}
           >
-            <ProfileContext.Provider value={serverProfile ?? null}>
-              <NotificationsContext.Provider value={serverNotifications ?? []}>
+            <ProfileContext.Provider value={profile}>
+              <NotificationsContext.Provider value={notifications}>
                 <ServiceWorkerContext.Provider value={{ registration }}>
                   <AnalyticsTracker />
                   {children}
