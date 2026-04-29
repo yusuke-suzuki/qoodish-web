@@ -74,9 +74,6 @@ importers:
       react-dom:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
-      react-facebook:
-        specifier: ^8.1.4
-        version: 8.1.4(react@19.2.4)
       react-swipeable-views:
         specifier: ^0.13.9
         version: 0.13.9(react@19.2.4)
@@ -1463,9 +1460,6 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  can-use-dom@0.1.0:
-    resolution: {integrity: sha512-ceOhN1DL7Y4O6M0j9ICgmTYziV89WMd96SvSl0REd8PMgrY0B/WBOPoed5S1KUmJqXgUXh8gzSe6E3ae27upsQ==}
-
   caniuse-lite@1.0.30001737:
     resolution: {integrity: sha512-BiloLiXtQNrY5UyF0+1nSJLXUENuhka2pzy2Fx5pGxqavdrxSCW4U6Pn/PoG3Efspi2frRbHpBV2XsrPE6EDlw==}
 
@@ -2477,23 +2471,11 @@ packages:
     peerDependencies:
       react: ^16.3.0
 
-  react-facebook@8.1.4:
-    resolution: {integrity: sha512-OVV9+h8jR4Us94ymHyrKpf33WqPX4+3vJvCFEV6ynaW80TC6rucYouQtRSv7G3oW+Tb+qAx8z8DZPYJfIVRW+A==}
-    engines: {node: '>= 6.0.0'}
-    peerDependencies:
-      react: '>= 16.8.0'
-
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
   react-is@19.1.1:
     resolution: {integrity: sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==}
-
-  react-spinner-children@1.0.8:
-    resolution: {integrity: sha512-JNo7Jvs6aZLwhzxEshmTc67RuLMNVbrdZ326fzW3LjeU6wT2Npucm0DHRp9k3Xr2415AZxlHI1LtP4k7uXEbxA==}
-    engines: {node: '>= 0.12.0'}
-    peerDependencies:
-      react: 15.x || 16.x
 
   react-swipeable-views-core@0.13.7:
     resolution: {integrity: sha512-ekn9oDYfBt0oqJSGGwLEhKvn+QaqMGTy//9dURTLf+vp7W5j6GvmKryYdnwJCDITaPFI2hujXV4CH9krhvaE5w==}
@@ -2683,9 +2665,6 @@ packages:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
     deprecated: The work that was done in this beta branch won't be included in future versions
-
-  spin.js@2.3.2:
-    resolution: {integrity: sha512-ryhCvKCRa6J5Fxa7Y+fnhE2a+e05JwfW5dxO82zPd0uDM9o+qp8p74BJUurjiqCqmDsWNvGOAxfqdD317XIedg==}
 
   stable-hash@0.0.5:
     resolution: {integrity: sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==}
@@ -4452,8 +4431,6 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  can-use-dom@0.1.0: {}
-
   caniuse-lite@1.0.30001737: {}
 
   caniuse-lite@1.0.30001781:
@@ -5660,22 +5637,9 @@ snapshots:
       react: 19.2.4
       warning: 4.0.3
 
-  react-facebook@8.1.4(react@19.2.4):
-    dependencies:
-      '@babel/runtime': 7.28.3
-      can-use-dom: 0.1.0
-      react: 19.2.4
-      react-spinner-children: 1.0.8(react@19.2.4)
-
   react-is@16.13.1: {}
 
   react-is@19.1.1: {}
-
-  react-spinner-children@1.0.8(react@19.2.4):
-    dependencies:
-      prop-types: 15.8.1
-      react: 19.2.4
-      spin.js: 2.3.2
 
   react-swipeable-views-core@0.13.7:
     dependencies:
@@ -5934,8 +5898,6 @@ snapshots:
   source-map@0.8.0-beta.0:
     dependencies:
       whatwg-url: 7.1.0
-
-  spin.js@2.3.2: {}
 
   stable-hash@0.0.5: {}
 
