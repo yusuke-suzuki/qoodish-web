@@ -12,7 +12,6 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import FbPage from './FbPage';
 import RecommendMaps from './RecommendMaps';
 import TrendingMaps from './TrendingMaps';
 
@@ -59,8 +58,6 @@ function Sidebar({ popularMaps, recommendMaps }: Props) {
           </Stack>
         </CardContent>
       </Paper>
-
-      <FbPage />
     </Stack>
   );
 }
