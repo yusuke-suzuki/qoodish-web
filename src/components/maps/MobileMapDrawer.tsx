@@ -7,8 +7,9 @@ import {
   SwipeableDrawer,
   Typography
 } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useContext, useState } from 'react';
 import type { AppMap, Follower, Profile, Review } from '../../../types';
+import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
 import FollowButton from './FollowButton';
 import Followers from './Followers';
@@ -47,7 +48,18 @@ function MobileMapDrawer({
 }: Props) {
   const [open, setOpen] = useState(false);
 
+  const { setAppBarHidden } = useContext(ShellContext);
   const dictionary = useDictionary();
+
+  const handleOpen = useCallback(() => {
+    setOpen(true);
+    setAppBarHidden(true);
+  }, [setAppBarHidden]);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    setAppBarHidden(false);
+  }, [setAppBarHidden]);
 
   const handleReviewClick = useCallback(
     (review: Review) => {
@@ -64,8 +76,8 @@ function MobileMapDrawer({
         hideBackdrop
         disableSwipeToOpen={false}
         open={reviewDrawerOpen ? false : open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
+        onOpen={handleOpen}
+        onClose={handleClose}
         swipeAreaWidth={drawerBleeding}
         sx={{
           zIndex: (theme) => theme.zIndex.appBar - 1,

@@ -1,7 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { type ReactNode, useCallback, useContext, useState } from 'react';
+import {
+  type ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState
+} from 'react';
 import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import ShellContext from '../../context/ShellContext';
@@ -18,6 +24,7 @@ export default function ShellProvider({ children }: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapOpen, setCreateMapOpen] = useState(false);
+  const [appBarHidden, setAppBarHidden] = useState(false);
 
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const openCreateMap = useCallback(() => {
@@ -36,8 +43,13 @@ export default function ShellProvider({ children }: Props) {
     [push]
   );
 
+  const contextValue = useMemo(
+    () => ({ openSearch, openCreateMap, appBarHidden, setAppBarHidden }),
+    [openSearch, openCreateMap, appBarHidden]
+  );
+
   return (
-    <ShellContext.Provider value={{ openSearch, openCreateMap }}>
+    <ShellContext.Provider value={contextValue}>
       {children}
       <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
       <CreateMapDialog
