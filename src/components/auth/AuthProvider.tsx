@@ -48,6 +48,12 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
     });
   }, []);
 
+  const clearNavigationCache = useCallback(async () => {
+    if (typeof caches !== 'undefined') {
+      await caches.delete('pages');
+    }
+  }, []);
+
   const handleIdTokenChanged = useCallback(
     async (user: User | null) => {
       if (user) {
@@ -60,6 +66,7 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
 
           if (authStateRef.current) {
             authStateRef.current = false;
+            await clearNavigationCache();
             router.refresh();
           }
         } else {
@@ -69,6 +76,7 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
           if (!authStateRef.current) {
             await fetch('/api/v1/users', { method: 'POST' });
             authStateRef.current = true;
+            await clearNavigationCache();
             router.refresh();
           }
 
@@ -85,11 +93,12 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
 
         if (authStateRef.current) {
           authStateRef.current = false;
+          await clearNavigationCache();
           router.refresh();
         }
       }
     },
-    [syncSessionCookie, router]
+    [syncSessionCookie, clearNavigationCache, router]
   );
 
   useEffect(() => {
