@@ -2,6 +2,7 @@ import type { PrecacheEntry, RuntimeCaching } from 'serwist';
 import {
   CacheFirst,
   ExpirationPlugin,
+  NetworkFirst,
   Serwist,
   StaleWhileRevalidate
 } from 'serwist';
@@ -51,8 +52,22 @@ interface PushEventPayload {
   data: NotificationData;
 }
 
-// Define runtime caching
 const runtimeCaching: RuntimeCaching[] = [
+  {
+    // Return cached HTML during Cloud Run cold starts so the PWA splash dismisses without waiting on the network.
+    matcher: ({ request, url }) =>
+      request.mode === 'navigate' && url.origin === self.location.origin,
+    handler: new NetworkFirst({
+      cacheName: 'pages',
+      networkTimeoutSeconds: 3,
+      plugins: [
+        new ExpirationPlugin({
+          maxEntries: 32,
+          maxAgeSeconds: 24 * 60 * 60
+        })
+      ]
+    })
+  },
   {
     matcher: /^https:\/\/fonts\.googleapis\.com\/.*/,
     handler: new StaleWhileRevalidate({
@@ -133,7 +148,7 @@ const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
-  navigationPreload: false,
+  navigationPreload: true,
   runtimeCaching
 });
 
