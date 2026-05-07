@@ -49,5 +49,5 @@ export default async function NotificationsPage({ params }: Props) {
   const { lang } = await params;
   const notifications = await getNotifications(lang);
 
-  return <NotificationsFeed initialNotifications={notifications} />;
+  return <NotificationsFeed notifications={notifications} />;
 }

@@ -19,7 +19,7 @@ import {
   useContext,
   useState
 } from 'react';
-import type { Profile, Review } from '../../../types';
+import type { AppMap, Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import ProfileAvatar from '../common/ProfileAvatar';
@@ -30,9 +30,10 @@ import UserReviews from './UserReviews';
 type Props = {
   profile: Profile;
   initialReviews: Review[];
+  maps: AppMap[];
 };
 
-function UserProfile({ profile, initialReviews }: Props) {
+function UserProfile({ profile, initialReviews, maps }: Props) {
   const { uid } = useContext(AuthContext);
   const router = useRouter();
 
@@ -135,7 +136,7 @@ function UserProfile({ profile, initialReviews }: Props) {
           <UserReviews userId={profile.id} initialReviews={initialReviews} />
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>
-          <UserMaps userId={profile.id} />
+          <UserMaps maps={maps} />
         </TabPanel>
       </TabContext>
 
