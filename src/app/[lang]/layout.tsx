@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import type { Notification, Profile } from '../../../types';
 import MiniDrawer from '../../components/layouts/MiniDrawer';
 import MobileAppBar from '../../components/layouts/MobileAppBar';
 import ShellProvider from '../../components/layouts/ShellProvider';
@@ -50,10 +51,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const { authenticated, uid, token } = await getServerAuthState();
-  const [profile, notifications] = await Promise.all([
-    authenticated && uid ? getProfile(uid, lang, token) : null,
-    authenticated ? getNotifications(lang) : []
-  ]);
+  const profilePromise =
+    authenticated && uid
+      ? getProfile(uid, lang, token)
+      : Promise.resolve<Profile | null>(null);
+  const notificationsPromise = authenticated
+    ? getNotifications(lang)
+    : Promise.resolve<Notification[]>([]);
 
   return (
     <html lang={lang}>
@@ -127,8 +131,8 @@ export default async function RootLayout({ children, params }: Props) {
           lang={lang}
           serverAuthenticated={authenticated}
           serverUid={uid}
-          profile={profile}
-          notifications={notifications}
+          profilePromise={profilePromise}
+          notificationsPromise={notificationsPromise}
         >
           <ShellProvider>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>

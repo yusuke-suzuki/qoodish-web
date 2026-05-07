@@ -2,7 +2,9 @@
 
 import { css } from '@emotion/react';
 import {
+  Box,
   Button,
+  CircularProgress,
   CssBaseline,
   GlobalStyles,
   ThemeProvider,
@@ -14,6 +16,7 @@ import { enUS, jaJP } from '@mui/material/locale';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import {
   type ReactNode,
+  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -21,11 +24,10 @@ import {
 } from 'react';
 import type { Notification, Profile } from '../../../types';
 import AuthProvider from '../../components/auth/AuthProvider';
-import NotificationsContext from '../../context/NotificationsContext';
-import ProfileContext from '../../context/ProfileContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
+import AccountProviders from './AccountProviders';
 import AnalyticsTracker from './AnalyticsTracker';
 
 const globalStyles = css`
@@ -41,8 +43,8 @@ type Props = {
   lang: string;
   serverAuthenticated: boolean;
   serverUid?: string;
-  profile: Profile | null;
-  notifications: Notification[];
+  profilePromise: Promise<Profile | null>;
+  notificationsPromise: Promise<Notification[]>;
 };
 
 export default function Providers({
@@ -50,8 +52,8 @@ export default function Providers({
   lang,
   serverAuthenticated,
   serverUid,
-  profile,
-  notifications
+  profilePromise,
+  notificationsPromise
 }: Props) {
   const dictionary = useDictionary();
 
@@ -59,6 +61,8 @@ export default function Providers({
     useState<ServiceWorkerRegistration>(null);
 
   usePushManager(registration);
+
+  const serviceWorkerValue = useMemo(() => ({ registration }), [registration]);
 
   const theme = useMemo(() => {
     const locale = lang === 'ja' ? jaJP : enUS;
@@ -134,14 +138,32 @@ export default function Providers({
             serverAuthenticated={serverAuthenticated}
             serverUid={serverUid ?? null}
           >
-            <ProfileContext.Provider value={profile}>
-              <NotificationsContext.Provider value={notifications}>
-                <ServiceWorkerContext.Provider value={{ registration }}>
+            <Suspense
+              fallback={
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100vw',
+                    height: '100vh',
+                    bgcolor: 'background.default'
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              }
+            >
+              <AccountProviders
+                profilePromise={profilePromise}
+                notificationsPromise={notificationsPromise}
+              >
+                <ServiceWorkerContext.Provider value={serviceWorkerValue}>
                   <AnalyticsTracker />
                   {children}
                 </ServiceWorkerContext.Provider>
-              </NotificationsContext.Provider>
-            </ProfileContext.Provider>
+              </AccountProviders>
+            </Suspense>
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>
