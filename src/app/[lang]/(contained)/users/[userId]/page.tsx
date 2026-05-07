@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import UserProfile from '../../../../../components/profiles/UserProfile';
-import { getProfile, getUserReviews } from '../../../../../lib/users';
+import {
+  getProfile,
+  getUserMaps,
+  getUserReviews
+} from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
 
 type Props = {
@@ -57,7 +61,16 @@ export default async function UserPage({ params }: Props) {
     notFound();
   }
 
-  const initialReviews = await getUserReviews(userId, lang);
+  const [initialReviews, maps] = await Promise.all([
+    getUserReviews(userId, lang),
+    getUserMaps(userId, lang, token)
+  ]);
 
-  return <UserProfile profile={profile} initialReviews={initialReviews} />;
+  return (
+    <UserProfile
+      profile={profile}
+      initialReviews={initialReviews}
+      maps={maps}
+    />
+  );
 }

@@ -7,10 +7,10 @@ import type { Notification } from '../../../types';
 import NotificationList from './NotificationList';
 
 type Props = {
-  initialNotifications: Notification[];
+  notifications: Notification[];
 };
 
-export default function NotificationsFeed({ initialNotifications }: Props) {
+export default function NotificationsFeed({ notifications }: Props) {
   const router = useRouter();
 
   const handleReadNotifications = useCallback(() => {
@@ -20,7 +20,7 @@ export default function NotificationsFeed({ initialNotifications }: Props) {
   return (
     <List>
       <NotificationList
-        notifications={initialNotifications}
+        notifications={notifications}
         onReadNotifications={handleReadNotifications}
       />
     </List>
