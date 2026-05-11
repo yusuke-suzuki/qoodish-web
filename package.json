@@ -5,6 +5,7 @@
   "repository": "git@github.com:yusuke-suzuki/qoodish-web.git",
   "author": "Yusuke Suzuki",
   "license": "UNLICENSED",
+  "packageManager": "pnpm@11.0.9",
   "scripts": {
     "dev": "next dev -p 5000",
     "build": "next build",
