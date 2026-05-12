@@ -12,7 +12,6 @@ const withSerwist = withSerwistInit({
  * @type {import('next').NextConfig}
  */
 module.exports = withSerwist({
-  output: 'standalone',
   experimental: {
     globalNotFound: true
   }
