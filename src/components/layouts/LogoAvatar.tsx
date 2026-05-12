@@ -5,7 +5,7 @@ export default memo(function LogoAvatar() {
   return (
     <Avatar
       sx={{
-        fontFamily: "'Lobster', cursive",
+        fontFamily: 'var(--font-lobster), cursive',
         fontWeight: 800,
         fontSize: '1.4rem',
         bgcolor: 'primary.main',

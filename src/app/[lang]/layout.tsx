@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { Lobster } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types';
 import MiniDrawer from '../../components/layouts/MiniDrawer';
@@ -10,9 +11,23 @@ import { getNotifications, getProfile } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
 import Providers from './Providers';
 
+const lobster = Lobster({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-lobster',
+  display: 'swap'
+});
+
 type Props = {
   children: ReactNode;
   params: Promise<{ lang: string }>;
+};
+
+export const viewport: Viewport = {
+  themeColor: '#ffc107',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover'
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -29,6 +44,42 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: process.env.NEXT_PUBLIC_ENDPOINT?.includes('dev')
       ? 'noindex'
       : undefined,
+    icons: {
+      icon: [
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x32.webp',
+          sizes: '32x32',
+          type: 'image/webp'
+        },
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x16.webp',
+          sizes: '16x16',
+          type: 'image/webp'
+        }
+      ],
+      apple: [
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone.png'
+        },
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad.png',
+          sizes: '152x152'
+        },
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone-retina.png',
+          sizes: '180x180'
+        },
+        {
+          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad-retina.png',
+          sizes: '167x167'
+        }
+      ]
+    },
+    appleWebApp: {
+      capable: true,
+      title: 'Qoodish',
+      statusBarStyle: 'black-translucent'
+    },
     openGraph: {
       title: 'Qoodish',
       description: dict['meta description'],
@@ -43,7 +94,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID ?? '',
       'og:type': 'website',
       'og:site_name': 'Qoodish',
-      'twitter:domain': 'qoodish.com'
+      'twitter:domain': 'qoodish.com',
+      'mobile-web-app-capable': 'yes'
     }
   };
 }
@@ -60,57 +112,8 @@ export default async function RootLayout({ children, params }: Props) {
     : Promise.resolve<Notification[]>([]);
 
   return (
-    <html lang={lang}>
+    <html lang={lang} className={lobster.variable}>
       <head>
-        <link rel="manifest" href="/app.webmanifest" />
-
-        <link
-          rel="icon"
-          type="image/webp"
-          sizes="32x32"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x32.webp"
-        />
-        <link
-          rel="icon"
-          type="image/webp"
-          sizes="16x16"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x16.webp"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="152x152"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone-retina.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="167x167"
-          href="https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad-retina.png"
-        />
-
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Lobster&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="preconnect dns-prefetch stylesheet"
-        />
-
         <link href="https://www.googleapis.com" rel="preconnect dns-prefetch" />
         <link
           href="https://www.google-analytics.com"
@@ -124,7 +127,6 @@ export default async function RootLayout({ children, params }: Props) {
           href="https://storage.googleapis.com"
           rel="preconnect dns-prefetch"
         />
-        <meta name="theme-color" content="#ffc107" />
       </head>
       <body>
         <Providers

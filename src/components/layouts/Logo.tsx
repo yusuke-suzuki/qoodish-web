@@ -21,7 +21,7 @@ export default memo(function Logo({ color }: Props) {
       variant={smUp ? 'h4' : 'h5'}
       color={color ? color : 'primary'}
       sx={{
-        fontFamily: "'Lobster', cursive"
+        fontFamily: 'var(--font-lobster), cursive'
       }}
     >
       Qoodish
