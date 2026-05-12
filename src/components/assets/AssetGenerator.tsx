@@ -47,7 +47,7 @@ export default function AssetGenerator({ lang, tagline }: Props) {
           <Typography
             color="background.paper"
             sx={{
-              fontFamily: "'Lobster', cursive",
+              fontFamily: 'var(--font-lobster), cursive',
               fontSize: 320
             }}
           >
@@ -80,7 +80,7 @@ export default function AssetGenerator({ lang, tagline }: Props) {
 
               <Typography
                 sx={{
-                  fontFamily: "'Lobster', cursive",
+                  fontFamily: 'var(--font-lobster), cursive',
                   fontSize: 200
                 }}
               >
