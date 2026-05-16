@@ -58,7 +58,7 @@ export default memo(function ReviewMenuButton({
     return currentProfile?.id === review?.author.id;
   }, [review, currentProfile]);
 
-  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}/${lang}/maps/${review?.map.id}/reports/${review?.id}`;
+  const url = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/${lang}/maps/${review?.map.id}/reports/${review?.id}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {

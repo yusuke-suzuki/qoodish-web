@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     review && review.images.length > 0
       ? review.images[0].thumbnail_url_800
       : defaultThumbnailUrl;
-  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
+  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
   return {
     title,

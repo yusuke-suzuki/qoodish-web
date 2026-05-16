@@ -54,7 +54,7 @@ export default memo(function MapMenuButton({
     return currentProfile?.id === map?.owner.id;
   }, [map, currentProfile]);
 
-  const url = `${process.env.NEXT_PUBLIC_ENDPOINT}/${lang}/maps/${map?.id}`;
+  const url = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/${lang}/maps/${map?.id}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {

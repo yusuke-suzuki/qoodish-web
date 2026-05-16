@@ -41,9 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: 'Qoodish',
     description: dict['meta description'],
-    robots: process.env.NEXT_PUBLIC_ENDPOINT?.includes('dev')
-      ? 'noindex'
-      : undefined,
+    robots: process.env.VERCEL_ENV !== 'production' ? 'noindex' : undefined,
     icons: {
       icon: [
         {
