@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     lang === 'en'
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
-  const endpoint = process.env.NEXT_PUBLIC_ENDPOINT;
+  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
   return {
     title,
