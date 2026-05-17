@@ -101,18 +101,21 @@ function GoogleMaps({
     }
   }, [googleMap, zoom]);
 
+  const contextValue = useMemo(
+    () => ({
+      googleMap,
+      loader,
+      currentPosition,
+      setCurrentPosition
+    }),
+    [googleMap, loader, currentPosition]
+  );
+
   return (
     <Box>
       <Box ref={mapRef} sx={sx} />
 
-      <GoogleMapsContext.Provider
-        value={{
-          googleMap: googleMap,
-          loader: loader,
-          currentPosition: currentPosition,
-          setCurrentPosition: setCurrentPosition
-        }}
-      >
+      <GoogleMapsContext.Provider value={contextValue}>
         {children}
       </GoogleMapsContext.Provider>
     </Box>

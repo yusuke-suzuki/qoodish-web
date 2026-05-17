@@ -25,7 +25,8 @@ function InfoWindow({ children, position, open, onClose }: Props) {
     const { InfoWindow } = await loader.importLibrary('maps');
 
     const window = new InfoWindow({
-      content: container
+      content: container,
+      disableAutoPan: true
     });
 
     setInfoWindow(window);
@@ -50,7 +51,11 @@ function InfoWindow({ children, position, open, onClose }: Props) {
       return;
     }
 
-    infoWindow.addListener('closeclick', onClose);
+    const listener = infoWindow.addListener('closeclick', onClose);
+
+    return () => {
+      listener.remove();
+    };
   }, [infoWindow, onClose]);
 
   useEffect(() => {
