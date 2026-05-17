@@ -1,9 +1,8 @@
-import { DragHandle } from '@mui/icons-material';
+import { DragHandle, Lock } from '@mui/icons-material';
 import { Avatar, Box, CardHeader, Skeleton, type SxProps } from '@mui/material';
 import { type ReactNode, memo } from 'react';
 import type { AppMap, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import PrivateMapChip from './PrivateMapChip';
 
 type Props = {
   map: AppMap | null;
@@ -40,30 +39,39 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
         title={map ? map.name : <Skeleton width="100%" />}
         subheader={
           map ? (
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              {reviews.length} {dictionary['spots count']}
-              {map.private && <PrivateMapChip />}
-            </Box>
+            `${reviews.length} ${dictionary['spots count']}`
           ) : (
             <Skeleton width="50%" />
           )
         }
-        action={action || null}
+        action={
+          action ??
+          (map?.private ? (
+            <Lock
+              fontSize="small"
+              color="action"
+              titleAccess={dictionary.private}
+            />
+          ) : null)
+        }
         slotProps={{
+          root: {
+            sx: { pt: 0 }
+          },
+          content: {
+            sx: { minWidth: 0 }
+          },
           title: {
             variant: 'subtitle1',
             component: 'h1',
             fontWeight: 600,
-            noWrap: true,
-            width: 'calc(100dvw - 112px)'
+            noWrap: true
           },
-
           subheader: {
             variant: 'body2',
             component: 'div',
             noWrap: true,
-            color: 'text.secondary',
-            width: 'calc(100dvw - 112px)'
+            color: 'text.secondary'
           }
         }}
       />

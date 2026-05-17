@@ -17,6 +17,7 @@ import MapCardHeader from './MapCardHeader';
 import MapMenuButton from './MapMenuButton';
 import MapReviewList from './MapReviewList';
 import MobileMiniMapHeader from './MobileMiniMapHeader';
+import PrivateMapChip from './PrivateMapChip';
 import UnfollowButton from './UnfollowButton';
 
 const drawerBleeding = 105;
@@ -114,15 +115,15 @@ function MobileMapDrawer({
             height: drawerBleeding
           }}
         >
-          <MobileMiniMapHeader
-            map={map}
-            reviews={reviews}
-            draggable
-            sx={{ pt: 0 }}
-          />
+          <MobileMiniMapHeader map={map} reviews={reviews} draggable />
         </Box>
         <Divider />
         <Box sx={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
+          {map?.private && (
+            <Box sx={{ px: 2, pt: 2 }}>
+              <PrivateMapChip />
+            </Box>
+          )}
           <MapCardHeader
             map={map}
             action={
