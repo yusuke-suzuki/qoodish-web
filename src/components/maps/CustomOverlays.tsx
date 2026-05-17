@@ -98,6 +98,26 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     [onReviewClick]
   );
 
+  const handleCreateReviewOpen = useCallback(() => {
+    setCreateReviewDialogOpen(true);
+  }, []);
+
+  const handleCreateReviewClose = useCallback(() => {
+    setCreateReviewDialogOpen(false);
+  }, []);
+
+  const handlePlaceClose = useCallback(() => {
+    setCurrentPlace(null);
+  }, []);
+
+  const handlePinnedPositionClose = useCallback(() => {
+    setPinnedPosition(null);
+  }, []);
+
+  const handlePopoverClose = useCallback(() => {
+    setPopoverAnchorEl(null);
+  }, []);
+
   const handleMapClick = useCallback(
     async (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
       if ('placeId' in event) {
@@ -201,7 +221,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
           anchorEl={popoverAnchorEl}
           popoverId={reviewPopoverId}
           popoverOpen={popoverOpen}
-          onPopoverClose={() => setPopoverAnchorEl(null)}
+          onPopoverClose={handlePopoverClose}
           onSaved={onReviewSaved}
           onDeleted={handleReviewDeleted}
         />
@@ -210,22 +230,22 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
       <PlaceInfoWindow
         place={currentPlace}
         disableCreateReview={!map || !map.postable}
-        onCreateReviewClick={() => setCreateReviewDialogOpen(true)}
-        onClose={() => setCurrentPlace(null)}
+        onCreateReviewClick={handleCreateReviewOpen}
+        onClose={handlePlaceClose}
       />
 
       <PositionInfoWindow
         position={pinnedPosition}
         disableCreateReview={!map || !map.postable}
-        onCreateReviewClick={() => setCreateReviewDialogOpen(true)}
-        onClose={() => setPinnedPosition(null)}
+        onCreateReviewClick={handleCreateReviewOpen}
+        onClose={handlePinnedPositionClose}
       />
 
       <CustomMapControls onPlaceChange={setCurrentPlace} />
 
       <CreateReviewDialog
         open={createReviewDialogOpen}
-        onClose={() => setCreateReviewDialogOpen(false)}
+        onClose={handleCreateReviewClose}
         map={map}
         place={currentPlace}
         currentPosition={currentPosition}
