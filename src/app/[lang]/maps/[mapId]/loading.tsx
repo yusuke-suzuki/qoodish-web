@@ -1,7 +1,17 @@
-import { Box, Skeleton, Stack } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Skeleton
+} from '@mui/material';
 
 const summaryCardWidth = 360;
 const bottomSheetHeight = 105;
+
+const reviewSkeletonKeys = ['a', 'b', 'c'];
 
 export default function Loading() {
   return (
@@ -10,24 +20,63 @@ export default function Loading() {
         sx={{
           display: { xs: 'none', md: 'block' },
           width: summaryCardWidth,
-          height: '100dvh',
-          p: 2
+          height: '100dvh'
         }}
       >
-        <Stack spacing={2}>
-          <Skeleton variant="rectangular" height={160} />
-          <Skeleton variant="text" height={32} width="70%" />
-          <Skeleton variant="text" />
-          <Skeleton variant="text" width="80%" />
-          <Stack direction="row" spacing={1}>
-            <Skeleton variant="rounded" width={100} height={32} />
-            <Skeleton variant="rounded" width={100} height={32} />
-          </Stack>
-          <Skeleton variant="rectangular" height={1} />
-          <Skeleton variant="text" width="40%" />
-          <Skeleton variant="rectangular" height={120} />
-          <Skeleton variant="rectangular" height={120} />
-        </Stack>
+        <Card sx={{ height: '100%', width: '100%', overflowY: 'auto' }}>
+          <Skeleton variant="rectangular" height={180} />
+          <CardContent sx={{ pb: 0 }}>
+            <Skeleton height={70} />
+          </CardContent>
+          <CardHeader
+            avatar={<Skeleton variant="circular" width={40} height={40} />}
+            title={<Skeleton height={20} width="50%" />}
+            subheader={<Skeleton height={20} width="50%" />}
+          />
+          <CardContent sx={{ pt: 0, pb: 0 }}>
+            <Skeleton />
+            <Skeleton />
+          </CardContent>
+          <CardActions sx={{ p: 2 }}>
+            <Skeleton variant="rounded" height={36} width="100%" />
+          </CardActions>
+          <Divider />
+          <CardContent>
+            <Skeleton variant="text" width="30%" sx={{ mb: 1 }} />
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant="circular" width={40} height={40} />
+            </Box>
+          </CardContent>
+          <Divider />
+          <CardContent>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 1
+              }}
+            >
+              <Skeleton variant="text" width="30%" />
+              <Skeleton variant="text" width={24} />
+            </Box>
+            {reviewSkeletonKeys.map((key) => (
+              <Box
+                key={key}
+                sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}
+              >
+                <Skeleton variant="rounded" width={40} height={40} />
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Skeleton variant="text" width="60%" />
+                  <Skeleton variant="text" width="80%" />
+                </Box>
+                <Skeleton variant="circular" width={24} height={24} />
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
       </Box>
 
       <Skeleton
