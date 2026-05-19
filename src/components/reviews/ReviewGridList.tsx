@@ -62,7 +62,7 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
                   <ButtonBase sx={{ display: 'contents' }}>
                     <CardMedia
                       component="img"
-                      image={review.images[0].thumbnail_url_400}
+                      image={review.images[0].card}
                       height="100%"
                       alt={review.name}
                       title={review.name}

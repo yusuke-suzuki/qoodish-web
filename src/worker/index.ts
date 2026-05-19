@@ -1,6 +1,5 @@
 import type { PrecacheEntry, RuntimeCaching } from 'serwist';
 import {
-  CacheFirst,
   ExpirationPlugin,
   NetworkFirst,
   Serwist,
@@ -72,18 +71,6 @@ const runtimeCaching: RuntimeCaching[] = [
     matcher: /^https:\/\/fonts\.googleapis\.com\/.*/,
     handler: new StaleWhileRevalidate({
       cacheName: 'google-fonts-stylesheets'
-    })
-  },
-  {
-    matcher: /^https:\/\/storage\.googleapis\.com\/.*/,
-    handler: new CacheFirst({
-      cacheName: 'storage-googleapis-images',
-      plugins: [
-        new ExpirationPlugin({
-          maxEntries: 60,
-          maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
-        })
-      ]
     })
   }
 ];

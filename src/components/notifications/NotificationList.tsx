@@ -110,10 +110,10 @@ const NotificationList = ({
             }
             disableTypography
           />
-          {notification.notifiable.thumbnail_url && (
+          {notification.notifiable.image && (
             <IconButton href={notification.click_action} LinkComponent={Link}>
               <Avatar
-                src={notification.notifiable.thumbnail_url}
+                src={notification.notifiable.image.avatar}
                 variant="rounded"
                 slotProps={{
                   img: {

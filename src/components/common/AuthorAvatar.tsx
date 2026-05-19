@@ -17,7 +17,7 @@ export default memo(function AuthorAvatar({ author, sx }: Props) {
       title={author.name}
     >
       <Avatar
-        src={author.profile_image_url}
+        src={author.image?.avatar}
         alt={author.name}
         sx={sx}
         slotProps={{

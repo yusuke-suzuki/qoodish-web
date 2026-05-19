@@ -13,7 +13,7 @@ function Followers({ followers }: Props) {
         <Avatar
           key={follower.id}
           alt={follower.name}
-          src={follower.profile_image_url}
+          src={follower.image?.avatar}
           sx={{ width: 40, height: 40 }}
         />
       ))}

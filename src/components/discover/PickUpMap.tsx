@@ -37,7 +37,7 @@ function PickUpMap({ map }: Props) {
               <ButtonBase>
                 <CardMedia
                   component="img"
-                  image={map.thumbnail_url_800}
+                  image={map.image?.hero}
                   height="100%"
                   alt={map.name}
                   title={map.name}

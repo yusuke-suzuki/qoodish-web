@@ -9,15 +9,20 @@ export type PushNotification = {
   comment: boolean;
 };
 
+export type ImageVariants = {
+  url: string;
+  avatar: string;
+  card: string;
+  hero: string;
+  ogp: string;
+};
+
 export type Profile = {
   id: number;
   uid: string;
   name: string;
   biography: string;
-  image_url: string;
-  thumbnail_url: string;
-  thumbnail_url_400: string;
-  thumbnail_url_800: string;
+  image: ImageVariants | null;
   maps_count: number;
   following_maps_count: number;
   reviews_count: number;
@@ -27,7 +32,7 @@ export type Profile = {
 export type Author = {
   id: number;
   name: string;
-  profile_image_url: string;
+  image: ImageVariants | null;
 };
 
 export type Comment = {
@@ -41,12 +46,8 @@ export type Comment = {
   created_at: string;
 };
 
-export type Image = {
+export type Image = ImageVariants & {
   id: number;
-  url: string;
-  thumbnail_url: string;
-  thumbnail_url_400: string;
-  thumbnail_url_800: string;
 };
 
 export type AppMap = {
@@ -65,9 +66,7 @@ export type AppMap = {
   postable: boolean;
   shared: boolean;
   invitable: boolean;
-  thumbnail_url: string;
-  thumbnail_url_400: string;
-  thumbnail_url_800: string;
+  image: ImageVariants | null;
   created_at: string;
   updated_at: string;
 };
@@ -76,7 +75,7 @@ export type Follower = {
   id: number;
   uid: string;
   name: string;
-  profile_image_url: string;
+  image: ImageVariants | null;
   owner: boolean;
   editable: boolean;
   created_at: string;
@@ -88,8 +87,7 @@ export type PublicUser = {
   uid: string;
   name: string;
   biography: string;
-  image_url: string;
-  thubmnail_url: string;
+  image: ImageVariants | null;
 };
 
 export type Like = {
@@ -117,7 +115,7 @@ export type Review = {
 export type Notifiable = {
   id: number;
   type: string;
-  thumbnail_url: string;
+  image: ImageVariants | null;
 };
 
 export type Notification = {

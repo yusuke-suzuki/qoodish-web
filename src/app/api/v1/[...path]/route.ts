@@ -10,7 +10,7 @@ const ALLOWED_GUEST_GET_PATTERNS = [
   /^guest\/users\/\d+\/maps$/
 ];
 
-const ALLOWED_AUTH_POST_PATTERNS = [/^users$/];
+const ALLOWED_AUTH_POST_PATTERNS = [/^users$/, /^images$/];
 
 type PathClass = 'guest' | 'auth' | 'unknown';
 

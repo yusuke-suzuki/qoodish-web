@@ -23,7 +23,7 @@ type CreateReviewParams = {
   comment: string;
   latitude: number;
   longitude: number;
-  images: { url: string }[];
+  image_ids: number[];
 };
 
 type UpdateReviewParams = CreateReviewParams;

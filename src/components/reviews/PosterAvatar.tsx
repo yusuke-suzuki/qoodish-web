@@ -15,10 +15,10 @@ export default memo(function PosterAvatar() {
       </Avatar>
     );
   }
-  if (profile.thumbnail_url) {
+  if (profile.image) {
     return (
       <Avatar
-        src={profile.thumbnail_url}
+        src={profile.image.avatar}
         slotProps={{
           img: {
             alt: profile.name,

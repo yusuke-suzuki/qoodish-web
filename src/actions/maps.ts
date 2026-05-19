@@ -10,7 +10,7 @@ type CreateMapParams = {
   longitude: number;
   private: boolean;
   shared: boolean;
-  image_url?: string;
+  image_ids?: number[];
 };
 
 type UpdateMapParams = CreateMapParams;

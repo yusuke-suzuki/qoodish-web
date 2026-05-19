@@ -54,12 +54,12 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
             >
               {!map && <Skeleton variant="rectangular" height="100%" />}
 
-              {map?.thumbnail_url && (
+              {map?.image && (
                 <Card sx={{ height: '100%' }} elevation={0}>
                   <ButtonBase>
                     <CardMedia
                       component="img"
-                      image={map.thumbnail_url_800}
+                      image={map.image.hero}
                       height="100%"
                       alt={map.name}
                       title={map.name}
@@ -69,7 +69,7 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
                 </Card>
               )}
 
-              {map && !map.thumbnail_url && (
+              {map && !map.image && (
                 <Paper
                   sx={{
                     display: 'grid',

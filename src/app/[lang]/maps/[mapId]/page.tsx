@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     lang === 'en'
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
-  const thumbnailUrl = map ? map.thumbnail_url_800 : defaultThumbnailUrl;
+  const thumbnailUrl = map?.image?.ogp ?? defaultThumbnailUrl;
   const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
   return {

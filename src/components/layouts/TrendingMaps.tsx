@@ -47,7 +47,7 @@ const TrendingMaps = ({ maps }: Props) => {
         >
           <ListItemAvatar>
             <Avatar
-              src={map.thumbnail_url}
+              src={map.image?.avatar}
               alt={map.name}
               slotProps={{
                 img: {
