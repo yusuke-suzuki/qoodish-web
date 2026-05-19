@@ -6,7 +6,7 @@ import { apiFetch } from '../lib/api';
 type UpdateProfileParams = {
   name: string;
   biography?: string;
-  image_path?: string;
+  image_ids?: number[];
 };
 
 type UpdatePushNotificationParams = {

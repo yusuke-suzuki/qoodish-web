@@ -27,7 +27,7 @@ function ProfileAvatar({ profile, size, variant }: Props) {
   }
   return (
     <Avatar
-      src={profile.thumbnail_url_400}
+      src={profile.image?.card}
       alt={profile.name}
       sx={avatarStyle}
       variant={variant || 'circular'}

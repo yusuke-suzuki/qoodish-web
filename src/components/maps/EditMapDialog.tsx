@@ -16,7 +16,7 @@ import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
 import { updateMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
-import uploadToStorage from '../../utils/uploadToStorage';
+import uploadImage from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
@@ -83,17 +83,12 @@ export default memo(function EditMapDialog({
       }
 
       try {
-        let imageUrl: string | undefined;
+        let imageId: number | undefined;
 
         const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
 
         if (url && url.protocol === 'data:') {
-          const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
-          imageUrl = await uploadToStorage(
-            thumbnailDataUrl,
-            fileName,
-            'data_url'
-          );
+          imageId = await uploadImage(thumbnailDataUrl);
         }
 
         const result = await updateMap(currentMap.id, {
@@ -103,7 +98,7 @@ export default memo(function EditMapDialog({
           longitude: position.lng,
           private: isPrivate,
           shared: isShared,
-          image_url: imageUrl
+          image_ids: imageId ? [imageId] : undefined
         });
 
         if (result.success) {
@@ -142,7 +137,7 @@ export default memo(function EditMapDialog({
       return;
     }
 
-    setThumbnailDataUrl(currentMap.thumbnail_url);
+    setThumbnailDataUrl(currentMap.image?.url ?? null);
   }, [currentMap]);
 
   const defaultCenter = useMemo(() => {

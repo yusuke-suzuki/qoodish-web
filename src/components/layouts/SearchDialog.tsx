@@ -100,7 +100,7 @@ const SearchDialog = ({ open, onClose }: Props) => {
                 onClick={() => handleMapClick(option)}
                 option={{ value: String(option.id), label: option.name }}
                 inputValue={inputValue}
-                avatar={<Avatar alt={option.name} src={option.thumbnail_url} />}
+                avatar={<Avatar alt={option.name} src={option.image?.avatar} />}
               />
             ))}
           </List>

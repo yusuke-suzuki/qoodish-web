@@ -16,7 +16,7 @@ import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
-import uploadToStorage from '../../utils/uploadToStorage';
+import uploadImage from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
@@ -81,15 +81,10 @@ export default memo(function CreateMapDialog({
       }
 
       try {
-        let imageUrl: string | undefined;
+        let imageId: number | undefined;
 
         if (thumbnailDataUrl) {
-          const fileName = `maps/${self.crypto.randomUUID()}.jpg`;
-          imageUrl = await uploadToStorage(
-            thumbnailDataUrl,
-            fileName,
-            'data_url'
-          );
+          imageId = await uploadImage(thumbnailDataUrl);
         }
 
         const result = await createMap({
@@ -99,7 +94,7 @@ export default memo(function CreateMapDialog({
           longitude: position.lng,
           private: isPrivate,
           shared: isShared,
-          image_url: imageUrl
+          image_ids: imageId ? [imageId] : undefined
         });
 
         if (result.success) {

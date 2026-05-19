@@ -13,7 +13,7 @@ import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import uploadToStorage from '../../utils/uploadToStorage';
+import uploadImage from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import PhotoPreviewList from '../common/PhotoPreviewList';
 import PositionForm from '../maps/PositionForm';
@@ -34,6 +34,8 @@ type Props = {
   currentReview: Review | null;
 };
 
+type ImageItem = { id?: number; dataUrl: string };
+
 export default memo(function EditReviewDialog({
   open,
   onClose,
@@ -44,7 +46,7 @@ export default memo(function EditReviewDialog({
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
-  const [dataUrls, setDataUrls] = useState<string[]>([]);
+  const [items, setItems] = useState<ImageItem[]>([]);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
   );
@@ -61,22 +63,14 @@ export default memo(function EditReviewDialog({
       }
 
       try {
-        const photos = [];
+        const imageIds: number[] = [];
 
-        for (const dataUrl of dataUrls) {
-          const url = new URL(dataUrl);
-
-          if (url.protocol === 'data:') {
-            const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-            const uploaded = await uploadToStorage(
-              dataUrl,
-              fileName,
-              'data_url'
-            );
-
-            photos.push({ url: uploaded });
+        for (const item of items) {
+          if (item.id !== undefined) {
+            imageIds.push(item.id);
           } else {
-            photos.push({ url: dataUrl });
+            const uploaded = await uploadImage(item.dataUrl);
+            imageIds.push(uploaded);
           }
         }
 
@@ -85,7 +79,7 @@ export default memo(function EditReviewDialog({
           comment,
           latitude: position.lat,
           longitude: position.lng,
-          images: photos
+          image_ids: imageIds
         });
 
         if (result.success) {
@@ -113,23 +107,26 @@ export default memo(function EditReviewDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setComment(undefined);
-    setDataUrls([]);
+    setItems([]);
     setPosition(null);
   }, []);
 
   const handleImagesChange = useCallback((currentDataUrls: string[]) => {
-    setDataUrls((prevState) => [...prevState, ...currentDataUrls]);
+    setItems((prevState) => [
+      ...prevState,
+      ...currentDataUrls.map((dataUrl) => ({ dataUrl }))
+    ]);
   }, []);
 
   const handleImageDelete = useCallback(
     (index) => {
-      setDataUrls(
-        dataUrls.filter((_dataUrl, i) => {
+      setItems(
+        items.filter((_item, i) => {
           return i !== index;
         })
       );
     },
-    [dataUrls]
+    [items]
   );
 
   const setCurrentImages = useCallback(async () => {
@@ -137,7 +134,12 @@ export default memo(function EditReviewDialog({
       return;
     }
 
-    setDataUrls(currentReview.images.map((image) => image.url));
+    setItems(
+      currentReview.images.map((image) => ({
+        id: image.id,
+        dataUrl: image.url
+      }))
+    );
   }, [currentReview]);
 
   const defaultPosition = useMemo(() => {
@@ -188,7 +190,10 @@ export default memo(function EditReviewDialog({
             onChange={setComment}
           />
 
-          <PhotoPreviewList dataUrls={dataUrls} onDelete={handleImageDelete} />
+          <PhotoPreviewList
+            dataUrls={items.map((item) => item.dataUrl)}
+            onDelete={handleImageDelete}
+          />
         </DialogContent>
         <DialogActions
           sx={{

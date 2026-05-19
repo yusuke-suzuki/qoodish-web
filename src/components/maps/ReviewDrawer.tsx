@@ -120,7 +120,7 @@ function ReviewDrawer({
               key={image.id}
               component="img"
               alt={review.name}
-              image={image.thumbnail_url_400}
+              image={image.card}
               width={200}
               height={200}
               sx={{

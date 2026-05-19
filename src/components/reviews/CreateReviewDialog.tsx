@@ -13,7 +13,7 @@ import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { AppMap } from '../../../types';
 import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import uploadToStorage from '../../utils/uploadToStorage';
+import uploadImage from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import PhotoPreviewList from '../common/PhotoPreviewList';
 import PositionForm from '../maps/PositionForm';
@@ -69,13 +69,12 @@ export default memo(function CreateReviewDialog({
       }
 
       try {
-        const photos = [];
+        const imageIds: number[] = [];
 
         for (const dataUrl of dataUrls) {
-          const fileName = `images/${self.crypto.randomUUID()}.jpg`;
-          const url = await uploadToStorage(dataUrl, fileName, 'data_url');
+          const id = await uploadImage(dataUrl);
 
-          photos.push({ url: url });
+          imageIds.push(id);
         }
 
         const result = await createReview(map.id, {
@@ -83,7 +82,7 @@ export default memo(function CreateReviewDialog({
           comment,
           latitude: position.lat,
           longitude: position.lng,
-          images: photos
+          image_ids: imageIds
         });
 
         if (result.success) {

@@ -89,7 +89,7 @@ function ReviewPopover({
               <CardMedia
                 component="img"
                 alt={review.name}
-                image={image.thumbnail_url_400}
+                image={image.card}
                 width={1200}
                 height={630}
                 sx={{

@@ -28,7 +28,7 @@ function ReviewImageList({ review }: Props) {
             <ButtonBase>
               <CardMedia
                 component="img"
-                image={image.thumbnail_url_400}
+                image={image.card}
                 height="100%"
                 alt={review.name}
                 loading="lazy"

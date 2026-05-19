@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
   const thumbnailUrl =
     review && review.images.length > 0
-      ? review.images[0].thumbnail_url_800
+      ? review.images[0].ogp
       : defaultThumbnailUrl;
   const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 

@@ -45,11 +45,11 @@ export default memo(function MapSummaryCard({
 
   return (
     <Card sx={{ height: '100%', width: '100%', overflowY: 'auto' }}>
-      {map?.thumbnail_url ? (
+      {map?.image ? (
         <CardMedia
           component="img"
           alt={map.name}
-          image={map.thumbnail_url_400}
+          image={map.image.card}
           width={1200}
           height={630}
           sx={{

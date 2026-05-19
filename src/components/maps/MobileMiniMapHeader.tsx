@@ -28,7 +28,7 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
           map ? (
             <Avatar
               alt={map.name}
-              src={map.thumbnail_url_400}
+              src={map.image?.card}
               variant="rounded"
               sx={{ width: 64, height: 64 }}
             />

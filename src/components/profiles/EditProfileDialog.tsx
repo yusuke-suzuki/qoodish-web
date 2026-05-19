@@ -16,7 +16,7 @@ import { memo, useActionState, useCallback, useMemo, useState } from 'react';
 import type { Profile } from '../../../types';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
-import uploadToStorage from '../../utils/uploadToStorage';
+import uploadImage from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import BiographyForm from './BiographyForm';
 import ProfileNameForm from './ProfileNameForm';
@@ -65,23 +65,18 @@ export default memo(function EditProfileDialog({
       }
 
       try {
-        let imagePath: string | undefined;
+        let imageId: number | undefined;
 
         const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
 
         if (url && url.protocol === 'data:') {
-          const fileName = `profile/${self.crypto.randomUUID()}.jpg`;
-          imagePath = await uploadToStorage(
-            thumbnailDataUrl,
-            fileName,
-            'data_url'
-          );
+          imageId = await uploadImage(thumbnailDataUrl);
         }
 
         const result = await updateProfile(currentProfile.id, {
           name,
           biography,
-          image_path: imagePath
+          image_ids: imageId ? [imageId] : undefined
         });
 
         if (result.success) {
@@ -117,7 +112,7 @@ export default memo(function EditProfileDialog({
       return;
     }
 
-    setThumbnailDataUrl(currentProfile.thumbnail_url);
+    setThumbnailDataUrl(currentProfile.image?.url ?? null);
   }, [currentProfile]);
 
   return (

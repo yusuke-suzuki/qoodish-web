@@ -56,7 +56,7 @@ function MapReviewList({ reviews, onReviewClick }: Props) {
               <Avatar
                 alt={review.name}
                 variant="rounded"
-                src={review.images[0].thumbnail_url}
+                src={review.images[0].avatar}
               />
             ) : (
               <Avatar alt={review.name} variant="rounded">

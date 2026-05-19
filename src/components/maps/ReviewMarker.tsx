@@ -92,7 +92,7 @@ function ReviewMarker({ review, onClick }: Props) {
         >
           {review.images.length > 0 ? (
             <Avatar
-              src={review.images[0].thumbnail_url}
+              src={review.images[0].avatar}
               sx={{
                 width: theme.spacing(4),
                 height: theme.spacing(4),
