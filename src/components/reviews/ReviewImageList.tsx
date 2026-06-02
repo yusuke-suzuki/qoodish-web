@@ -16,7 +16,10 @@ function ReviewImageList({ review }: Props) {
   return (
     <ImageList cols={2} gap={8}>
       {review.images.map((image) => (
-        <ImageListItem key={image.id}>
+        <ImageListItem
+          key={image.id}
+          sx={{ aspectRatio: '1 / 1', overflow: 'hidden' }}
+        >
           <Card
             elevation={0}
             component="a"
@@ -25,13 +28,15 @@ function ReviewImageList({ review }: Props) {
             rel="noreferrer"
             sx={{ height: '100%' }}
           >
-            <ButtonBase>
+            <ButtonBase
+              sx={{ display: 'block', width: '100%', height: '100%' }}
+            >
               <CardMedia
                 component="img"
                 image={image.card}
-                height="100%"
                 alt={review.name}
                 loading="lazy"
+                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </ButtonBase>
           </Card>

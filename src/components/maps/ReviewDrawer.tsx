@@ -116,18 +116,22 @@ function ReviewDrawer({
           }}
         >
           {review?.images.map((image) => (
-            <CardMedia
+            <Box
               key={image.id}
-              component="img"
-              alt={review.name}
-              image={image.card}
-              width={200}
-              height={200}
               sx={{
+                flexShrink: 0,
+                width: 200,
                 height: 200,
-                width: 200
+                overflow: 'hidden'
               }}
-            />
+            >
+              <CardMedia
+                component="img"
+                alt={review.name}
+                image={image.card}
+                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </Box>
           ))}
         </CardContent>
 
