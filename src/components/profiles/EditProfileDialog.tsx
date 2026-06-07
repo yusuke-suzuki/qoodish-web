@@ -23,7 +23,7 @@ import {
 import type { Profile } from '../../../types';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage from '../../utils/uploadImage';
+import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import BiographyForm from './BiographyForm';
 import ProfileNameForm from './ProfileNameForm';
@@ -52,17 +52,32 @@ export default memo(function EditProfileDialog({
 
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
-  const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
+  const [newThumbnail, setNewThumbnail] = useState<UploadedImage | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const disabled = useMemo(() => {
-    return !name;
-  }, [name]);
+    return !name || isUploading;
+  }, [name, isUploading]);
 
-  const handleImagesChange = useCallback((currentDataUrls: string[]) => {
-    if (currentDataUrls.length > 0) {
-      setThumbnailDataUrl(currentDataUrls[0]);
-    }
-  }, []);
+  const thumbnailUrl = newThumbnail?.url ?? currentProfile?.image?.card ?? null;
+
+  const handleImagesChange = useCallback(
+    async (dataUrls: string[]) => {
+      if (dataUrls.length < 1) {
+        return;
+      }
+      setIsUploading(true);
+      try {
+        const uploaded = await uploadImage(dataUrls[0]);
+        setNewThumbnail(uploaded);
+      } catch (_error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [dictionary]
+  );
 
   const [isPending, startTransition] = useTransition();
 
@@ -77,18 +92,10 @@ export default memo(function EditProfileDialog({
 
       startTransition(async () => {
         try {
-          let imageId: number | undefined;
-
-          const url = thumbnailDataUrl ? new URL(thumbnailDataUrl) : null;
-
-          if (url && url.protocol === 'data:') {
-            imageId = await uploadImage(thumbnailDataUrl);
-          }
-
           const result = await updateProfile(currentProfile.id, {
             name,
             biography,
-            image_ids: imageId ? [imageId] : undefined
+            image_ids: newThumbnail ? [newThumbnail.id] : undefined
           });
 
           if (result.success) {
@@ -113,7 +120,7 @@ export default memo(function EditProfileDialog({
     },
     [
       currentProfile,
-      thumbnailDataUrl,
+      newThumbnail,
       name,
       biography,
       dictionary,
@@ -125,16 +132,8 @@ export default memo(function EditProfileDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setBiography(undefined);
-    setThumbnailDataUrl(null);
+    setNewThumbnail(null);
   }, []);
-
-  const setCurrentThumbnail = useCallback(() => {
-    if (!currentProfile) {
-      return;
-    }
-
-    setThumbnailDataUrl(currentProfile.image?.url ?? null);
-  }, [currentProfile]);
 
   return (
     <Dialog
@@ -150,7 +149,7 @@ export default memo(function EditProfileDialog({
         transition: Transition
       }}
       slotProps={{
-        transition: { onEnter: setCurrentThumbnail, onExited: handleExited }
+        transition: { onExited: handleExited }
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -170,10 +169,10 @@ export default memo(function EditProfileDialog({
               mb: 2
             }}
           >
-            {thumbnailDataUrl ? (
+            {thumbnailUrl ? (
               <CardMedia
                 sx={{ width: 160, height: 160 }}
-                image={thumbnailDataUrl}
+                image={thumbnailUrl}
               />
             ) : (
               <Skeleton
@@ -184,7 +183,11 @@ export default memo(function EditProfileDialog({
             )}
 
             <Box position="absolute">
-              <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+              <AddPhotoButton
+                onChange={handleImagesChange}
+                color="inherit"
+                disabled={isUploading || isPending}
+              />
             </Box>
           </Box>
 

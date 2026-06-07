@@ -6,10 +6,21 @@ type DirectUploadAllocation = {
 };
 
 type CloudflareUploadResponse = {
+  result: {
+    id: string;
+    variants: string[];
+  };
   success: boolean;
 };
 
-export default async function uploadImage(dataUrl: string): Promise<number> {
+export type UploadedImage = {
+  id: number;
+  url: string;
+};
+
+export default async function uploadImage(
+  dataUrl: string
+): Promise<UploadedImage> {
   const allocRes = await fetch('/api/v1/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -29,10 +40,10 @@ export default async function uploadImage(dataUrl: string): Promise<number> {
   if (!cfRes.ok) {
     throw new Error('Failed to upload image to Cloudflare Images');
   }
-  const { success }: CloudflareUploadResponse = await cfRes.json();
-  if (!success) {
+  const { result, success }: CloudflareUploadResponse = await cfRes.json();
+  if (!success || result.variants.length === 0) {
     throw new Error('Cloudflare Images upload reported failure');
   }
 
-  return id;
+  return { id, url: result.variants[0] };
 }

@@ -23,7 +23,7 @@ import {
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage from '../../utils/uploadImage';
+import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
@@ -52,7 +52,8 @@ export default memo(function CreateMapDialog({
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [thumbnailDataUrl, setThumbnailDataUrl] = useState<string | null>(null);
+  const [thumbnail, setThumbnail] = useState<UploadedImage | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -60,14 +61,26 @@ export default memo(function CreateMapDialog({
   );
 
   const disabled = useMemo(() => {
-    return !(name && description && position);
-  }, [name, description, position]);
+    return !(name && description && position) || isUploading;
+  }, [name, description, position, isUploading]);
 
-  const handleImagesChange = useCallback((currentDataUrls: string[]) => {
-    if (currentDataUrls.length > 0) {
-      setThumbnailDataUrl(currentDataUrls[0]);
-    }
-  }, []);
+  const handleImagesChange = useCallback(
+    async (dataUrls: string[]) => {
+      if (dataUrls.length < 1) {
+        return;
+      }
+      setIsUploading(true);
+      try {
+        const uploaded = await uploadImage(dataUrls[0]);
+        setThumbnail(uploaded);
+      } catch (_error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [dictionary]
+  );
 
   const handleMapOptionsChange = useCallback(
     (options: {
@@ -93,12 +106,6 @@ export default memo(function CreateMapDialog({
 
       startTransition(async () => {
         try {
-          let imageId: number | undefined;
-
-          if (thumbnailDataUrl) {
-            imageId = await uploadImage(thumbnailDataUrl);
-          }
-
           const result = await createMap({
             name,
             description,
@@ -106,7 +113,7 @@ export default memo(function CreateMapDialog({
             longitude: position.lng,
             private: isPrivate,
             shared: isShared,
-            image_ids: imageId ? [imageId] : undefined
+            image_ids: thumbnail ? [thumbnail.id] : undefined
           });
 
           if (result.success) {
@@ -131,7 +138,7 @@ export default memo(function CreateMapDialog({
     },
     [
       position,
-      thumbnailDataUrl,
+      thumbnail,
       name,
       description,
       isPrivate,
@@ -145,7 +152,7 @@ export default memo(function CreateMapDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setDescription(undefined);
-    setThumbnailDataUrl(null);
+    setThumbnail(null);
     setPosition(null);
     setIsPrivate(false);
     setIsShared(false);
@@ -192,10 +199,10 @@ export default memo(function CreateMapDialog({
               mb: 2
             }}
           >
-            {thumbnailDataUrl ? (
+            {thumbnail ? (
               <CardMedia
                 sx={{ width: 160, height: 160 }}
-                image={thumbnailDataUrl}
+                image={thumbnail.url}
               />
             ) : (
               <Skeleton
@@ -206,7 +213,11 @@ export default memo(function CreateMapDialog({
             )}
 
             <Box position="absolute">
-              <AddPhotoButton onChange={handleImagesChange} color="inherit" />
+              <AddPhotoButton
+                onChange={handleImagesChange}
+                color="inherit"
+                disabled={isUploading || isPending}
+              />
             </Box>
           </Box>
 
