@@ -9,7 +9,14 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useCallback, useMemo, useState } from 'react';
+import {
+  type FormEvent,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  useTransition
+} from 'react';
 import type { AppMap } from '../../../types';
 import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -61,50 +68,56 @@ export default memo(function CreateReviewDialog({
     return !(name && comment && map && position);
   }, [name, comment, map, position]);
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
       if (!map || !position) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
+        return;
       }
 
-      try {
-        const imageIds: number[] = [];
+      startTransition(async () => {
+        try {
+          const imageIds: number[] = [];
 
-        for (const dataUrl of dataUrls) {
-          const id = await uploadImage(dataUrl);
+          for (const dataUrl of dataUrls) {
+            const id = await uploadImage(dataUrl);
 
-          imageIds.push(id);
-        }
+            imageIds.push(id);
+          }
 
-        const result = await createReview(map.id, {
-          name,
-          comment,
-          latitude: position.lat,
-          longitude: position.lng,
-          image_ids: imageIds
-        });
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['create review success'], {
-            variant: 'success'
+          const result = await createReview(map.id, {
+            name,
+            comment,
+            latitude: position.lat,
+            longitude: position.lng,
+            image_ids: imageIds
           });
 
-          onClose();
-          onSaved();
-          return null;
-        }
+          if (result.success) {
+            enqueueSnackbar(dictionary['create review success'], {
+              variant: 'success'
+            });
 
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
-        });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
-      }
+            onClose();
+            onSaved();
+            return;
+          }
+
+          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        } catch (_error) {
+          enqueueSnackbar(dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        }
+      });
     },
-    null
+    [map, position, dataUrls, name, comment, dictionary, onClose, onSaved]
   );
 
   const handleExited = useCallback(() => {
@@ -183,7 +196,7 @@ export default memo(function CreateReviewDialog({
         transition: { onExited: handleExited }
       }}
     >
-      <form action={submitAction}>
+      <form onSubmit={handleSubmit}>
         <DialogTitle>{dictionary['create new post']}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ mb: 2 }}>
