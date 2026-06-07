@@ -20,7 +20,7 @@ import {
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage from '../../utils/uploadImage';
+import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
 import AddPhotoButton from '../common/AddPhotoButton';
 import PhotoPreviewList from '../common/PhotoPreviewList';
 import PositionForm from '../maps/PositionForm';
@@ -41,8 +41,6 @@ type Props = {
   currentReview: Review | null;
 };
 
-type ImageItem = { id?: number; dataUrl: string };
-
 export default memo(function EditReviewDialog({
   open,
   onClose,
@@ -53,14 +51,15 @@ export default memo(function EditReviewDialog({
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
-  const [items, setItems] = useState<ImageItem[]>([]);
+  const [items, setItems] = useState<UploadedImage[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
   );
 
   const disabled = useMemo(() => {
-    return !(name && comment && position);
-  }, [name, comment, position]);
+    return !(name && comment && position) || isUploading;
+  }, [name, comment, position, isUploading]);
 
   const [isPending, startTransition] = useTransition();
 
@@ -75,23 +74,12 @@ export default memo(function EditReviewDialog({
 
       startTransition(async () => {
         try {
-          const imageIds: number[] = [];
-
-          for (const item of items) {
-            if (item.id !== undefined) {
-              imageIds.push(item.id);
-            } else {
-              const uploaded = await uploadImage(item.dataUrl);
-              imageIds.push(uploaded);
-            }
-          }
-
           const result = await updateReview(currentReview.id, {
             name,
             comment,
             latitude: position.lat,
             longitude: position.lng,
-            image_ids: imageIds
+            image_ids: items.map((item) => item.id)
           });
 
           if (result.success) {
@@ -133,25 +121,28 @@ export default memo(function EditReviewDialog({
     setPosition(null);
   }, []);
 
-  const handleImagesChange = useCallback((currentDataUrls: string[]) => {
-    setItems((prevState) => [
-      ...prevState,
-      ...currentDataUrls.map((dataUrl) => ({ dataUrl }))
-    ]);
-  }, []);
-
-  const handleImageDelete = useCallback(
-    (index) => {
-      setItems(
-        items.filter((_item, i) => {
-          return i !== index;
-        })
-      );
+  const handleImagesChange = useCallback(
+    async (dataUrls: string[]) => {
+      setIsUploading(true);
+      try {
+        for (const dataUrl of dataUrls) {
+          const item = await uploadImage(dataUrl);
+          setItems((prevState) => [...prevState, item]);
+        }
+      } catch (_error) {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } finally {
+        setIsUploading(false);
+      }
     },
-    [items]
+    [dictionary]
   );
 
-  const setCurrentImages = useCallback(async () => {
+  const handleImageDelete = useCallback((index: number) => {
+    setItems((prevState) => prevState.filter((_item, i) => i !== index));
+  }, []);
+
+  const setCurrentImages = useCallback(() => {
     if (!currentReview) {
       return;
     }
@@ -159,7 +150,7 @@ export default memo(function EditReviewDialog({
     setItems(
       currentReview.images.map((image) => ({
         id: image.id,
-        dataUrl: image.url
+        url: image.url
       }))
     );
   }, [currentReview]);
@@ -213,7 +204,7 @@ export default memo(function EditReviewDialog({
           />
 
           <PhotoPreviewList
-            dataUrls={items.map((item) => item.dataUrl)}
+            dataUrls={items.map((item) => item.url)}
             onDelete={handleImageDelete}
           />
         </DialogContent>
@@ -223,7 +214,11 @@ export default memo(function EditReviewDialog({
             gridTemplateColumns: '1fr auto'
           }}
         >
-          <AddPhotoButton onChange={handleImagesChange} multiple />
+          <AddPhotoButton
+            onChange={handleImagesChange}
+            multiple
+            disabled={isUploading || isPending}
+          />
 
           <Box
             sx={{
