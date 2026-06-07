@@ -12,7 +12,14 @@ import {
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useCallback, useMemo, useState } from 'react';
+import {
+  type FormEvent,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  useTransition
+} from 'react';
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
@@ -73,50 +80,66 @@ export default memo(function CreateMapDialog({
     []
   );
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
       if (!position) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
+        return;
       }
 
-      try {
-        let imageId: number | undefined;
+      startTransition(async () => {
+        try {
+          let imageId: number | undefined;
 
-        if (thumbnailDataUrl) {
-          imageId = await uploadImage(thumbnailDataUrl);
-        }
+          if (thumbnailDataUrl) {
+            imageId = await uploadImage(thumbnailDataUrl);
+          }
 
-        const result = await createMap({
-          name,
-          description,
-          latitude: position.lat,
-          longitude: position.lng,
-          private: isPrivate,
-          shared: isShared,
-          image_ids: imageId ? [imageId] : undefined
-        });
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['create map success'], {
-            variant: 'success'
+          const result = await createMap({
+            name,
+            description,
+            latitude: position.lat,
+            longitude: position.lng,
+            private: isPrivate,
+            shared: isShared,
+            image_ids: imageId ? [imageId] : undefined
           });
 
-          onClose();
-          onSaved(result.data);
-          return null;
-        }
+          if (result.success) {
+            enqueueSnackbar(dictionary['create map success'], {
+              variant: 'success'
+            });
 
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
-        });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
-      }
+            onClose();
+            onSaved(result.data);
+            return;
+          }
+
+          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        } catch (_error) {
+          enqueueSnackbar(dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        }
+      });
     },
-    null
+    [
+      position,
+      thumbnailDataUrl,
+      name,
+      description,
+      isPrivate,
+      isShared,
+      dictionary,
+      onClose,
+      onSaved
+    ]
   );
 
   const handleExited = useCallback(() => {
@@ -152,7 +175,7 @@ export default memo(function CreateMapDialog({
         transition: { onExited: handleExited }
       }}
     >
-      <form action={submitAction}>
+      <form onSubmit={handleSubmit}>
         <DialogTitle>{dictionary['create new map']}</DialogTitle>
         <DialogContent dividers>
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>

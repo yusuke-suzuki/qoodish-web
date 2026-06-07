@@ -9,7 +9,14 @@ import {
   type SlideProps
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useCallback, useMemo, useState } from 'react';
+import {
+  type FormEvent,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  useTransition
+} from 'react';
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -55,53 +62,68 @@ export default memo(function EditReviewDialog({
     return !(name && comment && position);
   }, [name, comment, position]);
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
       if (!currentReview || !position) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
+        return;
       }
 
-      try {
-        const imageIds: number[] = [];
+      startTransition(async () => {
+        try {
+          const imageIds: number[] = [];
 
-        for (const item of items) {
-          if (item.id !== undefined) {
-            imageIds.push(item.id);
-          } else {
-            const uploaded = await uploadImage(item.dataUrl);
-            imageIds.push(uploaded);
+          for (const item of items) {
+            if (item.id !== undefined) {
+              imageIds.push(item.id);
+            } else {
+              const uploaded = await uploadImage(item.dataUrl);
+              imageIds.push(uploaded);
+            }
           }
-        }
 
-        const result = await updateReview(currentReview.id, {
-          name,
-          comment,
-          latitude: position.lat,
-          longitude: position.lng,
-          image_ids: imageIds
-        });
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['edit review success'], {
-            variant: 'success'
+          const result = await updateReview(currentReview.id, {
+            name,
+            comment,
+            latitude: position.lat,
+            longitude: position.lng,
+            image_ids: imageIds
           });
 
-          onClose();
-          onSaved();
-          return null;
-        }
+          if (result.success) {
+            enqueueSnackbar(dictionary['edit review success'], {
+              variant: 'success'
+            });
 
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
-        });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
-      }
+            onClose();
+            onSaved();
+            return;
+          }
+
+          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        } catch (_error) {
+          enqueueSnackbar(dictionary['an error occurred'], {
+            variant: 'error'
+          });
+        }
+      });
     },
-    null
+    [
+      currentReview,
+      position,
+      items,
+      name,
+      comment,
+      dictionary,
+      onClose,
+      onSaved
+    ]
   );
 
   const handleExited = useCallback(() => {
@@ -170,7 +192,7 @@ export default memo(function EditReviewDialog({
         transition: { onEnter: setCurrentImages, onExited: handleExited }
       }}
     >
-      <form action={submitAction}>
+      <form onSubmit={handleSubmit}>
         <DialogTitle>{dictionary['edit post']}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ mb: 2 }}>

@@ -13,6 +13,9 @@ const withSerwist = withSerwistInit({
  */
 module.exports = withSerwist({
   experimental: {
-    globalNotFound: true
+    globalNotFound: true,
+    serverActions: {
+      bodySizeLimit: '10mb'
+    }
   }
 });
