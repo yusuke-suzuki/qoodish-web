@@ -1,10 +1,5 @@
 import type { PrecacheEntry, RuntimeCaching } from 'serwist';
-import {
-  ExpirationPlugin,
-  NetworkFirst,
-  Serwist,
-  StaleWhileRevalidate
-} from 'serwist';
+import { Serwist, StaleWhileRevalidate } from 'serwist';
 import en from '../dictionaries/en.json';
 import ja from '../dictionaries/ja.json';
 
@@ -52,21 +47,6 @@ interface PushEventPayload {
 }
 
 const runtimeCaching: RuntimeCaching[] = [
-  {
-    // Return cached HTML during Cloud Run cold starts so the PWA splash dismisses without waiting on the network.
-    matcher: ({ request, url }) =>
-      request.mode === 'navigate' && url.origin === self.location.origin,
-    handler: new NetworkFirst({
-      cacheName: 'pages',
-      networkTimeoutSeconds: 3,
-      plugins: [
-        new ExpirationPlugin({
-          maxEntries: 32,
-          maxAgeSeconds: 24 * 60 * 60
-        })
-      ]
-    })
-  },
   {
     matcher: /^https:\/\/fonts\.googleapis\.com\/.*/,
     handler: new StaleWhileRevalidate({
