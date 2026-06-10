@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +24,7 @@ import {
 import type { Profile } from '../../../types';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
+import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
 import BiographyForm from './BiographyForm';
 import ProfileNameForm from './ProfileNameForm';
@@ -52,31 +53,27 @@ export default memo(function EditProfileDialog({
 
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
-  const [newThumbnail, setNewThumbnail] = useState<UploadedImage | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
 
   const disabled = useMemo(() => {
     return !name || isUploading;
   }, [name, isUploading]);
 
-  const thumbnailUrl = newThumbnail?.url ?? currentProfile?.image?.card ?? null;
+  const thumbnailUrl = items[0]?.url ?? currentProfile?.image?.card ?? null;
 
   const handleImagesChange = useCallback(
     async (dataUrls: string[]) => {
       if (dataUrls.length < 1) {
         return;
       }
-      setIsUploading(true);
+      reset();
       try {
-        const uploaded = await uploadImage(dataUrls[0]);
-        setNewThumbnail(uploaded);
+        await upload([dataUrls[0]]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setIsUploading(false);
       }
     },
-    [dictionary]
+    [reset, upload, dictionary]
   );
 
   const [isPending, startTransition] = useTransition();
@@ -95,7 +92,7 @@ export default memo(function EditProfileDialog({
           const result = await updateProfile(currentProfile.id, {
             name,
             biography,
-            image_ids: newThumbnail ? [newThumbnail.id] : undefined
+            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
           });
 
           if (result.success) {
@@ -118,22 +115,14 @@ export default memo(function EditProfileDialog({
         }
       });
     },
-    [
-      currentProfile,
-      newThumbnail,
-      name,
-      biography,
-      dictionary,
-      onClose,
-      onSaved
-    ]
+    [currentProfile, uploadedIds, name, biography, dictionary, onClose, onSaved]
   );
 
   const handleExited = useCallback(() => {
     setName(undefined);
     setBiography(undefined);
-    setNewThumbnail(null);
-  }, []);
+    reset();
+  }, [reset]);
 
   return (
     <Dialog
@@ -171,7 +160,11 @@ export default memo(function EditProfileDialog({
           >
             {thumbnailUrl ? (
               <CardMedia
-                sx={{ width: 160, height: 160 }}
+                sx={{
+                  width: 160,
+                  height: 160,
+                  opacity: isUploading ? 0.4 : 1
+                }}
                 image={thumbnailUrl}
               />
             ) : (
@@ -183,11 +176,15 @@ export default memo(function EditProfileDialog({
             )}
 
             <Box position="absolute">
-              <AddPhotoButton
-                onChange={handleImagesChange}
-                color="inherit"
-                disabled={isUploading || isPending}
-              />
+              {isUploading ? (
+                <CircularProgress />
+              ) : (
+                <AddPhotoButton
+                  onChange={handleImagesChange}
+                  color="inherit"
+                  disabled={isPending}
+                />
+              )}
             </Box>
           </Box>
 

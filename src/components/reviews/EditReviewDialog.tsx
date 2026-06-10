@@ -20,7 +20,7 @@ import {
 import type { Review } from '../../../types';
 import { updateReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
+import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
 import PhotoPreviewList from '../common/PhotoPreviewList';
 import PositionForm from '../maps/PositionForm';
@@ -51,8 +51,8 @@ export default memo(function EditReviewDialog({
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
-  const [items, setItems] = useState<UploadedImage[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const { items, isUploading, uploadedIds, upload, removeAt, reset } =
+    usePhotoUploads();
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
   );
@@ -79,7 +79,7 @@ export default memo(function EditReviewDialog({
             comment,
             latitude: position.lat,
             longitude: position.lng,
-            image_ids: items.map((item) => item.id)
+            image_ids: uploadedIds
           });
 
           if (result.success) {
@@ -105,7 +105,7 @@ export default memo(function EditReviewDialog({
     [
       currentReview,
       position,
-      items,
+      uploadedIds,
       name,
       comment,
       dictionary,
@@ -117,43 +117,33 @@ export default memo(function EditReviewDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setComment(undefined);
-    setItems([]);
+    reset();
     setPosition(null);
-  }, []);
+  }, [reset]);
 
   const handleImagesChange = useCallback(
     async (dataUrls: string[]) => {
-      setIsUploading(true);
       try {
-        for (const dataUrl of dataUrls) {
-          const item = await uploadImage(dataUrl);
-          setItems((prevState) => [...prevState, item]);
-        }
+        await upload(dataUrls);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setIsUploading(false);
       }
     },
-    [dictionary]
+    [upload, dictionary]
   );
-
-  const handleImageDelete = useCallback((index: number) => {
-    setItems((prevState) => prevState.filter((_item, i) => i !== index));
-  }, []);
 
   const setCurrentImages = useCallback(() => {
     if (!currentReview) {
       return;
     }
 
-    setItems(
+    reset(
       currentReview.images.map((image) => ({
         id: image.id,
         url: image.url
       }))
     );
-  }, [currentReview]);
+  }, [currentReview, reset]);
 
   const defaultPosition = useMemo(() => {
     if (!currentReview) {
@@ -203,10 +193,7 @@ export default memo(function EditReviewDialog({
             onChange={setComment}
           />
 
-          <PhotoPreviewList
-            dataUrls={items.map((item) => item.url)}
-            onDelete={handleImageDelete}
-          />
+          <PhotoPreviewList items={items} onDelete={removeAt} />
         </DialogContent>
         <DialogActions
           sx={{

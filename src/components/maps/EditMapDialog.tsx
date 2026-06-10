@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +24,7 @@ import {
 import type { AppMap } from '../../../types';
 import { updateMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
+import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
@@ -54,8 +55,7 @@ export default memo(function EditMapDialog({
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [newThumbnail, setNewThumbnail] = useState<UploadedImage | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
   const [isPrivate, setIsPrivate] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -66,24 +66,21 @@ export default memo(function EditMapDialog({
     return !(name && description && position) || isUploading;
   }, [name, description, position, isUploading]);
 
-  const thumbnailUrl = newThumbnail?.url ?? currentMap?.image?.card ?? null;
+  const thumbnailUrl = items[0]?.url ?? currentMap?.image?.card ?? null;
 
   const handleImagesChange = useCallback(
     async (dataUrls: string[]) => {
       if (dataUrls.length < 1) {
         return;
       }
-      setIsUploading(true);
+      reset();
       try {
-        const uploaded = await uploadImage(dataUrls[0]);
-        setNewThumbnail(uploaded);
+        await upload([dataUrls[0]]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setIsUploading(false);
       }
     },
-    [dictionary]
+    [reset, upload, dictionary]
   );
 
   const handleMapOptionsChange = useCallback(
@@ -117,7 +114,7 @@ export default memo(function EditMapDialog({
             longitude: position.lng,
             private: isPrivate,
             shared: isShared,
-            image_ids: newThumbnail ? [newThumbnail.id] : undefined
+            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
           });
 
           if (result.success) {
@@ -143,7 +140,7 @@ export default memo(function EditMapDialog({
     [
       currentMap,
       position,
-      newThumbnail,
+      uploadedIds,
       name,
       description,
       isPrivate,
@@ -157,11 +154,11 @@ export default memo(function EditMapDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setDescription(undefined);
-    setNewThumbnail(null);
+    reset();
     setPosition(null);
     setIsPrivate(false);
     setIsShared(false);
-  }, []);
+  }, [reset]);
 
   const defaultCenter = useMemo(() => {
     if (!currentMap) {
@@ -210,7 +207,11 @@ export default memo(function EditMapDialog({
           >
             {thumbnailUrl ? (
               <CardMedia
-                sx={{ width: 160, height: 160 }}
+                sx={{
+                  width: 160,
+                  height: 160,
+                  opacity: isUploading ? 0.4 : 1
+                }}
                 image={thumbnailUrl}
               />
             ) : (
@@ -222,11 +223,15 @@ export default memo(function EditMapDialog({
             )}
 
             <Box position="absolute">
-              <AddPhotoButton
-                onChange={handleImagesChange}
-                color="inherit"
-                disabled={isUploading || isPending}
-              />
+              {isUploading ? (
+                <CircularProgress />
+              ) : (
+                <AddPhotoButton
+                  onChange={handleImagesChange}
+                  color="inherit"
+                  disabled={isPending}
+                />
+              )}
             </Box>
           </Box>
 
