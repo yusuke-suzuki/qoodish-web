@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CardMedia,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +24,7 @@ import {
 import type { AppMap } from '../../../types';
 import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
-import uploadImage, { type UploadedImage } from '../../utils/uploadImage';
+import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
@@ -52,8 +53,7 @@ export default memo(function CreateMapDialog({
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [thumbnail, setThumbnail] = useState<UploadedImage | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
   const [isPrivate, setIsPrivate] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -69,17 +69,14 @@ export default memo(function CreateMapDialog({
       if (dataUrls.length < 1) {
         return;
       }
-      setIsUploading(true);
+      reset();
       try {
-        const uploaded = await uploadImage(dataUrls[0]);
-        setThumbnail(uploaded);
+        await upload([dataUrls[0]]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setIsUploading(false);
       }
     },
-    [dictionary]
+    [reset, upload, dictionary]
   );
 
   const handleMapOptionsChange = useCallback(
@@ -113,7 +110,7 @@ export default memo(function CreateMapDialog({
             longitude: position.lng,
             private: isPrivate,
             shared: isShared,
-            image_ids: thumbnail ? [thumbnail.id] : undefined
+            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
           });
 
           if (result.success) {
@@ -138,7 +135,7 @@ export default memo(function CreateMapDialog({
     },
     [
       position,
-      thumbnail,
+      uploadedIds,
       name,
       description,
       isPrivate,
@@ -152,11 +149,11 @@ export default memo(function CreateMapDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setDescription(undefined);
-    setThumbnail(null);
+    reset();
     setPosition(null);
     setIsPrivate(false);
     setIsShared(false);
-  }, []);
+  }, [reset]);
 
   const defaultCenter = useMemo(() => {
     return {
@@ -199,10 +196,14 @@ export default memo(function CreateMapDialog({
               mb: 2
             }}
           >
-            {thumbnail ? (
+            {items[0] ? (
               <CardMedia
-                sx={{ width: 160, height: 160 }}
-                image={thumbnail.url}
+                sx={{
+                  width: 160,
+                  height: 160,
+                  opacity: isUploading ? 0.4 : 1
+                }}
+                image={items[0].url}
               />
             ) : (
               <Skeleton
@@ -213,11 +214,15 @@ export default memo(function CreateMapDialog({
             )}
 
             <Box position="absolute">
-              <AddPhotoButton
-                onChange={handleImagesChange}
-                color="inherit"
-                disabled={isUploading || isPending}
-              />
+              {isUploading ? (
+                <CircularProgress />
+              ) : (
+                <AddPhotoButton
+                  onChange={handleImagesChange}
+                  color="inherit"
+                  disabled={isPending}
+                />
+              )}
             </Box>
           </Box>
 
