@@ -1,7 +1,7 @@
 import dataUrlToBlob from './dataUrlToBlob';
 
 type DirectUploadAllocation = {
-  uploadURL: string;
+  upload_url: string;
   id: number;
 };
 
@@ -29,14 +29,15 @@ export default async function uploadImage(
   if (!allocRes.ok) {
     throw new Error('Failed to allocate upload URL');
   }
-  const { uploadURL, id }: DirectUploadAllocation = await allocRes.json();
+  const { upload_url: uploadUrl, id }: DirectUploadAllocation =
+    await allocRes.json();
 
   const blob = await dataUrlToBlob(dataUrl);
   const ext = blob.type.split('/')[1] ?? 'bin';
   const form = new FormData();
   form.append('file', blob, `${id}.${ext}`);
 
-  const cfRes = await fetch(uploadURL, { method: 'POST', body: form });
+  const cfRes = await fetch(uploadUrl, { method: 'POST', body: form });
   if (!cfRes.ok) {
     throw new Error('Failed to upload image to Cloudflare Images');
   }
