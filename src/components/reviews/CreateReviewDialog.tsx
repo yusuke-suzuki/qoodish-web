@@ -59,7 +59,7 @@ export default memo(function CreateReviewDialog({
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
-  const { items, isUploading, uploadedIds, upload, removeAt, reset } =
+  const { items, isUploading, uploadedImages, upload, removeAt, reset } =
     usePhotoUploads();
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
@@ -87,7 +87,7 @@ export default memo(function CreateReviewDialog({
             comment,
             latitude: position.lat,
             longitude: position.lng,
-            image_ids: uploadedIds
+            image_ids: uploadedImages.map((image) => image.id)
           });
 
           if (result.success) {
@@ -110,7 +110,7 @@ export default memo(function CreateReviewDialog({
         }
       });
     },
-    [map, position, uploadedIds, name, comment, dictionary, onClose, onSaved]
+    [map, position, uploadedImages, name, comment, dictionary, onClose, onSaved]
   );
 
   const handleExited = useCallback(() => {

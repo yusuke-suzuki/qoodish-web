@@ -53,7 +53,14 @@ export default memo(function CreateMapDialog({
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
+  const { items, isUploading, uploadedImages, upload, reset } =
+    usePhotoUploads();
+
+  const previewItem = items[0];
+  const thumbnailUrl =
+    previewItem?.status === 'uploading'
+      ? previewItem.previewUrl
+      : (previewItem?.image.card ?? null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -110,7 +117,10 @@ export default memo(function CreateMapDialog({
             longitude: position.lng,
             private: isPrivate,
             shared: isShared,
-            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
+            image_ids:
+              uploadedImages.length > 0
+                ? uploadedImages.map((image) => image.id)
+                : undefined
           });
 
           if (result.success) {
@@ -135,7 +145,7 @@ export default memo(function CreateMapDialog({
     },
     [
       position,
-      uploadedIds,
+      uploadedImages,
       name,
       description,
       isPrivate,
@@ -196,14 +206,14 @@ export default memo(function CreateMapDialog({
               mb: 2
             }}
           >
-            {items[0] ? (
+            {thumbnailUrl ? (
               <CardMedia
                 sx={{
                   width: 160,
                   height: 160,
                   opacity: isUploading ? 0.4 : 1
                 }}
-                image={items[0].url}
+                image={thumbnailUrl}
               />
             ) : (
               <Skeleton

@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import uploadImage, { type UploadedImage } from '../utils/uploadImage';
+import type { Image } from '../../types';
+import uploadImage from '../utils/uploadImage';
 
 export type PhotoItem =
-  | { key: string; status: 'uploading'; url: string }
-  | { key: string; status: 'uploaded'; url: string; id: number };
+  | { key: string; status: 'uploading'; previewUrl: string }
+  | { key: string; status: 'uploaded'; image: Image };
 
 export default function usePhotoUploads() {
   const [items, setItems] = useState<PhotoItem[]>([]);
@@ -13,17 +14,17 @@ export default function usePhotoUploads() {
     [items]
   );
 
-  const uploadedIds = useMemo(
+  const uploadedImages = useMemo(
     () =>
-      items.flatMap((item) => (item.status === 'uploaded' ? [item.id] : [])),
+      items.flatMap((item) => (item.status === 'uploaded' ? [item.image] : [])),
     [items]
   );
 
   const upload = useCallback(async (dataUrls: string[]) => {
-    const pending = dataUrls.map<PhotoItem>((dataUrl) => ({
+    const pending = dataUrls.map((dataUrl) => ({
       key: crypto.randomUUID(),
-      status: 'uploading',
-      url: dataUrl
+      status: 'uploading' as const,
+      previewUrl: dataUrl
     }));
     setItems((prevState) => [...prevState, ...pending]);
 
@@ -31,11 +32,11 @@ export default function usePhotoUploads() {
 
     for (const item of pending) {
       try {
-        const uploaded = await uploadImage(item.url);
+        const uploaded = await uploadImage(item.previewUrl);
         setItems((prevState) =>
           prevState.map((prevItem) =>
             prevItem.key === item.key
-              ? { key: item.key, status: 'uploaded', ...uploaded }
+              ? { key: item.key, status: 'uploaded', image: uploaded }
               : prevItem
           )
         );
@@ -56,15 +57,15 @@ export default function usePhotoUploads() {
     setItems((prevState) => prevState.filter((_item, i) => i !== index));
   }, []);
 
-  const reset = useCallback((images: UploadedImage[] = []) => {
+  const reset = useCallback((images: Image[] = []) => {
     setItems(
       images.map((image) => ({
         key: crypto.randomUUID(),
         status: 'uploaded',
-        ...image
+        image
       }))
     );
   }, []);
 
-  return { items, isUploading, uploadedIds, upload, removeAt, reset };
+  return { items, isUploading, uploadedImages, upload, removeAt, reset };
 }

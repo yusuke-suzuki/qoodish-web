@@ -53,13 +53,19 @@ export default memo(function EditProfileDialog({
 
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
-  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
+  const { items, isUploading, uploadedImages, upload, reset } =
+    usePhotoUploads();
 
   const disabled = useMemo(() => {
     return !name || isUploading;
   }, [name, isUploading]);
 
-  const thumbnailUrl = items[0]?.url ?? currentProfile?.image?.card ?? null;
+  const previewItem = items[0];
+  const newThumbnailUrl =
+    previewItem?.status === 'uploading'
+      ? previewItem.previewUrl
+      : (previewItem?.image.card ?? null);
+  const thumbnailUrl = newThumbnailUrl ?? currentProfile?.image?.card ?? null;
 
   const handleImagesChange = useCallback(
     async (dataUrls: string[]) => {
@@ -92,7 +98,10 @@ export default memo(function EditProfileDialog({
           const result = await updateProfile(currentProfile.id, {
             name,
             biography,
-            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
+            image_ids:
+              uploadedImages.length > 0
+                ? uploadedImages.map((image) => image.id)
+                : undefined
           });
 
           if (result.success) {
@@ -115,7 +124,15 @@ export default memo(function EditProfileDialog({
         }
       });
     },
-    [currentProfile, uploadedIds, name, biography, dictionary, onClose, onSaved]
+    [
+      currentProfile,
+      uploadedImages,
+      name,
+      biography,
+      dictionary,
+      onClose,
+      onSaved
+    ]
   );
 
   const handleExited = useCallback(() => {
