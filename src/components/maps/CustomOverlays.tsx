@@ -168,7 +168,6 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
 
   const initializedRef = useRef(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: replace is intentionally omitted to prevent infinite loops.
   useEffect(() => {
     if (!googleMap || !map) return;
     if (initializedRef.current) return;
@@ -177,19 +176,23 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     replace(`${pathname}?lat=${map.latitude}&lng=${map.longitude}&zoom=17`, {
       scroll: false
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [googleMap, map]);
+  }, [googleMap, map, pathname, replace]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: replace is intentionally omitted to prevent infinite loops.
+  // `replace` triggers an RSC refetch that hands down a freshly fetched `map`
+  // object, so keying this effect on `map` alone would re-run it forever.
+  // Track the place the URL was last synced to and skip repeats.
+  const lastSyncedPlaceRef = useRef<google.maps.places.Place | null>(null);
+
   useEffect(() => {
     if (!googleMap || !map || !currentPlace) return;
+    if (lastSyncedPlaceRef.current === currentPlace) return;
 
+    lastSyncedPlaceRef.current = currentPlace;
     replace(
       `${pathname}?lat=${currentPlace.location.lat()}&lng=${currentPlace.location.lng()}&zoom=17`,
       { scroll: false }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [googleMap, map, currentPlace]);
+  }, [googleMap, map, currentPlace, pathname, replace]);
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
@@ -204,7 +207,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
       <CurrentPositionMarker
         profile={profile}
         disableCreateReview={!map || !map.postable}
-        onCreateReviewClick={() => setCreateReviewDialogOpen(true)}
+        onCreateReviewClick={handleCreateReviewOpen}
       />
 
       {filteredReviews.map((review) => (
