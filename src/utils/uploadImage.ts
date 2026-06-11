@@ -1,4 +1,4 @@
-import type { Image } from '../../types';
+import type { Image, ImageVariants } from '../../types';
 import dataUrlToBlob from './dataUrlToBlob';
 
 type DirectUploadAllocation = {
@@ -14,10 +14,15 @@ type CloudflareUploadResponse = {
   success: boolean;
 };
 
-const VARIANT_NAMES = ['url', 'avatar', 'card', 'hero', 'ogp'] as const;
-type VariantName = (typeof VARIANT_NAMES)[number];
+const VARIANT_BY_KEY: Record<keyof ImageVariants, string> = {
+  url: 'public',
+  avatar: 'avatar',
+  card: 'card',
+  hero: 'hero',
+  ogp: 'ogp'
+};
 
-function buildVariants(urls: string[]): Record<VariantName, string> {
+function buildVariants(urls: string[]): ImageVariants {
   const byName = new Map<string, string>();
   for (const url of urls) {
     const name = url.split('/').pop();
@@ -26,13 +31,16 @@ function buildVariants(urls: string[]): Record<VariantName, string> {
     }
   }
 
-  const variants = {} as Record<VariantName, string>;
-  for (const name of VARIANT_NAMES) {
-    const url = byName.get(name);
+  const variants = {} as ImageVariants;
+  for (const key of Object.keys(VARIANT_BY_KEY) as (keyof ImageVariants)[]) {
+    const variantName = VARIANT_BY_KEY[key];
+    const url = byName.get(variantName);
     if (!url) {
-      throw new Error(`Cloudflare Images variant "${name}" is not configured`);
+      throw new Error(
+        `Cloudflare Images variant "${variantName}" is not configured`
+      );
     }
-    variants[name] = url;
+    variants[key] = url;
   }
   return variants;
 }
