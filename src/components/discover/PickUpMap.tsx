@@ -34,14 +34,18 @@ function PickUpMap({ map }: Props) {
 
           {map && (
             <Card sx={{ height: '100%' }}>
-              <ButtonBase>
+              <ButtonBase sx={{ width: '100%', height: '100%' }}>
                 <CardMedia
                   component="img"
                   image={map.image?.hero}
-                  height="100%"
                   alt={map.name}
                   title={map.name}
                   loading="lazy"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
                 />
               </ButtonBase>
             </Card>
