@@ -14,6 +14,9 @@ type CloudflareUploadResponse = {
   success: boolean;
 };
 
+// The Rails `image` payload keys the full-size URL as `url`, but the matching
+// Cloudflare variant is the built-in `public`; the sized variants share their
+// names. Only `url` needs translation.
 const VARIANT_BY_KEY: Record<keyof ImageVariants, string> = {
   url: 'public',
   avatar: 'avatar',
