@@ -25,47 +25,52 @@ export default memo(function PhotoPreviewList({ items, onDelete }: Props) {
 
   return (
     <ImageList cols={mdUp ? 2 : 1} rowHeight={mdUp ? 320 : 240} gap={8}>
-      {items.map((item, i) => (
-        <ImageListItem key={item.key}>
-          <Card sx={{ height: '100%', position: 'relative' }}>
-            <CardMedia
-              component="img"
-              image={item.url}
-              height="100%"
-              sx={{ opacity: item.status === 'uploading' ? 0.4 : 1 }}
+      {items.map((item, i) => {
+        const imageUrl =
+          item.status === 'uploading' ? item.previewUrl : item.image.card;
+
+        return (
+          <ImageListItem key={item.key}>
+            <Card sx={{ height: '100%', position: 'relative' }}>
+              <CardMedia
+                component="img"
+                image={imageUrl}
+                height="100%"
+                sx={{ opacity: item.status === 'uploading' ? 0.4 : 1 }}
+              />
+
+              {item.status === 'uploading' && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+            </Card>
+
+            <ImageListItemBar
+              position="top"
+              sx={{
+                background: 'transparent'
+              }}
+              actionIcon={
+                <IconButton
+                  onClick={() => onDelete(i)}
+                  disabled={item.status === 'uploading'}
+                >
+                  <Cancel />
+                </IconButton>
+              }
             />
-
-            {item.status === 'uploading' && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            )}
-          </Card>
-
-          <ImageListItemBar
-            position="top"
-            sx={{
-              background: 'transparent'
-            }}
-            actionIcon={
-              <IconButton
-                onClick={() => onDelete(i)}
-                disabled={item.status === 'uploading'}
-              >
-                <Cancel />
-              </IconButton>
-            }
-          />
-        </ImageListItem>
-      ))}
+          </ImageListItem>
+        );
+      })}
     </ImageList>
   );
 });

@@ -55,7 +55,8 @@ export default memo(function EditMapDialog({
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const { items, isUploading, uploadedIds, upload, reset } = usePhotoUploads();
+  const { items, isUploading, uploadedImages, upload, reset } =
+    usePhotoUploads();
   const [isPrivate, setIsPrivate] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -66,7 +67,12 @@ export default memo(function EditMapDialog({
     return !(name && description && position) || isUploading;
   }, [name, description, position, isUploading]);
 
-  const thumbnailUrl = items[0]?.url ?? currentMap?.image?.card ?? null;
+  const previewItem = items[0];
+  const newThumbnailUrl =
+    previewItem?.status === 'uploading'
+      ? previewItem.previewUrl
+      : (previewItem?.image.card ?? null);
+  const thumbnailUrl = newThumbnailUrl ?? currentMap?.image?.card ?? null;
 
   const handleImagesChange = useCallback(
     async (dataUrls: string[]) => {
@@ -114,7 +120,10 @@ export default memo(function EditMapDialog({
             longitude: position.lng,
             private: isPrivate,
             shared: isShared,
-            image_ids: uploadedIds.length > 0 ? uploadedIds : undefined
+            image_ids:
+              uploadedImages.length > 0
+                ? uploadedImages.map((image) => image.id)
+                : undefined
           });
 
           if (result.success) {
@@ -140,7 +149,7 @@ export default memo(function EditMapDialog({
     [
       currentMap,
       position,
-      uploadedIds,
+      uploadedImages,
       name,
       description,
       isPrivate,

@@ -1,3 +1,4 @@
+import type { Image } from '../../types';
 import dataUrlToBlob from './dataUrlToBlob';
 
 type DirectUploadAllocation = {
@@ -13,14 +14,30 @@ type CloudflareUploadResponse = {
   success: boolean;
 };
 
-export type UploadedImage = {
-  id: number;
-  url: string;
-};
+const VARIANT_NAMES = ['url', 'avatar', 'card', 'hero', 'ogp'] as const;
+type VariantName = (typeof VARIANT_NAMES)[number];
 
-export default async function uploadImage(
-  dataUrl: string
-): Promise<UploadedImage> {
+function buildVariants(urls: string[]): Record<VariantName, string> {
+  const byName = new Map<string, string>();
+  for (const url of urls) {
+    const name = url.split('/').pop();
+    if (name) {
+      byName.set(name, url);
+    }
+  }
+
+  const variants = {} as Record<VariantName, string>;
+  for (const name of VARIANT_NAMES) {
+    const url = byName.get(name);
+    if (!url) {
+      throw new Error(`Cloudflare Images variant "${name}" is not configured`);
+    }
+    variants[name] = url;
+  }
+  return variants;
+}
+
+export default async function uploadImage(dataUrl: string): Promise<Image> {
   const allocRes = await fetch('/api/v1/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -42,9 +59,9 @@ export default async function uploadImage(
     throw new Error('Failed to upload image to Cloudflare Images');
   }
   const { result, success }: CloudflareUploadResponse = await cfRes.json();
-  if (!success || result.variants.length === 0) {
+  if (!success) {
     throw new Error('Cloudflare Images upload reported failure');
   }
 
-  return { id, url: result.variants[0] };
+  return { id, ...buildVariants(result.variants) };
 }
