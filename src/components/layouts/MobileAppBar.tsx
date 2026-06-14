@@ -9,16 +9,15 @@ import {
   Toolbar,
   useScrollTrigger
 } from '@mui/material';
+import { usePathname } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import ProfileAvatar from '../common/ProfileAvatar';
 import Logo from './Logo';
 import MobileDrawer from './MobileDrawer';
 
-export default memo(function MobileAppBar() {
-  const { uid } = useContext(AuthContext);
+function MobileAppBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);
   const profile = useContext(ProfileContext);
 
@@ -69,4 +68,14 @@ export default memo(function MobileAppBar() {
       />
     </>
   );
+}
+
+export default memo(function MobileAppBar() {
+  const pathname = usePathname();
+
+  // MobileAppBar lives in the persistent root layout, so useScrollTrigger keeps
+  // its trigger value across client navigations and never recomputes without a
+  // scroll event. Remount on path change so the scroll state reflects the new
+  // page (scrolled to top) instead of staying hidden.
+  return <MobileAppBarContent key={pathname} />;
 });
