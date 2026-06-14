@@ -7,7 +7,7 @@ import {
   SwipeableDrawer,
   Typography
 } from '@mui/material';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useContext, useEffect, useState } from 'react';
 import type { AppMap, Follower, Profile, Review } from '../../../types';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -54,12 +54,21 @@ function MobileMapDrawer({
 
   const handleOpen = useCallback(() => {
     setOpen(true);
-    setAppBarHidden(true);
-  }, [setAppBarHidden]);
+  }, []);
 
   const handleClose = useCallback(() => {
     setOpen(false);
-    setAppBarHidden(false);
+  }, []);
+
+  // The review drawer overrides this drawer's open prop, so while it is open
+  // this drawer is visually closed even when `open` is still true. Keep the
+  // AppBar visible in that case.
+  useEffect(() => {
+    setAppBarHidden(open && !reviewDrawerOpen);
+  }, [open, reviewDrawerOpen, setAppBarHidden]);
+
+  useEffect(() => {
+    return () => setAppBarHidden(false);
   }, [setAppBarHidden]);
 
   const handleReviewClick = useCallback(
