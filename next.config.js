@@ -13,5 +13,9 @@ const withSerwist = withSerwistInit({
 module.exports = withSerwist({
   experimental: {
     globalNotFound: true
+  },
+  outputFileTracingIncludes: {
+    '/[lang]/(contained)/privacy': ['./src/content/legal/**'],
+    '/[lang]/(contained)/terms': ['./src/content/legal/**']
   }
 });
