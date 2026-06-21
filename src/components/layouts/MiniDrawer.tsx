@@ -127,8 +127,9 @@ export default memo(function MiniDrawer() {
           {authenticated && (
             <ListItemButton
               selected={pathname.endsWith(`/users/${profile?.id}`)}
-              LinkComponent={Link}
-              href={`/users/${profile?.id}`}
+              LinkComponent={profile ? Link : 'button'}
+              href={profile ? `/users/${profile.id}` : undefined}
+              disabled={!profile}
               title={dictionary.account}
               sx={{
                 justifyContent: 'center'
