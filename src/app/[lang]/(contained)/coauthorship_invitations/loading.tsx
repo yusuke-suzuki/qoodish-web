@@ -4,7 +4,7 @@ const PLACEHOLDER_COUNT = 5;
 
 export default function Loading() {
   return (
-    <Stack spacing={2} sx={{ p: 2 }}>
+    <Stack spacing={2}>
       {Array.from({ length: PLACEHOLDER_COUNT }).map((_, index) => (
         <Card
           // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
