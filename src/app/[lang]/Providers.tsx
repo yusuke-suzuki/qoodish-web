@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import {
   Box,
   Button,
-  CircularProgress,
   CssBaseline,
   GlobalStyles,
   ThemeProvider,
@@ -24,6 +23,7 @@ import {
 } from 'react';
 import type { Notification, Profile } from '../../../types';
 import AuthProvider from '../../components/auth/AuthProvider';
+import FootprintsLoader from '../../components/common/FootprintsLoader';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
 import { usePushManager } from '../../hooks/usePushManager';
@@ -84,6 +84,36 @@ export default function Providers({
           },
           background: {
             default: '#f1f1f1'
+          }
+        },
+        typography: {
+          fontFamily:
+            'var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif',
+          h1: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          h2: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          h3: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          h4: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          h5: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          h6: {
+            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
+          },
+          body1: {
+            lineHeight: 1.9,
+            letterSpacing: '0.01em'
+          },
+          body2: {
+            lineHeight: 1.8,
+            letterSpacing: '0.01em'
           }
         }
       },
@@ -150,7 +180,7 @@ export default function Providers({
                     bgcolor: 'background.default'
                   }}
                 >
-                  <CircularProgress />
+                  <FootprintsLoader label={dictionary.loading} />
                 </Box>
               }
             >

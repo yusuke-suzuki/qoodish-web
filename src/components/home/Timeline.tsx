@@ -1,11 +1,12 @@
 'use client';
 
 import { Reviews } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import { fetchMoreTimelineReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
+import FootprintsLoader from '../common/FootprintsLoader';
 import IssueDialog from '../common/IssueDialog';
 import NoContents from '../common/NoContents';
 import TimelineReviewCard from './TimelineReviewCard';
@@ -89,7 +90,7 @@ export default memo(function Timeline({ initialReviews }: Props) {
             my: 2
           }}
         >
-          <CircularProgress />
+          <FootprintsLoader label={dictionary.loading} />
         </Box>
       )}
 
