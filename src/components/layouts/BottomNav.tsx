@@ -103,8 +103,9 @@ export default memo(function BottomNav() {
           <BottomNavigationAction
             title={dictionary.account}
             icon={<AccountCircle />}
-            LinkComponent={Link}
-            href={`/users/${profile?.id}`}
+            LinkComponent={profile ? Link : 'button'}
+            href={profile ? `/users/${profile.id}` : undefined}
+            disabled={!profile}
           />
         </BottomNavigation>
       </Paper>

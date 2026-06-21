@@ -130,8 +130,9 @@ export default memo(function MobileDrawer({
             <ListItemButton
               selected={pathname.includes('/users/')}
               onClick={onClose}
-              LinkComponent={Link}
-              href={`/users/${profile?.id}`}
+              LinkComponent={profile ? Link : 'button'}
+              href={profile ? `/users/${profile.id}` : undefined}
+              disabled={!profile}
               title={dictionary.account}
             >
               <ListItemIcon>
