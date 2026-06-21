@@ -76,12 +76,33 @@ export type Coauthor = {
   updated_at: string;
 };
 
+export type CoauthorshipInvitation = {
+  id: number;
+  status: string;
+  map: {
+    id: number;
+    name: string;
+    description: string;
+    image: ImageVariants | null;
+  };
+  inviter: Author;
+  created_at: string;
+  updated_at: string;
+};
+
 export type PublicUser = {
   id: number;
   uid: string;
   name: string;
   biography: string;
   image: ImageVariants | null;
+};
+
+export type UserSearchResult = {
+  id: number;
+  name: string;
+  image: ImageVariants | null;
+  image_url: string;
 };
 
 export type Like = {

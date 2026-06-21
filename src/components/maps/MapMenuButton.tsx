@@ -3,6 +3,7 @@ import {
   Edit,
   Link,
   MoreVert,
+  PersonAdd,
   ReportProblem
 } from '@mui/icons-material';
 import {
@@ -26,6 +27,7 @@ import {
 import type { AppMap, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import CoauthorInviteDialog from './CoauthorInviteDialog';
 
 type Props = {
   map: AppMap | null;
@@ -46,6 +48,7 @@ export default memo(function MapMenuButton({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
@@ -91,6 +94,12 @@ export default memo(function MapMenuButton({
     onDeleteClick();
   }, [onDeleteClick]);
 
+  const handleInviteClick = useCallback(() => {
+    setAnchorEl(null);
+
+    setInviteDialogOpen(true);
+  }, []);
+
   return (
     <>
       <IconButton
@@ -123,6 +132,15 @@ export default memo(function MapMenuButton({
         {isAuthor && <Divider />}
 
         {isAuthor && (
+          <MenuItem onClick={handleInviteClick}>
+            <ListItemIcon>
+              <PersonAdd fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={dictionary.invite} />
+          </MenuItem>
+        )}
+
+        {isAuthor && (
           <MenuItem onClick={handleEditClick}>
             <ListItemIcon>
               <Edit fontSize="small" />
@@ -147,6 +165,12 @@ export default memo(function MapMenuButton({
           </MenuItem>
         )}
       </Menu>
+
+      <CoauthorInviteDialog
+        open={inviteDialogOpen}
+        onClose={() => setInviteDialogOpen(false)}
+        map={map}
+      />
     </>
   );
 });

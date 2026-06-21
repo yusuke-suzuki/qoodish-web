@@ -152,6 +152,18 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.notifications} />
             </ListItemButton>
             <ListItemButton
+              selected={pathname.endsWith('/invitations')}
+              onClick={onClose}
+              LinkComponent={Link}
+              href="/invitations"
+              title={dictionary.invites}
+            >
+              <ListItemIcon>
+                <Mail />
+              </ListItemIcon>
+              <ListItemText primary={dictionary.invites} />
+            </ListItemButton>
+            <ListItemButton
               selected={pathname.endsWith('/settings')}
               onClick={onClose}
               LinkComponent={Link}
