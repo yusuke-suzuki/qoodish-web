@@ -108,6 +108,8 @@
   "send invitation success": "招待を送信しました！",
   "remove coauthor": "共著者を外す",
   "remove coauthor success": "共著者を外しました",
+  "sure to remove coauthor": "この共著者を外しますか？",
+  "remove coauthor detail": "このマップの編集権限がなくなります。再度招待すれば共著者に戻せます。",
   "report inappropriate content": "不適切なコンテンツを報告します",
   "report inappropriate content detail": "この投稿を報告する理由を選択してください。",
   "not interested in": "この投稿に興味がない",
