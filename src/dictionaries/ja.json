@@ -106,6 +106,8 @@
   "select invite target": "招く相手を選択します",
   "search users": "ユーザー名を入力します...",
   "send invitation success": "招待を送信しました！",
+  "remove coauthor": "共著者を外す",
+  "remove coauthor success": "共著者を外しました",
   "report inappropriate content": "不適切なコンテンツを報告します",
   "report inappropriate content detail": "この投稿を報告する理由を選択してください。",
   "not interested in": "この投稿に興味がない",

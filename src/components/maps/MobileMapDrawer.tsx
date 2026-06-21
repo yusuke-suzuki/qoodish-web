@@ -175,7 +175,11 @@ function MobileMapDrawer({
               {dictionary.coauthors}
             </Typography>
             <Box sx={{ display: 'flex' }}>
-              <Coauthors coauthors={coauthors} />
+              <Coauthors
+                coauthors={coauthors}
+                map={map}
+                currentProfile={currentProfile}
+              />
             </Box>
           </CardContent>
           <Divider />
