@@ -58,7 +58,6 @@ export default memo(function EditMapDialog({
   const { items, isUploading, uploadedImages, upload, reset } =
     usePhotoUploads();
   const [isPrivate, setIsPrivate] = useState(false);
-  const [isShared, setIsShared] = useState(false);
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
     null
   );
@@ -92,10 +91,8 @@ export default memo(function EditMapDialog({
   const handleMapOptionsChange = useCallback(
     (options: {
       isPrivate: boolean;
-      isShared: boolean;
     }) => {
       setIsPrivate(options.isPrivate);
-      setIsShared(options.isShared);
     },
     []
   );
@@ -119,7 +116,6 @@ export default memo(function EditMapDialog({
             latitude: position.lat,
             longitude: position.lng,
             private: isPrivate,
-            shared: isShared,
             image_ids:
               uploadedImages.length > 0
                 ? uploadedImages.map((image) => image.id)
@@ -153,7 +149,6 @@ export default memo(function EditMapDialog({
       name,
       description,
       isPrivate,
-      isShared,
       dictionary,
       onClose,
       onSaved
@@ -166,7 +161,6 @@ export default memo(function EditMapDialog({
     reset();
     setPosition(null);
     setIsPrivate(false);
-    setIsShared(false);
   }, [reset]);
 
   const defaultCenter = useMemo(() => {

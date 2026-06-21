@@ -1,4 +1,4 @@
-import type { AppMap, Follower, Review } from '../../types';
+import type { AppMap, Coauthor, Review } from '../../types';
 import { apiFetch } from './api';
 
 export async function getMap(
@@ -29,13 +29,13 @@ export async function getMapReviews(
   return data ?? [];
 }
 
-export async function getMapFollowers(
+export async function getMapCoauthors(
   mapId: string,
   lang: string,
   token?: string
-): Promise<Follower[]> {
+): Promise<Coauthor[]> {
   const guest = !token;
-  const { data } = await apiFetch<Follower[]>(`/maps/${mapId}/collaborators`, {
+  const { data } = await apiFetch<Coauthor[]>(`/maps/${mapId}/coauthors`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }

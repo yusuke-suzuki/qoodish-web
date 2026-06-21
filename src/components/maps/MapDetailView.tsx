@@ -3,7 +3,7 @@
 import { Box, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import type { AppMap, Follower, Profile, Review } from '../../../types';
+import type { AppMap, Coauthor, Profile, Review } from '../../../types';
 import IssueDialog from '../common/IssueDialog';
 import CustomOverlays from './CustomOverlays';
 import DeleteMapDialog from './DeleteMapDialog';
@@ -19,14 +19,14 @@ const summaryCardHeight = 360;
 type Props = {
   map: AppMap;
   reviews: Review[];
-  followers: Follower[];
+  coauthors: Coauthor[];
   currentProfile: Profile | null;
 };
 
 export default function MapDetailView({
   map,
   reviews,
-  followers,
+  coauthors,
   currentProfile
 }: Props) {
   const theme = useTheme();
@@ -77,7 +77,7 @@ export default function MapDetailView({
       <MobileMapDrawer
         map={map}
         reviews={reviews}
-        followers={followers}
+        coauthors={coauthors}
         currentProfile={currentProfile}
         onEditClick={() => setEditDialogOpen(true)}
         onDeleteClick={() => setDeleteDialogOpen(true)}
@@ -108,7 +108,7 @@ export default function MapDetailView({
           <MapSummaryCard
             map={map}
             reviews={reviews}
-            followers={followers}
+            coauthors={coauthors}
             currentProfile={currentProfile}
             onEditClick={() => setEditDialogOpen(true)}
             onDeleteClick={() => setDeleteDialogOpen(true)}

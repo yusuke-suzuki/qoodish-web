@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import MapDetailView from '../../../../components/maps/MapDetailView';
 import { getServerAuthState } from '../../../../lib/auth';
-import { getMap, getMapFollowers, getMapReviews } from '../../../../lib/maps';
+import { getMap, getMapCoauthors, getMapReviews } from '../../../../lib/maps';
 import { getProfile } from '../../../../lib/users';
 import { getDictionary } from '../../../../utils/getDictionary';
 
@@ -58,10 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
   const { token, uid } = await getServerAuthState();
-  const [map, reviews, followers, profile] = await Promise.all([
+  const [map, reviews, coauthors, profile] = await Promise.all([
     getMap(mapId, lang, token),
     getMapReviews(mapId, lang, token),
-    getMapFollowers(mapId, lang, token),
+    getMapCoauthors(mapId, lang, token),
     uid ? getProfile(uid, lang, token) : Promise.resolve(null)
   ]);
 
@@ -74,7 +74,7 @@ export default async function MapPage({ params }: Props) {
       <MapDetailView
         map={map}
         reviews={reviews}
-        followers={followers}
+        coauthors={coauthors}
         currentProfile={profile}
       />
     </Suspense>

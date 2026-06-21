@@ -8,24 +8,24 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import type { AppMap, Follower, Profile, Review } from '../../../types';
+import type { AppMap, Coauthor, Profile, Review } from '../../../types';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
-import FollowButton from './FollowButton';
-import Followers from './Followers';
+import BookmarkButton from './BookmarkButton';
+import Coauthors from './Coauthors';
 import MapCardHeader from './MapCardHeader';
 import MapMenuButton from './MapMenuButton';
 import MapReviewList from './MapReviewList';
 import MobileMiniMapHeader from './MobileMiniMapHeader';
 import PrivateMapChip from './PrivateMapChip';
-import UnfollowButton from './UnfollowButton';
+import RemoveBookmarkButton from './RemoveBookmarkButton';
 
 const drawerBleeding = 105;
 
 type Props = {
   map: AppMap | null;
   reviews: Review[];
-  followers: Follower[];
+  coauthors: Coauthor[];
   currentProfile: Profile | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -38,7 +38,7 @@ type Props = {
 function MobileMapDrawer({
   map,
   reviews,
-  followers,
+  coauthors,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -158,24 +158,24 @@ function MobileMapDrawer({
           </CardContent>
           {map?.editable ? null : (
             <CardActions sx={{ p: 2 }}>
-              {map?.following ? (
-                <UnfollowButton
+              {map?.bookmarking ? (
+                <RemoveBookmarkButton
                   map={map}
                   currentProfile={currentProfile}
                   onSaved={onSaved}
                 />
               ) : (
-                <FollowButton map={map} onSaved={onSaved} />
+                <BookmarkButton map={map} onSaved={onSaved} />
               )}
             </CardActions>
           )}
           <Divider />
           <CardContent>
             <Typography variant="subtitle2" component="h2" gutterBottom>
-              {dictionary.followers}
+              {dictionary.coauthors}
             </Typography>
             <Box sx={{ display: 'flex' }}>
-              <Followers followers={followers} />
+              <Coauthors coauthors={coauthors} />
             </Box>
           </CardContent>
           <Divider />

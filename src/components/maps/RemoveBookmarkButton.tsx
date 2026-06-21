@@ -1,3 +1,4 @@
+import { Bookmark } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
@@ -9,7 +10,7 @@ import {
   useTransition
 } from 'react';
 import type { AppMap, Profile } from '../../../types';
-import { unfollowMap } from '../../actions/mapFollowers';
+import { removeBookmark } from '../../actions/mapBookmarks';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -19,15 +20,15 @@ type Props = {
   onSaved: () => void;
 };
 
-function UnfollowButton({ map, currentProfile, onSaved }: Props) {
+function RemoveBookmarkButton({ map, currentProfile, onSaved }: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
-  const [following, setFollowing] = useState(map?.following ?? false);
+  const [bookmarking, setBookmarking] = useState(map?.bookmarking ?? false);
   const [isPending, startTransition] = useTransition();
 
   const isAuthor = useMemo(() => {
-    return currentProfile?.id === map.owner.id;
+    return currentProfile?.id === map.author.id;
   }, [map, currentProfile]);
 
   const handleClick = useCallback(() => {
@@ -36,11 +37,11 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
       return;
     }
 
-    setFollowing(false);
+    setBookmarking(false);
 
     startTransition(async () => {
       try {
-        const result = await unfollowMap(map?.id);
+        const result = await removeBookmark(map?.id);
 
         if (result.success) {
           onSaved();
@@ -49,11 +50,11 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
             variant: 'success'
           });
         } else {
-          setFollowing(true);
+          setBookmarking(true);
           enqueueSnackbar(result.error, { variant: 'error' });
         }
       } catch (_error) {
-        setFollowing(true);
+        setBookmarking(true);
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
     });
@@ -65,7 +66,8 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
       color="inherit"
       size="medium"
       fullWidth
-      disabled={!map || !following || isAuthor}
+      startIcon={<Bookmark />}
+      disabled={!map || !bookmarking || isAuthor}
       onClick={handleClick}
       loading={isPending}
     >
@@ -74,4 +76,4 @@ function UnfollowButton({ map, currentProfile, onSaved }: Props) {
   );
 }
 
-export default memo(UnfollowButton);
+export default memo(RemoveBookmarkButton);

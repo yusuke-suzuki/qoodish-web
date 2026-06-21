@@ -40,7 +40,7 @@ function PushNotificationsCard() {
 
   const [loading, setLoading] = useState(false);
   const [likedEnabled, setLikedEnabled] = useState(false);
-  const [followedEnabled, setFollowedEnabled] = useState(false);
+  const [coauthorInvitedEnabled, setCoauthorInvitedEnabled] = useState(false);
   const [commentEnabled, setCommentEnabled] = useState(false);
 
   const handleSubscriptionChange = useCallback(
@@ -70,7 +70,7 @@ function PushNotificationsCard() {
     try {
       const result = await updatePushNotification(uid, {
         liked: likedEnabled,
-        followed: followedEnabled,
+        coauthor_invited: coauthorInvitedEnabled,
         comment: commentEnabled
       });
 
@@ -86,12 +86,12 @@ function PushNotificationsCard() {
     } finally {
       setLoading(false);
     }
-  }, [uid, likedEnabled, followedEnabled, commentEnabled, dictionary]);
+  }, [uid, likedEnabled, coauthorInvitedEnabled, commentEnabled, dictionary]);
 
   useEffect(() => {
     if (profile?.push_notification) {
       setLikedEnabled(profile.push_notification.liked);
-      setFollowedEnabled(profile.push_notification.followed);
+      setCoauthorInvitedEnabled(profile.push_notification.coauthor_invited);
       setCommentEnabled(profile.push_notification.comment);
     }
   }, [profile]);
@@ -149,14 +149,14 @@ function PushNotificationsCard() {
               control={
                 <Switch
                   color="secondary"
-                  checked={followedEnabled}
+                  checked={coauthorInvitedEnabled}
                   onChange={(
                     _event: ChangeEvent<HTMLInputElement>,
                     checked: boolean
-                  ) => setFollowedEnabled(checked)}
+                  ) => setCoauthorInvitedEnabled(checked)}
                 />
               }
-              label={dictionary['push for followed']}
+              label={dictionary['push for invited']}
             />
             <FormControlLabel
               control={

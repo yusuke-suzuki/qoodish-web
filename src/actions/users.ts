@@ -11,7 +11,7 @@ type UpdateProfileParams = {
 
 type UpdatePushNotificationParams = {
   liked: boolean;
-  followed: boolean;
+  coauthor_invited: boolean;
   comment: boolean;
 };
 

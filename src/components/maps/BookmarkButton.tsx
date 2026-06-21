@@ -1,8 +1,9 @@
+import { BookmarkBorder } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState, useTransition } from 'react';
 import type { AppMap } from '../../../types';
-import { followMap } from '../../actions/mapFollowers';
+import { bookmarkMap } from '../../actions/mapBookmarks';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
@@ -11,11 +12,11 @@ type Props = {
   onSaved: () => void;
 };
 
-function FollowButton({ map, onSaved }: Props) {
+function BookmarkButton({ map, onSaved }: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
-  const [following, setFollowing] = useState(map?.following ?? false);
+  const [bookmarking, setBookmarking] = useState(map?.bookmarking ?? false);
   const [isPending, startTransition] = useTransition();
 
   const handleClick = useCallback(() => {
@@ -24,11 +25,11 @@ function FollowButton({ map, onSaved }: Props) {
       return;
     }
 
-    setFollowing(true);
+    setBookmarking(true);
 
     startTransition(async () => {
       try {
-        const result = await followMap(map?.id);
+        const result = await bookmarkMap(map?.id);
 
         if (result.success) {
           onSaved();
@@ -37,11 +38,11 @@ function FollowButton({ map, onSaved }: Props) {
             variant: 'success'
           });
         } else {
-          setFollowing(false);
+          setBookmarking(false);
           enqueueSnackbar(result.error, { variant: 'error' });
         }
       } catch (_error) {
-        setFollowing(false);
+        setBookmarking(false);
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
     });
@@ -54,7 +55,8 @@ function FollowButton({ map, onSaved }: Props) {
       color="secondary"
       size="medium"
       fullWidth
-      disabled={!map || following}
+      startIcon={<BookmarkBorder />}
+      disabled={!map || bookmarking}
       onClick={handleClick}
     >
       {dictionary.follow}
@@ -62,4 +64,4 @@ function FollowButton({ map, onSaved }: Props) {
   );
 }
 
-export default memo(FollowButton);
+export default memo(BookmarkButton);
