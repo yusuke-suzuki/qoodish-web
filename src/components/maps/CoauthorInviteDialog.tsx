@@ -3,7 +3,6 @@
 import {
   Autocomplete,
   Avatar,
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -37,6 +36,7 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
   const dictionary = useDictionary();
 
   const [options, setOptions] = useState<UserSearchResult[]>([]);
+  const [inputValue, setInputValue] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(
     null
   );
@@ -47,12 +47,15 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
 
   const handleInputChange = useCallback(
     (_event: SyntheticEvent, value: string) => {
+      setInputValue(value);
+
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
 
       if (!value.trim()) {
         setOptions([]);
+        setLoading(false);
         return;
       }
 
@@ -84,6 +87,7 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
         });
         setSelectedUser(null);
         setOptions([]);
+        setInputValue('');
       } else {
         enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
           variant: 'error'
@@ -101,6 +105,7 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
           options={options}
           loading={loading}
           value={selectedUser}
+          inputValue={inputValue}
           onChange={(_event, value) => setSelectedUser(value)}
           onInputChange={handleInputChange}
           filterOptions={(x) => x}
@@ -130,7 +135,6 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
             />
           )}
         />
-        <Box sx={{ mt: 2 }} />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="inherit" disabled={isPending}>

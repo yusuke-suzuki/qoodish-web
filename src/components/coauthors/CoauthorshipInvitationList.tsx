@@ -3,14 +3,11 @@
 import { MailOutline } from '@mui/icons-material';
 import {
   Avatar,
-  Box,
   Button,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Stack,
-  Typography
+  Card,
+  CardActions,
+  CardHeader,
+  Stack
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
@@ -89,56 +86,45 @@ function CoauthorshipInvitationList({ invitations }: Props) {
   }
 
   return (
-    <List>
-      {invitations.map((invitation) => (
-        <ListItem
-          key={invitation.id}
-          alignItems="flex-start"
-          secondaryAction={
-            <Stack direction="row" spacing={1}>
+    <Stack spacing={2} sx={{ p: 2 }}>
+      {invitations.map((invitation) => {
+        const acting = isPending && actingId === invitation.id;
+
+        return (
+          <Card key={invitation.id} variant="outlined">
+            <CardHeader
+              avatar={
+                <Avatar
+                  variant="rounded"
+                  src={invitation.map.image?.avatar}
+                  alt={invitation.map.name}
+                />
+              }
+              title={invitation.map.name}
+              titleTypographyProps={{ fontWeight: 600 }}
+              subheader={`${invitation.inviter.name} ${dictionary['coauthor invitation message']}`}
+            />
+            <CardActions sx={{ justifyContent: 'flex-end', px: 2, pb: 2 }}>
               <Button
-                size="small"
                 color="inherit"
-                disabled={isPending && actingId === invitation.id}
+                disabled={acting}
                 onClick={() => handleDecline(invitation)}
               >
                 {dictionary.decline}
               </Button>
               <Button
-                size="small"
                 variant="contained"
                 color="secondary"
-                loading={isPending && actingId === invitation.id}
+                loading={acting}
                 onClick={() => handleAccept(invitation)}
               >
                 {dictionary.accept}
               </Button>
-            </Stack>
-          }
-        >
-          <ListItemAvatar>
-            <Avatar
-              variant="rounded"
-              src={invitation.map.image?.avatar}
-              alt={invitation.map.name}
-            />
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-              <Typography variant="subtitle1" fontWeight={600}>
-                {invitation.map.name}
-              </Typography>
-            }
-            secondary={
-              <Box component="span">
-                <strong>{invitation.inviter.name}</strong>
-                {` ${dictionary['coauthor invitation message']}`}
-              </Box>
-            }
-          />
-        </ListItem>
-      ))}
-    </List>
+            </CardActions>
+          </Card>
+        );
+      })}
+    </Stack>
   );
 }
 

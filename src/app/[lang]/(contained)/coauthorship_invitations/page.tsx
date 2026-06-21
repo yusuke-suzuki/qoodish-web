@@ -19,11 +19,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     robots: 'noindex',
     alternates: {
-      canonical: `${endpoint}/${lang}/invitations`,
+      canonical: `${endpoint}/${lang}/coauthorship_invitations`,
       languages: {
-        en: `${endpoint}/en/invitations`,
-        ja: `${endpoint}/ja/invitations`,
-        'x-default': `${endpoint}/en/invitations`
+        en: `${endpoint}/en/coauthorship_invitations`,
+        ja: `${endpoint}/ja/coauthorship_invitations`,
+        'x-default': `${endpoint}/en/coauthorship_invitations`
       }
     }
   };
