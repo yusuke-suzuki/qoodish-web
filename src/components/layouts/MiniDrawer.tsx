@@ -8,6 +8,8 @@ import {
   ExploreOutlined,
   Home,
   HomeOutlined,
+  Mail,
+  MailOutline,
   Notifications,
   NotificationsOutlined,
   SearchOutlined
@@ -166,6 +168,26 @@ export default memo(function MiniDrawer() {
                     />
                   )}
                 </Badge>
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+
+          {authenticated && (
+            <ListItemButton
+              selected={pathname.endsWith('/invitations')}
+              LinkComponent={Link}
+              href="/invitations"
+              title={dictionary.invites}
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>
+                {pathname.endsWith('/invitations') ? (
+                  <Mail sx={{ color: 'primary.contrastText' }} />
+                ) : (
+                  <MailOutline sx={{ color: 'primary.contrastText' }} />
+                )}
               </ListItemIcon>
             </ListItemButton>
           )}

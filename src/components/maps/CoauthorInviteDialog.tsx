@@ -1,0 +1,153 @@
+'use client';
+
+import {
+  Autocomplete,
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  TextField
+} from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import {
+  type SyntheticEvent,
+  memo,
+  useCallback,
+  useRef,
+  useState,
+  useTransition
+} from 'react';
+import type { AppMap, UserSearchResult } from '../../../types';
+import { inviteCoauthor, searchUsers } from '../../actions/coauthors';
+import useDictionary from '../../hooks/useDictionary';
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  map: AppMap | null;
+};
+
+function CoauthorInviteDialog({ open, onClose, map }: Props) {
+  const dictionary = useDictionary();
+
+  const [options, setOptions] = useState<UserSearchResult[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleInputChange = useCallback(
+    (_event: SyntheticEvent, value: string) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      if (!value.trim()) {
+        setOptions([]);
+        return;
+      }
+
+      setLoading(true);
+
+      debounceRef.current = setTimeout(async () => {
+        try {
+          const users = await searchUsers(value);
+          setOptions(users);
+        } finally {
+          setLoading(false);
+        }
+      }, 300);
+    },
+    []
+  );
+
+  const handleInvite = useCallback(() => {
+    if (!map || !selectedUser) {
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await inviteCoauthor(map.id, selectedUser.id);
+
+      if (result.success) {
+        enqueueSnackbar(dictionary['send invitation success'], {
+          variant: 'success'
+        });
+        setSelectedUser(null);
+        setOptions([]);
+      } else {
+        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+      }
+    });
+  }, [map, selectedUser, dictionary]);
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <DialogTitle>{dictionary.invite}</DialogTitle>
+      <DialogContent>
+        <Autocomplete
+          autoComplete
+          options={options}
+          loading={loading}
+          value={selectedUser}
+          onChange={(_event, value) => setSelectedUser(value)}
+          onInputChange={handleInputChange}
+          filterOptions={(x) => x}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          noOptionsText={dictionary['select invite target']}
+          renderOption={(props, option) => {
+            const { key, ...rest } = props;
+            return (
+              <ListItem key={option.id} {...rest}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={option.image?.avatar ?? option.image_url}
+                    alt={option.name}
+                  />
+                </ListItemAvatar>
+                <ListItemText primary={option.name} />
+              </ListItem>
+            );
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="standard"
+              placeholder={dictionary['search users']}
+              autoFocus
+            />
+          )}
+        />
+        <Box sx={{ mt: 2 }} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="inherit" disabled={isPending}>
+          {dictionary.cancel}
+        </Button>
+        <Button
+          onClick={handleInvite}
+          variant="contained"
+          color="secondary"
+          disabled={!selectedUser}
+          loading={isPending}
+        >
+          {dictionary.send}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export default memo(CoauthorInviteDialog);
