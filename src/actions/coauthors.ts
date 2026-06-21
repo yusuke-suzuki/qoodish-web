@@ -38,6 +38,21 @@ export async function inviteCoauthor(
   return { success: true };
 }
 
+export async function removeCoauthor(
+  mapId: number,
+  userId: number
+): Promise<ActionResult> {
+  const { error } = await apiFetch(`/maps/${mapId}/coauthors/${userId}`, {
+    method: 'DELETE'
+  });
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+}
+
 export async function acceptCoauthorshipInvitation(
   invitationId: number
 ): Promise<ActionResult> {

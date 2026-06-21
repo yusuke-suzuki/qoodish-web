@@ -106,6 +106,8 @@
   "select invite target": "Select a coauthor to invite",
   "search users": "Search users...",
   "send invitation success": "Invitation sent!",
+  "remove coauthor": "Remove coauthor",
+  "remove coauthor success": "Removed the coauthor",
   "report inappropriate content": "Report inappropriate content",
   "report inappropriate content detail": "Help us understand the problem. What is going on with this content?",
   "not interested in": "I'm not interested in this content",
