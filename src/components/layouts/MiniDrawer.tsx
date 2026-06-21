@@ -175,16 +175,16 @@ export default memo(function MiniDrawer() {
 
           {authenticated && (
             <ListItemButton
-              selected={pathname.endsWith('/invitations')}
+              selected={pathname.endsWith('/coauthorship_invitations')}
               LinkComponent={Link}
-              href="/invitations"
+              href="/coauthorship_invitations"
               title={dictionary.invites}
               sx={{
                 justifyContent: 'center'
               }}
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
-                {pathname.endsWith('/invitations') ? (
+                {pathname.endsWith('/coauthorship_invitations') ? (
                   <Mail sx={{ color: 'primary.contrastText' }} />
                 ) : (
                   <MailOutline sx={{ color: 'primary.contrastText' }} />

@@ -153,10 +153,10 @@ export default memo(function MobileDrawer({
               <ListItemText primary={dictionary.notifications} />
             </ListItemButton>
             <ListItemButton
-              selected={pathname.endsWith('/invitations')}
+              selected={pathname.endsWith('/coauthorship_invitations')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/invitations"
+              href="/coauthorship_invitations"
               title={dictionary.invites}
             >
               <ListItemIcon>
