@@ -86,7 +86,7 @@ function CoauthorshipInvitationList({ invitations }: Props) {
   }
 
   return (
-    <Stack spacing={2} sx={{ p: 2 }}>
+    <Stack spacing={2}>
       {invitations.map((invitation) => {
         const acting = isPending && actingId === invitation.id;
 
