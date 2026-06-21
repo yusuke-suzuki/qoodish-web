@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import type { Metadata, Viewport } from 'next';
-import { Lobster } from 'next/font/google';
+import { Cinzel, Lobster, Shippori_Mincho } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types';
 import MiniDrawer from '../../components/layouts/MiniDrawer';
@@ -16,6 +16,21 @@ const lobster = Lobster({
   weight: '400',
   variable: '--font-lobster',
   display: 'swap'
+});
+
+const cinzel = Cinzel({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-cinzel',
+  display: 'swap'
+});
+
+const shipporiMincho = Shippori_Mincho({
+  weight: ['400', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-shippori-mincho',
+  display: 'swap',
+  preload: false
 });
 
 type Props = {
@@ -110,7 +125,10 @@ export default async function RootLayout({ children, params }: Props) {
     : Promise.resolve<Notification[]>([]);
 
   return (
-    <html lang={lang} className={lobster.variable}>
+    <html
+      lang={lang}
+      className={`${lobster.variable} ${cinzel.variable} ${shipporiMincho.variable}`}
+    >
       <head>
         <link href="https://www.googleapis.com" rel="preconnect dns-prefetch" />
         <link

@@ -1,9 +1,10 @@
 import { Reviews } from '@mui/icons-material';
-import { Box, Button, CircularProgress, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import { fetchMoreUserReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
+import FootprintsLoader from '../common/FootprintsLoader';
 import NoContents from '../common/NoContents';
 import ReviewGridList from '../reviews/ReviewGridList';
 
@@ -61,7 +62,7 @@ export default memo(function UserReviews({ userId, initialReviews }: Props) {
             my: 2
           }}
         >
-          <CircularProgress />
+          <FootprintsLoader label={dictionary.loading} />
         </Box>
       )}
 
