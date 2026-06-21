@@ -206,7 +206,7 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
     <>
       <CurrentPositionMarker
         profile={profile}
-        disableCreateReview={!map || !map.postable}
+        disableCreateReview={!map || !map.editable}
         onCreateReviewClick={handleCreateReviewOpen}
       />
 
@@ -232,14 +232,14 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
 
       <PlaceInfoWindow
         place={currentPlace}
-        disableCreateReview={!map || !map.postable}
+        disableCreateReview={!map || !map.editable}
         onCreateReviewClick={handleCreateReviewOpen}
         onClose={handlePlaceClose}
       />
 
       <PositionInfoWindow
         position={pinnedPosition}
-        disableCreateReview={!map || !map.postable}
+        disableCreateReview={!map || !map.editable}
         onCreateReviewClick={handleCreateReviewOpen}
         onClose={handlePinnedPositionClose}
       />

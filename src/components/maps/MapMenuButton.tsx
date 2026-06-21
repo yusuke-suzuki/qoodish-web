@@ -51,7 +51,7 @@ export default memo(function MapMenuButton({
   const dictionary = useDictionary();
 
   const isAuthor = useMemo(() => {
-    return currentProfile?.id === map?.owner.id;
+    return currentProfile?.id === map?.author.id;
   }, [map, currentProfile]);
 
   const url = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/${lang}/maps/${map?.id}`;

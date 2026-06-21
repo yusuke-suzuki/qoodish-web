@@ -66,7 +66,7 @@ function PickUpMap({ map }: Props) {
                 sx={{ typography: { xs: 'subtitle2', sm: 'subtitle1' } }}
                 color="inherit"
               >
-                {map?.owner.name}
+                {map?.author.name}
               </Typography>
             }
             sx={{

@@ -7,8 +7,8 @@ type ActionResult = {
   error?: string;
 };
 
-export async function followMap(mapId: number): Promise<ActionResult> {
-  const { error } = await apiFetch(`/maps/${mapId}/follow`, {
+export async function bookmarkMap(mapId: number): Promise<ActionResult> {
+  const { error } = await apiFetch(`/maps/${mapId}/bookmark`, {
     method: 'POST'
   });
 
@@ -19,8 +19,8 @@ export async function followMap(mapId: number): Promise<ActionResult> {
   return { success: true };
 }
 
-export async function unfollowMap(mapId: number): Promise<ActionResult> {
-  const { error } = await apiFetch(`/maps/${mapId}/follow`, {
+export async function removeBookmark(mapId: number): Promise<ActionResult> {
+  const { error } = await apiFetch(`/maps/${mapId}/bookmark`, {
     method: 'DELETE'
   });
 

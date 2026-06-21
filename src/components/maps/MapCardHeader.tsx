@@ -24,7 +24,7 @@ function MapCardHeader({ map, action }: Props) {
     <CardHeader
       avatar={
         map ? (
-          <AuthorAvatar author={map.owner} />
+          <AuthorAvatar author={map.author} />
         ) : (
           <Skeleton variant="circular" width={40} height={40} />
         )
@@ -36,10 +36,10 @@ function MapCardHeader({ map, action }: Props) {
             underline="hover"
             color="inherit"
             component={Link}
-            href={`/users/${map.owner.id}`}
-            title={map.owner.name}
+            href={`/users/${map.author.id}`}
+            title={map.author.name}
           >
-            {map.owner.name}
+            {map.author.name}
           </MuiLink>
         ) : (
           <Skeleton height={20} width="50%" />

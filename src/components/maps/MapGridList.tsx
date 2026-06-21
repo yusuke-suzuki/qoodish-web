@@ -120,7 +120,7 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
               subtitle={
                 map ? (
                   <Typography variant="caption" color="text.secondary">
-                    {map.owner.name}
+                    {map.author.name}
                   </Typography>
                 ) : (
                   <Skeleton width="60%" height={24} />

@@ -9,7 +9,6 @@ type CreateMapParams = {
   latitude: number;
   longitude: number;
   private: boolean;
-  shared: boolean;
   image_ids?: number[];
 };
 

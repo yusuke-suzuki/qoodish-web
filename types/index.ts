@@ -4,7 +4,7 @@ export type AutocompleteOption = {
 };
 
 export type PushNotification = {
-  followed: boolean;
+  coauthor_invited: boolean;
   liked: boolean;
   comment: boolean;
 };
@@ -24,7 +24,7 @@ export type Profile = {
   biography: string;
   image: ImageVariants | null;
   maps_count: number;
-  following_maps_count: number;
+  bookmarked_maps_count: number;
   reviews_count: number;
   push_notification: PushNotification;
 };
@@ -52,31 +52,25 @@ export type Image = ImageVariants & {
 
 export type AppMap = {
   id: number;
-  owner: Author;
+  author: Author;
   name: string;
   description: string;
   private: boolean;
   latitude: number;
   longitude: number;
-  liked: boolean;
-  likes_count: number;
-  following: boolean;
-  followers_count: number;
+  bookmarking: boolean;
+  bookmarkable: boolean;
   editable: boolean;
-  postable: boolean;
-  shared: boolean;
-  invitable: boolean;
   image: ImageVariants | null;
   created_at: string;
   updated_at: string;
 };
 
-export type Follower = {
+export type Coauthor = {
   id: number;
-  uid: string;
   name: string;
   image: ImageVariants | null;
-  owner: boolean;
+  author: boolean;
   editable: boolean;
   created_at: string;
   updated_at: string;
