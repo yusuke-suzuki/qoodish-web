@@ -113,11 +113,11 @@ export default async function LoginPage({ params }: Props) {
                   </Typography>
 
                   <Typography
-                    variant="subtitle2"
+                    variant="subtitle1"
                     component="p"
                     color="white"
                     align="center"
-                    sx={{ typography: { md: 'subtitle1' } }}
+                    sx={{ typography: { md: 'h6' } }}
                   >
                     {dict['start new adventure']}
                   </Typography>
