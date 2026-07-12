@@ -2,9 +2,24 @@
 
 import { Box, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
-import type { AppMap, Coauthor, Profile, Review } from '../../../types';
+import { enqueueSnackbar } from 'notistack';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type {
+  AppMap,
+  Coauthor,
+  Journey,
+  Profile,
+  Review
+} from '../../../types';
+import { createChapter } from '../../actions/chapters';
+import useDictionary from '../../hooks/useDictionary';
+import useJourney from '../../hooks/useJourney';
+import { createChapterContent } from '../../utils/chapterContent';
 import IssueDialog from '../common/IssueDialog';
+import EndJourneyDialog from '../journeys/EndJourneyDialog';
+import JourneyFab from '../journeys/JourneyFab';
+import JourneyOverlay from '../journeys/JourneyOverlay';
+import JourneyProgressSheet from '../journeys/JourneyProgressSheet';
 import CustomOverlays from './CustomOverlays';
 import DeleteMapDialog from './DeleteMapDialog';
 import EditMapDialog from './EditMapDialog';
@@ -12,8 +27,8 @@ import GoogleMaps from './GoogleMaps';
 import MapSummaryCard from './MapSummaryCard';
 import MobileMapDrawer from './MobileMapDrawer';
 import ReviewDrawer from './ReviewDrawer';
+import { drawerBleeding } from './constants';
 
-const bottomSheetHeight = 105;
 const summaryCardHeight = 360;
 
 type Props = {
@@ -21,19 +36,123 @@ type Props = {
   reviews: Review[];
   coauthors: Coauthor[];
   currentProfile: Profile | null;
+  currentJourney: Journey | null;
 };
 
 export default function MapDetailView({
   map,
   reviews,
   coauthors,
-  currentProfile
+  currentProfile,
+  currentJourney
 }: Props) {
   const theme = useTheme();
+  const dictionary = useDictionary();
 
   const { lang, mapId } = useParams<{ lang: string; mapId: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const handleCheckin = useCallback(
+    (review: Review) => {
+      enqueueSnackbar(dictionary['checked in'].replace('{name}', review.name), {
+        variant: 'success'
+      });
+    },
+    [dictionary]
+  );
+
+  const handleLocationError = useCallback(() => {
+    enqueueSnackbar(dictionary['location unavailable'], { variant: 'error' });
+  }, [dictionary]);
+
+  const handleJourneyError = useCallback(
+    (message: string | null) => {
+      enqueueSnackbar(message ?? dictionary['an error occurred'], {
+        variant: 'error'
+      });
+    },
+    [dictionary]
+  );
+
+  const [journeyPosition, setJourneyPosition] =
+    useState<GeolocationPosition | null>(null);
+
+  const {
+    journey,
+    trail,
+    addMilestone,
+    start,
+    end,
+    removeMilestone,
+    removeCheckin
+  } = useJourney({
+    map,
+    reviews,
+    initialJourney: currentJourney,
+    onCheckin: handleCheckin,
+    onPosition: setJourneyPosition,
+    onLocationError: handleLocationError,
+    onError: handleJourneyError
+  });
+
+  const [progressOpen, setProgressOpen] = useState(false);
+  const [endDialogOpen, setEndDialogOpen] = useState(false);
+  const [currentReview, setCurrentReview] = useState<Review | null>(null);
+  const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
+
+  const journeyActive = Boolean(journey?.started_at && !journey?.finished_at);
+
+  const milestoneOrders = useMemo(
+    () =>
+      new Map(
+        (journey?.milestones ?? []).map((milestone, index) => [
+          milestone.review_id,
+          index + 1
+        ])
+      ),
+    [journey]
+  );
+
+  const handleAddMilestone = useCallback(
+    async (review: Review) => {
+      const added = await addMilestone(review);
+
+      if (added) {
+        enqueueSnackbar(
+          dictionary['added to milestones'].replace('{name}', review.name),
+          { variant: 'success' }
+        );
+        setReviewDrawerOpen(false);
+      }
+    },
+    [addMilestone, dictionary]
+  );
+
+  const handleEnd = useCallback(async () => {
+    const finished = await end();
+
+    if (!finished) {
+      return;
+    }
+
+    const { success, data, error } = await createChapter(map.id, {
+      title: dictionary['untitled journey'],
+      content: createChapterContent(finished.journey, finished.trail),
+      journey_id: finished.journey.id
+    });
+
+    if (!success || !data) {
+      enqueueSnackbar(error ?? dictionary['an error occurred'], {
+        variant: 'error'
+      });
+      return;
+    }
+
+    setEndDialogOpen(false);
+    setProgressOpen(false);
+    router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
+  }, [end, map.id, router, lang, dictionary]);
 
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
@@ -45,8 +164,6 @@ export default function MapDetailView({
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [currentReview, setCurrentReview] = useState<Review | null>(null);
-  const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
 
   const handleReviewSaved = useCallback(() => {
     router.refresh();
@@ -86,12 +203,21 @@ export default function MapDetailView({
         onReviewClick={handleReviewClick}
         reviewDrawerOpen={reviewDrawerOpen}
       />
+
       <ReviewDrawer
         currentReview={currentReview}
         open={reviewDrawerOpen}
         onOpen={() => setReviewDrawerOpen(true)}
         onClose={() => setReviewDrawerOpen(false)}
         onExited={() => setCurrentReview(null)}
+        milestoneAction={
+          currentReview
+            ? {
+                selected: milestoneOrders.has(currentReview.id),
+                onAdd: () => handleAddMilestone(currentReview)
+              }
+            : null
+        }
         onSaved={handleReviewSaved}
         onDeleted={handleReviewSaved}
       />
@@ -121,8 +247,8 @@ export default function MapDetailView({
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
           sx={{
             height: {
-              xs: `calc(100dvh - ${bottomSheetHeight}px - ${theme.spacing(7)})`,
-              sm: `calc(100dvh - ${bottomSheetHeight}px - ${theme.spacing(8)})`,
+              xs: `calc(100dvh - ${drawerBleeding}px - ${theme.spacing(7)})`,
+              sm: `calc(100dvh - ${drawerBleeding}px - ${theme.spacing(8)})`,
               md: '100dvh'
             },
             width: {
@@ -136,8 +262,28 @@ export default function MapDetailView({
           <CustomOverlays
             map={map}
             reviews={reviews}
+            milestoneOrders={milestoneOrders}
             onReviewSaved={handleReviewSaved}
             onReviewClick={handleReviewClick}
+          />
+          <JourneyOverlay
+            position={journeyPosition}
+            path={journeyActive ? trail : null}
+          />
+          <JourneyFab
+            disabled={false}
+            journey={journey}
+            onStart={start}
+            onOpenProgress={() => setProgressOpen(true)}
+          />
+          <JourneyProgressSheet
+            open={progressOpen}
+            onClose={() => setProgressOpen(false)}
+            journey={journey}
+            reviews={reviews}
+            onRemoveMilestone={removeMilestone}
+            onRemoveCheckin={removeCheckin}
+            onEndClick={() => setEndDialogOpen(true)}
           />
         </GoogleMaps>
       </Box>
@@ -161,6 +307,12 @@ export default function MapDetailView({
         onClose={() => setIssueDialogOpen(false)}
         contentType="map"
         contentId={map.id}
+      />
+
+      <EndJourneyDialog
+        open={endDialogOpen}
+        onClose={() => setEndDialogOpen(false)}
+        onEnd={handleEnd}
       />
     </>
   );

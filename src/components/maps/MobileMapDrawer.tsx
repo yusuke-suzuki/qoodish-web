@@ -19,8 +19,7 @@ import MapReviewList from './MapReviewList';
 import MobileMiniMapHeader from './MobileMiniMapHeader';
 import PrivateMapChip from './PrivateMapChip';
 import RemoveBookmarkButton from './RemoveBookmarkButton';
-
-const drawerBleeding = 105;
+import { drawerBleeding } from './constants';
 
 type Props = {
   map: AppMap | null;

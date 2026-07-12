@@ -4,6 +4,8 @@ import {
   AccountCircle,
   AccountCircleOutlined,
   AddBox,
+  DirectionsWalk,
+  DirectionsWalkOutlined,
   Explore,
   ExploreOutlined,
   Home,
@@ -130,7 +132,7 @@ export default memo(function MiniDrawer() {
               LinkComponent={profile ? Link : 'button'}
               href={profile ? `/users/${profile.id}` : undefined}
               disabled={!profile}
-              title={dictionary.account}
+              title={dictionary.profile}
               sx={{
                 justifyContent: 'center'
               }}
@@ -140,6 +142,28 @@ export default memo(function MiniDrawer() {
                   <AccountCircle sx={{ color: 'primary.contrastText' }} />
                 ) : (
                   <AccountCircleOutlined
+                    sx={{ color: 'primary.contrastText' }}
+                  />
+                )}
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+
+          {authenticated && (
+            <ListItemButton
+              selected={pathname.endsWith('/journeys')}
+              LinkComponent={Link}
+              href="/journeys"
+              title={dictionary['journey log']}
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>
+                {pathname.endsWith('/journeys') ? (
+                  <DirectionsWalk sx={{ color: 'primary.contrastText' }} />
+                ) : (
+                  <DirectionsWalkOutlined
                     sx={{ color: 'primary.contrastText' }}
                   />
                 )}

@@ -2,6 +2,7 @@ import {
   AccountCircle,
   AddBox,
   ChevronLeft,
+  DirectionsWalk,
   ExitToApp,
   Explore,
   Home,
@@ -133,12 +134,24 @@ export default memo(function MobileDrawer({
               LinkComponent={profile ? Link : 'button'}
               href={profile ? `/users/${profile.id}` : undefined}
               disabled={!profile}
-              title={dictionary.account}
+              title={dictionary.profile}
             >
               <ListItemIcon>
                 <AccountCircle />
               </ListItemIcon>
-              <ListItemText primary={dictionary.account} />
+              <ListItemText primary={dictionary.profile} />
+            </ListItemButton>
+            <ListItemButton
+              selected={pathname.endsWith('/journeys')}
+              onClick={onClose}
+              LinkComponent={Link}
+              href="/journeys"
+              title={dictionary['journey log']}
+            >
+              <ListItemIcon>
+                <DirectionsWalk />
+              </ListItemIcon>
+              <ListItemText primary={dictionary['journey log']} />
             </ListItemButton>
             <ListItemButton
               selected={pathname.endsWith('/notifications')}

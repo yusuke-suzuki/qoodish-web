@@ -19,11 +19,13 @@ import {
   useContext,
   useState
 } from 'react';
-import type { AppMap, Profile, Review } from '../../../types';
+import type { AppMap, Chapter, Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import ProfileAvatar from '../common/ProfileAvatar';
 import EditProfileDialog from './EditProfileDialog';
+import UserBookmarks from './UserBookmarks';
+import UserChapters from './UserChapters';
 import UserMaps from './UserMaps';
 import UserReviews from './UserReviews';
 
@@ -31,9 +33,17 @@ type Props = {
   profile: Profile;
   initialReviews: Review[];
   maps: AppMap[];
+  bookmarks: AppMap[];
+  chapters: Chapter[];
 };
 
-function UserProfile({ profile, initialReviews, maps }: Props) {
+function UserProfile({
+  profile,
+  initialReviews,
+  maps,
+  bookmarks,
+  chapters
+}: Props) {
   const { uid } = useContext(AuthContext);
   const router = useRouter();
 
@@ -41,6 +51,8 @@ function UserProfile({ profile, initialReviews, maps }: Props) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const dictionary = useDictionary();
+
+  const isOwnProfile = uid === profile.uid;
 
   const handleTabChange = useCallback(
     (_event: SyntheticEvent<Element, Event>, newValue: string) => {
@@ -81,7 +93,7 @@ function UserProfile({ profile, initialReviews, maps }: Props) {
                 {profile.biography}
               </Typography>
 
-              {uid === profile.uid && (
+              {isOwnProfile && (
                 <Button
                   variant="contained"
                   disableElevation
@@ -122,13 +134,33 @@ function UserProfile({ profile, initialReviews, maps }: Props) {
                     {dictionary.maps}
                   </Typography>
                 </Stack>
+
+                <Stack justifyContent="center">
+                  <Typography variant="h6" fontWeight="bold" align="center">
+                    {chapters.length}
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    align="center"
+                  >
+                    {dictionary.chapters}
+                  </Typography>
+                </Stack>
               </Stack>
             </Stack>
           </CardContent>
 
-          <TabList onChange={handleTabChange} centered>
+          <TabList
+            onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
+          >
             <Tab label={dictionary.spots} value="1" />
             <Tab label={dictionary.maps} value="2" />
+            <Tab label={dictionary.bookmarks} value="3" />
+            <Tab label={dictionary.chapters} value="4" />
           </TabList>
         </Card>
 
@@ -137,6 +169,12 @@ function UserProfile({ profile, initialReviews, maps }: Props) {
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>
           <UserMaps maps={maps} />
+        </TabPanel>
+        <TabPanel value="3" sx={{ px: 0 }}>
+          <UserBookmarks maps={bookmarks} />
+        </TabPanel>
+        <TabPanel value="4" sx={{ px: 0 }}>
+          <UserChapters chapters={chapters} />
         </TabPanel>
       </TabContext>
 

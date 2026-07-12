@@ -1,10 +1,10 @@
 import { AccountCircle } from '@mui/icons-material';
 import { Avatar, type SxProps } from '@mui/material';
 import { memo, useMemo } from 'react';
-import type { Profile } from '../../../types';
+import type { ImageVariants } from '../../../types';
 
 type Props = {
-  profile?: Profile | null;
+  profile?: { name: string; image: ImageVariants | null } | null;
   size?: number;
   variant?: 'rounded' | 'circular' | 'square';
 };

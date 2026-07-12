@@ -1,5 +1,12 @@
 import { HistoryEdu } from '@mui/icons-material';
-import { Avatar, Fab, Tooltip, Typography, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Badge,
+  Fab,
+  Tooltip,
+  Typography,
+  useTheme
+} from '@mui/material';
 import {
   type MutableRefObject,
   memo,
@@ -14,10 +21,11 @@ import MarkerView from './MarkerView';
 
 type Props = {
   review: Review;
+  order?: number;
   onClick: (review: Review, ref: MutableRefObject<HTMLButtonElement>) => void;
 };
 
-function ReviewMarker({ review, onClick }: Props) {
+function ReviewMarker({ review, order, onClick }: Props) {
   const { loader } = useGoogleMap();
 
   const [position, setPosition] = useState<google.maps.LatLng | null>(null);
@@ -62,6 +70,34 @@ function ReviewMarker({ review, onClick }: Props) {
     return null;
   }
 
+  const avatar =
+    review.images.length > 0 ? (
+      <Avatar
+        src={review.images[0].avatar}
+        sx={{
+          width: theme.spacing(4),
+          height: theme.spacing(4),
+          bgcolor: 'transparent'
+        }}
+        slotProps={{
+          img: {
+            alt: review.name,
+            loading: 'lazy'
+          }
+        }}
+      />
+    ) : (
+      <Avatar
+        sx={{
+          width: theme.spacing(4),
+          height: theme.spacing(4),
+          bgcolor: 'transparent'
+        }}
+      >
+        <HistoryEdu color="primary" />
+      </Avatar>
+    );
+
   return (
     <MarkerView
       position={position}
@@ -90,31 +126,22 @@ function ReviewMarker({ review, onClick }: Props) {
           }}
           ref={ref}
         >
-          {review.images.length > 0 ? (
-            <Avatar
-              src={review.images[0].avatar}
+          {order === undefined ? (
+            avatar
+          ) : (
+            <Badge
+              badgeContent={order}
+              color="primary"
+              overlap="circular"
               sx={{
-                width: theme.spacing(4),
-                height: theme.spacing(4),
-                bgcolor: 'transparent'
-              }}
-              slotProps={{
-                img: {
-                  alt: review.name,
-                  loading: 'lazy'
+                '& .MuiBadge-badge': {
+                  border: '2px solid',
+                  borderColor: 'background.paper'
                 }
               }}
-            />
-          ) : (
-            <Avatar
-              sx={{
-                width: theme.spacing(4),
-                height: theme.spacing(4),
-                bgcolor: 'transparent'
-              }}
             >
-              <HistoryEdu color="primary" />
-            </Avatar>
+              {avatar}
+            </Badge>
           )}
         </Fab>
       </Tooltip>

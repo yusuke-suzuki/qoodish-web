@@ -56,6 +56,7 @@ export default memo(function BottomNav() {
   }, [pathname]);
 
   if (!authenticated) return null;
+  if (pathname.includes('/chapters/')) return null;
 
   return (
     <Box
@@ -101,7 +102,7 @@ export default memo(function BottomNav() {
             href="/notifications"
           />
           <BottomNavigationAction
-            title={dictionary.account}
+            title={dictionary.profile}
             icon={<AccountCircle />}
             LinkComponent={profile ? Link : 'button'}
             href={profile ? `/users/${profile.id}` : undefined}

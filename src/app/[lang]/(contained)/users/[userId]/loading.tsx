@@ -36,11 +36,17 @@ export default function Loading() {
                 <Skeleton variant="text" width={40} height={28} />
                 <Skeleton variant="text" width={48} />
               </Stack>
+              <Stack alignItems="center" spacing={0.5}>
+                <Skeleton variant="text" width={40} height={28} />
+                <Skeleton variant="text" width={48} />
+              </Stack>
             </Stack>
           </Stack>
         </CardContent>
 
-        <Tabs value={0} centered>
+        <Tabs value={0} variant="scrollable" scrollButtons={false}>
+          <Tab label={<Skeleton variant="text" width={48} />} />
+          <Tab label={<Skeleton variant="text" width={48} />} />
           <Tab label={<Skeleton variant="text" width={48} />} />
           <Tab label={<Skeleton variant="text" width={48} />} />
         </Tabs>

@@ -29,6 +29,20 @@ export async function getUserMaps(
   return data ?? [];
 }
 
+export async function getUserBookmarks(
+  userId: string,
+  lang: string,
+  token?: string
+): Promise<AppMap[]> {
+  const guest = !token;
+  const { data } = await apiFetch<AppMap[]>(`/users/${userId}/bookmarks`, {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0 }
+  });
+  return data ?? [];
+}
+
 export async function getUserReviews(
   userId: string,
   lang?: string,
