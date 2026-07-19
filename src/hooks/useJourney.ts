@@ -55,8 +55,7 @@ export default function useJourney({
   onLocationError,
   onError
 }: Args) {
-  const { uid, isLoading, authenticated, setSignInRequired } =
-    useContext(AuthContext);
+  const { uid, authenticated, setSignInRequired } = useContext(AuthContext);
 
   const [journey, setJourney] = useState<Journey | null>(initialJourney);
   const journeyRef = useRef<Journey | null>(initialJourney);
@@ -88,8 +87,11 @@ export default function useJourney({
     [uid]
   );
 
+  // Must run before the watch effect below registers: a position delivered
+  // while the stored trail is not yet hydrated would make commitTrail
+  // overwrite it with a single fresh point.
   useEffect(() => {
-    if (isLoading || !uid) {
+    if (!uid) {
       return;
     }
 
@@ -100,7 +102,7 @@ export default function useJourney({
       trailRef.current = stored;
       setTrail(stored);
     }
-  }, [uid, isLoading]);
+  }, [uid]);
 
   const performCheckin = useCallback(
     async (review: Review) => {
