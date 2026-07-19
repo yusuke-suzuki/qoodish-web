@@ -87,7 +87,8 @@ export default function MapDetailView({
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
-    removeCheckinImage
+    removeCheckinImage,
+    updateCheckinNote
   } = useJourney({
     map,
     reviews,
@@ -287,6 +288,7 @@ export default function MapDetailView({
             onRemoveCheckin={removeCheckin}
             onAttachImage={attachCheckinImage}
             onRemoveImage={removeCheckinImage}
+            onSaveNote={updateCheckinNote}
             onEndClick={() => setEndDialogOpen(true)}
           />
         </GoogleMaps>

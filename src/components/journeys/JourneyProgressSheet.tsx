@@ -32,6 +32,7 @@ import type {
 } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import CheckinImageStrip from './CheckinImageStrip';
+import CheckinNoteField from './CheckinNoteField';
 
 type TimelineItem = {
   key: string;
@@ -48,6 +49,7 @@ type RowProps = {
   onRemove: () => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
   onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<void>;
+  onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
 };
 
 function TimelineRow({
@@ -55,7 +57,8 @@ function TimelineRow({
   timeLabel,
   onRemove,
   onAttachImage,
-  onRemoveImage
+  onRemoveImage,
+  onSaveNote
 }: RowProps) {
   const dictionary = useDictionary();
   const visited = Boolean(item.checkin);
@@ -137,13 +140,19 @@ function TimelineRow({
         </Box>
 
         {item.checkin && (
-          <Box sx={{ mt: 1, mb: 0.5 }}>
-            <CheckinImageStrip
-              checkin={item.checkin}
-              onAttach={onAttachImage}
-              onRemove={onRemoveImage}
-            />
-          </Box>
+          <>
+            <Box sx={{ mb: 1 }}>
+              <CheckinNoteField checkin={item.checkin} onSave={onSaveNote} />
+            </Box>
+
+            <Box sx={{ mt: 1, mb: 0.5 }}>
+              <CheckinImageStrip
+                checkin={item.checkin}
+                onAttach={onAttachImage}
+                onRemove={onRemoveImage}
+              />
+            </Box>
+          </>
         )}
       </Box>
 
@@ -177,6 +186,7 @@ type Props = {
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
   onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<void>;
+  onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
   onEndClick: () => void;
 };
 
@@ -189,6 +199,7 @@ function JourneyProgressSheet({
   onRemoveCheckin,
   onAttachImage,
   onRemoveImage,
+  onSaveNote,
   onEndClick
 }: Props) {
   const dictionary = useDictionary();
@@ -315,6 +326,7 @@ function JourneyProgressSheet({
             onRemove={() => handleRemoveItem(item)}
             onAttachImage={onAttachImage}
             onRemoveImage={onRemoveImage}
+            onSaveNote={onSaveNote}
           />
         ))}
 

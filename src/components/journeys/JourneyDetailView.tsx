@@ -55,6 +55,7 @@ import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
 import MapLinkChip from '../chapters/MapLinkChip';
 import NoContents from '../common/NoContents';
 import CheckinImageStrip from './CheckinImageStrip';
+import CheckinNoteField from './CheckinNoteField';
 import JourneyMap from './JourneyMap';
 
 type Props = {
@@ -93,12 +94,15 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
     [checkins]
   );
 
-  const saveCheckinImages = useCallback(
-    async (checkin: JourneyCheckin, imageIds: number[]) => {
+  const saveCheckin = useCallback(
+    async (
+      checkin: JourneyCheckin,
+      params: { image_ids?: number[]; note?: string | null }
+    ) => {
       const { success, data, error } = await updateCheckin(
         journey.id,
         checkin.id,
-        imageIds
+        params
       );
 
       if (!success || !data) {
@@ -122,12 +126,11 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
         checkinsRef.current.find((existing) => existing.id === checkin.id) ??
         checkin;
 
-      await saveCheckinImages(checkin, [
-        ...latest.images.map((existing) => existing.id),
-        image.id
-      ]);
+      await saveCheckin(checkin, {
+        image_ids: [...latest.images.map((existing) => existing.id), image.id]
+      });
     },
-    [saveCheckinImages]
+    [saveCheckin]
   );
 
   const handleRemoveImage = useCallback(
@@ -136,14 +139,20 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
         checkinsRef.current.find((existing) => existing.id === checkin.id) ??
         checkin;
 
-      await saveCheckinImages(
-        checkin,
-        latest.images
+      await saveCheckin(checkin, {
+        image_ids: latest.images
           .filter((existing) => existing.id !== imageId)
           .map((existing) => existing.id)
-      );
+      });
     },
-    [saveCheckinImages]
+    [saveCheckin]
+  );
+
+  const handleSaveNote = useCallback(
+    async (checkin: JourneyCheckin, note: string | null) => {
+      await saveCheckin(checkin, { note });
+    },
+    [saveCheckin]
   );
 
   const trailKm = useMemo(() => {
@@ -331,6 +340,13 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
                     <Typography variant="subtitle2" component="span">
                       {checkin.spot.name}
                     </Typography>
+
+                    <Box sx={{ mt: 0.5 }}>
+                      <CheckinNoteField
+                        checkin={checkin}
+                        onSave={handleSaveNote}
+                      />
+                    </Box>
 
                     <Box sx={{ mt: 1 }}>
                       <CheckinImageStrip

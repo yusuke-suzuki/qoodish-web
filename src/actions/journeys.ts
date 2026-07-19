@@ -127,16 +127,21 @@ export async function addCheckin(
   return { success: true, data };
 }
 
+type CheckinParams = {
+  image_ids?: number[];
+  note?: string | null;
+};
+
 export async function updateCheckin(
   journeyId: number,
   checkinId: number,
-  imageIds: number[]
+  params: CheckinParams
 ): Promise<ActionResult<JourneyCheckin>> {
   const { data, error } = await apiFetch<JourneyCheckin>(
     `/me/journeys/${journeyId}/checkins/${checkinId}`,
     {
       method: 'PUT',
-      body: JSON.stringify({ image_ids: imageIds })
+      body: JSON.stringify(params)
     }
   );
 

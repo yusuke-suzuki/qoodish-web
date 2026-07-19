@@ -174,7 +174,7 @@ export function createChapterContent(
     journey.milestones.map((milestone) => milestone.review_id)
   );
 
-  type Section = { anchor: SpotAnchor; images: Image[] };
+  type Section = { anchor: SpotAnchor; images: Image[]; note: string | null };
 
   const sections: Section[] = [
     ...journey.milestones.map((milestone) => {
@@ -188,7 +188,8 @@ export function createChapterContent(
           longitude: milestone.longitude,
           checked_in_at: checkin?.checked_in_at ?? null
         },
-        images: checkin?.images ?? []
+        images: checkin?.images ?? [],
+        note: checkin?.note ?? null
       };
     }),
     ...journey.checkins
@@ -202,14 +203,15 @@ export function createChapterContent(
           longitude: checkin.spot.longitude,
           checked_in_at: checkin.checked_in_at
         },
-        images: checkin.images
+        images: checkin.images,
+        note: checkin.note
       }))
   ];
 
   return createRoot([
     ...(path.length > 0 ? [createSerializedJourney(journey.id, path)] : []),
     createSerializedParagraph(),
-    ...sections.flatMap(({ anchor, images }) => [
+    ...sections.flatMap(({ anchor, images, note }) => [
       createSerializedSpot(anchor),
       ...images.map((image) =>
         createSerializedImage({
@@ -218,7 +220,7 @@ export function createChapterContent(
           hero: image.hero
         })
       ),
-      createSerializedParagraph()
+      createSerializedParagraph(note ?? undefined)
     ])
   ]);
 }

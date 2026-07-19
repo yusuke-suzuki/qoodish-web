@@ -124,26 +124,21 @@ export default function useJourney({
     [commitJourney]
   );
 
-  const attachCheckinImage = useCallback(
-    async (checkin: JourneyCheckin, image: Image) => {
+  const mutateCheckin = useCallback(
+    async (
+      checkin: JourneyCheckin,
+      params: { image_ids?: number[]; note?: string | null }
+    ) => {
       const current = journeyRef.current;
 
       if (!current) {
         return;
       }
 
-      const latest =
-        current.checkins.find((existing) => existing.id === checkin.id) ??
-        checkin;
-      const imageIds = [
-        ...latest.images.map((existing) => existing.id),
-        image.id
-      ];
-
       const { success, data, error } = await updateCheckin(
         current.id,
         checkin.id,
-        imageIds
+        params
       );
 
       if (!success || !data) {
@@ -156,35 +151,43 @@ export default function useJourney({
     [commitCheckin, onError]
   );
 
+  const findLatestCheckin = useCallback((checkin: JourneyCheckin) => {
+    return (
+      journeyRef.current?.checkins.find(
+        (existing) => existing.id === checkin.id
+      ) ?? checkin
+    );
+  }, []);
+
+  const attachCheckinImage = useCallback(
+    async (checkin: JourneyCheckin, image: Image) => {
+      const latest = findLatestCheckin(checkin);
+
+      await mutateCheckin(checkin, {
+        image_ids: [...latest.images.map((existing) => existing.id), image.id]
+      });
+    },
+    [findLatestCheckin, mutateCheckin]
+  );
+
   const removeCheckinImage = useCallback(
     async (checkin: JourneyCheckin, imageId: number) => {
-      const current = journeyRef.current;
+      const latest = findLatestCheckin(checkin);
 
-      if (!current) {
-        return;
-      }
-
-      const latest =
-        current.checkins.find((existing) => existing.id === checkin.id) ??
-        checkin;
-      const imageIds = latest.images
-        .filter((existing) => existing.id !== imageId)
-        .map((existing) => existing.id);
-
-      const { success, data, error } = await updateCheckin(
-        current.id,
-        checkin.id,
-        imageIds
-      );
-
-      if (!success || !data) {
-        onError(error ?? null);
-        return;
-      }
-
-      commitCheckin(current.id, data);
+      await mutateCheckin(checkin, {
+        image_ids: latest.images
+          .filter((existing) => existing.id !== imageId)
+          .map((existing) => existing.id)
+      });
     },
-    [commitCheckin, onError]
+    [findLatestCheckin, mutateCheckin]
+  );
+
+  const updateCheckinNote = useCallback(
+    async (checkin: JourneyCheckin, note: string | null) => {
+      await mutateCheckin(checkin, { note });
+    },
+    [mutateCheckin]
   );
 
   const performCheckin = useCallback(
@@ -506,6 +509,7 @@ export default function useJourney({
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
-    removeCheckinImage
+    removeCheckinImage,
+    updateCheckinNote
   };
 }
