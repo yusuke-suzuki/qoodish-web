@@ -16,13 +16,8 @@ import {
   type HeadingTagType
 } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
+import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
-  $getNearestNodeOfType,
-  $insertNodeToNearestRoot,
-  mergeRegister
-} from '@lexical/utils';
-import {
-  AddLocationAlt,
   FormatBold,
   FormatItalic,
   FormatListBulleted,
@@ -42,7 +37,6 @@ import {
   $getRoot,
   $getSelection,
   $isRangeSelection,
-  $nodesOfType,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND
@@ -54,11 +48,8 @@ import {
   useEffect,
   useState
 } from 'react';
-import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import EmojiPicker from './EmojiPicker';
-import { $createSpotNode, SpotNode } from './SpotNode';
-import SpotPickerDialog from './SpotPickerDialog';
 
 type BlockType = 'paragraph' | 'h2' | 'h3' | 'quote' | 'ul' | 'ol';
 
@@ -85,7 +76,7 @@ function ToolButton({
   );
 }
 
-export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
+export default function ChapterToolbar() {
   const [editor] = useLexicalComposerContext();
   const dictionary = useDictionary();
 
@@ -118,9 +109,6 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
 
-  const [spotPickerOpen, setSpotPickerOpen] = useState(false);
-  const [usedReviewIds, setUsedReviewIds] = useState<Set<number>>(new Set());
-
   const [emojiAnchor, setEmojiAnchor] = useState<HTMLElement | null>(null);
 
   const handleEmojiSelect = useCallback(
@@ -136,40 +124,6 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
         }
 
         $getRoot().selectEnd().insertText(emoji);
-      });
-    },
-    [editor]
-  );
-
-  const openSpotPicker = useCallback(() => {
-    const ids = editor
-      .getEditorState()
-      .read(() =>
-        $nodesOfType(SpotNode).map((node) => node.exportJSON().review_id)
-      );
-
-    setUsedReviewIds(new Set(ids));
-    setSpotPickerOpen(true);
-  }, [editor]);
-
-  const handleSpotSelect = useCallback(
-    (review: Review) => {
-      setSpotPickerOpen(false);
-
-      editor.update(() => {
-        const spotNode = $createSpotNode({
-          review_id: review.id,
-          name: review.name,
-          latitude: review.latitude,
-          longitude: review.longitude,
-          checked_in_at: null
-        });
-
-        $insertNodeToNearestRoot(spotNode);
-
-        const paragraph = $createParagraphNode();
-        spotNode.insertAfter(paragraph);
-        paragraph.select();
       });
     },
     [editor]
@@ -341,14 +295,6 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
         <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
         <ToolButton
-          label={dictionary['add pin']}
-          active={false}
-          onClick={openSpotPicker}
-        >
-          <AddLocationAlt />
-        </ToolButton>
-
-        <ToolButton
           label={dictionary['insert emoji']}
           active={false}
           onClick={(event) => setEmojiAnchor(event.currentTarget)}
@@ -360,14 +306,6 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
           anchorEl={emojiAnchor}
           onClose={() => setEmojiAnchor(null)}
           onSelect={handleEmojiSelect}
-        />
-
-        <SpotPickerDialog
-          open={spotPickerOpen}
-          onClose={() => setSpotPickerOpen(false)}
-          onSelect={handleSpotSelect}
-          reviews={reviews}
-          usedReviewIds={usedReviewIds}
         />
       </Toolbar>
     </AppBar>

@@ -115,7 +115,6 @@ export default function useChapter(initialChapter: Chapter) {
 
   return {
     chapter,
-    saved: chapter.updated_at === savedAt,
     updateTitle,
     updateContent,
     discardChapter,

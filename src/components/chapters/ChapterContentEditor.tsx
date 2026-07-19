@@ -10,7 +10,6 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { Box, Typography } from '@mui/material';
 import type { EditorState, SerializedEditorState } from 'lexical';
 import { memo, useCallback } from 'react';
-import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import ChapterToolbar from './ChapterToolbar';
 import {
@@ -22,7 +21,6 @@ import {
 type Props = {
   initialContent: SerializedEditorState;
   placeholder: string;
-  reviews: Review[];
   readOnly?: boolean;
   onChange: (content: SerializedEditorState) => void;
 };
@@ -30,7 +28,6 @@ type Props = {
 function ChapterContentEditor({
   initialContent,
   placeholder,
-  reviews,
   readOnly = false,
   onChange
 }: Props) {
@@ -133,7 +130,7 @@ function ChapterContentEditor({
         )}
       </Box>
 
-      {!readOnly && <ChapterToolbar reviews={reviews} />}
+      {!readOnly && <ChapterToolbar />}
     </LexicalComposer>
   );
 }

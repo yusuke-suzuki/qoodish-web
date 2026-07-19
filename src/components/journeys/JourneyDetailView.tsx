@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  AddLocationAlt,
   ChevronRight,
   Delete,
   HistoryEdu,
@@ -43,10 +44,15 @@ import type {
   Chapter,
   Image,
   Journey,
-  JourneyCheckin
+  JourneyCheckin,
+  Review
 } from '../../../types';
 import { createChapter } from '../../actions/chapters';
-import { deleteJourney, updateCheckin } from '../../actions/journeys';
+import {
+  addCheckin,
+  deleteJourney,
+  updateCheckin
+} from '../../actions/journeys';
 import useDictionary from '../../hooks/useDictionary';
 import { createChapterContent } from '../../utils/chapterContent';
 import { trailDistanceMeters } from '../../utils/geo';
@@ -57,14 +63,21 @@ import NoContents from '../common/NoContents';
 import CheckinImageStrip from './CheckinImageStrip';
 import CheckinNoteField from './CheckinNoteField';
 import JourneyMap from './JourneyMap';
+import SpotPickerDialog from './SpotPickerDialog';
 
 type Props = {
   journey: Journey;
   chapter: Chapter | null;
   map: AppMap;
+  reviews: Review[];
 };
 
-export default function JourneyDetailView({ journey, chapter, map }: Props) {
+export default function JourneyDetailView({
+  journey,
+  chapter,
+  map,
+  reviews
+}: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
@@ -72,6 +85,7 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [recording, setRecording] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const [checkins, setCheckins] = useState(journey.checkins);
   const checkinsRef = useRef(journey.checkins);
@@ -153,6 +167,30 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
       await saveCheckin(checkin, { note });
     },
     [saveCheckin]
+  );
+
+  const usedReviewIds = useMemo(
+    () => new Set(checkins.map((checkin) => checkin.review_id)),
+    [checkins]
+  );
+
+  const handleAddCheckin = useCallback(
+    async (review: Review) => {
+      setPickerOpen(false);
+
+      const { success, data, error } = await addCheckin(journey.id, review.id);
+
+      if (!success || !data) {
+        enqueueSnackbar(error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+        return;
+      }
+
+      checkinsRef.current = [...checkinsRef.current, data];
+      setCheckins(checkinsRef.current);
+    },
+    [journey.id, dictionary]
   );
 
   const trailKm = useMemo(() => {
@@ -360,6 +398,19 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
               ))}
             </Timeline>
           )}
+
+          {reviews.length > 0 && (
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              startIcon={<AddLocationAlt />}
+              onClick={() => setPickerOpen(true)}
+              sx={{ mt: sortedCheckins.length < 1 ? 3 : 1 }}
+            >
+              {dictionary['add checkin']}
+            </Button>
+          )}
         </Box>
       </Paper>
 
@@ -427,6 +478,14 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
         onClose={() => setDeleteOpen(false)}
         onConfirm={handleDeleteConfirm}
         title={dictionary['sure to delete journey']}
+      />
+
+      <SpotPickerDialog
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={handleAddCheckin}
+        reviews={reviews}
+        usedReviewIds={usedReviewIds}
       />
     </>
   );

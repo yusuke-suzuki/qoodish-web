@@ -4,7 +4,7 @@ import JourneyDetailView from '../../../../../../../components/journeys/JourneyD
 import { getServerAuthState } from '../../../../../../../lib/auth';
 import { getChapter } from '../../../../../../../lib/chapters';
 import { getMyJourney } from '../../../../../../../lib/journeys';
-import { getMap } from '../../../../../../../lib/maps';
+import { getMap, getMapReviews } from '../../../../../../../lib/maps';
 import { getDictionary } from '../../../../../../../utils/getDictionary';
 
 type Props = {
@@ -25,9 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function JourneyPage({ params }: Props) {
   const { lang, mapId, journeyId } = await params;
   const { token } = await getServerAuthState();
-  const [map, journey] = await Promise.all([
+  const [map, journey, reviews] = await Promise.all([
     getMap(mapId, lang, token),
-    getMyJourney(journeyId, lang, token)
+    getMyJourney(journeyId, lang, token),
+    getMapReviews(mapId, lang, token)
   ]);
 
   if (!map || !journey) {
@@ -38,5 +39,12 @@ export default async function JourneyPage({ params }: Props) {
     ? await getChapter(journey.chapter_id, lang, token)
     : null;
 
-  return <JourneyDetailView journey={journey} chapter={chapter} map={map} />;
+  return (
+    <JourneyDetailView
+      journey={journey}
+      chapter={chapter}
+      map={map}
+      reviews={reviews}
+    />
+  );
 }

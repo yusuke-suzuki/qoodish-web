@@ -18,7 +18,7 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
-import type { AppMap, Chapter, Review } from '../../../types';
+import type { AppMap, Chapter } from '../../../types';
 import useChapter from '../../hooks/useChapter';
 import useDictionary from '../../hooks/useDictionary';
 import { isContentEmpty } from '../../utils/chapterContent';
@@ -33,14 +33,12 @@ import MapLinkChip from './MapLinkChip';
 type Props = {
   chapter: Chapter;
   map: AppMap;
-  reviews: Review[];
   authorPageCount: number;
 };
 
 export default function ChapterEditorView({
   chapter: initialChapter,
   map,
-  reviews,
   authorPageCount
 }: Props) {
   const dictionary = useDictionary();
@@ -49,7 +47,6 @@ export default function ChapterEditorView({
 
   const {
     chapter,
-    saved,
     updateTitle,
     updateContent,
     discardChapter,
@@ -172,26 +169,15 @@ export default function ChapterEditorView({
           key={chapter.id}
           initialContent={chapter.content}
           placeholder={dictionary['chapter empty state']}
-          reviews={reviews}
           readOnly={!editable}
           onChange={updateContent}
         />
 
-        {editable && (
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              noWrap
-              sx={{ flex: 1 }}
-            >
-              {saved && dictionary.saved}
+        {editable && chapter.status === 'published' && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Typography variant="caption" color="success.main">
+              {dictionary.published}
             </Typography>
-            {chapter.status === 'published' && (
-              <Typography variant="caption" color="success.main">
-                {dictionary.published}
-              </Typography>
-            )}
           </Box>
         )}
 

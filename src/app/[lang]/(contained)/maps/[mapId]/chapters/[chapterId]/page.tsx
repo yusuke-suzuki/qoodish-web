@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ChapterEditorView from '../../../../../../../components/chapters/ChapterEditorView';
 import { getServerAuthState } from '../../../../../../../lib/auth';
 import { getChapter, getUserChapters } from '../../../../../../../lib/chapters';
-import { getMap, getMapReviews } from '../../../../../../../lib/maps';
+import { getMap } from '../../../../../../../lib/maps';
 import { getDictionary } from '../../../../../../../utils/getDictionary';
 
 type Props = {
@@ -31,9 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ChapterPage({ params }: Props) {
   const { lang, mapId, chapterId } = await params;
   const { token } = await getServerAuthState();
-  const [map, reviews, chapter] = await Promise.all([
+  const [map, chapter] = await Promise.all([
     getMap(mapId, lang, token),
-    getMapReviews(mapId, lang, token),
     getChapter(chapterId, lang, token)
   ]);
 
@@ -47,7 +46,6 @@ export default async function ChapterPage({ params }: Props) {
     <ChapterEditorView
       chapter={chapter}
       map={map}
-      reviews={reviews}
       authorPageCount={authorChapters.length}
     />
   );
