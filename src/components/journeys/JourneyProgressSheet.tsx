@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  AddPhotoAlternate,
   Check,
   CheckCircle,
+  Close,
   Delete,
   MoreVert,
   Place
@@ -12,6 +14,7 @@ import {
   Badge,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   IconButton,
   ListItemIcon,
@@ -21,8 +24,17 @@ import {
   Typography
 } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import {
+  type ChangeEvent,
+  memo,
+  useCallback,
+  useId,
+  useMemo,
+  useState
+} from 'react';
 import type {
+  Image,
   Journey,
   JourneyCheckin,
   Milestone,
@@ -30,6 +42,9 @@ import type {
   Spot
 } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import type { CheckinImages } from '../../utils/checkinImageStorage';
+import fileToDataUrl from '../../utils/fileToDataUrl';
+import uploadImage from '../../utils/uploadImage';
 
 type TimelineItem = {
   key: string;
@@ -43,15 +58,56 @@ type TimelineItem = {
 type RowProps = {
   item: TimelineItem;
   timeLabel: string | null;
+  images: Image[];
   onRemove: () => void;
+  onAttachImage: (checkin: JourneyCheckin, image: Image) => void;
+  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => void;
 };
 
-function TimelineRow({ item, timeLabel, onRemove }: RowProps) {
+function TimelineRow({
+  item,
+  timeLabel,
+  images,
+  onRemove,
+  onAttachImage,
+  onRemoveImage
+}: RowProps) {
   const dictionary = useDictionary();
   const visited = Boolean(item.checkin);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 
   const closeMenu = useCallback(() => setMenuAnchor(null), []);
+
+  const imageInputId = useId();
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageFilesChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(event.target.files ?? []);
+      event.target.value = '';
+
+      const checkin = item.checkin;
+
+      if (files.length < 1 || !checkin) {
+        return;
+      }
+
+      setUploading(true);
+
+      try {
+        for (const file of files) {
+          const dataUrl = await fileToDataUrl(file);
+          const image = await uploadImage(dataUrl);
+          onAttachImage(checkin, image);
+        }
+      } catch {
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } finally {
+        setUploading(false);
+      }
+    },
+    [item.checkin, onAttachImage, dictionary]
+  );
 
   return (
     <Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -125,6 +181,78 @@ function TimelineRow({ item, timeLabel, onRemove }: RowProps) {
             <MoreVert fontSize="small" />
           </IconButton>
         </Box>
+
+        {item.checkin && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1.5,
+              mt: 1,
+              mb: 0.5
+            }}
+          >
+            {images.map((image) => (
+              <Box key={image.id} sx={{ position: 'relative' }}>
+                <Avatar
+                  variant="rounded"
+                  src={image.avatar}
+                  alt={item.spot.name}
+                  sx={{ width: 48, height: 48 }}
+                />
+                <IconButton
+                  size="small"
+                  aria-label={dictionary.delete}
+                  onClick={() => {
+                    if (item.checkin) {
+                      onRemoveImage(item.checkin, image.id);
+                    }
+                  }}
+                  sx={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -8,
+                    p: 0.25,
+                    bgcolor: 'background.paper',
+                    boxShadow: 1,
+                    '&:hover': { bgcolor: 'background.paper' }
+                  }}
+                >
+                  <Close sx={{ fontSize: 14 }} />
+                </IconButton>
+              </Box>
+            ))}
+
+            <input
+              accept="image/*"
+              multiple
+              style={{ display: 'none' }}
+              id={imageInputId}
+              type="file"
+              onChange={handleImageFilesChange}
+            />
+            <label htmlFor={imageInputId}>
+              <IconButton
+                component="span"
+                aria-label={dictionary['add photos']}
+                disabled={uploading}
+                sx={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 1,
+                  border: '1px dashed',
+                  borderColor: 'divider'
+                }}
+              >
+                {uploading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <AddPhotoAlternate fontSize="small" />
+                )}
+              </IconButton>
+            </label>
+          </Box>
+        )}
       </Box>
 
       <Menu
@@ -153,8 +281,11 @@ type Props = {
   onClose: () => void;
   journey: Journey | null;
   reviews: Review[];
+  checkinImages: CheckinImages;
   onRemoveMilestone: (milestone: Milestone) => void;
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
+  onAttachImage: (checkin: JourneyCheckin, image: Image) => void;
+  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => void;
   onEndClick: () => void;
 };
 
@@ -163,8 +294,11 @@ function JourneyProgressSheet({
   onClose,
   journey,
   reviews,
+  checkinImages,
   onRemoveMilestone,
   onRemoveCheckin,
+  onAttachImage,
+  onRemoveImage,
   onEndClick
 }: Props) {
   const dictionary = useDictionary();
@@ -288,7 +422,10 @@ function JourneyProgressSheet({
             timeLabel={
               item.checkin ? formatTime(item.checkin.checked_in_at) : null
             }
+            images={item.checkin ? (checkinImages[item.checkin.id] ?? []) : []}
             onRemove={() => handleRemoveItem(item)}
+            onAttachImage={onAttachImage}
+            onRemoveImage={onRemoveImage}
           />
         ))}
 

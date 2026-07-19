@@ -18,6 +18,7 @@ import {
   timelineOppositeContentClasses
 } from '@mui/lab';
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -37,12 +38,18 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import type { AppMap, Chapter, Journey } from '../../../types';
 import { createChapter } from '../../actions/chapters';
 import { deleteJourney } from '../../actions/journeys';
+import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import { createChapterContent } from '../../utils/chapterContent';
+import {
+  type CheckinImages,
+  deleteCheckinImages,
+  loadCheckinImages
+} from '../../utils/checkinImageStorage';
 import { trailDistanceMeters } from '../../utils/geo';
 import { decodePath } from '../../utils/polyline';
 import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
@@ -60,6 +67,12 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
+  const { uid } = useContext(AuthContext);
+
+  const checkinImages = useMemo<CheckinImages>(
+    () => (uid ? loadCheckinImages(uid, journey.id) : {}),
+    [uid, journey.id]
+  );
 
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -95,7 +108,7 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent(journey, trail),
+      content: createChapterContent(journey, trail, checkinImages),
       journey_id: journey.id
     });
 
@@ -107,8 +120,12 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
       return;
     }
 
+    if (uid) {
+      deleteCheckinImages(uid, journey.id);
+    }
+
     router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
-  }, [map.id, journey, trail, router, lang, dictionary]);
+  }, [map.id, journey, trail, checkinImages, uid, router, lang, dictionary]);
 
   const handleDeleteConfirm = useCallback(async () => {
     const { success } = await deleteJourney(journey.id);
@@ -268,6 +285,27 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
                     <Typography variant="subtitle2" component="span">
                       {checkin.spot.name}
                     </Typography>
+
+                    {(checkinImages[checkin.id] ?? []).length > 0 && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1,
+                          mt: 1
+                        }}
+                      >
+                        {(checkinImages[checkin.id] ?? []).map((image) => (
+                          <Avatar
+                            key={image.id}
+                            variant="rounded"
+                            src={image.avatar}
+                            alt={checkin.spot.name}
+                            sx={{ width: 48, height: 48 }}
+                          />
+                        ))}
+                      </Box>
+                    )}
                   </TimelineContent>
                 </TimelineItem>
               ))}

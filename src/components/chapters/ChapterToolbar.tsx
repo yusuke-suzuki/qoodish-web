@@ -23,7 +23,6 @@ import {
 } from '@lexical/utils';
 import {
   AddLocationAlt,
-  AddPhotoAlternate,
   FormatBold,
   FormatItalic,
   FormatListBulleted,
@@ -33,7 +32,6 @@ import {
 } from '@mui/icons-material';
 import {
   AppBar,
-  CircularProgress,
   Divider,
   IconButton,
   Toolbar,
@@ -49,22 +47,16 @@ import {
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND
 } from 'lexical';
-import { enqueueSnackbar } from 'notistack';
 import {
-  type ChangeEvent,
   type MouseEvent,
   type ReactNode,
   useCallback,
   useEffect,
-  useId,
   useState
 } from 'react';
 import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import fileToDataUrl from '../../utils/fileToDataUrl';
-import uploadImage from '../../utils/uploadImage';
 import EmojiPicker from './EmojiPicker';
-import { $createImageNode } from './ImageNode';
 import { $createSpotNode, SpotNode } from './SpotNode';
 import SpotPickerDialog from './SpotPickerDialog';
 
@@ -129,46 +121,7 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
   const [spotPickerOpen, setSpotPickerOpen] = useState(false);
   const [usedReviewIds, setUsedReviewIds] = useState<Set<number>>(new Set());
 
-  const imageInputId = useId();
-  const [uploadingImage, setUploadingImage] = useState(false);
   const [emojiAnchor, setEmojiAnchor] = useState<HTMLElement | null>(null);
-
-  const handleImageFileChange = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      event.target.value = '';
-
-      if (!file) {
-        return;
-      }
-
-      setUploadingImage(true);
-
-      try {
-        const dataUrl = await fileToDataUrl(file);
-        const image = await uploadImage(dataUrl);
-
-        editor.update(() => {
-          const imageNode = $createImageNode({
-            image_id: image.id,
-            url: image.url,
-            hero: image.hero
-          });
-
-          $insertNodeToNearestRoot(imageNode);
-
-          const paragraph = $createParagraphNode();
-          imageNode.insertAfter(paragraph);
-          paragraph.select();
-        });
-      } catch {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setUploadingImage(false);
-      }
-    },
-    [editor, dictionary]
-  );
 
   const handleEmojiSelect = useCallback(
     (emoji: string) => {
@@ -394,27 +347,6 @@ export default function ChapterToolbar({ reviews }: { reviews: Review[] }) {
         >
           <AddLocationAlt />
         </ToolButton>
-
-        <input
-          accept="image/*"
-          style={{ display: 'none' }}
-          id={imageInputId}
-          type="file"
-          onChange={handleImageFileChange}
-        />
-        <label htmlFor={imageInputId}>
-          <IconButton
-            component="span"
-            aria-label={dictionary['insert image']}
-            disabled={uploadingImage}
-          >
-            {uploadingImage ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              <AddPhotoAlternate />
-            )}
-          </IconButton>
-        </label>
 
         <ToolButton
           label={dictionary['insert emoji']}

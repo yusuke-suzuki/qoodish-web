@@ -5,7 +5,8 @@ import type {
   SerializedRootNode,
   SerializedTextNode
 } from 'lexical';
-import type { Journey, JourneyPathPoint, SpotAnchor } from '../../types';
+import type { Image, Journey, JourneyPathPoint, SpotAnchor } from '../../types';
+import type { CheckinImages } from './checkinImageStorage';
 
 export const SPOT_NODE_TYPE = 'spot';
 export const JOURNEY_NODE_TYPE = 'journey';
@@ -161,7 +162,8 @@ export function isContentEmpty(content: SerializedEditorState): boolean {
 
 export function createChapterContent(
   journey: Journey,
-  path: JourneyPathPoint[]
+  path: JourneyPathPoint[],
+  checkinImages: CheckinImages = {}
 ): SerializedEditorState {
   const checkinByReviewId = new Map(
     journey.checkins
@@ -174,32 +176,50 @@ export function createChapterContent(
     journey.milestones.map((milestone) => milestone.review_id)
   );
 
-  const anchors: SpotAnchor[] = [
-    ...journey.milestones.map((milestone) => ({
-      review_id: milestone.review_id,
-      name: milestone.name,
-      latitude: milestone.latitude,
-      longitude: milestone.longitude,
-      checked_in_at:
-        checkinByReviewId.get(milestone.review_id)?.checked_in_at ?? null
-    })),
+  type Section = { anchor: SpotAnchor; images: Image[] };
+
+  const sections: Section[] = [
+    ...journey.milestones.map((milestone) => {
+      const checkin = checkinByReviewId.get(milestone.review_id);
+
+      return {
+        anchor: {
+          review_id: milestone.review_id,
+          name: milestone.name,
+          latitude: milestone.latitude,
+          longitude: milestone.longitude,
+          checked_in_at: checkin?.checked_in_at ?? null
+        },
+        images: checkin ? (checkinImages[checkin.id] ?? []) : []
+      };
+    }),
     ...journey.checkins
       .filter((checkin) => !milestoneReviewIds.has(checkin.review_id))
       .sort((a, b) => a.checked_in_at.localeCompare(b.checked_in_at))
       .map((checkin) => ({
-        review_id: checkin.review_id,
-        name: checkin.spot.name,
-        latitude: checkin.spot.latitude,
-        longitude: checkin.spot.longitude,
-        checked_in_at: checkin.checked_in_at
+        anchor: {
+          review_id: checkin.review_id,
+          name: checkin.spot.name,
+          latitude: checkin.spot.latitude,
+          longitude: checkin.spot.longitude,
+          checked_in_at: checkin.checked_in_at
+        },
+        images: checkinImages[checkin.id] ?? []
       }))
   ];
 
   return createRoot([
     ...(path.length > 0 ? [createSerializedJourney(journey.id, path)] : []),
     createSerializedParagraph(),
-    ...anchors.flatMap((anchor) => [
+    ...sections.flatMap(({ anchor, images }) => [
       createSerializedSpot(anchor),
+      ...images.map((image) =>
+        createSerializedImage({
+          image_id: image.id,
+          url: image.url,
+          hero: image.hero
+        })
+      ),
       createSerializedParagraph()
     ])
   ]);

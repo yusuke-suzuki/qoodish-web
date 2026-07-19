@@ -3,6 +3,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type {
   AppMap,
+  Image,
   Journey,
   JourneyCheckin,
   JourneyPathPoint,
@@ -20,6 +21,12 @@ import {
   startJourney
 } from '../actions/journeys';
 import AuthContext from '../context/AuthContext';
+import {
+  type CheckinImages,
+  deleteCheckinImages,
+  loadCheckinImages,
+  saveCheckinImages
+} from '../utils/checkinImageStorage';
 import { distanceInMeters } from '../utils/geo';
 import {
   deleteTrail,
@@ -44,6 +51,7 @@ type Args = {
 type FinishedJourney = {
   journey: Journey;
   trail: JourneyPathPoint[];
+  checkinImages: CheckinImages;
 };
 
 export default function useJourney({
@@ -62,6 +70,9 @@ export default function useJourney({
 
   const trailRef = useRef<JourneyPathPoint[]>([]);
   const [trail, setTrail] = useState<JourneyPathPoint[]>([]);
+
+  const checkinImagesRef = useRef<CheckinImages>({});
+  const [checkinImages, setCheckinImages] = useState<CheckinImages>({});
 
   const reviewsRef = useRef(reviews);
   reviewsRef.current = reviews;
@@ -97,12 +108,73 @@ export default function useJourney({
 
     const current = journeyRef.current;
 
-    if (current?.started_at && !current.finished_at) {
+    if (!current) {
+      return;
+    }
+
+    if (current.started_at && !current.finished_at) {
       const stored = loadTrail(uid, current.id);
       trailRef.current = stored;
       setTrail(stored);
     }
+
+    const storedImages = loadCheckinImages(uid, current.id);
+    checkinImagesRef.current = storedImages;
+    setCheckinImages(storedImages);
   }, [uid]);
+
+  const commitCheckinImages = useCallback(
+    (next: CheckinImages) => {
+      checkinImagesRef.current = next;
+      setCheckinImages(next);
+
+      const current = journeyRef.current;
+
+      if (uid && current) {
+        saveCheckinImages(uid, current.id, next);
+      }
+    },
+    [uid]
+  );
+
+  const attachCheckinImage = useCallback(
+    (checkin: JourneyCheckin, image: Image) => {
+      const images = checkinImagesRef.current;
+
+      commitCheckinImages({
+        ...images,
+        [checkin.id]: [...(images[checkin.id] ?? []), image]
+      });
+    },
+    [commitCheckinImages]
+  );
+
+  const removeCheckinImage = useCallback(
+    (checkin: JourneyCheckin, imageId: number) => {
+      const images = checkinImagesRef.current;
+      const remaining = (images[checkin.id] ?? []).filter(
+        (image) => image.id !== imageId
+      );
+      const { [checkin.id]: _removed, ...rest } = images;
+
+      commitCheckinImages(
+        remaining.length > 0 ? { ...rest, [checkin.id]: remaining } : rest
+      );
+    },
+    [commitCheckinImages]
+  );
+
+  const clearCheckinImages = useCallback(
+    (journeyId: number) => {
+      if (uid) {
+        deleteCheckinImages(uid, journeyId);
+      }
+
+      checkinImagesRef.current = {};
+      setCheckinImages({});
+    },
+    [uid]
+  );
 
   const performCheckin = useCallback(
     async (review: Review) => {
@@ -186,6 +258,7 @@ export default function useJourney({
 
       if (uid && current) {
         deleteTrail(uid, current.id);
+        deleteCheckinImages(uid, current.id);
         deleteJourney(current.id);
       }
 
@@ -384,8 +457,13 @@ export default function useJourney({
         ...latest,
         checkins: latest.checkins.filter((checkin) => checkin.id !== target.id)
       });
+
+      if (checkinImagesRef.current[target.id]) {
+        const { [target.id]: _removed, ...rest } = checkinImagesRef.current;
+        commitCheckinImages(rest);
+      }
     },
-    [uid, commitJourney, onError]
+    [uid, commitJourney, onError, commitCheckinImages]
   );
 
   const end = useCallback(async (): Promise<FinishedJourney | null> => {
@@ -396,6 +474,7 @@ export default function useJourney({
     }
 
     const points = trailRef.current;
+    const images = checkinImagesRef.current;
     const { success, data, error } = await finishJourney(
       current.id,
       encodePath(points)
@@ -411,16 +490,20 @@ export default function useJourney({
     trailRef.current = [];
     setTrail([]);
 
-    return { journey: data, trail: points };
+    return { journey: data, trail: points, checkinImages: images };
   }, [uid, commitJourney, onError]);
 
   return {
     journey,
     trail,
+    checkinImages,
     addMilestone,
     start,
     end,
     removeMilestone,
-    removeCheckin
+    removeCheckin,
+    attachCheckinImage,
+    removeCheckinImage,
+    clearCheckinImages
   };
 }

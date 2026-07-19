@@ -81,11 +81,15 @@ export default function MapDetailView({
   const {
     journey,
     trail,
+    checkinImages,
     addMilestone,
     start,
     end,
     removeMilestone,
-    removeCheckin
+    removeCheckin,
+    attachCheckinImage,
+    removeCheckinImage,
+    clearCheckinImages
   } = useJourney({
     map,
     reviews,
@@ -138,7 +142,11 @@ export default function MapDetailView({
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent(finished.journey, finished.trail),
+      content: createChapterContent(
+        finished.journey,
+        finished.trail,
+        finished.checkinImages
+      ),
       journey_id: finished.journey.id
     });
 
@@ -149,10 +157,11 @@ export default function MapDetailView({
       return;
     }
 
+    clearCheckinImages(finished.journey.id);
     setEndDialogOpen(false);
     setProgressOpen(false);
     router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
-  }, [end, map.id, router, lang, dictionary]);
+  }, [end, clearCheckinImages, map.id, router, lang, dictionary]);
 
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
@@ -281,8 +290,11 @@ export default function MapDetailView({
             onClose={() => setProgressOpen(false)}
             journey={journey}
             reviews={reviews}
+            checkinImages={checkinImages}
             onRemoveMilestone={removeMilestone}
             onRemoveCheckin={removeCheckin}
+            onAttachImage={attachCheckinImage}
+            onRemoveImage={removeCheckinImage}
             onEndClick={() => setEndDialogOpen(true)}
           />
         </GoogleMaps>
