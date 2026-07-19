@@ -66,6 +66,16 @@ function ChapterContentEditor({
               position: 'absolute',
               color: theme.palette.text.disabled,
               pointerEvents: 'none'
+            },
+            // The absolute ::before cannot grow the one-line paragraph, so
+            // wrapped placeholder lines would overlap the block below. The
+            // hidden in-flow copy reserves the wrapped height; the negative
+            // margin cancels the line the caret already occupies.
+            '&::after': {
+              content: `"${content}"`,
+              display: 'block',
+              visibility: 'hidden',
+              marginTop: `calc(-1em * ${theme.typography.body1.lineHeight})`
             }
           });
 
