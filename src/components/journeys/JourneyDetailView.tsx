@@ -25,6 +25,10 @@ import {
   CardActionArea,
   CardContent,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   IconButton,
   ListItemIcon,
@@ -33,6 +37,7 @@ import {
   MenuItem,
   Paper,
   Stack,
+  TextField,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -65,6 +70,15 @@ import CheckinNoteField from './CheckinNoteField';
 import JourneyMap from './JourneyMap';
 import SpotPickerDialog from './SpotPickerDialog';
 
+function toDatetimeLocal(value: string): string {
+  const date = new Date(value);
+  const pad = (part: number) => String(part).padStart(2, '0');
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 type Props = {
   journey: Journey;
   chapter: Chapter | null;
@@ -86,6 +100,9 @@ export default function JourneyDetailView({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [recording, setRecording] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [pendingReview, setPendingReview] = useState<Review | null>(null);
+  const [pendingTime, setPendingTime] = useState('');
+  const [addingCheckin, setAddingCheckin] = useState(false);
 
   const [checkins, setCheckins] = useState(journey.checkins);
   const checkinsRef = useRef(journey.checkins);
@@ -174,24 +191,49 @@ export default function JourneyDetailView({
     [checkins]
   );
 
-  const handleAddCheckin = useCallback(
-    async (review: Review) => {
+  const handleSelectReview = useCallback(
+    (review: Review) => {
       setPickerOpen(false);
+      setPendingReview(review);
 
-      const { success, data, error } = await addCheckin(journey.id, review.id);
+      const last = checkinsRef.current[checkinsRef.current.length - 1];
+      const seed =
+        last?.checked_in_at ??
+        journey.finished_at ??
+        journey.started_at ??
+        new Date().toISOString();
 
-      if (!success || !data) {
-        enqueueSnackbar(error ?? dictionary['an error occurred'], {
-          variant: 'error'
-        });
-        return;
-      }
-
-      checkinsRef.current = [...checkinsRef.current, data];
-      setCheckins(checkinsRef.current);
+      setPendingTime(toDatetimeLocal(seed));
     },
-    [journey.id, dictionary]
+    [journey.finished_at, journey.started_at]
   );
+
+  const handleConfirmCheckin = useCallback(async () => {
+    if (!pendingReview) {
+      return;
+    }
+
+    setAddingCheckin(true);
+
+    const { success, data, error } = await addCheckin(
+      journey.id,
+      pendingReview.id,
+      new Date(pendingTime).toISOString()
+    );
+
+    setAddingCheckin(false);
+
+    if (!success || !data) {
+      enqueueSnackbar(error ?? dictionary['an error occurred'], {
+        variant: 'error'
+      });
+      return;
+    }
+
+    checkinsRef.current = [...checkinsRef.current, data];
+    setCheckins(checkinsRef.current);
+    setPendingReview(null);
+  }, [journey.id, pendingReview, pendingTime, dictionary]);
 
   const trailKm = useMemo(() => {
     const meters = trailDistanceMeters(trail);
@@ -483,10 +525,45 @@ export default function JourneyDetailView({
       <SpotPickerDialog
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onSelect={handleAddCheckin}
+        onSelect={handleSelectReview}
         reviews={reviews}
         usedReviewIds={usedReviewIds}
       />
+
+      <Dialog
+        open={Boolean(pendingReview)}
+        onClose={() => setPendingReview(null)}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>{dictionary['add checkin']}</DialogTitle>
+        <DialogContent>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>
+            {pendingReview?.name}
+          </Typography>
+          <TextField
+            fullWidth
+            type="datetime-local"
+            label={dictionary['checkin time']}
+            value={pendingTime}
+            onChange={(event) => setPendingTime(event.target.value)}
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="inherit" onClick={() => setPendingReview(null)}>
+            {dictionary.cancel}
+          </Button>
+          <Button
+            variant="contained"
+            loading={addingCheckin}
+            disabled={!pendingTime}
+            onClick={handleConfirmCheckin}
+          >
+            {dictionary.add}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

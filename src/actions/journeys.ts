@@ -110,13 +110,17 @@ export async function removeMilestone(
 
 export async function addCheckin(
   journeyId: number,
-  reviewId: number
+  reviewId: number,
+  checkedInAt?: string
 ): Promise<ActionResult<JourneyCheckin>> {
   const { data, error } = await apiFetch<JourneyCheckin>(
     `/me/journeys/${journeyId}/checkins`,
     {
       method: 'POST',
-      body: JSON.stringify({ review_id: reviewId })
+      body: JSON.stringify({
+        review_id: reviewId,
+        ...(checkedInAt ? { checked_in_at: checkedInAt } : {})
+      })
     }
   );
 
