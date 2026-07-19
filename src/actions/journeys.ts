@@ -127,6 +127,26 @@ export async function addCheckin(
   return { success: true, data };
 }
 
+export async function updateCheckin(
+  journeyId: number,
+  checkinId: number,
+  imageIds: number[]
+): Promise<ActionResult<JourneyCheckin>> {
+  const { data, error } = await apiFetch<JourneyCheckin>(
+    `/me/journeys/${journeyId}/checkins/${checkinId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ image_ids: imageIds })
+    }
+  );
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true, data };
+}
+
 export async function removeCheckin(
   journeyId: number,
   checkinId: number

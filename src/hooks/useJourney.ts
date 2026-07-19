@@ -18,15 +18,10 @@ import {
   initJourney,
   removeCheckin as removeCheckinAction,
   removeMilestone as removeMilestoneAction,
-  startJourney
+  startJourney,
+  updateCheckin
 } from '../actions/journeys';
 import AuthContext from '../context/AuthContext';
-import {
-  type CheckinImages,
-  deleteCheckinImages,
-  loadCheckinImages,
-  saveCheckinImages
-} from '../utils/checkinImageStorage';
 import { distanceInMeters } from '../utils/geo';
 import {
   deleteTrail,
@@ -51,7 +46,6 @@ type Args = {
 type FinishedJourney = {
   journey: Journey;
   trail: JourneyPathPoint[];
-  checkinImages: CheckinImages;
 };
 
 export default function useJourney({
@@ -70,9 +64,6 @@ export default function useJourney({
 
   const trailRef = useRef<JourneyPathPoint[]>([]);
   const [trail, setTrail] = useState<JourneyPathPoint[]>([]);
-
-  const checkinImagesRef = useRef<CheckinImages>({});
-  const [checkinImages, setCheckinImages] = useState<CheckinImages>({});
 
   const reviewsRef = useRef(reviews);
   reviewsRef.current = reviews;
@@ -108,72 +99,92 @@ export default function useJourney({
 
     const current = journeyRef.current;
 
-    if (!current) {
-      return;
-    }
-
-    if (current.started_at && !current.finished_at) {
+    if (current?.started_at && !current.finished_at) {
       const stored = loadTrail(uid, current.id);
       trailRef.current = stored;
       setTrail(stored);
     }
-
-    const storedImages = loadCheckinImages(uid, current.id);
-    checkinImagesRef.current = storedImages;
-    setCheckinImages(storedImages);
   }, [uid]);
 
-  const commitCheckinImages = useCallback(
-    (next: CheckinImages) => {
-      checkinImagesRef.current = next;
-      setCheckinImages(next);
+  const commitCheckin = useCallback(
+    (journeyId: number, next: JourneyCheckin) => {
+      const latest = journeyRef.current;
 
-      const current = journeyRef.current;
-
-      if (uid && current) {
-        saveCheckinImages(uid, current.id, next);
+      if (!latest || latest.id !== journeyId) {
+        return;
       }
+
+      commitJourney({
+        ...latest,
+        checkins: latest.checkins.map((checkin) =>
+          checkin.id === next.id ? next : checkin
+        )
+      });
     },
-    [uid]
+    [commitJourney]
   );
 
   const attachCheckinImage = useCallback(
-    (checkin: JourneyCheckin, image: Image) => {
-      const images = checkinImagesRef.current;
+    async (checkin: JourneyCheckin, image: Image) => {
+      const current = journeyRef.current;
 
-      commitCheckinImages({
-        ...images,
-        [checkin.id]: [...(images[checkin.id] ?? []), image]
-      });
+      if (!current) {
+        return;
+      }
+
+      const latest =
+        current.checkins.find((existing) => existing.id === checkin.id) ??
+        checkin;
+      const imageIds = [
+        ...latest.images.map((existing) => existing.id),
+        image.id
+      ];
+
+      const { success, data, error } = await updateCheckin(
+        current.id,
+        checkin.id,
+        imageIds
+      );
+
+      if (!success || !data) {
+        onError(error ?? null);
+        return;
+      }
+
+      commitCheckin(current.id, data);
     },
-    [commitCheckinImages]
+    [commitCheckin, onError]
   );
 
   const removeCheckinImage = useCallback(
-    (checkin: JourneyCheckin, imageId: number) => {
-      const images = checkinImagesRef.current;
-      const remaining = (images[checkin.id] ?? []).filter(
-        (image) => image.id !== imageId
-      );
-      const { [checkin.id]: _removed, ...rest } = images;
+    async (checkin: JourneyCheckin, imageId: number) => {
+      const current = journeyRef.current;
 
-      commitCheckinImages(
-        remaining.length > 0 ? { ...rest, [checkin.id]: remaining } : rest
-      );
-    },
-    [commitCheckinImages]
-  );
-
-  const clearCheckinImages = useCallback(
-    (journeyId: number) => {
-      if (uid) {
-        deleteCheckinImages(uid, journeyId);
+      if (!current) {
+        return;
       }
 
-      checkinImagesRef.current = {};
-      setCheckinImages({});
+      const latest =
+        current.checkins.find((existing) => existing.id === checkin.id) ??
+        checkin;
+      const imageIds = latest.images
+        .filter((existing) => existing.id !== imageId)
+        .map((existing) => existing.id);
+
+      const { success, data, error } = await updateCheckin(
+        current.id,
+        checkin.id,
+        imageIds
+      );
+
+      if (!success || !data) {
+        onError(error ?? null);
+        return;
+      }
+
+      commitCheckin(current.id, data);
     },
-    [uid]
+    [commitCheckin, onError]
   );
 
   const performCheckin = useCallback(
@@ -258,7 +269,6 @@ export default function useJourney({
 
       if (uid && current) {
         deleteTrail(uid, current.id);
-        deleteCheckinImages(uid, current.id);
         deleteJourney(current.id);
       }
 
@@ -457,13 +467,8 @@ export default function useJourney({
         ...latest,
         checkins: latest.checkins.filter((checkin) => checkin.id !== target.id)
       });
-
-      if (checkinImagesRef.current[target.id]) {
-        const { [target.id]: _removed, ...rest } = checkinImagesRef.current;
-        commitCheckinImages(rest);
-      }
     },
-    [uid, commitJourney, onError, commitCheckinImages]
+    [uid, commitJourney, onError]
   );
 
   const end = useCallback(async (): Promise<FinishedJourney | null> => {
@@ -474,7 +479,6 @@ export default function useJourney({
     }
 
     const points = trailRef.current;
-    const images = checkinImagesRef.current;
     const { success, data, error } = await finishJourney(
       current.id,
       encodePath(points)
@@ -490,20 +494,18 @@ export default function useJourney({
     trailRef.current = [];
     setTrail([]);
 
-    return { journey: data, trail: points, checkinImages: images };
+    return { journey: data, trail: points };
   }, [uid, commitJourney, onError]);
 
   return {
     journey,
     trail,
-    checkinImages,
     addMilestone,
     start,
     end,
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
-    removeCheckinImage,
-    clearCheckinImages
+    removeCheckinImage
   };
 }

@@ -81,15 +81,13 @@ export default function MapDetailView({
   const {
     journey,
     trail,
-    checkinImages,
     addMilestone,
     start,
     end,
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
-    removeCheckinImage,
-    clearCheckinImages
+    removeCheckinImage
   } = useJourney({
     map,
     reviews,
@@ -142,11 +140,7 @@ export default function MapDetailView({
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent(
-        finished.journey,
-        finished.trail,
-        finished.checkinImages
-      ),
+      content: createChapterContent(finished.journey, finished.trail),
       journey_id: finished.journey.id
     });
 
@@ -157,11 +151,10 @@ export default function MapDetailView({
       return;
     }
 
-    clearCheckinImages(finished.journey.id);
     setEndDialogOpen(false);
     setProgressOpen(false);
     router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
-  }, [end, clearCheckinImages, map.id, router, lang, dictionary]);
+  }, [end, map.id, router, lang, dictionary]);
 
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
@@ -290,7 +283,6 @@ export default function MapDetailView({
             onClose={() => setProgressOpen(false)}
             journey={journey}
             reviews={reviews}
-            checkinImages={checkinImages}
             onRemoveMilestone={removeMilestone}
             onRemoveCheckin={removeCheckin}
             onAttachImage={attachCheckinImage}

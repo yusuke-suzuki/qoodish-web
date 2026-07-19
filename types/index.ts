@@ -171,6 +171,7 @@ export type JourneyCheckin = {
   review_id: number;
   spot: Spot;
   checked_in_at: string;
+  images: Image[];
 };
 
 export type JourneyPathPoint = {

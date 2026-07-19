@@ -18,7 +18,6 @@ import {
   timelineOppositeContentClasses
 } from '@mui/lab';
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -38,23 +37,24 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useContext, useMemo, useState } from 'react';
-import type { AppMap, Chapter, Journey } from '../../../types';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import type {
+  AppMap,
+  Chapter,
+  Image,
+  Journey,
+  JourneyCheckin
+} from '../../../types';
 import { createChapter } from '../../actions/chapters';
-import { deleteJourney } from '../../actions/journeys';
-import AuthContext from '../../context/AuthContext';
+import { deleteJourney, updateCheckin } from '../../actions/journeys';
 import useDictionary from '../../hooks/useDictionary';
 import { createChapterContent } from '../../utils/chapterContent';
-import {
-  type CheckinImages,
-  deleteCheckinImages,
-  loadCheckinImages
-} from '../../utils/checkinImageStorage';
 import { trailDistanceMeters } from '../../utils/geo';
 import { decodePath } from '../../utils/polyline';
 import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
 import MapLinkChip from '../chapters/MapLinkChip';
 import NoContents from '../common/NoContents';
+import CheckinImageStrip from './CheckinImageStrip';
 import JourneyMap from './JourneyMap';
 
 type Props = {
@@ -67,16 +67,13 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
-  const { uid } = useContext(AuthContext);
-
-  const checkinImages = useMemo<CheckinImages>(
-    () => (uid ? loadCheckinImages(uid, journey.id) : {}),
-    [uid, journey.id]
-  );
 
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [recording, setRecording] = useState(false);
+
+  const [checkins, setCheckins] = useState(journey.checkins);
+  const checkinsRef = useRef(journey.checkins);
 
   const trail = useMemo(
     () => decodePath(journey.encoded_path),
@@ -85,15 +82,68 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
 
   const sortedCheckins = useMemo(
     () =>
-      [...journey.checkins].sort((a, b) =>
+      [...checkins].sort((a, b) =>
         a.checked_in_at.localeCompare(b.checked_in_at)
       ),
-    [journey]
+    [checkins]
   );
 
   const checkinSpots = useMemo(
-    () => journey.checkins.map((checkin) => checkin.spot),
-    [journey]
+    () => checkins.map((checkin) => checkin.spot),
+    [checkins]
+  );
+
+  const saveCheckinImages = useCallback(
+    async (checkin: JourneyCheckin, imageIds: number[]) => {
+      const { success, data, error } = await updateCheckin(
+        journey.id,
+        checkin.id,
+        imageIds
+      );
+
+      if (!success || !data) {
+        enqueueSnackbar(error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+        return;
+      }
+
+      checkinsRef.current = checkinsRef.current.map((existing) =>
+        existing.id === data.id ? data : existing
+      );
+      setCheckins(checkinsRef.current);
+    },
+    [journey.id, dictionary]
+  );
+
+  const handleAttachImage = useCallback(
+    async (checkin: JourneyCheckin, image: Image) => {
+      const latest =
+        checkinsRef.current.find((existing) => existing.id === checkin.id) ??
+        checkin;
+
+      await saveCheckinImages(checkin, [
+        ...latest.images.map((existing) => existing.id),
+        image.id
+      ]);
+    },
+    [saveCheckinImages]
+  );
+
+  const handleRemoveImage = useCallback(
+    async (checkin: JourneyCheckin, imageId: number) => {
+      const latest =
+        checkinsRef.current.find((existing) => existing.id === checkin.id) ??
+        checkin;
+
+      await saveCheckinImages(
+        checkin,
+        latest.images
+          .filter((existing) => existing.id !== imageId)
+          .map((existing) => existing.id)
+      );
+    },
+    [saveCheckinImages]
   );
 
   const trailKm = useMemo(() => {
@@ -108,7 +158,7 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent(journey, trail, checkinImages),
+      content: createChapterContent({ ...journey, checkins }, trail),
       journey_id: journey.id
     });
 
@@ -120,12 +170,8 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
       return;
     }
 
-    if (uid) {
-      deleteCheckinImages(uid, journey.id);
-    }
-
     router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
-  }, [map.id, journey, trail, checkinImages, uid, router, lang, dictionary]);
+  }, [map.id, journey, checkins, trail, router, lang, dictionary]);
 
   const handleDeleteConfirm = useCallback(async () => {
     const { success } = await deleteJourney(journey.id);
@@ -286,26 +332,13 @@ export default function JourneyDetailView({ journey, chapter, map }: Props) {
                       {checkin.spot.name}
                     </Typography>
 
-                    {(checkinImages[checkin.id] ?? []).length > 0 && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: 1,
-                          mt: 1
-                        }}
-                      >
-                        {(checkinImages[checkin.id] ?? []).map((image) => (
-                          <Avatar
-                            key={image.id}
-                            variant="rounded"
-                            src={image.avatar}
-                            alt={checkin.spot.name}
-                            sx={{ width: 48, height: 48 }}
-                          />
-                        ))}
-                      </Box>
-                    )}
+                    <Box sx={{ mt: 1 }}>
+                      <CheckinImageStrip
+                        checkin={checkin}
+                        onAttach={handleAttachImage}
+                        onRemove={handleRemoveImage}
+                      />
+                    </Box>
                   </TimelineContent>
                 </TimelineItem>
               ))}

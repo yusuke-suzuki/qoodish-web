@@ -6,7 +6,6 @@ import type {
   SerializedTextNode
 } from 'lexical';
 import type { Image, Journey, JourneyPathPoint, SpotAnchor } from '../../types';
-import type { CheckinImages } from './checkinImageStorage';
 
 export const SPOT_NODE_TYPE = 'spot';
 export const JOURNEY_NODE_TYPE = 'journey';
@@ -162,8 +161,7 @@ export function isContentEmpty(content: SerializedEditorState): boolean {
 
 export function createChapterContent(
   journey: Journey,
-  path: JourneyPathPoint[],
-  checkinImages: CheckinImages = {}
+  path: JourneyPathPoint[]
 ): SerializedEditorState {
   const checkinByReviewId = new Map(
     journey.checkins
@@ -190,7 +188,7 @@ export function createChapterContent(
           longitude: milestone.longitude,
           checked_in_at: checkin?.checked_in_at ?? null
         },
-        images: checkin ? (checkinImages[checkin.id] ?? []) : []
+        images: checkin?.images ?? []
       };
     }),
     ...journey.checkins
@@ -204,7 +202,7 @@ export function createChapterContent(
           longitude: checkin.spot.longitude,
           checked_in_at: checkin.checked_in_at
         },
-        images: checkinImages[checkin.id] ?? []
+        images: checkin.images
       }))
   ];
 
