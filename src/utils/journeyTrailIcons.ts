@@ -23,7 +23,7 @@ export function footprintIcons(
   ): google.maps.Symbol => ({
     path,
     anchor,
-    scale: 0.5,
+    scale: 0.7,
     fillColor: FOOTPRINT_COLOR,
     fillOpacity: 0.9,
     strokeOpacity: 0
@@ -33,12 +33,12 @@ export function footprintIcons(
     {
       icon: symbol(FOOTPRINT_PATH_LEFT, new Point(24, 15)),
       offset: '0',
-      repeat: '46px'
+      repeat: '40px'
     },
     {
       icon: symbol(FOOTPRINT_PATH_RIGHT, new Point(0, 15)),
-      offset: '23px',
-      repeat: '46px'
+      offset: '20px',
+      repeat: '40px'
     }
   ];
 }

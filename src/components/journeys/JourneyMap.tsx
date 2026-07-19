@@ -1,7 +1,7 @@
 'use client';
 
 import { Place } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
 import type { JourneyPathPoint, Spot } from '../../../types';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
@@ -39,9 +39,22 @@ const JourneySpotMarker = memo(function JourneySpotMarker({
 
   return (
     <MarkerView position={position}>
-      <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
-        <Place fontSize="small" />
-      </Avatar>
+      <Tooltip
+        title={spot.name}
+        arrow
+        enterTouchDelay={0}
+        leaveTouchDelay={3000}
+      >
+        <Place
+          sx={{
+            display: 'block',
+            fontSize: 34,
+            color: 'secondary.main',
+            filter:
+              'drop-shadow(0 0 1px #fff) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35))'
+          }}
+        />
+      </Tooltip>
     </MarkerView>
   );
 });
