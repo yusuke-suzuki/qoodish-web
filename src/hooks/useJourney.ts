@@ -128,11 +128,11 @@ export default function useJourney({
     async (
       checkin: JourneyCheckin,
       params: { image_ids?: number[]; note?: string | null }
-    ) => {
+    ): Promise<boolean> => {
       const current = journeyRef.current;
 
       if (!current) {
-        return;
+        return false;
       }
 
       const { success, data, error } = await updateCheckin(
@@ -143,10 +143,11 @@ export default function useJourney({
 
       if (!success || !data) {
         onError(error ?? null);
-        return;
+        return false;
       }
 
       commitCheckin(current.id, data);
+      return true;
     },
     [commitCheckin, onError]
   );
@@ -171,10 +172,10 @@ export default function useJourney({
   );
 
   const removeCheckinImage = useCallback(
-    async (checkin: JourneyCheckin, imageId: number) => {
+    (checkin: JourneyCheckin, imageId: number): Promise<boolean> => {
       const latest = findLatestCheckin(checkin);
 
-      await mutateCheckin(checkin, {
+      return mutateCheckin(checkin, {
         image_ids: latest.images
           .filter((existing) => existing.id !== imageId)
           .map((existing) => existing.id)

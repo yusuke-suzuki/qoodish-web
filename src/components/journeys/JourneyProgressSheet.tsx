@@ -48,7 +48,7 @@ type RowProps = {
   timeLabel: string | null;
   onRemove: () => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
-  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<void>;
+  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<boolean>;
   onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
 };
 
@@ -118,8 +118,9 @@ function TimelineRow({
           sx={{ display: 'flex', alignItems: 'center', gap: 1, minHeight: 36 }}
         >
           <Typography
-            variant="subtitle2"
+            variant="subtitle1"
             component="h4"
+            fontWeight={700}
             noWrap
             sx={{ flex: 1, minWidth: 0 }}
           >
@@ -185,7 +186,7 @@ type Props = {
   onRemoveMilestone: (milestone: Milestone) => void;
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
-  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<void>;
+  onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<boolean>;
   onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
   onEndClick: () => void;
 };

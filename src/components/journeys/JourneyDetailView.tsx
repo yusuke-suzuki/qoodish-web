@@ -129,7 +129,7 @@ export default function JourneyDetailView({
     async (
       checkin: JourneyCheckin,
       params: { image_ids?: number[]; note?: string | null }
-    ) => {
+    ): Promise<boolean> => {
       const { success, data, error } = await updateCheckin(
         journey.id,
         checkin.id,
@@ -140,13 +140,14 @@ export default function JourneyDetailView({
         enqueueSnackbar(error ?? dictionary['an error occurred'], {
           variant: 'error'
         });
-        return;
+        return false;
       }
 
       checkinsRef.current = checkinsRef.current.map((existing) =>
         existing.id === data.id ? data : existing
       );
       setCheckins(checkinsRef.current);
+      return true;
     },
     [journey.id, dictionary]
   );
@@ -165,12 +166,12 @@ export default function JourneyDetailView({
   );
 
   const handleRemoveImage = useCallback(
-    async (checkin: JourneyCheckin, imageId: number) => {
+    (checkin: JourneyCheckin, imageId: number): Promise<boolean> => {
       const latest =
         checkinsRef.current.find((existing) => existing.id === checkin.id) ??
         checkin;
 
-      await saveCheckin(checkin, {
+      return saveCheckin(checkin, {
         image_ids: latest.images
           .filter((existing) => existing.id !== imageId)
           .map((existing) => existing.id)
@@ -417,7 +418,11 @@ export default function JourneyDetailView({
                     />
                   </TimelineSeparator>
                   <TimelineContent sx={{ py: '12px', px: 2, m: 'auto 0' }}>
-                    <Typography variant="subtitle2" component="span">
+                    <Typography
+                      variant="subtitle1"
+                      component="h3"
+                      fontWeight={700}
+                    >
                       {checkin.spot.name}
                     </Typography>
 
