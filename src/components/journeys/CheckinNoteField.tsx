@@ -64,7 +64,7 @@ function CheckinNoteField({ checkin, onSave }: Props) {
       size="small"
       variant="standard"
       value={value}
-      placeholder={dictionary['chapter spot placeholder']}
+      placeholder={dictionary['checkin note placeholder']}
       onChange={(event) => {
         setValue(event.target.value);
         stateRef.current.dirty = true;
@@ -79,7 +79,7 @@ function CheckinNoteField({ checkin, onSave }: Props) {
           })
         },
         htmlInput: {
-          'aria-label': dictionary['chapter spot placeholder'],
+          'aria-label': dictionary['checkin note placeholder'],
           maxLength: NOTE_MAX_LENGTH
         }
       }}
