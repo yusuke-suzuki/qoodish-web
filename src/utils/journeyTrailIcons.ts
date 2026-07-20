@@ -31,14 +31,14 @@ export function footprintIcons(
 
   return [
     {
-      icon: symbol(FOOTPRINT_PATH_LEFT, new Point(24, 15)),
+      icon: symbol(FOOTPRINT_PATH_LEFT, new Point(16, 15)),
       offset: '0',
-      repeat: '40px'
+      repeat: '56px'
     },
     {
-      icon: symbol(FOOTPRINT_PATH_RIGHT, new Point(0, 15)),
-      offset: '20px',
-      repeat: '40px'
+      icon: symbol(FOOTPRINT_PATH_RIGHT, new Point(8, 15)),
+      offset: '28px',
+      repeat: '56px'
     }
   ];
 }
