@@ -71,7 +71,9 @@ function CheckinImageStrip({ checkin, onAttach, onRemove }: Props) {
     setPendingDelete(null);
 
     if (success) {
-      enqueueSnackbar(dictionary['photo deleted'], { variant: 'success' });
+      enqueueSnackbar(dictionary['delete image success'], {
+        variant: 'success'
+      });
     }
   }, [checkin, pendingDelete, onRemove, dictionary]);
 
@@ -115,7 +117,7 @@ function CheckinImageStrip({ checkin, onAttach, onRemove }: Props) {
       <label htmlFor={inputId}>
         <IconButton
           component="span"
-          aria-label={dictionary['add photos']}
+          aria-label={dictionary['add images']}
           disabled={uploading}
           sx={{
             width: IMAGE_SIZE,
@@ -138,7 +140,7 @@ function CheckinImageStrip({ checkin, onAttach, onRemove }: Props) {
         onClose={() => setPendingDelete(null)}
         maxWidth="xs"
       >
-        <DialogTitle>{dictionary['sure to delete photo']}</DialogTitle>
+        <DialogTitle>{dictionary['sure to delete image']}</DialogTitle>
         <DialogActions>
           <Button color="inherit" onClick={() => setPendingDelete(null)}>
             {dictionary.cancel}
