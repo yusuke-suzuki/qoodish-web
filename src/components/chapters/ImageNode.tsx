@@ -1,10 +1,23 @@
 'use client';
 
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
-import { MoreVert } from '@mui/icons-material';
-import { Box, CardMedia, IconButton, Paper } from '@mui/material';
-import { DecoratorNode, type NodeKey } from 'lexical';
-import { type JSX, memo, useState } from 'react';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
+import { mergeRegister } from '@lexical/utils';
+import { Delete } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
+import {
+  $getNodeByKey,
+  $getSelection,
+  $isNodeSelection,
+  CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
+  DecoratorNode,
+  KEY_BACKSPACE_COMMAND,
+  KEY_DELETE_COMMAND,
+  type NodeKey
+} from 'lexical';
+import { type JSX, memo, useCallback, useEffect, useRef } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import {
   type ChapterImage,
@@ -12,7 +25,6 @@ import {
   type SerializedImageNode,
   createSerializedImage
 } from '../../utils/chapterContent';
-import ChapterNodeMenu from './ChapterNodeMenu';
 
 type ImageViewProps = {
   nodeKey: NodeKey;
@@ -24,55 +36,116 @@ const ImageNodeView = memo(function ImageNodeView({
   image
 }: ImageViewProps) {
   const dictionary = useDictionary();
+  const [editor] = useLexicalComposerContext();
   const isEditable = useLexicalEditable();
+  const [isSelected, setSelected, clearSelection] =
+    useLexicalNodeSelection(nodeKey);
 
-  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const handleDelete = useCallback(
+    (event: KeyboardEvent) => {
+      const selection = $getSelection();
+
+      if (!isSelected || !$isNodeSelection(selection)) {
+        return false;
+      }
+
+      event.preventDefault();
+
+      for (const node of selection.getNodes()) {
+        node.remove();
+      }
+
+      return true;
+    },
+    [isSelected]
+  );
+
+  useEffect(() => {
+    if (!isEditable) {
+      return;
+    }
+
+    return mergeRegister(
+      editor.registerCommand<MouseEvent>(
+        CLICK_COMMAND,
+        (event) => {
+          if (event.target !== imageRef.current) {
+            return false;
+          }
+
+          if (!event.shiftKey) {
+            clearSelection();
+          }
+
+          setSelected(!isSelected);
+          return true;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        KEY_DELETE_COMMAND,
+        handleDelete,
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        KEY_BACKSPACE_COMMAND,
+        handleDelete,
+        COMMAND_PRIORITY_LOW
+      )
+    );
+  }, [
+    editor,
+    isEditable,
+    isSelected,
+    setSelected,
+    clearSelection,
+    handleDelete
+  ]);
+
+  const removeNode = useCallback(() => {
+    editor.update(() => {
+      $getNodeByKey(nodeKey)?.remove();
+    });
+  }, [editor, nodeKey]);
+
+  const selected = isEditable && isSelected;
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-      <Paper
-        elevation={3}
-        square
+    <Box sx={{ position: 'relative', my: 2 }}>
+      <Box
+        component="img"
+        ref={imageRef}
+        src={image.hero}
+        alt=""
         sx={{
-          position: 'relative',
-          p: 1.5,
+          display: 'block',
           width: '100%',
-          maxWidth: 360,
-          bgcolor: 'background.paper'
+          borderRadius: 1,
+          outline: selected ? '2px solid' : 'none',
+          outlineColor: 'primary.main',
+          outlineOffset: '2px'
         }}
-      >
-        <CardMedia
-          component="img"
-          image={image.hero}
-          alt=""
-          sx={{ display: 'block', width: '100%' }}
-        />
+      />
 
-        {isEditable && (
-          <>
-            <IconButton
-              size="small"
-              aria-label={dictionary.edit}
-              onClick={(event) => setMenuAnchor(event.currentTarget)}
-              sx={{
-                position: 'absolute',
-                top: 8,
-                right: 8,
-                bgcolor: 'background.paper',
-                '&:hover': { bgcolor: 'background.paper' }
-              }}
-            >
-              <MoreVert fontSize="small" />
-            </IconButton>
-
-            <ChapterNodeMenu
-              nodeKey={nodeKey}
-              anchorEl={menuAnchor}
-              onClose={() => setMenuAnchor(null)}
-            />
-          </>
-        )}
-      </Paper>
+      {selected && (
+        <IconButton
+          size="small"
+          aria-label={dictionary.delete}
+          onClick={removeNode}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: 'common.white',
+            bgcolor: 'rgba(0, 0, 0, 0.55)',
+            '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.7)' }
+          }}
+        >
+          <Delete fontSize="small" />
+        </IconButton>
+      )}
     </Box>
   );
 });

@@ -262,7 +262,7 @@ export default function JourneyDetailView({
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent({ ...journey, checkins }, trail),
+      content: createChapterContent({ ...journey, checkins }),
       journey_id: journey.id
     });
 
@@ -275,7 +275,7 @@ export default function JourneyDetailView({
     }
 
     router.push(`/${lang}/maps/${map.id}/chapters/${data.id}`);
-  }, [map.id, journey, checkins, trail, router, lang, dictionary]);
+  }, [map.id, journey, checkins, router, lang, dictionary]);
 
   const handleDeleteConfirm = useCallback(async () => {
     const { success } = await deleteJourney(journey.id);

@@ -141,7 +141,7 @@ export default function MapDetailView({
 
     const { success, data, error } = await createChapter(map.id, {
       title: dictionary['untitled journey'],
-      content: createChapterContent(finished.journey, finished.trail),
+      content: createChapterContent(finished.journey),
       journey_id: finished.journey.id
     });
 

@@ -5,15 +5,18 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { Box, Typography } from '@mui/material';
 import type { EditorState, SerializedEditorState } from 'lexical';
 import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import ChapterSlashMenu from './ChapterSlashMenu';
 import ChapterToolbar from './ChapterToolbar';
 import {
   chapterContentStyles,
+  chapterMarkdownTransformers,
   chapterNodes,
   chapterTheme
 } from './chapterEditorConfig';
@@ -85,13 +88,12 @@ function ChapterContentEditor({
             },
             ...chapterContentStyles(theme),
             '& .journal-editor-input[contenteditable="true"]': {
-              [`& .journal-spot + ${emptyParagraph}:not(:last-child)`]:
-                placeholderStyle(dictionary['chapter spot placeholder']),
               [`& ${emptyParagraph}:last-child`]: placeholderStyle(
                 dictionary['chapter closing placeholder']
               ),
-              [`& .journal-journey + ${emptyParagraph}, & ${emptyParagraph}:first-child`]:
-                placeholderStyle(dictionary['chapter opening placeholder'])
+              [`& ${emptyParagraph}:first-child`]: placeholderStyle(
+                dictionary['chapter opening placeholder']
+              )
             }
           };
         }}
@@ -125,6 +127,10 @@ function ChapterContentEditor({
         {!readOnly && (
           <>
             <HistoryPlugin />
+            <MarkdownShortcutPlugin
+              transformers={chapterMarkdownTransformers}
+            />
+            <ChapterSlashMenu />
             <OnChangePlugin ignoreSelectionChange onChange={handleChange} />
           </>
         )}

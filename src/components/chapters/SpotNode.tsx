@@ -1,34 +1,23 @@
 'use client';
 
-import { useLexicalEditable } from '@lexical/react/useLexicalEditable';
-import { MoreVert, Place } from '@mui/icons-material';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Place } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 import { DecoratorNode, type NodeKey } from 'lexical';
 import { useParams } from 'next/navigation';
-import { type JSX, memo, useState } from 'react';
+import { type JSX, memo } from 'react';
 import type { SpotAnchor } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
 import {
   SPOT_NODE_TYPE,
   type SerializedSpotNode,
   createSerializedSpot
 } from '../../utils/chapterContent';
-import ChapterNodeMenu from './ChapterNodeMenu';
-
-type SpotViewProps = {
-  nodeKey: NodeKey;
-  anchor: SpotAnchor;
-};
 
 const SpotNodeView = memo(function SpotNodeView({
-  nodeKey,
   anchor
-}: SpotViewProps) {
-  const dictionary = useDictionary();
+}: {
+  anchor: SpotAnchor;
+}) {
   const { lang } = useParams<{ lang: string }>();
-  const isEditable = useLexicalEditable();
-
-  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 
   const timeLabel = anchor.checked_in_at
     ? new Date(anchor.checked_in_at).toLocaleString(lang, {
@@ -51,16 +40,6 @@ const SpotNodeView = memo(function SpotNodeView({
         >
           {anchor.name}
         </Typography>
-
-        {isEditable && (
-          <IconButton
-            size="small"
-            aria-label={dictionary.edit}
-            onClick={(event) => setMenuAnchor(event.currentTarget)}
-          >
-            <MoreVert fontSize="small" />
-          </IconButton>
-        )}
       </Box>
 
       {timeLabel && (
@@ -71,14 +50,6 @@ const SpotNodeView = memo(function SpotNodeView({
         >
           {timeLabel}
         </Typography>
-      )}
-
-      {isEditable && (
-        <ChapterNodeMenu
-          nodeKey={nodeKey}
-          anchorEl={menuAnchor}
-          onClose={() => setMenuAnchor(null)}
-        />
       )}
     </Box>
   );
@@ -129,7 +100,7 @@ export class SpotNode extends DecoratorNode<JSX.Element> {
   }
 
   decorate(): JSX.Element {
-    return <SpotNodeView nodeKey={this.getKey()} anchor={this.__anchor} />;
+    return <SpotNodeView anchor={this.__anchor} />;
   }
 }
 

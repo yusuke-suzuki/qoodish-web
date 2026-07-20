@@ -1,3 +1,4 @@
+import type { SerializedHeadingNode } from '@lexical/rich-text';
 import type {
   SerializedEditorState,
   SerializedLexicalNode,
@@ -71,6 +72,18 @@ export function createSerializedParagraph(
     textFormat: 0,
     textStyle: '',
     type: 'paragraph',
+    version: 1
+  };
+}
+
+function createSerializedHeading(text: string): SerializedHeadingNode {
+  return {
+    children: [createSerializedText(text)],
+    direction: null,
+    format: '',
+    indent: 0,
+    tag: 'h2',
+    type: 'heading',
     version: 1
   };
 }
@@ -159,10 +172,7 @@ export function isContentEmpty(content: SerializedEditorState): boolean {
   );
 }
 
-export function createChapterContent(
-  journey: Journey,
-  path: JourneyPathPoint[]
-): SerializedEditorState {
+export function createChapterContent(journey: Journey): SerializedEditorState {
   const checkinByReviewId = new Map(
     journey.checkins
       .slice()
@@ -174,20 +184,14 @@ export function createChapterContent(
     journey.milestones.map((milestone) => milestone.review_id)
   );
 
-  type Section = { anchor: SpotAnchor; images: Image[]; note: string | null };
+  type Section = { name: string; images: Image[]; note: string | null };
 
   const sections: Section[] = [
     ...journey.milestones.map((milestone) => {
       const checkin = checkinByReviewId.get(milestone.review_id);
 
       return {
-        anchor: {
-          review_id: milestone.review_id,
-          name: milestone.name,
-          latitude: milestone.latitude,
-          longitude: milestone.longitude,
-          checked_in_at: checkin?.checked_in_at ?? null
-        },
+        name: milestone.name,
         images: checkin?.images ?? [],
         note: checkin?.note ?? null
       };
@@ -196,23 +200,16 @@ export function createChapterContent(
       .filter((checkin) => !milestoneReviewIds.has(checkin.review_id))
       .sort((a, b) => a.checked_in_at.localeCompare(b.checked_in_at))
       .map((checkin) => ({
-        anchor: {
-          review_id: checkin.review_id,
-          name: checkin.spot.name,
-          latitude: checkin.spot.latitude,
-          longitude: checkin.spot.longitude,
-          checked_in_at: checkin.checked_in_at
-        },
+        name: checkin.spot.name,
         images: checkin.images,
         note: checkin.note
       }))
   ];
 
   return createRoot([
-    ...(path.length > 0 ? [createSerializedJourney(journey.id, path)] : []),
     createSerializedParagraph(),
-    ...sections.flatMap(({ anchor, images, note }) => [
-      createSerializedSpot(anchor),
+    ...sections.flatMap(({ name, images, note }) => [
+      createSerializedHeading(name),
       ...images.map((image) =>
         createSerializedImage({
           image_id: image.id,
