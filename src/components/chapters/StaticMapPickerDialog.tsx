@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import CoodinatesConverter from '../maps/CoodinatesConverter';
 import GoogleMaps from '../maps/GoogleMaps';
@@ -21,9 +21,16 @@ function StaticMapPickerDialog({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
-    null
-  );
+  // Seed with the map center so the action works even before the marker is
+  // touched; reset each time the dialog opens so a prior pick does not linger.
+  const [position, setPosition] =
+    useState<google.maps.LatLngLiteral>(defaultCenter);
+
+  useEffect(() => {
+    if (open) {
+      setPosition(defaultCenter);
+    }
+  }, [open, defaultCenter]);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -51,15 +58,7 @@ function StaticMapPickerDialog({
         <Button color="inherit" onClick={onClose}>
           {dictionary.cancel}
         </Button>
-        <Button
-          variant="contained"
-          disabled={!position}
-          onClick={() => {
-            if (position) {
-              onSelect(position);
-            }
-          }}
-        >
+        <Button variant="contained" onClick={() => onSelect(position)}>
           {dictionary.add}
         </Button>
       </DialogActions>
