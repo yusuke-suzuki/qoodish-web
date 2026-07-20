@@ -139,6 +139,10 @@ function rootChildren(content: SerializedEditorState): SerializedLexicalNode[] {
   return (content.root as SerializedRootNode).children ?? [];
 }
 
+export function hasJourneyNode(content: SerializedEditorState): boolean {
+  return rootChildren(content).some((node) => node.type === JOURNEY_NODE_TYPE);
+}
+
 export function extractSpots(content: SerializedEditorState): SpotAnchor[] {
   return rootChildren(content)
     .filter(isSpotNode)
