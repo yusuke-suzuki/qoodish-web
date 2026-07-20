@@ -14,9 +14,8 @@ import {
   TimelineContent,
   TimelineDot,
   TimelineItem,
-  TimelineOppositeContent,
   TimelineSeparator,
-  timelineOppositeContentClasses
+  timelineItemClasses
 } from '@mui/lab';
 import {
   Box,
@@ -209,6 +208,21 @@ export default function JourneyDetailView({
     [journey.finished_at, journey.started_at]
   );
 
+  const timeRange = useMemo(
+    () => ({
+      min: journey.started_at ? toDatetimeLocal(journey.started_at) : undefined,
+      max: journey.finished_at
+        ? toDatetimeLocal(journey.finished_at)
+        : toDatetimeLocal(new Date().toISOString())
+    }),
+    [journey.started_at, journey.finished_at]
+  );
+
+  const pendingTimeValid =
+    Boolean(pendingTime) &&
+    (!timeRange.min || pendingTime >= timeRange.min) &&
+    pendingTime <= timeRange.max;
+
   const handleConfirmCheckin = useCallback(async () => {
     if (!pendingReview) {
       return;
@@ -387,21 +401,15 @@ export default function JourneyDetailView({
           ) : (
             <Timeline
               sx={{
-                [`& .${timelineOppositeContentClasses.root}`]: {
-                  flex: 0.2
+                p: 0,
+                [`& .${timelineItemClasses.root}:before`]: {
+                  flex: 0,
+                  padding: 0
                 }
               }}
             >
               {sortedCheckins.map((checkin, index) => (
                 <TimelineItem key={checkin.id}>
-                  <TimelineOppositeContent
-                    sx={{ m: 'auto 0' }}
-                    align="right"
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {formatTime(checkin.checked_in_at)}
-                  </TimelineOppositeContent>
                   <TimelineSeparator>
                     <TimelineConnector
                       sx={index === 0 ? { visibility: 'hidden' } : undefined}
@@ -424,6 +432,14 @@ export default function JourneyDetailView({
                       fontWeight={700}
                     >
                       {checkin.spot.name}
+                    </Typography>
+
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block' }}
+                    >
+                      {formatTime(checkin.checked_in_at)}
                     </Typography>
 
                     <Box sx={{ mt: 0.5 }}>
@@ -551,8 +567,12 @@ export default function JourneyDetailView({
             type="datetime-local"
             label={dictionary['checkin time']}
             value={pendingTime}
+            error={Boolean(pendingTime) && !pendingTimeValid}
             onChange={(event) => setPendingTime(event.target.value)}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{
+              inputLabel: { shrink: true },
+              htmlInput: { min: timeRange.min, max: timeRange.max }
+            }}
           />
         </DialogContent>
         <DialogActions>
@@ -562,7 +582,7 @@ export default function JourneyDetailView({
           <Button
             variant="contained"
             loading={addingCheckin}
-            disabled={!pendingTime}
+            disabled={!pendingTimeValid}
             onClick={handleConfirmCheckin}
           >
             {dictionary.add}
