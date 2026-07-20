@@ -17,13 +17,11 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import type { Theme } from '@mui/material';
 import type { EditorThemeClasses, Klass, LexicalNode } from 'lexical';
 import { ImageNode } from './ImageNode';
-import { JourneyNode } from './JourneyNode';
-import { SpotNode } from './SpotNode';
+import { StaticMapNode } from './StaticMapNode';
 
 export const chapterNodes: Klass<LexicalNode>[] = [
-  SpotNode,
-  JourneyNode,
   ImageNode,
+  StaticMapNode,
   HeadingNode,
   QuoteNode,
   ListNode,

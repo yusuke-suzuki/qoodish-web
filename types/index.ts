@@ -141,11 +141,6 @@ export type Milestone = Spot & {
   review_id: number;
 };
 
-export type SpotAnchor = Spot & {
-  review_id: number;
-  checked_in_at: string | null;
-};
-
 export type MapRef = {
   id: number;
   name: string;

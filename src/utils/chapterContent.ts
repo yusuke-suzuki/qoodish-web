@@ -6,26 +6,10 @@ import type {
   SerializedRootNode,
   SerializedTextNode
 } from 'lexical';
-import type { Image, Journey, JourneyPathPoint, SpotAnchor } from '../../types';
+import type { Image, Journey } from '../../types';
 
-export const SPOT_NODE_TYPE = 'spot';
-export const JOURNEY_NODE_TYPE = 'journey';
 export const IMAGE_NODE_TYPE = 'image';
-
-export type SerializedSpotNode = SerializedLexicalNode & {
-  type: typeof SPOT_NODE_TYPE;
-  review_id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  checked_in_at: string | null;
-};
-
-export type SerializedJourneyNode = SerializedLexicalNode & {
-  type: typeof JOURNEY_NODE_TYPE;
-  journey_id: number | null;
-  path: JourneyPathPoint[];
-};
+export const STATIC_MAP_NODE_TYPE = 'static_map';
 
 export type ChapterImage = {
   image_id: number;
@@ -36,6 +20,24 @@ export type ChapterImage = {
 export type SerializedImageNode = SerializedLexicalNode & {
   type: typeof IMAGE_NODE_TYPE;
 } & ChapterImage;
+
+export type SerializedStaticMapNode = SerializedLexicalNode & {
+  type: typeof STATIC_MAP_NODE_TYPE;
+  latitude: number;
+  longitude: number;
+};
+
+export function createSerializedStaticMap(
+  latitude: number,
+  longitude: number
+): SerializedStaticMapNode {
+  return {
+    type: STATIC_MAP_NODE_TYPE,
+    version: 1,
+    latitude,
+    longitude
+  };
+}
 
 export function createSerializedImage(
   image: ChapterImage
@@ -88,30 +90,6 @@ function createSerializedHeading(text: string): SerializedHeadingNode {
   };
 }
 
-export function createSerializedSpot(anchor: SpotAnchor): SerializedSpotNode {
-  return {
-    type: SPOT_NODE_TYPE,
-    version: 1,
-    review_id: anchor.review_id,
-    name: anchor.name,
-    latitude: anchor.latitude,
-    longitude: anchor.longitude,
-    checked_in_at: anchor.checked_in_at
-  };
-}
-
-export function createSerializedJourney(
-  journeyId: number | null,
-  path: JourneyPathPoint[]
-): SerializedJourneyNode {
-  return {
-    type: JOURNEY_NODE_TYPE,
-    version: 1,
-    journey_id: journeyId,
-    path
-  };
-}
-
 export function createRoot(
   children: SerializedLexicalNode[]
 ): SerializedEditorState {
@@ -127,32 +105,12 @@ export function createRoot(
   return { root };
 }
 
-function isSpotNode(node: SerializedLexicalNode): node is SerializedSpotNode {
-  return node.type === SPOT_NODE_TYPE;
-}
-
 function isImageNode(node: SerializedLexicalNode): node is SerializedImageNode {
   return node.type === IMAGE_NODE_TYPE;
 }
 
 function rootChildren(content: SerializedEditorState): SerializedLexicalNode[] {
   return (content.root as SerializedRootNode).children ?? [];
-}
-
-export function hasJourneyNode(content: SerializedEditorState): boolean {
-  return rootChildren(content).some((node) => node.type === JOURNEY_NODE_TYPE);
-}
-
-export function extractSpots(content: SerializedEditorState): SpotAnchor[] {
-  return rootChildren(content)
-    .filter(isSpotNode)
-    .map((node) => ({
-      review_id: node.review_id,
-      name: node.name,
-      latitude: node.latitude,
-      longitude: node.longitude,
-      checked_in_at: node.checked_in_at
-    }));
 }
 
 type SerializedNodeWithChildren = SerializedLexicalNode & {
@@ -172,7 +130,8 @@ function hasText(node: SerializedLexicalNode): boolean {
 
 export function isContentEmpty(content: SerializedEditorState): boolean {
   return rootChildren(content).every(
-    (node) => !isSpotNode(node) && !isImageNode(node) && !hasText(node)
+    (node) =>
+      !isImageNode(node) && node.type !== STATIC_MAP_NODE_TYPE && !hasText(node)
   );
 }
 

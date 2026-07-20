@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import ChapterEditorView from '../../../../../../../components/chapters/ChapterEditorView';
 import { getServerAuthState } from '../../../../../../../lib/auth';
 import { getChapter, getUserChapters } from '../../../../../../../lib/chapters';
-import { getMyJourney } from '../../../../../../../lib/journeys';
 import { getMap } from '../../../../../../../lib/maps';
 import { getDictionary } from '../../../../../../../utils/getDictionary';
 
@@ -41,18 +40,12 @@ export default async function ChapterPage({ params }: Props) {
     notFound();
   }
 
-  const [authorChapters, journey] = await Promise.all([
-    getUserChapters(chapter.author.id, lang, token),
-    chapter.journey_id
-      ? getMyJourney(String(chapter.journey_id), lang, token)
-      : Promise.resolve(null)
-  ]);
+  const authorChapters = await getUserChapters(chapter.author.id, lang, token);
 
   return (
     <ChapterEditorView
       chapter={chapter}
       map={map}
-      journey={journey}
       authorPageCount={authorChapters.length}
     />
   );

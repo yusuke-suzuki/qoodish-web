@@ -24,6 +24,7 @@ import {
 type Props = {
   initialContent: SerializedEditorState;
   placeholder: string;
+  mapCenter: google.maps.LatLngLiteral;
   readOnly?: boolean;
   onChange: (content: SerializedEditorState) => void;
 };
@@ -31,6 +32,7 @@ type Props = {
 function ChapterContentEditor({
   initialContent,
   placeholder,
+  mapCenter,
   readOnly = false,
   onChange
 }: Props) {
@@ -136,7 +138,7 @@ function ChapterContentEditor({
         )}
       </Box>
 
-      {!readOnly && <ChapterToolbar />}
+      {!readOnly && <ChapterToolbar mapCenter={mapCenter} />}
     </LexicalComposer>
   );
 }

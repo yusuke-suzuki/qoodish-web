@@ -17,14 +17,11 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useMemo, useState } from 'react';
-import type { AppMap, Chapter, Journey } from '../../../types';
+import { useCallback, useState } from 'react';
+import type { AppMap, Chapter } from '../../../types';
 import useChapter from '../../hooks/useChapter';
 import useDictionary from '../../hooks/useDictionary';
-import { hasJourneyNode, isContentEmpty } from '../../utils/chapterContent';
-import { journeyDate } from '../../utils/chapterDate';
-import { decodePath } from '../../utils/polyline';
-import JourneyMap from '../journeys/JourneyMap';
+import { isContentEmpty } from '../../utils/chapterContent';
 import ChapterAuthorCard from './ChapterAuthorCard';
 import ChapterAuthorHeader from './ChapterAuthorHeader';
 import ChapterContentEditor from './ChapterContentEditor';
@@ -35,14 +32,12 @@ import MapLinkChip from './MapLinkChip';
 type Props = {
   chapter: Chapter;
   map: AppMap;
-  journey: Journey | null;
   authorPageCount: number;
 };
 
 export default function ChapterEditorView({
   chapter: initialChapter,
   map,
-  journey,
   authorPageCount
 }: Props) {
   const dictionary = useDictionary();
@@ -59,23 +54,6 @@ export default function ChapterEditorView({
   } = useChapter(initialChapter);
 
   const editable = initialChapter.editable;
-
-  // Chapters written before the plain-block editor carry the map inside
-  // their body; showing the page-level map too would duplicate it.
-  const journeyMap = useMemo(() => {
-    if (!journey || hasJourneyNode(initialChapter.content)) {
-      return null;
-    }
-
-    const trail = decodePath(journey.encoded_path);
-    const spots = journey.checkins.map((checkin) => checkin.spot);
-
-    if (trail.length < 1 && spots.length < 1) {
-      return null;
-    }
-
-    return { trail, spots };
-  }, [journey, initialChapter.content]);
 
   const [pageMenuAnchor, setPageMenuAnchor] = useState<HTMLElement | null>(
     null
@@ -173,7 +151,7 @@ export default function ChapterEditorView({
         )}
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {new Date(journeyDate(chapter)).toLocaleDateString(lang, {
+          {new Date(chapter.created_at).toLocaleDateString(lang, {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -186,20 +164,11 @@ export default function ChapterEditorView({
 
         <Divider sx={{ mb: 4 }} />
 
-        {journeyMap && (
-          <Box sx={{ borderRadius: 1, overflow: 'hidden', mb: 4 }}>
-            <JourneyMap
-              spots={journeyMap.spots}
-              path={journeyMap.trail}
-              locale={lang}
-            />
-          </Box>
-        )}
-
         <ChapterContentEditor
           key={chapter.id}
           initialContent={chapter.content}
           placeholder={dictionary['chapter empty state']}
+          mapCenter={{ lat: map.latitude, lng: map.longitude }}
           readOnly={!editable}
           onChange={updateContent}
         />

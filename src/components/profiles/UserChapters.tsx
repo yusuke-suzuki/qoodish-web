@@ -16,7 +16,6 @@ import { useParams } from 'next/navigation';
 import { memo } from 'react';
 import type { Chapter } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import { journeyDate } from '../../utils/chapterDate';
 import NoContents from '../common/NoContents';
 
 function UserChapters({ chapters }: { chapters: Chapter[] }) {
@@ -51,7 +50,7 @@ function UserChapters({ chapters }: { chapters: Chapter[] }) {
                 secondary={
                   <>
                     <Box component="span" sx={{ display: 'block' }}>
-                      {new Date(journeyDate(chapter)).toLocaleDateString(lang, {
+                      {new Date(chapter.created_at).toLocaleDateString(lang, {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
