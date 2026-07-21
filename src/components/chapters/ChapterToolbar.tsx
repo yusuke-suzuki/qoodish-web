@@ -138,7 +138,16 @@ export default function ChapterToolbar({
   const insertBlock = useCallback(
     (node: LexicalNode) => {
       editor.update(() => {
-        $insertNodeToNearestRoot(node);
+        const selection = $getSelection();
+
+        // Opening the picker dialog clears the editor selection, so
+        // $insertNodeToNearestRoot has no anchor and inserts nothing; fall
+        // back to appending at the end of the document.
+        if ($isRangeSelection(selection)) {
+          $insertNodeToNearestRoot(node);
+        } else {
+          $getRoot().append(node);
+        }
 
         const paragraph = $createParagraphNode();
         node.insertAfter(paragraph);
