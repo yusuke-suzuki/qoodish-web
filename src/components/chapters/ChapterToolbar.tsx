@@ -16,14 +16,8 @@ import {
   type HeadingTagType
 } from '@lexical/rich-text';
 import { $setBlocksType } from '@lexical/selection';
+import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
-  $getNearestNodeOfType,
-  $insertNodeToNearestRoot,
-  mergeRegister
-} from '@lexical/utils';
-import {
-  AddLocationAlt,
-  AddPhotoAlternate,
   FormatBold,
   FormatItalic,
   FormatListBulleted,
@@ -33,7 +27,6 @@ import {
 } from '@mui/icons-material';
 import {
   AppBar,
-  CircularProgress,
   Divider,
   IconButton,
   Toolbar,
@@ -46,26 +39,17 @@ import {
   $isRangeSelection,
   COMMAND_PRIORITY_LOW,
   FORMAT_TEXT_COMMAND,
-  type LexicalNode,
   SELECTION_CHANGE_COMMAND
 } from 'lexical';
-import { enqueueSnackbar } from 'notistack';
 import {
-  type ChangeEvent,
   type MouseEvent,
   type ReactNode,
   useCallback,
   useEffect,
-  useId,
   useState
 } from 'react';
 import useDictionary from '../../hooks/useDictionary';
-import fileToDataUrl from '../../utils/fileToDataUrl';
-import uploadImage from '../../utils/uploadImage';
 import EmojiPicker from './EmojiPicker';
-import { $createImageNode } from './ImageNode';
-import { $createStaticMapNode } from './StaticMapNode';
-import StaticMapPickerDialog from './StaticMapPickerDialog';
 
 type BlockType = 'paragraph' | 'h2' | 'h3' | 'quote' | 'ul' | 'ol';
 
@@ -92,11 +76,7 @@ function ToolButton({
   );
 }
 
-export default function ChapterToolbar({
-  mapCenter
-}: {
-  mapCenter: google.maps.LatLngLiteral;
-}) {
+export default function ChapterToolbar() {
   const [editor] = useLexicalComposerContext();
   const dictionary = useDictionary();
 
@@ -130,73 +110,6 @@ export default function ChapterToolbar({
   const [isItalic, setIsItalic] = useState(false);
 
   const [emojiAnchor, setEmojiAnchor] = useState<HTMLElement | null>(null);
-
-  const imageInputId = useId();
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [mapPickerOpen, setMapPickerOpen] = useState(false);
-
-  const insertBlock = useCallback(
-    (node: LexicalNode) => {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        // Opening the picker dialog clears the editor selection, so
-        // $insertNodeToNearestRoot has no anchor and inserts nothing; fall
-        // back to appending at the end of the document.
-        if ($isRangeSelection(selection)) {
-          $insertNodeToNearestRoot(node);
-        } else {
-          $getRoot().append(node);
-        }
-
-        const paragraph = $createParagraphNode();
-        node.insertAfter(paragraph);
-        paragraph.select();
-      });
-    },
-    [editor]
-  );
-
-  const handleImageFilesChange = useCallback(
-    async (event: ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(event.target.files ?? []);
-      event.target.value = '';
-
-      if (files.length < 1) {
-        return;
-      }
-
-      setUploadingImage(true);
-
-      try {
-        for (const file of files) {
-          const dataUrl = await fileToDataUrl(file);
-          const image = await uploadImage(dataUrl);
-
-          insertBlock(
-            $createImageNode({
-              image_id: image.id,
-              url: image.url,
-              hero: image.hero
-            })
-          );
-        }
-      } catch {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-      } finally {
-        setUploadingImage(false);
-      }
-    },
-    [insertBlock, dictionary]
-  );
-
-  const handleMapSelect = useCallback(
-    (position: google.maps.LatLngLiteral) => {
-      setMapPickerOpen(false);
-      insertBlock($createStaticMapNode(position.lat, position.lng));
-    },
-    [insertBlock]
-  );
 
   const handleEmojiSelect = useCallback(
     (emoji: string) => {
@@ -381,36 +294,6 @@ export default function ChapterToolbar({
 
         <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-        <input
-          accept="image/*"
-          multiple
-          style={{ display: 'none' }}
-          id={imageInputId}
-          type="file"
-          onChange={handleImageFilesChange}
-        />
-        <label htmlFor={imageInputId}>
-          <IconButton
-            component="span"
-            aria-label={dictionary['add images']}
-            disabled={uploadingImage}
-          >
-            {uploadingImage ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              <AddPhotoAlternate />
-            )}
-          </IconButton>
-        </label>
-
-        <ToolButton
-          label={dictionary['insert map']}
-          active={false}
-          onClick={() => setMapPickerOpen(true)}
-        >
-          <AddLocationAlt />
-        </ToolButton>
-
         <ToolButton
           label={dictionary['insert emoji']}
           active={false}
@@ -423,13 +306,6 @@ export default function ChapterToolbar({
           anchorEl={emojiAnchor}
           onClose={() => setEmojiAnchor(null)}
           onSelect={handleEmojiSelect}
-        />
-
-        <StaticMapPickerDialog
-          open={mapPickerOpen}
-          defaultCenter={mapCenter}
-          onClose={() => setMapPickerOpen(false)}
-          onSelect={handleMapSelect}
         />
       </Toolbar>
     </AppBar>

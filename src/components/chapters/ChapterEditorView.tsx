@@ -17,11 +17,12 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
-import type { AppMap, Chapter } from '../../../types';
+import { useCallback, useMemo, useState } from 'react';
+import type { AppMap, Chapter, Journey } from '../../../types';
 import useChapter from '../../hooks/useChapter';
 import useDictionary from '../../hooks/useDictionary';
 import { isContentEmpty } from '../../utils/chapterContent';
+import JourneyMap from '../journeys/JourneyMap';
 import ChapterAuthorCard from './ChapterAuthorCard';
 import ChapterAuthorHeader from './ChapterAuthorHeader';
 import ChapterContentEditor from './ChapterContentEditor';
@@ -32,17 +33,26 @@ import MapLinkChip from './MapLinkChip';
 type Props = {
   chapter: Chapter;
   map: AppMap;
+  journey: Journey | null;
   authorPageCount: number;
 };
 
 export default function ChapterEditorView({
   chapter: initialChapter,
   map,
+  journey,
   authorPageCount
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
+
+  // The trail is location history and stays off the page; only the visited
+  // spots are shown as markers.
+  const journeySpots = useMemo(
+    () => journey?.checkins.map((checkin) => checkin.spot) ?? [],
+    [journey]
+  );
 
   const {
     chapter,
@@ -164,11 +174,16 @@ export default function ChapterEditorView({
 
         <Divider sx={{ mb: 4 }} />
 
+        {journeySpots.length > 0 && (
+          <Box sx={{ borderRadius: 1, overflow: 'hidden', mb: 4 }}>
+            <JourneyMap spots={journeySpots} path={[]} locale={lang} />
+          </Box>
+        )}
+
         <ChapterContentEditor
           key={chapter.id}
           initialContent={chapter.content}
           placeholder={dictionary['chapter empty state']}
-          mapCenter={{ lat: map.latitude, lng: map.longitude }}
           readOnly={!editable}
           onChange={updateContent}
         />

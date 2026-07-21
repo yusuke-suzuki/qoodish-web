@@ -9,7 +9,6 @@ import type {
 import type { Image, Journey } from '../../types';
 
 export const IMAGE_NODE_TYPE = 'image';
-export const STATIC_MAP_NODE_TYPE = 'static_map';
 
 export type ChapterImage = {
   image_id: number;
@@ -20,24 +19,6 @@ export type ChapterImage = {
 export type SerializedImageNode = SerializedLexicalNode & {
   type: typeof IMAGE_NODE_TYPE;
 } & ChapterImage;
-
-export type SerializedStaticMapNode = SerializedLexicalNode & {
-  type: typeof STATIC_MAP_NODE_TYPE;
-  latitude: number;
-  longitude: number;
-};
-
-export function createSerializedStaticMap(
-  latitude: number,
-  longitude: number
-): SerializedStaticMapNode {
-  return {
-    type: STATIC_MAP_NODE_TYPE,
-    version: 1,
-    latitude,
-    longitude
-  };
-}
 
 export function createSerializedImage(
   image: ChapterImage
@@ -130,8 +111,7 @@ function hasText(node: SerializedLexicalNode): boolean {
 
 export function isContentEmpty(content: SerializedEditorState): boolean {
   return rootChildren(content).every(
-    (node) =>
-      !isImageNode(node) && node.type !== STATIC_MAP_NODE_TYPE && !hasText(node)
+    (node) => !isImageNode(node) && !hasText(node)
   );
 }
 
