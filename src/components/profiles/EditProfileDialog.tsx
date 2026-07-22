@@ -21,12 +21,14 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Profile } from '../../../types';
+import type { Journal, Profile } from '../../../types';
+import { updateJournal } from '../../actions/journals';
 import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
 import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
 import BiographyForm from './BiographyForm';
+import JournalTitleForm from './JournalTitleForm';
 import ProfileNameForm from './ProfileNameForm';
 
 function Transition({
@@ -38,6 +40,7 @@ function Transition({
 
 type Props = {
   currentProfile: Profile | null;
+  journal: Journal | null;
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
@@ -45,6 +48,7 @@ type Props = {
 
 export default memo(function EditProfileDialog({
   currentProfile,
+  journal,
   open,
   onClose,
   onSaved
@@ -53,12 +57,15 @@ export default memo(function EditProfileDialog({
 
   const [name, setName] = useState<string | undefined>(undefined);
   const [biography, setBiography] = useState<string | undefined>(undefined);
+  const [journalTitle, setJournalTitle] = useState<string | undefined>(
+    undefined
+  );
   const { items, isUploading, uploadedImages, upload, reset } =
     usePhotoUploads();
 
   const disabled = useMemo(() => {
-    return !name || isUploading;
-  }, [name, isUploading]);
+    return !name || (Boolean(journal) && !journalTitle) || isUploading;
+  }, [name, journal, journalTitle, isUploading]);
 
   const previewItem = items[0];
   const newThumbnailUrl =
@@ -104,19 +111,36 @@ export default memo(function EditProfileDialog({
                 : undefined
           });
 
-          if (result.success) {
-            enqueueSnackbar(dictionary['edit profile success'], {
-              variant: 'success'
+          if (!result.success) {
+            enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+              variant: 'error'
             });
-
-            onClose();
-            onSaved();
             return;
           }
 
-          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-            variant: 'error'
+          // The profile is already persisted at this point, so a failing
+          // journal update reports itself but must not withhold the refresh.
+          if (journal) {
+            const journalResult = await updateJournal(journal.id, {
+              title: journalTitle
+            });
+
+            if (!journalResult.success) {
+              enqueueSnackbar(
+                journalResult.error ?? dictionary['an error occurred'],
+                { variant: 'error' }
+              );
+              onSaved();
+              return;
+            }
+          }
+
+          enqueueSnackbar(dictionary['edit profile success'], {
+            variant: 'success'
           });
+
+          onClose();
+          onSaved();
         } catch (_error) {
           enqueueSnackbar(dictionary['an error occurred'], {
             variant: 'error'
@@ -126,6 +150,8 @@ export default memo(function EditProfileDialog({
     },
     [
       currentProfile,
+      journal,
+      journalTitle,
       uploadedImages,
       name,
       biography,
@@ -138,6 +164,7 @@ export default memo(function EditProfileDialog({
   const handleExited = useCallback(() => {
     setName(undefined);
     setBiography(undefined);
+    setJournalTitle(undefined);
     reset();
   }, [reset]);
 
@@ -213,6 +240,12 @@ export default memo(function EditProfileDialog({
             onChange={setBiography}
             defaultValue={currentProfile?.biography}
           />
+          {journal && (
+            <JournalTitleForm
+              onChange={setJournalTitle}
+              defaultValue={journal.title}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button

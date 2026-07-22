@@ -55,13 +55,7 @@ export default memo(function UserReviews({ userId, initialReviews }: Props) {
       </Box>
 
       {isPending && (
-        <Box
-          sx={{
-            display: 'grid',
-            placeItems: 'center',
-            my: 2
-          }}
-        >
+        <Box sx={{ my: 2, height: { xs: 220, sm: 280 } }}>
           <FootprintsLoader label={dictionary.loading} />
         </Box>
       )}

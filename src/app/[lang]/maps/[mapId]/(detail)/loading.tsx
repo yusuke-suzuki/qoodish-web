@@ -7,9 +7,9 @@ import {
   Divider,
   Skeleton
 } from '@mui/material';
+import { drawerBleeding } from '../../../../../components/maps/constants';
 
 const summaryCardWidth = 360;
-const bottomSheetHeight = 105;
 
 const reviewSkeletonKeys = ['a', 'b', 'c'];
 
@@ -83,8 +83,8 @@ export default function Loading() {
         variant="rectangular"
         sx={{
           height: {
-            xs: `calc(100dvh - ${bottomSheetHeight}px - 56px)`,
-            sm: `calc(100dvh - ${bottomSheetHeight}px - 64px)`,
+            xs: `calc(100dvh - ${drawerBleeding}px - 56px)`,
+            sm: `calc(100dvh - ${drawerBleeding}px - 64px)`,
             md: '100dvh'
           },
           width: {
@@ -101,7 +101,7 @@ export default function Loading() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: bottomSheetHeight,
+          height: drawerBleeding,
           bgcolor: 'background.paper'
         }}
       >

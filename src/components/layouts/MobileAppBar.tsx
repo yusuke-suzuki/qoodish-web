@@ -1,25 +1,37 @@
 'use client';
 
-import { Search } from '@mui/icons-material';
+import { Notifications, Search } from '@mui/icons-material';
 import {
   AppBar,
+  Badge,
   Box,
   IconButton,
   Slide,
   Toolbar,
   useScrollTrigger
 } from '@mui/material';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
+import AuthContext from '../../context/AuthContext';
+import NotificationsContext from '../../context/NotificationsContext';
 import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
+import useDictionary from '../../hooks/useDictionary';
 import ProfileAvatar from '../common/ProfileAvatar';
 import Logo from './Logo';
 import MobileDrawer from './MobileDrawer';
 
 function MobileAppBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);
+  const { authenticated } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
+  const notifications = useContext(NotificationsContext);
+  const dictionary = useDictionary();
+
+  const unreadCount = notifications.filter(
+    (notification) => notification.read === false
+  ).length;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -52,7 +64,27 @@ function MobileAppBarContent() {
             <Logo color="inherit" />
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton onClick={openSearch} edge="end" color="inherit">
+              {authenticated && (
+                <IconButton
+                  component={Link}
+                  href="/notifications"
+                  color="inherit"
+                  title={dictionary.notifications}
+                  aria-label={dictionary.notifications}
+                >
+                  <Badge badgeContent={unreadCount} color="secondary">
+                    <Notifications />
+                  </Badge>
+                </IconButton>
+              )}
+
+              <IconButton
+                onClick={openSearch}
+                edge="end"
+                color="inherit"
+                title={dictionary.search}
+                aria-label={dictionary.search}
+              >
                 <Search />
               </IconButton>
             </Box>

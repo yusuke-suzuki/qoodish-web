@@ -1,9 +1,11 @@
-import { Comment, DragHandle } from '@mui/icons-material';
+import { Comment, Flag, OutlinedFlag } from '@mui/icons-material';
 import {
   Box,
   CardActions,
   CardContent,
   CardMedia,
+  Chip,
+  CircularProgress,
   IconButton,
   SwipeableDrawer,
   Typography
@@ -12,6 +14,8 @@ import Link from 'next/link';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { Review } from '../../../types';
 import ProfileContext from '../../context/ProfileContext';
+import useDictionary from '../../hooks/useDictionary';
+import DrawerPuller from '../common/DrawerPuller';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
 import EditReviewDialog from '../reviews/EditReviewDialog';
@@ -19,12 +23,18 @@ import LikeReviewButton from '../reviews/LikeReviewButton';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewMenuButton from '../reviews/ReviewMenuButton';
 
+type MilestoneAction = {
+  selected: boolean;
+  onAdd: () => void | Promise<void>;
+};
+
 type Props = {
   open: boolean;
   onOpen: () => void;
   onClose: () => void;
   onExited: () => void;
   currentReview: Review | null;
+  milestoneAction?: MilestoneAction | null;
   onSaved: () => void;
   onDeleted: () => void;
 };
@@ -35,19 +45,36 @@ function ReviewDrawer({
   onClose,
   onExited,
   currentReview,
+  milestoneAction,
   onSaved,
   onDeleted
 }: Props) {
   const profile = useContext(ProfileContext);
+  const dictionary = useDictionary();
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [milestoneLoading, setMilestoneLoading] = useState(false);
 
   const handleReviewDeleted = useCallback(() => {
     onClose();
     onDeleted();
   }, [onClose, onDeleted]);
+
+  const handleAddMilestone = useCallback(async () => {
+    if (!milestoneAction) {
+      return;
+    }
+
+    setMilestoneLoading(true);
+
+    try {
+      await milestoneAction.onAdd();
+    } finally {
+      setMilestoneLoading(false);
+    }
+  }, [milestoneAction]);
 
   const review = currentReview;
 
@@ -77,9 +104,7 @@ function ReviewDrawer({
           }
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          {<DragHandle fontSize="small" color="disabled" />}
-        </Box>
+        <DrawerPuller />
 
         <CardContent sx={{ pt: 0, pb: 1 }}>
           <Typography variant="h6">{review?.name}</Typography>
@@ -122,6 +147,7 @@ function ReviewDrawer({
                 flexShrink: 0,
                 width: 200,
                 height: 200,
+                borderRadius: 1,
                 overflow: 'hidden'
               }}
             >
@@ -135,18 +161,43 @@ function ReviewDrawer({
           ))}
         </CardContent>
 
-        <CardActions>
-          {review && <LikeReviewButton review={review} />}
-
-          {review && (
-            <IconButton
-              LinkComponent={Link}
-              href={`/maps/${review?.map.id}/reports/${review?.id}`}
-              disabled={!review}
-            >
-              <Comment />
-            </IconButton>
+        <CardActions sx={{ justifyContent: 'space-between' }}>
+          {review && milestoneAction && (
+            <Chip
+              clickable
+              color="default"
+              disabled={milestoneAction.selected || milestoneLoading}
+              onClick={handleAddMilestone}
+              icon={
+                milestoneLoading ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : milestoneAction.selected ? (
+                  <Flag />
+                ) : (
+                  <OutlinedFlag />
+                )
+              }
+              label={
+                milestoneAction.selected
+                  ? dictionary['milestone added']
+                  : dictionary['add milestone']
+              }
+            />
           )}
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {review && <LikeReviewButton review={review} />}
+
+            {review && (
+              <IconButton
+                LinkComponent={Link}
+                href={`/maps/${review?.map.id}/reports/${review?.id}`}
+                disabled={!review}
+              >
+                <Comment />
+              </IconButton>
+            )}
+          </Box>
         </CardActions>
       </SwipeableDrawer>
       <EditReviewDialog

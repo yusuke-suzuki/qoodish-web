@@ -14,9 +14,11 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useState, useTransition } from 'react';
 import type { AppMap, Coauthor } from '../../../types';
@@ -33,6 +35,7 @@ type Props = {
 function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
   const dictionary = useDictionary();
   const router = useRouter();
+  const { lang } = useParams<{ lang: string }>();
 
   const [confirmTarget, setConfirmTarget] = useState<Coauthor | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -68,6 +71,7 @@ function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
             {coauthors.map((coauthor) => (
               <ListItem
                 key={coauthor.id}
+                disablePadding
                 secondaryAction={
                   coauthor.author ? (
                     <Chip label={dictionary.owner} size="small" />
@@ -83,10 +87,16 @@ function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
                   )
                 }
               >
-                <ListItemAvatar>
-                  <Avatar src={coauthor.image?.avatar} alt={coauthor.name} />
-                </ListItemAvatar>
-                <ListItemText primary={coauthor.name} />
+                <ListItemButton
+                  component={Link}
+                  href={`/${lang}/users/${coauthor.id}`}
+                  onClick={onClose}
+                >
+                  <ListItemAvatar>
+                    <Avatar src={coauthor.image?.avatar} alt={coauthor.name} />
+                  </ListItemAvatar>
+                  <ListItemText primary={coauthor.name} />
+                </ListItemButton>
               </ListItem>
             ))}
           </List>

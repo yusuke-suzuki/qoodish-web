@@ -24,6 +24,8 @@ import ReviewPopover from './ReviewPopover';
 type Props = {
   map: AppMap | null;
   reviews: Review[];
+  milestoneOrders: Map<number, number>;
+  checkedInReviewIds: Set<number>;
   onReviewSaved: () => void;
   onReviewClick: (review: Review) => void;
 };
@@ -47,7 +49,14 @@ function positionInBounds(
   );
 }
 
-function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
+function CustomOverlays({
+  map,
+  reviews,
+  milestoneOrders,
+  checkedInReviewIds,
+  onReviewSaved,
+  onReviewClick
+}: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
 
   const profile = useContext(ProfileContext);
@@ -214,6 +223,13 @@ function CustomOverlays({ map, reviews, onReviewSaved, onReviewClick }: Props) {
         <ReviewMarker
           key={review.id}
           review={review}
+          milestone={
+            milestoneOrders.has(review.id)
+              ? checkedInReviewIds.has(review.id)
+                ? 'visited'
+                : 'planned'
+              : undefined
+          }
           onClick={handleReviewClick}
         />
       ))}
