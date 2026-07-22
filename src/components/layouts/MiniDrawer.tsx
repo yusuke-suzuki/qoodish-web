@@ -4,6 +4,10 @@ import {
   AccountCircle,
   AccountCircleOutlined,
   AddBox,
+  BookmarkBorder,
+  Bookmarks,
+  DirectionsWalk,
+  DirectionsWalkOutlined,
   Explore,
   ExploreOutlined,
   Home,
@@ -126,11 +130,33 @@ export default memo(function MiniDrawer() {
 
           {authenticated && (
             <ListItemButton
+              selected={pathname.endsWith('/journeys')}
+              LinkComponent={Link}
+              href="/journeys"
+              title={dictionary['journey log']}
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>
+                {pathname.endsWith('/journeys') ? (
+                  <DirectionsWalk sx={{ color: 'primary.contrastText' }} />
+                ) : (
+                  <DirectionsWalkOutlined
+                    sx={{ color: 'primary.contrastText' }}
+                  />
+                )}
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+
+          {authenticated && (
+            <ListItemButton
               selected={pathname.endsWith(`/users/${profile?.id}`)}
               LinkComponent={profile ? Link : 'button'}
               href={profile ? `/users/${profile.id}` : undefined}
               disabled={!profile}
-              title={dictionary.account}
+              title={dictionary.profile}
               sx={{
                 justifyContent: 'center'
               }}
@@ -142,6 +168,26 @@ export default memo(function MiniDrawer() {
                   <AccountCircleOutlined
                     sx={{ color: 'primary.contrastText' }}
                   />
+                )}
+              </ListItemIcon>
+            </ListItemButton>
+          )}
+
+          {authenticated && (
+            <ListItemButton
+              selected={pathname.endsWith('/bookmarks')}
+              LinkComponent={Link}
+              href="/bookmarks"
+              title={dictionary.bookmarks}
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0 }}>
+                {pathname.endsWith('/bookmarks') ? (
+                  <Bookmarks sx={{ color: 'primary.contrastText' }} />
+                ) : (
+                  <BookmarkBorder sx={{ color: 'primary.contrastText' }} />
                 )}
               </ListItemIcon>
             </ListItemButton>

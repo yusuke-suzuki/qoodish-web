@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import Timeline from '../../../components/home/Timeline';
-import TrendingReviews from '../../../components/home/TrendingReviews';
-import { getServerAuthState } from '../../../lib/auth';
-import { getPopularReviews, getTimelineReviews } from '../../../lib/reviews';
-import { getDictionary } from '../../../utils/getDictionary';
+import Timeline from '../../../../components/home/Timeline';
+import TrendingReviews from '../../../../components/home/TrendingReviews';
+import { getServerAuthState } from '../../../../lib/auth';
+import { getPopularReviews, getTimelineReviews } from '../../../../lib/reviews';
+import { getDictionary } from '../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string }>;

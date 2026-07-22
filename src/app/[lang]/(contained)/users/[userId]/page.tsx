@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import UserProfile from '../../../../../components/profiles/UserProfile';
+import { getServerAuthState } from '../../../../../lib/auth';
+import { getMyChapters, getUserChapters } from '../../../../../lib/chapters';
 import {
   getProfile,
+  getUserJournal,
   getUserMaps,
   getUserReviews
 } from '../../../../../lib/users';
@@ -53,17 +55,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function UserPage({ params }: Props) {
   const { lang, userId } = await params;
-  const cookieStore = await cookies();
-  const token = cookieStore.get('__session')?.value;
+  const { token, uid } = await getServerAuthState();
   const profile = await getProfile(userId, lang, token);
 
   if (!profile) {
     notFound();
   }
 
-  const [initialReviews, maps] = await Promise.all([
+  const isOwnProfile = Boolean(uid && profile.uid === uid);
+
+  const [initialReviews, maps, journal, chapters] = await Promise.all([
     getUserReviews(userId, lang),
-    getUserMaps(userId, lang, token)
+    getUserMaps(userId, lang, token),
+    getUserJournal(userId, lang, token),
+    isOwnProfile
+      ? getMyChapters(lang, token)
+      : getUserChapters(userId, lang, token)
   ]);
 
   return (
@@ -71,6 +78,8 @@ export default async function UserPage({ params }: Props) {
       profile={profile}
       initialReviews={initialReviews}
       maps={maps}
+      journal={journal}
+      chapters={chapters}
     />
   );
 }

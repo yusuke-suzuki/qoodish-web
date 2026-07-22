@@ -1,8 +1,9 @@
-import { DragHandle, Lock } from '@mui/icons-material';
+import { Lock } from '@mui/icons-material';
 import { Avatar, Box, CardHeader, Skeleton, type SxProps } from '@mui/material';
 import { type ReactNode, memo } from 'react';
 import type { AppMap, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import DrawerPuller from '../common/DrawerPuller';
 
 type Props = {
   map: AppMap | null;
@@ -17,11 +18,7 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
 
   return (
     <>
-      {draggable && (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          {<DragHandle fontSize="small" color="disabled" />}
-        </Box>
-      )}
+      {draggable && <DrawerPuller />}
       <CardHeader
         sx={sx}
         avatar={

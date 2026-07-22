@@ -1,4 +1,10 @@
-import type { AppMap, Notification, Profile, Review } from '../../types';
+import type {
+  AppMap,
+  Journal,
+  Notification,
+  Profile,
+  Review
+} from '../../types';
 import { apiFetch } from './api';
 
 export async function getProfile(
@@ -25,6 +31,52 @@ export async function getUserMaps(
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
+  });
+  return data ?? [];
+}
+
+export async function getUserJournal(
+  userId: string,
+  lang: string,
+  token?: string
+): Promise<Journal | null> {
+  if (!token) {
+    return null;
+  }
+
+  const { data } = await apiFetch<Journal>(`/users/${userId}/journal`, {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data;
+}
+
+export async function getBookmarkedMaps(
+  lang: string,
+  token?: string
+): Promise<AppMap[]> {
+  if (!token) {
+    return [];
+  }
+
+  const { data } = await apiFetch<AppMap[]>('/me/bookmarks/maps', {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data ?? [];
+}
+
+export async function getBookmarkedJournals(
+  lang: string,
+  token?: string
+): Promise<Journal[]> {
+  if (!token) {
+    return [];
+  }
+
+  const { data } = await apiFetch<Journal[]>('/me/bookmarks/journals', {
+    lang,
+    next: { revalidate: 0 }
   });
   return data ?? [];
 }

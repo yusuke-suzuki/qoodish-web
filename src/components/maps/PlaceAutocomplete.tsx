@@ -14,9 +14,10 @@ type Props = {
   ref: MutableRefObject<HTMLInputElement>;
   onChange: (place: google.maps.places.Place) => void;
   label?: string;
+  autoFocus?: boolean;
 };
 
-function PlaceAutocomplete({ ref, onChange, label }: Props) {
+function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   const { lang } = useParams<{ lang: string }>();
 
   const { loader } = useGoogleMap();
@@ -77,7 +78,7 @@ function PlaceAutocomplete({ ref, onChange, label }: Props) {
     <TextField
       variant="outlined"
       fullWidth
-      autoFocus
+      autoFocus={autoFocus}
       type="search"
       size="small"
       slotProps={{

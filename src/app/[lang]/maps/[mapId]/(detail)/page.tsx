@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import MapDetailView from '../../../../components/maps/MapDetailView';
-import { getServerAuthState } from '../../../../lib/auth';
-import { getMap, getMapCoauthors, getMapReviews } from '../../../../lib/maps';
-import { getProfile } from '../../../../lib/users';
-import { getDictionary } from '../../../../utils/getDictionary';
+import MapDetailView from '../../../../../components/maps/MapDetailView';
+import { getServerAuthState } from '../../../../../lib/auth';
+import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys';
+import {
+  getMap,
+  getMapCoauthors,
+  getMapReviews
+} from '../../../../../lib/maps';
+import { getProfile } from '../../../../../lib/users';
+import { getDictionary } from '../../../../../utils/getDictionary';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;
@@ -58,16 +63,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
   const { token, uid } = await getServerAuthState();
-  const [map, reviews, coauthors, profile] = await Promise.all([
+  const [map, reviews, coauthors, profile, journeys] = await Promise.all([
     getMap(mapId, lang, token),
     getMapReviews(mapId, lang, token),
     getMapCoauthors(mapId, lang, token),
-    uid ? getProfile(uid, lang, token) : Promise.resolve(null)
+    uid ? getProfile(uid, lang, token) : Promise.resolve(null),
+    getMyJourneys(lang, token)
   ]);
 
   if (!map) {
     notFound();
   }
+
+  const currentSummary = journeys.find(
+    (journey) => journey.map_id === map.id && !journey.finished_at
+  );
+  const currentJourney = currentSummary
+    ? await getMyJourney(String(currentSummary.id), lang, token)
+    : null;
 
   return (
     <Suspense>
@@ -76,6 +89,7 @@ export default async function MapPage({ params }: Props) {
         reviews={reviews}
         coauthors={coauthors}
         currentProfile={profile}
+        currentJourney={currentJourney}
       />
     </Suspense>
   );
