@@ -45,7 +45,7 @@ This document provides essential context for Claude Code to understand the Qoodi
 ## 4. Code Generation & Modification Guidelines
 
 - When adding new features, follow the existing architectural patterns. For example, a new data type should have its server fetchers in `src/lib/`, mutations in `src/actions/`, components in `src/components/`, and routes in `src/app/[lang]/`.
-- When creating components, use MUI components (`<Button>`, `<Card>`, `<Typography>`, etc.) as the base.
+- **Component Library (MUI):** MUI is the assumed component library — build UI from its components (`<Button>`, `<Card>`, `<Typography>`, etc.). Satisfy a requirement with MUI's default behavior and built-in props (`variant`, `size`, `color`, `slotProps`, etc.) first; reach for `sx` or custom CSS only when the defaults cannot express it. Do not override MUI's internal styles to reproduce what a default or prop already provides.
 - Ensure all new code is strongly typed with TypeScript.
 - For user-facing text, always use the i18n dictionaries and the `useDictionary` hook. Do not hardcode strings in English or Japanese.
 - **Responsive Layout:** Design mobile-first. Every layout must function on small screens — buttons must not overflow their containers, and text must not be truncated in a way that makes it ambiguous or unintelligible. Use MUI's responsive utilities (`sx` breakpoints, `useMediaQuery`) to adapt layouts across screen sizes.
