@@ -12,7 +12,7 @@ import type {
   Review
 } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
-import useJourney from '../../hooks/useJourney';
+import useJourney, { type PauseReason } from '../../hooks/useJourney';
 import IssueDialog from '../common/IssueDialog';
 import EndJourneyDialog from '../journeys/EndJourneyDialog';
 import JourneyFab from '../journeys/JourneyFab';
@@ -68,6 +68,18 @@ export default function MapDetailView({
     enqueueSnackbar(dictionary['location unavailable'], { variant: 'error' });
   }, [dictionary]);
 
+  const handlePaused = useCallback(
+    (reason: PauseReason) => {
+      enqueueSnackbar(
+        reason === 'permission'
+          ? dictionary['journey paused permission']
+          : dictionary['journey paused inactivity'],
+        { variant: 'warning' }
+      );
+    },
+    [dictionary]
+  );
+
   const handleJourneyError = useCallback(
     (message: string | null) => {
       enqueueSnackbar(message ?? dictionary['an error occurred'], {
@@ -83,9 +95,12 @@ export default function MapDetailView({
   const {
     journey,
     trail,
+    paused,
     addMilestone,
     start,
     end,
+    pause,
+    resume,
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
@@ -99,6 +114,7 @@ export default function MapDetailView({
     onCheckin: handleCheckin,
     onPosition: setJourneyPosition,
     onLocationError: handleLocationError,
+    onPaused: handlePaused,
     onError: handleJourneyError
   });
 
@@ -149,6 +165,24 @@ export default function MapDetailView({
       setStartDialogOpen(false);
     }
   }, [start]);
+
+  const handlePause = useCallback(() => {
+    pause();
+    enqueueSnackbar(dictionary['journey recording paused'], {
+      variant: 'info'
+    });
+  }, [pause, dictionary]);
+
+  const handleResume = useCallback(async () => {
+    const resumed = await resume();
+
+    enqueueSnackbar(
+      resumed
+        ? dictionary['journey recording resumed']
+        : dictionary['journey resume unavailable'],
+      { variant: resumed ? 'success' : 'error' }
+    );
+  }, [resume, dictionary]);
 
   const handleEnd = useCallback(async () => {
     const finished = await end();
@@ -284,6 +318,7 @@ export default function MapDetailView({
               <JourneyFab
                 disabled={false}
                 journey={journey}
+                paused={paused}
                 onStartClick={() => setStartDialogOpen(true)}
                 onOpenProgress={() => setProgressOpen(true)}
               />
@@ -293,12 +328,15 @@ export default function MapDetailView({
                 onOpen={() => setProgressOpen(true)}
                 journey={journey}
                 reviews={reviews}
+                paused={paused}
                 onRemoveMilestone={removeMilestone}
                 onRemoveCheckin={removeCheckin}
                 onAttachImage={attachCheckinImage}
                 onRemoveImage={removeCheckinImage}
                 onSaveNote={updateCheckinNote}
                 onStartClick={() => setStartDialogOpen(true)}
+                onPauseClick={handlePause}
+                onResumeClick={handleResume}
                 onEndClick={() => setEndDialogOpen(true)}
               />
             </>
