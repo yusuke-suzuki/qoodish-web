@@ -10,13 +10,19 @@ import {
   Typography
 } from '@mui/material';
 import { memo } from 'react';
-import type { AppMap, Coauthor, Profile, Review } from '../../../types';
+import type {
+  AppMap,
+  Chapter,
+  Coauthor,
+  Profile,
+  Review
+} from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import BookmarkButton from './BookmarkButton';
 import Coauthors from './Coauthors';
 import MapCardHeader from './MapCardHeader';
+import MapDetailTabs from './MapDetailTabs';
 import MapMenuButton from './MapMenuButton';
-import MapReviewList from './MapReviewList';
 import PrivateMapChip from './PrivateMapChip';
 import RemoveBookmarkButton from './RemoveBookmarkButton';
 
@@ -24,6 +30,7 @@ type Props = {
   map: AppMap | null;
   reviews: Review[];
   coauthors: Coauthor[];
+  chapters: Chapter[];
   currentProfile: Profile | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -35,6 +42,7 @@ export default memo(function MapSummaryCard({
   map,
   reviews,
   coauthors,
+  chapters,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -134,29 +142,7 @@ export default memo(function MapSummaryCard({
         </Box>
       </CardContent>
       <Divider />
-      <CardContent>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}
-        >
-          <Typography variant="h6" component="h2">
-            {dictionary.spots}
-          </Typography>
-
-          <Typography
-            variant="subtitle1"
-            component="div"
-            color="text.secondary"
-          >
-            {reviews.length}
-          </Typography>
-        </Box>
-
-        <MapReviewList reviews={reviews} />
-      </CardContent>
+      <MapDetailTabs reviews={reviews} chapters={chapters} />
     </Card>
   );
 });
