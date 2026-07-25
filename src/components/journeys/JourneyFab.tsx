@@ -1,4 +1,4 @@
-import { DirectionsWalk } from '@mui/icons-material';
+import { DirectionsWalk, Pause } from '@mui/icons-material';
 import { Box, Fab } from '@mui/material';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
 import type { Journey } from '../../../types';
@@ -11,6 +11,7 @@ import MapControl from '../maps/MapControl';
 type Props = {
   disabled: boolean;
   journey: Journey | null;
+  paused: boolean;
   onStartClick: () => void;
   onOpenProgress: () => void;
 };
@@ -18,6 +19,7 @@ type Props = {
 function JourneyFab({
   disabled,
   journey,
+  paused,
   onStartClick,
   onOpenProgress
 }: Props) {
@@ -58,6 +60,30 @@ function JourneyFab({
     onStartClick();
   }, [journey, onOpenProgress, onStartClick, authenticated, setSignInRequired]);
 
+  const icon = !active ? (
+    <DirectionsWalk sx={{ mr: 1 }} />
+  ) : paused ? (
+    <Pause sx={{ mr: 1 }} />
+  ) : (
+    <Box
+      sx={{
+        mr: 1,
+        display: 'inline-flex',
+        color: 'primary.main'
+      }}
+    >
+      <WalkingFootprints count={1} />
+    </Box>
+  );
+
+  const label = active
+    ? paused
+      ? dictionary['journey paused']
+      : dictionary['journey in progress']
+    : journey && journey.milestones.length > 0
+      ? `${dictionary['start journey']} (${journey.milestones.length})`
+      : dictionary['start journey'];
+
   return (
     <MapControl controlPosition={controlPosition}>
       <Box sx={{ p: 2 }}>
@@ -68,24 +94,8 @@ function JourneyFab({
           onClick={handleClick}
           sx={active ? { bgcolor: 'background.paper' } : undefined}
         >
-          {active ? (
-            <Box
-              sx={{
-                mr: 1,
-                display: 'inline-flex',
-                color: 'primary.main'
-              }}
-            >
-              <WalkingFootprints count={1} />
-            </Box>
-          ) : (
-            <DirectionsWalk sx={{ mr: 1 }} />
-          )}
-          {active
-            ? dictionary['journey in progress']
-            : journey && journey.milestones.length > 0
-              ? `${dictionary['start journey']} (${journey.milestones.length})`
-              : dictionary['start journey']}
+          {icon}
+          {label}
         </Fab>
       </Box>
     </MapControl>

@@ -68,6 +68,7 @@ import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import { createChapterContent } from '../../utils/chapterContent';
 import { trailDistanceMeters } from '../../utils/geo';
+import { deletePaused } from '../../utils/journeyPauseStorage';
 import { deleteTrail, loadTrail } from '../../utils/journeyTrailStorage';
 import { createMapFeatures } from '../../utils/mapFeatures';
 import { decodePath, encodePath } from '../../utils/polyline';
@@ -349,6 +350,7 @@ export default function JourneyDetailView({
 
     if (uid) {
       deleteTrail(uid, journey.id);
+      deletePaused(uid, journey.id);
     }
 
     setEnded(true);

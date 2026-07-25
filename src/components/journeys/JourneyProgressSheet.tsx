@@ -6,7 +6,9 @@ import {
   Delete,
   DirectionsWalk,
   MoreVert,
-  Place
+  Pause,
+  Place,
+  PlayArrow
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -19,6 +21,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
   SwipeableDrawer,
   Typography
 } from '@mui/material';
@@ -187,12 +190,15 @@ type Props = {
   onOpen: () => void;
   journey: Journey | null;
   reviews: Review[];
+  paused: boolean;
   onRemoveMilestone: (milestone: Milestone) => void;
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
   onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<boolean>;
   onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
   onStartClick: () => void;
+  onPauseClick: () => void;
+  onResumeClick: () => void | Promise<void>;
   onEndClick: () => void;
 };
 
@@ -202,12 +208,15 @@ function JourneyProgressSheet({
   onOpen,
   journey,
   reviews,
+  paused,
   onRemoveMilestone,
   onRemoveCheckin,
   onAttachImage,
   onRemoveImage,
   onSaveNote,
   onStartClick,
+  onPauseClick,
+  onResumeClick,
   onEndClick
 }: Props) {
   const dictionary = useDictionary();
@@ -269,6 +278,23 @@ function JourneyProgressSheet({
   const visitedCount = plannedItems.filter((item) => item.checkin).length;
   const progress =
     plannedItems.length > 0 ? (visitedCount / plannedItems.length) * 100 : 0;
+
+  const [resuming, setResuming] = useState(false);
+
+  const handleRecordingToggle = useCallback(async () => {
+    if (!paused) {
+      onPauseClick();
+      return;
+    }
+
+    setResuming(true);
+
+    try {
+      await onResumeClick();
+    } finally {
+      setResuming(false);
+    }
+  }, [paused, onPauseClick, onResumeClick]);
 
   const handleRemoveItem = useCallback(
     (item: TimelineItem) => {
@@ -368,16 +394,30 @@ function JourneyProgressSheet({
         }}
       >
         {journey?.started_at ? (
-          <Button
-            fullWidth
-            disableElevation
-            variant="contained"
-            color="success"
-            startIcon={<Check />}
-            onClick={onEndClick}
-          >
-            {dictionary['end journey']}
-          </Button>
+          <Stack spacing={1}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              loading={resuming}
+              startIcon={paused ? <PlayArrow /> : <Pause />}
+              onClick={handleRecordingToggle}
+            >
+              {paused
+                ? dictionary['resume journey recording']
+                : dictionary['pause journey recording']}
+            </Button>
+            <Button
+              fullWidth
+              disableElevation
+              variant="contained"
+              color="success"
+              startIcon={<Check />}
+              onClick={onEndClick}
+            >
+              {dictionary['end journey']}
+            </Button>
+          </Stack>
         ) : (
           <Button
             fullWidth

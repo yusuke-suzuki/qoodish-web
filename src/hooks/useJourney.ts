@@ -24,6 +24,11 @@ import {
 import AuthContext from '../context/AuthContext';
 import { distanceInMeters } from '../utils/geo';
 import {
+  deletePaused,
+  loadPaused,
+  savePaused
+} from '../utils/journeyPauseStorage';
+import {
   deleteTrail,
   loadTrail,
   saveTrail
@@ -34,6 +39,29 @@ const CHECKIN_RADIUS_METERS = 50;
 const PATH_MIN_DISTANCE_METERS = 10;
 const CHECKIN_VIBRATION_MS = 30;
 
+// A coarse fix can report a spot as reachable from far outside the check-in
+// radius, so anything less certain than this is only used to draw the trail.
+const CHECKIN_MAX_ACCURACY_METERS = 100;
+
+const ACCURACY_UPGRADE_RADIUS_METERS = 300;
+const ACCURACY_DOWNGRADE_RADIUS_METERS = 500;
+
+const INACTIVITY_PAUSE_MS = 8 * 60 * 60 * 1000;
+const INACTIVITY_CHECK_INTERVAL_MS = 10 * 60 * 1000;
+const INITIAL_POSITION_TIMEOUT_MS = 15000;
+
+const HIGH_ACCURACY_OPTIONS: PositionOptions = {
+  enableHighAccuracy: true,
+  maximumAge: 10000
+};
+
+const LOW_ACCURACY_OPTIONS: PositionOptions = {
+  enableHighAccuracy: false,
+  maximumAge: 60000
+};
+
+export type PauseReason = 'permission' | 'inactivity';
+
 type Args = {
   map: AppMap;
   reviews: Review[];
@@ -42,6 +70,7 @@ type Args = {
   onCheckin: (review: Review) => void;
   onPosition: (position: GeolocationPosition) => void;
   onLocationError: () => void;
+  onPaused: (reason: PauseReason) => void;
   onError: (message: string | null) => void;
 };
 
@@ -58,6 +87,7 @@ export default function useJourney({
   onCheckin,
   onPosition,
   onLocationError,
+  onPaused,
   onError
 }: Args) {
   const { uid, authenticated, setSignInRequired } = useContext(AuthContext);
@@ -67,6 +97,12 @@ export default function useJourney({
 
   const trailRef = useRef<JourneyPathPoint[]>([]);
   const [trail, setTrail] = useState<JourneyPathPoint[]>([]);
+
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  const [visible, setVisible] = useState(true);
+  const [highAccuracy, setHighAccuracy] = useState(true);
+  const lastPositionAtRef = useRef<number | null>(null);
 
   const reviewsRef = useRef(reviews);
   reviewsRef.current = reviews;
@@ -92,6 +128,26 @@ export default function useJourney({
     [uid]
   );
 
+  const commitPaused = useCallback(
+    (next: boolean) => {
+      pausedRef.current = next;
+      setPaused(next);
+
+      // The gap that led to an inactivity pause would still be there on
+      // resume and would pause the journey again right away.
+      if (!next) {
+        lastPositionAtRef.current = null;
+      }
+
+      const current = journeyRef.current;
+
+      if (uid && current) {
+        savePaused(uid, current.id, next);
+      }
+    },
+    [uid]
+  );
+
   // Must run before the watch effect below registers: a position delivered
   // while the stored trail is not yet hydrated would make commitTrail
   // overwrite it with a single fresh point.
@@ -106,6 +162,10 @@ export default function useJourney({
       const stored = loadTrail(uid, current.id);
       trailRef.current = stored;
       setTrail(stored);
+
+      const storedPaused = loadPaused(uid, current.id);
+      pausedRef.current = storedPaused;
+      setPaused(storedPaused);
     }
   }, [uid]);
 
@@ -239,6 +299,8 @@ export default function useJourney({
         return;
       }
 
+      lastPositionAtRef.current = position.timestamp;
+
       const here = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
@@ -246,10 +308,14 @@ export default function useJourney({
 
       const lastPoint = trailRef.current.at(-1);
 
-      if (
-        !lastPoint ||
-        distanceInMeters(here, lastPoint) >= PATH_MIN_DISTANCE_METERS
-      ) {
+      // A coarse fix drifts on its own, so the threshold follows the reported
+      // accuracy to keep those jumps out of the trail.
+      const minDistance = Math.max(
+        PATH_MIN_DISTANCE_METERS,
+        position.coords.accuracy
+      );
+
+      if (!lastPoint || distanceInMeters(here, lastPoint) >= minDistance) {
         commitTrail([...trailRef.current, here]);
       }
 
@@ -257,9 +323,28 @@ export default function useJourney({
         current.checkins.map((checkin) => checkin.review_id)
       );
 
-      const reached = reviewsRef.current.filter(
+      const remaining = reviewsRef.current.filter(
+        (review) => !visitedIds.has(review.id)
+      );
+
+      const nearest = remaining.reduce(
+        (shortest, review) =>
+          Math.min(shortest, distanceInMeters(here, review)),
+        Number.POSITIVE_INFINITY
+      );
+
+      setHighAccuracy((enabled) =>
+        enabled
+          ? nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
+          : nearest <= ACCURACY_UPGRADE_RADIUS_METERS
+      );
+
+      if (position.coords.accuracy > CHECKIN_MAX_ACCURACY_METERS) {
+        return;
+      }
+
+      const reached = remaining.filter(
         (review) =>
-          !visitedIds.has(review.id) &&
           !pendingCheckinsRef.current.has(review.id) &&
           distanceInMeters(here, review) <= CHECKIN_RADIUS_METERS
       );
@@ -271,28 +356,64 @@ export default function useJourney({
     [uid, onPosition, commitTrail, performCheckin]
   );
 
+  // Losing the permission mid-journey must not cost the traveller their
+  // milestones and check-ins, so recording only pauses.
   const handleError = useCallback(
     (error: GeolocationPositionError) => {
-      if (error.code !== error.PERMISSION_DENIED) {
+      // The watch stays live until the effect cleanup runs, so a second
+      // error can arrive before it is torn down. The ref settles at once
+      // where the state would not.
+      if (pausedRef.current || error.code !== error.PERMISSION_DENIED) {
         return;
       }
 
-      const current = journeyRef.current;
-
-      if (uid && current) {
-        deleteTrail(uid, current.id);
-        deleteJourney(current.id);
-      }
-
-      commitJourney(null);
-      onLocationError();
+      commitPaused(true);
+      onPaused('permission');
     },
-    [uid, onLocationError, commitJourney]
+    [commitPaused, onPaused]
   );
 
-  const watching = Boolean(
-    canRecord && journey?.started_at && !journey.finished_at
+  const recording = Boolean(
+    canRecord && journey?.started_at && !journey.finished_at && !paused
   );
+
+  const watching = recording && visible;
+
+  useEffect(() => {
+    const sync = () => setVisible(document.visibilityState === 'visible');
+
+    sync();
+    document.addEventListener('visibilitychange', sync);
+
+    return () => document.removeEventListener('visibilitychange', sync);
+  }, []);
+
+  // A journey left running overnight would keep the device fixing positions
+  // for nothing, so a long gap without a fix stops it until the traveller
+  // sets off again.
+  useEffect(() => {
+    if (!visible || !recording) {
+      return;
+    }
+
+    const check = () => {
+      const lastPositionAt = lastPositionAtRef.current;
+
+      if (
+        lastPositionAt &&
+        Date.now() - lastPositionAt >= INACTIVITY_PAUSE_MS
+      ) {
+        commitPaused(true);
+        onPaused('inactivity');
+      }
+    };
+
+    check();
+
+    const intervalId = setInterval(check, INACTIVITY_CHECK_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
+  }, [visible, recording, commitPaused, onPaused]);
 
   useEffect(() => {
     if (!uid || !watching) {
@@ -307,14 +428,50 @@ export default function useJourney({
     const watchId = navigator.geolocation.watchPosition(
       handlePosition,
       handleError,
-      {
-        enableHighAccuracy: true,
-        maximumAge: 10000
-      }
+      highAccuracy ? HIGH_ACCURACY_OPTIONS : LOW_ACCURACY_OPTIONS
     );
 
     return () => navigator.geolocation.clearWatch(watchId);
-  }, [uid, watching, handlePosition, handleError, onLocationError]);
+  }, [
+    uid,
+    watching,
+    highAccuracy,
+    handlePosition,
+    handleError,
+    onLocationError
+  ]);
+
+  const requestPosition =
+    useCallback((): Promise<GeolocationPosition | null> => {
+      if (!('geolocation' in navigator)) {
+        return Promise.resolve(null);
+      }
+
+      return new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          (fix) => resolve(fix),
+          () => resolve(null),
+          { ...HIGH_ACCURACY_OPTIONS, timeout: INITIAL_POSITION_TIMEOUT_MS }
+        );
+      });
+    }, []);
+
+  const pause = useCallback(() => commitPaused(true), [commitPaused]);
+
+  // Asking here rather than letting the watch ask keeps a refused resume from
+  // reporting success and bouncing straight back to paused.
+  const resume = useCallback(async (): Promise<boolean> => {
+    const position = await requestPosition();
+
+    if (!position) {
+      return false;
+    }
+
+    commitPaused(false);
+    handlePosition(position);
+
+    return true;
+  }, [requestPosition, commitPaused, handlePosition]);
 
   const ensureJourney = useCallback(async (): Promise<Journey | null> => {
     const current = journeyRef.current;
@@ -383,12 +540,16 @@ export default function useJourney({
     ]
   );
 
+  // The permission prompt belongs to this tap rather than to the watch that
+  // follows, so a refused journey never reaches the started state.
   const start = useCallback(async (): Promise<boolean> => {
     if (!uid) {
       return false;
     }
 
-    if (!('geolocation' in navigator)) {
+    const position = await requestPosition();
+
+    if (!position) {
       onLocationError();
       return false;
     }
@@ -403,12 +564,23 @@ export default function useJourney({
 
     if (success && data) {
       commitJourney(data);
+      commitPaused(false);
+      handlePosition(position);
       return true;
     }
 
     onError(error);
     return false;
-  }, [uid, ensureJourney, commitJourney, onLocationError, onError]);
+  }, [
+    uid,
+    requestPosition,
+    ensureJourney,
+    commitJourney,
+    commitPaused,
+    handlePosition,
+    onLocationError,
+    onError
+  ]);
 
   const removeMilestone = useCallback(
     async (milestone: Milestone) => {
@@ -504,9 +676,12 @@ export default function useJourney({
     }
 
     deleteTrail(uid, current.id);
+    deletePaused(uid, current.id);
     commitJourney(null);
     trailRef.current = [];
     setTrail([]);
+    pausedRef.current = false;
+    setPaused(false);
 
     return { journey: data, trail: points };
   }, [uid, commitJourney, onError]);
@@ -514,9 +689,12 @@ export default function useJourney({
   return {
     journey,
     trail,
+    paused,
     addMilestone,
     start,
     end,
+    pause,
+    resume,
     removeMilestone,
     removeCheckin,
     attachCheckinImage,
