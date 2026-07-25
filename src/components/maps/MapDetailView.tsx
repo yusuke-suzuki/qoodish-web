@@ -6,6 +6,7 @@ import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
   AppMap,
+  Chapter,
   Coauthor,
   Journey,
   Profile,
@@ -34,6 +35,7 @@ type Props = {
   map: AppMap;
   reviews: Review[];
   coauthors: Coauthor[];
+  chapters: Chapter[];
   currentProfile: Profile | null;
   currentJourney: Journey | null;
 };
@@ -42,6 +44,7 @@ export default function MapDetailView({
   map,
   reviews,
   coauthors,
+  chapters,
   currentProfile,
   currentJourney
 }: Props) {
@@ -237,6 +240,7 @@ export default function MapDetailView({
         map={map}
         reviews={reviews}
         coauthors={coauthors}
+        chapters={chapters}
         currentProfile={currentProfile}
         onEditClick={() => setEditDialogOpen(true)}
         onDeleteClick={() => setDeleteDialogOpen(true)}
@@ -277,6 +281,7 @@ export default function MapDetailView({
             map={map}
             reviews={reviews}
             coauthors={coauthors}
+            chapters={chapters}
             currentProfile={currentProfile}
             onEditClick={() => setEditDialogOpen(true)}
             onDeleteClick={() => setDeleteDialogOpen(true)}

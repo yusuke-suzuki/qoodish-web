@@ -1,6 +1,7 @@
 import { HistoryEdu, Place } from '@mui/icons-material';
 import {
   Avatar,
+  Box,
   List,
   ListItemAvatar,
   ListItemButton,
@@ -36,9 +37,13 @@ function MapReviewList({ reviews, onReviewClick }: Props) {
     [onReviewClick, push, pathname]
   );
 
+  // The rows carry their own padding, so the panel around this list has none
+  // to give the empty state.
   if (reviews.length < 1) {
     return (
-      <NoContents icon={Place} message={dictionary['spots will see here']} />
+      <Box sx={{ py: 4 }}>
+        <NoContents icon={Place} message={dictionary['spots will see here']} />
+      </Box>
     );
   }
 

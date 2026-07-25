@@ -13,6 +13,8 @@ const summaryCardWidth = 360;
 
 const reviewSkeletonKeys = ['a', 'b', 'c'];
 
+const tabSkeletonKeys = ['spots', 'chapters'];
+
 export default function Loading() {
   return (
     <Box sx={{ display: { xs: 'block', md: 'flex' } }}>
@@ -50,18 +52,27 @@ export default function Loading() {
             </Box>
           </CardContent>
           <Divider />
-          <CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 1
-              }}
-            >
-              <Skeleton variant="text" width="30%" />
-              <Skeleton variant="text" width={24} />
-            </Box>
+          <Box
+            sx={{ display: 'flex', borderBottom: 1, borderColor: 'divider' }}
+          >
+            {tabSkeletonKeys.map((key) => (
+              <Box
+                key={key}
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 1,
+                  py: 1.5
+                }}
+              >
+                <Skeleton variant="circular" width={20} height={20} />
+                <Skeleton variant="text" width="40%" />
+              </Box>
+            ))}
+          </Box>
+          <Box sx={{ px: 2 }}>
             {reviewSkeletonKeys.map((key) => (
               <Box
                 key={key}
@@ -75,7 +86,7 @@ export default function Loading() {
                 <Skeleton variant="circular" width={24} height={24} />
               </Box>
             ))}
-          </CardContent>
+          </Box>
         </Card>
       </Box>
 

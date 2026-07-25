@@ -6,6 +6,7 @@ import { getServerAuthState } from '../../../../../lib/auth';
 import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys';
 import {
   getMap,
+  getMapChapters,
   getMapCoauthors,
   getMapReviews
 } from '../../../../../lib/maps';
@@ -63,13 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
   const { token, uid } = await getServerAuthState();
-  const [map, reviews, coauthors, profile, journeys] = await Promise.all([
-    getMap(mapId, lang, token),
-    getMapReviews(mapId, lang, token),
-    getMapCoauthors(mapId, lang, token),
-    uid ? getProfile(uid, lang, token) : Promise.resolve(null),
-    getMyJourneys(lang, token)
-  ]);
+  const [map, reviews, coauthors, chapters, profile, journeys] =
+    await Promise.all([
+      getMap(mapId, lang, token),
+      getMapReviews(mapId, lang, token),
+      getMapCoauthors(mapId, lang, token),
+      getMapChapters(mapId, lang, token),
+      uid ? getProfile(uid, lang, token) : Promise.resolve(null),
+      getMyJourneys(lang, token)
+    ]);
 
   if (!map) {
     notFound();
@@ -88,6 +91,7 @@ export default async function MapPage({ params }: Props) {
         map={map}
         reviews={reviews}
         coauthors={coauthors}
+        chapters={chapters}
         currentProfile={profile}
         currentJourney={currentJourney}
       />

@@ -8,14 +8,20 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useCallback, useContext, useEffect, useState } from 'react';
-import type { AppMap, Coauthor, Profile, Review } from '../../../types';
+import type {
+  AppMap,
+  Chapter,
+  Coauthor,
+  Profile,
+  Review
+} from '../../../types';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
 import BookmarkButton from './BookmarkButton';
 import Coauthors from './Coauthors';
 import MapCardHeader from './MapCardHeader';
+import MapDetailTabs from './MapDetailTabs';
 import MapMenuButton from './MapMenuButton';
-import MapReviewList from './MapReviewList';
 import MobileMiniMapHeader from './MobileMiniMapHeader';
 import PrivateMapChip from './PrivateMapChip';
 import RemoveBookmarkButton from './RemoveBookmarkButton';
@@ -25,6 +31,7 @@ type Props = {
   map: AppMap | null;
   reviews: Review[];
   coauthors: Coauthor[];
+  chapters: Chapter[];
   currentProfile: Profile | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
@@ -38,6 +45,7 @@ function MobileMapDrawer({
   map,
   reviews,
   coauthors,
+  chapters,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -182,32 +190,11 @@ function MobileMapDrawer({
             </Box>
           </CardContent>
           <Divider />
-          <CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <Typography variant="subtitle2" component="h2">
-                {dictionary.spots}
-              </Typography>
-
-              <Typography
-                variant="subtitle1"
-                component="div"
-                color="text.secondary"
-              >
-                {reviews.length}
-              </Typography>
-            </Box>
-
-            <MapReviewList
-              reviews={reviews}
-              onReviewClick={handleReviewClick}
-            />
-          </CardContent>
+          <MapDetailTabs
+            reviews={reviews}
+            chapters={chapters}
+            onReviewClick={handleReviewClick}
+          />
         </Box>
       </SwipeableDrawer>
     </>
