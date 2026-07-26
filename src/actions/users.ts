@@ -13,6 +13,7 @@ type UpdatePushNotificationParams = {
   liked: boolean;
   coauthor_invited: boolean;
   comment: boolean;
+  published: boolean;
 };
 
 type ActionResult<T = null> = {

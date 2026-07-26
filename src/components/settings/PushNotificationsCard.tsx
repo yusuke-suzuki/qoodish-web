@@ -42,6 +42,7 @@ function PushNotificationsCard() {
   const [likedEnabled, setLikedEnabled] = useState(false);
   const [coauthorInvitedEnabled, setCoauthorInvitedEnabled] = useState(false);
   const [commentEnabled, setCommentEnabled] = useState(false);
+  const [publishedEnabled, setPublishedEnabled] = useState(false);
 
   const handleSubscriptionChange = useCallback(
     async (_event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -71,7 +72,8 @@ function PushNotificationsCard() {
       const result = await updatePushNotification(uid, {
         liked: likedEnabled,
         coauthor_invited: coauthorInvitedEnabled,
-        comment: commentEnabled
+        comment: commentEnabled,
+        published: publishedEnabled
       });
 
       if (result.success) {
@@ -86,13 +88,21 @@ function PushNotificationsCard() {
     } finally {
       setLoading(false);
     }
-  }, [uid, likedEnabled, coauthorInvitedEnabled, commentEnabled, dictionary]);
+  }, [
+    uid,
+    likedEnabled,
+    coauthorInvitedEnabled,
+    commentEnabled,
+    publishedEnabled,
+    dictionary
+  ]);
 
   useEffect(() => {
     if (profile?.push_notification) {
       setLikedEnabled(profile.push_notification.liked);
       setCoauthorInvitedEnabled(profile.push_notification.coauthor_invited);
       setCommentEnabled(profile.push_notification.comment);
+      setPublishedEnabled(profile.push_notification.published);
     }
   }, [profile]);
 
@@ -170,6 +180,19 @@ function PushNotificationsCard() {
                 />
               }
               label={dictionary['push for comment']}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  color="secondary"
+                  checked={publishedEnabled}
+                  onChange={(
+                    _event: ChangeEvent<HTMLInputElement>,
+                    checked: boolean
+                  ) => setPublishedEnabled(checked)}
+                />
+              }
+              label={dictionary['push for published']}
             />
           </FormGroup>
         </FormControl>

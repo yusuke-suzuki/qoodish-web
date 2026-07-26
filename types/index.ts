@@ -9,6 +9,7 @@ export type PushNotification = {
   coauthor_invited: boolean;
   liked: boolean;
   comment: boolean;
+  published: boolean;
 };
 
 export type ImageVariants = {
