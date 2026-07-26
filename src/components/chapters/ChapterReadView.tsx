@@ -19,6 +19,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type { AppMap, Chapter, Journal } from '../../../types';
 import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import { featureSpots } from '../../utils/mapFeatures';
 import ChapterActions from './ChapterActions';
 import ChapterAuthorCard from './ChapterAuthorCard';
@@ -28,6 +29,12 @@ import ChapterCover from './ChapterCover';
 import ChapterMapCard from './ChapterMapCard';
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import MapLinkChip from './MapLinkChip';
+
+const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+};
 
 type Props = {
   chapter: Chapter;
@@ -45,6 +52,7 @@ export default function ChapterReadView({
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatDateTime = useLocalDateTime();
   const router = useRouter();
 
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
@@ -118,11 +126,7 @@ export default function ChapterReadView({
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {new Date(chapter.created_at).toLocaleDateString(lang, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+            {formatDateTime(chapter.created_at, LONG_DATE_OPTIONS)}
           </Typography>
 
           <Box sx={{ mb: 3 }}>

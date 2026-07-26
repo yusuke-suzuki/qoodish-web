@@ -22,14 +22,22 @@ import { type MouseEvent, memo, useCallback, useState } from 'react';
 import type { Chapter } from '../../../types';
 import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
 import NoContents from '../common/NoContents';
 
 const THUMBNAIL_SIZE = { xs: 80, sm: 100 };
 
+const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+};
+
 function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatDateTime = useLocalDateTime();
   const router = useRouter();
 
   const [chapters, setChapters] = useState(initialChapters);
@@ -131,11 +139,7 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
                   }}
                 >
                   <Typography variant="caption" color="text.secondary">
-                    {new Date(chapter.created_at).toLocaleDateString(lang, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
+                    {formatDateTime(chapter.created_at, DATE_OPTIONS)}
                   </Typography>
                   {chapter.status === 'draft' && (
                     <Chip label={dictionary.draft} size="small" />

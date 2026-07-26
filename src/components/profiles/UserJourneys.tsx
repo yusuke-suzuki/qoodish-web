@@ -21,14 +21,24 @@ import { type MouseEvent, memo, useCallback, useState } from 'react';
 import type { JourneySummary } from '../../../types';
 import { deleteJourney } from '../../actions/journeys';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
 import NoContents from '../common/NoContents';
+
+const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+};
 
 function UserJourneys({
   journeys: initialJourneys
 }: { journeys: JourneySummary[] }) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatLocal = useLocalDateTime();
   const router = useRouter();
 
   const [journeys, setJourneys] = useState(initialJourneys);
@@ -108,13 +118,7 @@ function UserJourneys({
                     <DirectionsWalk fontSize="small" color="action" />
                   </ListItemIcon>
                   <ListItemText
-                    primary={new Date(dateSource).toLocaleString(lang, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
+                    primary={formatLocal(dateSource, DATE_TIME_OPTIONS)}
                     secondary={
                       <>
                         {journey.map?.name && (

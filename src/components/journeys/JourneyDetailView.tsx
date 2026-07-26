@@ -66,6 +66,9 @@ import {
 } from '../../actions/journeys';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime, {
+  LOCAL_DATE_TIME_PLACEHOLDER
+} from '../../hooks/useLocalDateTime';
 import { createChapterContent } from '../../utils/chapterContent';
 import { trailDistanceMeters } from '../../utils/geo';
 import { deletePaused } from '../../utils/journeyPauseStorage';
@@ -80,6 +83,24 @@ import CheckinNoteField from './CheckinNoteField';
 import EndJourneyDialog from './EndJourneyDialog';
 import JourneyMap from './JourneyMap';
 import SpotPickerDialog from './SpotPickerDialog';
+
+const DAY_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+};
+
+const TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit'
+};
+
+const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+};
 
 function toDatetimeLocal(value: string): string {
   const date = new Date(value);
@@ -106,6 +127,7 @@ export default function JourneyDetailView({
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatLocal = useLocalDateTime();
   const router = useRouter();
   const { uid } = useContext(AuthContext);
 
@@ -398,26 +420,24 @@ export default function JourneyDetailView({
     router.push(`/${lang}/journeys`);
   }, [journey.id, dictionary, router, lang]);
 
-  const formatDay = (value: string) =>
-    new Date(value).toLocaleDateString(lang, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  const formatDay = (value: string) => formatLocal(value, DAY_OPTIONS);
 
-  const formatTime = (value: string) =>
-    new Date(value).toLocaleTimeString(lang, {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatTime = (value: string) => formatLocal(value, TIME_OPTIONS);
 
   const formatDateTime = (value: string) =>
-    new Date(value).toLocaleString(lang, {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    formatLocal(value, DATE_TIME_OPTIONS);
+
+  const startFormatted = journey.started_at
+    ? formatDateTime(journey.started_at)
+    : null;
+  const finishFormatted = journey.finished_at
+    ? formatDateTime(journey.finished_at)
+    : null;
+  const dateRangeText =
+    startFormatted === LOCAL_DATE_TIME_PLACEHOLDER &&
+    finishFormatted === LOCAL_DATE_TIME_PLACEHOLDER
+      ? LOCAL_DATE_TIME_PLACEHOLDER
+      : [startFormatted, finishFormatted].filter(Boolean).join(' – ');
 
   return (
     <>
@@ -466,12 +486,7 @@ export default function JourneyDetailView({
           </Box>
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            {[
-              journey.started_at ? formatDateTime(journey.started_at) : null,
-              journey.finished_at ? formatDateTime(journey.finished_at) : null
-            ]
-              .filter(Boolean)
-              .join(' – ')}
+            {dateRangeText}
           </Typography>
 
           <Stack

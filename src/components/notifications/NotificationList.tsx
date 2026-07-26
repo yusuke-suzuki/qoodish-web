@@ -13,11 +13,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useContext, useEffect, useMemo, useRef } from 'react';
+import { memo, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { Notification } from '../../../types';
 import { markNotificationAsRead } from '../../actions/notifications';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import { LOCAL_DATE_TIME_PLACEHOLDER } from '../../hooks/useLocalDateTime';
 import sleep from '../../utils/sleep';
 import AuthorAvatar from '../common/AuthorAvatar';
 import NoContents from '../common/NoContents';
@@ -37,6 +38,14 @@ const NotificationList = ({
   const dictionary = useDictionary();
 
   const { authenticated } = useContext(AuthContext);
+
+  // Server rendering resolves "now" and the time zone differently from the
+  // browser, so the elapsed time is only rendered once mounted.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const unreadNotifications = useMemo(
     () => notifications.filter((notification) => !notification.read),
@@ -102,10 +111,12 @@ const NotificationList = ({
             }
             secondary={
               <Typography variant="subtitle1" color="text.secondary">
-                {formatDistanceToNow(new Date(notification.created_at), {
-                  addSuffix: true,
-                  locale: lang === 'ja' ? ja : enUS
-                })}
+                {mounted
+                  ? formatDistanceToNow(new Date(notification.created_at), {
+                      addSuffix: true,
+                      locale: lang === 'ja' ? ja : enUS
+                    })
+                  : LOCAL_DATE_TIME_PLACEHOLDER}
               </Typography>
             }
             disableTypography
