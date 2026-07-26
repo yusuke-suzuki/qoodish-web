@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const chapter = await getChapter(chapterId, lang);
 
   const title = chapter
-    ? `${chapter.title || dict['untitled journey']} | Qoodish`
+    ? `${chapter.title || dict['untitled chapter']} | Qoodish`
     : 'Qoodish';
   const description = dict['meta description'];
   const keywords = `${

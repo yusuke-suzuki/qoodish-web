@@ -122,7 +122,7 @@ export default function ChapterReadView({
           </Box>
 
           <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
-            {chapter.title || dictionary['untitled journey']}
+            {chapter.title || dictionary['untitled chapter']}
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
