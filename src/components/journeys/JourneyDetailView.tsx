@@ -388,7 +388,7 @@ export default function JourneyDetailView({
     setRecording(true);
 
     const { success, data, error } = await createChapter(map.id, {
-      title: dictionary['untitled journey'],
+      title: dictionary['untitled chapter'],
       content: createChapterContent({ ...journey, checkins }),
       map_features: createMapFeatures({ ...journey, checkins }),
       journey_id: journey.id
@@ -710,7 +710,7 @@ export default function JourneyDetailView({
                 <HistoryEdu color="action" />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                   <Typography variant="subtitle2" noWrap>
-                    {chapter.title || dictionary['untitled journey']}
+                    {chapter.title || dictionary['untitled chapter']}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     {chapter.status === 'published'

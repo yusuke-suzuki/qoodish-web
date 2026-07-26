@@ -61,7 +61,7 @@ function MapChapterList({ chapters }: Props) {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={chapter.title || dictionary['untitled journey']}
+            primary={chapter.title || dictionary['untitled chapter']}
             secondary={formatDateTime(chapter.created_at, DATE_OPTIONS)}
             slotProps={{
               primary: {

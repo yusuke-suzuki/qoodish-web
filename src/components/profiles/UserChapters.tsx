@@ -111,7 +111,7 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
                     overflow: 'hidden'
                   }}
                 >
-                  {chapter.title || dictionary['untitled journey']}
+                  {chapter.title || dictionary['untitled chapter']}
                 </Typography>
 
                 {chapter.map?.name && (
