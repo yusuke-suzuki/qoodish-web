@@ -159,6 +159,7 @@
   "push for liked": "投稿に「いいね！」されたとき",
   "push for invited": "共著者に招かれたとき",
   "push for comment": "投稿にコメントされたとき",
+  "push for published": "マップからチャプターが公開されたとき",
   "push update success": "プッシュ通知設定を更新しました",
   "unlink": "リンク解除",
   "link": "リンクする",
