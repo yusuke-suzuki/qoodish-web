@@ -12,8 +12,15 @@ import { useParams } from 'next/navigation';
 import { memo } from 'react';
 import type { Chapter } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import AuthorAvatar from '../common/AuthorAvatar';
 import NoContents from '../common/NoContents';
+
+const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+};
 
 type Props = {
   chapters: Chapter[];
@@ -22,6 +29,7 @@ type Props = {
 function MapChapterList({ chapters }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatDateTime = useLocalDateTime();
 
   // The rows carry their own padding, so the panel around this list has none
   // to give the empty state.
@@ -54,11 +62,7 @@ function MapChapterList({ chapters }: Props) {
           </ListItemAvatar>
           <ListItemText
             primary={chapter.title || dictionary['untitled journey']}
-            secondary={new Date(chapter.created_at).toLocaleDateString(lang, {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric'
-            })}
+            secondary={formatDateTime(chapter.created_at, DATE_OPTIONS)}
             slotProps={{
               primary: {
                 noWrap: true

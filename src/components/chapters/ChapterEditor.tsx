@@ -33,6 +33,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import type { AppMap, Chapter, Journal, Journey, Review } from '../../../types';
 import useChapter from '../../hooks/useChapter';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import { isContentEmpty } from '../../utils/chapterContent';
 import {
   createMapFeatures,
@@ -49,6 +50,12 @@ import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import ConfirmDialog from './ConfirmDialog';
 import MapLinkChip from './MapLinkChip';
 import { $replaceChapterContent } from './replaceChapterContent';
+
+const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+};
 
 type Props = {
   chapter: Chapter;
@@ -70,6 +77,7 @@ export default function ChapterEditor({
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatDateTime = useLocalDateTime();
   const router = useRouter();
 
   const readPath = `/${lang}/chapters/${initialChapter.id}`;
@@ -310,11 +318,7 @@ export default function ChapterEditor({
           />
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {new Date(chapter.created_at).toLocaleDateString(lang, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+            {formatDateTime(chapter.created_at, LONG_DATE_OPTIONS)}
           </Typography>
 
           <Box sx={{ mb: 3 }}>

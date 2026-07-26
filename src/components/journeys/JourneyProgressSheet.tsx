@@ -36,9 +36,15 @@ import type {
   Spot
 } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalDateTime from '../../hooks/useLocalDateTime';
 import DrawerPuller from '../common/DrawerPuller';
 import CheckinImageStrip from './CheckinImageStrip';
 import CheckinNoteField from './CheckinNoteField';
+
+const TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit'
+};
 
 type TimelineItem = {
   key: string;
@@ -221,6 +227,7 @@ function JourneyProgressSheet({
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
+  const formatLocal = useLocalDateTime();
 
   const imagesByReview = useMemo(() => {
     return new Map(
@@ -309,11 +316,7 @@ function JourneyProgressSheet({
     [onRemoveMilestone, onRemoveCheckin]
   );
 
-  const formatTime = (value: string) =>
-    new Date(value).toLocaleTimeString(lang, {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatTime = (value: string) => formatLocal(value, TIME_OPTIONS);
 
   return (
     <SwipeableDrawer
