@@ -1,5 +1,68 @@
 # Changelog
 
+## [5.0.0](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.2...v5.0.0) (2026-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* AuthContext no longer exposes currentUser, setCurrentUser, providerData, or setProviderData.
+
+### Features
+
+* add a push toggle for published chapters ([d2c9acc](https://github.com/yusuke-suzuki/qoodish-web/commit/d2c9accb0802638b3cda981034515bd56d1e866a))
+* add coauthor invitations ([df315d3](https://github.com/yusuke-suzuki/qoodish-web/commit/df315d3150f1f43ddd46dd31b65a6a0ca134d829))
+* add journeys with chapters and check-ins ([5183a55](https://github.com/yusuke-suzuki/qoodish-web/commit/5183a55988e153361e66caf2399ee7cbc79afb17))
+* add serif typography and footprints loader ([0e1692e](https://github.com/yusuke-suzuki/qoodish-web/commit/0e1692e3a2131e5c9550faa67a54b5f221682421))
+* add server-side auth and data fetching ([6b04c65](https://github.com/yusuke-suzuki/qoodish-web/commit/6b04c650e362850a1027201099a8df89163e1d19))
+* confirm before removing a coauthor ([75dd921](https://github.com/yusuke-suzuki/qoodish-web/commit/75dd921028ff92d9a1b41ac3e3fc7c6b3925d205))
+* **dialogs:** show per-image upload progress ([268cbb8](https://github.com/yusuke-suzuki/qoodish-web/commit/268cbb8baca121b18c3a5241a85c9b357aa7e777))
+* hide AppBar on drawer open and scroll ([a18074a](https://github.com/yusuke-suzuki/qoodish-web/commit/a18074a0dc4710b82c68131b48907b3520d09d5c))
+* let authors remove coauthors ([083519a](https://github.com/yusuke-suzuki/qoodish-web/commit/083519a6fd30f385324e5ab91ae2dbf2e546813b))
+* let travellers pause journey recording ([de7be08](https://github.com/yusuke-suzuki/qoodish-web/commit/de7be08f7504886568ed85097551b427f4a8bb65))
+* migrate guest fetching to Server Components ([63d06e3](https://github.com/yusuke-suzuki/qoodish-web/commit/63d06e389dedce992e0937da4854d1dcf0959107)), closes [#1044](https://github.com/yusuke-suzuki/qoodish-web/issues/1044)
+* migrate Pages Router to App Router ([041e55a](https://github.com/yusuke-suzuki/qoodish-web/commit/041e55a6edaa29e5cb3d047182280e2f3b7019c1))
+* move legal pages to markdown files ([6b211c4](https://github.com/yusuke-suzuki/qoodish-web/commit/6b211c49bc6aed014d2faef816be19c6420d018b))
+* **pwa:** cache navigations during cold starts ([05ebdc7](https://github.com/yusuke-suzuki/qoodish-web/commit/05ebdc7f7ad86864bcfdbc0a0e877f65f1e09a99))
+* render the chapter published notification ([c7c3279](https://github.com/yusuke-suzuki/qoodish-web/commit/c7c32797d000abbb8ff4fb9716cfbfae1294f1d2))
+* replace follow with bookmark and coauthor ([a908620](https://github.com/yusuke-suzuki/qoodish-web/commit/a908620fda1852bc61066db8310d4f13efffae01))
+* rewrite meta and login page copy ([fed827a](https://github.com/yusuke-suzuki/qoodish-web/commit/fed827a584c56fdcbb23b376c7b8889e2f4a6876))
+* show the chapters written from a map ([ab60419](https://github.com/yusuke-suzuki/qoodish-web/commit/ab604198c9320cd1143a7bfb07a86d4b86a50535)), closes [#1080](https://github.com/yusuke-suzuki/qoodish-web/issues/1080)
+* tailor loading skeletons per route ([60e5776](https://github.com/yusuke-suzuki/qoodish-web/commit/60e57763c8a6cd344fdf0f4b3d01578c42b1a73e))
+
+
+### Bug Fixes
+
+* avoid /users/undefined profile links ([7feb2b0](https://github.com/yusuke-suzuki/qoodish-web/commit/7feb2b0b7ef003988984cdab0e5d6063d97518aa))
+* call an untitled chapter a chapter ([847e03e](https://github.com/yusuke-suzuki/qoodish-web/commit/847e03e0501ee030f888dd16ab6a2462e848bed6))
+* **dialogs:** switch form submit to useTransition ([085174d](https://github.com/yusuke-suzuki/qoodish-web/commit/085174dd4b1224789d9f91f7964bf933f00dad85))
+* drop redundant padding on invitations list ([793dff9](https://github.com/yusuke-suzuki/qoodish-web/commit/793dff93295fdcc7e12730f88d4b20071fe7746d))
+* format dates after mount, not on the server ([edbe6b7](https://github.com/yusuke-suzuki/qoodish-web/commit/edbe6b71fc03dfbf5323b04a7c2bf42d99603175))
+* init Firebase at module load in AuthProvider ([d7eacca](https://github.com/yusuke-suzuki/qoodish-web/commit/d7eaccadcf581da555de599663c881c4f1b640fe)), closes [#1040](https://github.com/yusuke-suzuki/qoodish-web/issues/1040)
+* keep mobile AppBar visible on spot detail ([93509e6](https://github.com/yusuke-suzuki/qoodish-web/commit/93509e6f0aa7468bf21c6c2b826852012808a345))
+* **maps:** break re-render loop on place selection ([b91f04f](https://github.com/yusuke-suzuki/qoodish-web/commit/b91f04ff108d9dd62d61f4544292ed80f8aab796))
+* **maps:** fit hero variant to grid tile ([f034c3b](https://github.com/yusuke-suzuki/qoodish-web/commit/f034c3b56bfe6934346a2759b926d34c41745e25))
+* **maps:** match detail skeleton to summary card ([1eae7cc](https://github.com/yusuke-suzuki/qoodish-web/commit/1eae7ccb351844fb19dbe7310d78fdc4a5c2d988))
+* **maps:** show private indicator without clipping ([8ebc062](https://github.com/yusuke-suzuki/qoodish-web/commit/8ebc062f84022ecc1d6ea09b837f5825507d691b))
+* **maps:** stop URL sync loop on place selection ([95ee4a7](https://github.com/yusuke-suzuki/qoodish-web/commit/95ee4a7233ccab9dc6401203f0deda2d0b648e9b))
+* **pwa:** clear nav cache on auth transitions ([5239a9f](https://github.com/yusuke-suzuki/qoodish-web/commit/5239a9fc6eccc2c22094ed85e8df030dff1231fd))
+* reset mobile AppBar visibility on navigation ([9035d40](https://github.com/yusuke-suzuki/qoodish-web/commit/9035d404c31f28836c5040e250d7330c8138572a))
+* **reviews:** square tiles in detail and drawer ([220b980](https://github.com/yusuke-suzuki/qoodish-web/commit/220b980fcd0cfdac42f929e0fb1586a2fb4a9a7d))
+* rework coauthor invitation list and dialog ([72bed8e](https://github.com/yusuke-suzuki/qoodish-web/commit/72bed8eaa96ef4974b58db39359a46e53be2fe9a))
+* **sw:** drop stale navigation cache ([9de282a](https://github.com/yusuke-suzuki/qoodish-web/commit/9de282a638bef28eef102460a6c75870309d20a1))
+* **upload:** destructure upload_url not uploadURL ([7032653](https://github.com/yusuke-suzuki/qoodish-web/commit/70326539688748e443b6d0df740023aa2879c0c2))
+* **upload:** map public variant to url key ([44575f0](https://github.com/yusuke-suzuki/qoodish-web/commit/44575f0522932f7aa59a8ad303e4a57ebb44a659))
+* **upload:** preview dialogs use card variant ([526e9a7](https://github.com/yusuke-suzuki/qoodish-web/commit/526e9a74ea53d5ac9162743f8c18c006eae8cd81))
+
+
+### Performance Improvements
+
+* **pwa:** stream layout fetches via suspense ([727f7cb](https://github.com/yusuke-suzuki/qoodish-web/commit/727f7cbda468eac6a776f2c9674d3cd7e9f320e4))
+
+
+### Code Refactoring
+
+* replace SWR with BFF pattern ([d5ea860](https://github.com/yusuke-suzuki/qoodish-web/commit/d5ea8608716e8db4f37b4f5c5b56ec26e3157482))
+
 ## [4.0.2](https://github.com/yusuke-suzuki/qoodish-web/compare/v4.0.1...v4.0.2) (2026-03-23)
 
 
