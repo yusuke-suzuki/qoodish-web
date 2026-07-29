@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TermsPage({ params }: Props) {
   const { lang } = await params;
-  const content = await getLegalDocument('terms', lang);
+  const content = getLegalDocument('terms', lang);
 
   return <MarkdownContent content={content} />;
 }

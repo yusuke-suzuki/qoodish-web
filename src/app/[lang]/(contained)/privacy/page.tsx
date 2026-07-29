@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PrivacyPage({ params }: Props) {
   const { lang } = await params;
-  const content = await getLegalDocument('privacy', lang);
+  const content = getLegalDocument('privacy', lang);
 
   return <MarkdownContent content={content} />;
 }
