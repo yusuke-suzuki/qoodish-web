@@ -19,6 +19,7 @@
     }
   ],
   "vars": {
-    "APP_ENV": "production"
+    "APP_ENV": "production",
+    "API_ENDPOINT": "https://api.qoodish.com"
   }
 }
