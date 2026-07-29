@@ -1,0 +1,3 @@
+# Copy to .dev.vars for `pnpm preview` (wrangler local runtime).
+API_ENDPOINT=https://example.com/api
+APP_ENV=development

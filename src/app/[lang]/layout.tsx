@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     metadataBase: new URL(SITE_ORIGIN),
     title: 'Qoodish',
     description: dict['meta description'],
-    robots: process.env.VERCEL_ENV !== 'production' ? 'noindex' : undefined,
+    robots: process.env.APP_ENV !== 'production' ? 'noindex' : undefined,
     icons: {
       icon: [
         {

@@ -74,6 +74,11 @@ firebase-debug.log
 
 .next
 
+.open-next
+.wrangler
+.dev.vars
+cloudflare-env.d.ts
+
 .env.*
 
 credentials.json
