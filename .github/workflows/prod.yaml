@@ -1,8 +1,8 @@
 name: Prod
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v*
 concurrency:
   group: prod-deploy
   cancel-in-progress: false

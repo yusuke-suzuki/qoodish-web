@@ -32,7 +32,7 @@ $ pnpm preview
 
 ## Deploy to Cloudflare Workers
 
-Pushes to `master` deploy to production via the `Prod` workflow.
+Merging the release-please PR tags a release (`v*`), which deploys to production via the `Prod` workflow.
 
 Prerequisites (one-time setup):
 
