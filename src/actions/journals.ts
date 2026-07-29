@@ -15,10 +15,9 @@ type UpdateJournalParams = {
 };
 
 export async function updateJournal(
-  journalId: number,
   params: UpdateJournalParams
 ): Promise<ActionResult<Journal>> {
-  const { data, error } = await apiFetch<Journal>(`/journals/${journalId}`, {
+  const { data, error } = await apiFetch<Journal>('/me/journal', {
     method: 'PUT',
     body: JSON.stringify(params)
   });

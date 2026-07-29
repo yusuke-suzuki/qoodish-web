@@ -3,7 +3,7 @@
 import type { Review } from '../../types';
 import { apiFetch } from '../lib/api';
 import { getTimelineReviews } from '../lib/reviews';
-import { getUserReviews } from '../lib/users';
+import { getMyReviews, getUserReviews } from '../lib/users';
 
 export async function fetchMoreTimelineReviews(
   nextTimestamp: string
@@ -16,6 +16,12 @@ export async function fetchMoreUserReviews(
   nextTimestamp: string
 ): Promise<Review[]> {
   return getUserReviews(String(userId), undefined, nextTimestamp);
+}
+
+export async function fetchMoreMyReviews(
+  nextTimestamp: string
+): Promise<Review[]> {
+  return getMyReviews(undefined, nextTimestamp);
 }
 
 type CreateReviewParams = {
@@ -54,7 +60,7 @@ export async function updateReview(
   reviewId: number,
   params: UpdateReviewParams
 ): Promise<ActionResult<Review>> {
-  const { data, error } = await apiFetch<Review>(`/reviews/${reviewId}`, {
+  const { data, error } = await apiFetch<Review>(`/me/reviews/${reviewId}`, {
     method: 'PUT',
     body: JSON.stringify(params)
   });
@@ -67,7 +73,7 @@ export async function updateReview(
 }
 
 export async function deleteReview(reviewId: number): Promise<ActionResult> {
-  const { error } = await apiFetch(`/reviews/${reviewId}`, {
+  const { error } = await apiFetch(`/me/reviews/${reviewId}`, {
     method: 'DELETE'
   });
 

@@ -7,7 +7,7 @@ import MiniDrawer from '../../components/layouts/MiniDrawer';
 import MobileAppBar from '../../components/layouts/MobileAppBar';
 import ShellProvider from '../../components/layouts/ShellProvider';
 import { getServerAuthState } from '../../lib/auth';
-import { getNotifications, getProfile } from '../../lib/users';
+import { getMyProfile, getNotifications } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
 import Providers from './Providers';
 
@@ -116,10 +116,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const { authenticated, uid, token } = await getServerAuthState();
-  const profilePromise =
-    authenticated && uid
-      ? getProfile(uid, lang, token)
-      : Promise.resolve<Profile | null>(null);
+  const profilePromise = authenticated
+    ? getMyProfile(lang, token)
+    : Promise.resolve<Profile | null>(null);
   const notificationsPromise = authenticated
     ? getNotifications(lang)
     : Promise.resolve<Notification[]>([]);

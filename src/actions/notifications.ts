@@ -10,7 +10,7 @@ type ActionResult = {
 export async function markNotificationAsRead(
   notificationId: number
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(`/notifications/${notificationId}`, {
+  const { error } = await apiFetch(`/me/notifications/${notificationId}`, {
     method: 'PUT',
     body: JSON.stringify({ read: true })
   });

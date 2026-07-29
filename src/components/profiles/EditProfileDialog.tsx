@@ -102,7 +102,7 @@ export default memo(function EditProfileDialog({
 
       startTransition(async () => {
         try {
-          const result = await updateProfile(currentProfile.id, {
+          const result = await updateProfile({
             name,
             biography,
             image_ids:
@@ -121,7 +121,7 @@ export default memo(function EditProfileDialog({
           // The profile is already persisted at this point, so a failing
           // journal update reports itself but must not withhold the refresh.
           if (journal) {
-            const journalResult = await updateJournal(journal.id, {
+            const journalResult = await updateJournal({
               title: journalTitle
             });
 

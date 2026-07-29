@@ -4,6 +4,9 @@ import UserProfile from '../../../../../components/profiles/UserProfile';
 import { getServerAuthState } from '../../../../../lib/auth';
 import { getMyChapters, getUserChapters } from '../../../../../lib/chapters';
 import {
+  getMyJournal,
+  getMyMaps,
+  getMyReviews,
   getProfile,
   getUserJournal,
   getUserMaps,
@@ -65,9 +68,11 @@ export default async function UserPage({ params }: Props) {
   const isOwnProfile = Boolean(uid && profile.uid === uid);
 
   const [initialReviews, maps, journal, chapters] = await Promise.all([
-    getUserReviews(userId, lang),
-    getUserMaps(userId, lang, token),
-    getUserJournal(userId, lang, token),
+    isOwnProfile ? getMyReviews(lang) : getUserReviews(userId, lang),
+    isOwnProfile ? getMyMaps(lang, token) : getUserMaps(userId, lang, token),
+    isOwnProfile
+      ? getMyJournal(lang, token)
+      : getUserJournal(userId, lang, token),
     isOwnProfile
       ? getMyChapters(lang, token)
       : getUserChapters(userId, lang, token)

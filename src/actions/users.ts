@@ -9,11 +9,13 @@ type UpdateProfileParams = {
   image_ids?: number[];
 };
 
-type UpdatePushNotificationParams = {
-  liked: boolean;
-  coauthor_invited: boolean;
-  comment: boolean;
-  published: boolean;
+type UpdatePreferencesParams = {
+  web_push: {
+    liked: boolean;
+    coauthor_invited: boolean;
+    comment: boolean;
+    published: boolean;
+  };
 };
 
 type ActionResult<T = null> = {
@@ -23,10 +25,9 @@ type ActionResult<T = null> = {
 };
 
 export async function updateProfile(
-  userId: number,
   params: UpdateProfileParams
 ): Promise<ActionResult<Profile>> {
-  const { data, error } = await apiFetch<Profile>(`/users/${userId}`, {
+  const { data, error } = await apiFetch<Profile>('/me/profile', {
     method: 'PUT',
     body: JSON.stringify(params)
   });
@@ -38,8 +39,8 @@ export async function updateProfile(
   return { success: true, data };
 }
 
-export async function deleteAccount(uid: string): Promise<ActionResult> {
-  const { error } = await apiFetch(`/users/${uid}`, {
+export async function deleteAccount(): Promise<ActionResult> {
+  const { error } = await apiFetch('/me/account', {
     method: 'DELETE'
   });
 
@@ -50,11 +51,10 @@ export async function deleteAccount(uid: string): Promise<ActionResult> {
   return { success: true };
 }
 
-export async function updatePushNotification(
-  uid: string,
-  params: UpdatePushNotificationParams
+export async function updatePreferences(
+  params: UpdatePreferencesParams
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(`/users/${uid}/push_notification`, {
+  const { error } = await apiFetch('/me/preferences', {
     method: 'PUT',
     body: JSON.stringify(params)
   });

@@ -5,7 +5,7 @@ export async function getCoauthorshipInvitations(
   lang: string
 ): Promise<CoauthorshipInvitation[]> {
   const { data } = await apiFetch<CoauthorshipInvitation[]>(
-    '/coauthorship_invitations',
+    '/me/coauthorship_invitations',
     {
       lang,
       next: { revalidate: 0 }
