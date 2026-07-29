@@ -32,11 +32,15 @@ $ pnpm preview
 
 ## Deploy to Cloudflare Workers
 
+Pushes to `master` deploy to production via the `Prod` workflow.
+
 Prerequisites (one-time setup):
 
 - Create the R2 bucket `qoodish-web-incremental-cache`
-- Set the runtime secret: `pnpm exec wrangler secret put API_ENDPOINT`
-- Provide build-time variables (`NEXT_PUBLIC_*`, including `NEXT_PUBLIC_SITE_URL=https://qoodish.com`) via `.env.local` or CI environment
+- Store a Cloudflare API token with `Workers Scripts: Edit` permission as the `QOODISH_WEB_CLOUDFLARE_API_TOKEN` secret in Secret Manager
+- Include `NEXT_PUBLIC_SITE_URL=https://qoodish.com` in the `QOODISH_WEB_DOTENV` secret
+
+Manual deploy from a local checkout:
 
 ```bash
 $ pnpm run deploy
