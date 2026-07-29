@@ -10,7 +10,7 @@ import {
   getMapCoauthors,
   getMapReviews
 } from '../../../../../lib/maps';
-import { getProfile } from '../../../../../lib/users';
+import { getMyProfile } from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
 
 type Props = {
@@ -63,14 +63,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
-  const { token, uid } = await getServerAuthState();
+  const { token } = await getServerAuthState();
   const [map, reviews, coauthors, chapters, profile, journeys] =
     await Promise.all([
       getMap(mapId, lang, token),
       getMapReviews(mapId, lang, token),
       getMapCoauthors(mapId, lang, token),
       getMapChapters(mapId, lang, token),
-      uid ? getProfile(uid, lang, token) : Promise.resolve(null),
+      getMyProfile(lang, token),
       getMyJourneys(lang, token)
     ]);
 

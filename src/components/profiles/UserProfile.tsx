@@ -142,7 +142,11 @@ function UserProfile({
         </Card>
 
         <TabPanel value="1" sx={{ px: 0 }}>
-          <UserReviews userId={profile.id} initialReviews={initialReviews} />
+          <UserReviews
+            userId={profile.id}
+            initialReviews={initialReviews}
+            isOwnProfile={isOwnProfile}
+          />
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>
           <UserMaps maps={maps} />

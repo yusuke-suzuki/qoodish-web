@@ -2,7 +2,10 @@ import { Reviews } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
 import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
-import { fetchMoreUserReviews } from '../../actions/reviews';
+import {
+  fetchMoreMyReviews,
+  fetchMoreUserReviews
+} from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
 import FootprintsLoader from '../common/FootprintsLoader';
 import NoContents from '../common/NoContents';
@@ -11,9 +14,14 @@ import ReviewGridList from '../reviews/ReviewGridList';
 type Props = {
   userId: number;
   initialReviews: Review[];
+  isOwnProfile: boolean;
 };
 
-export default memo(function UserReviews({ userId, initialReviews }: Props) {
+export default memo(function UserReviews({
+  userId,
+  initialReviews,
+  isOwnProfile
+}: Props) {
   const dictionary = useDictionary();
 
   const [reviews, setReviews] = useState(initialReviews);
@@ -30,14 +38,13 @@ export default memo(function UserReviews({ userId, initialReviews }: Props) {
     }
 
     startTransition(async () => {
-      const moreReviews = await fetchMoreUserReviews(
-        userId,
-        lastReview.created_at
-      );
+      const moreReviews = isOwnProfile
+        ? await fetchMoreMyReviews(lastReview.created_at)
+        : await fetchMoreUserReviews(userId, lastReview.created_at);
       setReviews((prev) => [...prev, ...moreReviews]);
       setNoMoreResults(moreReviews.length < 1);
     });
-  }, [userId, reviews, noMoreResults, isPending]);
+  }, [userId, isOwnProfile, reviews, noMoreResults, isPending]);
 
   return (
     <>

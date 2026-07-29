@@ -57,7 +57,7 @@ export async function acceptCoauthorshipInvitation(
   invitationId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `/coauthorship_invitations/${invitationId}/accept`,
+    `/me/coauthorship_invitations/${invitationId}/accept`,
     {
       method: 'POST'
     }
@@ -74,7 +74,7 @@ export async function declineCoauthorshipInvitation(
   invitationId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `/coauthorship_invitations/${invitationId}/decline`,
+    `/me/coauthorship_invitations/${invitationId}/decline`,
     {
       method: 'POST'
     }

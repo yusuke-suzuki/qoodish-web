@@ -21,6 +21,21 @@ export async function getProfile(
   return data;
 }
 
+export async function getMyProfile(
+  lang: string,
+  token?: string
+): Promise<Profile | null> {
+  if (!token) {
+    return null;
+  }
+
+  const { data } = await apiFetch<Profile>('/me/profile', {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data;
+}
+
 export async function getUserMaps(
   userId: string,
   lang: string,
@@ -35,6 +50,21 @@ export async function getUserMaps(
   return data ?? [];
 }
 
+export async function getMyMaps(
+  lang: string,
+  token?: string
+): Promise<AppMap[]> {
+  if (!token) {
+    return [];
+  }
+
+  const { data } = await apiFetch<AppMap[]>('/me/maps', {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data ?? [];
+}
+
 export async function getUserJournal(
   userId: string,
   lang: string,
@@ -45,6 +75,21 @@ export async function getUserJournal(
   }
 
   const { data } = await apiFetch<Journal>(`/users/${userId}/journal`, {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data;
+}
+
+export async function getMyJournal(
+  lang: string,
+  token?: string
+): Promise<Journal | null> {
+  if (!token) {
+    return null;
+  }
+
+  const { data } = await apiFetch<Journal>('/me/journal', {
     lang,
     next: { revalidate: 0 }
   });
@@ -97,8 +142,20 @@ export async function getUserReviews(
   return data ?? [];
 }
 
+export async function getMyReviews(
+  lang?: string,
+  nextTimestamp?: string
+): Promise<Review[]> {
+  const query = nextTimestamp ? `?next_timestamp=${nextTimestamp}` : '';
+  const { data } = await apiFetch<Review[]>(`/me/reviews${query}`, {
+    lang,
+    next: { revalidate: 0 }
+  });
+  return data ?? [];
+}
+
 export async function getNotifications(lang: string): Promise<Notification[]> {
-  const { data } = await apiFetch<Notification[]>('/notifications', {
+  const { data } = await apiFetch<Notification[]>('/me/notifications', {
     lang,
     next: { revalidate: 0 }
   });

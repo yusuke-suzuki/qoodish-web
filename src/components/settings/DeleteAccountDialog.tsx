@@ -9,9 +9,8 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useContext, useState } from 'react';
+import { memo, useActionState, useState } from 'react';
 import { deleteAccount } from '../../actions/users';
-import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
@@ -22,19 +21,13 @@ type Props = {
 
 function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
   const dictionary = useDictionary();
-  const { uid } = useContext(AuthContext);
 
   const [check, setCheck] = useState(false);
 
   const [, submitAction, isPending] = useActionState<null, FormData>(
     async (_prevState, _formData) => {
-      if (!uid) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
-      }
-
       try {
-        const result = await deleteAccount(uid);
+        const result = await deleteAccount();
 
         if (result.success) {
           enqueueSnackbar(dictionary['delete account success'], {

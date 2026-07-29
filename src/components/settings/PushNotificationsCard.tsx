@@ -12,6 +12,7 @@ import {
   Switch,
   Typography
 } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import {
   type ChangeEvent,
@@ -21,8 +22,7 @@ import {
   useEffect,
   useState
 } from 'react';
-import { updatePushNotification } from '../../actions/users';
-import AuthContext from '../../context/AuthContext';
+import { updatePreferences } from '../../actions/users';
 import ProfileContext from '../../context/ProfileContext';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -30,12 +30,12 @@ import { usePushManager } from '../../hooks/usePushManager';
 
 function PushNotificationsCard() {
   const dictionary = useDictionary();
+  const router = useRouter();
 
   const { registration } = useContext(ServiceWorkerContext);
 
   const { isSubscribed, subscribe, unsubscribe } = usePushManager(registration);
 
-  const { uid } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
 
   const [loading, setLoading] = useState(false);
@@ -69,17 +69,21 @@ function PushNotificationsCard() {
     setLoading(true);
 
     try {
-      const result = await updatePushNotification(uid, {
-        liked: likedEnabled,
-        coauthor_invited: coauthorInvitedEnabled,
-        comment: commentEnabled,
-        published: publishedEnabled
+      const result = await updatePreferences({
+        web_push: {
+          liked: likedEnabled,
+          coauthor_invited: coauthorInvitedEnabled,
+          comment: commentEnabled,
+          published: publishedEnabled
+        }
       });
 
       if (result.success) {
         enqueueSnackbar(dictionary['push update success'], {
           variant: 'success'
         });
+
+        router.refresh();
       } else {
         enqueueSnackbar(result.error, { variant: 'error' });
       }
@@ -89,12 +93,12 @@ function PushNotificationsCard() {
       setLoading(false);
     }
   }, [
-    uid,
     likedEnabled,
     coauthorInvitedEnabled,
     commentEnabled,
     publishedEnabled,
-    dictionary
+    dictionary,
+    router
   ]);
 
   useEffect(() => {
