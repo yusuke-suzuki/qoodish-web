@@ -4,11 +4,17 @@
   "account_id": "9671c836ad132f87d892b12ccd1809e0",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "qoodish-web"
+    }
+  ],
   "observability": {
     "enabled": true
   },
