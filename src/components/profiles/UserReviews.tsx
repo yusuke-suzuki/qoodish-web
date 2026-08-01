@@ -1,5 +1,5 @@
 import { Reviews } from '@mui/icons-material';
-import { Box, Button, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import {
@@ -7,7 +7,7 @@ import {
   fetchMoreUserReviews
 } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import FootprintsLoader from '../common/FootprintsLoader';
+import LoadingStatus from '../common/LoadingStatus';
 import NoContents from '../common/NoContents';
 import ReviewGridList from '../reviews/ReviewGridList';
 
@@ -55,17 +55,9 @@ export default memo(function UserReviews({
         />
       )}
 
-      <Box sx={{ display: 'grid', gap: 1 }}>
-        {reviews.length > 0 && (
-          <ReviewGridList reviews={reviews} hideSkeleton />
-        )}
-      </Box>
+      <LoadingStatus loading={isPending} />
 
-      {isPending && (
-        <Box sx={{ my: 2, height: { xs: 220, sm: 280 } }}>
-          <FootprintsLoader label={dictionary.loading} />
-        </Box>
-      )}
+      <ReviewGridList reviews={reviews} hideSkeleton loading={isPending} />
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
         {!isPending && !noMoreResults && reviews.length > 0 && (
