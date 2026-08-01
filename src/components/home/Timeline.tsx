@@ -6,10 +6,11 @@ import { memo, useCallback, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import { fetchMoreTimelineReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
-import FootprintsLoader from '../common/FootprintsLoader';
 import IssueDialog from '../common/IssueDialog';
+import LoadingStatus from '../common/LoadingStatus';
 import NoContents from '../common/NoContents';
 import TimelineReviewCard from './TimelineReviewCard';
+import TimelineReviewCardSkeleton from './TimelineReviewCardSkeleton';
 
 type Props = {
   initialReviews: Review[];
@@ -19,6 +20,8 @@ type IssueReportOptions = {
   contentId: number | null;
   dialogOpen: boolean;
 };
+
+const skeletonKeys = ['skeleton-1', 'skeleton-2'];
 
 export default memo(function Timeline({ initialReviews }: Props) {
   const dictionary = useDictionary();
@@ -72,7 +75,9 @@ export default memo(function Timeline({ initialReviews }: Props) {
         />
       )}
 
-      <Box sx={{ display: 'grid', gap: 3 }}>
+      <LoadingStatus loading={isPending} />
+
+      <Box sx={{ display: 'grid', gap: 3 }} aria-busy={isPending}>
         {reviews.map((review) => (
           <TimelineReviewCard
             key={review.id}
@@ -80,13 +85,10 @@ export default memo(function Timeline({ initialReviews }: Props) {
             onReportClick={handleReportClick}
           />
         ))}
-      </Box>
 
-      {isPending && (
-        <Box sx={{ my: 2, height: { xs: 220, sm: 280 } }}>
-          <FootprintsLoader label={dictionary.loading} />
-        </Box>
-      )}
+        {isPending &&
+          skeletonKeys.map((key) => <TimelineReviewCardSkeleton key={key} />)}
+      </Box>
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
         {!isPending && !noMoreResults && reviews.length > 0 && (
