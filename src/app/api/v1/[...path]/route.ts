@@ -61,7 +61,8 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
 
   const init: RequestInit = {
     method: request.method,
-    headers
+    headers,
+    signal: AbortSignal.timeout(30000)
   };
 
   if (request.method === 'POST') {
@@ -81,6 +82,11 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
     });
   } catch (error) {
     console.error(`Proxy error for /${joinedPath}:`, error);
+
+    if (error instanceof DOMException && error.name === 'TimeoutError') {
+      return NextResponse.json({ detail: 'Upstream timeout' }, { status: 504 });
+    }
+
     return NextResponse.json(
       { detail: 'Internal proxy error' },
       { status: 502 }

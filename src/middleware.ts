@@ -1,4 +1,22 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import {
+  type NextFetchEvent,
+  type NextRequest,
+  NextResponse
+} from 'next/server';
+
+const WARMUP_INTERVAL_MS = 60000;
+
+let lastWarmupAt = 0;
+
+async function warmUpApi(): Promise<void> {
+  try {
+    await fetch(`${process.env.API_ENDPOINT}/healthcheck`, {
+      signal: AbortSignal.timeout(60000)
+    });
+  } catch (error) {
+    console.warn('API warmup request failed:', error);
+  }
+}
 
 const locales = ['en', 'ja'] as const;
 type Locale = (typeof locales)[number];
@@ -18,7 +36,12 @@ function getPreferredLocale(request: NextRequest): Locale {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+export function middleware(request: NextRequest, event: NextFetchEvent) {
+  if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
+    lastWarmupAt = Date.now();
+    event.waitUntil(warmUpApi());
+  }
+
   const { pathname } = request.nextUrl;
 
   const pathnameHasLocale = locales.some(
