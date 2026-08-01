@@ -58,6 +58,7 @@ typings/
 .yarn-integrity
 
 public/*
+!public/_headers
 !public/apple-touch-icon.png
 !public/favicon.ico
 !public/manifest.json
