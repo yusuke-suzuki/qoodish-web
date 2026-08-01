@@ -18,12 +18,22 @@ import type { Review } from '../../../types';
 type Props = {
   reviews: Review[];
   hideSkeleton?: boolean;
+  loading?: boolean;
 };
 
 const tileImageHeight = 180;
 
-function ReviewGridList({ reviews, hideSkeleton }: Props) {
-  if (reviews.length < 1 && hideSkeleton) {
+const loadingTileKeys = [
+  'loading-1',
+  'loading-2',
+  'loading-3',
+  'loading-4',
+  'loading-5',
+  'loading-6'
+];
+
+function ReviewGridList({ reviews, hideSkeleton, loading }: Props) {
+  if (reviews.length < 1 && hideSkeleton && !loading) {
     return null;
   }
 
@@ -37,8 +47,9 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
           sm: 'repeat(3, 1fr)'
         }
       }}
+      aria-busy={loading}
     >
-      {(!reviews.length ? Array.from(new Array(6)) : reviews).map(
+      {(!reviews.length && !loading ? Array.from(new Array(6)) : reviews).map(
         (review: Review | null, i) => (
           <MuiLink
             href={review ? `/maps/${review.map.id}/reports/${review.id}` : '/'}
@@ -55,7 +66,7 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
                 overflow: 'hidden'
               }}
             >
-              {!review && <Skeleton variant="rectangular" height="100%" />}
+              {!review && <Skeleton variant="rounded" height="100%" />}
 
               {review?.images.length > 0 && (
                 <Card sx={{ height: '100%' }} elevation={0}>
@@ -109,6 +120,11 @@ function ReviewGridList({ reviews, hideSkeleton }: Props) {
           </MuiLink>
         )
       )}
+
+      {loading &&
+        loadingTileKeys.map((key) => (
+          <Skeleton key={key} variant="rounded" height={tileImageHeight} />
+        ))}
     </Box>
   );
 }
