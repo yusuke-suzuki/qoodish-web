@@ -3,8 +3,11 @@ import { cookies, headers } from 'next/headers';
 type ApiFetchOptions = RequestInit & {
   guest?: boolean;
   lang?: string;
+  timeoutMs?: number;
   next?: { revalidate?: number | false; tags?: string[] };
 };
+
+const DEFAULT_TIMEOUT_MS = 15000;
 
 async function getAuthToken(): Promise<string | null> {
   const cookieStore = await cookies();
@@ -24,7 +27,7 @@ export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {}
 ): Promise<{ data: T | null; error: string | null; status: number }> {
-  const { guest, lang, next, ...fetchOptions } = options;
+  const { guest, lang, timeoutMs, next, ...fetchOptions } = options;
 
   const token = guest ? null : await getAuthToken();
   const acceptLanguage = await getAcceptLanguage(lang);
@@ -44,6 +47,9 @@ export async function apiFetch<T>(
   try {
     const res = await fetch(`${process.env.API_ENDPOINT}${apiPath}`, {
       ...fetchOptions,
+      signal:
+        fetchOptions.signal ??
+        AbortSignal.timeout(timeoutMs ?? DEFAULT_TIMEOUT_MS),
       headers: {
         ...requestHeaders,
         ...Object.fromEntries(new Headers(fetchOptions.headers).entries())
@@ -65,7 +71,15 @@ export async function apiFetch<T>(
     return { data, error: null, status: res.status };
   } catch (error) {
     console.error(`API fetch error for ${path}:`, error);
-    return { data: null, error: 'Network error', status: 0 };
+
+    const timedOut =
+      error instanceof DOMException && error.name === 'TimeoutError';
+
+    return {
+      data: null,
+      error: timedOut ? 'Request timed out' : 'Network error',
+      status: 0
+    };
   }
 }
 

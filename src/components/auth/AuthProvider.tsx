@@ -36,6 +36,7 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
   const [loading, setLoading] = useState(true);
   const [signInRequired, setSignInRequired] = useState(false);
   const authStateRef = useRef(serverAuthenticated);
+  const pendingRegistrationRef = useRef(false);
 
   useEmailLinkHandler({ isLoading: loading });
 
@@ -53,11 +54,78 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
     }
   }, []);
 
+  const registerBackendUser = useCallback(async () => {
+    // Retry across the API's cold start; delays add up to ~30s on top of
+    // the proxy's own 30s timeout per attempt.
+    const retryDelays = [1000, 2000, 4000, 8000, 16000];
+
+    for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+      try {
+        const res = await fetch('/api/v1/users', { method: 'POST' });
+
+        if (res.ok) {
+          return true;
+        }
+
+        if (res.status < 500) {
+          return false;
+        }
+      } catch (error) {
+        console.error('Failed to register backend user:', error);
+      }
+
+      if (attempt < retryDelays.length) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, retryDelays[attempt])
+        );
+      }
+    }
+
+    return false;
+  }, []);
+
   const handleIdTokenChanged = useCallback(
     async (user: User | null) => {
-      if (user) {
-        if (user.isAnonymous) {
-          await user.delete();
+      try {
+        if (user) {
+          if (user.isAnonymous) {
+            await user.delete();
+
+            setAuthenticated(false);
+            setUid(null);
+            setLoading(false);
+
+            if (authStateRef.current) {
+              authStateRef.current = false;
+              await clearNavigationCache();
+              router.refresh();
+            }
+          } else {
+            const accessToken = await user.getIdToken();
+            await syncSessionCookie(accessToken);
+
+            setAuthenticated(true);
+            setUid(user.uid);
+            setLoading(false);
+
+            if (!authStateRef.current) {
+              authStateRef.current = true;
+              pendingRegistrationRef.current = !(await registerBackendUser());
+              await clearNavigationCache();
+              router.refresh();
+            } else if (pendingRegistrationRef.current) {
+              pendingRegistrationRef.current = !(await registerBackendUser());
+
+              if (!pendingRegistrationRef.current) {
+                await clearNavigationCache();
+                router.refresh();
+              }
+            }
+          }
+        } else {
+          await syncSessionCookie(null);
+
+          pendingRegistrationRef.current = false;
 
           setAuthenticated(false);
           setUid(null);
@@ -68,36 +136,13 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
             await clearNavigationCache();
             router.refresh();
           }
-        } else {
-          const accessToken = await user.getIdToken();
-          await syncSessionCookie(accessToken);
-
-          if (!authStateRef.current) {
-            await fetch('/api/v1/users', { method: 'POST' });
-            authStateRef.current = true;
-            await clearNavigationCache();
-            router.refresh();
-          }
-
-          setAuthenticated(true);
-          setUid(user.uid);
-          setLoading(false);
         }
-      } else {
-        await syncSessionCookie(null);
-
-        setAuthenticated(false);
-        setUid(null);
+      } catch (error) {
+        console.error('Failed to handle auth state change:', error);
         setLoading(false);
-
-        if (authStateRef.current) {
-          authStateRef.current = false;
-          await clearNavigationCache();
-          router.refresh();
-        }
       }
     },
-    [syncSessionCookie, clearNavigationCache, router]
+    [syncSessionCookie, clearNavigationCache, registerBackendUser, router]
   );
 
   useEffect(() => {
