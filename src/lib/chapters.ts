@@ -10,7 +10,7 @@ export async function getChapter(
   const { data } = await apiFetch<Chapter>(`/chapters/${chapterId}`, {
     lang,
     guest,
-    next: { revalidate: 0 }
+    next: { revalidate: guest ? 300 : 0 }
   });
   return data;
 }
