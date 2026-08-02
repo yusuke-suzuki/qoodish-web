@@ -61,7 +61,7 @@ export async function getActiveMaps(lang: string): Promise<AppMap[]> {
   const { data } = await apiFetch<AppMap[]>('/maps?active=true', {
     lang,
     guest: true,
-    next: { revalidate: 300 }
+    next: { revalidate: 3600 }
   });
   return data ?? [];
 }
@@ -70,7 +70,7 @@ export async function getPopularMaps(lang: string): Promise<AppMap[]> {
   const { data } = await apiFetch<AppMap[]>('/maps?popular=true', {
     lang,
     guest: true,
-    next: { revalidate: 300 }
+    next: { revalidate: 3600 }
   });
   return data ?? [];
 }
@@ -79,7 +79,7 @@ export async function getRecentMaps(lang: string): Promise<AppMap[]> {
   const { data } = await apiFetch<AppMap[]>('/maps?recent=true', {
     lang,
     guest: true,
-    next: { revalidate: 300 }
+    next: { revalidate: 900 }
   });
   return data ?? [];
 }
