@@ -53,6 +53,7 @@
     "@types/google.maps": "^3.54.6",
     "@types/lodash.debounce": "^4.0.7",
     "@types/lodash.throttle": "^4.1.7",
+    "@types/node": "^22.20.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/react-swipeable-views": "^0.13.5",
