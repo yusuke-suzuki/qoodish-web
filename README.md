@@ -32,16 +32,21 @@ $ pnpm preview
 
 ## Deploy to Cloudflare Workers
 
-Merging the release-please PR tags a release (`v*`), which deploys to production via the `Prod` workflow.
+Both environments live in one Cloudflare account as separate Workers:
 
-Prerequisites (one-time setup):
+| Environment | Worker | Deployed by |
+| --- | --- | --- |
+| dev | `dev-qoodish-web` | Pushing to `master` (`Dev` workflow) |
+| production | `prod-qoodish-web` | Tagging a release via release-please (`Prod` workflow) |
 
-- Create the R2 bucket `qoodish-web-incremental-cache`
-- Store a Cloudflare API token with `Workers Scripts: Edit` permission as the `QOODISH_WEB_CLOUDFLARE_API_TOKEN` secret in Secret Manager
-- Include `NEXT_PUBLIC_SITE_URL=https://qoodish.com` in the `QOODISH_WEB_DOTENV` secret
+Prerequisites (one-time setup, per environment):
+
+- Create the R2 bucket (`prod-qoodish-web-incremental-cache` for production, `dev-qoodish-web-incremental-cache` for dev)
+- Store a Cloudflare API token with `Workers Scripts: Edit` permission as the `QOODISH_WEB_CLOUDFLARE_API_TOKEN` secret in Secret Manager, in both the `qoodish` and `qoodish-dev` projects
 
 Manual deploy from a local checkout:
 
 ```bash
-$ pnpm run deploy
+$ pnpm run deploy      # production
+$ pnpm run deploy:dev  # dev
 ```
