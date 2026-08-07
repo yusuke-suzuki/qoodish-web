@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "qoodish-web",
+  "name": "prod-qoodish-web",
   "account_id": "9671c836ad132f87d892b12ccd1809e0",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-01",
@@ -12,7 +12,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "qoodish-web"
+      "service": "prod-qoodish-web"
     }
   ],
   "observability": {
@@ -21,11 +21,32 @@
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "qoodish-web-incremental-cache"
+      "bucket_name": "prod-qoodish-web-incremental-cache"
     }
   ],
   "vars": {
     "APP_ENV": "production",
     "API_ENDPOINT": "https://api.qoodish.com"
+  },
+  "env": {
+    "dev": {
+      "name": "dev-qoodish-web",
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "dev-qoodish-web"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "NEXT_INC_CACHE_R2_BUCKET",
+          "bucket_name": "dev-qoodish-web-incremental-cache"
+        }
+      ],
+      "vars": {
+        "APP_ENV": "development",
+        "API_ENDPOINT": "https://api-dev.qoodish.com"
+      }
+    }
   }
 }
