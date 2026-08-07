@@ -39,6 +39,8 @@ Both environments live in one Cloudflare account as separate Workers:
 | dev | `dev-qoodish-web` | Pushing to `master` (`Dev` workflow) |
 | production | `prod-qoodish-web` | Tagging a release via release-please (`Prod` workflow) |
 
+Opening a pull request uploads a preview version of the dev Worker, aliased `pr-<number>`, and comments its URL on the pull request. Preview versions take no traffic from `dev.qoodish.com` but share the dev Worker's bindings, so they read the dev API and write to the dev cache bucket.
+
 Prerequisites (one-time setup, per environment):
 
 - Create the R2 bucket (`prod-qoodish-web-incremental-cache` for production, `dev-qoodish-web-incremental-cache` for dev)
