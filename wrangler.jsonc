@@ -31,6 +31,7 @@
   "env": {
     "dev": {
       "name": "dev-qoodish-web",
+      "preview_urls": true,
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
