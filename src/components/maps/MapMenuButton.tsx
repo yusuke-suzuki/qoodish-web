@@ -27,6 +27,8 @@ import {
 import type { AppMap, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import { localePath } from '../../utils/locales';
+import { SITE_ORIGIN } from '../../utils/metadata';
 import CoauthorInviteDialog from './CoauthorInviteDialog';
 
 type Props = {
@@ -57,7 +59,7 @@ export default memo(function MapMenuButton({
     return currentProfile?.id === map?.author.id;
   }, [map, currentProfile]);
 
-  const url = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/${lang}/maps/${map?.id}`;
+  const url = `${SITE_ORIGIN}${localePath(lang, `/maps/${map?.id}`)}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {

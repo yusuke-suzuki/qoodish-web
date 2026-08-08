@@ -27,6 +27,8 @@ import {
 import type { Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import { localePath } from '../../utils/locales';
+import { SITE_ORIGIN } from '../../utils/metadata';
 
 type Props = {
   review: Review | null;
@@ -58,7 +60,8 @@ export default memo(function ReviewMenuButton({
     return currentProfile?.id === review?.author.id;
   }, [review, currentProfile]);
 
-  const url = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}/${lang}/maps/${review?.map.id}/reports/${review?.id}`;
+  const reviewPath = `/maps/${review?.map.id}/reports/${review?.id}`;
+  const url = `${SITE_ORIGIN}${localePath(lang, reviewPath)}`;
 
   const handleCopyClick = useCallback(async () => {
     if (!url) {
@@ -98,8 +101,8 @@ export default memo(function ReviewMenuButton({
   const handleDetailClick = useCallback(() => {
     setAnchorEl(null);
 
-    push(`/maps/${review?.map.id}/reports/${review?.id}`);
-  }, [review, push]);
+    push(localePath(lang, reviewPath));
+  }, [lang, reviewPath, push]);
 
   return (
     <>
