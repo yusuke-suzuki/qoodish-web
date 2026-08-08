@@ -12,9 +12,11 @@ import { amber } from '@mui/material/colors';
 import Link from 'next/link';
 import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 
 export default memo(function Footer() {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   return (
     <Paper square>
@@ -27,7 +29,7 @@ export default memo(function Footer() {
         <Container>
           <Stack>
             <MuiLink
-              href="/terms"
+              href={localePath('/terms')}
               underline="hover"
               color="inherit"
               component={Link}
@@ -36,7 +38,7 @@ export default memo(function Footer() {
               {dictionary['terms of service']}
             </MuiLink>
             <MuiLink
-              href="/privacy"
+              href={localePath('/privacy')}
               underline="hover"
               color="inherit"
               component={Link}

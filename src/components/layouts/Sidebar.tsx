@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import RecommendMaps from './RecommendMaps';
 import TrendingMaps from './TrendingMaps';
 
@@ -22,6 +23,7 @@ type Props = {
 
 function Sidebar({ popularMaps, recommendMaps }: Props) {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   return (
     <Stack spacing={2}>
@@ -35,7 +37,7 @@ function Sidebar({ popularMaps, recommendMaps }: Props) {
         <CardContent>
           <Stack spacing={1}>
             <MuiLink
-              href="/terms"
+              href={localePath('/terms')}
               underline="hover"
               color="inherit"
               component={Link}
@@ -44,7 +46,7 @@ function Sidebar({ popularMaps, recommendMaps }: Props) {
               {dictionary['terms of service']}
             </MuiLink>
             <MuiLink
-              href="/privacy"
+              href={localePath('/privacy')}
               underline="hover"
               color="inherit"
               component={Link}

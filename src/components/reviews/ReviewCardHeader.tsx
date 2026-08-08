@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { type ReactNode, memo } from 'react';
 import type { Review } from '../../../types';
+import useLocalePath from '../../hooks/useLocalePath';
 import AuthorAvatar from '../common/AuthorAvatar';
 
 type Props = {
@@ -22,6 +23,7 @@ type Props = {
 
 function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
   const { lang } = useParams<{ lang: string }>();
+  const localePath = useLocalePath();
 
   return (
     <CardHeader
@@ -40,7 +42,7 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
             underline="hover"
             color="inherit"
             component={Link}
-            href={`/users/${review?.author.id}`}
+            href={localePath(`/users/${review?.author.id}`)}
             title={review?.author.name}
           >
             {review?.author.name}
@@ -70,7 +72,7 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
           <MuiLink
             underline="hover"
             component={Link}
-            href={`/maps/${review?.map.id}`}
+            href={localePath(`/maps/${review?.map.id}`)}
             title={review?.map.name}
           >
             {review?.map.name}

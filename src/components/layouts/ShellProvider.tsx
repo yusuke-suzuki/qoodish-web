@@ -11,6 +11,7 @@ import {
 import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import ShellContext from '../../context/ShellContext';
+import useLocalePath from '../../hooks/useLocalePath';
 import SignInRequiredDialog from '../auth/SignInRequiredDialog';
 import CreateMapDialog from '../maps/CreateMapDialog';
 import SearchDialog from './SearchDialog';
@@ -21,6 +22,7 @@ type Props = {
 
 export default function ShellProvider({ children }: Props) {
   const { push } = useRouter();
+  const localePath = useLocalePath();
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const [searchOpen, setSearchOpen] = useState(false);
   const [createMapOpen, setCreateMapOpen] = useState(false);
@@ -38,9 +40,9 @@ export default function ShellProvider({ children }: Props) {
   const handleCreatedMap = useCallback(
     (map: AppMap) => {
       setCreateMapOpen(false);
-      push(`/maps/${map.id}`);
+      push(localePath(`/maps/${map.id}`));
     },
-    [push]
+    [push, localePath]
   );
 
   const contextValue = useMemo(

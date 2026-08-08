@@ -12,10 +12,12 @@ import { useRouter } from 'next/navigation';
 import { memo, useCallback, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import DeleteAccountDialog from './DeleteAccountDialog';
 
 function DeleteAccountCard() {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
   const { push } = useRouter();
 
   const { authenticated } = useContext(AuthContext);
@@ -26,8 +28,8 @@ function DeleteAccountCard() {
     const auth = getAuth();
     await signOut(auth);
 
-    push('/login');
-  }, [push]);
+    push(localePath('/login'));
+  }, [push, localePath]);
 
   return (
     <>

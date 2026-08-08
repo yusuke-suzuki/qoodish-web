@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { type ReactNode, memo } from 'react';
 import type { AppMap } from '../../../types';
+import useLocalePath from '../../hooks/useLocalePath';
 import AuthorAvatar from '../common/AuthorAvatar';
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 
 function MapCardHeader({ map, action }: Props) {
   const { lang } = useParams<{ lang: string }>();
+  const localePath = useLocalePath();
 
   return (
     <CardHeader
@@ -36,7 +38,7 @@ function MapCardHeader({ map, action }: Props) {
             underline="hover"
             color="inherit"
             component={Link}
-            href={`/users/${map.author.id}`}
+            href={localePath(`/users/${map.author.id}`)}
             title={map.author.name}
           >
             {map.author.name}

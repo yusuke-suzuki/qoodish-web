@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import { memo } from 'react';
 import type { Review } from '../../../types';
+import useLocalePath from '../../hooks/useLocalePath';
 import LikeReviewButton from '../reviews/LikeReviewButton';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewImageList from '../reviews/ReviewImageList';
@@ -23,6 +24,8 @@ export default memo(function TimelineReviewCard({
   review,
   onReportClick
 }: Props) {
+  const localePath = useLocalePath();
+
   return (
     <Card elevation={0}>
       <ReviewCardHeader
@@ -47,7 +50,7 @@ export default memo(function TimelineReviewCard({
 
         <IconButton
           LinkComponent={Link}
-          href={`/maps/${review.map.id}/reports/${review.id}`}
+          href={localePath(`/maps/${review.map.id}/reports/${review.id}`)}
         >
           <Comment />
         </IconButton>

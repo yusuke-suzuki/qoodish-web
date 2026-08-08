@@ -35,6 +35,7 @@ import NotificationsContext from '../../context/NotificationsContext';
 import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import NotificationList from '../notifications/NotificationList';
 import AccountMenuButton from './AccountMenuButton';
 import LogoAvatar from './LogoAvatar';
@@ -42,6 +43,7 @@ import LogoAvatar from './LogoAvatar';
 export default memo(function MiniDrawer() {
   const { openSearch, openCreateMap } = useContext(ShellContext);
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
   const pathname = usePathname();
   const router = useRouter();
   const { authenticated, uid } = useContext(AuthContext);
@@ -80,7 +82,7 @@ export default memo(function MiniDrawer() {
           <ListItemButton
             LinkComponent={Link}
             title="Qoodish"
-            href="/"
+            href={localePath('/')}
             sx={{
               justifyContent: 'center'
             }}
@@ -96,7 +98,7 @@ export default memo(function MiniDrawer() {
             selected={/^\/[a-z]+\/?$/.test(pathname)}
             LinkComponent={Link}
             title={dictionary.home}
-            href="/"
+            href={localePath('/')}
             sx={{
               justifyContent: 'center'
             }}
@@ -114,7 +116,7 @@ export default memo(function MiniDrawer() {
             selected={pathname.endsWith('/discover')}
             LinkComponent={Link}
             title={dictionary.discover}
-            href="/discover"
+            href={localePath('/discover')}
             sx={{
               justifyContent: 'center'
             }}
@@ -132,7 +134,7 @@ export default memo(function MiniDrawer() {
             <ListItemButton
               selected={pathname.endsWith('/journeys')}
               LinkComponent={Link}
-              href="/journeys"
+              href={localePath('/journeys')}
               title={dictionary['journey log']}
               sx={{
                 justifyContent: 'center'
@@ -154,7 +156,7 @@ export default memo(function MiniDrawer() {
             <ListItemButton
               selected={pathname.endsWith(`/users/${profile?.id}`)}
               LinkComponent={profile ? Link : 'button'}
-              href={profile ? `/users/${profile.id}` : undefined}
+              href={profile ? localePath(`/users/${profile.id}`) : undefined}
               disabled={!profile}
               title={dictionary.profile}
               sx={{
@@ -177,7 +179,7 @@ export default memo(function MiniDrawer() {
             <ListItemButton
               selected={pathname.endsWith('/bookmarks')}
               LinkComponent={Link}
-              href="/bookmarks"
+              href={localePath('/bookmarks')}
               title={dictionary.bookmarks}
               sx={{
                 justifyContent: 'center'
@@ -223,7 +225,7 @@ export default memo(function MiniDrawer() {
             <ListItemButton
               selected={pathname.endsWith('/coauthorship_invitations')}
               LinkComponent={Link}
-              href="/coauthorship_invitations"
+              href={localePath('/coauthorship_invitations')}
               title={dictionary.invites}
               sx={{
                 justifyContent: 'center'

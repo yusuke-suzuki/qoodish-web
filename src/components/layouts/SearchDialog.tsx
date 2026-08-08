@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { memo, useCallback, useDeferredValue, useState } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import { useMapSearch } from '../../hooks/useMapSearch';
 import AutocompleteListItem from '../common/AutocompleteListItem';
 import NoContents from '../common/NoContents';
@@ -26,6 +27,7 @@ type Props = {
 
 const SearchDialog = ({ open, onClose }: Props) => {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   const { push } = useRouter();
 
@@ -37,9 +39,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const handleMapClick = useCallback(
     (option: AppMap) => {
       onClose();
-      push(`/maps/${option.id}`);
+      push(localePath(`/maps/${option.id}`));
     },
-    [onClose, push]
+    [onClose, push, localePath]
   );
 
   const handleExited = useCallback(() => {

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import MapGridList from '../maps/MapGridList';
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 
 function RecommendMaps({ maps }: Props) {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   return (
     <>
@@ -23,7 +25,7 @@ function RecommendMaps({ maps }: Props) {
           size="small"
           color="secondary"
           LinkComponent={Link}
-          href="/discover"
+          href={localePath('/discover')}
         >
           {dictionary['discover more']}
         </Button>

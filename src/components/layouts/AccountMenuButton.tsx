@@ -15,12 +15,14 @@ import { memo, useCallback, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import ProfileAvatar from '../common/ProfileAvatar';
 
 export default memo(function AccountMenuButton() {
   const { authenticated, uid } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
   const { push } = useRouter();
 
   const buttonRef = useRef<HTMLDivElement | null>(null);
@@ -37,8 +39,8 @@ export default memo(function AccountMenuButton() {
     const auth = getAuth();
     await signOut(auth);
 
-    push('/login');
-  }, [push]);
+    push(localePath('/login'));
+  }, [push, localePath]);
 
   return (
     <>
@@ -60,7 +62,7 @@ export default memo(function AccountMenuButton() {
       >
         <ListItemButton
           LinkComponent={profile ? Link : 'button'}
-          href={profile ? `/users/${profile.id}` : undefined}
+          href={profile ? localePath(`/users/${profile.id}`) : undefined}
           disabled={!profile}
           onClick={handleLinkClick}
         >
@@ -80,7 +82,7 @@ export default memo(function AccountMenuButton() {
           <ListItemButton
             LinkComponent={Link}
             key="settings"
-            href="/settings"
+            href={localePath('/settings')}
             title={dictionary.settings}
             onClick={handleLinkClick}
           >
@@ -102,7 +104,7 @@ export default memo(function AccountMenuButton() {
           <ListItemButton
             onClick={handleLinkClick}
             LinkComponent={Link}
-            href="/login"
+            href={localePath('/login')}
             title={dictionary.login}
           >
             <ListItemIcon>
@@ -117,7 +119,7 @@ export default memo(function AccountMenuButton() {
         <ListItemButton
           dense
           LinkComponent={Link}
-          href="/terms"
+          href={localePath('/terms')}
           title={dictionary['terms of service']}
           onClick={handleLinkClick}
         >
@@ -132,7 +134,7 @@ export default memo(function AccountMenuButton() {
         <ListItemButton
           dense
           LinkComponent={Link}
-          href="/privacy"
+          href={localePath('/privacy')}
           title={dictionary['privacy policy']}
           onClick={handleLinkClick}
         >

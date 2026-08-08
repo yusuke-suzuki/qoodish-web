@@ -15,6 +15,7 @@ import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useState } from 'react';
 import type { Comment } from '../../../types';
 import ProfileContext from '../../context/ProfileContext';
+import useLocalePath from '../../hooks/useLocalePath';
 import AuthorAvatar from '../common/AuthorAvatar';
 import IssueDialog from '../common/IssueDialog';
 import CommentMenuButton from './CommentMenuButton';
@@ -27,6 +28,7 @@ type Props = {
 
 const ReviewComments = ({ comments, onDeleted }: Props) => {
   const { lang } = useParams<{ lang: string }>();
+  const localePath = useLocalePath();
 
   const profile = useContext(ProfileContext);
 
@@ -65,7 +67,7 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
                     underline="hover"
                     color="inherit"
                     component={Link}
-                    href={`/users/${comment.author.id}`}
+                    href={localePath(`/users/${comment.author.id}`)}
                     title={comment.author.name}
                   >
                     {comment.author.name}

@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { memo } from 'react';
 import type { Review } from '../../../types';
+import useLocalePath from '../../hooks/useLocalePath';
 
 type Props = {
   reviews: Review[];
@@ -33,6 +34,8 @@ const loadingTileKeys = [
 ];
 
 function ReviewGridList({ reviews, hideSkeleton, loading }: Props) {
+  const localePath = useLocalePath();
+
   if (reviews.length < 1 && hideSkeleton && !loading) {
     return null;
   }
@@ -52,7 +55,9 @@ function ReviewGridList({ reviews, hideSkeleton, loading }: Props) {
       {(!reviews.length && !loading ? Array.from(new Array(6)) : reviews).map(
         (review: Review | null, i) => (
           <MuiLink
-            href={review ? `/maps/${review.map.id}/reports/${review.id}` : '/'}
+            href={localePath(
+              review ? `/maps/${review.map.id}/reports/${review.id}` : '/'
+            )}
             key={review ? review.id : i}
             underline={review ? 'hover' : 'none'}
             color="inherit"

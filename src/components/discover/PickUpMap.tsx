@@ -14,16 +14,19 @@ import {
 import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
+import useLocalePath from '../../hooks/useLocalePath';
 
 type Props = {
   map: AppMap | null;
 };
 
 function PickUpMap({ map }: Props) {
+  const localePath = useLocalePath();
+
   return (
     <ImageList cols={1} rowHeight={240} gap={0} sx={{ m: 0 }}>
       <MuiLink
-        href={map ? `/maps/${map.id}` : '/'}
+        href={localePath(map ? `/maps/${map.id}` : '/')}
         key={map?.id}
         underline="none"
         component={Link}
