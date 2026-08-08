@@ -12,6 +12,8 @@ import {
 } from '../../../../../lib/maps';
 import { getMyProfile } from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
+import { localePath } from '../../../../../utils/locales';
+import { buildAlternates } from '../../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;
@@ -32,25 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
   const thumbnailUrl = map?.image?.ogp ?? defaultThumbnailUrl;
-  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
+  const path = `/maps/${mapId}`;
 
   return {
     title,
     description,
     keywords,
     robots: map ? undefined : 'noindex',
-    alternates: {
-      canonical: `${endpoint}/${lang}/maps/${mapId}`,
-      languages: {
-        en: `${endpoint}/en/maps/${mapId}`,
-        ja: `${endpoint}/ja/maps/${mapId}`,
-        'x-default': `${endpoint}/en/maps/${mapId}`
-      }
-    },
+    alternates: buildAlternates(lang, path),
     openGraph: {
       title,
       description,
-      url: `${endpoint}/${lang}/maps/${mapId}`,
+      url: localePath(lang, path),
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']

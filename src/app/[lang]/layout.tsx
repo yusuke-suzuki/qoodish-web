@@ -9,6 +9,7 @@ import ShellProvider from '../../components/layouts/ShellProvider';
 import { getServerAuthState } from '../../lib/auth';
 import { getMyProfile, getNotifications } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
+import { SITE_ORIGIN } from '../../utils/metadata';
 import Providers from './Providers';
 
 const lobster = Lobster({
@@ -54,6 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
 
   return {
+    metadataBase: new URL(SITE_ORIGIN),
     title: 'Qoodish',
     description: dict['meta description'],
     robots: process.env.VERCEL_ENV !== 'production' ? 'noindex' : undefined,

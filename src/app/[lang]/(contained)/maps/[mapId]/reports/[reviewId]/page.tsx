@@ -5,6 +5,8 @@ import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail';
 import { getServerAuthState } from '../../../../../../../lib/auth';
 import { getReview } from '../../../../../../../lib/reviews';
 import { getDictionary } from '../../../../../../../utils/getDictionary';
+import { localePath } from '../../../../../../../utils/locales';
+import { buildAlternates } from '../../../../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;
@@ -30,25 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     review && review.images.length > 0
       ? review.images[0].ogp
       : defaultThumbnailUrl;
-  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
+  const path = `/maps/${mapId}/reports/${reviewId}`;
 
   return {
     title,
     description,
     keywords,
     robots: !review || review.map.private ? 'noindex' : undefined,
-    alternates: {
-      canonical: `${endpoint}/${lang}/maps/${mapId}/reports/${reviewId}`,
-      languages: {
-        en: `${endpoint}/en/maps/${mapId}/reports/${reviewId}`,
-        ja: `${endpoint}/ja/maps/${mapId}/reports/${reviewId}`,
-        'x-default': `${endpoint}/en/maps/${mapId}/reports/${reviewId}`
-      }
-    },
+    alternates: buildAlternates(lang, path),
     openGraph: {
       title,
       description,
-      url: `${endpoint}/${lang}/maps/${mapId}/reports/${reviewId}`,
+      url: localePath(lang, path),
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']

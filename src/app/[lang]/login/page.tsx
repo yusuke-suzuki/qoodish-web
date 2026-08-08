@@ -12,6 +12,8 @@ import type { Metadata } from 'next';
 import LoginCard from '../../../components/auth/LoginCard';
 import Footer from '../../../components/layouts/Footer';
 import { getDictionary } from '../../../utils/getDictionary';
+import { localePath } from '../../../utils/locales';
+import { buildAlternates } from '../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -26,25 +28,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     lang === 'en'
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
-  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
   return {
     title,
     description,
     keywords:
       'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip',
-    alternates: {
-      canonical: `${endpoint}/${lang}/login`,
-      languages: {
-        en: `${endpoint}/en/login`,
-        ja: `${endpoint}/ja/login`,
-        'x-default': `${endpoint}/en/login`
-      }
-    },
+    alternates: buildAlternates(lang, '/login'),
     openGraph: {
       title,
       description,
-      url: `${endpoint}/${lang}/login`,
+      url: localePath(lang, '/login'),
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']

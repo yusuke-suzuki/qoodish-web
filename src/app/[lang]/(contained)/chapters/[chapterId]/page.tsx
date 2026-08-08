@@ -6,6 +6,8 @@ import { getChapter, getUserChapters } from '../../../../../lib/chapters';
 import { getMap } from '../../../../../lib/maps';
 import { getUserJournal } from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
+import { localePath } from '../../../../../utils/locales';
+import { buildAlternates } from '../../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string; chapterId: string }>;
@@ -28,7 +30,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
       : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
   const thumbnailUrl = chapter?.image?.ogp ?? defaultThumbnailUrl;
-  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
   const path = `/chapters/${chapterId}`;
 
   return {
@@ -36,18 +37,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     keywords,
     robots: chapter?.status === 'published' ? undefined : 'noindex',
-    alternates: {
-      canonical: `${endpoint}/${lang}${path}`,
-      languages: {
-        en: `${endpoint}/en${path}`,
-        ja: `${endpoint}/ja${path}`,
-        'x-default': `${endpoint}/en${path}`
-      }
-    },
+    alternates: buildAlternates(lang, path),
     openGraph: {
       title,
       description,
-      url: `${endpoint}/${lang}${path}`,
+      url: localePath(lang, path),
       images: [{ url: thumbnailUrl }],
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']

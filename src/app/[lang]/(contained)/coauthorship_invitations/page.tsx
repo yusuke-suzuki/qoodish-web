@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import CoauthorshipInvitationList from '../../../../components/coauthors/CoauthorshipInvitationList';
 import { getCoauthorshipInvitations } from '../../../../lib/coauthorshipInvitations';
 import { getDictionary } from '../../../../utils/getDictionary';
+import { buildAlternates } from '../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -12,20 +13,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(lang);
   const title = `${dict.invites} | Qoodish`;
   const description = dict['meta description'];
-  const endpoint = `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`;
 
   return {
     title,
     description,
     robots: 'noindex',
-    alternates: {
-      canonical: `${endpoint}/${lang}/coauthorship_invitations`,
-      languages: {
-        en: `${endpoint}/en/coauthorship_invitations`,
-        ja: `${endpoint}/ja/coauthorship_invitations`,
-        'x-default': `${endpoint}/en/coauthorship_invitations`
-      }
-    }
+    alternates: buildAlternates(lang, '/coauthorship_invitations')
   };
 }
 
