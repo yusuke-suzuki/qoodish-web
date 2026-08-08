@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import SkeletonTrendingList from './SkeletonTrendingList';
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
 
 const TrendingMaps = ({ maps }: Props) => {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   return !maps || maps.length < 1 ? (
     <SkeletonTrendingList />
@@ -43,7 +45,7 @@ const TrendingMaps = ({ maps }: Props) => {
           key={map.id}
           LinkComponent={Link}
           title={map.name}
-          href={`/maps/${map.id}`}
+          href={localePath(`/maps/${map.id}`)}
         >
           <ListItemAvatar>
             <Avatar

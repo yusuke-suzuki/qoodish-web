@@ -32,6 +32,7 @@ import { memo, useCallback, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import ProfileAvatar from '../common/ProfileAvatar';
 import Logo from './Logo';
 
@@ -51,6 +52,7 @@ export default memo(function MobileDrawer({
   const { push } = useRouter();
   const pathname = usePathname();
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   const { authenticated, uid } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
@@ -61,8 +63,8 @@ export default memo(function MobileDrawer({
     const auth = getAuth();
     await signOut(auth);
 
-    push('/login');
-  }, [onClose, push]);
+    push(localePath('/login'));
+  }, [onClose, push, localePath]);
 
   const handleCreateMapClick = useCallback(() => {
     onClose();
@@ -106,7 +108,7 @@ export default memo(function MobileDrawer({
           selected={/^\/[a-z]+\/?$/.test(pathname)}
           onClick={onClose}
           LinkComponent={Link}
-          href="/"
+          href={localePath('/')}
           title={dictionary.home}
         >
           <ListItemIcon>
@@ -118,7 +120,7 @@ export default memo(function MobileDrawer({
           selected={pathname.endsWith('/discover')}
           onClick={onClose}
           LinkComponent={Link}
-          href="/discover"
+          href={localePath('/discover')}
           title={dictionary.discover}
         >
           <ListItemIcon>
@@ -133,7 +135,7 @@ export default memo(function MobileDrawer({
               selected={pathname.endsWith('/journeys')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/journeys"
+              href={localePath('/journeys')}
               title={dictionary['journey log']}
             >
               <ListItemIcon>
@@ -145,7 +147,7 @@ export default memo(function MobileDrawer({
               selected={pathname.includes('/users/')}
               onClick={onClose}
               LinkComponent={profile ? Link : 'button'}
-              href={profile ? `/users/${profile.id}` : undefined}
+              href={profile ? localePath(`/users/${profile.id}`) : undefined}
               disabled={!profile}
               title={dictionary.profile}
             >
@@ -158,7 +160,7 @@ export default memo(function MobileDrawer({
               selected={pathname.endsWith('/bookmarks')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/bookmarks"
+              href={localePath('/bookmarks')}
               title={dictionary.bookmarks}
             >
               <ListItemIcon>
@@ -170,7 +172,7 @@ export default memo(function MobileDrawer({
               selected={pathname.endsWith('/notifications')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/notifications"
+              href={localePath('/notifications')}
               title={dictionary.notifications}
             >
               <ListItemIcon>
@@ -182,7 +184,7 @@ export default memo(function MobileDrawer({
               selected={pathname.endsWith('/coauthorship_invitations')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/coauthorship_invitations"
+              href={localePath('/coauthorship_invitations')}
               title={dictionary.invites}
             >
               <ListItemIcon>
@@ -194,7 +196,7 @@ export default memo(function MobileDrawer({
               selected={pathname.endsWith('/settings')}
               onClick={onClose}
               LinkComponent={Link}
-              href="/settings"
+              href={localePath('/settings')}
               title={dictionary.settings}
             >
               <ListItemIcon>
@@ -231,7 +233,7 @@ export default memo(function MobileDrawer({
             dense
             onClick={onClose}
             LinkComponent={Link}
-            href="/login"
+            href={localePath('/login')}
             title={dictionary.login}
           >
             <ListItemIcon>
@@ -249,7 +251,7 @@ export default memo(function MobileDrawer({
           dense
           onClick={onClose}
           LinkComponent={Link}
-          href="/terms"
+          href={localePath('/terms')}
           title={dictionary['terms of service']}
         >
           <ListItemText
@@ -263,7 +265,7 @@ export default memo(function MobileDrawer({
           dense
           onClick={onClose}
           LinkComponent={Link}
-          href="/privacy"
+          href={localePath('/privacy')}
           title={dictionary['privacy policy']}
         >
           <ListItemText

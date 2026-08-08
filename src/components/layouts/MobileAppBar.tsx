@@ -18,6 +18,7 @@ import NotificationsContext from '../../context/NotificationsContext';
 import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import ProfileAvatar from '../common/ProfileAvatar';
 import Logo from './Logo';
 import MobileDrawer from './MobileDrawer';
@@ -28,6 +29,7 @@ function MobileAppBarContent() {
   const profile = useContext(ProfileContext);
   const notifications = useContext(NotificationsContext);
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   const unreadCount = notifications.filter(
     (notification) => notification.read === false
@@ -67,7 +69,7 @@ function MobileAppBarContent() {
               {authenticated && (
                 <IconButton
                   component={Link}
-                  href="/notifications"
+                  href={localePath('/notifications')}
                   color="inherit"
                   title={dictionary.notifications}
                   aria-label={dictionary.notifications}

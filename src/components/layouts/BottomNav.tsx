@@ -20,6 +20,7 @@ import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 
 export default memo(function BottomNav() {
   const { authenticated } = useContext(AuthContext);
@@ -32,6 +33,7 @@ export default memo(function BottomNav() {
   );
 
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -70,13 +72,13 @@ export default memo(function BottomNav() {
               title={dictionary.home}
               icon={<Home />}
               LinkComponent={Link}
-              href="/"
+              href={localePath('/')}
             />
             <BottomNavigationAction
               title={dictionary.discover}
               icon={<Explore />}
               LinkComponent={Link}
-              href="/discover"
+              href={localePath('/discover')}
             />
             <BottomNavigationAction
               title={dictionary['create new map']}
@@ -87,13 +89,13 @@ export default memo(function BottomNav() {
               title={dictionary['journey log']}
               icon={<DirectionsWalk />}
               LinkComponent={Link}
-              href="/journeys"
+              href={localePath('/journeys')}
             />
             <BottomNavigationAction
               title={dictionary.profile}
               icon={<AccountCircle />}
               LinkComponent={profile ? Link : 'button'}
-              href={profile ? `/users/${profile.id}` : undefined}
+              href={profile ? localePath(`/users/${profile.id}`) : undefined}
               disabled={!profile}
             />
           </BottomNavigation>

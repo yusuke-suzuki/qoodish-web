@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import NoContents from '../common/NoContents';
 import TimelineReviewCard from './TimelineReviewCard';
 
@@ -15,6 +16,7 @@ type Props = {
 
 export default memo(function TrendingReviews({ reviews }: Props) {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   return (
     <>
@@ -41,7 +43,7 @@ export default memo(function TrendingReviews({ reviews }: Props) {
       </Box>
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
-        <Link href="/discover" passHref>
+        <Link href={localePath('/discover')} passHref>
           <Button color="secondary">{dictionary['discover more']}</Button>
         </Link>
       </Stack>

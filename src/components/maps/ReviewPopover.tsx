@@ -18,6 +18,7 @@ import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ProfileContext from '../../context/ProfileContext';
+import useLocalePath from '../../hooks/useLocalePath';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
 import EditReviewDialog from '../reviews/EditReviewDialog';
@@ -43,6 +44,7 @@ function ReviewPopover({
   onDeleted
 }: Props) {
   const profile = useContext(ProfileContext);
+  const localePath = useLocalePath();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -113,7 +115,7 @@ function ReviewPopover({
 
           <IconButton
             LinkComponent={Link}
-            href={`/maps/${review?.map.id}/reports/${review?.id}`}
+            href={localePath(`/maps/${review?.map.id}/reports/${review?.id}`)}
             disabled={!review}
           >
             <Comment />

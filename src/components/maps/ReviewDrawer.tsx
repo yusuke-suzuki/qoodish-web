@@ -15,6 +15,7 @@ import { memo, useCallback, useContext, useState } from 'react';
 import type { Review } from '../../../types';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 import DrawerPuller from '../common/DrawerPuller';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
@@ -51,6 +52,7 @@ function ReviewDrawer({
 }: Props) {
   const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -191,7 +193,9 @@ function ReviewDrawer({
             {review && (
               <IconButton
                 LinkComponent={Link}
-                href={`/maps/${review?.map.id}/reports/${review?.id}`}
+                href={localePath(
+                  `/maps/${review?.map.id}/reports/${review?.id}`
+                )}
                 disabled={!review}
               >
                 <Comment />

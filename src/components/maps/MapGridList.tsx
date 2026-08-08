@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
+import useLocalePath from '../../hooks/useLocalePath';
 
 type Props = {
   maps: AppMap[];
@@ -28,6 +29,7 @@ const tileImageHeight = 240;
 
 function MapGridList({ maps, skeletonSize, cols }: Props) {
   const dictionary = useDictionary();
+  const localePath = useLocalePath();
 
   const gridTemplateColumns = cols
     ? `repeat(${cols}, 1fr)`
@@ -38,7 +40,7 @@ function MapGridList({ maps, skeletonSize, cols }: Props) {
       {(!maps.length ? Array.from(new Array(skeletonSize || 6)) : maps).map(
         (map: AppMap | null, i) => (
           <MuiLink
-            href={map ? `/maps/${map.id}` : '/'}
+            href={localePath(map ? `/maps/${map.id}` : '/')}
             key={map ? map.id : i}
             underline={map ? 'hover' : 'none'}
             color="inherit"
