@@ -58,6 +58,7 @@ typings/
 .yarn-integrity
 
 public/*
+!public/_headers
 !public/apple-touch-icon.png
 !public/favicon.ico
 !public/manifest.json
@@ -73,6 +74,11 @@ firebase-debug.log
 .DS_Store
 
 .next
+
+.open-next
+.wrangler
+.dev.vars
+cloudflare-env.d.ts
 
 .env.*
 

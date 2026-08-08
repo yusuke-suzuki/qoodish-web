@@ -1,20 +1,28 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
+import privacyEn from '../content/legal/privacy.en.md';
+import privacyJa from '../content/legal/privacy.ja.md';
+import termsEn from '../content/legal/terms.en.md';
+import termsJa from '../content/legal/terms.ja.md';
 
 type LegalDocumentName = 'privacy' | 'terms';
 
-const SUPPORTED_LANGS = ['en', 'ja'];
+type SupportedLang = 'en' | 'ja';
 
-export async function getLegalDocument(
+const documents: Record<LegalDocumentName, Record<SupportedLang, string>> = {
+  privacy: {
+    en: privacyEn,
+    ja: privacyJa
+  },
+  terms: {
+    en: termsEn,
+    ja: termsJa
+  }
+};
+
+export function getLegalDocument(
   name: LegalDocumentName,
   lang: string
-): Promise<string> {
-  const locale = SUPPORTED_LANGS.includes(lang) ? lang : 'en';
-  const filePath = path.join(
-    process.cwd(),
-    'src/content/legal',
-    `${name}.${locale}.md`
-  );
+): string {
+  const locale: SupportedLang = lang === 'ja' ? 'ja' : 'en';
 
-  return readFile(filePath, 'utf-8');
+  return documents[name][locale];
 }

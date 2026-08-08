@@ -5,6 +5,14 @@ on:
       - opened
       - reopened
       - synchronize
+  push:
+    branches:
+      - master
+concurrency:
+  group: dev-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PROJECT_ID: qoodish-dev
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -26,3 +34,99 @@ jobs:
       - name: Biome check
         run: |
           pnpm biome ci ./src
+  preview:
+    if: github.event_name == 'pull_request'
+    needs:
+      - lint
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: github-actions@qoodish-common.iam.gserviceaccount.com
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Decrypt secrets
+        run: |
+          gcloud secrets versions access latest \
+            --secret=QOODISH_WEB_DOTENV \
+            --project=$PROJECT_ID \
+            --out-file=.env.local
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: |
+          pnpm install
+      - name: Upload preview version
+        id: upload
+        run: |
+          set -o pipefail
+          CLOUDFLARE_API_TOKEN="$(gcloud secrets versions access latest \
+            --secret=QOODISH_WEB_CLOUDFLARE_API_TOKEN \
+            --project=$PROJECT_ID)"
+          echo "::add-mask::$CLOUDFLARE_API_TOKEN"
+          export CLOUDFLARE_API_TOKEN
+          pnpm exec opennextjs-cloudflare build --env dev
+          pnpm exec opennextjs-cloudflare upload --env dev \
+            --preview-alias "pr-${{ github.event.number }}" | tee upload.log
+          echo "url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' upload.log | tail -1)" >> "$GITHUB_OUTPUT"
+      - name: Comment the preview URL
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_URL: ${{ steps.upload.outputs.url }}
+        run: |
+          BODY="Preview deployment: $PREVIEW_URL"
+          gh pr comment ${{ github.event.number }} --body "$BODY" --edit-last --create-if-none \
+            || gh pr comment ${{ github.event.number }} --body "$BODY"
+  deploy:
+    if: github.event_name == 'push'
+    needs:
+      - lint
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/438842534630/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: github-actions@qoodish-common.iam.gserviceaccount.com
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Decrypt secrets
+        run: |
+          gcloud secrets versions access latest \
+            --secret=QOODISH_WEB_DOTENV \
+            --project=$PROJECT_ID \
+            --out-file=.env.local
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: |
+          pnpm install
+      - name: Deploy to Cloudflare Workers
+        run: |
+          CLOUDFLARE_API_TOKEN="$(gcloud secrets versions access latest \
+            --secret=QOODISH_WEB_CLOUDFLARE_API_TOKEN \
+            --project=$PROJECT_ID)"
+          echo "::add-mask::$CLOUDFLARE_API_TOKEN"
+          export CLOUDFLARE_API_TOKEN
+          pnpm run deploy:dev

@@ -10,7 +10,12 @@
     "dev": "next dev -p 5000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:dev": "opennextjs-cloudflare build --env dev && opennextjs-cloudflare deploy --env dev",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -49,6 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.3.3",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@serwist/next": "^9.2.1",
     "@types/google.maps": "^3.54.6",
     "@types/lodash.debounce": "^4.0.7",
@@ -59,6 +65,7 @@
     "@types/react-swipeable-views": "^0.13.5",
     "eslint-config-next": "^15.5.18",
     "serwist": "^9.2.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "wrangler": "^4.114.0"
   }
 }
