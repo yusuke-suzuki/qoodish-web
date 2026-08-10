@@ -51,7 +51,8 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
 
   const locale = getPreferredLocale(request);
   const newUrl = request.nextUrl.clone();
-  newUrl.pathname = `/${locale}${pathname}`;
+  // '/' must not become '/en/', which Next would 308 again to '/en'.
+  newUrl.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
 
   // Redirect instead of rewriting so every page is reachable under exactly one
   // URL; serving locale-less paths with a 200 duplicates every localized page.
