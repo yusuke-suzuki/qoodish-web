@@ -24,7 +24,7 @@ export async function getPopularReviews(lang: string): Promise<Review[]> {
   const { data } = await apiFetch<Review[]>('/reviews?popular=true', {
     lang,
     guest: true,
-    next: { revalidate: 3600 }
+    next: { revalidate: 900 }
   });
   return data ?? [];
 }
