@@ -42,7 +42,9 @@ export async function getRecentReviews(lang: string): Promise<Review[]> {
 export async function getTimelineReviews(
   nextTimestamp?: string
 ): Promise<Review[]> {
-  const query = nextTimestamp ? `?next_timestamp=${nextTimestamp}` : '';
+  const query = nextTimestamp
+    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    : '';
   const { data } = await apiFetch<Review[]>(`/reviews${query}`, {
     next: { revalidate: 0 }
   });
