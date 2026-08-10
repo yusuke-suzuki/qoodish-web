@@ -131,7 +131,9 @@ export async function getUserReviews(
   lang?: string,
   nextTimestamp?: string
 ): Promise<Review[]> {
-  const query = nextTimestamp ? `?next_timestamp=${nextTimestamp}` : '';
+  const query = nextTimestamp
+    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    : '';
   const { data } = await apiFetch<Review[]>(
     `/users/${userId}/reviews${query}`,
     {
@@ -146,7 +148,9 @@ export async function getMyReviews(
   lang?: string,
   nextTimestamp?: string
 ): Promise<Review[]> {
-  const query = nextTimestamp ? `?next_timestamp=${nextTimestamp}` : '';
+  const query = nextTimestamp
+    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    : '';
   const { data } = await apiFetch<Review[]>(`/me/reviews${query}`, {
     lang,
     next: { revalidate: 0 }
