@@ -15,6 +15,15 @@ export async function getChapter(
   return data;
 }
 
+export async function getRecentChapters(lang: string): Promise<Chapter[]> {
+  const { data } = await apiFetch<Chapter[]>('/chapters', {
+    lang,
+    guest: true,
+    next: { revalidate: 900 }
+  });
+  return data ?? [];
+}
+
 export async function getUserChapters(
   userId: string | number,
   lang: string,

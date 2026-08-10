@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getRecentChapters } from '../lib/chapters';
 import { getActiveMaps, getPopularMaps, getRecentMaps } from '../lib/maps';
 import { getPopularReviews, getRecentReviews } from '../lib/reviews';
 import { DEFAULT_LOCALE, LOCALES, localePath } from '../utils/locales';
@@ -46,14 +47,21 @@ function expand({
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [activeMaps, popularMaps, recentMaps, popularReviews, recentReviews] =
-    await Promise.all([
-      getActiveMaps(DEFAULT_LOCALE),
-      getPopularMaps(DEFAULT_LOCALE),
-      getRecentMaps(DEFAULT_LOCALE),
-      getPopularReviews(DEFAULT_LOCALE),
-      getRecentReviews(DEFAULT_LOCALE)
-    ]);
+  const [
+    activeMaps,
+    popularMaps,
+    recentMaps,
+    popularReviews,
+    recentReviews,
+    recentChapters
+  ] = await Promise.all([
+    getActiveMaps(DEFAULT_LOCALE),
+    getPopularMaps(DEFAULT_LOCALE),
+    getRecentMaps(DEFAULT_LOCALE),
+    getPopularReviews(DEFAULT_LOCALE),
+    getRecentReviews(DEFAULT_LOCALE),
+    getRecentChapters(DEFAULT_LOCALE)
+  ]);
 
   const mapEntries = new Map<number, Entry>();
 
@@ -83,9 +91,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
+  const chapterEntries = new Map<number, Entry>();
+
+  for (const chapter of recentChapters) {
+    if (chapter.status !== 'published') {
+      continue;
+    }
+
+    chapterEntries.set(chapter.id, {
+      path: `/chapters/${chapter.id}`,
+      lastModified: chapter.updated_at,
+      priority: 0.6
+    });
+  }
+
   return [
     ...STATIC_ENTRIES,
     ...Array.from(mapEntries.values()),
-    ...Array.from(reviewEntries.values())
+    ...Array.from(reviewEntries.values()),
+    ...Array.from(chapterEntries.values())
   ].flatMap(expand);
 }
