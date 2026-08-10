@@ -5,7 +5,7 @@ import type {
   Profile,
   Review
 } from '../../types';
-import { apiFetch } from './api';
+import { apiFetch, assertApiAvailable } from './api';
 
 export async function getProfile(
   userId: string,
@@ -13,11 +13,12 @@ export async function getProfile(
   token?: string
 ): Promise<Profile | null> {
   const guest = !token;
-  const { data } = await apiFetch<Profile>(`/users/${userId}`, {
+  const { data, status } = await apiFetch<Profile>(`/users/${userId}`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
+  assertApiAvailable(status, `/users/${userId}`);
   return data;
 }
 

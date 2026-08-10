@@ -1,5 +1,5 @@
 import type { AppMap, Chapter, Coauthor, Review } from '../../types';
-import { apiFetch } from './api';
+import { apiFetch, assertApiAvailable } from './api';
 
 export async function getMap(
   mapId: string,
@@ -7,11 +7,12 @@ export async function getMap(
   token?: string
 ): Promise<AppMap | null> {
   const guest = !token;
-  const { data } = await apiFetch<AppMap>(`/maps/${mapId}`, {
+  const { data, status } = await apiFetch<AppMap>(`/maps/${mapId}`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
+  assertApiAvailable(status, `/maps/${mapId}`);
   return data;
 }
 

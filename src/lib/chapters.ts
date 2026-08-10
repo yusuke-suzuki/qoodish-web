@@ -1,5 +1,5 @@
 import type { Chapter } from '../../types';
-import { apiFetch } from './api';
+import { apiFetch, assertApiAvailable } from './api';
 
 export async function getChapter(
   chapterId: string | number,
@@ -7,11 +7,12 @@ export async function getChapter(
   token?: string
 ): Promise<Chapter | null> {
   const guest = !token;
-  const { data } = await apiFetch<Chapter>(`/chapters/${chapterId}`, {
+  const { data, status } = await apiFetch<Chapter>(`/chapters/${chapterId}`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
+  assertApiAvailable(status, `/chapters/${chapterId}`);
   return data;
 }
 
