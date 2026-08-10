@@ -44,7 +44,8 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
     await fetch('/api/auth/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken })
+      body: JSON.stringify({ idToken }),
+      signal: AbortSignal.timeout(10000)
     });
   }, []);
 
@@ -55,13 +56,20 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
   }, []);
 
   const registerBackendUser = useCallback(async () => {
-    // Retry across the API's cold start; delays add up to ~30s on top of
-    // the proxy's own 30s timeout per attempt.
-    const retryDelays = [1000, 2000, 4000, 8000, 16000];
+    // This loop runs between the 10s-bounded session-cookie sync and the
+    // first router.refresh() after sign-in; its worst case (3 attempts x
+    // 10s + 3s of delays, ~33s) dominates how long the shell can stay in
+    // the guest state.
+    // On failure pendingRegistrationRef defers further attempts to later
+    // token-change events instead of extending the wait here.
+    const retryDelays = [1000, 2000];
 
     for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
       try {
-        const res = await fetch('/api/v1/users', { method: 'POST' });
+        const res = await fetch('/api/v1/users', {
+          method: 'POST',
+          signal: AbortSignal.timeout(10000)
+        });
 
         if (res.ok) {
           return true;
@@ -108,15 +116,13 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
             setUid(user.uid);
             setLoading(false);
 
-            if (!authStateRef.current) {
+            const firstAuth = !authStateRef.current;
+
+            if (firstAuth || pendingRegistrationRef.current) {
               authStateRef.current = true;
               pendingRegistrationRef.current = !(await registerBackendUser());
-              await clearNavigationCache();
-              router.refresh();
-            } else if (pendingRegistrationRef.current) {
-              pendingRegistrationRef.current = !(await registerBackendUser());
 
-              if (!pendingRegistrationRef.current) {
+              if (firstAuth || !pendingRegistrationRef.current) {
                 await clearNavigationCache();
                 router.refresh();
               }
