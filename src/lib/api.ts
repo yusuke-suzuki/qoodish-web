@@ -95,3 +95,12 @@ export async function apiFetchOrThrow<T>(
 
   return data;
 }
+
+// A missing resource must stay distinguishable from an unreachable API:
+// detail pages translate null into notFound(), and serving 404s for
+// timeouts or 5xx would let crawlers deindex live content.
+export function assertApiAvailable(status: number, path: string): void {
+  if (status === 0 || status >= 500) {
+    throw new Error(`API request for ${path} failed with status ${status}`);
+  }
+}

@@ -1,5 +1,5 @@
 import type { Review } from '../../types';
-import { apiFetch } from './api';
+import { apiFetch, assertApiAvailable } from './api';
 
 export async function getReview(
   reviewId: string,
@@ -12,11 +12,12 @@ export async function getReview(
     !guest && mapId
       ? `/maps/${mapId}/reviews/${reviewId}`
       : `/reviews/${reviewId}`;
-  const { data } = await apiFetch<Review>(path, {
+  const { data, status } = await apiFetch<Review>(path, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
+  assertApiAvailable(status, path);
   return data;
 }
 
