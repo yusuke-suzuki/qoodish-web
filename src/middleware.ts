@@ -7,12 +7,18 @@ import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales';
 
 const WARMUP_INTERVAL_MS = 60000;
 
+// Module state resets with every fresh runtime instance, so this throttle is
+// best-effort: each new instance pings once immediately. The healthcheck
+// renders a constant string, so those extra pings are cheap; the throttle
+// only keeps warm instances from pinging on every request.
 let lastWarmupAt = 0;
 
 async function warmUpApi(): Promise<void> {
   try {
+    // The response is irrelevant — the connection alone starts the boot, so
+    // the timeout only bounds how long this background task lingers.
     await fetch(`${process.env.API_ENDPOINT}/healthcheck`, {
-      signal: AbortSignal.timeout(60000)
+      signal: AbortSignal.timeout(10000)
     });
   } catch (error) {
     console.warn('API warmup request failed:', error);
@@ -34,11 +40,6 @@ function getPreferredLocale(request: NextRequest): Locale {
 }
 
 export function middleware(request: NextRequest, event: NextFetchEvent) {
-  if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
-    lastWarmupAt = Date.now();
-    event.waitUntil(warmUpApi());
-  }
-
   const { pathname } = request.nextUrl;
 
   const pathnameHasLocale = LOCALES.some(
@@ -46,6 +47,11 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
   );
 
   if (pathnameHasLocale) {
+    if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
+      lastWarmupAt = Date.now();
+      event.waitUntil(warmUpApi());
+    }
+
     return NextResponse.next();
   }
 
