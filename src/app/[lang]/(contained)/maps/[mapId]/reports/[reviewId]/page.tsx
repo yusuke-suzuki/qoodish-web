@@ -6,7 +6,10 @@ import { getServerAuthState } from '../../../../../../../lib/auth';
 import { getReview } from '../../../../../../../lib/reviews';
 import { getDictionary } from '../../../../../../../utils/getDictionary';
 import { localePath } from '../../../../../../../utils/locales';
-import { buildAlternates } from '../../../../../../../utils/metadata';
+import {
+  buildAlternates,
+  defaultOgImage
+} from '../../../../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;
@@ -24,14 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const keywords = `${
     review ? `${review.map.name}, ${review.name}, ` : ''
   }Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
-  const defaultThumbnailUrl =
-    lang === 'en'
-      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
-      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
   const thumbnailUrl =
     review && review.images.length > 0
       ? review.images[0].ogp
-      : defaultThumbnailUrl;
+      : defaultOgImage(lang);
   const path = `/maps/${mapId}/reports/${reviewId}`;
 
   return {

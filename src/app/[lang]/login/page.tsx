@@ -13,7 +13,14 @@ import LoginCard from '../../../components/auth/LoginCard';
 import Footer from '../../../components/layouts/Footer';
 import { getDictionary } from '../../../utils/getDictionary';
 import { localePath } from '../../../utils/locales';
-import { buildAlternates } from '../../../utils/metadata';
+import { buildAlternates, defaultOgImage } from '../../../utils/metadata';
+
+const HERO_IMAGE_URL =
+  'https://storage.googleapis.com/qoodish.appspot.com/assets/qoodish-lp-carousel-1-2019-05-06.jpg';
+const SHARE_FEATURE_IMAGE_URL =
+  'https://storage.googleapis.com/qoodish.appspot.com/assets/qoodish-lp-map-detail-2019-05-06.png';
+const DISCOVER_FEATURE_IMAGE_URL =
+  'https://storage.googleapis.com/qoodish.appspot.com/assets/qoodish-lp-discover-2019-05-06.png';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -24,10 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(lang);
   const title = `${dict.login} | Qoodish`;
   const description = dict['meta description'];
-  const thumbnailUrl =
-    lang === 'en'
-      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
-      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+  const thumbnailUrl = defaultOgImage(lang);
 
   return {
     title,
@@ -58,7 +62,7 @@ export default async function LoginPage({ params }: Props) {
       <Box sx={{ display: 'flex', position: 'relative' }}>
         <CardMedia
           component="img"
-          image={process.env.NEXT_PUBLIC_LP_CAROUSEL_1}
+          image={HERO_IMAGE_URL}
           width={4592}
           height={2576}
           alt="Qoodish"
@@ -152,7 +156,7 @@ export default async function LoginPage({ params }: Props) {
               <Card>
                 <CardMedia
                   component="img"
-                  image={process.env.NEXT_PUBLIC_LP_IMAGE_1}
+                  image={SHARE_FEATURE_IMAGE_URL}
                   width={2878}
                   height={1578}
                   alt="Qoodish"
@@ -190,7 +194,7 @@ export default async function LoginPage({ params }: Props) {
               <Card>
                 <CardMedia
                   component="img"
-                  image={process.env.NEXT_PUBLIC_LP_IMAGE_2}
+                  image={DISCOVER_FEATURE_IMAGE_URL}
                   width={2878}
                   height={1578}
                   alt="Qoodish"

@@ -7,7 +7,7 @@ import { getMap } from '../../../../../lib/maps';
 import { getUserJournal } from '../../../../../lib/users';
 import { getDictionary } from '../../../../../utils/getDictionary';
 import { localePath } from '../../../../../utils/locales';
-import { buildAlternates } from '../../../../../utils/metadata';
+import { buildAlternates, defaultOgImage } from '../../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string; chapterId: string }>;
@@ -25,11 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const keywords = `${
     chapter?.title ? `${chapter.title}, ` : ''
   }Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
-  const defaultThumbnailUrl =
-    lang === 'en'
-      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
-      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
-  const thumbnailUrl = chapter?.image?.ogp ?? defaultThumbnailUrl;
+  const thumbnailUrl = chapter?.image?.ogp ?? defaultOgImage(lang);
   const path = `/chapters/${chapterId}`;
 
   return {
