@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import AssetGenerator from '../../../../components/assets/AssetGenerator';
 import { getDictionary } from '../../../../utils/getDictionary';
 import { localePath } from '../../../../utils/locales';
-import { buildAlternates } from '../../../../utils/metadata';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -12,10 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
   const description = dict['meta description'];
-  const thumbnailUrl =
-    lang === 'en'
-      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
-      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+  const thumbnailUrl = defaultOgImage(lang);
 
   return {
     title: 'Assets | Qoodish',

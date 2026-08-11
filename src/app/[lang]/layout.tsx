@@ -9,7 +9,7 @@ import ShellProvider from '../../components/layouts/ShellProvider';
 import { getServerAuthState } from '../../lib/auth';
 import { getMyProfile, getNotifications } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
-import { SITE_ORIGIN } from '../../utils/metadata';
+import { SITE_ORIGIN, defaultOgImage } from '../../utils/metadata';
 import Providers from './Providers';
 
 const lobster = Lobster({
@@ -49,10 +49,7 @@ export const viewport: Viewport = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const defaultThumbnailUrl =
-    lang === 'en'
-      ? process.env.NEXT_PUBLIC_OGP_IMAGE_URL_EN
-      : process.env.NEXT_PUBLIC_OGP_IMAGE_URL_JA;
+  const defaultThumbnailUrl = defaultOgImage(lang);
 
   return {
     metadataBase: new URL(SITE_ORIGIN),
@@ -106,9 +103,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image'
     },
     other: {
-      'fb:app_id': process.env.NEXT_PUBLIC_FB_APP_ID ?? '',
       'og:type': 'website',
-      'og:site_name': 'Qoodish',
       'twitter:domain': 'qoodish.com',
       'mobile-web-app-capable': 'yes'
     }
