@@ -16,6 +16,18 @@ export async function getMap(
   return data;
 }
 
+export async function getFeaturedMap(lang: string): Promise<AppMap | null> {
+  // A 404 here means nothing is featured, which the discover page renders as an
+  // empty slot — only an unreachable API should surface as an error.
+  const { data, status } = await apiFetch<AppMap>('/maps/featured', {
+    lang,
+    guest: true,
+    next: { revalidate: 900 }
+  });
+  assertApiAvailable(status, '/maps/featured');
+  return data;
+}
+
 export async function getMapReviews(
   mapId: string,
   lang: string,

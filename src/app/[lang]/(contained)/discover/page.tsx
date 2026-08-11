@@ -4,7 +4,11 @@ import type { Metadata } from 'next';
 import PickUpMap from '../../../../components/discover/PickUpMap';
 import MapGridList from '../../../../components/maps/MapGridList';
 import ReviewGridList from '../../../../components/reviews/ReviewGridList';
-import { getActiveMaps, getMap, getRecentMaps } from '../../../../lib/maps';
+import {
+  getActiveMaps,
+  getFeaturedMap,
+  getRecentMaps
+} from '../../../../lib/maps';
 import { getRecentReviews } from '../../../../lib/reviews';
 import { getDictionary } from '../../../../utils/getDictionary';
 import { localePath } from '../../../../utils/locales';
@@ -47,12 +51,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DiscoverPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const mapId = process.env.NEXT_PUBLIC_PICKED_UP_MAP_ID;
   const [recentReviews, activeMaps, recentMaps, pickUpMap] = await Promise.all([
     getRecentReviews(lang),
     getActiveMaps(lang),
     getRecentMaps(lang),
-    mapId ? getMap(mapId, lang) : Promise.resolve(null)
+    getFeaturedMap(lang)
   ]);
 
   return (
