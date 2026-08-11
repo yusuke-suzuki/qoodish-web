@@ -24,6 +24,20 @@
       "bucket_name": "prod-qoodish-web-incremental-cache"
     }
   ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"]
+    }
+  ],
   "vars": {
     "APP_ENV": "production",
     "API_ENDPOINT": "https://api.qoodish.com"
@@ -44,6 +58,14 @@
           "bucket_name": "dev-qoodish-web-incremental-cache"
         }
       ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "NEXT_CACHE_DO_QUEUE",
+            "class_name": "DOQueueHandler"
+          }
+        ]
+      },
       "vars": {
         "APP_ENV": "development",
         "API_ENDPOINT": "https://api-dev.qoodish.com"
