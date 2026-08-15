@@ -75,8 +75,9 @@ We may entrust all or part of the handling of personal data to external service 
 Among the external providers set out in the preceding Article, Google LLC and Cloudflare, Inc. are located in a foreign country (the United States of America), and users' personal data may be handled in that foreign country in connection with such entrustment. In providing personal data to third parties in a foreign country, we provide the following information.
 
 - Name of the foreign country in which the third party is located: the United States of America
+- Countries in which personal data is actually handled: each provider delivers its services using facilities distributed across many countries, and the country in which processing takes place varies with the user's point of connection and each provider's operational circumstances, so we cannot determine in advance the countries in which personal data is actually handled. For the countries and regions in which their facilities are located, please refer to the information published by each provider.
 - The personal information protection system in that foreign country: the United States does not have a comprehensive, cross-sectoral federal statute protecting personal information; rather, it is governed by sector-specific laws and state laws. Please also refer to the information on foreign systems published by the Personal Information Protection Commission.
-- Measures taken by the third party to protect personal information: each provider takes the safety management measures necessary to protect personal information in accordance with its own privacy policy and data processing terms.
+- Measures taken by the third party to protect personal information: each provider takes the safety management measures necessary to protect personal information in accordance with its own privacy policy and data processing terms, regardless of the country in which the personal data is handled.
 
 ## Article 9 (External Transmission, Cookies, and Access Analysis)
 
