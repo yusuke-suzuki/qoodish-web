@@ -68,12 +68,11 @@ We will not provide personal data to any third party without obtaining the prior
 We may entrust all or part of the handling of personal data to external service providers within the scope necessary to achieve the purposes of use. In such cases, we exercise necessary and appropriate supervision over those providers. The principal external providers used by the Service are as follows.
 
 - Google LLC (provision of Google Cloud Identity Platform, Firebase Cloud Messaging, Google Analytics for Firebase, and Google Maps Platform)
-- Cloudflare, Inc. (storage and delivery of images)
-- Vercel Inc. (hosting of the Service)
+- Cloudflare, Inc. (hosting of the Service, and the storage and delivery of images)
 
 ## Article 8 (Provision to Third Parties in Foreign Countries)
 
-Among the external providers set out in the preceding Article, Google LLC, Cloudflare, Inc., and Vercel Inc. are located in a foreign country (the United States of America), and users' personal data may be handled in that foreign country in connection with such entrustment. In providing personal data to third parties in a foreign country, we provide the following information.
+Among the external providers set out in the preceding Article, Google LLC and Cloudflare, Inc. are located in a foreign country (the United States of America), and users' personal data may be handled in that foreign country in connection with such entrustment. In providing personal data to third parties in a foreign country, we provide the following information.
 
 - Name of the foreign country in which the third party is located: the United States of America
 - The personal information protection system in that foreign country: the United States does not have a comprehensive, cross-sectoral federal statute protecting personal information; rather, it is governed by sector-specific laws and state laws. Please also refer to the information on foreign systems published by the Personal Information Protection Commission.
