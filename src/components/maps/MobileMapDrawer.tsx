@@ -106,16 +106,20 @@ function MobileMapDrawer({
             display: { xs: 'block', md: 'none' }
           }
         }}
-        ModalProps={{
-          keepMounted: true
-        }}
         slotProps={{
+          root: {
+            keepMounted: true
+          },
           paper: {
             sx: {
               height: `calc(100% - ${drawerBleeding}px)`,
               overflow: 'visible',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              // The bleeding header below forms the sheet's visual top edge
+              // and carries the rounded corners instead.
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0
             }
           }
         }}
@@ -128,7 +132,9 @@ function MobileMapDrawer({
             right: 0,
             left: 0,
             bgcolor: 'background.paper',
-            height: drawerBleeding
+            height: drawerBleeding,
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16
           }}
         >
           <MobileMiniMapHeader map={map} reviews={reviews} draggable />

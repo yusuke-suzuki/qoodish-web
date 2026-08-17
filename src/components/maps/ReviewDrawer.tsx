@@ -7,7 +7,6 @@ import {
   Chip,
   CircularProgress,
   IconButton,
-  SwipeableDrawer,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -16,7 +15,7 @@ import type { Review } from '../../../types';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalePath from '../../hooks/useLocalePath';
-import DrawerPuller from '../common/DrawerPuller';
+import BottomSheet from '../common/BottomSheet';
 import IssueDialog from '../common/IssueDialog';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
 import EditReviewDialog from '../reviews/EditReviewDialog';
@@ -82,88 +81,82 @@ function ReviewDrawer({
 
   return (
     <>
-      <SwipeableDrawer
-        anchor="bottom"
-        variant="temporary"
+      <BottomSheet
         open={open}
         onOpen={onOpen}
         onClose={onClose}
-        disableSwipeToOpen
+        onExited={onExited}
+        invisibleBackdrop
         sx={{
           zIndex: (theme) => theme.zIndex.appBar - 1,
           display: { xs: 'block', md: 'none' }
         }}
-        ModalProps={{
-          slotProps: {
-            backdrop: {
-              invisible: true
-            }
-          }
-        }}
-        slotProps={{
-          transition: {
-            onExited
-          }
-        }}
       >
-        <DrawerPuller />
+        <Box sx={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto' }}>
+          <CardContent sx={{ pt: 0, pb: 1 }}>
+            <Typography variant="h6">{review?.name}</Typography>
+          </CardContent>
 
-        <CardContent sx={{ pt: 0, pb: 1 }}>
-          <Typography variant="h6">{review?.name}</Typography>
-        </CardContent>
+          <ReviewCardHeader
+            sx={{ pt: 0 }}
+            review={review}
+            hideMapLink
+            action={
+              <ReviewMenuButton
+                review={review}
+                currentProfile={profile}
+                onReportClick={() => setIssueDialogOpen(true)}
+                onEditClick={() => setEditDialogOpen(true)}
+                onDeleteClick={() => setDeleteDialogOpen(true)}
+              />
+            }
+          />
 
-        <ReviewCardHeader
-          sx={{ pt: 0 }}
-          review={review}
-          hideMapLink
-          action={
-            <ReviewMenuButton
-              review={review}
-              currentProfile={profile}
-              onReportClick={() => setIssueDialogOpen(true)}
-              onEditClick={() => setEditDialogOpen(true)}
-              onDeleteClick={() => setDeleteDialogOpen(true)}
-            />
-          }
-        />
+          <CardContent sx={{ pt: 0 }}>
+            <Typography variant="body2" component="p">
+              {review?.comment}
+            </Typography>
+          </CardContent>
 
-        <CardContent sx={{ pt: 0 }}>
-          <Typography variant="body2" component="p">
-            {review?.comment}
-          </Typography>
-        </CardContent>
+          <CardContent
+            sx={{
+              display: 'flex',
+              gap: 2,
+              width: '100%',
+              overflowX: 'auto',
+              py: 0
+            }}
+          >
+            {review?.images.map((image) => (
+              <Box
+                key={image.id}
+                sx={{
+                  flexShrink: 0,
+                  width: 200,
+                  height: 200,
+                  borderRadius: 1,
+                  overflow: 'hidden'
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  alt={review.name}
+                  image={image.card}
+                  sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </Box>
+            ))}
+          </CardContent>
+        </Box>
 
-        <CardContent
+        <CardActions
           sx={{
-            display: 'flex',
-            gap: 2,
-            width: '100%',
-            overflowX: 'auto',
-            py: 0
+            flexShrink: 0,
+            justifyContent: 'space-between',
+            borderTop: '1px solid',
+            borderColor: 'divider'
           }}
         >
-          {review?.images.map((image) => (
-            <Box
-              key={image.id}
-              sx={{
-                flexShrink: 0,
-                width: 200,
-                height: 200,
-                borderRadius: 1,
-                overflow: 'hidden'
-              }}
-            >
-              <CardMedia
-                component="img"
-                alt={review.name}
-                image={image.card}
-                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </Box>
-          ))}
-        </CardContent>
-
-        <CardActions sx={{ justifyContent: 'space-between' }}>
           {review && milestoneAction && (
             <Chip
               clickable
@@ -203,7 +196,7 @@ function ReviewDrawer({
             )}
           </Box>
         </CardActions>
-      </SwipeableDrawer>
+      </BottomSheet>
       <EditReviewDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}

@@ -1,16 +1,9 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Alert, DialogContentText } from '@mui/material';
 import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import AppDialog from '../common/AppDialog';
 import EmailField from '../common/EmailField';
 
 type Props = {
@@ -87,64 +80,53 @@ function LinkEmailDialog({ open, onClose }: Props) {
   }, []);
 
   return (
-    <Dialog
+    <AppDialog
       open={open}
       onClose={onClose}
-      fullWidth
-      slotProps={{
-        transition: {
-          onExited: handleExited
-        }
-      }}
+      title={dictionary['link email']}
+      disableClose={loading}
+      onExited={handleExited}
+      cancelLabel={sent ? dictionary.close : dictionary.cancel}
+      confirmAction={
+        sent
+          ? undefined
+          : {
+              label: dictionary['send link'],
+              loading,
+              disabled: !email || !emailValid,
+              onClick: handleSend
+            }
+      }
     >
-      <DialogTitle>{dictionary['link email']}</DialogTitle>
-      <DialogContent>
-        {sent ? (
-          <>
-            <Alert severity="success" sx={{ mb: 2 }}>
-              {dictionary['link email sent']}
-            </Alert>
-            <Alert severity="info">
-              {dictionary['email link sent description']}
-            </Alert>
-          </>
-        ) : (
-          <>
-            <DialogContentText sx={{ mb: 2 }}>
-              {dictionary['link email detail']}
-            </DialogContentText>
+      {sent ? (
+        <>
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {dictionary['link email sent']}
+          </Alert>
+          <Alert severity="info">
+            {dictionary['email link sent description']}
+          </Alert>
+        </>
+      ) : (
+        <>
+          <DialogContentText sx={{ mb: 2 }}>
+            {dictionary['link email detail']}
+          </DialogContentText>
 
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-            <EmailField
-              value={email}
-              onChange={handleEmailChange}
-              disabled={loading}
-            />
-          </>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
-          {sent ? dictionary.close : dictionary.cancel}
-        </Button>
-        {!sent && (
-          <Button
-            variant="contained"
-            onClick={handleSend}
-            color="secondary"
-            disabled={!email || !emailValid}
-            loading={loading}
-          >
-            {dictionary['send link']}
-          </Button>
-        )}
-      </DialogActions>
-    </Dialog>
+          <EmailField
+            value={email}
+            onChange={handleEmailChange}
+            disabled={loading}
+          />
+        </>
+      )}
+    </AppDialog>
   );
 }
 

@@ -1,18 +1,9 @@
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel
-} from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useState } from 'react';
+import { memo, useCallback } from 'react';
 import type { AppMap } from '../../../types';
 import { deleteMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 
 type Props = {
   map: AppMap | null;
@@ -24,90 +15,41 @@ type Props = {
 const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
 
-  const [check, setCheck] = useState(false);
+  const handleConfirm = useCallback(async () => {
+    if (!map) {
+      enqueueSnackbar(dictionary['delete map failed'], { variant: 'error' });
+      return;
+    }
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
-      if (!map) {
-        enqueueSnackbar(dictionary['delete map failed'], { variant: 'error' });
-        return null;
-      }
+    try {
+      const result = await deleteMap(map.id);
 
-      try {
-        const result = await deleteMap(map.id);
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['delete map success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onDeleted();
-          return null;
-        }
-
-        enqueueSnackbar(result.error ?? dictionary['delete map failed'], {
-          variant: 'error'
+      if (result.success) {
+        enqueueSnackbar(dictionary['delete map success'], {
+          variant: 'success'
         });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['delete map failed'], { variant: 'error' });
-        return null;
+
+        onClose();
+        onDeleted();
+        return;
       }
-    },
-    null
-  );
+
+      enqueueSnackbar(result.error ?? dictionary['delete map failed'], {
+        variant: 'error'
+      });
+    } catch (_error) {
+      enqueueSnackbar(dictionary['delete map failed'], { variant: 'error' });
+    }
+  }, [map, dictionary, onClose, onDeleted]);
 
   return (
-    <Dialog
+    <ConfirmDeleteDialog
       open={open}
+      title={dictionary['sure to delete map']}
+      description={dictionary['delete map detail']}
       onClose={onClose}
-      fullWidth
-      slotProps={{
-        transition: {
-          onExited: () => setCheck(false)
-        }
-      }}
-    >
-      <form action={submitAction}>
-        <DialogTitle>{dictionary['sure to delete map']}</DialogTitle>
-        <DialogContent>
-          <DialogContentText gutterBottom>
-            {dictionary['delete map detail']}
-          </DialogContentText>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={check}
-                onChange={() => setCheck((prev) => !prev)}
-                color="success"
-              />
-            }
-            label={dictionary['understand this cannot be undone']}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            color="inherit"
-            disabled={isPending}
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="error"
-            disabled={!check}
-            loading={isPending}
-          >
-            {dictionary.delete}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+      onConfirm={handleConfirm}
+    />
   );
 };
 

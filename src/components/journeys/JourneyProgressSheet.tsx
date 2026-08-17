@@ -22,7 +22,6 @@ import {
   Menu,
   MenuItem,
   Stack,
-  SwipeableDrawer,
   Typography
 } from '@mui/material';
 import { useParams } from 'next/navigation';
@@ -37,7 +36,7 @@ import type {
 } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalDateTime from '../../hooks/useLocalDateTime';
-import DrawerPuller from '../common/DrawerPuller';
+import BottomSheet from '../common/BottomSheet';
 import CheckinImageStrip from './CheckinImageStrip';
 import CheckinNoteField from './CheckinNoteField';
 
@@ -319,26 +318,7 @@ function JourneyProgressSheet({
   const formatTime = (value: string) => formatLocal(value, TIME_OPTIONS);
 
   return (
-    <SwipeableDrawer
-      anchor="bottom"
-      open={open}
-      onClose={onClose}
-      onOpen={onOpen}
-      disableSwipeToOpen
-      slotProps={{
-        paper: {
-          sx: {
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
-            maxHeight: '75svh',
-            display: 'flex',
-            flexDirection: 'column'
-          }
-        }
-      }}
-    >
-      <DrawerPuller />
-
+    <BottomSheet open={open} onClose={onClose} onOpen={onOpen}>
       <Box sx={{ flexShrink: 0, px: 2, pb: 2.5 }}>
         <Box
           sx={{
@@ -434,7 +414,7 @@ function JourneyProgressSheet({
           </Button>
         )}
       </Box>
-    </SwipeableDrawer>
+    </BottomSheet>
   );
 }
 

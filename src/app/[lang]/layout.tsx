@@ -43,7 +43,10 @@ export const viewport: Viewport = {
   themeColor: '#ffc107',
   width: 'device-width',
   initialScale: 1,
-  viewportFit: 'cover'
+  viewportFit: 'cover',
+  // Shrink the layout viewport with the software keyboard. Under the default
+  // resizes-visual, fixed-positioned dialogs and app bars get pushed behind it.
+  interactiveWidget: 'resizes-content'
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

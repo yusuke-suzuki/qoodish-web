@@ -1,15 +1,18 @@
-import { Search } from '@mui/icons-material';
+import { Close, Search } from '@mui/icons-material';
 import {
   AppBar,
   Avatar,
   Box,
   Dialog,
   DialogContent,
+  IconButton,
   InputAdornment,
   List,
   TextField,
   Toolbar,
-  Typography
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback, useDeferredValue, useState } from 'react';
@@ -19,6 +22,7 @@ import useLocalePath from '../../hooks/useLocalePath';
 import { useMapSearch } from '../../hooks/useMapSearch';
 import AutocompleteListItem from '../common/AutocompleteListItem';
 import NoContents from '../common/NoContents';
+import SlideUpTransition from '../common/SlideUpTransition';
 
 type Props = {
   open: boolean;
@@ -28,6 +32,9 @@ type Props = {
 const SearchDialog = ({ open, onClose }: Props) => {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { push } = useRouter();
 
@@ -52,8 +59,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
     <Dialog
       open={open}
       onClose={onClose}
-      fullWidth
       maxWidth="md"
+      fullScreen={fullScreen}
+      slots={fullScreen ? { transition: SlideUpTransition } : undefined}
       slotProps={{
         transition: {
           onExited: handleExited
@@ -84,6 +92,14 @@ const SearchDialog = ({ open, onClose }: Props) => {
               }
             }}
           />
+
+          <IconButton
+            edge="end"
+            onClick={onClose}
+            aria-label={dictionary.close}
+          >
+            <Close />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <DialogContent dividers>

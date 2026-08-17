@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Alert, DialogContentText } from '@mui/material';
 import {
   type AuthError,
   GoogleAuthProvider,
@@ -19,6 +11,7 @@ import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
+import AppDialog, { type ConfirmAction } from '../common/AppDialog';
 import EmailField from '../common/EmailField';
 
 type Props = {
@@ -178,105 +171,107 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     window.localStorage.removeItem('reauthForEmailChange');
   }, []);
 
+  const confirmAction = useMemo<ConfirmAction | undefined>(() => {
+    if (reauthStep === 'google') {
+      return {
+        label: dictionary['sign in again'],
+        loading,
+        onClick: handleReauth
+      };
+    }
+
+    if (reauthStep === 'emailLink') {
+      return {
+        label: dictionary['send reauth link'],
+        loading,
+        onClick: handleSendReauthLink
+      };
+    }
+
+    if (!sent && reauthStep === 'idle') {
+      return {
+        label: dictionary['send verification email'],
+        loading,
+        disabled: !email || !emailValid || !authenticated,
+        onClick: handleSend
+      };
+    }
+
+    return undefined;
+  }, [
+    reauthStep,
+    sent,
+    loading,
+    email,
+    emailValid,
+    authenticated,
+    dictionary,
+    handleReauth,
+    handleSendReauthLink,
+    handleSend
+  ]);
+
   return (
-    <Dialog
+    <AppDialog
       open={open}
       onClose={onClose}
-      fullWidth
-      slotProps={{
-        transition: {
-          onExited: handleExited
-        }
-      }}
+      title={dictionary['change email']}
+      disableClose={loading}
+      onExited={handleExited}
+      cancelLabel={
+        sent || reauthStep === 'emailLinkSent'
+          ? dictionary.close
+          : dictionary.cancel
+      }
+      confirmAction={confirmAction}
     >
-      <DialogTitle>{dictionary['change email']}</DialogTitle>
-      <DialogContent>
-        {sent ? (
-          <>
-            <Alert severity="success" sx={{ mb: 2 }}>
-              {dictionary['change email sent']}
+      {sent ? (
+        <>
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {dictionary['change email sent']}
+          </Alert>
+          <Alert severity="info">
+            {dictionary['change email sent description']}
+          </Alert>
+        </>
+      ) : reauthStep === 'emailLinkSent' ? (
+        <>
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {dictionary['reauth email link sent']}
+          </Alert>
+          <Alert severity="info">
+            {dictionary['reauth email link sent description']}
+          </Alert>
+        </>
+      ) : reauthStep !== 'idle' ? (
+        <>
+          <DialogContentText sx={{ mb: 2 }}>
+            {dictionary['reauth required detail']}
+          </DialogContentText>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
             </Alert>
-            <Alert severity="info">
-              {dictionary['change email sent description']}
+          )}
+        </>
+      ) : (
+        <>
+          <DialogContentText sx={{ mb: 2 }}>
+            {dictionary['change email detail']}
+          </DialogContentText>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
             </Alert>
-          </>
-        ) : reauthStep === 'emailLinkSent' ? (
-          <>
-            <Alert severity="success" sx={{ mb: 2 }}>
-              {dictionary['reauth email link sent']}
-            </Alert>
-            <Alert severity="info">
-              {dictionary['reauth email link sent description']}
-            </Alert>
-          </>
-        ) : reauthStep !== 'idle' ? (
-          <>
-            <DialogContentText sx={{ mb: 2 }}>
-              {dictionary['reauth required detail']}
-            </DialogContentText>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-          </>
-        ) : (
-          <>
-            <DialogContentText sx={{ mb: 2 }}>
-              {dictionary['change email detail']}
-            </DialogContentText>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-            <EmailField
-              value={email}
-              onChange={handleEmailChange}
-              disabled={loading}
-            />
-          </>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
-          {sent || reauthStep === 'emailLinkSent'
-            ? dictionary.close
-            : dictionary.cancel}
-        </Button>
-        {reauthStep === 'google' && (
-          <Button
-            variant="contained"
-            onClick={handleReauth}
-            color="secondary"
-            loading={loading}
-          >
-            {dictionary['sign in again']}
-          </Button>
-        )}
-        {reauthStep === 'emailLink' && (
-          <Button
-            variant="contained"
-            onClick={handleSendReauthLink}
-            color="secondary"
-            loading={loading}
-          >
-            {dictionary['send reauth link']}
-          </Button>
-        )}
-        {!sent && reauthStep === 'idle' && (
-          <Button
-            variant="contained"
-            onClick={handleSend}
-            color="secondary"
-            disabled={!email || !emailValid || !authenticated}
-            loading={loading}
-          >
-            {dictionary['send verification email']}
-          </Button>
-        )}
-      </DialogActions>
-    </Dialog>
+          )}
+          <EmailField
+            value={email}
+            onChange={handleEmailChange}
+            disabled={loading}
+          />
+        </>
+      )}
+    </AppDialog>
   );
 }
 

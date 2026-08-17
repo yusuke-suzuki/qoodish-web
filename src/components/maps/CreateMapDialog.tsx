@@ -1,15 +1,8 @@
 import {
   Box,
-  Button,
   CardMedia,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Skeleton,
-  Slide,
-  type SlideProps,
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
@@ -26,17 +19,11 @@ import { createMap } from '../../actions/maps';
 import useDictionary from '../../hooks/useDictionary';
 import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
+import AppDialog from '../common/AppDialog';
 import MapDescriptionForm from './MapDescriptionForm';
 import MapNameForm from './MapNameForm';
 import MapOptions from './MapOptions';
 import PositionForm from './PositionForm';
-
-function Transition({
-  ref,
-  ...props
-}: SlideProps & { ref?: React.Ref<unknown> }) {
-  return <Slide direction="up" ref={ref} {...props} />;
-}
 
 type Props = {
   open: boolean;
@@ -167,102 +154,79 @@ export default memo(function CreateMapDialog({
   }, []);
 
   return (
-    <Dialog
+    <AppDialog
       open={open}
-      onClose={(_event, reason) => {
-        if (reason !== 'backdropClick') {
-          onClose();
-        }
-      }}
-      disableEscapeKeyDown
-      fullWidth
-      slots={{
-        transition: Transition
-      }}
-      slotProps={{
-        transition: { onExited: handleExited }
+      onClose={onClose}
+      title={dictionary['create new map']}
+      fullScreenOnMobile
+      dividers
+      disableQuickDismiss
+      onSubmit={handleSubmit}
+      onExited={handleExited}
+      disableClose={isPending}
+      confirmAction={{
+        label: dictionary.save,
+        type: 'submit',
+        disabled,
+        loading: isPending
       }}
     >
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>{dictionary['create new map']}</DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            {dictionary.thumbnail}
-          </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        {dictionary.thumbnail}
+      </Typography>
 
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="fit-content"
-            position="relative"
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        width="fit-content"
+        position="relative"
+        sx={{
+          mb: 2
+        }}
+      >
+        {thumbnailUrl ? (
+          <CardMedia
             sx={{
-              mb: 2
+              width: 160,
+              height: 160,
+              opacity: isUploading ? 0.4 : 1
             }}
-          >
-            {thumbnailUrl ? (
-              <CardMedia
-                sx={{
-                  width: 160,
-                  height: 160,
-                  opacity: isUploading ? 0.4 : 1
-                }}
-                image={thumbnailUrl}
-              />
-            ) : (
-              <Skeleton
-                sx={{ width: 160, height: 160 }}
-                variant="rectangular"
-                animation={false}
-              />
-            )}
+            image={thumbnailUrl}
+          />
+        ) : (
+          <Skeleton
+            sx={{ width: 160, height: 160 }}
+            variant="rectangular"
+            animation={false}
+          />
+        )}
 
-            <Box position="absolute">
-              {isUploading ? (
-                <CircularProgress />
-              ) : (
-                <AddPhotoButton
-                  onChange={handleImagesChange}
-                  color="inherit"
-                  disabled={isPending}
-                />
-              )}
-            </Box>
-          </Box>
+        <Box position="absolute">
+          {isUploading ? (
+            <CircularProgress />
+          ) : (
+            <AddPhotoButton
+              onChange={handleImagesChange}
+              color="inherit"
+              disabled={isPending}
+            />
+          )}
+        </Box>
+      </Box>
 
-          <MapNameForm onChange={setName} />
-          <MapDescriptionForm onChange={setDescription} />
+      <MapNameForm onChange={setName} />
+      <MapDescriptionForm onChange={setDescription} />
 
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            {dictionary['center of map']}
-          </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        {dictionary['center of map']}
+      </Typography>
 
-          <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
+      <PositionForm onChange={setPosition} defaultValue={defaultCenter} />
 
-          <Box>
-            <MapOptions onChange={handleMapOptionsChange} />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            disabled={isPending}
-            color="inherit"
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            disabled={disabled}
-            loading={isPending}
-          >
-            {dictionary.save}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+      <Box>
+        <MapOptions onChange={handleMapOptionsChange} />
+      </Box>
+    </AppDialog>
   );
 });

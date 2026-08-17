@@ -115,6 +115,21 @@ export default function Providers({
             lineHeight: 1.8,
             letterSpacing: '0.01em'
           }
+        },
+        components: {
+          MuiDialog: {
+            defaultProps: {
+              fullWidth: true
+            }
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              paperAnchorBottom: {
+                borderTopLeftRadius: 16,
+                borderTopRightRadius: 16
+              }
+            }
+          }
         }
       },
       locale

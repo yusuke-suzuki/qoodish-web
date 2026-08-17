@@ -1,16 +1,9 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState } from 'react';
+import { memo, useCallback } from 'react';
 import type { Comment } from '../../../types';
 import { deleteComment } from '../../actions/comments';
 import useDictionary from '../../hooks/useDictionary';
+import ConfirmDialog from '../common/ConfirmDialog';
 
 type Props = {
   comment: Comment | null;
@@ -22,62 +15,43 @@ type Props = {
 const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
-      if (!comment) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
-      }
+  const handleConfirm = useCallback(async () => {
+    if (!comment) {
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      return;
+    }
 
-      try {
-        const result = await deleteComment(comment.review_id, comment.id);
+    try {
+      const result = await deleteComment(comment.review_id, comment.id);
 
-        if (result.success) {
-          enqueueSnackbar(dictionary['delete comment success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onDeleted();
-          return null;
-        }
-
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
+      if (result.success) {
+        enqueueSnackbar(dictionary['delete comment success'], {
+          variant: 'success'
         });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
+
+        onClose();
+        onDeleted();
+        return;
       }
-    },
-    null
-  );
+
+      enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+        variant: 'error'
+      });
+    } catch (_error) {
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+    }
+  }, [comment, dictionary, onClose, onDeleted]);
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <form action={submitAction}>
-        <DialogTitle>{dictionary['delete comment']}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {dictionary['sure to delete comment']}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            disabled={isPending}
-            color="inherit"
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button type="submit" color="error" loading={isPending}>
-            {dictionary.delete}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      title={dictionary['delete comment']}
+      description={dictionary['sure to delete comment']}
+      confirmLabel={dictionary.delete}
+      confirmColor="error"
+      onClose={onClose}
+      onConfirm={handleConfirm}
+    />
   );
 };
 
