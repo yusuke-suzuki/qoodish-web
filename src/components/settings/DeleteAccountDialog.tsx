@@ -1,17 +1,8 @@
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel
-} from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { deleteAccount } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 
 type Props = {
   open: boolean;
@@ -22,85 +13,36 @@ type Props = {
 function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
   const dictionary = useDictionary();
 
-  const [check, setCheck] = useState(false);
+  const handleConfirm = useCallback(async () => {
+    try {
+      const result = await deleteAccount();
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
-      try {
-        const result = await deleteAccount();
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['delete account success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onDeleted();
-          return null;
-        }
-
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
+      if (result.success) {
+        enqueueSnackbar(dictionary['delete account success'], {
+          variant: 'success'
         });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-        return null;
+
+        onClose();
+        onDeleted();
+        return;
       }
-    },
-    null
-  );
+
+      enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+        variant: 'error'
+      });
+    } catch (_error) {
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+    }
+  }, [dictionary, onClose, onDeleted]);
 
   return (
-    <Dialog
+    <ConfirmDeleteDialog
       open={open}
+      title={dictionary['sure to delete account']}
+      description={dictionary['delete account detail']}
       onClose={onClose}
-      fullWidth
-      slotProps={{
-        transition: {
-          onExited: () => setCheck(false)
-        }
-      }}
-    >
-      <form action={submitAction}>
-        <DialogTitle>{dictionary['sure to delete account']}</DialogTitle>
-        <DialogContent>
-          <DialogContentText gutterBottom>
-            {dictionary['delete account detail']}
-          </DialogContentText>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={check}
-                onChange={() => setCheck((prev) => !prev)}
-                color="success"
-              />
-            }
-            label={dictionary['understand this cannot be undone']}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            color="inherit"
-            disabled={isPending}
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="error"
-            disabled={!check}
-            loading={isPending}
-          >
-            {dictionary.delete}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+      onConfirm={handleConfirm}
+    />
   );
 }
 

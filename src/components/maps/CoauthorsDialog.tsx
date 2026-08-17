@@ -3,13 +3,7 @@
 import { Delete } from '@mui/icons-material';
 import {
   Avatar,
-  Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   IconButton,
   List,
   ListItem,
@@ -20,10 +14,12 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useState, useTransition } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { AppMap, Coauthor } from '../../../types';
 import { removeCoauthor } from '../../actions/coauthors';
 import useDictionary from '../../hooks/useDictionary';
+import AppDialog from '../common/AppDialog';
+import ConfirmDialog from '../common/ConfirmDialog';
 
 type Props = {
   open: boolean;
@@ -38,100 +34,82 @@ function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
   const { lang } = useParams<{ lang: string }>();
 
   const [confirmTarget, setConfirmTarget] = useState<Coauthor | null>(null);
-  const [isPending, startTransition] = useTransition();
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!map || !confirmTarget) {
       return;
     }
 
-    startTransition(async () => {
-      const result = await removeCoauthor(map.id, confirmTarget.id);
+    const result = await removeCoauthor(map.id, confirmTarget.id);
 
-      if (result.success) {
-        enqueueSnackbar(dictionary['remove coauthor success'], {
-          variant: 'success'
-        });
-        setConfirmTarget(null);
-        router.refresh();
-      } else {
-        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-          variant: 'error'
-        });
-      }
+    if (result.success) {
+      enqueueSnackbar(dictionary['remove coauthor success'], {
+        variant: 'success'
+      });
+      setConfirmTarget(null);
+      router.refresh();
+      return;
+    }
+
+    enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+      variant: 'error'
     });
   }, [map, confirmTarget, dictionary, router]);
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} fullWidth>
-        <DialogTitle>{dictionary.coauthors}</DialogTitle>
-        <DialogContent>
-          <List>
-            {coauthors.map((coauthor) => (
-              <ListItem
-                key={coauthor.id}
-                disablePadding
-                secondaryAction={
-                  coauthor.author ? (
-                    <Chip label={dictionary.owner} size="small" />
-                  ) : (
-                    <IconButton
-                      edge="end"
-                      aria-label={dictionary['remove coauthor']}
-                      title={dictionary['remove coauthor']}
-                      onClick={() => setConfirmTarget(coauthor)}
-                    >
-                      <Delete color="error" />
-                    </IconButton>
-                  )
-                }
-              >
-                <ListItemButton
-                  component={Link}
-                  href={`/${lang}/users/${coauthor.id}`}
-                  onClick={onClose}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={coauthor.image?.avatar} alt={coauthor.name} />
-                  </ListItemAvatar>
-                  <ListItemText primary={coauthor.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={Boolean(confirmTarget)}
-        onClose={() => setConfirmTarget(null)}
-        fullWidth
+      <AppDialog
+        open={open}
+        onClose={onClose}
+        title={dictionary.coauthors}
+        disableContentPadding
+        dividers
+        cancelLabel={dictionary.close}
       >
-        <DialogTitle>{dictionary['sure to remove coauthor']}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {dictionary['remove coauthor detail']}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmTarget(null)}
-            color="inherit"
-            disabled={isPending}
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            onClick={handleConfirm}
-            variant="contained"
-            color="error"
-            loading={isPending}
-          >
-            {dictionary['remove coauthor']}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <List disablePadding>
+          {coauthors.map((coauthor) => (
+            <ListItem
+              key={coauthor.id}
+              disablePadding
+              secondaryAction={
+                coauthor.author ? (
+                  <Chip label={dictionary.owner} size="small" />
+                ) : (
+                  <IconButton
+                    edge="end"
+                    aria-label={dictionary['remove coauthor']}
+                    title={dictionary['remove coauthor']}
+                    onClick={() => setConfirmTarget(coauthor)}
+                  >
+                    <Delete color="error" />
+                  </IconButton>
+                )
+              }
+            >
+              <ListItemButton
+                component={Link}
+                href={`/${lang}/users/${coauthor.id}`}
+                onClick={onClose}
+              >
+                <ListItemAvatar>
+                  <Avatar src={coauthor.image?.avatar} alt={coauthor.name} />
+                </ListItemAvatar>
+                <ListItemText primary={coauthor.name} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </AppDialog>
+
+      <ConfirmDialog
+        open={Boolean(confirmTarget)}
+        title={dictionary['sure to remove coauthor']}
+        description={dictionary['remove coauthor detail']}
+        confirmLabel={dictionary['remove coauthor']}
+        confirmColor="error"
+        onClose={() => setConfirmTarget(null)}
+        onConfirm={handleConfirm}
+      />
     </>
   );
 }

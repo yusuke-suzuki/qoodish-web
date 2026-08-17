@@ -1,26 +1,8 @@
 import { Check, HistoryEdu, LocationOff } from '@mui/icons-material';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Slide,
-  type SlideProps
-} from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
-
-function Transition({
-  ref,
-  ...props
-}: SlideProps & { ref?: React.Ref<unknown> }) {
-  return <Slide direction="up" ref={ref} {...props} />;
-}
+import AppDialog from '../common/AppDialog';
 
 type Props = {
   open: boolean;
@@ -43,61 +25,53 @@ export default memo(function EndJourneyDialog({ open, onClose, onEnd }: Props) {
     }
   }, [onEnd]);
 
+  const handleExited = useCallback(() => setLoading(false), []);
+
   return (
-    <Dialog
+    <AppDialog
       open={open}
-      onClose={loading ? undefined : onClose}
-      fullWidth
+      onClose={onClose}
+      title={dictionary['end journey']}
       maxWidth="xs"
-      slots={{
-        transition: Transition
+      dividers
+      disableClose={loading}
+      onExited={handleExited}
+      confirmAction={{
+        label: dictionary['end journey'],
+        color: 'success',
+        startIcon: <Check />,
+        loading,
+        onClick: handleEnd
       }}
     >
-      <DialogTitle>{dictionary['end journey']}</DialogTitle>
-      <DialogContent dividers>
-        <List disablePadding>
-          <ListItem disableGutters>
-            <ListItemIcon>
-              <LocationOff />
-            </ListItemIcon>
-            <ListItemText
-              primary={dictionary['end journey location']}
-              slotProps={{
-                primary: {
-                  variant: 'body2'
-                }
-              }}
-            />
-          </ListItem>
-          <ListItem disableGutters>
-            <ListItemIcon>
-              <HistoryEdu />
-            </ListItemIcon>
-            <ListItemText
-              primary={dictionary['end journey journal']}
-              slotProps={{
-                primary: {
-                  variant: 'body2'
-                }
-              }}
-            />
-          </ListItem>
-        </List>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="inherit" disabled={loading}>
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<Check />}
-          loading={loading}
-          onClick={handleEnd}
-        >
-          {dictionary['end journey']}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <List disablePadding>
+        <ListItem disableGutters>
+          <ListItemIcon>
+            <LocationOff />
+          </ListItemIcon>
+          <ListItemText
+            primary={dictionary['end journey location']}
+            slotProps={{
+              primary: {
+                variant: 'body2'
+              }
+            }}
+          />
+        </ListItem>
+        <ListItem disableGutters>
+          <ListItemIcon>
+            <HistoryEdu />
+          </ListItemIcon>
+          <ListItemText
+            primary={dictionary['end journey journal']}
+            slotProps={{
+              primary: {
+                variant: 'body2'
+              }
+            }}
+          />
+        </ListItem>
+      </List>
+    </AppDialog>
   );
 });

@@ -1,18 +1,9 @@
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel
-} from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useActionState, useState } from 'react';
+import { memo, useCallback } from 'react';
 import type { Review } from '../../../types';
 import { deleteReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 
 type Props = {
   review: Review | null;
@@ -24,94 +15,40 @@ type Props = {
 const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
 
-  const [check, setCheck] = useState(false);
+  const handleConfirm = useCallback(async () => {
+    if (!review) {
+      enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
+      return;
+    }
 
-  const [, submitAction, isPending] = useActionState<null, FormData>(
-    async (_prevState, _formData) => {
-      if (!review) {
-        enqueueSnackbar(dictionary['delete report failed'], {
-          variant: 'error'
+    try {
+      const result = await deleteReview(review.id);
+
+      if (result.success) {
+        enqueueSnackbar(dictionary['delete report success'], {
+          variant: 'success'
         });
-        return null;
+
+        onClose();
+        onDeleted();
+        return;
       }
 
-      try {
-        const result = await deleteReview(review.id);
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['delete report success'], {
-            variant: 'success'
-          });
-
-          onClose();
-          onDeleted();
-          return null;
-        }
-
-        enqueueSnackbar(result.error ?? dictionary['delete report failed'], {
-          variant: 'error'
-        });
-        return null;
-      } catch (_error) {
-        enqueueSnackbar(dictionary['delete report failed'], {
-          variant: 'error'
-        });
-        return null;
-      }
-    },
-    null
-  );
+      enqueueSnackbar(result.error ?? dictionary['delete report failed'], {
+        variant: 'error'
+      });
+    } catch (_error) {
+      enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
+    }
+  }, [review, dictionary, onClose, onDeleted]);
 
   return (
-    <Dialog
+    <ConfirmDeleteDialog
       open={open}
+      title={dictionary['sure to delete report']}
       onClose={onClose}
-      fullWidth
-      slotProps={{
-        transition: {
-          onExited: () => setCheck(false)
-        }
-      }}
-    >
-      <form action={submitAction}>
-        <DialogTitle>{dictionary['sure to delete report']}</DialogTitle>
-        <DialogContent>
-          <DialogContentText gutterBottom>
-            {dictionary['this cannot be undone']}
-          </DialogContentText>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={check}
-                onChange={() => setCheck((prev) => !prev)}
-                color="success"
-              />
-            }
-            label={dictionary['understand this cannot be undone']}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            color="inherit"
-            disabled={isPending}
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="error"
-            disabled={!check}
-            loading={isPending}
-          >
-            {dictionary.delete}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+      onConfirm={handleConfirm}
+    />
   );
 };
 

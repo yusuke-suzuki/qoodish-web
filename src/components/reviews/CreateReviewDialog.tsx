@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Slide,
-  type SlideProps
-} from '@mui/material';
+import { Box } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
   type FormEvent,
@@ -22,17 +13,11 @@ import { createReview } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
 import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
+import AppDialog from '../common/AppDialog';
 import PhotoPreviewList from '../common/PhotoPreviewList';
 import PositionForm from '../maps/PositionForm';
 import ReviewDescriptionForm from './ReviewDescriptionForm';
 import ReviewNameForm from './ReviewNameForm';
-
-function Transition({
-  ref,
-  ...props
-}: SlideProps & { ref?: React.Ref<unknown> }) {
-  return <Slide direction="up" ref={ref} {...props} />;
-}
 
 type Props = {
   open: boolean;
@@ -169,84 +154,46 @@ export default memo(function CreateReviewDialog({
   }, [pinnedPosition]);
 
   return (
-    <Dialog
+    <AppDialog
       open={open}
-      onClose={(_event, reason) => {
-        if (reason !== 'backdropClick') {
-          onClose();
-        }
-      }}
-      disableEscapeKeyDown
-      fullWidth
-      slots={{
-        transition: Transition
-      }}
-      slotProps={{
-        transition: { onExited: handleExited }
+      onClose={onClose}
+      title={dictionary['create new post']}
+      fullScreenOnMobile
+      dividers
+      disableQuickDismiss
+      onSubmit={handleSubmit}
+      onExited={handleExited}
+      secondaryActions={
+        <AddPhotoButton
+          onChange={handleImagesChange}
+          multiple
+          disabled={isUploading || isPending}
+        />
+      }
+      disableClose={isPending}
+      confirmAction={{
+        label: dictionary.save,
+        type: 'submit',
+        disabled,
+        loading: isPending
       }}
     >
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>{dictionary['create new post']}</DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ mb: 2 }}>
-            <PositionForm
-              defaultValue={
-                defaultPositionFromPlace ||
-                defaultPositionFromGeolocation ||
-                defaultPositionFromPinnedPosition
-              }
-              onChange={setPosition}
-            />
-          </Box>
+      <Box sx={{ mb: 2 }}>
+        <PositionForm
+          defaultValue={
+            defaultPositionFromPlace ||
+            defaultPositionFromGeolocation ||
+            defaultPositionFromPinnedPosition
+          }
+          onChange={setPosition}
+        />
+      </Box>
 
-          <ReviewNameForm
-            defaultValue={place?.displayName}
-            onChange={setName}
-          />
+      <ReviewNameForm defaultValue={place?.displayName} onChange={setName} />
 
-          <ReviewDescriptionForm onChange={setComment} />
+      <ReviewDescriptionForm onChange={setComment} />
 
-          <PhotoPreviewList items={items} onDelete={removeAt} />
-        </DialogContent>
-        <DialogActions
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto'
-          }}
-        >
-          <AddPhotoButton
-            onChange={handleImagesChange}
-            multiple
-            disabled={isUploading || isPending}
-          />
-
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            <Button
-              type="button"
-              onClick={onClose}
-              disabled={isPending}
-              color="inherit"
-            >
-              {dictionary.cancel}
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="secondary"
-              disabled={disabled}
-              loading={isPending}
-            >
-              {dictionary.save}
-            </Button>
-          </Box>
-        </DialogActions>
-      </form>
-    </Dialog>
+      <PhotoPreviewList items={items} onDelete={removeAt} />
+    </AppDialog>
   );
 });

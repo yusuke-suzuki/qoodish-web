@@ -3,11 +3,6 @@
 import {
   Autocomplete,
   Avatar,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -25,6 +20,7 @@ import {
 import type { AppMap, UserSearchResult } from '../../../types';
 import { inviteCoauthor, searchUsers } from '../../actions/coauthors';
 import useDictionary from '../../hooks/useDictionary';
+import AppDialog from '../common/AppDialog';
 
 type Props = {
   open: boolean;
@@ -97,60 +93,54 @@ function CoauthorInviteDialog({ open, onClose, map }: Props) {
   }, [map, selectedUser, dictionary]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>{dictionary.invite}</DialogTitle>
-      <DialogContent>
-        <Autocomplete
-          autoComplete
-          options={options}
-          loading={loading}
-          value={selectedUser}
-          inputValue={inputValue}
-          onChange={(_event, value) => setSelectedUser(value)}
-          onInputChange={handleInputChange}
-          filterOptions={(x) => x}
-          getOptionLabel={(option) => option.name}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          noOptionsText={dictionary['select invite target']}
-          renderOption={(props, option) => {
-            const { key, ...rest } = props;
-            return (
-              <ListItem key={option.id} {...rest}>
-                <ListItemAvatar>
-                  <Avatar
-                    src={option.image?.avatar ?? option.image_url}
-                    alt={option.name}
-                  />
-                </ListItemAvatar>
-                <ListItemText primary={option.name} />
-              </ListItem>
-            );
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="standard"
-              placeholder={dictionary['search users']}
-              autoFocus
-            />
-          )}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="inherit" disabled={isPending}>
-          {dictionary.cancel}
-        </Button>
-        <Button
-          onClick={handleInvite}
-          variant="contained"
-          color="secondary"
-          disabled={!selectedUser}
-          loading={isPending}
-        >
-          {dictionary.send}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <AppDialog
+      open={open}
+      onClose={onClose}
+      title={dictionary.invite}
+      disableClose={isPending}
+      confirmAction={{
+        label: dictionary.send,
+        disabled: !selectedUser,
+        loading: isPending,
+        onClick: handleInvite
+      }}
+    >
+      <Autocomplete
+        autoComplete
+        options={options}
+        loading={loading}
+        value={selectedUser}
+        inputValue={inputValue}
+        onChange={(_event, value) => setSelectedUser(value)}
+        onInputChange={handleInputChange}
+        filterOptions={(x) => x}
+        getOptionLabel={(option) => option.name}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
+        noOptionsText={dictionary['select invite target']}
+        renderOption={(props, option) => {
+          const { key, ...rest } = props;
+          return (
+            <ListItem key={option.id} {...rest}>
+              <ListItemAvatar>
+                <Avatar
+                  src={option.image?.avatar ?? option.image_url}
+                  alt={option.name}
+                />
+              </ListItemAvatar>
+              <ListItemText primary={option.name} />
+            </ListItem>
+          );
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="standard"
+            placeholder={dictionary['search users']}
+            autoFocus
+          />
+        )}
+      />
+    </AppDialog>
   );
 }
 

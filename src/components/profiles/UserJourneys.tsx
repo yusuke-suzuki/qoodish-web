@@ -22,7 +22,7 @@ import type { JourneySummary } from '../../../types';
 import { deleteJourney } from '../../actions/journeys';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalDateTime from '../../hooks/useLocalDateTime';
-import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 import NoContents from '../common/NoContents';
 
 const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {

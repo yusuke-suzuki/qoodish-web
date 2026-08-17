@@ -40,14 +40,14 @@ import {
   featureSpots,
   spotFeature
 } from '../../utils/mapFeatures';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
+import ConfirmDialog from '../common/ConfirmDialog';
 import SpotPickerDialog from '../journeys/SpotPickerDialog';
 import ChapterAuthorCard from './ChapterAuthorCard';
 import ChapterAuthorHeader from './ChapterAuthorHeader';
 import ChapterContentEditor from './ChapterContentEditor';
 import ChapterCover from './ChapterCover';
 import ChapterMapCard from './ChapterMapCard';
-import ConfirmDeleteDialog from './ConfirmDeleteDialog';
-import ConfirmDialog from './ConfirmDialog';
 import MapLinkChip from './MapLinkChip';
 import { $replaceChapterContent } from './replaceChapterContent';
 
@@ -438,6 +438,7 @@ export default function ChapterEditor({
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
+        title={dictionary['sure to delete chapter']}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
       />

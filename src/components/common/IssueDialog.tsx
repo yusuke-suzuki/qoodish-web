@@ -1,9 +1,4 @@
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -21,6 +16,7 @@ import {
 } from 'react';
 import { createIssue } from '../../actions/issues';
 import useDictionary from '../../hooks/useDictionary';
+import AppDialog from './AppDialog';
 
 type Props = {
   open: boolean;
@@ -77,60 +73,52 @@ const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
   );
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <form action={submitAction}>
-        <DialogTitle>{dictionary['report inappropriate content']}</DialogTitle>
-        <DialogContent>
-          <FormControl required>
-            <FormLabel id={labelId} focused>
-              {dictionary['report inappropriate content detail']}
-            </FormLabel>
-            <br />
-            <RadioGroup
-              aria-labelledby={labelId}
-              name={reasonFieldName}
-              value={reason ?? ''}
-              onChange={handleReasonChange}
-            >
-              <FormControlLabel
-                value="0"
-                control={<Radio checked={reason === '0'} />}
-                label={dictionary['not interested in']}
-              />
-              <FormControlLabel
-                value="1"
-                control={<Radio checked={reason === '1'} />}
-                label={dictionary.spam}
-              />
-              <FormControlLabel
-                value="2"
-                control={<Radio checked={reason === '2'} />}
-                label={dictionary.sensitive}
-              />
-              <FormControlLabel
-                value="3"
-                control={<Radio checked={reason === '3'} />}
-                label={dictionary['abusive or harmful']}
-              />
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} type="button" disabled={isPending}>
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            loading={isPending}
-            disabled={!reason}
-          >
-            {dictionary.send}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <AppDialog
+      open={open}
+      onClose={onClose}
+      title={dictionary['report inappropriate content']}
+      disableClose={isPending}
+      formAction={submitAction}
+      confirmAction={{
+        label: dictionary.send,
+        type: 'submit',
+        loading: isPending,
+        disabled: !reason
+      }}
+    >
+      <FormControl required fullWidth>
+        <FormLabel id={labelId} sx={{ mb: 1 }}>
+          {dictionary['report inappropriate content detail']}
+        </FormLabel>
+        <RadioGroup
+          aria-labelledby={labelId}
+          name={reasonFieldName}
+          value={reason ?? ''}
+          onChange={handleReasonChange}
+        >
+          <FormControlLabel
+            value="0"
+            control={<Radio />}
+            label={dictionary['not interested in']}
+          />
+          <FormControlLabel
+            value="1"
+            control={<Radio />}
+            label={dictionary.spam}
+          />
+          <FormControlLabel
+            value="2"
+            control={<Radio />}
+            label={dictionary.sensitive}
+          />
+          <FormControlLabel
+            value="3"
+            control={<Radio />}
+            label={dictionary['abusive or harmful']}
+          />
+        </RadioGroup>
+      </FormControl>
+    </AppDialog>
   );
 };
 

@@ -23,7 +23,7 @@ import type { Chapter } from '../../../types';
 import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalDateTime from '../../hooks/useLocalDateTime';
-import ConfirmDeleteDialog from '../chapters/ConfirmDeleteDialog';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 import NoContents from '../common/NoContents';
 
 const THUMBNAIL_SIZE = { xs: 80, sm: 100 };

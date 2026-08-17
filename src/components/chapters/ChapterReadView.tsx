@@ -21,13 +21,13 @@ import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalDateTime from '../../hooks/useLocalDateTime';
 import { featureSpots } from '../../utils/mapFeatures';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
 import ChapterActions from './ChapterActions';
 import ChapterAuthorCard from './ChapterAuthorCard';
 import ChapterAuthorHeader from './ChapterAuthorHeader';
 import ChapterContentReader from './ChapterContentReader';
 import ChapterCover from './ChapterCover';
 import ChapterMapCard from './ChapterMapCard';
-import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import MapLinkChip from './MapLinkChip';
 
 const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -186,6 +186,7 @@ export default function ChapterReadView({
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
+        title={dictionary['sure to delete chapter']}
         onClose={() => setDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
       />

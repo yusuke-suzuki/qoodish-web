@@ -1,15 +1,8 @@
 import {
   Box,
-  Button,
   CardMedia,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Skeleton,
-  Slide,
-  type SlideProps,
   Typography
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
@@ -27,16 +20,10 @@ import { updateProfile } from '../../actions/users';
 import useDictionary from '../../hooks/useDictionary';
 import usePhotoUploads from '../../hooks/usePhotoUploads';
 import AddPhotoButton from '../common/AddPhotoButton';
+import AppDialog from '../common/AppDialog';
 import BiographyForm from './BiographyForm';
 import JournalTitleForm from './JournalTitleForm';
 import ProfileNameForm from './ProfileNameForm';
-
-function Transition({
-  ref,
-  ...props
-}: SlideProps & { ref?: React.Ref<unknown> }) {
-  return <Slide direction="up" ref={ref} {...props} />;
-}
 
 type Props = {
   currentProfile: Profile | null;
@@ -169,104 +156,78 @@ export default memo(function EditProfileDialog({
   }, [reset]);
 
   return (
-    <Dialog
+    <AppDialog
       open={open}
-      onClose={(_event, reason) => {
-        if (reason !== 'backdropClick') {
-          onClose();
-        }
-      }}
-      disableEscapeKeyDown
-      fullWidth
-      slots={{
-        transition: Transition
-      }}
-      slotProps={{
-        transition: { onExited: handleExited }
+      onClose={onClose}
+      title={dictionary['edit profile']}
+      fullScreenOnMobile
+      dividers
+      disableQuickDismiss
+      onSubmit={handleSubmit}
+      onExited={handleExited}
+      disableClose={isPending}
+      confirmAction={{
+        label: dictionary.save,
+        type: 'submit',
+        disabled,
+        loading: isPending
       }}
     >
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>{dictionary['edit profile']}</DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            {dictionary.thumbnail}
-          </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+        {dictionary.thumbnail}
+      </Typography>
 
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="fit-content"
-            position="relative"
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        width="fit-content"
+        position="relative"
+        sx={{
+          mb: 2
+        }}
+      >
+        {thumbnailUrl ? (
+          <CardMedia
             sx={{
-              mb: 2
+              width: 160,
+              height: 160,
+              opacity: isUploading ? 0.4 : 1
             }}
-          >
-            {thumbnailUrl ? (
-              <CardMedia
-                sx={{
-                  width: 160,
-                  height: 160,
-                  opacity: isUploading ? 0.4 : 1
-                }}
-                image={thumbnailUrl}
-              />
-            ) : (
-              <Skeleton
-                sx={{ width: 160, height: 160 }}
-                variant="rectangular"
-                animation={false}
-              />
-            )}
-
-            <Box position="absolute">
-              {isUploading ? (
-                <CircularProgress />
-              ) : (
-                <AddPhotoButton
-                  onChange={handleImagesChange}
-                  color="inherit"
-                  disabled={isPending}
-                />
-              )}
-            </Box>
-          </Box>
-
-          <ProfileNameForm
-            onChange={setName}
-            defaultValue={currentProfile?.name}
+            image={thumbnailUrl}
           />
-          <BiographyForm
-            onChange={setBiography}
-            defaultValue={currentProfile?.biography}
+        ) : (
+          <Skeleton
+            sx={{ width: 160, height: 160 }}
+            variant="rectangular"
+            animation={false}
           />
-          {journal && (
-            <JournalTitleForm
-              onChange={setJournalTitle}
-              defaultValue={journal.title}
+        )}
+
+        <Box position="absolute">
+          {isUploading ? (
+            <CircularProgress />
+          ) : (
+            <AddPhotoButton
+              onChange={handleImagesChange}
+              color="inherit"
+              disabled={isPending}
             />
           )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            type="button"
-            onClick={onClose}
-            disabled={isPending}
-            color="inherit"
-          >
-            {dictionary.cancel}
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            disabled={disabled}
-            loading={isPending}
-          >
-            {dictionary.save}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+        </Box>
+      </Box>
+
+      <ProfileNameForm onChange={setName} defaultValue={currentProfile?.name} />
+      <BiographyForm
+        onChange={setBiography}
+        defaultValue={currentProfile?.biography}
+      />
+      {journal && (
+        <JournalTitleForm
+          onChange={setJournalTitle}
+          defaultValue={journal.title}
+        />
+      )}
+    </AppDialog>
   );
 });

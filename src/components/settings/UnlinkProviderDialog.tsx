@@ -1,13 +1,6 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import useDictionary from '../../hooks/useDictionary';
+import ConfirmDialog from '../common/ConfirmDialog';
 
 type Props = {
   open: boolean;
@@ -17,41 +10,22 @@ type Props = {
 
 function UnlinkProviderDialog({ open, onClose, onUnlink }: Props) {
   const dictionary = useDictionary();
-  const [loading, setLoading] = useState(false);
 
-  const handleUnlink = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      await onUnlink();
-      onClose();
-    } finally {
-      setLoading(false);
-    }
+  const handleConfirm = useCallback(async () => {
+    await onUnlink();
+    onClose();
   }, [onUnlink, onClose]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>{dictionary['unlink provider']}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          {dictionary['unlink provider detail']}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={loading} color="inherit">
-          {dictionary.cancel}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleUnlink}
-          color="error"
-          loading={loading}
-        >
-          {dictionary.unlink}
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      title={dictionary['unlink provider']}
+      description={dictionary['unlink provider detail']}
+      confirmLabel={dictionary.unlink}
+      confirmColor="error"
+      onClose={onClose}
+      onConfirm={handleConfirm}
+    />
   );
 }
 
