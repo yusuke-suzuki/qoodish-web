@@ -60,6 +60,39 @@ const LOW_ACCURACY_OPTIONS: PositionOptions = {
   maximumAge: 60000
 };
 
+// The Geolocation API offers no interval or distance filter, so a registered
+// watch keeps the positioning hardware powered the whole time. Away from any
+// unvisited spot the journey samples on a timer instead, and the hardware can
+// power down between fixes.
+const MOVING_SAMPLE_MIN_INTERVAL_MS = 15000;
+const MOVING_SAMPLE_MAX_INTERVAL_MS = 2 * 60 * 1000;
+
+// Headroom over the observed speed, so that speeding up between two samples
+// cannot carry the traveller into the continuous-watch zone unseen.
+const SPEED_HEADROOM = 2;
+const MIN_ASSUMED_SPEED_MPS = 1.5;
+
+// Positioning jitter alone can move a fix this far while the device rests.
+const STATIONARY_RADIUS_METERS = 30;
+const STATIONARY_AFTER_MS = 3 * 60 * 1000;
+const STATIONARY_SAMPLE_BASE_INTERVAL_MS = 30000;
+const STATIONARY_BACKOFF_MAX_STEPS = 4;
+
+// Near a spot a stale fix could miss a departure that heads straight into
+// the check-in radius, so the backoff stays tighter there.
+const STATIONARY_SAMPLE_MAX_NEAR_MS = 60000;
+const STATIONARY_SAMPLE_MAX_FAR_MS = 5 * 60 * 1000;
+
+// A fix that never resolves would otherwise stall the sampling loop.
+const SAMPLE_TIMEOUT_MS = 30000;
+
+type StationaryAnchor = {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  since: number;
+};
+
 export type PauseReason = 'permission' | 'inactivity';
 
 type Args = {
@@ -102,6 +135,15 @@ export default function useJourney({
   const pausedRef = useRef(false);
   const [visible, setVisible] = useState(true);
   const [highAccuracy, setHighAccuracy] = useState(true);
+  const [stationary, setStationary] = useState(false);
+  const stationaryRef = useRef(false);
+  const anchorRef = useRef<StationaryAnchor | null>(null);
+  const lastFixRef = useRef<{
+    latitude: number;
+    longitude: number;
+    timestamp: number;
+  } | null>(null);
+  const sampleIntervalRef = useRef(MOVING_SAMPLE_MIN_INTERVAL_MS);
   const lastPositionAtRef = useRef<number | null>(null);
 
   const reviewsRef = useRef(reviews);
@@ -134,9 +176,15 @@ export default function useJourney({
       setPaused(next);
 
       // The gap that led to an inactivity pause would still be there on
-      // resume and would pause the journey again right away.
+      // resume and would pause the journey again right away. A stationary
+      // anchor from before the pause would resume already backed off.
       if (!next) {
         lastPositionAtRef.current = null;
+        lastFixRef.current = null;
+        anchorRef.current = null;
+        stationaryRef.current = false;
+        setStationary(false);
+        sampleIntervalRef.current = MOVING_SAMPLE_MIN_INTERVAL_MS;
       }
 
       const current = journeyRef.current;
@@ -306,6 +354,42 @@ export default function useJourney({
         longitude: position.coords.longitude
       };
 
+      const previousFix = lastFixRef.current;
+      lastFixRef.current = { ...here, timestamp: position.timestamp };
+
+      const { accuracy } = position.coords;
+      const precise = accuracy <= CHECKIN_MAX_ACCURACY_METERS;
+      const anchor = anchorRef.current;
+
+      const applyStationary = (next: boolean) => {
+        stationaryRef.current = next;
+        setStationary(next);
+      };
+
+      if (
+        anchor &&
+        distanceInMeters(here, anchor) >
+          Math.max(STATIONARY_RADIUS_METERS, accuracy, anchor.accuracy)
+      ) {
+        // The fix's error circle excludes the anchor, so this is genuine
+        // movement even when the fix itself is coarse.
+        anchorRef.current = precise
+          ? { ...here, accuracy, since: position.timestamp }
+          : null;
+        applyStationary(false);
+      } else if (!anchor) {
+        // Only a precise fix may open an anchor: a coarse one would widen the
+        // stillness radius so far that a stroll would read as rest.
+        if (precise) {
+          anchorRef.current = { ...here, accuracy, since: position.timestamp };
+        }
+        applyStationary(false);
+      } else if (precise) {
+        applyStationary(
+          position.timestamp - anchor.since >= STATIONARY_AFTER_MS
+        );
+      }
+
       const lastPoint = trailRef.current.at(-1);
 
       // A coarse fix drifts on its own, so the threshold follows the reported
@@ -338,6 +422,52 @@ export default function useJourney({
           ? nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
           : nearest <= ACCURACY_UPGRADE_RADIUS_METERS
       );
+
+      const currentAnchor = anchorRef.current;
+
+      if (stationaryRef.current && currentAnchor) {
+        const steps = Math.min(
+          STATIONARY_BACKOFF_MAX_STEPS,
+          Math.floor(
+            (position.timestamp - currentAnchor.since) / STATIONARY_AFTER_MS
+          )
+        );
+
+        const cap =
+          nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
+            ? STATIONARY_SAMPLE_MAX_NEAR_MS
+            : STATIONARY_SAMPLE_MAX_FAR_MS;
+
+        sampleIntervalRef.current = Math.min(
+          cap,
+          STATIONARY_SAMPLE_BASE_INTERVAL_MS * 2 ** steps
+        );
+      } else {
+        let observedSpeed = position.coords.speed ?? Number.NaN;
+
+        if (!Number.isFinite(observedSpeed) || observedSpeed < 0) {
+          observedSpeed =
+            previousFix && position.timestamp > previousFix.timestamp
+              ? distanceInMeters(here, previousFix) /
+                ((position.timestamp - previousFix.timestamp) / 1000)
+              : 0;
+        }
+
+        const speed = Math.max(
+          MIN_ASSUMED_SPEED_MPS,
+          observedSpeed * SPEED_HEADROOM
+        );
+
+        // The next sample only has to land before the traveller could reach
+        // the continuous-watch zone around the nearest unvisited spot.
+        const travelMs =
+          ((nearest - ACCURACY_UPGRADE_RADIUS_METERS) / speed) * 1000;
+
+        sampleIntervalRef.current = Math.min(
+          MOVING_SAMPLE_MAX_INTERVAL_MS,
+          Math.max(MOVING_SAMPLE_MIN_INTERVAL_MS, travelMs)
+        );
+      }
 
       if (position.coords.accuracy > CHECKIN_MAX_ACCURACY_METERS) {
         return;
@@ -425,17 +555,59 @@ export default function useJourney({
       return;
     }
 
-    const watchId = navigator.geolocation.watchPosition(
-      handlePosition,
-      handleError,
-      highAccuracy ? HIGH_ACCURACY_OPTIONS : LOW_ACCURACY_OPTIONS
-    );
+    // Only a moving traveller near an unvisited spot needs the fix rate a
+    // continuous watch provides; everywhere else timed samples are enough.
+    if (highAccuracy && !stationary) {
+      const watchId = navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        HIGH_ACCURACY_OPTIONS
+      );
 
-    return () => navigator.geolocation.clearWatch(watchId);
+      return () => navigator.geolocation.clearWatch(watchId);
+    }
+
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const options: PositionOptions = {
+      ...(highAccuracy ? HIGH_ACCURACY_OPTIONS : LOW_ACCURACY_OPTIONS),
+      timeout: SAMPLE_TIMEOUT_MS
+    };
+
+    const schedule = () => {
+      timeoutId = setTimeout(() => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (!cancelled) {
+              handlePosition(position);
+              schedule();
+            }
+          },
+          (error) => {
+            if (!cancelled) {
+              handleError(error);
+              schedule();
+            }
+          },
+          options
+        );
+      }, sampleIntervalRef.current);
+    };
+
+    // The fix that switched the journey into sampling mode has just been
+    // handled, so the first sample can wait a full interval.
+    schedule();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [
     uid,
     watching,
     highAccuracy,
+    stationary,
     handlePosition,
     handleError,
     onLocationError
@@ -682,6 +854,11 @@ export default function useJourney({
     setTrail([]);
     pausedRef.current = false;
     setPaused(false);
+    lastFixRef.current = null;
+    anchorRef.current = null;
+    stationaryRef.current = false;
+    setStationary(false);
+    sampleIntervalRef.current = MOVING_SAMPLE_MIN_INTERVAL_MS;
 
     return { journey: data, trail: points };
   }, [uid, commitJourney, onError]);
