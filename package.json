@@ -49,7 +49,6 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
-    "react-swipeable-views": "^0.13.9",
     "swiper": "^11.0.4"
   },
   "devDependencies": {
@@ -62,7 +61,6 @@
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@types/react-swipeable-views": "^0.13.5",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint-config-next": "^15.5.18",
     "serwist": "^9.2.1",
