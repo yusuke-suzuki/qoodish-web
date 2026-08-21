@@ -13,7 +13,8 @@ const withSerwist = withSerwistInit({
 
 const nextConfig: NextConfig = {
   experimental: {
-    globalNotFound: true
+    globalNotFound: true,
+    reactCompiler: true
   },
   webpack: (config) => {
     config.module.rules.push({
