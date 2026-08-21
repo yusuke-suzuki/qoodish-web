@@ -301,13 +301,13 @@ export default function ChapterEditor({
             slotProps={{
               input: {
                 disableUnderline: true,
-                sx: (theme) => ({
-                  ...theme.typography.h4,
+                sx: {
+                  typography: 'h4',
                   '& .MuiInputBase-input': {
                     py: 0,
                     height: 'auto'
                   }
-                })
+                }
               },
               htmlInput: {
                 'aria-label': dictionary['chapter title placeholder'],
