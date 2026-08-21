@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, useMediaQuery, useTheme } from '@mui/material';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import CurrentPositionButton from './CurrentPositionButton';
@@ -25,42 +25,40 @@ function CustomMapControls({ onPlaceChange }: Props) {
   const [buttonPosition, setButtonPosition] =
     useState<google.maps.ControlPosition | null>(null);
 
-  const handleMapClick = useCallback(() => {
-    if (pacRef.current) {
-      pacRef.current.blur();
-    }
-  }, []);
-
-  const initControlPositions = useCallback(async () => {
+  useEffect(() => {
     if (!googleMap || !loader) {
       return;
     }
 
-    const { ControlPosition } = await loader.importLibrary('core');
+    const initControlPositions = async () => {
+      const { ControlPosition } = await loader.importLibrary('core');
 
-    setPacPosition(
-      mdDown ? ControlPosition.TOP_CENTER : ControlPosition.TOP_LEFT
-    );
-    setButtonPosition(ControlPosition.RIGHT_BOTTOM);
+      setPacPosition(
+        mdDown ? ControlPosition.TOP_CENTER : ControlPosition.TOP_LEFT
+      );
+      setButtonPosition(ControlPosition.RIGHT_BOTTOM);
+    };
+
+    initControlPositions();
   }, [googleMap, loader, mdDown]);
-
-  useEffect(() => {
-    if (googleMap && loader) {
-      initControlPositions();
-    }
-  }, [googleMap, loader, initControlPositions]);
 
   useEffect(() => {
     if (!googleMap) {
       return;
     }
 
+    const handleMapClick = () => {
+      if (pacRef.current) {
+        pacRef.current.blur();
+      }
+    };
+
     const clickListener = googleMap.addListener('click', handleMapClick);
 
     return () => {
       clickListener.remove();
     };
-  }, [googleMap, handleMapClick]);
+  }, [googleMap]);
 
   return (
     <>

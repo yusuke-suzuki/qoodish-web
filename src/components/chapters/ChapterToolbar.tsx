@@ -46,7 +46,6 @@ import {
 import {
   type MouseEvent,
   type ReactNode,
-  useCallback,
   useEffect,
   useRef,
   useState
@@ -129,23 +128,23 @@ export default function ChapterToolbar() {
   const [linkValue, setLinkValue] = useState('');
   const savedSelectionRef = useRef<BaseSelection | null>(null);
 
-  const updateToolbar = useCallback(() => {
-    const selection = $getSelection();
-
-    if (!$isRangeSelection(selection)) {
-      return;
-    }
-
-    setIsBold(selection.hasFormat('bold'));
-    setIsItalic(selection.hasFormat('italic'));
-    setIsUnderline(selection.hasFormat('underline'));
-    setIsStrikethrough(selection.hasFormat('strikethrough'));
-
-    const anchorNode = selection.anchor.getNode();
-    setIsLink($isLinkNode(anchorNode) || $isLinkNode(anchorNode.getParent()));
-  }, []);
-
   useEffect(() => {
+    const updateToolbar = () => {
+      const selection = $getSelection();
+
+      if (!$isRangeSelection(selection)) {
+        return;
+      }
+
+      setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsUnderline(selection.hasFormat('underline'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+      const anchorNode = selection.anchor.getNode();
+      setIsLink($isLinkNode(anchorNode) || $isLinkNode(anchorNode.getParent()));
+    };
+
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(updateToolbar);
@@ -175,110 +174,95 @@ export default function ChapterToolbar() {
         COMMAND_PRIORITY_LOW
       )
     );
-  }, [editor, updateToolbar]);
+  }, [editor]);
 
-  const captureSelection = useCallback(() => {
+  const captureSelection = () => {
     editor.getEditorState().read(() => {
       const selection = $getSelection();
       savedSelectionRef.current = $isRangeSelection(selection)
         ? selection.clone()
         : null;
     });
-  }, [editor]);
+  };
 
-  const restoreSelection = useCallback(() => {
+  const restoreSelection = () => {
     editor.update(() => {
       if (savedSelectionRef.current) {
         $setSelection(savedSelectionRef.current.clone());
       }
     });
-  }, [editor]);
+  };
 
-  const openBlockMenu = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      captureSelection();
-      setBlockMenuAnchor(event.currentTarget);
-    },
-    [captureSelection]
-  );
+  const openBlockMenu = (event: MouseEvent<HTMLButtonElement>) => {
+    captureSelection();
+    setBlockMenuAnchor(event.currentTarget);
+  };
 
-  const insertBlock = useCallback(
-    (action: BlockAction) => {
-      setBlockMenuAnchor(null);
+  const insertBlock = (action: BlockAction) => {
+    setBlockMenuAnchor(null);
 
-      editor.update(() => {
-        if (savedSelectionRef.current) {
-          $setSelection(savedSelectionRef.current.clone());
-        }
+    editor.update(() => {
+      if (savedSelectionRef.current) {
+        $setSelection(savedSelectionRef.current.clone());
+      }
 
-        const selection = $getSelection();
-        const anchorNode = $isRangeSelection(selection)
-          ? selection.anchor.getNode()
-          : null;
-        const block =
-          anchorNode && anchorNode.getKey() !== 'root'
-            ? anchorNode.getTopLevelElementOrThrow()
-            : null;
-
-        const paragraph = $createParagraphNode();
-
-        if (block) {
-          block.insertAfter(paragraph);
-        } else {
-          $getRoot().append(paragraph);
-        }
-
-        paragraph.select();
-      });
-
-      action.apply(editor);
-    },
-    [editor]
-  );
-
-  const openConvertMenu = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      captureSelection();
-      setConvertAnchor(event.currentTarget);
-    },
-    [captureSelection]
-  );
-
-  const convertBlock = useCallback(
-    (action: BlockAction) => {
-      setConvertAnchor(null);
-      restoreSelection();
-      action.apply(editor);
-    },
-    [editor, restoreSelection]
-  );
-
-  const openLinkEditor = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) => {
-      editor.getEditorState().read(() => {
-        const selection = $getSelection();
-        savedSelectionRef.current = $isRangeSelection(selection)
-          ? selection.clone()
+      const selection = $getSelection();
+      const anchorNode = $isRangeSelection(selection)
+        ? selection.anchor.getNode()
+        : null;
+      const block =
+        anchorNode && anchorNode.getKey() !== 'root'
+          ? anchorNode.getTopLevelElementOrThrow()
           : null;
 
-        const anchorNode = $isRangeSelection(selection)
-          ? selection.anchor.getNode()
+      const paragraph = $createParagraphNode();
+
+      if (block) {
+        block.insertAfter(paragraph);
+      } else {
+        $getRoot().append(paragraph);
+      }
+
+      paragraph.select();
+    });
+
+    action.apply(editor);
+  };
+
+  const openConvertMenu = (event: MouseEvent<HTMLButtonElement>) => {
+    captureSelection();
+    setConvertAnchor(event.currentTarget);
+  };
+
+  const convertBlock = (action: BlockAction) => {
+    setConvertAnchor(null);
+    restoreSelection();
+    action.apply(editor);
+  };
+
+  const openLinkEditor = (event: MouseEvent<HTMLButtonElement>) => {
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      savedSelectionRef.current = $isRangeSelection(selection)
+        ? selection.clone()
+        : null;
+
+      const anchorNode = $isRangeSelection(selection)
+        ? selection.anchor.getNode()
+        : null;
+      const linkNode = $isLinkNode(anchorNode)
+        ? anchorNode
+        : $isLinkNode(anchorNode?.getParent())
+          ? anchorNode?.getParent()
           : null;
-        const linkNode = $isLinkNode(anchorNode)
-          ? anchorNode
-          : $isLinkNode(anchorNode?.getParent())
-            ? anchorNode?.getParent()
-            : null;
 
-        setLinkValue($isLinkNode(linkNode) ? linkNode.getURL() : '');
-      });
+      setLinkValue($isLinkNode(linkNode) ? linkNode.getURL() : '');
+    });
 
-      setLinkAnchor(event.currentTarget);
-    },
-    [editor]
-  );
+    setLinkAnchor(event.currentTarget);
+  };
 
-  const applyLink = useCallback(() => {
+  const applyLink = () => {
     const trimmed = linkValue.trim();
     const url = trimmed ? formatUrl(trimmed) : '';
 
@@ -288,13 +272,13 @@ export default function ChapterToolbar() {
       url ? { url, target: '_blank', rel: 'noopener noreferrer' } : null
     );
     setLinkAnchor(null);
-  }, [editor, linkValue, restoreSelection]);
+  };
 
-  const removeLink = useCallback(() => {
+  const removeLink = () => {
     restoreSelection();
     editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     setLinkAnchor(null);
-  }, [editor, restoreSelection]);
+  };
 
   return (
     <AppBar

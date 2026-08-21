@@ -14,7 +14,7 @@ import {
   Paper
 } from '@mui/material';
 import type { TextNode } from 'lexical';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { type BlockAction, useBlockActions } from './chapterBlockActions';
 
@@ -37,37 +37,28 @@ export default function ChapterSlashMenu() {
     minLength: 0
   });
 
-  const options = useMemo(() => {
-    const all = actions.map((action) => new BlockOption(action));
+  const allOptions = actions.map((action) => new BlockOption(action));
+  const query = queryString?.toLowerCase();
+  const options = query
+    ? allOptions.filter(
+        (option) =>
+          option.action.label.toLowerCase().includes(query) ||
+          option.action.keywords.some((keyword) => keyword.includes(query))
+      )
+    : allOptions;
 
-    if (!queryString) {
-      return all;
-    }
+  const onSelectOption = (
+    option: BlockOption,
+    nodeToRemove: TextNode | null,
+    closeMenu: () => void
+  ) => {
+    editor.update(() => {
+      nodeToRemove?.remove();
+    });
 
-    const query = queryString.toLowerCase();
-
-    return all.filter(
-      (option) =>
-        option.action.label.toLowerCase().includes(query) ||
-        option.action.keywords.some((keyword) => keyword.includes(query))
-    );
-  }, [actions, queryString]);
-
-  const onSelectOption = useCallback(
-    (
-      option: BlockOption,
-      nodeToRemove: TextNode | null,
-      closeMenu: () => void
-    ) => {
-      editor.update(() => {
-        nodeToRemove?.remove();
-      });
-
-      option.action.apply(editor);
-      closeMenu();
-    },
-    [editor]
-  );
+    option.action.apply(editor);
+    closeMenu();
+  };
 
   return (
     <LexicalTypeaheadMenuPlugin<BlockOption>

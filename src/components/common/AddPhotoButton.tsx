@@ -1,6 +1,6 @@
 import { AddAPhoto } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { memo, useCallback, useEffect, useId, useState } from 'react';
+import { memo, useEffect, useId, useState } from 'react';
 import fileToDataUrl from '../../utils/fileToDataUrl';
 
 type Props = {
@@ -19,7 +19,7 @@ export default memo(function AddPhotoButton({
   const inputId = useId();
   const [dataUrls, setDataUrls] = useState<string[] | undefined>(undefined);
 
-  const handleImageFilesChange = useCallback(async (e) => {
+  const handleImageFilesChange = async (e) => {
     const files: File[] = Array.from(e.target.files);
     const items = [];
 
@@ -29,7 +29,7 @@ export default memo(function AddPhotoButton({
     }
 
     setDataUrls(items);
-  }, []);
+  };
 
   useEffect(() => {
     if (dataUrls) {

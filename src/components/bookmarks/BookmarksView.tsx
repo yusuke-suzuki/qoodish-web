@@ -2,7 +2,7 @@
 
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Card, Tab } from '@mui/material';
-import { type SyntheticEvent, memo, useCallback, useState } from 'react';
+import { type SyntheticEvent, memo, useState } from 'react';
 import type { AppMap, Journal } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import UserBookmarks from '../profiles/UserBookmarks';
@@ -17,12 +17,12 @@ function BookmarksView({ maps, journals }: Props) {
   const dictionary = useDictionary();
   const [tabValue, setTabValue] = useState('1');
 
-  const handleTabChange = useCallback(
-    (_event: SyntheticEvent<Element, Event>, newValue: string) => {
-      setTabValue(newValue);
-    },
-    []
-  );
+  const handleTabChange = (
+    _event: SyntheticEvent<Element, Event>,
+    newValue: string
+  ) => {
+    setTabValue(newValue);
+  };
 
   return (
     <TabContext value={tabValue}>

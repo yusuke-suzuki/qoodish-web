@@ -15,7 +15,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { AppMap, Chapter, Journal } from '../../../types';
 import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
@@ -58,23 +58,18 @@ export default function ChapterReadView({
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const markerSpots = useMemo(
-    () => featureSpots(chapter.map_features),
-    [chapter.map_features]
-  );
+  const markerSpots = featureSpots(chapter.map_features);
 
-  const mapCenter = useMemo(
-    () =>
-      map ? { latitude: map.latitude, longitude: map.longitude } : undefined,
-    [map]
-  );
+  const mapCenter = map
+    ? { latitude: map.latitude, longitude: map.longitude }
+    : undefined;
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setMenuAnchor(null);
     setDeleteDialogOpen(true);
-  }, []);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     const { success } = await deleteChapter(chapter.id);
 
     if (!success) {
@@ -93,7 +88,7 @@ export default function ChapterReadView({
     }
 
     router.push(map ? `/${lang}/maps/${map.id}` : `/${lang}`);
-  }, [chapter.id, chapter.journey_id, dictionary, router, lang, map]);
+  };
 
   return (
     <>

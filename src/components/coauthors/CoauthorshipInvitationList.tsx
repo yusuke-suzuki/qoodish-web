@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useState, useTransition } from 'react';
+import { memo, useState, useTransition } from 'react';
 import type { CoauthorshipInvitation } from '../../../types';
 import {
   acceptCoauthorshipInvitation,
@@ -31,53 +31,47 @@ function CoauthorshipInvitationList({ invitations }: Props) {
   const [actingId, setActingId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const handleAccept = useCallback(
-    (invitation: CoauthorshipInvitation) => {
-      setActingId(invitation.id);
+  const handleAccept = (invitation: CoauthorshipInvitation) => {
+    setActingId(invitation.id);
 
-      startTransition(async () => {
-        const result = await acceptCoauthorshipInvitation(invitation.id);
+    startTransition(async () => {
+      const result = await acceptCoauthorshipInvitation(invitation.id);
 
-        if (result.success) {
-          enqueueSnackbar(dictionary['accept invitation success'], {
-            variant: 'success'
-          });
-          router.refresh();
-        } else {
-          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-            variant: 'error'
-          });
-        }
+      if (result.success) {
+        enqueueSnackbar(dictionary['accept invitation success'], {
+          variant: 'success'
+        });
+        router.refresh();
+      } else {
+        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+      }
 
-        setActingId(null);
-      });
-    },
-    [dictionary, router]
-  );
+      setActingId(null);
+    });
+  };
 
-  const handleDecline = useCallback(
-    (invitation: CoauthorshipInvitation) => {
-      setActingId(invitation.id);
+  const handleDecline = (invitation: CoauthorshipInvitation) => {
+    setActingId(invitation.id);
 
-      startTransition(async () => {
-        const result = await declineCoauthorshipInvitation(invitation.id);
+    startTransition(async () => {
+      const result = await declineCoauthorshipInvitation(invitation.id);
 
-        if (result.success) {
-          enqueueSnackbar(dictionary['decline invitation success'], {
-            variant: 'success'
-          });
-          router.refresh();
-        } else {
-          enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
-            variant: 'error'
-          });
-        }
+      if (result.success) {
+        enqueueSnackbar(dictionary['decline invitation success'], {
+          variant: 'success'
+        });
+        router.refresh();
+      } else {
+        enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
+          variant: 'error'
+        });
+      }
 
-        setActingId(null);
-      });
-    },
-    [dictionary, router]
-  );
+      setActingId(null);
+    });
+  };
 
   if (invitations.length < 1) {
     return (

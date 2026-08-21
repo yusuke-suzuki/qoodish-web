@@ -1,6 +1,6 @@
 import { SvgIcon } from '@mui/material';
 import { GoogleAuthProvider } from 'firebase/auth';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import SignInWithProviderButton from './SignInWithProviderButton';
 
 type Props = {
@@ -8,9 +8,7 @@ type Props = {
 };
 
 function SignInWithGoogleButton({ onSignInSuccess }: Props) {
-  const provider = useMemo(() => {
-    return new GoogleAuthProvider();
-  }, []);
+  const provider = new GoogleAuthProvider();
 
   return (
     <SignInWithProviderButton

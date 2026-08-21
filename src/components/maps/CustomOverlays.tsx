@@ -3,7 +3,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   type MutableRefObject,
   memo,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -78,88 +77,78 @@ function CustomOverlays({
   const [pinnedPosition, setPinnedPosition] =
     useState<google.maps.LatLng | null>(null);
 
-  const filteredReviews = useMemo(() => {
-    if (!currentBounds) {
-      return [];
-    }
-
-    return reviews.filter((review) =>
-      positionInBounds(
-        { lat: review.latitude, lng: review.longitude },
-        currentBounds
+  const filteredReviews = currentBounds
+    ? reviews.filter((review) =>
+        positionInBounds(
+          { lat: review.latitude, lng: review.longitude },
+          currentBounds
+        )
       )
-    );
-  }, [reviews, currentBounds]);
+    : [];
 
-  const handleReviewDeleted = useCallback(() => {
+  const handleReviewDeleted = () => {
     setCurrentReview(null);
     setPopoverAnchorEl(null);
     onReviewSaved();
-  }, [onReviewSaved]);
+  };
 
-  const handleReviewClick = useCallback(
-    (review: Review, ref: MutableRefObject<HTMLButtonElement>) => {
-      setCurrentReview(review);
-      onReviewClick(review);
+  const handleReviewClick = (
+    review: Review,
+    ref: MutableRefObject<HTMLButtonElement>
+  ) => {
+    setCurrentReview(review);
+    onReviewClick(review);
 
-      setPopoverAnchorEl(ref.current);
-    },
-    [onReviewClick]
-  );
+    setPopoverAnchorEl(ref.current);
+  };
 
-  const handleCreateReviewOpen = useCallback(() => {
+  const handleCreateReviewOpen = () => {
     setCreateReviewDialogOpen(true);
-  }, []);
+  };
 
-  const handleCreateReviewClose = useCallback(() => {
+  const handleCreateReviewClose = () => {
     setCreateReviewDialogOpen(false);
-  }, []);
+  };
 
-  const handlePlaceClose = useCallback(() => {
+  const handlePlaceClose = () => {
     setCurrentPlace(null);
-  }, []);
+  };
 
-  const handlePinnedPositionClose = useCallback(() => {
+  const handlePinnedPositionClose = () => {
     setPinnedPosition(null);
-  }, []);
+  };
 
-  const handlePopoverClose = useCallback(() => {
+  const handlePopoverClose = () => {
     setPopoverAnchorEl(null);
-  }, []);
-
-  const handleMapClick = useCallback(
-    async (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
-      if ('placeId' in event) {
-        // Prevent POI Click Events
-        event.stop();
-      }
-    },
-    []
-  );
-
-  const handleMapRightClick = useCallback(
-    async (event: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
-      setPinnedPosition(event.latLng);
-    },
-    []
-  );
-
-  const handleIdle = useCallback(() => {
-    if (!googleMap) {
-      return;
-    }
-
-    const bounds = googleMap.getBounds();
-
-    if (bounds) {
-      setCurrentBounds(bounds);
-    }
-  }, [googleMap]);
+  };
 
   useEffect(() => {
     if (!googleMap) {
       return;
     }
+
+    const handleIdle = () => {
+      const bounds = googleMap.getBounds();
+
+      if (bounds) {
+        setCurrentBounds(bounds);
+      }
+    };
+
+    const handleMapClick = (
+      event: google.maps.MapMouseEvent | google.maps.IconMouseEvent
+    ) => {
+      if ('placeId' in event) {
+        // Prevent POI Click Events
+        event.stop();
+      }
+    };
+
+    const handleMapRightClick = (
+      event: google.maps.MapMouseEvent | google.maps.IconMouseEvent
+    ) => {
+      setPinnedPosition(event.latLng);
+    };
 
     const idleListener = googleMap.addListener('idle', handleIdle);
     const clickListener = googleMap.addListener('click', handleMapClick);
@@ -173,7 +162,7 @@ function CustomOverlays({
       clickListener.remove();
       rightCickListener.remove();
     };
-  }, [googleMap, handleIdle, handleMapClick, handleMapRightClick]);
+  }, [googleMap]);
 
   const initializedRef = useRef(false);
 
@@ -205,11 +194,10 @@ function CustomOverlays({
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
-  const reviewPopoverId = useMemo(() => {
-    return popoverOpen && currentReview
+  const reviewPopoverId =
+    popoverOpen && currentReview
       ? `review-popover-${currentReview.id}`
       : undefined;
-  }, [popoverOpen, currentReview]);
 
   return (
     <>

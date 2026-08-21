@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 30;
@@ -15,24 +15,21 @@ export default memo(function MapNameForm({ onChange, defaultValue }: Props) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleNameChange = useCallback(
-    (e) => {
-      const input = e.target.value;
+  const handleNameChange = (e) => {
+    const input = e.target.value;
 
-      if (input) {
-        if (input.length > MAX_LENGTH) {
-          setError(dictionary['max characters 30']);
-        } else {
-          setError(null);
-        }
+    if (input) {
+      if (input.length > MAX_LENGTH) {
+        setError(dictionary['max characters 30']);
       } else {
-        setError(dictionary['map name is required']);
+        setError(null);
       }
+    } else {
+      setError(dictionary['map name is required']);
+    }
 
-      setName(input);
-    },
-    [dictionary]
-  );
+    setName(input);
+  };
 
   useEffect(() => {
     onChange(name);

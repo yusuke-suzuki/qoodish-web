@@ -1,4 +1,4 @@
-import { type ReactNode, memo, useCallback, useEffect, useState } from 'react';
+import { type ReactNode, memo, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 
@@ -17,21 +17,6 @@ function InfoWindow({ children, position, open, onClose }: Props) {
     null
   );
 
-  const initWindow = useCallback(async () => {
-    if (!loader) {
-      return;
-    }
-
-    const { InfoWindow } = await loader.importLibrary('maps');
-
-    const window = new InfoWindow({
-      content: container,
-      disableAutoPan: true
-    });
-
-    setInfoWindow(window);
-  }, [loader, container]);
-
   useEffect(() => {
     if (!container) {
       const div = document.createElement('div');
@@ -41,10 +26,23 @@ function InfoWindow({ children, position, open, onClose }: Props) {
   }, [container]);
 
   useEffect(() => {
-    if (!infoWindow && loader && container) {
-      initWindow();
+    if (infoWindow || !loader || !container) {
+      return;
     }
-  }, [infoWindow, loader, container, initWindow]);
+
+    const initWindow = async () => {
+      const { InfoWindow } = await loader.importLibrary('maps');
+
+      const window = new InfoWindow({
+        content: container,
+        disableAutoPan: true
+      });
+
+      setInfoWindow(window);
+    };
+
+    initWindow();
+  }, [infoWindow, loader, container]);
 
   useEffect(() => {
     if (!infoWindow) {

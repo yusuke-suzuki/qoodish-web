@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { Image } from '../../types';
 import uploadImage from '../utils/uploadImage';
 
@@ -9,18 +9,13 @@ export type PhotoItem =
 export default function usePhotoUploads() {
   const [items, setItems] = useState<PhotoItem[]>([]);
 
-  const isUploading = useMemo(
-    () => items.some((item) => item.status === 'uploading'),
-    [items]
+  const isUploading = items.some((item) => item.status === 'uploading');
+
+  const uploadedImages = items.flatMap((item) =>
+    item.status === 'uploaded' ? [item.image] : []
   );
 
-  const uploadedImages = useMemo(
-    () =>
-      items.flatMap((item) => (item.status === 'uploaded' ? [item.image] : [])),
-    [items]
-  );
-
-  const upload = useCallback(async (dataUrls: string[]) => {
+  const upload = async (dataUrls: string[]) => {
     const pending = dataUrls.map((dataUrl) => ({
       key: crypto.randomUUID(),
       status: 'uploading' as const,
@@ -51,13 +46,13 @@ export default function usePhotoUploads() {
     if (failed) {
       throw new Error('Failed to upload one or more images');
     }
-  }, []);
+  };
 
-  const removeAt = useCallback((index: number) => {
+  const removeAt = (index: number) => {
     setItems((prevState) => prevState.filter((_item, i) => i !== index));
-  }, []);
+  };
 
-  const reset = useCallback((images: Image[] = []) => {
+  const reset = (images: Image[] = []) => {
     setItems(
       images.map((image) => ({
         key: crypto.randomUUID(),
@@ -65,7 +60,7 @@ export default function usePhotoUploads() {
         image
       }))
     );
-  }, []);
+  };
 
   return { items, isUploading, uploadedImages, upload, removeAt, reset };
 }

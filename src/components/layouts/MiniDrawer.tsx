@@ -29,7 +29,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, useCallback, useContext, useRef, useState } from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import NotificationsContext from '../../context/NotificationsContext';
 import ProfileContext from '../../context/ProfileContext';
@@ -50,9 +50,9 @@ export default memo(function MiniDrawer() {
   const profile = useContext(ProfileContext);
   const notifications = useContext(NotificationsContext);
 
-  const refreshNotifications = useCallback(() => {
+  const refreshNotifications = () => {
     router.refresh();
-  }, [router]);
+  };
 
   const unreadNotifications = notifications.filter((notification) => {
     return notification.read === false;

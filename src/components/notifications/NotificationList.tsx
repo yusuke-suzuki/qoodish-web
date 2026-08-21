@@ -13,7 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useRef, useState } from 'react';
 import type { Notification } from '../../../types';
 import { markNotificationAsRead } from '../../actions/notifications';
 import AuthContext from '../../context/AuthContext';
@@ -47,9 +47,8 @@ const NotificationList = ({
     setMounted(true);
   }, []);
 
-  const unreadNotifications = useMemo(
-    () => notifications.filter((notification) => !notification.read),
-    [notifications]
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.read
   );
 
   const didMarkRef = useRef(false);

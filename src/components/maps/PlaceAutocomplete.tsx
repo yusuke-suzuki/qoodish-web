@@ -1,13 +1,7 @@
 import { Search } from '@mui/icons-material';
 import { InputAdornment, TextField } from '@mui/material';
 import { useParams } from 'next/navigation';
-import {
-  type MutableRefObject,
-  memo,
-  useCallback,
-  useEffect,
-  useState
-} from 'react';
+import { type MutableRefObject, memo, useEffect, useState } from 'react';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 
 type Props = {
@@ -25,40 +19,36 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   const [place, setPlace] = useState<google.maps.places.Place | null>(null);
   const [pac, setPac] = useState<google.maps.places.Autocomplete | null>(null);
 
-  const initPac = useCallback(async () => {
-    const { Autocomplete } = await loader.importLibrary('places');
-
-    const autocomplete = new Autocomplete(ref.current, {
-      fields: ['place_id', 'plus_code', 'name', 'formatted_address', 'geometry']
-    });
-
-    setPac(autocomplete);
-  }, [loader, ref]);
-
-  const handlePlaceChanged = useCallback(async () => {
-    const placeResult = pac.getPlace();
-
-    const { Place } = await loader.importLibrary('places');
-
-    const place = new Place({
-      id: placeResult.place_id,
-      requestedLanguage: lang
-    });
-
-    const data = await place.fetchFields({
-      fields: ['id', 'location', 'displayName', 'plusCode', 'formattedAddress']
-    });
-
-    setPlace(data.place);
-  }, [pac, loader, lang]);
-
   useEffect(() => {
     if (!pac) {
       return;
     }
 
+    const handlePlaceChanged = async () => {
+      const placeResult = pac.getPlace();
+
+      const { Place } = await loader.importLibrary('places');
+
+      const place = new Place({
+        id: placeResult.place_id,
+        requestedLanguage: lang
+      });
+
+      const data = await place.fetchFields({
+        fields: [
+          'id',
+          'location',
+          'displayName',
+          'plusCode',
+          'formattedAddress'
+        ]
+      });
+
+      setPlace(data.place);
+    };
+
     pac.addListener('place_changed', handlePlaceChanged);
-  }, [pac, handlePlaceChanged]);
+  }, [pac, loader, lang]);
 
   useEffect(() => {
     if (place) {
@@ -71,8 +61,24 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
       return;
     }
 
+    const initPac = async () => {
+      const { Autocomplete } = await loader.importLibrary('places');
+
+      const autocomplete = new Autocomplete(ref.current, {
+        fields: [
+          'place_id',
+          'plus_code',
+          'name',
+          'formatted_address',
+          'geometry'
+        ]
+      });
+
+      setPac(autocomplete);
+    };
+
     initPac();
-  }, [loader, initPac]);
+  }, [loader, ref]);
 
   return (
     <TextField

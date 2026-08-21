@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 30;
@@ -15,24 +15,21 @@ function ProfileNameForm({ onChange, defaultValue }: Props) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleChange = useCallback(
-    (e) => {
-      const input = e.target.value;
+  const handleChange = (e) => {
+    const input = e.target.value;
 
-      if (input) {
-        if (input.length > MAX_LENGTH) {
-          setError(dictionary['max characters 30']);
-        } else {
-          setError(undefined);
-        }
+    if (input) {
+      if (input.length > MAX_LENGTH) {
+        setError(dictionary['max characters 30']);
       } else {
-        setError(dictionary['name is required']);
+        setError(undefined);
       }
+    } else {
+      setError(dictionary['name is required']);
+    }
 
-      setName(input);
-    },
-    [dictionary]
-  );
+    setName(input);
+  };
 
   useEffect(() => {
     onChange(name);

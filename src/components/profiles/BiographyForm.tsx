@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 160;
@@ -15,24 +15,21 @@ function BiographyForm({ onChange, defaultValue }: Props) {
   const [biography, setBiography] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleChange = useCallback(
-    (e) => {
-      const input = e.target.value;
+  const handleChange = (e) => {
+    const input = e.target.value;
 
-      if (input) {
-        if (input.length > MAX_LENGTH) {
-          setError(dictionary['max characters 160']);
-        } else {
-          setError(undefined);
-        }
+    if (input) {
+      if (input.length > MAX_LENGTH) {
+        setError(dictionary['max characters 160']);
       } else {
-        setError(dictionary['biography is required']);
+        setError(undefined);
       }
+    } else {
+      setError(dictionary['biography is required']);
+    }
 
-      setBiography(input);
-    },
-    [dictionary]
-  );
+    setBiography(input);
+  };
 
   useEffect(() => {
     onChange(biography);

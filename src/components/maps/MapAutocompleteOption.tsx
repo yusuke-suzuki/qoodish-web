@@ -2,7 +2,7 @@ import { Map as MapIcon } from '@mui/icons-material';
 import { Grid, Typography } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import type { AppMap } from '../../../types';
 
 type Props = {
@@ -14,12 +14,8 @@ export default memo(function MapAutocompleteOption({
   option,
   inputValue
 }: Props) {
-  const parts = useMemo(() => {
-    const text = option.name;
-    const matches = match(text, inputValue);
-
-    return matches ? parse(text, matches) : [];
-  }, [option, inputValue]);
+  const matches = match(option.name, inputValue);
+  const parts = matches ? parse(option.name, matches) : [];
 
   return (
     <Grid container alignItems="center" data-test="map-item">
