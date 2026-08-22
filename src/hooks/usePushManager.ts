@@ -10,20 +10,6 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
   const [registrationToken, setRegistrationToken] = useState(null);
 
-  const initPushStatus = useCallback(async () => {
-    const sub = await registration.pushManager.getSubscription();
-
-    setSubscription(sub);
-  }, [registration]);
-
-  const persistRegistrationToken = useCallback(async () => {
-    try {
-      await registerDevice(registrationToken);
-    } catch (error) {
-      console.error('Failed to send registration token', error);
-    }
-  }, [registrationToken]);
-
   const subscribe = useCallback(async () => {
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -45,44 +31,117 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     }
   }, [subscription, isLoading]);
 
-  const getRegistrationToken = useCallback(async () => {
-    const messaging = getMessaging();
-    const token = await getToken(messaging, {
-      serviceWorkerRegistration: registration,
-      vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY
-    });
-
-    if (!token) {
-      console.log('Unable to get registration token.');
+  useEffect(() => {
+    if (authenticated || isLoading || !subscription) {
       return;
     }
 
-    setRegistrationToken(token);
-  }, [registration]);
+    let cancelled = false;
+    const subscriptionToRemove = subscription;
+
+    // The browser-side unsubscribe cannot be cancelled, so once it succeeds
+    // the state must drop the removed subscription even after cleanup ran;
+    // the identity check keeps a newer subscription intact.
+    subscriptionToRemove
+      .unsubscribe()
+      .then((successful) => {
+        if (successful) {
+          setSubscription((current) =>
+            current === subscriptionToRemove ? null : current
+          );
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error('Failed to unsubscribe push subscription', error);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authenticated, isLoading, subscription]);
 
   useEffect(() => {
-    if (!authenticated && !isLoading) {
-      unsubscribe();
+    if (!registrationToken) {
+      return;
     }
-  }, [authenticated, isLoading, unsubscribe]);
+
+    const persistRegistrationToken = async () => {
+      const { success, error } = await registerDevice(registrationToken);
+
+      if (!success) {
+        console.error('Failed to send registration token', error);
+      }
+    };
+
+    persistRegistrationToken().catch((error) => {
+      console.error('Failed to send registration token', error);
+    });
+  }, [registrationToken]);
 
   useEffect(() => {
-    if (registrationToken) {
-      persistRegistrationToken();
+    if (!subscription) {
+      return;
     }
-  }, [registrationToken, persistRegistrationToken]);
+
+    let cancelled = false;
+
+    const getRegistrationToken = async () => {
+      const messaging = getMessaging();
+      const token = await getToken(messaging, {
+        serviceWorkerRegistration: registration,
+        vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY
+      });
+
+      if (cancelled) {
+        return;
+      }
+
+      if (!token) {
+        console.log('Unable to get registration token.');
+        return;
+      }
+
+      setRegistrationToken(token);
+    };
+
+    getRegistrationToken().catch((error) => {
+      if (!cancelled) {
+        console.error('Failed to get registration token', error);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [subscription, registration]);
 
   useEffect(() => {
-    if (subscription) {
-      getRegistrationToken();
+    if (!registration || !authenticated) {
+      return;
     }
-  }, [subscription, getRegistrationToken]);
 
-  useEffect(() => {
-    if (registration && authenticated) {
-      initPushStatus();
-    }
-  }, [registration, authenticated, initPushStatus]);
+    let cancelled = false;
+
+    const initPushStatus = async () => {
+      const sub = await registration.pushManager.getSubscription();
+
+      if (!cancelled) {
+        setSubscription(sub);
+      }
+    };
+
+    initPushStatus().catch((error) => {
+      if (!cancelled) {
+        console.error('Failed to get push subscription', error);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [registration, authenticated]);
 
   return {
     subscribe: subscribe,
