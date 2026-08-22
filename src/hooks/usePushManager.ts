@@ -36,11 +36,24 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       return;
     }
 
-    subscription.unsubscribe().then((successful) => {
-      if (successful) {
-        setSubscription(null);
-      }
-    });
+    let cancelled = false;
+
+    subscription
+      .unsubscribe()
+      .then((successful) => {
+        if (!cancelled && successful) {
+          setSubscription(null);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error('Failed to unsubscribe push subscription', error);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [authenticated, isLoading, subscription]);
 
   useEffect(() => {
@@ -49,14 +62,16 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     }
 
     const persistRegistrationToken = async () => {
-      try {
-        await registerDevice(registrationToken);
-      } catch (error) {
+      const { success, error } = await registerDevice(registrationToken);
+
+      if (!success) {
         console.error('Failed to send registration token', error);
       }
     };
 
-    persistRegistrationToken();
+    persistRegistrationToken().catch((error) => {
+      console.error('Failed to send registration token', error);
+    });
   }, [registrationToken]);
 
   useEffect(() => {
