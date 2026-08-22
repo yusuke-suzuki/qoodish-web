@@ -11,7 +11,7 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useContext, useRef, useState } from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -29,18 +29,18 @@ export default memo(function AccountMenuButton() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleLinkClick = useCallback(() => {
+  const handleLinkClick = () => {
     setAnchorEl(null);
-  }, []);
+  };
 
-  const handleSignOutClick = useCallback(async () => {
+  const handleSignOutClick = async () => {
     setAnchorEl(null);
 
     const auth = getAuth();
     await signOut(auth);
 
     push(localePath('/login'));
-  }, [push, localePath]);
+  };
 
   return (
     <>

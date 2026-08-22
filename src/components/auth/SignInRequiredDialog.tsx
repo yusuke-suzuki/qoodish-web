@@ -1,5 +1,5 @@
 import { Container, Typography } from '@mui/material';
-import { memo, useCallback, useContext } from 'react';
+import { memo, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import BottomSheet from '../common/BottomSheet';
@@ -10,15 +10,9 @@ function SignInRequiredDialog() {
   const dictionary = useDictionary();
   const { signInRequired, setSignInRequired } = useContext(AuthContext);
 
-  const handleOpen = useCallback(
-    () => setSignInRequired(true),
-    [setSignInRequired]
-  );
+  const handleOpen = () => setSignInRequired(true);
 
-  const handleClose = useCallback(
-    () => setSignInRequired(false),
-    [setSignInRequired]
-  );
+  const handleClose = () => setSignInRequired(false);
 
   return (
     <BottomSheet

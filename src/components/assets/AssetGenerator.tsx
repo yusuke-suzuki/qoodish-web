@@ -3,7 +3,7 @@
 import { Map as MapIcon } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import html2canvas from 'html2canvas';
-import { type RefObject, useCallback, useRef } from 'react';
+import { type RefObject, useRef } from 'react';
 
 type Props = {
   lang: string;
@@ -14,22 +14,22 @@ export default function AssetGenerator({ lang, tagline }: Props) {
   const iconRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
 
-  const handleConvertToImage = useCallback(
-    async (ref: RefObject<HTMLDivElement>, fileName: string) => {
-      if (!ref.current) {
-        return;
-      }
+  const handleConvertToImage = async (
+    ref: RefObject<HTMLDivElement>,
+    fileName: string
+  ) => {
+    if (!ref.current) {
+      return;
+    }
 
-      const canvas = await html2canvas(ref.current);
-      const link = document.createElement('a');
+    const canvas = await html2canvas(ref.current);
+    const link = document.createElement('a');
 
-      link.download = fileName;
-      link.href = canvas.toDataURL('image/webp');
+    link.download = fileName;
+    link.href = canvas.toDataURL('image/webp');
 
-      link.click();
-    },
-    []
-  );
+    link.click();
+  };
 
   return (
     <Box>

@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { type MouseEvent, memo, useCallback, useState } from 'react';
+import { type MouseEvent, memo, useState } from 'react';
 import type { Chapter } from '../../../types';
 import { deleteChapter } from '../../actions/chapters';
 import useDictionary from '../../hooks/useDictionary';
@@ -45,22 +45,19 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
   const [menuChapter, setMenuChapter] = useState<Chapter | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Chapter | null>(null);
 
-  const openMenu = useCallback(
-    (event: MouseEvent<HTMLElement>, chapter: Chapter) => {
-      setMenuAnchor(event.currentTarget);
-      setMenuChapter(chapter);
-    },
-    []
-  );
+  const openMenu = (event: MouseEvent<HTMLElement>, chapter: Chapter) => {
+    setMenuAnchor(event.currentTarget);
+    setMenuChapter(chapter);
+  };
 
-  const closeMenu = useCallback(() => setMenuAnchor(null), []);
+  const closeMenu = () => setMenuAnchor(null);
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setDeleteTarget(menuChapter);
     closeMenu();
-  }, [menuChapter, closeMenu]);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteTarget) {
       return;
     }
@@ -82,7 +79,7 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
     setDeleteTarget(null);
     // The profile renders a server-fetched chapter count alongside this list.
     router.refresh();
-  }, [deleteTarget, dictionary, router]);
+  };
 
   if (chapters.length < 1) {
     return (

@@ -16,7 +16,6 @@ import {
   type SyntheticEvent,
   memo,
   startTransition,
-  useCallback,
   useContext,
   useState
 } from 'react';
@@ -55,18 +54,18 @@ function UserProfile({
 
   const isOwnProfile = uid === profile.uid;
 
-  const handleTabChange = useCallback(
-    (_event: SyntheticEvent<Element, Event>, newValue: string) => {
-      startTransition(() => {
-        setTabValue(newValue);
-      });
-    },
-    []
-  );
+  const handleTabChange = (
+    _event: SyntheticEvent<Element, Event>,
+    newValue: string
+  ) => {
+    startTransition(() => {
+      setTabValue(newValue);
+    });
+  };
 
-  const handleProfileSaved = useCallback(() => {
+  const handleProfileSaved = () => {
     router.refresh();
-  }, [router]);
+  };
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {
@@ -20,32 +20,26 @@ function EmailField({ value, onChange, disabled }: Props) {
     }
   }, [value]);
 
-  const validate = useCallback(
-    (inputValue: string, validity: ValidityState): string | null => {
-      const valid = !inputValue || validity.valid;
-      return valid ? null : dictionary['email link error invalid email'];
-    },
-    [dictionary]
-  );
+  const validate = (
+    inputValue: string,
+    validity: ValidityState
+  ): string | null => {
+    const valid = !inputValue || validity.valid;
+    return valid ? null : dictionary['email link error invalid email'];
+  };
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const valid = !e.target.value || e.target.validity.valid;
-      if (touched) {
-        setEmailError(validate(e.target.value, e.target.validity));
-      }
-      onChange(e.target.value, valid);
-    },
-    [touched, validate, onChange]
-  );
-
-  const handleBlur = useCallback(
-    (e: React.FocusEvent<HTMLInputElement>) => {
-      setTouched(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valid = !e.target.value || e.target.validity.valid;
+    if (touched) {
       setEmailError(validate(e.target.value, e.target.validity));
-    },
-    [validate]
-  );
+    }
+    onChange(e.target.value, valid);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setTouched(true);
+    setEmailError(validate(e.target.value, e.target.validity));
+  };
 
   return (
     <TextField

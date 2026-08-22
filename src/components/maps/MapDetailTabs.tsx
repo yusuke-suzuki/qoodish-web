@@ -1,7 +1,7 @@
 import { HistoryEdu, Place } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
-import { type SyntheticEvent, memo, useCallback, useState } from 'react';
+import { type SyntheticEvent, memo, useState } from 'react';
 import type { Chapter, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import MapChapterList from './MapChapterList';
@@ -18,12 +18,12 @@ function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
 
   const [tabValue, setTabValue] = useState('spots');
 
-  const handleTabChange = useCallback(
-    (_event: SyntheticEvent<Element, Event>, newValue: string) => {
-      setTabValue(newValue);
-    },
-    []
-  );
+  const handleTabChange = (
+    _event: SyntheticEvent<Element, Event>,
+    newValue: string
+  ) => {
+    setTabValue(newValue);
+  };
 
   return (
     <TabContext value={tabValue}>

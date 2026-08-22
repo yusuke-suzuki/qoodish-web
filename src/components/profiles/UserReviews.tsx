@@ -1,6 +1,6 @@
 import { Reviews } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
-import { memo, useCallback, useState, useTransition } from 'react';
+import { memo, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import {
   fetchMoreMyReviews,
@@ -28,7 +28,7 @@ export default memo(function UserReviews({
   const [noMoreResults, setNoMoreResults] = useState(initialReviews.length < 1);
   const [isPending, startTransition] = useTransition();
 
-  const loadMore = useCallback(() => {
+  const loadMore = () => {
     if (noMoreResults || isPending) return;
 
     const lastReview = reviews[reviews.length - 1];
@@ -44,7 +44,7 @@ export default memo(function UserReviews({
       setReviews((prev) => [...prev, ...moreReviews]);
       setNoMoreResults(moreReviews.length < 1);
     });
-  }, [userId, isOwnProfile, reviews, noMoreResults, isPending]);
+  };
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Done, Edit } from '@mui/icons-material';
 import { Box, Button, Chip, Stack } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import CoodinatesConverter from './CoodinatesConverter';
 import GoogleMaps from './GoogleMaps';
@@ -19,11 +19,11 @@ function PositionForm({ onChange, defaultValue }: Props) {
 
   const dictionary = useDictionary();
 
-  const handleSave = useCallback(() => {
+  const handleSave = () => {
     onChange(position);
 
     setEditPosition(false);
-  }, [position, onChange]);
+  };
 
   useEffect(() => {
     if (defaultValue) {

@@ -7,7 +7,7 @@ import {
   SwipeableDrawer,
   Typography
 } from '@mui/material';
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -59,13 +59,13 @@ function MobileMapDrawer({
   const { setAppBarHidden } = useContext(ShellContext);
   const dictionary = useDictionary();
 
-  const handleOpen = useCallback(() => {
+  const handleOpen = () => {
     setOpen(true);
-  }, []);
+  };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setOpen(false);
-  }, []);
+  };
 
   // The review drawer overrides this drawer's open prop, so while it is open
   // this drawer is visually closed even when `open` is still true. Keep the
@@ -78,12 +78,9 @@ function MobileMapDrawer({
     return () => setAppBarHidden(false);
   }, [setAppBarHidden]);
 
-  const handleReviewClick = useCallback(
-    (review: Review) => {
-      onReviewClick(review);
-    },
-    [onReviewClick]
-  );
+  const handleReviewClick = (review: Review) => {
+    onReviewClick(review);
+  };
 
   return (
     <>

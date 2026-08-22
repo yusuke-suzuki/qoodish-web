@@ -1,7 +1,5 @@
 'use client';
-
 import { useParams } from 'next/navigation';
-import { useCallback } from 'react';
 import { localePath } from '../utils/locales';
 
 /**
@@ -13,5 +11,5 @@ export default function useLocalePath() {
   const params = useParams<{ lang: string }>();
   const lang = params?.lang;
 
-  return useCallback((path = '') => localePath(lang, path), [lang]);
+  return (path = '') => localePath(lang, path);
 }

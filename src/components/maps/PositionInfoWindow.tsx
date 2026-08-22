@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import InfoWindow from './InfoWindow';
 
@@ -28,15 +28,15 @@ function PositionInfoWindow({
 
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
-  const handleCreateReviewClick = useCallback(() => {
+  const handleCreateReviewClick = () => {
     setInfoWindowOpen(false);
     onCreateReviewClick();
-  }, [onCreateReviewClick]);
+  };
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setInfoWindowOpen(false);
     onClose();
-  }, [onClose]);
+  };
 
   useEffect(() => {
     if (position) {

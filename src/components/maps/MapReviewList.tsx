@@ -8,7 +8,7 @@ import {
   ListItemText
 } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import type { Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import AuthorAvatar from '../common/AuthorAvatar';
@@ -24,18 +24,14 @@ function MapReviewList({ reviews, onReviewClick }: Props) {
   const { push } = useRouter();
   const pathname = usePathname();
 
-  const handleClick = useCallback(
-    (review: Review) => {
-      if (onReviewClick) {
-        onReviewClick(review);
-      }
-      push(
-        `${pathname}?lat=${review.latitude}&lng=${review.longitude}&zoom=17`,
-        { scroll: false }
-      );
-    },
-    [onReviewClick, push, pathname]
-  );
+  const handleClick = (review: Review) => {
+    if (onReviewClick) {
+      onReviewClick(review);
+    }
+    push(`${pathname}?lat=${review.latitude}&lng=${review.longitude}&zoom=17`, {
+      scroll: false
+    });
+  };
 
   // The rows carry their own padding, so the panel around this list has none
   // to give the empty state.

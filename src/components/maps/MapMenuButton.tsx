@@ -16,14 +16,7 @@ import {
 } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import {
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import type { AppMap, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -55,13 +48,11 @@ export default memo(function MapMenuButton({
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
-  const isAuthor = useMemo(() => {
-    return currentProfile?.id === map?.author.id;
-  }, [map, currentProfile]);
+  const isAuthor = currentProfile?.id === map?.author.id;
 
   const url = `${SITE_ORIGIN}${localePath(lang, `/maps/${map?.id}`)}`;
 
-  const handleCopyClick = useCallback(async () => {
+  const handleCopyClick = async () => {
     if (!url) {
       return;
     }
@@ -71,9 +62,9 @@ export default memo(function MapMenuButton({
     await navigator.clipboard.writeText(url);
 
     enqueueSnackbar(dictionary.copied);
-  }, [url, dictionary]);
+  };
 
-  const handleReportClick = useCallback(() => {
+  const handleReportClick = () => {
     setAnchorEl(null);
 
     if (!authenticated) {
@@ -82,25 +73,25 @@ export default memo(function MapMenuButton({
     }
 
     onReportClick();
-  }, [authenticated, setSignInRequired, onReportClick]);
+  };
 
-  const handleEditClick = useCallback(() => {
+  const handleEditClick = () => {
     setAnchorEl(null);
 
     onEditClick();
-  }, [onEditClick]);
+  };
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setAnchorEl(null);
 
     onDeleteClick();
-  }, [onDeleteClick]);
+  };
 
-  const handleInviteClick = useCallback(() => {
+  const handleInviteClick = () => {
     setAnchorEl(null);
 
     setInviteDialogOpen(true);
-  }, []);
+  };
 
   return (
     <>

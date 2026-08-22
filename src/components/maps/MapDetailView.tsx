@@ -3,7 +3,7 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -58,39 +58,30 @@ export default function MapDetailView({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const handleCheckin = useCallback(
-    (review: Review) => {
-      enqueueSnackbar(dictionary['checked in'].replace('{name}', review.name), {
-        variant: 'success'
-      });
-    },
-    [dictionary]
-  );
+  const handleCheckin = (review: Review) => {
+    enqueueSnackbar(dictionary['checked in'].replace('{name}', review.name), {
+      variant: 'success'
+    });
+  };
 
-  const handleLocationError = useCallback(() => {
+  const handleLocationError = () => {
     enqueueSnackbar(dictionary['location unavailable'], { variant: 'error' });
-  }, [dictionary]);
+  };
 
-  const handlePaused = useCallback(
-    (reason: PauseReason) => {
-      enqueueSnackbar(
-        reason === 'permission'
-          ? dictionary['journey paused permission']
-          : dictionary['journey paused inactivity'],
-        { variant: 'warning' }
-      );
-    },
-    [dictionary]
-  );
+  const handlePaused = (reason: PauseReason) => {
+    enqueueSnackbar(
+      reason === 'permission'
+        ? dictionary['journey paused permission']
+        : dictionary['journey paused inactivity'],
+      { variant: 'warning' }
+    );
+  };
 
-  const handleJourneyError = useCallback(
-    (message: string | null) => {
-      enqueueSnackbar(message ?? dictionary['an error occurred'], {
-        variant: 'error'
-      });
-    },
-    [dictionary]
-  );
+  const handleJourneyError = (message: string | null) => {
+    enqueueSnackbar(message ?? dictionary['an error occurred'], {
+      variant: 'error'
+    });
+  };
 
   const [journeyPosition, setJourneyPosition] =
     useState<GeolocationPosition | null>(null);
@@ -129,54 +120,45 @@ export default function MapDetailView({
 
   const journeyActive = Boolean(journey?.started_at && !journey?.finished_at);
 
-  const milestoneOrders = useMemo(
-    () =>
-      new Map(
-        (journey?.milestones ?? []).map((milestone, index) => [
-          milestone.review_id,
-          index + 1
-        ])
-      ),
-    [journey]
+  const milestoneOrders = new Map(
+    (journey?.milestones ?? []).map((milestone, index) => [
+      milestone.review_id,
+      index + 1
+    ])
   );
 
-  const checkedInReviewIds = useMemo(
-    () =>
-      new Set((journey?.checkins ?? []).map((checkin) => checkin.review_id)),
-    [journey]
+  const checkedInReviewIds = new Set(
+    (journey?.checkins ?? []).map((checkin) => checkin.review_id)
   );
 
-  const handleAddMilestone = useCallback(
-    async (review: Review) => {
-      const added = await addMilestone(review);
+  const handleAddMilestone = async (review: Review) => {
+    const added = await addMilestone(review);
 
-      if (added) {
-        enqueueSnackbar(
-          dictionary['added to milestones'].replace('{name}', review.name),
-          { variant: 'success' }
-        );
-        setReviewDrawerOpen(false);
-      }
-    },
-    [addMilestone, dictionary]
-  );
+    if (added) {
+      enqueueSnackbar(
+        dictionary['added to milestones'].replace('{name}', review.name),
+        { variant: 'success' }
+      );
+      setReviewDrawerOpen(false);
+    }
+  };
 
-  const handleStart = useCallback(async () => {
+  const handleStart = async () => {
     const started = await start();
 
     if (started) {
       setStartDialogOpen(false);
     }
-  }, [start]);
+  };
 
-  const handlePause = useCallback(() => {
+  const handlePause = () => {
     pause();
     enqueueSnackbar(dictionary['journey recording paused'], {
       variant: 'info'
     });
-  }, [pause, dictionary]);
+  };
 
-  const handleResume = useCallback(async () => {
+  const handleResume = async () => {
     const resumed = await resume();
 
     enqueueSnackbar(
@@ -185,9 +167,9 @@ export default function MapDetailView({
         : dictionary['journey resume unavailable'],
       { variant: resumed ? 'success' : 'error' }
     );
-  }, [resume, dictionary]);
+  };
 
-  const handleEnd = useCallback(async () => {
+  const handleEnd = async () => {
     const finished = await end();
 
     if (!finished) {
@@ -197,7 +179,7 @@ export default function MapDetailView({
     setEndDialogOpen(false);
     setProgressOpen(false);
     router.push(`/${lang}/journeys/${finished.journey.id}`);
-  }, [end, router, lang]);
+  };
 
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
@@ -210,14 +192,14 @@ export default function MapDetailView({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleReviewSaved = useCallback(() => {
+  const handleReviewSaved = () => {
     router.refresh();
-  }, [router]);
+  };
 
-  const handleReviewClick = useCallback((review: Review) => {
+  const handleReviewClick = (review: Review) => {
     setCurrentReview(review);
     setReviewDrawerOpen(true);
-  }, []);
+  };
 
   useEffect(() => {
     if (lat && lng) {

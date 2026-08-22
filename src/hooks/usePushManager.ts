@@ -1,5 +1,5 @@
 import { getMessaging, getToken } from 'firebase/messaging';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { registerDevice } from '../actions/devices';
 import AuthContext from '../context/AuthContext';
 
@@ -10,16 +10,16 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
   const [registrationToken, setRegistrationToken] = useState(null);
 
-  const subscribe = useCallback(async () => {
+  const subscribe = async () => {
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY
     });
 
     setSubscription(sub);
-  }, [registration]);
+  };
 
-  const unsubscribe = useCallback(async () => {
+  const unsubscribe = async () => {
     if (!subscription || isLoading) {
       return false;
     }
@@ -36,7 +36,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     setRegistrationToken(null);
 
     return true;
-  }, [subscription, isLoading]);
+  };
 
   useEffect(() => {
     if (authenticated || isLoading || !subscription) {

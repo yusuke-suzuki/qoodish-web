@@ -16,7 +16,7 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import type { Profile } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
@@ -75,56 +75,50 @@ function CurrentPositionMarker({
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
 
-  const handlePopoverOpen = useCallback(() => {
+  const handlePopoverOpen = () => {
     setPopoverAnchorEl(ref.current);
-  }, []);
+  };
 
-  const handlePopoverClose = useCallback(() => {
+  const handlePopoverClose = () => {
     setPopoverAnchorEl(null);
-  }, []);
+  };
 
-  const handleTooltipClose = useCallback(() => {
+  const handleTooltipClose = () => {
     setOpen(false);
-  }, []);
+  };
 
-  const handleTooltipOpen = useCallback(() => {
+  const handleTooltipOpen = () => {
     setOpen(true);
-  }, []);
+  };
 
-  const handleCreateReviewClick = useCallback(() => {
+  const handleCreateReviewClick = () => {
     setPopoverAnchorEl(null);
 
     onCreateReviewClick();
-  }, [onCreateReviewClick]);
+  };
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
-  const popoverId = useMemo(() => {
-    return popoverOpen ? 'current-position' : undefined;
-  }, [popoverOpen]);
+  const popoverId = popoverOpen ? 'current-position' : undefined;
 
-  const initPosition = useCallback(async () => {
+  useEffect(() => {
     if (!loader || !currentPosition) {
       return;
     }
 
-    const { LatLng } = await loader.importLibrary('core');
+    const initPosition = async () => {
+      const { LatLng } = await loader.importLibrary('core');
 
-    setPosition(
-      new LatLng(
-        currentPosition.coords.latitude,
-        currentPosition.coords.longitude
-      )
-    );
-  }, [loader, currentPosition]);
-
-  useEffect(() => {
-    if (!loader) {
-      return;
-    }
+      setPosition(
+        new LatLng(
+          currentPosition.coords.latitude,
+          currentPosition.coords.longitude
+        )
+      );
+    };
 
     initPosition();
-  }, [loader, initPosition]);
+  }, [loader, currentPosition]);
 
   if (!position) {
     return null;

@@ -14,7 +14,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import type { AppMap, Coauthor } from '../../../types';
 import { removeCoauthor } from '../../actions/coauthors';
 import useDictionary from '../../hooks/useDictionary';
@@ -35,7 +35,7 @@ function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
 
   const [confirmTarget, setConfirmTarget] = useState<Coauthor | null>(null);
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     if (!map || !confirmTarget) {
       return;
     }
@@ -54,7 +54,7 @@ function CoauthorsDialog({ open, onClose, map, coauthors }: Props) {
     enqueueSnackbar(result.error ?? dictionary['an error occurred'], {
       variant: 'error'
     });
-  }, [map, confirmTarget, dictionary, router]);
+  };
 
   return (
     <>

@@ -17,7 +17,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { type MouseEvent, memo, useCallback, useState } from 'react';
+import { type MouseEvent, memo, useState } from 'react';
 import type { JourneySummary } from '../../../types';
 import { deleteJourney } from '../../actions/journeys';
 import useDictionary from '../../hooks/useDictionary';
@@ -46,22 +46,22 @@ function UserJourneys({
   const [menuJourney, setMenuJourney] = useState<JourneySummary | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<JourneySummary | null>(null);
 
-  const openMenu = useCallback(
-    (event: MouseEvent<HTMLElement>, journey: JourneySummary) => {
-      setMenuAnchor(event.currentTarget);
-      setMenuJourney(journey);
-    },
-    []
-  );
+  const openMenu = (
+    event: MouseEvent<HTMLElement>,
+    journey: JourneySummary
+  ) => {
+    setMenuAnchor(event.currentTarget);
+    setMenuJourney(journey);
+  };
 
-  const closeMenu = useCallback(() => setMenuAnchor(null), []);
+  const closeMenu = () => setMenuAnchor(null);
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setDeleteTarget(menuJourney);
     closeMenu();
-  }, [menuJourney, closeMenu]);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     if (!deleteTarget) {
       return;
     }
@@ -82,7 +82,7 @@ function UserJourneys({
     });
     setDeleteTarget(null);
     router.refresh();
-  }, [deleteTarget, dictionary, router]);
+  };
 
   if (journeys.length < 1) {
     return (
