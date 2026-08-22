@@ -26,11 +26,16 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
     const successful = await subscription.unsubscribe();
 
-    if (successful) {
-      setSubscription(null);
+    if (!successful) {
+      console.warn('Push subscription was already inactive');
     }
 
-    return successful;
+    // Either outcome leaves no active subscription behind, and the token
+    // belongs to the subscription that is now gone.
+    setSubscription(null);
+    setRegistrationToken(null);
+
+    return true;
   }, [subscription, isLoading]);
 
   useEffect(() => {
@@ -41,17 +46,20 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     let cancelled = false;
     const subscriptionToRemove = subscription;
 
-    // The browser-side unsubscribe cannot be cancelled, so once it succeeds
+    // The browser-side unsubscribe cannot be cancelled, so once it settles
     // the state must drop the removed subscription even after cleanup ran;
     // the identity check keeps a newer subscription intact.
     subscriptionToRemove
       .unsubscribe()
       .then((successful) => {
-        if (successful) {
-          setSubscription((current) =>
-            current === subscriptionToRemove ? null : current
-          );
+        if (!successful) {
+          console.warn('Push subscription was already inactive');
         }
+
+        setSubscription((current) =>
+          current === subscriptionToRemove ? null : current
+        );
+        setRegistrationToken(null);
       })
       .catch((error) => {
         if (!cancelled) {
@@ -105,6 +113,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
       if (!token) {
         console.log('Unable to get registration token.');
+        setRegistrationToken(null);
         return;
       }
 
