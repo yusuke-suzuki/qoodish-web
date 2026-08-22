@@ -12,7 +12,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 import type { Comment } from '../../../types';
 import ProfileContext from '../../context/ProfileContext';
 import useLocalePath from '../../hooks/useLocalePath';
@@ -36,15 +36,15 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleDeleteClick = useCallback((comment: Comment) => {
+  const handleDeleteClick = (comment: Comment) => {
     setCurrentComment(comment);
     setDeleteDialogOpen(true);
-  }, []);
+  };
 
-  const handleReportClick = useCallback((comment: Comment) => {
+  const handleReportClick = (comment: Comment) => {
     setCurrentComment(comment);
     setIssueDialogOpen(true);
-  }, []);
+  };
 
   return (
     <>

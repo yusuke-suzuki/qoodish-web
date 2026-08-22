@@ -2,7 +2,7 @@
 
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
-import { memo, useCallback, useState, useTransition } from 'react';
+import { memo, useState, useTransition } from 'react';
 import type { Review } from '../../../types';
 import { fetchMoreTimelineReviews } from '../../actions/reviews';
 import useDictionary from '../../hooks/useDictionary';
@@ -36,7 +36,7 @@ export default memo(function Timeline({ initialReviews }: Props) {
       dialogOpen: false
     });
 
-  const loadMore = useCallback(() => {
+  const loadMore = () => {
     if (noMoreResults || isPending) return;
 
     const lastReview = reviews[reviews.length - 1];
@@ -50,21 +50,21 @@ export default memo(function Timeline({ initialReviews }: Props) {
       setReviews((prev) => [...prev, ...moreReviews]);
       setNoMoreResults(moreReviews.length < 1);
     });
-  }, [reviews, noMoreResults, isPending]);
+  };
 
-  const handleReportClick = useCallback((review: Review) => {
+  const handleReportClick = (review: Review) => {
     setIssueReportOptions({
       contentId: review.id,
       dialogOpen: true
     });
-  }, []);
+  };
 
-  const handleIssueDialogClose = useCallback(() => {
+  const handleIssueDialogClose = () => {
     setIssueReportOptions({
       contentId: null,
       dialogOpen: false
     });
-  }, []);
+  };
 
   return (
     <>

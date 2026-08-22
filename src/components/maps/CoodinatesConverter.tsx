@@ -1,5 +1,5 @@
 import { Box, Paper } from '@mui/material';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import DraggableMarker from './DraggableMarker';
 import MapControl from './MapControl';
@@ -22,38 +22,33 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
   const [pacPosition, setPacPosition] =
     useState<google.maps.ControlPosition | null>(null);
 
-  const handlePlaceChange = useCallback(
-    (place: google.maps.places.Place) => {
-      if (!googleMap || !place || !place.location) {
-        return;
-      }
-
-      googleMap.setCenter(place.location);
-
-      setDefaultPosition(place.location);
-      setCenter({
-        lat: place.location.lat(),
-        lng: place.location.lng()
-      });
-    },
-    [googleMap]
-  );
-
-  const initControlPosition = useCallback(async () => {
-    if (!loader) {
+  const handlePlaceChange = (place: google.maps.places.Place) => {
+    if (!googleMap || !place || !place.location) {
       return;
     }
 
-    const { ControlPosition } = await loader.importLibrary('core');
+    googleMap.setCenter(place.location);
 
-    setPacPosition(ControlPosition.TOP_CENTER);
-  }, [loader]);
+    setDefaultPosition(place.location);
+    setCenter({
+      lat: place.location.lat(),
+      lng: place.location.lng()
+    });
+  };
 
   useEffect(() => {
-    if (googleMap && loader) {
-      initControlPosition();
+    if (!googleMap || !loader) {
+      return;
     }
-  }, [googleMap, loader, initControlPosition]);
+
+    const initControlPosition = async () => {
+      const { ControlPosition } = await loader.importLibrary('core');
+
+      setPacPosition(ControlPosition.TOP_CENTER);
+    };
+
+    initControlPosition();
+  }, [googleMap, loader]);
 
   useEffect(() => {
     if (center) {

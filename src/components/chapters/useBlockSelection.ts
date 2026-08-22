@@ -14,7 +14,7 @@ import {
   KEY_DELETE_COMMAND,
   type NodeKey
 } from 'lexical';
-import { type RefObject, useCallback, useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 
 export default function useBlockSelection(
   nodeKey: NodeKey,
@@ -25,8 +25,12 @@ export default function useBlockSelection(
   const [isSelected, setSelected, clearSelection] =
     useLexicalNodeSelection(nodeKey);
 
-  const handleDelete = useCallback(
-    (event: KeyboardEvent) => {
+  useEffect(() => {
+    if (!isEditable) {
+      return;
+    }
+
+    const handleDelete = (event: KeyboardEvent) => {
       const selection = $getSelection();
 
       if (!isSelected || !$isNodeSelection(selection)) {
@@ -40,14 +44,7 @@ export default function useBlockSelection(
       }
 
       return true;
-    },
-    [isSelected]
-  );
-
-  useEffect(() => {
-    if (!isEditable) {
-      return;
-    }
+    };
 
     return mergeRegister(
       editor.registerCommand<MouseEvent>(
@@ -77,21 +74,13 @@ export default function useBlockSelection(
         COMMAND_PRIORITY_LOW
       )
     );
-  }, [
-    editor,
-    isEditable,
-    isSelected,
-    setSelected,
-    clearSelection,
-    handleDelete,
-    targetRef
-  ]);
+  }, [editor, isEditable, isSelected, setSelected, clearSelection, targetRef]);
 
-  const remove = useCallback(() => {
+  const remove = () => {
     editor.update(() => {
       $getNodeByKey(nodeKey)?.remove();
     });
-  }, [editor, nodeKey]);
+  };
 
   return { selected: isEditable && isSelected, remove };
 }

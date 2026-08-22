@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalePath from '../../hooks/useLocalePath';
@@ -24,12 +24,12 @@ function DeleteAccountCard() {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleDeleted = useCallback(async () => {
+  const handleDeleted = async () => {
     const auth = getAuth();
     await signOut(auth);
 
     push(localePath('/login'));
-  }, [push, localePath]);
+  };
 
   return (
     <>

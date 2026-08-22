@@ -28,7 +28,7 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, useCallback, useContext } from 'react';
+import { memo, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import ProfileContext from '../../context/ProfileContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -57,19 +57,19 @@ export default memo(function MobileDrawer({
   const { authenticated, uid } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
 
-  const handleSignOutClick = useCallback(async () => {
+  const handleSignOutClick = async () => {
     onClose();
 
     const auth = getAuth();
     await signOut(auth);
 
     push(localePath('/login'));
-  }, [onClose, push, localePath]);
+  };
 
-  const handleCreateMapClick = useCallback(() => {
+  const handleCreateMapClick = () => {
     onClose();
     onCreateMapClick();
-  }, [onClose, onCreateMapClick]);
+  };
 
   return (
     <SwipeableDrawer open={open} onOpen={onOpen} onClose={onClose}>

@@ -10,7 +10,6 @@ import {
 import {
   type MutableRefObject,
   memo,
-  useCallback,
   useEffect,
   useRef,
   useState
@@ -38,35 +37,31 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
 
   const [open, setOpen] = useState(false);
 
-  const updatePosition = useCallback(async () => {
-    if (!loader) {
-      return;
-    }
-
-    const { LatLng } = await loader.importLibrary('core');
-
-    setPosition(new LatLng(review.latitude, review.longitude));
-  }, [loader, review]);
-
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     onClick(review, ref);
-  }, [review, onClick]);
+  };
 
-  const handleTooltipClose = useCallback(() => {
+  const handleTooltipClose = () => {
     setOpen(false);
-  }, []);
+  };
 
-  const handleTooltipOpen = useCallback(() => {
+  const handleTooltipOpen = () => {
     setOpen(true);
-  }, []);
+  };
 
   useEffect(() => {
     if (!loader) {
       return;
     }
 
+    const updatePosition = async () => {
+      const { LatLng } = await loader.importLibrary('core');
+
+      setPosition(new LatLng(review.latitude, review.longitude));
+    };
+
     updatePosition();
-  }, [loader, updatePosition]);
+  }, [loader, review.latitude, review.longitude]);
 
   if (!position) {
     return null;

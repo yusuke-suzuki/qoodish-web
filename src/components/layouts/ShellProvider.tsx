@@ -1,13 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import {
-  type ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import { type ReactNode, useContext, useState } from 'react';
 import type { AppMap } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import ShellContext from '../../context/ShellContext';
@@ -28,27 +22,26 @@ export default function ShellProvider({ children }: Props) {
   const [createMapOpen, setCreateMapOpen] = useState(false);
   const [appBarHidden, setAppBarHidden] = useState(false);
 
-  const openSearch = useCallback(() => setSearchOpen(true), []);
-  const openCreateMap = useCallback(() => {
+  const openSearch = () => setSearchOpen(true);
+  const openCreateMap = () => {
     if (!authenticated) {
       setSignInRequired(true);
       return;
     }
     setCreateMapOpen(true);
-  }, [authenticated, setSignInRequired]);
+  };
 
-  const handleCreatedMap = useCallback(
-    (map: AppMap) => {
-      setCreateMapOpen(false);
-      push(localePath(`/maps/${map.id}`));
-    },
-    [push, localePath]
-  );
+  const handleCreatedMap = (map: AppMap) => {
+    setCreateMapOpen(false);
+    push(localePath(`/maps/${map.id}`));
+  };
 
-  const contextValue = useMemo(
-    () => ({ openSearch, openCreateMap, appBarHidden, setAppBarHidden }),
-    [openSearch, openCreateMap, appBarHidden]
-  );
+  const contextValue = {
+    openSearch,
+    openCreateMap,
+    appBarHidden,
+    setAppBarHidden
+  };
 
   return (
     <ShellContext.Provider value={contextValue}>

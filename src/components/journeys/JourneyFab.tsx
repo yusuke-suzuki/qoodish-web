@@ -1,6 +1,6 @@
 import { DirectionsWalk, Pause } from '@mui/icons-material';
 import { Box, Fab } from '@mui/material';
-import { memo, useCallback, useContext, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import type { Journey } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -46,7 +46,7 @@ function JourneyFab({
 
   // A journey that exists but has not started still holds milestones worth
   // reviewing, so the sheet opens first and starting happens from there.
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     if (journey) {
       onOpenProgress();
       return;
@@ -58,7 +58,7 @@ function JourneyFab({
     }
 
     onStartClick();
-  }, [journey, onOpenProgress, onStartClick, authenticated, setSignInRequired]);
+  };
 
   const icon = !active ? (
     <DirectionsWalk sx={{ mr: 1 }} />

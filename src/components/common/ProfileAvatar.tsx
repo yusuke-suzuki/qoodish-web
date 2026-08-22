@@ -1,6 +1,6 @@
 import { AccountCircle } from '@mui/icons-material';
 import { Avatar, type SxProps } from '@mui/material';
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import type { ImageVariants } from '../../../types';
 
 type Props = {
@@ -10,13 +10,11 @@ type Props = {
 };
 
 function ProfileAvatar({ profile, size, variant }: Props) {
-  const avatarStyle = useMemo<SxProps>(() => {
-    return size ? { width: size, height: size } : { width: 40, height: 40 };
-  }, [size]);
+  const avatarStyle = size
+    ? { width: size, height: size }
+    : { width: 40, height: 40 };
 
-  const iconStyle = useMemo<SxProps>(() => {
-    return size ? { fontSize: size } : { fontSize: 40 };
-  }, [size]);
+  const iconStyle = size ? { fontSize: size } : { fontSize: 40 };
 
   if (!profile) {
     return (

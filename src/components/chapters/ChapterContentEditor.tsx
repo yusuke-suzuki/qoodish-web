@@ -18,7 +18,7 @@ import type {
   LexicalEditor,
   SerializedEditorState
 } from 'lexical';
-import { type RefObject, memo, useCallback } from 'react';
+import { type RefObject, memo } from 'react';
 import ChapterFloatingToolbar from './ChapterFloatingToolbar';
 import ChapterSlashMenu from './ChapterSlashMenu';
 import ChapterToolbar from './ChapterToolbar';
@@ -50,12 +50,9 @@ function ChapterContentEditor({
     noSsr: true
   });
 
-  const handleChange = useCallback(
-    (editorState: EditorState) => {
-      onChange(editorState.toJSON());
-    },
-    [onChange]
-  );
+  const handleChange = (editorState: EditorState) => {
+    onChange(editorState.toJSON());
+  };
 
   return (
     <LexicalComposer

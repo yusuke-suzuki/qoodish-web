@@ -10,7 +10,7 @@ import {
   useTheme
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalePath from '../../hooks/useLocalePath';
 import SignInButtons from './SignInButtons';
@@ -22,9 +22,9 @@ export default memo(function LoginCard() {
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
-  const handleSignInSuccess = useCallback(() => {
+  const handleSignInSuccess = () => {
     push(localePath('/discover'));
-  }, [push, localePath]);
+  };
 
   return (
     <Card>

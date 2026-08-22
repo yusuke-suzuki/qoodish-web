@@ -1,8 +1,6 @@
 'use client';
-
 import { List } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
 import type { Notification } from '../../../types';
 import NotificationList from './NotificationList';
 
@@ -13,9 +11,9 @@ type Props = {
 export default function NotificationsFeed({ notifications }: Props) {
   const router = useRouter();
 
-  const handleReadNotifications = useCallback(() => {
+  const handleReadNotifications = () => {
     router.refresh();
-  }, [router]);
+  };
 
   return (
     <List>
