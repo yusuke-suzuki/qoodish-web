@@ -64,12 +64,18 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       return;
     }
 
+    let cancelled = false;
+
     const getRegistrationToken = async () => {
       const messaging = getMessaging();
       const token = await getToken(messaging, {
         serviceWorkerRegistration: registration,
         vapidKey: process.env.NEXT_PUBLIC_VAPID_KEY
       });
+
+      if (cancelled) {
+        return;
+      }
 
       if (!token) {
         console.log('Unable to get registration token.');
@@ -80,6 +86,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     };
 
     getRegistrationToken();
+
+    return () => {
+      cancelled = true;
+    };
   }, [subscription, registration]);
 
   useEffect(() => {
@@ -87,13 +97,21 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       return;
     }
 
+    let cancelled = false;
+
     const initPushStatus = async () => {
       const sub = await registration.pushManager.getSubscription();
 
-      setSubscription(sub);
+      if (!cancelled) {
+        setSubscription(sub);
+      }
     };
 
     initPushStatus();
+
+    return () => {
+      cancelled = true;
+    };
   }, [registration, authenticated]);
 
   return {
