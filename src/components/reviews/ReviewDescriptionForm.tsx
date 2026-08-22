@@ -1,5 +1,11 @@
 import { TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useState } from 'react';
+import {
+  type ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 500;
@@ -16,7 +22,7 @@ function ReviewDescriptionForm({ onChange, defaultValue }: Props) {
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleCommentChange = useCallback(
-    (e) => {
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const input = e.target.value;
 
       if (input) {
