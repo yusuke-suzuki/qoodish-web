@@ -37,12 +37,18 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     }
 
     let cancelled = false;
+    const subscriptionToRemove = subscription;
 
-    subscription
+    // The browser-side unsubscribe cannot be cancelled, so once it succeeds
+    // the state must drop the removed subscription even after cleanup ran;
+    // the identity check keeps a newer subscription intact.
+    subscriptionToRemove
       .unsubscribe()
       .then((successful) => {
-        if (!cancelled && successful) {
-          setSubscription(null);
+        if (successful) {
+          setSubscription((current) =>
+            current === subscriptionToRemove ? null : current
+          );
         }
       })
       .catch((error) => {
