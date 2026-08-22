@@ -21,7 +21,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
   const unsubscribe = useCallback(async () => {
     if (!subscription || isLoading) {
-      return;
+      return false;
     }
 
     const successful = await subscription.unsubscribe();
@@ -29,6 +29,8 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     if (successful) {
       setSubscription(null);
     }
+
+    return successful;
   }, [subscription, isLoading]);
 
   useEffect(() => {

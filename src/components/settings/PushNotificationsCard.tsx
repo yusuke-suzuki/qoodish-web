@@ -57,10 +57,12 @@ function PushNotificationsCard() {
           } else {
             enqueueSnackbar(dictionary['push denied'], { variant: 'error' });
           }
-        } else {
-          await unsubscribe();
-
+        } else if (await unsubscribe()) {
           enqueueSnackbar(dictionary['push disabled'], { variant: 'success' });
+        } else {
+          enqueueSnackbar(dictionary['an error occurred'], {
+            variant: 'error'
+          });
         }
       } catch (error) {
         console.error('Failed to change push subscription', error);
