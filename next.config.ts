@@ -8,7 +8,11 @@ const withSerwist = withSerwistInit({
   swSrc: 'src/worker/index.ts',
   swDest: 'public/sw.js',
   reloadOnOnline: true,
-  disable: process.env.NODE_ENV === 'development'
+  disable: process.env.NODE_ENV === 'development',
+  // _headers configures the Cloudflare asset host and is not served as an
+  // asset, so precaching it leaves the install waiting on a redirect that
+  // never resolves into a response the worker can store.
+  globPublicPatterns: ['**/!(_headers)']
 });
 
 const nextConfig: NextConfig = {
