@@ -46,20 +46,26 @@ function PushNotificationsCard() {
 
   const handleSubscriptionChange = useCallback(
     async (_event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      if (checked) {
-        const permission = await Notification.requestPermission();
+      try {
+        if (checked) {
+          const permission = await Notification.requestPermission();
 
-        if (permission === 'granted') {
-          await subscribe();
+          if (permission === 'granted') {
+            await subscribe();
 
-          enqueueSnackbar(dictionary['push enabled'], { variant: 'success' });
+            enqueueSnackbar(dictionary['push enabled'], { variant: 'success' });
+          } else {
+            enqueueSnackbar(dictionary['push denied'], { variant: 'error' });
+          }
         } else {
-          enqueueSnackbar(dictionary['push denied'], { variant: 'error' });
-        }
-      } else {
-        await unsubscribe();
+          await unsubscribe();
 
-        enqueueSnackbar(dictionary['push disabled'], { variant: 'success' });
+          enqueueSnackbar(dictionary['push disabled'], { variant: 'success' });
+        }
+      } catch (error) {
+        console.error('Failed to change push subscription', error);
+
+        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
     },
     [subscribe, unsubscribe, dictionary]
