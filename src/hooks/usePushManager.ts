@@ -63,7 +63,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   }, [authenticated, isLoading, subscription]);
 
   useEffect(() => {
-    if (!registrationToken) {
+    // Signing out does not change the token, so without this guard a token
+    // resolved just before sign-out would still be registered against the
+    // session that just ended.
+    if (!registrationToken || !authenticated) {
       return;
     }
 
@@ -78,10 +81,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     persistRegistrationToken().catch((error) => {
       console.error('Failed to send registration token', error);
     });
-  }, [registrationToken]);
+  }, [registrationToken, authenticated]);
 
   useEffect(() => {
-    if (!subscription) {
+    if (!subscription || !authenticated) {
       return;
     }
 
@@ -115,7 +118,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
     return () => {
       cancelled = true;
     };
-  }, [subscription, registration]);
+  }, [subscription, registration, authenticated]);
 
   useEffect(() => {
     if (!registration || !authenticated) {
