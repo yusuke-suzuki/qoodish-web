@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 30;
@@ -15,7 +15,9 @@ function ReviewNameForm({ onChange, defaultValue }: Props) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const input = e.target.value;
 
     if (input) {

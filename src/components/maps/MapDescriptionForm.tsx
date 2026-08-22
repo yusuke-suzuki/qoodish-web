@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 200;
@@ -18,7 +18,9 @@ export default memo(function MapDescriptionForm({
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleDescriptionChange = (e) => {
+  const handleDescriptionChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const input = e.target.value;
 
     if (input) {
