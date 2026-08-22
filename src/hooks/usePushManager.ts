@@ -85,7 +85,11 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       setRegistrationToken(token);
     };
 
-    getRegistrationToken();
+    getRegistrationToken().catch((error) => {
+      if (!cancelled) {
+        console.error('Failed to get registration token', error);
+      }
+    });
 
     return () => {
       cancelled = true;
@@ -107,7 +111,11 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       }
     };
 
-    initPushStatus();
+    initPushStatus().catch((error) => {
+      if (!cancelled) {
+        console.error('Failed to get push subscription', error);
+      }
+    });
 
     return () => {
       cancelled = true;
