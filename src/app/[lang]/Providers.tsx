@@ -151,9 +151,13 @@ export default function Providers({
         reg?.scope
       );
 
-      if (reg) {
-        setRegistration(reg);
+      if (!reg) {
+        return;
       }
+
+      // register() resolves while the worker is still installing, and the push
+      // API rejects a subscription until one is active; ready holds until then.
+      setRegistration(await navigator.serviceWorker.ready);
     } catch (error) {
       console.log('ServiceWorker registration failed: ', error);
     }
