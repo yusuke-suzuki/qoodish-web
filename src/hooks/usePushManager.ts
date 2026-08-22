@@ -133,7 +133,11 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
       const sub = await registration.pushManager.getSubscription();
 
       if (!cancelled) {
-        setSubscription(sub);
+        // The lookup only seeds the initial state, so it must not undo a
+        // subscription the user created while it was still in flight;
+        // neither the registration nor the session changes then, which
+        // leaves the cleanup above unable to catch it.
+        setSubscription((current) => current ?? sub);
       }
     };
 
