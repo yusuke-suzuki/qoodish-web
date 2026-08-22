@@ -10,7 +10,7 @@
     "dev": "next dev -p 5000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "biome ci ./src",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "deploy:dev": "opennextjs-cloudflare build --env dev && opennextjs-cloudflare deploy --env dev",
@@ -62,7 +62,6 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint-config-next": "^15.5.18",
     "serwist": "^9.2.1",
     "typescript": "^5.2.2",
     "wrangler": "^4.114.0"
