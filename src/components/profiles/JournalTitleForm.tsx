@@ -1,11 +1,5 @@
 import { TextField } from '@mui/material';
-import {
-  type ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useState
-} from 'react';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 50;
@@ -21,24 +15,21 @@ function JournalTitleForm({ onChange, defaultValue }: Props) {
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const input = e.target.value;
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
 
-      if (input) {
-        if (input.length > MAX_LENGTH) {
-          setError(dictionary['max characters 50']);
-        } else {
-          setError(undefined);
-        }
+    if (input) {
+      if (input.length > MAX_LENGTH) {
+        setError(dictionary['max characters 50']);
       } else {
-        setError(dictionary['journal title required']);
+        setError(undefined);
       }
+    } else {
+      setError(dictionary['journal title required']);
+    }
 
-      setTitle(input);
-    },
-    [dictionary]
-  );
+    setTitle(input);
+  };
 
   // Reports undefined while invalid so the caller can block saving a title the
   // API would reject.

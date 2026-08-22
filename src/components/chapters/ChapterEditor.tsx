@@ -29,7 +29,7 @@ import type { LexicalEditor } from 'lexical';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import type { AppMap, Chapter, Journal, Journey, Review } from '../../../types';
 import useChapter from '../../hooks/useChapter';
 import useDictionary from '../../hooks/useDictionary';
@@ -94,65 +94,50 @@ export default function ChapterEditor({
     unpublishChapter
   } = useChapter(initialChapter);
 
-  const markerSpots = useMemo(
-    () => featureSpots(chapter.map_features),
-    [chapter.map_features]
-  );
+  const markerSpots = featureSpots(chapter.map_features);
 
-  const mapCenter = useMemo(
-    () =>
-      map ? { latitude: map.latitude, longitude: map.longitude } : undefined,
-    [map]
-  );
+  const mapCenter = map
+    ? { latitude: map.latitude, longitude: map.longitude }
+    : undefined;
 
   const [coverSaving, setCoverSaving] = useState(false);
   const [markerPickerOpen, setMarkerPickerOpen] = useState(false);
 
-  const usedReviewIds = useMemo(
-    () =>
-      new Set(
-        reviews
-          .filter((review) =>
-            markerSpots.some(
-              (spot) =>
-                spot.latitude === review.latitude &&
-                spot.longitude === review.longitude
-            )
-          )
-          .map((review) => review.id)
-      ),
-    [reviews, markerSpots]
-  );
-
-  const handleAddMarker = useCallback(
-    (review: Review) => {
-      setMarkerPickerOpen(false);
-      updateMapFeatures({
-        type: 'FeatureCollection',
-        features: [
-          ...chapter.map_features.features,
-          spotFeature({
-            name: review.name,
-            latitude: review.latitude,
-            longitude: review.longitude
-          })
-        ]
-      });
-    },
-    [chapter.map_features, updateMapFeatures]
-  );
-
-  const handleRemoveMarker = useCallback(
-    (index: number) => {
-      updateMapFeatures({
-        type: 'FeatureCollection',
-        features: chapter.map_features.features.filter(
-          (_, featureIndex) => featureIndex !== index
+  const usedReviewIds = new Set(
+    reviews
+      .filter((review) =>
+        markerSpots.some(
+          (spot) =>
+            spot.latitude === review.latitude &&
+            spot.longitude === review.longitude
         )
-      });
-    },
-    [chapter.map_features, updateMapFeatures]
+      )
+      .map((review) => review.id)
   );
+
+  const handleAddMarker = (review: Review) => {
+    setMarkerPickerOpen(false);
+    updateMapFeatures({
+      type: 'FeatureCollection',
+      features: [
+        ...chapter.map_features.features,
+        spotFeature({
+          name: review.name,
+          latitude: review.latitude,
+          longitude: review.longitude
+        })
+      ]
+    });
+  };
+
+  const handleRemoveMarker = (index: number) => {
+    updateMapFeatures({
+      type: 'FeatureCollection',
+      features: chapter.map_features.features.filter(
+        (_, featureIndex) => featureIndex !== index
+      )
+    });
+  };
 
   const [pageMenuAnchor, setPageMenuAnchor] = useState<HTMLElement | null>(
     null
@@ -164,7 +149,7 @@ export default function ChapterEditor({
 
   const editorRef = useRef<LexicalEditor | null>(null);
 
-  const handlePublishConfirm = useCallback(async () => {
+  const handlePublishConfirm = async () => {
     const { success } = await publishChapter();
     setPublishDialogOpen(false);
 
@@ -176,9 +161,9 @@ export default function ChapterEditor({
       variant: 'success'
     });
     router.push(readPath);
-  }, [publishChapter, dictionary, router, readPath]);
+  };
 
-  const handleUnpublishConfirm = useCallback(async () => {
+  const handleUnpublishConfirm = async () => {
     const { success } = await unpublishChapter();
     setUnpublishDialogOpen(false);
 
@@ -189,14 +174,14 @@ export default function ChapterEditor({
     enqueueSnackbar(dictionary['revert to draft success'], {
       variant: 'success'
     });
-  }, [unpublishChapter, dictionary]);
+  };
 
-  const handleRegenerateClick = useCallback(() => {
+  const handleRegenerateClick = () => {
     setPageMenuAnchor(null);
     setRegenerateDialogOpen(true);
-  }, []);
+  };
 
-  const handleRegenerateConfirm = useCallback(() => {
+  const handleRegenerateConfirm = () => {
     if (!journey) {
       return;
     }
@@ -211,14 +196,14 @@ export default function ChapterEditor({
     enqueueSnackbar(dictionary['regenerate chapter success'], {
       variant: 'success'
     });
-  }, [journey, dictionary, updateMapFeatures]);
+  };
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setPageMenuAnchor(null);
     setDeleteDialogOpen(true);
-  }, []);
+  };
 
-  const handleDeleteConfirm = useCallback(async () => {
+  const handleDeleteConfirm = async () => {
     const { success } = await discardChapter();
 
     if (!success) {
@@ -237,7 +222,7 @@ export default function ChapterEditor({
           ? `/${lang}/maps/${map.id}`
           : `/${lang}`
     );
-  }, [discardChapter, dictionary, router, lang, map, journey]);
+  };
 
   return (
     <>

@@ -30,9 +30,7 @@ import {
 import {
   type MouseEvent,
   type ReactNode,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState
 } from 'react';
@@ -88,40 +86,40 @@ export default function ChapterFloatingToolbar() {
     linkOpenRef.current = Boolean(linkAnchor);
   }, [linkAnchor]);
 
-  const update = useCallback(() => {
-    const selection = $getSelection();
-
-    if (
-      !$isRangeSelection(selection) ||
-      selection.isCollapsed() ||
-      !selection.getTextContent()
-    ) {
-      setVisible(false);
-      return;
-    }
-
-    setIsBold(selection.hasFormat('bold'));
-    setIsItalic(selection.hasFormat('italic'));
-    setIsUnderline(selection.hasFormat('underline'));
-    setIsStrikethrough(selection.hasFormat('strikethrough'));
-
-    const node = selection.anchor.getNode();
-    setIsLink($isLinkNode(node) || $isLinkNode(node.getParent()));
-
-    const domSelection = window.getSelection();
-
-    if (domSelection && domSelection.rangeCount > 0) {
-      const rect = domSelection.getRangeAt(0).getBoundingClientRect();
-
-      if (rect.width || rect.height) {
-        lastRectRef.current = rect;
-      }
-    }
-
-    setVisible(true);
-  }, []);
-
   useEffect(() => {
+    const update = () => {
+      const selection = $getSelection();
+
+      if (
+        !$isRangeSelection(selection) ||
+        selection.isCollapsed() ||
+        !selection.getTextContent()
+      ) {
+        setVisible(false);
+        return;
+      }
+
+      setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsUnderline(selection.hasFormat('underline'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+      const node = selection.anchor.getNode();
+      setIsLink($isLinkNode(node) || $isLinkNode(node.getParent()));
+
+      const domSelection = window.getSelection();
+
+      if (domSelection && domSelection.rangeCount > 0) {
+        const rect = domSelection.getRangeAt(0).getBoundingClientRect();
+
+        if (rect.width || rect.height) {
+          lastRectRef.current = rect;
+        }
+      }
+
+      setVisible(true);
+    };
+
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(update);
@@ -135,67 +133,61 @@ export default function ChapterFloatingToolbar() {
         COMMAND_PRIORITY_LOW
       )
     );
-  }, [editor, update]);
+  }, [editor]);
 
-  const anchorEl = useMemo(
-    () => ({
-      getBoundingClientRect: () => {
-        if (!linkOpenRef.current) {
-          const domSelection = window.getSelection();
+  const anchorEl = {
+    getBoundingClientRect: () => {
+      if (!linkOpenRef.current) {
+        const domSelection = window.getSelection();
 
-          if (domSelection && domSelection.rangeCount > 0) {
-            const rect = domSelection.getRangeAt(0).getBoundingClientRect();
+        if (domSelection && domSelection.rangeCount > 0) {
+          const rect = domSelection.getRangeAt(0).getBoundingClientRect();
 
-            if (rect.width || rect.height) {
-              return rect;
-            }
+          if (rect.width || rect.height) {
+            return rect;
           }
         }
-
-        return lastRectRef.current ?? new DOMRect();
       }
-    }),
-    []
-  );
 
-  const openLinkEditor = useCallback(
-    (anchor: HTMLElement) => {
-      let current = '';
+      return lastRectRef.current ?? new DOMRect();
+    }
+  };
 
-      editor.getEditorState().read(() => {
-        const selection = $getSelection();
+  const openLinkEditor = (anchor: HTMLElement) => {
+    let current = '';
 
-        if ($isRangeSelection(selection)) {
-          savedSelectionRef.current = selection.clone();
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
 
-          const node = selection.anchor.getNode();
-          const linkNode = $isLinkNode(node)
-            ? node
-            : $isLinkNode(node.getParent())
-              ? node.getParent()
-              : null;
+      if ($isRangeSelection(selection)) {
+        savedSelectionRef.current = selection.clone();
 
-          if ($isLinkNode(linkNode)) {
-            current = linkNode.getURL();
-          }
+        const node = selection.anchor.getNode();
+        const linkNode = $isLinkNode(node)
+          ? node
+          : $isLinkNode(node.getParent())
+            ? node.getParent()
+            : null;
+
+        if ($isLinkNode(linkNode)) {
+          current = linkNode.getURL();
         }
-      });
+      }
+    });
 
-      setLinkValue(current);
-      setLinkAnchor(anchor);
-    },
-    [editor]
-  );
+    setLinkValue(current);
+    setLinkAnchor(anchor);
+  };
 
-  const restoreSelection = useCallback(() => {
+  const restoreSelection = () => {
     editor.update(() => {
       if (savedSelectionRef.current) {
         $setSelection(savedSelectionRef.current.clone());
       }
     });
-  }, [editor]);
+  };
 
-  const applyLink = useCallback(() => {
+  const applyLink = () => {
     const trimmed = linkValue.trim();
     const url = trimmed ? formatUrl(trimmed) : '';
 
@@ -205,13 +197,13 @@ export default function ChapterFloatingToolbar() {
       url ? { url, target: '_blank', rel: 'noopener noreferrer' } : null
     );
     setLinkAnchor(null);
-  }, [editor, linkValue, restoreSelection]);
+  };
 
-  const removeLink = useCallback(() => {
+  const removeLink = () => {
     restoreSelection();
     editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     setLinkAnchor(null);
-  }, [editor, restoreSelection]);
+  };
 
   return (
     <>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Rendered on the server before hydration, where the viewer's time zone is
 // unknown. A non-breaking space keeps the line height so the text appears
@@ -25,11 +25,8 @@ export default function useLocalDateTime() {
     setMounted(true);
   }, []);
 
-  return useCallback(
-    (value: string, options: Intl.DateTimeFormatOptions) =>
-      mounted
-        ? new Intl.DateTimeFormat(lang, options).format(new Date(value))
-        : LOCAL_DATE_TIME_PLACEHOLDER,
-    [mounted, lang]
-  );
+  return (value: string, options: Intl.DateTimeFormatOptions) =>
+    mounted
+      ? new Intl.DateTimeFormat(lang, options).format(new Date(value))
+      : LOCAL_DATE_TIME_PLACEHOLDER;
 }

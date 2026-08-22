@@ -16,14 +16,7 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar, useSnackbar } from 'notistack';
-import {
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import type { Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -56,14 +49,12 @@ export default memo(function ReviewMenuButton({
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
-  const isAuthor = useMemo(() => {
-    return currentProfile?.id === review?.author.id;
-  }, [review, currentProfile]);
+  const isAuthor = currentProfile?.id === review?.author.id;
 
   const reviewPath = `/maps/${review?.map.id}/reports/${review?.id}`;
   const url = `${SITE_ORIGIN}${localePath(lang, reviewPath)}`;
 
-  const handleCopyClick = useCallback(async () => {
+  const handleCopyClick = async () => {
     if (!url) {
       return;
     }
@@ -73,9 +64,9 @@ export default memo(function ReviewMenuButton({
     await navigator.clipboard.writeText(url);
 
     enqueueSnackbar(dictionary.copied);
-  }, [url, dictionary]);
+  };
 
-  const handleReportClick = useCallback(() => {
+  const handleReportClick = () => {
     setAnchorEl(null);
 
     if (!authenticated) {
@@ -84,25 +75,25 @@ export default memo(function ReviewMenuButton({
     }
 
     onReportClick(review);
-  }, [authenticated, review, onReportClick, setSignInRequired]);
+  };
 
-  const handleEditClick = useCallback(() => {
+  const handleEditClick = () => {
     setAnchorEl(null);
 
     onEditClick(review);
-  }, [review, onEditClick]);
+  };
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setAnchorEl(null);
 
     onDeleteClick(review);
-  }, [review, onDeleteClick]);
+  };
 
-  const handleDetailClick = useCallback(() => {
+  const handleDetailClick = () => {
     setAnchorEl(null);
 
     push(localePath(lang, reviewPath));
-  }, [lang, reviewPath, push]);
+  };
 
   return (
     <>

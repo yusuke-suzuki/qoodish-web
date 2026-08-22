@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import { type ReactNode, memo, useMemo } from 'react';
+import { type ReactNode, memo } from 'react';
 import type { AutocompleteOption } from '../../../types';
 
 type Props = {
@@ -23,12 +23,8 @@ export default memo(function AutocompleteListItem({
   onClick,
   avatar
 }: Props) {
-  const parts = useMemo(() => {
-    const text = option.label;
-    const matches = match(text, inputValue);
-
-    return matches ? parse(text, matches) : [];
-  }, [option, inputValue]);
+  const matches = match(option.label, inputValue);
+  const parts = matches ? parse(option.label, matches) : [];
 
   return (
     <ListItem key={option.value} disableGutters dense>

@@ -15,7 +15,7 @@ import {
   useTheme
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { memo, useCallback, useDeferredValue, useState } from 'react';
+import { memo, useDeferredValue, useState } from 'react';
 import type { AppMap } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import useLocalePath from '../../hooks/useLocalePath';
@@ -43,17 +43,14 @@ const SearchDialog = ({ open, onClose }: Props) => {
 
   const { options } = useMapSearch(deferredInputValue);
 
-  const handleMapClick = useCallback(
-    (option: AppMap) => {
-      onClose();
-      push(localePath(`/maps/${option.id}`));
-    },
-    [onClose, push, localePath]
-  );
+  const handleMapClick = (option: AppMap) => {
+    onClose();
+    push(localePath(`/maps/${option.id}`));
+  };
 
-  const handleExited = useCallback(() => {
+  const handleExited = () => {
     setInputValue('');
-  }, []);
+  };
 
   return (
     <Dialog

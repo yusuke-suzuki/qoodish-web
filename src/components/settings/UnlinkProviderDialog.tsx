@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 import ConfirmDialog from '../common/ConfirmDialog';
 
@@ -11,10 +11,10 @@ type Props = {
 function UnlinkProviderDialog({ open, onClose, onUnlink }: Props) {
   const dictionary = useDictionary();
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     await onUnlink();
     onClose();
-  }, [onUnlink, onClose]);
+  };
 
   return (
     <ConfirmDialog

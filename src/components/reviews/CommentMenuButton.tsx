@@ -6,14 +6,7 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
-import {
-  memo,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { memo, useContext, useRef, useState } from 'react';
 import type { Comment, Profile } from '../../../types';
 import AuthContext from '../../context/AuthContext';
 import useDictionary from '../../hooks/useDictionary';
@@ -39,11 +32,9 @@ export default memo(function CommentMenuButton({
 
   const dictionary = useDictionary();
 
-  const isAuthor = useMemo(() => {
-    return currentProfile?.id === comment.author.id;
-  }, [comment, currentProfile]);
+  const isAuthor = currentProfile?.id === comment.author.id;
 
-  const handleReportClick = useCallback(() => {
+  const handleReportClick = () => {
     setAnchorEl(null);
 
     if (!authenticated) {
@@ -52,13 +43,13 @@ export default memo(function CommentMenuButton({
     }
 
     onReportClick(comment);
-  }, [authenticated, comment, onReportClick, setSignInRequired]);
+  };
 
-  const handleDeleteClick = useCallback(() => {
+  const handleDeleteClick = () => {
     setAnchorEl(null);
 
     onDeleteClick(comment);
-  }, [comment, onDeleteClick]);
+  };
 
   return (
     <>

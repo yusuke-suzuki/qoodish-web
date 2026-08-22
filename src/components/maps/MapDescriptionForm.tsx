@@ -1,11 +1,5 @@
 import { TextField } from '@mui/material';
-import {
-  type ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useState
-} from 'react';
+import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 const MAX_LENGTH = 200;
@@ -24,23 +18,22 @@ export default memo(function MapDescriptionForm({
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleDescriptionChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const input = e.target.value;
+  const handleDescriptionChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const input = e.target.value;
 
-      if (input) {
-        if (input.length > MAX_LENGTH) {
-          setError(dictionary['max characters 200']);
-        } else {
-          setError(null);
-        }
+    if (input) {
+      if (input.length > MAX_LENGTH) {
+        setError(dictionary['max characters 200']);
       } else {
-        setError(dictionary['description is required']);
+        setError(null);
       }
-      setDescription(input);
-    },
-    [dictionary]
-  );
+    } else {
+      setError(dictionary['description is required']);
+    }
+    setDescription(input);
+  };
 
   useEffect(() => {
     onChange(description);

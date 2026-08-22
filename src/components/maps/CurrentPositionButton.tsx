@@ -1,6 +1,6 @@
 import { MyLocation } from '@mui/icons-material';
 import { Box, CircularProgress, Fab } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 
 function CurrentPositionButton() {
@@ -8,34 +8,28 @@ function CurrentPositionButton() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handlePosition = useCallback(
-    (position: GeolocationPosition) => {
-      setLoading(false);
+  const handlePosition = (position: GeolocationPosition) => {
+    setLoading(false);
 
-      if (!googleMap) {
-        return;
-      }
+    if (!googleMap) {
+      return;
+    }
 
-      setCurrentPosition(position);
+    setCurrentPosition(position);
 
-      googleMap.panTo({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      });
-      googleMap.setZoom(17);
-    },
-    [googleMap, setCurrentPosition]
-  );
+    googleMap.panTo({
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    });
+    googleMap.setZoom(17);
+  };
 
-  const handlePositionError = useCallback(
-    (positionError: GeolocationPositionError) => {
-      console.error(positionError);
-      setLoading(false);
-    },
-    []
-  );
+  const handlePositionError = (positionError: GeolocationPositionError) => {
+    console.error(positionError);
+    setLoading(false);
+  };
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     setLoading(true);
 
     navigator.geolocation.getCurrentPosition(
@@ -46,7 +40,7 @@ function CurrentPositionButton() {
         maximumAge: 30000
       }
     );
-  }, [handlePosition, handlePositionError]);
+  };
 
   return (
     <Box position="relative">
