@@ -33,7 +33,6 @@ function ChangeEmailDialog({ open, onClose }: Props) {
   const [reauthStep, setReauthStep] = useState<ReauthStep>('idle');
   const [error, setError] = useState<string | null>(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   // biome-ignore lint/correctness/useExhaustiveDependencies: authenticated triggers re-read of getAuth().currentUser
   const hasGoogleProvider = useMemo(
     () =>
