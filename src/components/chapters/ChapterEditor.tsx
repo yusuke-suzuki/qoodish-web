@@ -336,7 +336,8 @@ export default function ChapterEditor({
             >
               {markerSpots.map((spot, index) => (
                 <Chip
-                  key={`${spot.name}-${spot.latitude}-${spot.longitude}`}
+                  // biome-ignore lint/suspicious/noArrayIndexKey: map_features arrives from the API, which does not guarantee that a name and its coordinates appear once
+                  key={`${spot.name}-${spot.latitude}-${spot.longitude}-${index}`}
                   icon={<Place />}
                   label={spot.name}
                   onDelete={() => handleRemoveMarker(index)}
