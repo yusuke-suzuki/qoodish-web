@@ -336,7 +336,7 @@ export default function ChapterEditor({
             >
               {markerSpots.map((spot, index) => (
                 <Chip
-                  key={`${spot.name}-${spot.latitude}-${spot.longitude}-${index}`}
+                  key={`${spot.name}-${spot.latitude}-${spot.longitude}`}
                   icon={<Place />}
                   label={spot.name}
                   onDelete={() => handleRemoveMarker(index)}

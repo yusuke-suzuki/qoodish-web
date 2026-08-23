@@ -17,10 +17,10 @@ import {
   type AuthError,
   EmailAuthProvider,
   GoogleAuthProvider,
-  type UserInfo,
   getAuth,
   linkWithPopup,
   onIdTokenChanged,
+  type UserInfo,
   unlink
 } from 'firebase/auth';
 import { useParams } from 'next/navigation';

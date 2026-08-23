@@ -1,3 +1,4 @@
+import { Comment } from '@mui/icons-material';
 import {
   CardActions,
   CardContent,
@@ -6,13 +7,11 @@ import {
   Popover,
   Typography
 } from '@mui/material';
+import Link from 'next/link';
 import { memo, useContext, useState } from 'react';
 import type { Review } from '../../../types';
 import ReviewCardHeader from '../reviews/ReviewCardHeader';
 import ReviewMenuButton from '../reviews/ReviewMenuButton';
-
-import { Comment } from '@mui/icons-material';
-import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';

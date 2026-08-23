@@ -23,7 +23,7 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
     useState<google.maps.ControlPosition | null>(null);
 
   const handlePlaceChange = (place: google.maps.places.Place) => {
-    if (!googleMap || !place || !place.location) {
+    if (!googleMap || !place?.location) {
       return;
     }
 

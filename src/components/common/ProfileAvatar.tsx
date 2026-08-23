@@ -1,5 +1,5 @@
 import { AccountCircle } from '@mui/icons-material';
-import { Avatar, type SxProps } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { memo } from 'react';
 import type { ImageVariants } from '../../../types';
 

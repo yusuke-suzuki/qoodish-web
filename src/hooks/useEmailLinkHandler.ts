@@ -3,12 +3,12 @@ import { getApps } from 'firebase/app';
 import {
   type Auth,
   EmailAuthProvider,
-  type User,
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
   reauthenticateWithCredential,
   signInWithEmailLink,
+  type User,
   verifyBeforeUpdateEmail
 } from 'firebase/auth';
 import { useParams } from 'next/navigation';

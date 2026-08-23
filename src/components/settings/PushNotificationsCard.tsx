@@ -95,7 +95,7 @@ function PushNotificationsCard() {
       } else {
         enqueueSnackbar(result.error, { variant: 'error' });
       }
-    } catch (error) {
+    } catch (_error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     } finally {
       setLoading(false);

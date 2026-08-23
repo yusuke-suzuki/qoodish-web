@@ -46,7 +46,7 @@ export default memo(function MiniDrawer() {
   const localePath = useLocalePath();
   const pathname = usePathname();
   const router = useRouter();
-  const { authenticated, uid } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
   const notifications = useContext(NotificationsContext);
 

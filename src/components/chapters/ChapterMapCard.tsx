@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import Link from 'next/link';
-import { type ReactNode, memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import type { AppMap, JourneyPathPoint, Spot } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import JourneyMap from '../journeys/JourneyMap';

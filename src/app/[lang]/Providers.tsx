@@ -5,14 +5,14 @@ import {
   Box,
   Button,
   CssBaseline,
+  createTheme,
   GlobalStyles,
-  ThemeProvider,
-  createTheme
+  ThemeProvider
 } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
-import { SnackbarProvider, closeSnackbar } from 'notistack';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { closeSnackbar, SnackbarProvider } from 'notistack';
 import {
   type ReactNode,
   Suspense,

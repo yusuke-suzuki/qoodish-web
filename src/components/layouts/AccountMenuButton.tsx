@@ -5,8 +5,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Menu,
-  MenuItem
+  Menu
 } from '@mui/material';
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
@@ -19,7 +18,7 @@ import useLocalePath from '../../hooks/useLocalePath';
 import ProfileAvatar from '../common/ProfileAvatar';
 
 export default memo(function AccountMenuButton() {
-  const { authenticated, uid } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();

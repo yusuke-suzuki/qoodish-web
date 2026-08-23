@@ -20,8 +20,8 @@ import {
 import {
   type CSSProperties,
   type FormEvent,
-  type ReactNode,
   memo,
+  type ReactNode,
   useId
 } from 'react';
 import useDictionary from '../../hooks/useDictionary';

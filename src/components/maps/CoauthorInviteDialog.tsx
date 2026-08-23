@@ -10,8 +10,8 @@ import {
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import {
-  type SyntheticEvent,
   memo,
+  type SyntheticEvent,
   useCallback,
   useRef,
   useState,

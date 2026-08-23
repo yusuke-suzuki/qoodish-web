@@ -8,7 +8,7 @@ import {
 } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { type ReactNode, memo, useCallback, useState } from 'react';
+import { memo, type ReactNode, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary';
 
 type Props = {

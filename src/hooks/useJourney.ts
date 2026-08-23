@@ -343,7 +343,7 @@ export default function useJourney({
 
       const current = journeyRef.current;
 
-      if (!uid || !current || !current.started_at) {
+      if (!uid || !current?.started_at) {
         return;
       }
 

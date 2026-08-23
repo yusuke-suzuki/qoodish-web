@@ -39,9 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function SettingsPage({ params }: Props) {
-  const { lang } = await params;
-
+export default async function SettingsPage() {
   return (
     <Stack spacing={3}>
       <AccountEmailCard />

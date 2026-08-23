@@ -76,9 +76,7 @@ export default memo(function EditMapDialog({
   );
 
   const handleMapOptionsChange = useCallback(
-    (options: {
-      isPrivate: boolean;
-    }) => {
+    (options: { isPrivate: boolean }) => {
       setIsPrivate(options.isPrivate);
     },
     []

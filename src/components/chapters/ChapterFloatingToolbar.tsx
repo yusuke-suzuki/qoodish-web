@@ -1,4 +1,4 @@
-import { $isLinkNode, TOGGLE_LINK_COMMAND, formatUrl } from '@lexical/link';
+import { $isLinkNode, formatUrl, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {

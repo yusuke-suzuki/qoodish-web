@@ -1,9 +1,9 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { type User, getAuth, onIdTokenChanged } from 'firebase/auth';
+import { getAuth, onIdTokenChanged, type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import {
-  type ReactNode,
   memo,
+  type ReactNode,
   useCallback,
   useEffect,
   useRef,

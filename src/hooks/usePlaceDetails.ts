@@ -1,4 +1,3 @@
-import type { Loader } from '@googlemaps/js-api-loader';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useGoogleMap } from './useGoogleMap';

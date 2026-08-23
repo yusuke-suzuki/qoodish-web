@@ -9,7 +9,7 @@ import ShellProvider from '../../components/layouts/ShellProvider';
 import { getServerAuthState } from '../../lib/auth';
 import { getMyProfile, getNotifications } from '../../lib/users';
 import { getDictionary } from '../../utils/getDictionary';
-import { SITE_ORIGIN, defaultOgImage } from '../../utils/metadata';
+import { defaultOgImage, SITE_ORIGIN } from '../../utils/metadata';
 import Providers from './Providers';
 
 const lobster = Lobster({

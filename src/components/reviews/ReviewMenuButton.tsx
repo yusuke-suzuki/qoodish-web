@@ -15,7 +15,7 @@ import {
   MenuItem
 } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
-import { enqueueSnackbar, useSnackbar } from 'notistack';
+import { enqueueSnackbar } from 'notistack';
 import { memo, useContext, useRef, useState } from 'react';
 import type { Profile, Review } from '../../../types';
 import AuthContext from '../../context/AuthContext';

@@ -2,7 +2,7 @@
 
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Card, Tab } from '@mui/material';
-import { type SyntheticEvent, memo, useState } from 'react';
+import { memo, type SyntheticEvent, useState } from 'react';
 import type { AppMap, Journal } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import UserBookmarks from '../profiles/UserBookmarks';

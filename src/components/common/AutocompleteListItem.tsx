@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import { type ReactNode, memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import type { AutocompleteOption } from '../../../types';
 
 type Props = {
@@ -34,6 +34,7 @@ export default memo(function AutocompleteListItem({
           disableTypography
           primary={parts.map((part, index) => (
             <Typography
+              // biome-ignore lint/suspicious/noArrayIndexKey: parse() splits one label into segments that repeat the same text, so the index is what tells them apart
               key={`${part.text}-${index}`}
               variant="subtitle1"
               component="span"

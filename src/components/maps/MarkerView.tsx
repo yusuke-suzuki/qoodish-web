@@ -1,6 +1,6 @@
 import {
-  type ReactNode,
   memo,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -68,7 +68,7 @@ export default memo(function MarkerView({
   }, [googleMap, content, loader]);
 
   useEffect(() => {
-    if (!markerView || !markerView.element) {
+    if (!markerView?.element) {
       return;
     }
 
