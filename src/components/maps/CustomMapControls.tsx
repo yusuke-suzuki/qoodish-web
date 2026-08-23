@@ -30,8 +30,14 @@ function CustomMapControls({ onPlaceChange }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const initControlPositions = async () => {
       const { ControlPosition } = await loader.importLibrary('core');
+
+      if (cancelled) {
+        return;
+      }
 
       setPacPosition(
         mdDown ? ControlPosition.TOP_CENTER : ControlPosition.TOP_LEFT
@@ -40,6 +46,10 @@ function CustomMapControls({ onPlaceChange }: Props) {
     };
 
     initControlPositions();
+
+    return () => {
+      cancelled = true;
+    };
   }, [googleMap, loader, mdDown]);
 
   useEffect(() => {

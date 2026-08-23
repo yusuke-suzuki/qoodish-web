@@ -54,13 +54,23 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const updatePosition = async () => {
       const { LatLng } = await loader.importLibrary('core');
+
+      if (cancelled) {
+        return;
+      }
 
       setPosition(new LatLng(review.latitude, review.longitude));
     };
 
     updatePosition();
+
+    return () => {
+      cancelled = true;
+    };
   }, [loader, review.latitude, review.longitude]);
 
   if (!position) {

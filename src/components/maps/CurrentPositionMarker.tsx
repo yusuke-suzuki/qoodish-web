@@ -106,8 +106,14 @@ function CurrentPositionMarker({
       return;
     }
 
+    let cancelled = false;
+
     const initPosition = async () => {
       const { LatLng } = await loader.importLibrary('core');
+
+      if (cancelled) {
+        return;
+      }
 
       setPosition(
         new LatLng(
@@ -118,6 +124,10 @@ function CurrentPositionMarker({
     };
 
     initPosition();
+
+    return () => {
+      cancelled = true;
+    };
   }, [loader, currentPosition]);
 
   if (!position) {
