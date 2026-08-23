@@ -280,36 +280,33 @@ export default function useJourney({
     );
   }, []);
 
-  const attachCheckinImage = useCallback(
-    async (checkin: JourneyCheckin, image: Image) => {
-      const latest = findLatestCheckin(checkin);
+  const attachCheckinImage = async (checkin: JourneyCheckin, image: Image) => {
+    const latest = findLatestCheckin(checkin);
 
-      await mutateCheckin(checkin, {
-        image_ids: [...latest.images.map((existing) => existing.id), image.id]
-      });
-    },
-    [findLatestCheckin, mutateCheckin]
-  );
+    await mutateCheckin(checkin, {
+      image_ids: [...latest.images.map((existing) => existing.id), image.id]
+    });
+  };
 
-  const removeCheckinImage = useCallback(
-    (checkin: JourneyCheckin, imageId: number): Promise<boolean> => {
-      const latest = findLatestCheckin(checkin);
+  const removeCheckinImage = (
+    checkin: JourneyCheckin,
+    imageId: number
+  ): Promise<boolean> => {
+    const latest = findLatestCheckin(checkin);
 
-      return mutateCheckin(checkin, {
-        image_ids: latest.images
-          .filter((existing) => existing.id !== imageId)
-          .map((existing) => existing.id)
-      });
-    },
-    [findLatestCheckin, mutateCheckin]
-  );
+    return mutateCheckin(checkin, {
+      image_ids: latest.images
+        .filter((existing) => existing.id !== imageId)
+        .map((existing) => existing.id)
+    });
+  };
 
-  const updateCheckinNote = useCallback(
-    async (checkin: JourneyCheckin, note: string | null) => {
-      await mutateCheckin(checkin, { note });
-    },
-    [mutateCheckin]
-  );
+  const updateCheckinNote = async (
+    checkin: JourneyCheckin,
+    note: string | null
+  ) => {
+    await mutateCheckin(checkin, { note });
+  };
 
   const performCheckin = useCallback(
     async (review: Review) => {
@@ -637,11 +634,11 @@ export default function useJourney({
       });
     }, []);
 
-  const pause = useCallback(() => commitPaused(true), [commitPaused]);
+  const pause = () => commitPaused(true);
 
   // Asking here rather than letting the watch ask keeps a refused resume from
   // reporting success and bouncing straight back to paused.
-  const resume = useCallback(async (): Promise<boolean> => {
+  const resume = async (): Promise<boolean> => {
     const position = await requestPosition();
 
     if (!position) {
@@ -652,7 +649,7 @@ export default function useJourney({
     handlePosition(position);
 
     return true;
-  }, [requestPosition, commitPaused, handlePosition]);
+  };
 
   const ensureJourney = useCallback(async (): Promise<Journey | null> => {
     const current = journeyRef.current;
@@ -673,57 +670,47 @@ export default function useJourney({
     return data;
   }, [map.id, commitJourney, onError]);
 
-  const addMilestone = useCallback(
-    async (review: Review): Promise<boolean> => {
-      if (!authenticated || !uid) {
-        setSignInRequired(true);
-        return false;
-      }
+  const addMilestone = async (review: Review): Promise<boolean> => {
+    if (!authenticated || !uid) {
+      setSignInRequired(true);
+      return false;
+    }
 
-      const current = await ensureJourney();
+    const current = await ensureJourney();
 
-      if (!current) {
-        return false;
-      }
+    if (!current) {
+      return false;
+    }
 
-      if (
-        current.milestones.some((existing) => existing.review_id === review.id)
-      ) {
-        return true;
-      }
-
-      const { success, data, error } = await addMilestoneAction(
-        current.id,
-        review.id
-      );
-
-      if (!success || !data) {
-        onError(error);
-        return false;
-      }
-
-      const latest = journeyRef.current;
-
-      if (!latest || latest.id !== current.id) {
-        return false;
-      }
-
-      commitJourney({ ...latest, milestones: [...latest.milestones, data] });
+    if (
+      current.milestones.some((existing) => existing.review_id === review.id)
+    ) {
       return true;
-    },
-    [
-      authenticated,
-      uid,
-      setSignInRequired,
-      ensureJourney,
-      commitJourney,
-      onError
-    ]
-  );
+    }
+
+    const { success, data, error } = await addMilestoneAction(
+      current.id,
+      review.id
+    );
+
+    if (!success || !data) {
+      onError(error);
+      return false;
+    }
+
+    const latest = journeyRef.current;
+
+    if (!latest || latest.id !== current.id) {
+      return false;
+    }
+
+    commitJourney({ ...latest, milestones: [...latest.milestones, data] });
+    return true;
+  };
 
   // The permission prompt belongs to this tap rather than to the watch that
   // follows, so a refused journey never reaches the started state.
-  const start = useCallback(async (): Promise<boolean> => {
+  const start = async (): Promise<boolean> => {
     if (!uid) {
       return false;
     }
@@ -752,93 +739,75 @@ export default function useJourney({
 
     onError(error);
     return false;
-  }, [
-    uid,
-    requestPosition,
-    ensureJourney,
-    commitJourney,
-    commitPaused,
-    handlePosition,
-    onLocationError,
-    onError
-  ]);
+  };
 
-  const removeMilestone = useCallback(
-    async (milestone: Milestone) => {
-      const current = journeyRef.current;
+  const removeMilestone = async (milestone: Milestone) => {
+    const current = journeyRef.current;
 
-      if (!uid || !current) {
-        return;
-      }
+    if (!uid || !current) {
+      return;
+    }
 
-      const { success, error } = await removeMilestoneAction(
-        current.id,
-        milestone.id
-      );
+    const { success, error } = await removeMilestoneAction(
+      current.id,
+      milestone.id
+    );
 
-      if (!success) {
-        onError(error);
-        return;
-      }
+    if (!success) {
+      onError(error);
+      return;
+    }
 
-      const latest = journeyRef.current;
+    const latest = journeyRef.current;
 
-      if (!latest || latest.id !== current.id) {
-        return;
-      }
+    if (!latest || latest.id !== current.id) {
+      return;
+    }
 
-      const milestones = latest.milestones.filter(
-        (existing) => existing.id !== milestone.id
-      );
+    const milestones = latest.milestones.filter(
+      (existing) => existing.id !== milestone.id
+    );
 
-      if (
-        !latest.started_at &&
-        milestones.length < 1 &&
-        latest.checkins.length < 1
-      ) {
-        deleteJourney(latest.id);
-        commitJourney(null);
-        return;
-      }
+    if (
+      !latest.started_at &&
+      milestones.length < 1 &&
+      latest.checkins.length < 1
+    ) {
+      deleteJourney(latest.id);
+      commitJourney(null);
+      return;
+    }
 
-      commitJourney({ ...latest, milestones });
-    },
-    [uid, commitJourney, onError]
-  );
+    commitJourney({ ...latest, milestones });
+  };
 
-  const removeCheckin = useCallback(
-    async (target: JourneyCheckin) => {
-      const current = journeyRef.current;
+  const removeCheckin = async (target: JourneyCheckin) => {
+    const current = journeyRef.current;
 
-      if (!uid || !current) {
-        return;
-      }
+    if (!uid || !current) {
+      return;
+    }
 
-      const { success, error } = await removeCheckinAction(
-        current.id,
-        target.id
-      );
+    const { success, error } = await removeCheckinAction(current.id, target.id);
 
-      if (!success) {
-        onError(error);
-        return;
-      }
+    if (!success) {
+      onError(error);
+      return;
+    }
 
-      const latest = journeyRef.current;
+    const latest = journeyRef.current;
 
-      if (!latest || latest.id !== current.id) {
-        return;
-      }
+    if (!latest || latest.id !== current.id) {
+      return;
+    }
 
-      commitJourney({
-        ...latest,
-        checkins: latest.checkins.filter((checkin) => checkin.id !== target.id)
-      });
-    },
-    [uid, commitJourney, onError]
-  );
+    commitJourney({
+      ...latest,
+      checkins: latest.checkins.filter((checkin) => checkin.id !== target.id)
+    });
+  };
 
-  const end = useCallback(async (): Promise<FinishedJourney | null> => {
+  const end = async (): Promise<FinishedJourney | null> => {
     const current = journeyRef.current;
 
     if (!uid || !current) {
@@ -870,7 +839,7 @@ export default function useJourney({
     sampleIntervalRef.current = MOVING_SAMPLE_MIN_INTERVAL_MS;
 
     return { journey: data, trail: points };
-  }, [uid, commitJourney, onError]);
+  };
 
   return {
     journey,
