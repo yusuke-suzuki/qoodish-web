@@ -28,12 +28,10 @@ export function usePlaceSearch(input: string) {
 
   const fetchSuggestions = useMemo(
     () =>
-      debounce(async (query: string) => {
+      debounce(async (query: string, requestId: number) => {
         if (!loader) {
           return;
         }
-
-        const requestId = ++requestIdRef.current;
 
         setIsLoading(true);
 
@@ -87,10 +85,12 @@ export function usePlaceSearch(input: string) {
   };
 
   useEffect(() => {
+    // 実行中のリクエストは debounce の待ち時間中にも解決しうるため、
+    // ID の採番は待ち時間の前、入力が変わった時点で行う
+    const requestId = ++requestIdRef.current;
+
     if (!input) {
       fetchSuggestions.cancel();
-
-      requestIdRef.current += 1;
 
       setPredictions([]);
       setIsLoading(false);
@@ -98,7 +98,7 @@ export function usePlaceSearch(input: string) {
       return;
     }
 
-    fetchSuggestions(input);
+    fetchSuggestions(input, requestId);
 
     return () => fetchSuggestions.cancel();
   }, [input, fetchSuggestions]);
