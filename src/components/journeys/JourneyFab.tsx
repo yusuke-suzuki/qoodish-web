@@ -35,11 +35,21 @@ function JourneyFab({
       return;
     }
 
+    let cancelled = false;
+
     (async () => {
       const { ControlPosition } = await loader.importLibrary('core');
 
+      if (cancelled) {
+        return;
+      }
+
       setControlPosition(ControlPosition.BOTTOM_CENTER);
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [googleMap, loader]);
 
   const active = Boolean(journey?.started_at && !journey?.finished_at);
