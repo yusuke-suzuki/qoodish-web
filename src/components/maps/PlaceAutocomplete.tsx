@@ -1,8 +1,21 @@
-import { Search } from '@mui/icons-material';
-import { InputAdornment, TextField } from '@mui/material';
-import { useParams } from 'next/navigation';
-import { type MutableRefObject, memo, useEffect, useState } from 'react';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
+import { LocationOn, Search } from '@mui/icons-material';
+import {
+  Autocomplete,
+  InputAdornment,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  TextField
+} from '@mui/material';
+import {
+  type MutableRefObject,
+  memo,
+  type SyntheticEvent,
+  useDeferredValue,
+  useState
+} from 'react';
+import useDictionary from '../../hooks/useDictionary';
+import { usePlaceSearch } from '../../hooks/usePlaceSearch';
 
 type Props = {
   ref: MutableRefObject<HTMLInputElement>;
@@ -12,117 +25,95 @@ type Props = {
 };
 
 function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
-  const { lang } = useParams<{ lang: string }>();
+  const dictionary = useDictionary();
 
-  const { loader } = useGoogleMap();
+  const [value, setValue] = useState<google.maps.places.PlacePrediction | null>(
+    null
+  );
+  const [inputValue, setInputValue] = useState('');
+  const deferredInputValue = useDeferredValue(inputValue);
 
-  const [place, setPlace] = useState<google.maps.places.Place | null>(null);
-  const [pac, setPac] = useState<google.maps.places.Autocomplete | null>(null);
+  const { predictions, isLoading, resolvePlace } =
+    usePlaceSearch(deferredInputValue);
 
-  useEffect(() => {
-    if (!pac) {
+  // 選択済みの候補が options から外れると MUI が value を不正とみなすため、
+  // 最新の候補に含まれていない場合は選択済みの候補を補う
+  const options =
+    !value ||
+    predictions.some((prediction) => prediction.placeId === value.placeId)
+      ? predictions
+      : [value, ...predictions];
+
+  const handleChange = async (
+    _event: SyntheticEvent,
+    prediction: google.maps.places.PlacePrediction | null
+  ) => {
+    setValue(prediction);
+
+    if (!prediction) {
       return;
     }
 
-    let cancelled = false;
+    onChange(await resolvePlace(prediction));
+  };
 
-    const handlePlaceChanged = async () => {
-      const placeResult = pac.getPlace();
-
-      const { Place } = await loader.importLibrary('places');
-
-      const place = new Place({
-        id: placeResult.place_id,
-        requestedLanguage: lang
-      });
-
-      const data = await place.fetchFields({
-        fields: [
-          'id',
-          'location',
-          'displayName',
-          'plusCode',
-          'formattedAddress'
-        ]
-      });
-
-      if (cancelled) {
-        return;
-      }
-
-      setPlace(data.place);
-    };
-
-    const listener = pac.addListener('place_changed', handlePlaceChanged);
-
-    return () => {
-      cancelled = true;
-      listener.remove();
-    };
-  }, [pac, loader, lang]);
-
-  useEffect(() => {
-    if (place) {
-      onChange(place);
-    }
-  }, [place, onChange]);
-
-  useEffect(() => {
-    if (!loader) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const initPac = async () => {
-      const { Autocomplete } = await loader.importLibrary('places');
-
-      if (cancelled) {
-        return;
-      }
-
-      setPac(
-        new Autocomplete(ref.current, {
-          fields: [
-            'place_id',
-            'plus_code',
-            'name',
-            'formatted_address',
-            'geometry'
-          ]
-        })
-      );
-    };
-
-    initPac();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loader, ref]);
+  const handleInputChange = (_event: SyntheticEvent, newInputValue: string) => {
+    setInputValue(newInputValue);
+  };
 
   return (
-    <TextField
-      variant="outlined"
+    <Autocomplete
       fullWidth
-      autoFocus={autoFocus}
-      type="search"
-      size="small"
-      slotProps={{
-        input: {
-          margin: 'none',
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          )
-        },
-
-        htmlInput: {
-          ref: ref,
-          placeholder: label
-        }
-      }}
+      autoComplete
+      includeInputInList
+      filterSelectedOptions
+      forcePopupIcon={false}
+      options={options}
+      loading={isLoading}
+      loadingText={dictionary.loading}
+      noOptionsText={dictionary['place not found']}
+      value={value}
+      inputValue={inputValue}
+      onChange={handleChange}
+      onInputChange={handleInputChange}
+      filterOptions={(unfiltered) => unfiltered}
+      getOptionKey={(option) => option.placeId}
+      getOptionLabel={(option) => option.text.text}
+      isOptionEqualToValue={(option, selected) =>
+        option.placeId === selected.placeId
+      }
+      renderOption={({ key, ...optionProps }, option) => (
+        <ListItem key={key} {...optionProps}>
+          <ListItemIcon>
+            <LocationOn />
+          </ListItemIcon>
+          <ListItemText
+            primary={option.mainText?.text ?? option.text.text}
+            secondary={option.secondaryText?.text}
+          />
+        </ListItem>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          size="small"
+          autoFocus={autoFocus}
+          placeholder={label}
+          inputRef={ref}
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              margin: 'none',
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              )
+            }
+          }}
+        />
+      )}
     />
   );
 }
