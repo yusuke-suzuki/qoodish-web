@@ -34,6 +34,7 @@ import {
   saveTrail
 } from '../utils/journeyTrailStorage';
 import { encodePath } from '../utils/polyline';
+import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 const CHECKIN_RADIUS_METERS = 50;
 const PATH_MIN_DISTANCE_METERS = 10;
@@ -150,8 +151,10 @@ export default function useJourney({
 
   // The check-in path runs from geolocation callbacks rather than from a
   // render, so it reads the list through a ref instead of taking a dependency
-  // on it and re-registering the watch every time the list changes.
-  useEffect(() => {
+  // on it and re-registering the watch every time the list changes. A fix that
+  // arrived between the commit and a passive effect would read the previous
+  // list, so the write happens in the commit phase.
+  useIsomorphicLayoutEffect(() => {
     reviewsRef.current = reviews;
   }, [reviews]);
 
