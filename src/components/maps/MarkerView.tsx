@@ -3,7 +3,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
-  useMemo,
+  useRef,
   useState
 } from 'react';
 import { createPortal } from 'react-dom';
@@ -25,12 +25,20 @@ export default memo(function MarkerView({
   onMouseLeave
 }: Props) {
   const { loader, googleMap } = useGoogleMap();
-  const [markerView, setMarkerView] =
-    useState<google.maps.marker.AdvancedMarkerElement | null>(null);
 
-  const content = useMemo<HTMLDivElement>(() => {
-    return document.createElement('div');
-  }, []);
+  // The marker is an imperative map object that the effects below write to, so
+  // it is held in a ref rather than in state; the flag is what lets them run
+  // once it exists.
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
+  const [ready, setReady] = useState(false);
+
+  // The marker holds this element, so the portal has to keep rendering into
+  // the same one. A lazy initial state guarantees that; useMemo does not.
+  const [content] = useState<HTMLDivElement>(() =>
+    document.createElement('div')
+  );
 
   const handleClick = useCallback(() => {
     if (!onClick) {
@@ -56,56 +64,75 @@ export default memo(function MarkerView({
     onMouseLeave();
   }, [onMouseLeave]);
 
-  const initMarker = useCallback(async () => {
-    const { AdvancedMarkerElement } = await loader.importLibrary('marker');
+  useEffect(() => {
+    if (!googleMap || !loader) {
+      return;
+    }
 
-    setMarkerView(
-      new AdvancedMarkerElement({
+    let cancelled = false;
+
+    const initMarker = async () => {
+      const { AdvancedMarkerElement } = await loader.importLibrary('marker');
+
+      if (cancelled) {
+        return;
+      }
+
+      const marker = new AdvancedMarkerElement({
         map: googleMap,
         content: content
-      })
-    );
-  }, [googleMap, content, loader]);
+      });
+
+      marker.element.style.cursor = 'pointer';
+      markerRef.current = marker;
+
+      setReady(true);
+    };
+
+    initMarker();
+
+    return () => {
+      cancelled = true;
+
+      if (markerRef.current) {
+        markerRef.current.map = null;
+        markerRef.current = null;
+      }
+
+      setReady(false);
+    };
+  }, [googleMap, loader, content]);
 
   useEffect(() => {
-    if (!markerView?.element) {
+    const element = markerRef.current?.element;
+
+    if (!ready || !element) {
       return;
     }
 
     // markerView.addListener でイベントを設定してしまうと
     // マーカー付近をタップしてのマップ移動操作を受け付けなくなってしまうため、
     // element に対して listener を設定する
-    markerView.element.addEventListener('click', handleClick);
-    markerView.element.addEventListener('mouseenter', handleMouseEnter);
-    markerView.element.addEventListener('mouseleave', handleMouseLeave);
-    markerView.element.style.cursor = 'pointer';
+    element.addEventListener('click', handleClick);
+    element.addEventListener('mouseenter', handleMouseEnter);
+    element.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      if (markerView?.element) {
-        markerView.element.removeEventListener('click', handleClick);
-        markerView.element.removeEventListener('mouseenter', handleMouseEnter);
-        markerView.element.removeEventListener('mouseleave', handleMouseLeave);
-      }
+      element.removeEventListener('click', handleClick);
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [markerView, handleClick, handleMouseEnter, handleMouseLeave]);
+  }, [ready, handleClick, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
-    if (!markerView && googleMap && loader) {
-      initMarker();
+    const marker = markerRef.current;
+
+    if (!ready || !marker || !position) {
+      return;
     }
 
-    return () => {
-      if (markerView) {
-        markerView.map = null;
-      }
-    };
-  }, [markerView, googleMap, loader, initMarker]);
-
-  useEffect(() => {
-    if (markerView && position) {
-      markerView.position = position;
-    }
-  }, [markerView, position]);
+    marker.position = position;
+  }, [ready, position]);
 
   return createPortal(children, content);
 });

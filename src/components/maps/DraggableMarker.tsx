@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 
 type Props = {
@@ -12,8 +12,13 @@ export default memo(function DraggableMarker({
 }: Props) {
   const { googleMap, loader } = useGoogleMap();
 
-  const [markerView, setMarkerView] =
-    useState<google.maps.marker.AdvancedMarkerElement | null>(null);
+  // The marker is an imperative map object that the effects below write to, so
+  // it is held in a ref rather than in state; the flag is what lets them run
+  // once it exists.
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(
+    null
+  );
+  const [ready, setReady] = useState(false);
 
   const handleDragEnd = useCallback(
     ({ latLng }: google.maps.MapMouseEvent) => {
@@ -29,47 +34,66 @@ export default memo(function DraggableMarker({
     [onLatLngChanged]
   );
 
-  const initMarker = useCallback(async () => {
-    const { AdvancedMarkerElement } = await loader.importLibrary('marker');
-
-    setMarkerView(
-      new AdvancedMarkerElement({
-        map: googleMap,
-        gmpDraggable: true,
-        zIndex: 2
-      })
-    );
-  }, [googleMap, loader]);
-
   useEffect(() => {
-    if (!markerView) {
+    if (!googleMap || !loader) {
       return;
     }
 
-    const listener = markerView.addListener('dragend', handleDragEnd);
+    let cancelled = false;
+
+    const initMarker = async () => {
+      const { AdvancedMarkerElement } = await loader.importLibrary('marker');
+
+      if (cancelled) {
+        return;
+      }
+
+      markerRef.current = new AdvancedMarkerElement({
+        map: googleMap,
+        gmpDraggable: true,
+        zIndex: 2
+      });
+
+      setReady(true);
+    };
+
+    initMarker();
+
+    return () => {
+      cancelled = true;
+
+      if (markerRef.current) {
+        markerRef.current.map = null;
+        markerRef.current = null;
+      }
+
+      setReady(false);
+    };
+  }, [googleMap, loader]);
+
+  useEffect(() => {
+    const marker = markerRef.current;
+
+    if (!ready || !marker) {
+      return;
+    }
+
+    const listener = marker.addListener('dragend', handleDragEnd);
 
     return () => {
       listener.remove();
     };
-  }, [markerView, handleDragEnd]);
+  }, [ready, handleDragEnd]);
 
   useEffect(() => {
-    if (!markerView && googleMap && loader) {
-      initMarker();
+    const marker = markerRef.current;
+
+    if (!ready || !marker || !defaultPosition) {
+      return;
     }
 
-    return () => {
-      if (markerView) {
-        markerView.map = null;
-      }
-    };
-  }, [markerView, googleMap, loader, initMarker]);
-
-  useEffect(() => {
-    if (markerView && defaultPosition) {
-      markerView.position = defaultPosition;
-    }
-  }, [markerView, defaultPosition]);
+    marker.position = defaultPosition;
+  }, [ready, defaultPosition]);
 
   return null;
 });
