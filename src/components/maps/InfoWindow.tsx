@@ -30,18 +30,28 @@ function InfoWindow({ children, position, open, onClose }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const initWindow = async () => {
       const { InfoWindow } = await loader.importLibrary('maps');
 
-      const window = new InfoWindow({
-        content: container,
-        disableAutoPan: true
-      });
+      if (cancelled) {
+        return;
+      }
 
-      setInfoWindow(window);
+      setInfoWindow(
+        new InfoWindow({
+          content: container,
+          disableAutoPan: true
+        })
+      );
     };
 
     initWindow();
+
+    return () => {
+      cancelled = true;
+    };
   }, [infoWindow, loader, container]);
 
   useEffect(() => {

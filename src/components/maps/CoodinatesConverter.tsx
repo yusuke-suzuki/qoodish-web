@@ -41,13 +41,23 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const initControlPosition = async () => {
       const { ControlPosition } = await loader.importLibrary('core');
+
+      if (cancelled) {
+        return;
+      }
 
       setPacPosition(ControlPosition.TOP_CENTER);
     };
 
     initControlPosition();
+
+    return () => {
+      cancelled = true;
+    };
   }, [googleMap, loader]);
 
   useEffect(() => {

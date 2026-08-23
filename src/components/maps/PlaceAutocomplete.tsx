@@ -24,6 +24,8 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const handlePlaceChanged = async () => {
       const placeResult = pac.getPlace();
 
@@ -44,10 +46,19 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
         ]
       });
 
+      if (cancelled) {
+        return;
+      }
+
       setPlace(data.place);
     };
 
-    pac.addListener('place_changed', handlePlaceChanged);
+    const listener = pac.addListener('place_changed', handlePlaceChanged);
+
+    return () => {
+      cancelled = true;
+      listener.remove();
+    };
   }, [pac, loader, lang]);
 
   useEffect(() => {
