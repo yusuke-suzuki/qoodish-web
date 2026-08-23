@@ -1,5 +1,6 @@
 import { Box, Paper } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
+import useDictionary from '../../hooks/useDictionary';
 import { useGoogleMap } from '../../hooks/useGoogleMap';
 import DraggableMarker from './DraggableMarker';
 import MapControl from './MapControl';
@@ -12,6 +13,8 @@ type Props = {
 
 function CoodinatesConverter({ onChange, defaultValue }: Props) {
   const { googleMap, loader } = useGoogleMap();
+
+  const dictionary = useDictionary();
 
   const pacRef = useRef<HTMLInputElement | null>(null);
 
@@ -78,7 +81,11 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
       <MapControl controlPosition={pacPosition} fullWidth>
         <Box sx={{ p: 2 }}>
           <Paper>
-            <PlaceAutocomplete onChange={handlePlaceChange} ref={pacRef} />
+            <PlaceAutocomplete
+              onChange={handlePlaceChange}
+              ref={pacRef}
+              label={dictionary['search places']}
+            />
           </Paper>
         </Box>
       </MapControl>

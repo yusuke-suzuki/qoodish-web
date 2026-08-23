@@ -11,7 +11,6 @@ import {
   type MutableRefObject,
   memo,
   type SyntheticEvent,
-  useDeferredValue,
   useRef,
   useState
 } from 'react';
@@ -21,7 +20,7 @@ import { usePlaceSearch } from '../../hooks/usePlaceSearch';
 type Props = {
   ref: MutableRefObject<HTMLInputElement>;
   onChange: (place: google.maps.places.Place) => void;
-  label?: string;
+  label: string;
   autoFocus?: boolean;
 };
 
@@ -32,12 +31,10 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
     null
   );
   const [inputValue, setInputValue] = useState('');
-  const deferredInputValue = useDeferredValue(inputValue);
 
   const selectionIdRef = useRef(0);
 
-  const { predictions, isLoading, resolvePlace } =
-    usePlaceSearch(deferredInputValue);
+  const { predictions, isLoading, resolvePlace } = usePlaceSearch(inputValue);
 
   // 選択済みの候補が options から外れると MUI が value を不正とみなすため、
   // 最新の候補に含まれていない場合は選択済みの候補を補う
@@ -123,6 +120,11 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
                   <Search />
                 </InputAdornment>
               )
+            },
+
+            htmlInput: {
+              ...params.inputProps,
+              'aria-label': label
             }
           }}
         />
