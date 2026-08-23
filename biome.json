@@ -13,7 +13,8 @@
         "noArrayIndexKey": "warn"
       },
       "correctness": {
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"
