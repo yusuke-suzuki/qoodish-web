@@ -12,6 +12,7 @@ import {
   memo,
   type SyntheticEvent,
   useDeferredValue,
+  useRef,
   useState
 } from 'react';
 import useDictionary from '../../hooks/useDictionary';
@@ -33,6 +34,8 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   const [inputValue, setInputValue] = useState('');
   const deferredInputValue = useDeferredValue(inputValue);
 
+  const selectionIdRef = useRef(0);
+
   const { predictions, isLoading, resolvePlace } =
     usePlaceSearch(deferredInputValue);
 
@@ -48,13 +51,23 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
     _event: SyntheticEvent,
     prediction: google.maps.places.PlacePrediction | null
   ) => {
+    // Place の取得中に別の候補が選択された場合、
+    // 遅れて解決した Place で新しい選択を上書きしないようにする
+    const selectionId = ++selectionIdRef.current;
+
     setValue(prediction);
 
     if (!prediction) {
       return;
     }
 
-    onChange(await resolvePlace(prediction));
+    const place = await resolvePlace(prediction);
+
+    if (selectionId !== selectionIdRef.current) {
+      return;
+    }
+
+    onChange(place);
   };
 
   const handleInputChange = (_event: SyntheticEvent, newInputValue: string) => {
