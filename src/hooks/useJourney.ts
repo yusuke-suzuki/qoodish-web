@@ -147,7 +147,13 @@ export default function useJourney({
   const lastPositionAtRef = useRef<number | null>(null);
 
   const reviewsRef = useRef(reviews);
-  reviewsRef.current = reviews;
+
+  // The check-in path runs from geolocation callbacks rather than from a
+  // render, so it reads the list through a ref instead of taking a dependency
+  // on it and re-registering the watch every time the list changes.
+  useEffect(() => {
+    reviewsRef.current = reviews;
+  }, [reviews]);
 
   const pendingCheckinsRef = useRef(new Set<number>());
 

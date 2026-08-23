@@ -20,7 +20,16 @@ function CheckinNoteField({ checkin, onSave }: Props) {
   const [revision, setRevision] = useState(0);
 
   const stateRef = useRef({ checkin, value, dirty: false, onSave });
-  stateRef.current = { ...stateRef.current, checkin, value, onSave };
+
+  // flush runs from a timer, a pagehide listener and unmount, so it reads the
+  // latest values through the ref rather than being rebuilt on every keystroke
+  // and re-arming both listeners with it. dirty is left alone because the
+  // change handler owns it.
+  useEffect(() => {
+    stateRef.current.checkin = checkin;
+    stateRef.current.value = value;
+    stateRef.current.onSave = onSave;
+  });
 
   const flush = useCallback(() => {
     const {
