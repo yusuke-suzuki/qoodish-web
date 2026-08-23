@@ -36,9 +36,12 @@ export default memo(function MarkerView({
 
   // The marker holds this element, so the portal has to keep rendering into
   // the same one. A lazy initial state guarantees that; useMemo does not.
-  const [content] = useState<HTMLDivElement>(() =>
-    document.createElement('div')
-  );
+  const [content] = useState<HTMLDivElement>(() => {
+    const element = document.createElement('div');
+    element.style.cursor = 'pointer';
+
+    return element;
+  });
 
   const handleClick = useCallback(() => {
     if (!onClick) {
@@ -109,7 +112,6 @@ export default memo(function MarkerView({
     content.addEventListener('click', handleClick);
     content.addEventListener('mouseenter', handleMouseEnter);
     content.addEventListener('mouseleave', handleMouseLeave);
-    content.style.cursor = 'pointer';
 
     return () => {
       content.removeEventListener('click', handleClick);
