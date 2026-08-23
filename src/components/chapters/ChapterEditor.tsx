@@ -130,11 +130,20 @@ export default function ChapterEditor({
     });
   };
 
-  const handleRemoveMarker = (index: number) => {
+  // featureSpots keeps only the Point features, so a chip's position in the
+  // list is not the feature's position once the collection carries anything
+  // else.
+  const markerFeatureIndexes = chapter.map_features.features.flatMap(
+    (feature, index) => (feature.geometry?.type === 'Point' ? [index] : [])
+  );
+
+  const handleRemoveMarker = (markerIndex: number) => {
+    const featureIndex = markerFeatureIndexes[markerIndex];
+
     updateMapFeatures({
       type: 'FeatureCollection',
       features: chapter.map_features.features.filter(
-        (_, featureIndex) => featureIndex !== index
+        (_, index) => index !== featureIndex
       )
     });
   };
