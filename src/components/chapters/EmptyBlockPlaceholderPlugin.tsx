@@ -11,7 +11,9 @@ const PLACEHOLDER_ATTR = 'data-placeholder';
 // Notion prompts on the focused block, rather than a single editor-wide message.
 export default function EmptyBlockPlaceholderPlugin({
   text
-}: { text: string }) {
+}: {
+  text: string;
+}) {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {

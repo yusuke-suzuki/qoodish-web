@@ -25,6 +25,7 @@ export default memo(function MapAutocompleteOption({
       <Grid size="grow">
         {parts.map((part, index) => (
           <span
+            // biome-ignore lint/suspicious/noArrayIndexKey: parse() splits one name into segments that repeat the same text, so the index is what tells them apart
             key={`${part.text}-${index}`}
             style={{ fontWeight: part.highlight ? 700 : 400 }}
           >

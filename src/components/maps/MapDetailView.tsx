@@ -21,13 +21,13 @@ import JourneyOverlay from '../journeys/JourneyOverlay';
 import JourneyProgressSheet from '../journeys/JourneyProgressSheet';
 import StartJourneyDialog from '../journeys/StartJourneyDialog';
 import CustomOverlays from './CustomOverlays';
+import { drawerBleeding } from './constants';
 import DeleteMapDialog from './DeleteMapDialog';
 import EditMapDialog from './EditMapDialog';
 import GoogleMaps from './GoogleMaps';
 import MapSummaryCard from './MapSummaryCard';
 import MobileMapDrawer from './MobileMapDrawer';
 import ReviewDrawer from './ReviewDrawer';
-import { drawerBleeding } from './constants';
 
 const summaryCardHeight = 360;
 
@@ -54,7 +54,7 @@ export default function MapDetailView({
   });
   const dictionary = useDictionary();
 
-  const { lang, mapId } = useParams<{ lang: string; mapId: string }>();
+  const { lang } = useParams<{ lang: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
 

@@ -24,7 +24,6 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import { useParams } from 'next/navigation';
 import { memo, useCallback, useMemo, useState } from 'react';
 import type {
   Image,
@@ -225,7 +224,6 @@ function JourneyProgressSheet({
   onEndClick
 }: Props) {
   const dictionary = useDictionary();
-  const { lang } = useParams<{ lang: string }>();
   const formatLocal = useLocalDateTime();
 
   const imagesByReview = useMemo(() => {

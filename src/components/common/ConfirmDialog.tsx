@@ -24,7 +24,7 @@ function ConfirmDialog({
   onClose,
   onConfirm
 }: Props) {
-  const dictionary = useDictionary();
+  const _dictionary = useDictionary();
 
   const [loading, setLoading] = useState(false);
 

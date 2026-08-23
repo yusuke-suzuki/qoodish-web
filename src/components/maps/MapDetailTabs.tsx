@@ -1,7 +1,7 @@
 import { HistoryEdu, Place } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
-import { type SyntheticEvent, memo, useState } from 'react';
+import { memo, type SyntheticEvent, useState } from 'react';
 import type { Chapter, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import MapChapterList from './MapChapterList';

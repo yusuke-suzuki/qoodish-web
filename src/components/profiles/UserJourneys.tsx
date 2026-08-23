@@ -35,7 +35,9 @@ const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
 
 function UserJourneys({
   journeys: initialJourneys
-}: { journeys: JourneySummary[] }) {
+}: {
+  journeys: JourneySummary[];
+}) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
   const formatLocal = useLocalDateTime();

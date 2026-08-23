@@ -73,9 +73,7 @@ export default memo(function CreateMapDialog({
   );
 
   const handleMapOptionsChange = useCallback(
-    (options: {
-      isPrivate: boolean;
-    }) => {
+    (options: { isPrivate: boolean }) => {
       setIsPrivate(options.isPrivate);
     },
     []

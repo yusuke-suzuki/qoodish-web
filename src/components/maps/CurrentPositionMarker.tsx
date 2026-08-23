@@ -12,9 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   Popover,
+  styled,
   Tooltip,
-  Typography,
-  styled
+  Typography
 } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
 import type { Profile } from '../../../types';

@@ -54,7 +54,7 @@ export default memo(function MobileDrawer({
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
-  const { authenticated, uid } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
 
   const handleSignOutClick = async () => {

@@ -5,9 +5,9 @@ import { DecoratorNode, type NodeKey } from 'lexical';
 import { type JSX, memo, useRef } from 'react';
 import {
   type ChapterImage,
+  createSerializedImage,
   IMAGE_NODE_TYPE,
-  type SerializedImageNode,
-  createSerializedImage
+  type SerializedImageNode
 } from '../../utils/chapterContent';
 import useBlockSelection from './useBlockSelection';
 

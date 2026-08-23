@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, SwipeableDrawer, type SwipeableDrawerProps } from '@mui/material';
-import { type ReactNode, memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import DrawerPuller from './DrawerPuller';
 
 type Props = {

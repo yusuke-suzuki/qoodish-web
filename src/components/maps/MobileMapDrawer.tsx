@@ -19,13 +19,13 @@ import ShellContext from '../../context/ShellContext';
 import useDictionary from '../../hooks/useDictionary';
 import BookmarkButton from './BookmarkButton';
 import Coauthors from './Coauthors';
+import { drawerBleeding } from './constants';
 import MapCardHeader from './MapCardHeader';
 import MapDetailTabs from './MapDetailTabs';
 import MapMenuButton from './MapMenuButton';
 import MobileMiniMapHeader from './MobileMiniMapHeader';
 import PrivateMapChip from './PrivateMapChip';
 import RemoveBookmarkButton from './RemoveBookmarkButton';
-import { drawerBleeding } from './constants';
 
 type Props = {
   map: AppMap | null;
@@ -83,124 +83,122 @@ function MobileMapDrawer({
   };
 
   return (
-    <>
-      <SwipeableDrawer
-        anchor="bottom"
-        variant="temporary"
-        hideBackdrop
-        disableSwipeToOpen={false}
-        open={reviewDrawerOpen ? false : open}
-        onOpen={handleOpen}
-        onClose={handleClose}
-        swipeAreaWidth={drawerBleeding}
-        sx={{
-          zIndex: (theme) => theme.zIndex.appBar - 1,
+    <SwipeableDrawer
+      anchor="bottom"
+      variant="temporary"
+      hideBackdrop
+      disableSwipeToOpen={false}
+      open={reviewDrawerOpen ? false : open}
+      onOpen={handleOpen}
+      onClose={handleClose}
+      swipeAreaWidth={drawerBleeding}
+      sx={{
+        zIndex: (theme) => theme.zIndex.appBar - 1,
+        display: { xs: 'block', md: 'none' }
+      }}
+      SwipeAreaProps={{
+        sx: {
+          zIndex: (theme) => theme.zIndex.appBar - 2,
           display: { xs: 'block', md: 'none' }
-        }}
-        SwipeAreaProps={{
+        }
+      }}
+      slotProps={{
+        root: {
+          keepMounted: true
+        },
+        paper: {
           sx: {
-            zIndex: (theme) => theme.zIndex.appBar - 2,
-            display: { xs: 'block', md: 'none' }
+            height: `calc(100% - ${drawerBleeding}px)`,
+            overflow: 'visible',
+            display: 'flex',
+            flexDirection: 'column',
+            // The bleeding header below forms the sheet's visual top edge
+            // and carries the rounded corners instead.
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0
           }
-        }}
-        slotProps={{
-          root: {
-            keepMounted: true
-          },
-          paper: {
-            sx: {
-              height: `calc(100% - ${drawerBleeding}px)`,
-              overflow: 'visible',
-              display: 'flex',
-              flexDirection: 'column',
-              // The bleeding header below forms the sheet's visual top edge
-              // and carries the rounded corners instead.
-              borderTopLeftRadius: 0,
-              borderTopRightRadius: 0
-            }
-          }
+        }
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: -drawerBleeding,
+          visibility: 'visible',
+          right: 0,
+          left: 0,
+          bgcolor: 'background.paper',
+          height: drawerBleeding,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: -drawerBleeding,
-            visibility: 'visible',
-            right: 0,
-            left: 0,
-            bgcolor: 'background.paper',
-            height: drawerBleeding,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16
-          }}
-        >
-          <MobileMiniMapHeader map={map} reviews={reviews} draggable />
-        </Box>
-        <Divider />
-        <Box sx={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
-          {map?.private && (
-            <Box sx={{ px: 2, pt: 2 }}>
-              <PrivateMapChip />
-            </Box>
-          )}
-          <MapCardHeader
-            map={map}
-            action={
-              <MapMenuButton
-                map={map}
-                currentProfile={currentProfile}
-                onReportClick={onReportClick}
-                onEditClick={onEditClick}
-                onDeleteClick={onDeleteClick}
-              />
-            }
-          />
+        <MobileMiniMapHeader map={map} reviews={reviews} draggable />
+      </Box>
+      <Divider />
+      <Box sx={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
+        {map?.private && (
+          <Box sx={{ px: 2, pt: 2 }}>
+            <PrivateMapChip />
+          </Box>
+        )}
+        <MapCardHeader
+          map={map}
+          action={
+            <MapMenuButton
+              map={map}
+              currentProfile={currentProfile}
+              onReportClick={onReportClick}
+              onEditClick={onEditClick}
+              onDeleteClick={onDeleteClick}
+            />
+          }
+        />
 
-          <CardContent sx={{ pt: 0, pb: map?.editable ? 2 : 0 }}>
-            {map ? (
-              <Typography variant="body1">{map.description}</Typography>
-            ) : (
-              <>
-                <Skeleton />
-                <Skeleton />
-              </>
-            )}
-          </CardContent>
-          {map?.editable ? null : (
-            <CardActions sx={{ p: 2 }}>
-              {map?.bookmarking ? (
-                <RemoveBookmarkButton
-                  map={map}
-                  currentProfile={currentProfile}
-                  onSaved={onSaved}
-                />
-              ) : (
-                <BookmarkButton map={map} onSaved={onSaved} />
-              )}
-            </CardActions>
+        <CardContent sx={{ pt: 0, pb: map?.editable ? 2 : 0 }}>
+          {map ? (
+            <Typography variant="body1">{map.description}</Typography>
+          ) : (
+            <>
+              <Skeleton />
+              <Skeleton />
+            </>
           )}
-          <Divider />
-          <CardContent>
-            <Typography variant="subtitle2" component="h2" gutterBottom>
-              {dictionary.coauthors}
-            </Typography>
-            <Box sx={{ display: 'flex' }}>
-              <Coauthors
-                coauthors={coauthors}
+        </CardContent>
+        {map?.editable ? null : (
+          <CardActions sx={{ p: 2 }}>
+            {map?.bookmarking ? (
+              <RemoveBookmarkButton
                 map={map}
                 currentProfile={currentProfile}
+                onSaved={onSaved}
               />
-            </Box>
-          </CardContent>
-          <Divider />
-          <MapDetailTabs
-            reviews={reviews}
-            chapters={chapters}
-            onReviewClick={handleReviewClick}
-          />
-        </Box>
-      </SwipeableDrawer>
-    </>
+            ) : (
+              <BookmarkButton map={map} onSaved={onSaved} />
+            )}
+          </CardActions>
+        )}
+        <Divider />
+        <CardContent>
+          <Typography variant="subtitle2" component="h2" gutterBottom>
+            {dictionary.coauthors}
+          </Typography>
+          <Box sx={{ display: 'flex' }}>
+            <Coauthors
+              coauthors={coauthors}
+              map={map}
+              currentProfile={currentProfile}
+            />
+          </Box>
+        </CardContent>
+        <Divider />
+        <MapDetailTabs
+          reviews={reviews}
+          chapters={chapters}
+          onReviewClick={handleReviewClick}
+        />
+      </Box>
+    </SwipeableDrawer>
   );
 }
 

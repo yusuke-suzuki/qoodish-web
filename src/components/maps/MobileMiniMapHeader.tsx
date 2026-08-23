@@ -1,6 +1,6 @@
 import { Lock } from '@mui/icons-material';
-import { Avatar, Box, CardHeader, Skeleton, type SxProps } from '@mui/material';
-import { type ReactNode, memo } from 'react';
+import { Avatar, CardHeader, Skeleton, type SxProps } from '@mui/material';
+import { memo, type ReactNode } from 'react';
 import type { AppMap, Review } from '../../../types';
 import useDictionary from '../../hooks/useDictionary';
 import DrawerPuller from '../common/DrawerPuller';

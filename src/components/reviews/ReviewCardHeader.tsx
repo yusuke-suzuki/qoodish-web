@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { type ReactNode, memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import type { Review } from '../../../types';
 import useLocalePath from '../../hooks/useLocalePath';
 import AuthorAvatar from '../common/AuthorAvatar';
