@@ -83,7 +83,6 @@ export default memo(function MarkerView({
         content: content
       });
 
-      marker.element.style.cursor = 'pointer';
       markerRef.current = marker;
 
       setReady(true);
@@ -104,25 +103,20 @@ export default memo(function MarkerView({
   }, [googleMap, loader, content]);
 
   useEffect(() => {
-    const element = markerRef.current?.element;
-
-    if (!ready || !element) {
-      return;
-    }
-
-    // markerView.addListener でイベントを設定してしまうと
+    // gmpClickable を有効にして gmp-click を使うと、
     // マーカー付近をタップしてのマップ移動操作を受け付けなくなってしまうため、
-    // element に対して listener を設定する
-    element.addEventListener('click', handleClick);
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
+    // 自前でレンダリングしている content に対して listener を設定する
+    content.addEventListener('click', handleClick);
+    content.addEventListener('mouseenter', handleMouseEnter);
+    content.addEventListener('mouseleave', handleMouseLeave);
+    content.style.cursor = 'pointer';
 
     return () => {
-      element.removeEventListener('click', handleClick);
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
+      content.removeEventListener('click', handleClick);
+      content.removeEventListener('mouseenter', handleMouseEnter);
+      content.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [ready, handleClick, handleMouseEnter, handleMouseLeave]);
+  }, [content, handleClick, handleMouseEnter, handleMouseLeave]);
 
   useEffect(() => {
     const marker = markerRef.current;
