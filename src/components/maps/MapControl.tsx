@@ -29,15 +29,19 @@ export default memo(function MapControl({
     };
   }, [googleMap, controlPosition, container]);
 
-  // The width is set on the element the map positions, so it has to go on the
-  // container itself. Building a fresh one keeps the element out of state that
-  // is later written to.
   useEffect(() => {
-    const div = document.createElement('div');
-    div.style.width = fullWidth ? '100%' : 'auto';
+    if (!container) {
+      const div = document.createElement('div');
 
-    setContainer(div);
-  }, [fullWidth]);
+      setContainer(div);
+    }
+  }, [container]);
+
+  useEffect(() => {
+    if (container) {
+      container.style.width = fullWidth ? '100%' : 'auto';
+    }
+  }, [container, fullWidth]);
 
   return container && createPortal(children, container);
 });
