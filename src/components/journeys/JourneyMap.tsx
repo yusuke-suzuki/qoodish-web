@@ -170,8 +170,15 @@ const JourneyMapOverlay = memo(function JourneyMapOverlay({
       return;
     }
 
+    let cancelled = false;
+
     (async () => {
       const { LatLngBounds } = await loader.importLibrary('core');
+
+      if (cancelled) {
+        return;
+      }
+
       const bounds = new LatLngBounds();
 
       for (const point of points) {
@@ -184,6 +191,10 @@ const JourneyMapOverlay = memo(function JourneyMapOverlay({
         googleMap.setZoom(17);
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [googleMap, loader, path, spots, milestones, fallbackCenter]);
 
   return (

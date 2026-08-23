@@ -72,23 +72,33 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
       return;
     }
 
+    let cancelled = false;
+
     const initPac = async () => {
       const { Autocomplete } = await loader.importLibrary('places');
 
-      const autocomplete = new Autocomplete(ref.current, {
-        fields: [
-          'place_id',
-          'plus_code',
-          'name',
-          'formatted_address',
-          'geometry'
-        ]
-      });
+      if (cancelled) {
+        return;
+      }
 
-      setPac(autocomplete);
+      setPac(
+        new Autocomplete(ref.current, {
+          fields: [
+            'place_id',
+            'plus_code',
+            'name',
+            'formatted_address',
+            'geometry'
+          ]
+        })
+      );
     };
 
     initPac();
+
+    return () => {
+      cancelled = true;
+    };
   }, [loader, ref]);
 
   return (

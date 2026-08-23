@@ -46,7 +46,11 @@ export default memo(function DraggableMarker({
       return;
     }
 
-    markerView.addListener('dragend', handleDragEnd);
+    const listener = markerView.addListener('dragend', handleDragEnd);
+
+    return () => {
+      listener.remove();
+    };
   }, [markerView, handleDragEnd]);
 
   useEffect(() => {
