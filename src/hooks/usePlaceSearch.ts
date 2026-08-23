@@ -75,11 +75,13 @@ export function usePlaceSearch(input: string) {
   const resolvePlace = async (
     prediction: google.maps.places.PlacePrediction
   ) => {
+    // セッションは fetchFields の応答ではなく呼び出しで終了するため、
+    // 待っている間に始まった入力が終了済みのトークンを使い回さないよう先に破棄する
+    sessionTokenRef.current = null;
+
     const { place } = await prediction
       .toPlace()
       .fetchFields({ fields: PLACE_FIELDS });
-
-    sessionTokenRef.current = null;
 
     return place;
   };
