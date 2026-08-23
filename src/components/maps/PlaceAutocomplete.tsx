@@ -7,6 +7,7 @@ import {
   ListItemText,
   TextField
 } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import {
   type MutableRefObject,
   memo,
@@ -58,13 +59,23 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
       return;
     }
 
-    const place = await resolvePlace(prediction);
+    try {
+      const place = await resolvePlace(prediction);
 
-    if (selectionId !== selectionIdRef.current) {
-      return;
+      if (selectionId !== selectionIdRef.current) {
+        return;
+      }
+
+      onChange(place);
+    } catch {
+      if (selectionId !== selectionIdRef.current) {
+        return;
+      }
+
+      setValue(null);
+
+      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-
-    onChange(place);
   };
 
   const handleInputChange = (_event: SyntheticEvent, newInputValue: string) => {
