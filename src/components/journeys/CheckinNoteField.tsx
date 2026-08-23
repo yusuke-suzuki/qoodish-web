@@ -23,11 +23,11 @@ function CheckinNoteField({ checkin, onSave }: Props) {
 
   // flush runs from a timer, a pagehide listener and unmount, so it reads the
   // latest values through the ref rather than being rebuilt on every keystroke
-  // and re-arming both listeners with it. dirty is left alone because the
-  // change handler owns it.
+  // and re-arming both listeners with it. The draft is not synced here: pagehide
+  // can fire between the keystroke and this effect, and flush would then save
+  // the previous draft and clear dirty with it.
   useEffect(() => {
     stateRef.current.checkin = checkin;
-    stateRef.current.value = value;
     stateRef.current.onSave = onSave;
   });
 
@@ -76,6 +76,7 @@ function CheckinNoteField({ checkin, onSave }: Props) {
       placeholder={dictionary['checkin note placeholder']}
       onChange={(event) => {
         setValue(event.target.value);
+        stateRef.current.value = event.target.value;
         stateRef.current.dirty = true;
         setRevision((current) => current + 1);
       }}
