@@ -1,6 +1,13 @@
 'use client';
 
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState
+} from 'react';
 import type {
   AppMap,
   Image,
@@ -34,7 +41,6 @@ import {
   saveTrail
 } from '../utils/journeyTrailStorage';
 import { encodePath } from '../utils/polyline';
-import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 const CHECKIN_RADIUS_METERS = 50;
 const PATH_MIN_DISTANCE_METERS = 10;
@@ -146,17 +152,6 @@ export default function useJourney({
   } | null>(null);
   const sampleIntervalRef = useRef(MOVING_SAMPLE_MIN_INTERVAL_MS);
   const lastPositionAtRef = useRef<number | null>(null);
-
-  const reviewsRef = useRef(reviews);
-
-  // The check-in path runs from geolocation callbacks rather than from a
-  // render, so it reads the list through a ref instead of taking a dependency
-  // on it and re-registering the watch every time the list changes. A fix that
-  // arrived between the commit and a passive effect would read the previous
-  // list, so the write happens in the commit phase.
-  useIsomorphicLayoutEffect(() => {
-    reviewsRef.current = reviews;
-  }, [reviews]);
 
   const pendingCheckinsRef = useRef(new Set<number>());
 
@@ -343,154 +338,153 @@ export default function useJourney({
     [commitJourney, onCheckin]
   );
 
-  const handlePosition = useCallback(
-    (position: GeolocationPosition) => {
-      onPosition(position);
+  const processPosition = (position: GeolocationPosition) => {
+    onPosition(position);
 
-      const current = journeyRef.current;
+    const current = journeyRef.current;
 
-      if (!uid || !current?.started_at) {
-        return;
+    if (!uid || !current?.started_at) {
+      return;
+    }
+
+    lastPositionAtRef.current = position.timestamp;
+
+    const here = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    };
+
+    const previousFix = lastFixRef.current;
+    lastFixRef.current = { ...here, timestamp: position.timestamp };
+
+    const { accuracy } = position.coords;
+    const precise = accuracy <= CHECKIN_MAX_ACCURACY_METERS;
+    const anchor = anchorRef.current;
+
+    const applyStationary = (next: boolean) => {
+      stationaryRef.current = next;
+      setStationary(next);
+    };
+
+    if (
+      anchor &&
+      distanceInMeters(here, anchor) >
+        Math.max(STATIONARY_RADIUS_METERS, accuracy, anchor.accuracy)
+    ) {
+      // The fix's error circle excludes the anchor, so this is genuine
+      // movement even when the fix itself is coarse.
+      anchorRef.current = precise
+        ? { ...here, accuracy, since: position.timestamp }
+        : null;
+      applyStationary(false);
+    } else if (!anchor) {
+      // Only a precise fix may open an anchor: a coarse one would widen the
+      // stillness radius so far that a stroll would read as rest.
+      if (precise) {
+        anchorRef.current = { ...here, accuracy, since: position.timestamp };
       }
+      applyStationary(false);
+    } else if (precise) {
+      applyStationary(position.timestamp - anchor.since >= STATIONARY_AFTER_MS);
+    }
 
-      lastPositionAtRef.current = position.timestamp;
+    const lastPoint = trailRef.current.at(-1);
 
-      const here = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      };
+    // A coarse fix drifts on its own, so the threshold follows the reported
+    // accuracy to keep those jumps out of the trail.
+    const minDistance = Math.max(
+      PATH_MIN_DISTANCE_METERS,
+      position.coords.accuracy
+    );
 
-      const previousFix = lastFixRef.current;
-      lastFixRef.current = { ...here, timestamp: position.timestamp };
+    if (!lastPoint || distanceInMeters(here, lastPoint) >= minDistance) {
+      commitTrail([...trailRef.current, here]);
+    }
 
-      const { accuracy } = position.coords;
-      const precise = accuracy <= CHECKIN_MAX_ACCURACY_METERS;
-      const anchor = anchorRef.current;
+    const visitedIds = new Set(
+      current.checkins.map((checkin) => checkin.review_id)
+    );
 
-      const applyStationary = (next: boolean) => {
-        stationaryRef.current = next;
-        setStationary(next);
-      };
+    const remaining = reviews.filter((review) => !visitedIds.has(review.id));
 
-      if (
-        anchor &&
-        distanceInMeters(here, anchor) >
-          Math.max(STATIONARY_RADIUS_METERS, accuracy, anchor.accuracy)
-      ) {
-        // The fix's error circle excludes the anchor, so this is genuine
-        // movement even when the fix itself is coarse.
-        anchorRef.current = precise
-          ? { ...here, accuracy, since: position.timestamp }
-          : null;
-        applyStationary(false);
-      } else if (!anchor) {
-        // Only a precise fix may open an anchor: a coarse one would widen the
-        // stillness radius so far that a stroll would read as rest.
-        if (precise) {
-          anchorRef.current = { ...here, accuracy, since: position.timestamp };
-        }
-        applyStationary(false);
-      } else if (precise) {
-        applyStationary(
-          position.timestamp - anchor.since >= STATIONARY_AFTER_MS
-        );
-      }
+    const nearest = remaining.reduce(
+      (shortest, review) => Math.min(shortest, distanceInMeters(here, review)),
+      Number.POSITIVE_INFINITY
+    );
 
-      const lastPoint = trailRef.current.at(-1);
+    setHighAccuracy((enabled) =>
+      enabled
+        ? nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
+        : nearest <= ACCURACY_UPGRADE_RADIUS_METERS
+    );
 
-      // A coarse fix drifts on its own, so the threshold follows the reported
-      // accuracy to keep those jumps out of the trail.
-      const minDistance = Math.max(
-        PATH_MIN_DISTANCE_METERS,
-        position.coords.accuracy
+    const currentAnchor = anchorRef.current;
+
+    if (stationaryRef.current && currentAnchor) {
+      const steps = Math.min(
+        STATIONARY_BACKOFF_MAX_STEPS,
+        Math.floor(
+          (position.timestamp - currentAnchor.since) / STATIONARY_AFTER_MS
+        )
       );
 
-      if (!lastPoint || distanceInMeters(here, lastPoint) >= minDistance) {
-        commitTrail([...trailRef.current, here]);
+      const cap =
+        nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
+          ? STATIONARY_SAMPLE_MAX_NEAR_MS
+          : STATIONARY_SAMPLE_MAX_FAR_MS;
+
+      sampleIntervalRef.current = Math.min(
+        cap,
+        STATIONARY_SAMPLE_BASE_INTERVAL_MS * 2 ** steps
+      );
+    } else {
+      let observedSpeed = position.coords.speed ?? Number.NaN;
+
+      if (!Number.isFinite(observedSpeed) || observedSpeed < 0) {
+        observedSpeed =
+          previousFix && position.timestamp > previousFix.timestamp
+            ? distanceInMeters(here, previousFix) /
+              ((position.timestamp - previousFix.timestamp) / 1000)
+            : 0;
       }
 
-      const visitedIds = new Set(
-        current.checkins.map((checkin) => checkin.review_id)
+      const speed = Math.max(
+        MIN_ASSUMED_SPEED_MPS,
+        observedSpeed * SPEED_HEADROOM
       );
 
-      const remaining = reviewsRef.current.filter(
-        (review) => !visitedIds.has(review.id)
+      // The next sample only has to land before the traveller could reach
+      // the continuous-watch zone around the nearest unvisited spot.
+      const travelMs =
+        ((nearest - ACCURACY_UPGRADE_RADIUS_METERS) / speed) * 1000;
+
+      sampleIntervalRef.current = Math.min(
+        MOVING_SAMPLE_MAX_INTERVAL_MS,
+        Math.max(MOVING_SAMPLE_MIN_INTERVAL_MS, travelMs)
       );
+    }
 
-      const nearest = remaining.reduce(
-        (shortest, review) =>
-          Math.min(shortest, distanceInMeters(here, review)),
-        Number.POSITIVE_INFINITY
-      );
+    if (position.coords.accuracy > CHECKIN_MAX_ACCURACY_METERS) {
+      return;
+    }
 
-      setHighAccuracy((enabled) =>
-        enabled
-          ? nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
-          : nearest <= ACCURACY_UPGRADE_RADIUS_METERS
-      );
+    const reached = remaining.filter(
+      (review) =>
+        !pendingCheckinsRef.current.has(review.id) &&
+        distanceInMeters(here, review) <= CHECKIN_RADIUS_METERS
+    );
 
-      const currentAnchor = anchorRef.current;
+    for (const review of reached) {
+      performCheckin(review);
+    }
+  };
 
-      if (stationaryRef.current && currentAnchor) {
-        const steps = Math.min(
-          STATIONARY_BACKOFF_MAX_STEPS,
-          Math.floor(
-            (position.timestamp - currentAnchor.since) / STATIONARY_AFTER_MS
-          )
-        );
-
-        const cap =
-          nearest <= ACCURACY_DOWNGRADE_RADIUS_METERS
-            ? STATIONARY_SAMPLE_MAX_NEAR_MS
-            : STATIONARY_SAMPLE_MAX_FAR_MS;
-
-        sampleIntervalRef.current = Math.min(
-          cap,
-          STATIONARY_SAMPLE_BASE_INTERVAL_MS * 2 ** steps
-        );
-      } else {
-        let observedSpeed = position.coords.speed ?? Number.NaN;
-
-        if (!Number.isFinite(observedSpeed) || observedSpeed < 0) {
-          observedSpeed =
-            previousFix && position.timestamp > previousFix.timestamp
-              ? distanceInMeters(here, previousFix) /
-                ((position.timestamp - previousFix.timestamp) / 1000)
-              : 0;
-        }
-
-        const speed = Math.max(
-          MIN_ASSUMED_SPEED_MPS,
-          observedSpeed * SPEED_HEADROOM
-        );
-
-        // The next sample only has to land before the traveller could reach
-        // the continuous-watch zone around the nearest unvisited spot.
-        const travelMs =
-          ((nearest - ACCURACY_UPGRADE_RADIUS_METERS) / speed) * 1000;
-
-        sampleIntervalRef.current = Math.min(
-          MOVING_SAMPLE_MAX_INTERVAL_MS,
-          Math.max(MOVING_SAMPLE_MIN_INTERVAL_MS, travelMs)
-        );
-      }
-
-      if (position.coords.accuracy > CHECKIN_MAX_ACCURACY_METERS) {
-        return;
-      }
-
-      const reached = remaining.filter(
-        (review) =>
-          !pendingCheckinsRef.current.has(review.id) &&
-          distanceInMeters(here, review) <= CHECKIN_RADIUS_METERS
-      );
-
-      for (const review of reached) {
-        performCheckin(review);
-      }
-    },
-    [uid, onPosition, commitTrail, performCheckin]
-  );
+  // The geolocation watch and the sampling timer outlive the render that
+  // registered them, so they deliver fixes through an effect event, which
+  // always sees the latest committed review list without the watch having to
+  // re-register every time that list changes. Event handlers call
+  // processPosition directly.
+  const handlePosition = useEffectEvent(processPosition);
 
   // Losing the permission mid-journey must not cost the traveller their
   // milestones and check-ins, so recording only pauses.
@@ -565,7 +559,7 @@ export default function useJourney({
     // continuous watch provides; everywhere else timed samples are enough.
     if (highAccuracy && !stationary) {
       const watchId = navigator.geolocation.watchPosition(
-        handlePosition,
+        (position) => handlePosition(position),
         handleError,
         HIGH_ACCURACY_OPTIONS
       );
@@ -609,15 +603,7 @@ export default function useJourney({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [
-    uid,
-    watching,
-    highAccuracy,
-    stationary,
-    handlePosition,
-    handleError,
-    onLocationError
-  ]);
+  }, [uid, watching, highAccuracy, stationary, handleError, onLocationError]);
 
   const requestPosition =
     useCallback((): Promise<GeolocationPosition | null> => {
@@ -646,7 +632,7 @@ export default function useJourney({
     }
 
     commitPaused(false);
-    handlePosition(position);
+    processPosition(position);
 
     return true;
   };
@@ -733,7 +719,7 @@ export default function useJourney({
     if (success && data) {
       commitJourney(data);
       commitPaused(false);
-      handlePosition(position);
+      processPosition(position);
       return true;
     }
 
