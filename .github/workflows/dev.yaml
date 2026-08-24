@@ -8,6 +8,8 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -23,6 +25,6 @@ jobs:
       - name: Lint
         run: |
           pnpm lint
-      - name: Biome check
+      - name: Type check
         run: |
-          pnpm biome ci ./src
+          pnpm typecheck
