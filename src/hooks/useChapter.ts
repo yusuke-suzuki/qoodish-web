@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Chapter, MapFeatureCollection } from '../../types';
 import { deleteChapter, updateChapter } from '../actions/chapters';
 import useDictionary from './useDictionary';
+import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 const AUTOSAVE_DELAY = 800;
 
@@ -16,10 +17,16 @@ export default function useChapter(initialChapter: Chapter) {
   const [savedAt, setSavedAt] = useState(initialChapter.updated_at);
 
   const latestRef = useRef<Chapter | null>(chapter);
-  latestRef.current = chapter;
-
   const savedAtRef = useRef(savedAt);
-  savedAtRef.current = savedAt;
+
+  // flush runs from the debounce timer, so it reads these through refs rather
+  // than being rebuilt on every edit. A flush firing between the commit and a
+  // passive effect would save a stale draft, so the writes happen in the
+  // commit phase.
+  useIsomorphicLayoutEffect(() => {
+    latestRef.current = chapter;
+    savedAtRef.current = savedAt;
+  }, [chapter, savedAt]);
 
   const saveErrorNotifiedRef = useRef(false);
 
