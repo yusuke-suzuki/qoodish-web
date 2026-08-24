@@ -32,16 +32,17 @@ export default function useChapter(initialChapter: Chapter) {
   // newer draft chains after the request instead of being swallowed by it.
   const inFlightRef = useRef<{
     stamp: string;
-    request: Promise<void>;
+    request: Promise<boolean>;
   } | null>(null);
 
-  const flush = (): Promise<void> | undefined => {
-    if (discardedRef.current || chapter.updated_at === savedAt) {
+  const flush = (draft?: Chapter): Promise<boolean> | undefined => {
+    const current = draft ?? chapter;
+
+    if (discardedRef.current || current.updated_at === savedAt) {
       return inFlightRef.current?.request;
     }
 
     const inFlight = inFlightRef.current;
-    const current = chapter;
     const stamp = current.updated_at;
 
     if (inFlight && inFlight.stamp === stamp) {
@@ -53,7 +54,7 @@ export default function useChapter(initialChapter: Chapter) {
         if (inFlight) {
           // A failed earlier save must not block this newer draft, so only
           // wait for it to settle.
-          await inFlight.request.catch(() => {});
+          await inFlight.request.catch(() => false);
         }
 
         const { success } = await updateChapter(current.id, {
@@ -66,7 +67,7 @@ export default function useChapter(initialChapter: Chapter) {
         if (success) {
           setSavedAt(stamp);
           saveErrorNotifiedRef.current = false;
-          return;
+          return true;
         }
 
         if (!saveErrorNotifiedRef.current) {
@@ -75,6 +76,8 @@ export default function useChapter(initialChapter: Chapter) {
             variant: 'error'
           });
         }
+
+        return false;
       } finally {
         if (inFlightRef.current?.request === request) {
           inFlightRef.current = null;
@@ -184,15 +187,21 @@ export default function useChapter(initialChapter: Chapter) {
       return { success: false };
     }
 
-    // Persist pending title/content first so callers can navigate away
-    // knowing the new status is saved, rather than racing the autosave.
-    await flush();
+    // The status travels through the shared save pipeline as a normal draft:
+    // a dedicated status request would race the autosave, and adopting its
+    // response into state would overwrite edits typed while it was on the
+    // wire.
+    const next: Chapter = {
+      ...chapter,
+      status,
+      updated_at: new Date().toISOString()
+    };
 
-    const { success, data } = await updateChapter(chapter.id, { status });
+    setChapter(next);
 
-    if (success && data) {
-      setChapter(data);
-      setSavedAt(data.updated_at);
+    const saved = (await flush(next)) ?? true;
+
+    if (saved) {
       return { success: true };
     }
 
