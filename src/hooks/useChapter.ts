@@ -205,14 +205,13 @@ export default function useChapter(initialChapter: Chapter) {
 
     setChapter(next);
 
+    // flush notifies its own failures but dedups repeats; an explicit save
+    // must always be able to report, so the dedup flag resets first.
+    saveErrorNotifiedRef.current = false;
+
     const saved = (await flush(next)) ?? true;
 
-    if (saved) {
-      return { success: true };
-    }
-
-    enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
-    return { success: false };
+    return { success: saved };
   };
 
   const publishChapter = () => changeStatus('published');
