@@ -2,11 +2,16 @@
 
 import type { SerializedEditorState } from 'lexical';
 import { enqueueSnackbar } from 'notistack';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState
+} from 'react';
 import type { Chapter, MapFeatureCollection } from '../../types';
 import { deleteChapter, updateChapter } from '../actions/chapters';
 import useDictionary from './useDictionary';
-import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 const AUTOSAVE_DELAY = 800;
 
@@ -16,28 +21,17 @@ export default function useChapter(initialChapter: Chapter) {
   const [chapter, setChapter] = useState<Chapter>(initialChapter);
   const [savedAt, setSavedAt] = useState(initialChapter.updated_at);
 
-  const latestRef = useRef<Chapter | null>(chapter);
-  const savedAtRef = useRef(savedAt);
-
-  // flush runs from the debounce timer, so it reads these through refs rather
-  // than being rebuilt on every edit. A flush firing between the commit and a
-  // passive effect would save a stale draft, so the writes happen in the
-  // commit phase.
-  useIsomorphicLayoutEffect(() => {
-    latestRef.current = chapter;
-    savedAtRef.current = savedAt;
-  }, [chapter, savedAt]);
-
   const saveErrorNotifiedRef = useRef(false);
+
+  // A flush that fires after the chapter is deleted would resurrect it.
+  const discardedRef = useRef(false);
 
   // The debounce timer and the callers that await a save can both reach for a
   // flush; sharing the in-flight one keeps them from issuing competing writes.
   const inFlightRef = useRef<Promise<void> | null>(null);
 
-  const flush = useCallback(async () => {
-    const current = latestRef.current;
-
-    if (!current || current.updated_at === savedAtRef.current) {
+  const flush = (): Promise<void> | undefined => {
+    if (discardedRef.current || chapter.updated_at === savedAt) {
       return inFlightRef.current ?? undefined;
     }
 
@@ -45,6 +39,7 @@ export default function useChapter(initialChapter: Chapter) {
       return inFlightRef.current;
     }
 
+    const current = chapter;
     const stamp = current.updated_at;
 
     const request = (async () => {
@@ -76,26 +71,35 @@ export default function useChapter(initialChapter: Chapter) {
     inFlightRef.current = request;
 
     return request;
-  }, [dictionary]);
+  };
+
+  // The debounce timer and the pagehide listener outlive the render that
+  // registered them, so they flush through an effect event, which always
+  // sees the latest committed values. Event handlers call flush directly.
+  const flushLatest = useEffectEvent(flush);
 
   useEffect(() => {
     if (chapter.updated_at === savedAt) {
       return;
     }
 
-    const timer = window.setTimeout(flush, AUTOSAVE_DELAY);
+    const timer = window.setTimeout(() => flushLatest(), AUTOSAVE_DELAY);
 
     return () => window.clearTimeout(timer);
-  }, [chapter, savedAt, flush]);
+  }, [chapter, savedAt]);
 
   useEffect(() => {
-    window.addEventListener('pagehide', flush);
+    const handlePageHide = () => {
+      flushLatest();
+    };
+
+    window.addEventListener('pagehide', handlePageHide);
 
     return () => {
-      window.removeEventListener('pagehide', flush);
-      flush();
+      window.removeEventListener('pagehide', handlePageHide);
+      flushLatest();
     };
-  }, [flush]);
+  }, []);
 
   const mutate = useCallback((updater: (chapter: Chapter) => Chapter) => {
     setChapter((current) => ({
@@ -125,85 +129,66 @@ export default function useChapter(initialChapter: Chapter) {
     [mutate]
   );
 
-  const discardChapter = useCallback(async () => {
-    const current = latestRef.current;
-
-    if (!current) {
+  const discardChapter = async () => {
+    if (discardedRef.current) {
       return { success: false };
     }
 
-    const result = await deleteChapter(current.id);
+    const result = await deleteChapter(chapter.id);
 
     if (result.success) {
-      latestRef.current = null;
+      discardedRef.current = true;
     }
 
     return result;
-  }, []);
+  };
 
-  const updateCover = useCallback(
-    async (imageIds: number[]) => {
-      const current = latestRef.current;
-
-      if (!current) {
-        return { success: false };
-      }
-
-      // Persist any pending title/content edits first so the cover-only
-      // partial update does not race the debounced autosave.
-      await flush();
-
-      const { success, data } = await updateChapter(current.id, {
-        image_ids: imageIds
-      });
-
-      if (success && data) {
-        setChapter((prev) => ({ ...prev, image: data.image }));
-        return { success: true };
-      }
-
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+  const updateCover = async (imageIds: number[]) => {
+    if (discardedRef.current) {
       return { success: false };
-    },
-    [flush, dictionary]
-  );
+    }
 
-  const changeStatus = useCallback(
-    async (status: Chapter['status']) => {
-      const current = latestRef.current;
+    // Persist any pending title/content edits first so the cover-only
+    // partial update does not race the debounced autosave.
+    await flush();
 
-      if (!current) {
-        return { success: false };
-      }
+    const { success, data } = await updateChapter(chapter.id, {
+      image_ids: imageIds
+    });
 
-      // Persist pending title/content first so callers can navigate away
-      // knowing the new status is saved, rather than racing the autosave.
-      await flush();
+    if (success && data) {
+      setChapter((prev) => ({ ...prev, image: data.image }));
+      return { success: true };
+    }
 
-      const { success, data } = await updateChapter(current.id, { status });
+    enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+    return { success: false };
+  };
 
-      if (success && data) {
-        latestRef.current = data;
-        setChapter(data);
-        setSavedAt(data.updated_at);
-        return { success: true };
-      }
-
-      enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+  const changeStatus = async (status: Chapter['status']) => {
+    if (discardedRef.current) {
       return { success: false };
-    },
-    [flush, dictionary]
-  );
+    }
 
-  const publishChapter = useCallback(
-    () => changeStatus('published'),
-    [changeStatus]
-  );
+    // Persist pending title/content first so callers can navigate away
+    // knowing the new status is saved, rather than racing the autosave.
+    await flush();
 
-  const unpublishChapter = useCallback(
-    () => changeStatus('draft'),
-    [changeStatus]
-  );
+    const { success, data } = await updateChapter(chapter.id, { status });
+
+    if (success && data) {
+      setChapter(data);
+      setSavedAt(data.updated_at);
+      return { success: true };
+    }
+
+    enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+    return { success: false };
+  };
+
+  const publishChapter = () => changeStatus('published');
+
+  const unpublishChapter = () => changeStatus('draft');
 
   const unsaved = chapter.updated_at !== savedAt;
 
