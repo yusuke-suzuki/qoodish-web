@@ -57,6 +57,12 @@ export default function useChapter(initialChapter: Chapter) {
           await inFlight.request.catch(() => false);
         }
 
+        // The chapter may have been discarded while the earlier save was
+        // settling; a request issued now would recreate it.
+        if (discardedRef.current) {
+          return false;
+        }
+
         const { success } = await updateChapter(current.id, {
           title: current.title,
           status: current.status,
