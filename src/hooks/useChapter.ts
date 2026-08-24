@@ -28,22 +28,34 @@ export default function useChapter(initialChapter: Chapter) {
 
   // The debounce timer and the callers that await a save can both reach for a
   // flush; sharing the in-flight one keeps them from issuing competing writes.
-  const inFlightRef = useRef<Promise<void> | null>(null);
+  // The stamp identifies which draft a request carries, so a flush holding a
+  // newer draft chains after the request instead of being swallowed by it.
+  const inFlightRef = useRef<{
+    stamp: string;
+    request: Promise<void>;
+  } | null>(null);
 
   const flush = (): Promise<void> | undefined => {
     if (discardedRef.current || chapter.updated_at === savedAt) {
-      return inFlightRef.current ?? undefined;
+      return inFlightRef.current?.request;
     }
 
-    if (inFlightRef.current) {
-      return inFlightRef.current;
-    }
-
+    const inFlight = inFlightRef.current;
     const current = chapter;
     const stamp = current.updated_at;
 
+    if (inFlight && inFlight.stamp === stamp) {
+      return inFlight.request;
+    }
+
     const request = (async () => {
       try {
+        if (inFlight) {
+          // A failed earlier save must not block this newer draft, so only
+          // wait for it to settle.
+          await inFlight.request.catch(() => {});
+        }
+
         const { success } = await updateChapter(current.id, {
           title: current.title,
           status: current.status,
@@ -64,11 +76,13 @@ export default function useChapter(initialChapter: Chapter) {
           });
         }
       } finally {
-        inFlightRef.current = null;
+        if (inFlightRef.current?.request === request) {
+          inFlightRef.current = null;
+        }
       }
     })();
 
-    inFlightRef.current = request;
+    inFlightRef.current = { stamp, request };
 
     return request;
   };
