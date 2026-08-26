@@ -25,7 +25,7 @@ const VARIANT_BY_KEY: Record<keyof ImageVariants, string> = {
   ogp: 'ogp'
 };
 
-function buildVariants(urls: string[]): ImageVariants {
+export function buildVariants(urls: string[]): ImageVariants {
   const byName = new Map<string, string>();
   for (const url of urls) {
     const name = url.split('/').pop();
