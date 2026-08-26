@@ -7,6 +7,19 @@ type ApiFetchOptions = RequestInit & {
   next?: { revalidate?: number | false; tags?: string[] };
 };
 
+type PerformApiFetchOptions = RequestInit & {
+  token: string | null;
+  acceptLanguage: string;
+  timeoutMs?: number;
+  next?: { revalidate?: number | false; tags?: string[] };
+};
+
+export type ApiResult<T> = {
+  data: T | null;
+  error: string | null;
+  status: number;
+};
+
 const DEFAULT_TIMEOUT_MS = 15000;
 
 async function getAuthToken(): Promise<string | null> {
@@ -23,16 +36,15 @@ async function getAcceptLanguage(lang?: string): Promise<string> {
   return headerStore.get('accept-language')?.split(',')[0] ?? 'en';
 }
 
-export async function apiFetch<T>(
+// The transport half of apiFetch: everything below the request-context
+// lookups, so it stays callable outside a Next.js request scope.
+export async function performApiFetch<T>(
   path: string,
-  options: ApiFetchOptions = {}
-): Promise<{ data: T | null; error: string | null; status: number }> {
-  const { guest, lang, timeoutMs, next, ...fetchOptions } = options;
+  options: PerformApiFetchOptions
+): Promise<ApiResult<T>> {
+  const { token, acceptLanguage, timeoutMs, next, ...fetchOptions } = options;
 
-  const token = guest ? null : await getAuthToken();
-  const acceptLanguage = await getAcceptLanguage(lang);
-
-  const apiPath = !guest && token ? path : `/guest${path}`;
+  const apiPath = token ? path : `/guest${path}`;
 
   const requestHeaders: Record<string, string> = {
     Accept: 'application/json',
@@ -40,7 +52,7 @@ export async function apiFetch<T>(
     'Content-Type': 'application/json'
   };
 
-  if (token && !guest) {
+  if (token) {
     requestHeaders.Authorization = `Bearer ${token}`;
   }
 
@@ -81,6 +93,18 @@ export async function apiFetch<T>(
       status: 0
     };
   }
+}
+
+export async function apiFetch<T>(
+  path: string,
+  options: ApiFetchOptions = {}
+): Promise<ApiResult<T>> {
+  const { guest, lang, ...fetchOptions } = options;
+
+  const token = guest ? null : await getAuthToken();
+  const acceptLanguage = await getAcceptLanguage(lang);
+
+  return performApiFetch<T>(path, { ...fetchOptions, token, acceptLanguage });
 }
 
 export async function apiFetchOrThrow<T>(
