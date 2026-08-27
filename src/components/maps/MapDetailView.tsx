@@ -286,7 +286,6 @@ export default function MapDetailView({
           }}
           center={center}
           zoom={currentZoom}
-          locale={lang}
         >
           <CustomOverlays
             map={map}

@@ -446,7 +446,6 @@ export default function JourneyDetailView({
           spots={checkinSpots}
           milestones={pendingMilestones}
           path={trail}
-          locale={lang}
           fallbackCenter={mapCenter}
           height={{ xs: 260, sm: 320 }}
         />

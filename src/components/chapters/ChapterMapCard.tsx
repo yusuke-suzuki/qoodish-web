@@ -40,12 +40,7 @@ function ChapterMapCard({
       <Divider sx={{ mb: 4 }} />
 
       <Box sx={{ borderRadius: 1, overflow: 'hidden', mb: 3 }}>
-        <JourneyMap
-          spots={spots}
-          path={[]}
-          locale={locale}
-          fallbackCenter={fallbackCenter}
-        />
+        <JourneyMap spots={spots} path={[]} fallbackCenter={fallbackCenter} />
       </Box>
 
       {children && <Box sx={{ mb: 3 }}>{children}</Box>}
