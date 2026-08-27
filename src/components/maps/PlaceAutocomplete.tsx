@@ -1,6 +1,7 @@
 import { LocationOn, Search } from '@mui/icons-material';
 import {
   Autocomplete,
+  type AutocompleteInputChangeReason,
   InputAdornment,
   ListItem,
   ListItemIcon,
@@ -32,10 +33,11 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
     null
   );
   const [inputValue, setInputValue] = useState('');
+  const [query, setQuery] = useState('');
 
   const selectionIdRef = useRef(0);
 
-  const { predictions, isLoading, resolvePlace } = usePlaceSearch(inputValue);
+  const { predictions, isLoading, resolvePlace } = usePlaceSearch(query);
 
   // 選択済みの候補が options から外れると MUI が value を不正とみなすため、
   // 最新の候補に含まれていない場合は選択済みの候補を補う
@@ -78,8 +80,18 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
     }
   };
 
-  const handleInputChange = (_event: SyntheticEvent, newInputValue: string) => {
+  const handleInputChange = (
+    _event: SyntheticEvent,
+    newInputValue: string,
+    reason: AutocompleteInputChangeReason
+  ) => {
     setInputValue(newInputValue);
+
+    // 候補選択時に書き戻されるラベルまで検索すると、resolvePlace が終了させた
+    // 直後に新しいセッションが始まり、fetchFields で閉じられないまま課金される
+    if (reason === 'input' || reason === 'clear') {
+      setQuery(newInputValue);
+    }
   };
 
   return (
