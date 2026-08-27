@@ -1,9 +1,10 @@
 import debounce from 'lodash.debounce';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { toLocale } from '../utils/locales.ts';
 import { useGoogleMap } from './useGoogleMap.ts';
 
-const PLACE_FIELDS = [
+export const PLACE_FIELDS = [
   'id',
   'location',
   'displayName',
@@ -14,6 +15,7 @@ const PLACE_FIELDS = [
 export function usePlaceSearch(input: string) {
   const { loader } = useGoogleMap();
   const { lang } = useParams<{ lang: string }>();
+  const language = toLocale(lang);
 
   const [predictions, setPredictions] = useState<
     google.maps.places.PlacePrediction[]
@@ -46,7 +48,7 @@ export function usePlaceSearch(input: string) {
           const { suggestions } =
             await AutocompleteSuggestion.fetchAutocompleteSuggestions({
               input: query,
-              language: lang,
+              language,
               sessionToken: sessionTokenRef.current
             });
 
@@ -69,7 +71,7 @@ export function usePlaceSearch(input: string) {
           }
         }
       }, 300),
-    [loader, lang]
+    [loader, language]
   );
 
   const resolvePlace = async (
