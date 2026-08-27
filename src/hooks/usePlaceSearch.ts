@@ -31,13 +31,11 @@ export function usePlaceSearch(input: string) {
   const fetchSuggestions = useMemo(
     () =>
       debounce(async (query: string, requestId: number) => {
-        if (!loader) {
-          return;
-        }
-
-        setIsLoading(true);
-
         try {
+          if (!loader) {
+            return;
+          }
+
           const { AutocompleteSessionToken, AutocompleteSuggestion } =
             await loader.importLibrary('places');
 
@@ -101,6 +99,11 @@ export function usePlaceSearch(input: string) {
 
       return;
     }
+
+    // デバウンスの待ち時間もリクエスト中と同じ扱いにする。
+    // 本体の先頭で立てると、その間だけ候補ゼロかつ非ローディングになり
+    // Autocomplete が「見つかりません」を表示してしまう。
+    setIsLoading(true);
 
     fetchSuggestions(input, requestId);
 
