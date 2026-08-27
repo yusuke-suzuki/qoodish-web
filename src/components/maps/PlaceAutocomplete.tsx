@@ -89,6 +89,10 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
       includeInputInList
       filterSelectedOptions
       forcePopupIcon={false}
+      // The input is width: 0, so the field collapses inside a container that
+      // sizes to its contents, as the map control does. Narrow screens get
+      // their width from fullWidth instead.
+      sx={{ minWidth: { xs: 0, md: 320 } }}
       options={options}
       loading={isLoading}
       loadingText={dictionary.loading}
