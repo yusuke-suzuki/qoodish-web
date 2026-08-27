@@ -119,6 +119,15 @@ export default function useJourney({
 
   const pendingCheckinsRef = useRef(new Set<number>());
 
+  // resume and start hand a fix to processPosition after awaiting the device,
+  // which can take the best part of a minute; a router refresh landing in that
+  // window must not leave the check-in decision judging a stale spot list.
+  const reviewsRef = useRef(reviews);
+
+  useEffect(() => {
+    reviewsRef.current = reviews;
+  }, [reviews]);
+
   const commitJourney = useCallback((next: Journey | null) => {
     journeyRef.current = next;
     setJourney(next);
@@ -333,7 +342,7 @@ export default function useJourney({
         lastTrailPoint: trailRef.current.at(-1) ?? null
       },
       fix,
-      reviews.filter((review) => !visitedIds.has(review.id))
+      reviewsRef.current.filter((review) => !visitedIds.has(review.id))
     );
 
     lastFixRef.current = {
@@ -365,9 +374,9 @@ export default function useJourney({
 
   // The geolocation watch and the sampling timer outlive the render that
   // registered them, so they deliver fixes through an effect event, which
-  // always sees the latest committed review list without the watch having to
-  // re-register every time that list changes. Event handlers call
-  // processPosition directly.
+  // always sees the latest committed callbacks without the watch having to
+  // re-register every time they change. Event handlers call processPosition
+  // directly, which effect events do not allow.
   const handlePosition = useEffectEvent(processPosition);
 
   // Losing the permission mid-journey must not cost the traveller their
