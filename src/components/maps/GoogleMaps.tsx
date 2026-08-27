@@ -30,8 +30,8 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
   const [currentPosition, setCurrentPosition] =
     useState<GeolocationPosition | null>(null);
 
-  // Loader は options ごとのシングルトンで、言語はスクリプト URL に焼き込まれる。
-  // 読み込み後の差し替えはできないため、生成時に渡す唯一の機会となる。
+  // The loader is a singleton per option set, and the language is baked into
+  // the script URL it builds, so construction is the only chance to set it.
   const language = toLocale(lang);
 
   const loader = useMemo(() => {
