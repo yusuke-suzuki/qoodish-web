@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { assertCloseTo } from '../test/assertions.ts';
 import {
   movingSampleIntervalMs,
   nearestSpotDistance,
@@ -192,7 +193,7 @@ describe('nearestSpotDistance', () => {
       pointAt(100)
     ]);
 
-    assert.ok(Math.abs(nearest - 100) < 0.001);
+    assertCloseTo(nearest, 100, 0.001);
   });
 });
 
@@ -278,7 +279,7 @@ describe('movingSampleIntervalMs', () => {
 
     const interval = movingSampleIntervalMs(fix, previous, 2300);
 
-    assert.ok(Math.abs(interval - 100000) < 0.001);
+    assertCloseTo(interval, 100000, 0.001);
   });
 
   it('assumes a walking pace without any speed signal', () => {

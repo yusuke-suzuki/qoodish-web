@@ -1,15 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { assertCloseTo } from '../test/assertions.ts';
 import { distanceInMeters, trailDistanceMeters } from './geo.ts';
 
 const EQUATOR_ONE_DEGREE_METERS = 111194.93;
-
-function assertCloseTo(actual: number, expected: number, tolerance: number) {
-  assert.ok(
-    Math.abs(actual - expected) <= tolerance,
-    `expected ${actual} to be within ${tolerance} of ${expected}`
-  );
-}
 
 describe('distanceInMeters', () => {
   it('returns zero for identical points', () => {

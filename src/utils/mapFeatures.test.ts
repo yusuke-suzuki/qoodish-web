@@ -7,38 +7,8 @@ import type {
   MapFeatureCollection,
   Spot
 } from '../../types/index.ts';
+import { buildCheckin, buildJourney } from '../test/journeys.ts';
 import { createMapFeatures, featureSpots, spotFeature } from './mapFeatures.ts';
-
-function buildCheckin(
-  id: number,
-  checkedInAt: string,
-  spot: Spot
-): JourneyCheckin {
-  return {
-    id,
-    review_id: id * 100,
-    spot,
-    checked_in_at: checkedInAt,
-    note: null,
-    images: []
-  };
-}
-
-function buildJourney(checkins: JourneyCheckin[]): Journey {
-  return {
-    id: 1,
-    map_id: 10,
-    started_at: '2026-08-01T00:00:00Z',
-    finished_at: null,
-    milestones: [],
-    checkins,
-    encoded_path: null,
-    chapter_id: null,
-    map: null,
-    created_at: '2026-08-01T00:00:00Z',
-    updated_at: '2026-08-01T00:00:00Z'
-  };
-}
 
 const tower: Spot = {
   name: 'Tokyo Tower',
@@ -67,8 +37,8 @@ describe('spotFeature', () => {
 describe('createMapFeatures', () => {
   it('orders features by check-in time', () => {
     const journey = buildJourney([
-      buildCheckin(2, '2026-08-02T00:00:00Z', castle),
-      buildCheckin(1, '2026-08-01T00:00:00Z', tower)
+      buildCheckin(2, '2026-08-02T00:00:00Z', { spot: castle }),
+      buildCheckin(1, '2026-08-01T00:00:00Z', { spot: tower })
     ]);
 
     const collection = createMapFeatures(journey);
@@ -90,8 +60,8 @@ describe('createMapFeatures', () => {
 describe('featureSpots', () => {
   it('round-trips spots through a feature collection', () => {
     const journey = buildJourney([
-      buildCheckin(1, '2026-08-01T00:00:00Z', tower),
-      buildCheckin(2, '2026-08-02T00:00:00Z', castle)
+      buildCheckin(1, '2026-08-01T00:00:00Z', { spot: tower }),
+      buildCheckin(2, '2026-08-02T00:00:00Z', { spot: castle })
     ]);
 
     assert.deepEqual(featureSpots(createMapFeatures(journey)), [tower, castle]);
