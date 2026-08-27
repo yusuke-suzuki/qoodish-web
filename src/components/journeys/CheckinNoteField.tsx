@@ -10,7 +10,7 @@ const NOTE_MAX_LENGTH = 500;
 
 type Props = {
   checkin: JourneyCheckin;
-  onSave: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
+  onSave: (checkin: JourneyCheckin, note: string | null) => Promise<boolean>;
 };
 
 function CheckinNoteField({ checkin, onSave }: Props) {
@@ -44,7 +44,16 @@ function CheckinNoteField({ checkin, onSave }: Props) {
     }
 
     stateRef.current.dirty = false;
-    save(latest, draft.trim() ? draft : null);
+
+    // 保存できなかった下書きを保存済みとして扱うと、離脱時の flush でも
+    // 送られずに失われるため、失敗したら未保存に戻して再送の対象にする
+    save(latest, draft.trim() ? draft : null)
+      .catch(() => false)
+      .then((saved) => {
+        if (!saved) {
+          stateRef.current.dirty = true;
+        }
+      });
   }, []);
 
   useEffect(() => {
