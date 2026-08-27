@@ -106,9 +106,9 @@ export default memo(function MarkerView({
   }, [googleMap, loader, content]);
 
   useEffect(() => {
-    // gmpClickable を有効にして gmp-click を使うと、
-    // マーカー付近をタップしてのマップ移動操作を受け付けなくなってしまうため、
-    // 自前でレンダリングしている content に対して listener を設定する
+    // Turning on gmpClickable to use gmp-click makes the marker swallow taps
+    // around it, which stops the visitor panning the map from there, so the
+    // listeners go on the content this component renders itself.
     content.addEventListener('click', handleClick);
     content.addEventListener('mouseenter', handleMouseEnter);
     content.addEventListener('mouseleave', handleMouseLeave);
