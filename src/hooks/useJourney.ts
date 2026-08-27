@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useEffectEvent,
+  useLayoutEffect,
   useRef,
   useState
 } from 'react';
@@ -122,9 +123,12 @@ export default function useJourney({
   // resume and start hand a fix to processPosition after awaiting the device,
   // which can take the best part of a minute; a router refresh landing in that
   // window must not leave the check-in decision judging a stale spot list.
+  // The copy runs as a layout effect so it lands in the commit itself: a
+  // geolocation callback is a task, and no task can run before the commit
+  // finishes, whereas one can arrive ahead of a passive effect.
   const reviewsRef = useRef(reviews);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     reviewsRef.current = reviews;
   }, [reviews]);
 
