@@ -87,10 +87,12 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   ) => {
     setInputValue(newInputValue);
 
-    // Searching for the label MUI writes back on selection would open a new
-    // billing session the moment resolvePlace closed one, and no place lookup
-    // would ever close it.
-    if (reason === 'input' || reason === 'clear') {
+    // Selecting a suggestion writes its label back through here, and searching
+    // for that would open a billing session the moment resolvePlace closed
+    // one, with no place lookup left to close it. Only the visitor's own
+    // typing is worth a query; the reasons that write a label back matter
+    // just when they empty the field, which has to drop the suggestions too.
+    if (reason === 'input' || newInputValue === '') {
       setQuery(newInputValue);
     }
   };

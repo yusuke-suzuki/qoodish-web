@@ -13,6 +13,26 @@ import {
 import GoogleMapsContext from '../../context/GoogleMapsContext.ts';
 import { toLocale } from '../../utils/locales.ts';
 
+// The Maps script carries its language in the URL it is loaded from, so the
+// first map on a document settles the language for every later one, and the
+// Loader enforces that by throwing when constructed again with different
+// options. Handing back the existing instance keeps a locale reached by
+// client navigation from throwing on a change the loaded script could not
+// have honoured anyway; a full load picks the new language up.
+let loader: Loader | null = null;
+
+function getLoader(language: string): Loader {
+  if (!loader) {
+    loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+      version: 'beta',
+      language
+    });
+  }
+
+  return loader;
+}
+
 type Props = {
   mapId: string;
   children?: ReactNode;
@@ -30,17 +50,7 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
   const [currentPosition, setCurrentPosition] =
     useState<GeolocationPosition | null>(null);
 
-  // The loader is a singleton per option set, and the language is baked into
-  // the script URL it builds, so construction is the only chance to set it.
-  const language = toLocale(lang);
-
-  const loader = useMemo(() => {
-    return new Loader({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-      version: 'beta',
-      language
-    });
-  }, [language]);
+  const loader = getLoader(toLocale(lang));
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
