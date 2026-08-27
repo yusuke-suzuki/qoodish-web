@@ -1,12 +1,15 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toLocale } from '../utils/locales.ts';
 import { useGoogleMap } from './useGoogleMap.ts';
+import { PLACE_FIELDS } from './usePlaceSearch.ts';
 
 const placeCache = new Map<string, google.maps.places.Place>();
 
 export function usePlaceDetails(placeId: string | null | undefined) {
   const { loader } = useGoogleMap();
   const { lang } = useParams<{ lang: string }>();
+  const language = toLocale(lang);
 
   const [place, setPlace] = useState<google.maps.places.Place | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +20,7 @@ export function usePlaceDetails(placeId: string | null | undefined) {
       return;
     }
 
-    const cacheKey = `${placeId}-${lang}`;
+    const cacheKey = `${placeId}-${language}`;
     const cached = placeCache.get(cacheKey);
 
     if (cached) {
@@ -36,17 +39,11 @@ export function usePlaceDetails(placeId: string | null | undefined) {
 
         const placeInstance = new Place({
           id: placeId,
-          requestedLanguage: lang ?? 'en'
+          requestedLanguage: language
         });
 
         const data = await placeInstance.fetchFields({
-          fields: [
-            'id',
-            'location',
-            'displayName',
-            'plusCode',
-            'formattedAddress'
-          ]
+          fields: PLACE_FIELDS
         });
 
         if (!cancelled) {
@@ -69,7 +66,7 @@ export function usePlaceDetails(placeId: string | null | undefined) {
     return () => {
       cancelled = true;
     };
-  }, [placeId, loader, lang]);
+  }, [placeId, loader, language]);
 
   return {
     place,
