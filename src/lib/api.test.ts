@@ -27,11 +27,11 @@ describe('performApiFetch', () => {
     });
 
     const [url, init] = fetchMock.mock.calls[0].arguments as FetchArgs;
-    const requestHeaders = init?.headers as Record<string, string>;
+    const requestHeaders = init?.headers as Headers;
 
     assert.equal(url, 'https://api.example.com/maps');
-    assert.equal(requestHeaders.Authorization, 'Bearer token-1');
-    assert.equal(requestHeaders['Accept-Language'], 'ja');
+    assert.equal(requestHeaders.get('Authorization'), 'Bearer token-1');
+    assert.equal(requestHeaders.get('Accept-Language'), 'ja');
     assert.deepEqual(result, { data: { id: 1 }, error: null, status: 200 });
   });
 
@@ -43,10 +43,10 @@ describe('performApiFetch', () => {
     await performApiFetch('/maps', { token: null, acceptLanguage: 'en' });
 
     const [url, init] = fetchMock.mock.calls[0].arguments as FetchArgs;
-    const requestHeaders = init?.headers as Record<string, string>;
+    const requestHeaders = init?.headers as Headers;
 
     assert.equal(url, 'https://api.example.com/guest/maps');
-    assert.equal('Authorization' in requestHeaders, false);
+    assert.equal(requestHeaders.has('Authorization'), false);
   });
 
   it('passes caller headers through alongside the defaults', async (t) => {
@@ -61,10 +61,27 @@ describe('performApiFetch', () => {
     });
 
     const [, init] = fetchMock.mock.calls[0].arguments as FetchArgs;
-    const requestHeaders = init?.headers as Record<string, string>;
+    const requestHeaders = init?.headers as Headers;
 
-    assert.equal(requestHeaders['x-requested-with'], 'test');
-    assert.equal(requestHeaders.Accept, 'application/json');
+    assert.equal(requestHeaders.get('X-Requested-With'), 'test');
+    assert.equal(requestHeaders.get('Accept'), 'application/json');
+  });
+
+  it('lets a caller header replace the default of any casing', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({})
+    );
+
+    await performApiFetch('/maps', {
+      token: 'token-1',
+      acceptLanguage: 'en',
+      headers: { 'content-type': 'multipart/form-data' }
+    });
+
+    const [, init] = fetchMock.mock.calls[0].arguments as FetchArgs;
+    const requestHeaders = init?.headers as Headers;
+
+    assert.equal(requestHeaders.get('Content-Type'), 'multipart/form-data');
   });
 
   it('surfaces the backend error detail', async (t) => {
@@ -181,10 +198,10 @@ describe('apiFetch', () => {
     const result = await apiFetch('/maps', { guest: true, lang: 'ja' });
 
     const [url, init] = fetchMock.mock.calls[0].arguments as FetchArgs;
-    const requestHeaders = init?.headers as Record<string, string>;
+    const requestHeaders = init?.headers as Headers;
 
     assert.equal(url, 'https://api.example.com/guest/maps');
-    assert.equal(requestHeaders['Accept-Language'], 'ja');
+    assert.equal(requestHeaders.get('Accept-Language'), 'ja');
     assert.deepEqual(result, { data: [], error: null, status: 200 });
   });
 });
