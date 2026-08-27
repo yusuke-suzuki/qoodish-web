@@ -59,7 +59,10 @@ type RowProps = {
   onRemove: () => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
   onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<boolean>;
-  onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
+  onSaveNote: (
+    checkin: JourneyCheckin,
+    note: string | null
+  ) => Promise<boolean>;
 };
 
 function TimelineRow({
@@ -199,7 +202,10 @@ type Props = {
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
   onAttachImage: (checkin: JourneyCheckin, image: Image) => Promise<void>;
   onRemoveImage: (checkin: JourneyCheckin, imageId: number) => Promise<boolean>;
-  onSaveNote: (checkin: JourneyCheckin, note: string | null) => Promise<void>;
+  onSaveNote: (
+    checkin: JourneyCheckin,
+    note: string | null
+  ) => Promise<boolean>;
   onStartClick: () => void;
   onPauseClick: () => void;
   onResumeClick: () => void | Promise<void>;

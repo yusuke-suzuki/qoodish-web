@@ -260,11 +260,11 @@ export default function useJourney({
     });
   };
 
-  const updateCheckinNote = async (
+  const updateCheckinNote = (
     checkin: JourneyCheckin,
     note: string | null
-  ) => {
-    await mutateCheckin(checkin, { note });
+  ): Promise<boolean> => {
+    return mutateCheckin(checkin, { note });
   };
 
   const performCheckin = useCallback(

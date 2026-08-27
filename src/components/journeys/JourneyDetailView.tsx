@@ -253,8 +253,8 @@ export default function JourneyDetailView({
   );
 
   const handleSaveNote = useCallback(
-    async (checkin: JourneyCheckin, note: string | null) => {
-      await saveCheckin(checkin, { note });
+    (checkin: JourneyCheckin, note: string | null): Promise<boolean> => {
+      return saveCheckin(checkin, { note });
     },
     [saveCheckin]
   );
