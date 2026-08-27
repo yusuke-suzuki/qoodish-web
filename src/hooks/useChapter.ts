@@ -35,11 +35,18 @@ export default function useChapter(initialChapter: Chapter) {
     request: Promise<boolean>;
   } | null>(null);
 
-  const flush = (draft?: Chapter): Promise<boolean> | undefined => {
+  const flush = (draft?: Chapter): Promise<boolean> => {
     const current = draft ?? chapter;
 
-    if (discardedRef.current || current.updated_at === savedAt) {
-      return inFlightRef.current?.request;
+    // A discarded chapter has nothing left to save, and a draft already on
+    // the server is saved; callers that report to the user need those two
+    // apart rather than both arriving as "no request was made".
+    if (discardedRef.current) {
+      return Promise.resolve(false);
+    }
+
+    if (current.updated_at === savedAt) {
+      return inFlightRef.current?.request ?? Promise.resolve(true);
     }
 
     const inFlight = inFlightRef.current;
@@ -209,7 +216,14 @@ export default function useChapter(initialChapter: Chapter) {
     // must always be able to report, so the dedup flag resets first.
     saveErrorNotifiedRef.current = false;
 
-    const saved = (await flush(next)) ?? true;
+    const saved = await flush(next);
+
+    if (!saved) {
+      // Leaving the new status on screen would claim the chapter is published
+      // when the server still has it as a draft. Edits typed while the
+      // request was in flight stay; only the status goes back.
+      setChapter((current) => ({ ...current, status: chapter.status }));
+    }
 
     return { success: saved };
   };
