@@ -1,22 +1,22 @@
 import type { JourneyPathPoint } from '../../types/index.ts';
 import { distanceInMeters } from './geo.ts';
 
-export const CHECKIN_RADIUS_METERS = 50;
-export const PATH_MIN_DISTANCE_METERS = 10;
+const CHECKIN_RADIUS_METERS = 50;
+const PATH_MIN_DISTANCE_METERS = 10;
 
 // A coarse fix can report a spot as reachable from far outside the check-in
 // radius, so anything less certain than this is only used to draw the trail.
-export const CHECKIN_MAX_ACCURACY_METERS = 100;
+const CHECKIN_MAX_ACCURACY_METERS = 100;
 
-export const ACCURACY_UPGRADE_RADIUS_METERS = 300;
-export const ACCURACY_DOWNGRADE_RADIUS_METERS = 500;
+const ACCURACY_UPGRADE_RADIUS_METERS = 300;
+const ACCURACY_DOWNGRADE_RADIUS_METERS = 500;
 
 // The Geolocation API offers no interval or distance filter, so a registered
 // watch keeps the positioning hardware powered the whole time. Away from any
 // unvisited spot the journey samples on a timer instead, and the hardware can
 // power down between fixes.
 export const MOVING_SAMPLE_MIN_INTERVAL_MS = 15000;
-export const MOVING_SAMPLE_MAX_INTERVAL_MS = 2 * 60 * 1000;
+const MOVING_SAMPLE_MAX_INTERVAL_MS = 2 * 60 * 1000;
 
 // Headroom over the observed speed, so that speeding up between two samples
 // cannot carry the traveller into the continuous-watch zone unseen.
@@ -24,15 +24,15 @@ const SPEED_HEADROOM = 2;
 const MIN_ASSUMED_SPEED_MPS = 1.5;
 
 // Positioning jitter alone can move a fix this far while the device rests.
-export const STATIONARY_RADIUS_METERS = 30;
-export const STATIONARY_AFTER_MS = 3 * 60 * 1000;
-export const STATIONARY_SAMPLE_BASE_INTERVAL_MS = 30000;
+const STATIONARY_RADIUS_METERS = 30;
+const STATIONARY_AFTER_MS = 3 * 60 * 1000;
+const STATIONARY_SAMPLE_BASE_INTERVAL_MS = 30000;
 const STATIONARY_BACKOFF_MAX_STEPS = 4;
 
 // Near a spot a stale fix could miss a departure that heads straight into
 // the check-in radius, so the backoff stays tighter there.
-export const STATIONARY_SAMPLE_MAX_NEAR_MS = 60000;
-export const STATIONARY_SAMPLE_MAX_FAR_MS = 5 * 60 * 1000;
+const STATIONARY_SAMPLE_MAX_NEAR_MS = 60000;
+const STATIONARY_SAMPLE_MAX_FAR_MS = 5 * 60 * 1000;
 
 export type StationaryAnchor = {
   latitude: number;
