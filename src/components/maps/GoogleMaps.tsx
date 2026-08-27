@@ -1,5 +1,6 @@
 import { Loader } from '@googlemaps/js-api-loader';
 import { Box, type SxProps, useMediaQuery, useTheme } from '@mui/material';
+import { useParams } from 'next/navigation';
 import {
   memo,
   type ReactNode,
@@ -10,6 +11,7 @@ import {
   useState
 } from 'react';
 import GoogleMapsContext from '../../context/GoogleMapsContext.ts';
+import { toLocale } from '../../utils/locales.ts';
 
 type Props = {
   mapId: string;
@@ -18,30 +20,27 @@ type Props = {
   mapOptions?: Partial<google.maps.MapOptions>;
   center?: google.maps.LatLngLiteral;
   zoom?: number;
-  locale?: string;
 };
 
-function GoogleMaps({
-  mapId,
-  children,
-  sx,
-  mapOptions,
-  center,
-  zoom,
-  locale
-}: Props) {
+function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const { lang } = useParams<{ lang: string }>();
 
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
   const [currentPosition, setCurrentPosition] =
     useState<GeolocationPosition | null>(null);
 
+  // Loader は options ごとのシングルトンで、言語はスクリプト URL に焼き込まれる。
+  // 読み込み後の差し替えはできないため、生成時に渡す唯一の機会となる。
+  const language = toLocale(lang);
+
   const loader = useMemo(() => {
     return new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-      version: 'beta'
+      version: 'beta',
+      language
     });
-  }, []);
+  }, [language]);
 
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
@@ -74,14 +73,6 @@ function GoogleMaps({
 
     setGoogleMap(map);
   }, [mapId, mapOptions, mdUp, loader]);
-
-  useEffect(() => {
-    if (!locale) {
-      return;
-    }
-
-    loader.options.language = locale;
-  }, [loader, locale]);
 
   useEffect(() => {
     if (!googleMap && mapRef.current && loader) {

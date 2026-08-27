@@ -221,7 +221,6 @@ const JourneyMapOverlay = memo(function JourneyMapOverlay({
 type Props = {
   spots: Spot[];
   path: JourneyPathPoint[];
-  locale: string;
   milestones?: Spot[];
   fallbackCenter?: JourneyPathPoint;
   height?: number | { xs?: number; sm?: number; md?: number };
@@ -236,7 +235,6 @@ const noMilestones: Spot[] = [];
 function JourneyMap({
   spots,
   path,
-  locale,
   milestones = noMilestones,
   fallbackCenter,
   height = 240
@@ -246,7 +244,6 @@ function JourneyMap({
       mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
       sx={{ height, width: '100%' }}
       mapOptions={mapOptions}
-      locale={locale}
     >
       <JourneyMapOverlay
         spots={spots}
