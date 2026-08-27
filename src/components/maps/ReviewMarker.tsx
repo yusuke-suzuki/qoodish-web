@@ -14,10 +14,10 @@ import {
   useRef,
   useState
 } from 'react';
-import type { Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import MarkerView from './MarkerView';
+import type { Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import MarkerView from './MarkerView.tsx';
 
 type Props = {
   review: Review;

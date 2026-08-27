@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import BookmarksView from '../../../../components/bookmarks/BookmarksView';
-import { getServerAuthState } from '../../../../lib/auth';
+import BookmarksView from '../../../../components/bookmarks/BookmarksView.tsx';
+import { getServerAuthState } from '../../../../lib/auth.ts';
 import {
   getBookmarkedJournals,
   getBookmarkedMaps
-} from '../../../../lib/users';
-import { getDictionary } from '../../../../utils/getDictionary';
+} from '../../../../lib/users.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

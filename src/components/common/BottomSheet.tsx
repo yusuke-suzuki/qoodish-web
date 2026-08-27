@@ -2,7 +2,7 @@
 
 import { Box, SwipeableDrawer, type SwipeableDrawerProps } from '@mui/material';
 import { memo, type ReactNode } from 'react';
-import DrawerPuller from './DrawerPuller';
+import DrawerPuller from './DrawerPuller.tsx';
 
 type Props = {
   open: boolean;

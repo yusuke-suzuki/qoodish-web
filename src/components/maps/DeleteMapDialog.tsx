@@ -1,9 +1,9 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { AppMap } from '../../../types';
-import { deleteMap } from '../../actions/maps';
-import useDictionary from '../../hooks/useDictionary';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
+import type { AppMap } from '../../../types/index.ts';
+import { deleteMap } from '../../actions/maps.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 
 type Props = {
   map: AppMap | null;

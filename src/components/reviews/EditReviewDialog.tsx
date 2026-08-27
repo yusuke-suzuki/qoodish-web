@@ -8,16 +8,16 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Review } from '../../../types';
-import { updateReview } from '../../actions/reviews';
-import useDictionary from '../../hooks/useDictionary';
-import usePhotoUploads from '../../hooks/usePhotoUploads';
-import AddPhotoButton from '../common/AddPhotoButton';
-import AppDialog from '../common/AppDialog';
-import PhotoPreviewList from '../common/PhotoPreviewList';
-import PositionForm from '../maps/PositionForm';
-import ReviewDescriptionForm from './ReviewDescriptionForm';
-import ReviewNameForm from './ReviewNameForm';
+import type { Review } from '../../../types/index.ts';
+import { updateReview } from '../../actions/reviews.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import AddPhotoButton from '../common/AddPhotoButton.tsx';
+import AppDialog from '../common/AppDialog.tsx';
+import PhotoPreviewList from '../common/PhotoPreviewList.tsx';
+import PositionForm from '../maps/PositionForm.tsx';
+import ReviewDescriptionForm from './ReviewDescriptionForm.tsx';
+import ReviewNameForm from './ReviewNameForm.tsx';
 
 type Props = {
   open: boolean;

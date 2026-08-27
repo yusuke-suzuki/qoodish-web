@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { SerializedEditorState } from 'lexical';
-import type { Image, Journey, JourneyCheckin } from '../../types';
+import type { Image, Journey, JourneyCheckin } from '../../types/index.ts';
 import {
   chapterSections,
   createChapterContent,
   createSerializedImage,
   isContentEmpty
-} from './chapterContent';
+} from './chapterContent.ts';
 
 function buildImage(id: number): Image {
   return {

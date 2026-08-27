@@ -2,15 +2,15 @@ import { Box } from '@mui/material';
 import type { Metadata, Viewport } from 'next';
 import { Cinzel, Lobster, Shippori_Mincho } from 'next/font/google';
 import type { ReactNode } from 'react';
-import type { Notification, Profile } from '../../../types';
-import MiniDrawer from '../../components/layouts/MiniDrawer';
-import MobileAppBar from '../../components/layouts/MobileAppBar';
-import ShellProvider from '../../components/layouts/ShellProvider';
-import { getServerAuthState } from '../../lib/auth';
-import { getMyProfile, getNotifications } from '../../lib/users';
-import { getDictionary } from '../../utils/getDictionary';
-import { defaultOgImage, SITE_ORIGIN } from '../../utils/metadata';
-import Providers from './Providers';
+import type { Notification, Profile } from '../../../types/index.ts';
+import MiniDrawer from '../../components/layouts/MiniDrawer.tsx';
+import MobileAppBar from '../../components/layouts/MobileAppBar.tsx';
+import ShellProvider from '../../components/layouts/ShellProvider.tsx';
+import { getServerAuthState } from '../../lib/auth.ts';
+import { getMyProfile, getNotifications } from '../../lib/users.ts';
+import { getDictionary } from '../../utils/getDictionary.ts';
+import { defaultOgImage, SITE_ORIGIN } from '../../utils/metadata.ts';
+import Providers from './Providers.tsx';
 
 const lobster = Lobster({
   subsets: ['latin'],

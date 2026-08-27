@@ -14,16 +14,16 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Journal, Profile } from '../../../types';
-import { updateJournal } from '../../actions/journals';
-import { updateProfile } from '../../actions/users';
-import useDictionary from '../../hooks/useDictionary';
-import usePhotoUploads from '../../hooks/usePhotoUploads';
-import AddPhotoButton from '../common/AddPhotoButton';
-import AppDialog from '../common/AppDialog';
-import BiographyForm from './BiographyForm';
-import JournalTitleForm from './JournalTitleForm';
-import ProfileNameForm from './ProfileNameForm';
+import type { Journal, Profile } from '../../../types/index.ts';
+import { updateJournal } from '../../actions/journals.ts';
+import { updateProfile } from '../../actions/users.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import AddPhotoButton from '../common/AddPhotoButton.tsx';
+import AppDialog from '../common/AppDialog.tsx';
+import BiographyForm from './BiographyForm.tsx';
+import JournalTitleForm from './JournalTitleForm.tsx';
+import ProfileNameForm from './ProfileNameForm.tsx';
 
 type Props = {
   currentProfile: Profile | null;

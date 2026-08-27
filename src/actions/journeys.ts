@@ -1,7 +1,7 @@
 'use server';
 
-import type { Journey, JourneyCheckin, Milestone } from '../../types';
-import { apiFetch } from '../lib/api';
+import type { Journey, JourneyCheckin, Milestone } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
 
 type ActionResult<T = null> = {
   success: boolean;

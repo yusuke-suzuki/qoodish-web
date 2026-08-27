@@ -7,7 +7,7 @@ import {
   Divider,
   Skeleton
 } from '@mui/material';
-import { drawerBleeding } from '../../../../../components/maps/constants';
+import { drawerBleeding } from '../../../../../components/maps/constants.ts';
 
 const summaryCardWidth = 360;
 

@@ -9,10 +9,10 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Review } from '../../../types';
-import { likeReview, unlikeReview } from '../../actions/reviewLikes';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+import type { Review } from '../../../types/index.ts';
+import { likeReview, unlikeReview } from '../../actions/reviewLikes.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   review: Review;

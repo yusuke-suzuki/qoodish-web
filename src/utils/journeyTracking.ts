@@ -1,5 +1,5 @@
-import type { JourneyPathPoint } from '../../types';
-import { distanceInMeters } from './geo';
+import type { JourneyPathPoint } from '../../types/index.ts';
+import { distanceInMeters } from './geo.ts';
 
 export const CHECKIN_RADIUS_METERS = 50;
 export const PATH_MIN_DISTANCE_METERS = 10;

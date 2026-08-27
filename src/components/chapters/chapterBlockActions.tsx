@@ -27,7 +27,7 @@ import {
   type LexicalEditor
 } from 'lexical';
 import type { ReactNode } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 export type BlockAction = {
   key: string;

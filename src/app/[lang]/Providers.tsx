@@ -21,14 +21,14 @@ import {
   useMemo,
   useState
 } from 'react';
-import type { Notification, Profile } from '../../../types';
-import AuthProvider from '../../components/auth/AuthProvider';
-import FootprintsLoader from '../../components/common/FootprintsLoader';
-import ServiceWorkerContext from '../../context/ServiceWorkerContext';
-import useDictionary from '../../hooks/useDictionary';
-import { usePushManager } from '../../hooks/usePushManager';
-import AccountProviders from './AccountProviders';
-import AnalyticsTracker from './AnalyticsTracker';
+import type { Notification, Profile } from '../../../types/index.ts';
+import AuthProvider from '../../components/auth/AuthProvider.tsx';
+import FootprintsLoader from '../../components/common/FootprintsLoader.tsx';
+import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { usePushManager } from '../../hooks/usePushManager.ts';
+import AccountProviders from './AccountProviders.tsx';
+import AnalyticsTracker from './AnalyticsTracker.tsx';
 
 const globalStyles = css`
   .pac-container {

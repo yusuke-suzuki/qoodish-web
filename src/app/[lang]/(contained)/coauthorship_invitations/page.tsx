@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import CoauthorshipInvitationList from '../../../../components/coauthors/CoauthorshipInvitationList';
-import { getCoauthorshipInvitations } from '../../../../lib/coauthorshipInvitations';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { buildAlternates } from '../../../../utils/metadata';
+import CoauthorshipInvitationList from '../../../../components/coauthors/CoauthorshipInvitationList.tsx';
+import { getCoauthorshipInvitations } from '../../../../lib/coauthorshipInvitations.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { buildAlternates } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

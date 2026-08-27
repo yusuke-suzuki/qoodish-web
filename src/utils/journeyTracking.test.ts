@@ -11,7 +11,7 @@ import {
   stationarySampleIntervalMs,
   type TrackingFix,
   trackPosition
-} from './journeyTracking';
+} from './journeyTracking.ts';
 
 const BASE_LATITUDE = 35;
 const BASE_LONGITUDE = 139;

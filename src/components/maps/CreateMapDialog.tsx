@@ -14,16 +14,16 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { AppMap } from '../../../types';
-import { createMap } from '../../actions/maps';
-import useDictionary from '../../hooks/useDictionary';
-import usePhotoUploads from '../../hooks/usePhotoUploads';
-import AddPhotoButton from '../common/AddPhotoButton';
-import AppDialog from '../common/AppDialog';
-import MapDescriptionForm from './MapDescriptionForm';
-import MapNameForm from './MapNameForm';
-import MapOptions from './MapOptions';
-import PositionForm from './PositionForm';
+import type { AppMap } from '../../../types/index.ts';
+import { createMap } from '../../actions/maps.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import AddPhotoButton from '../common/AddPhotoButton.tsx';
+import AppDialog from '../common/AppDialog.tsx';
+import MapDescriptionForm from './MapDescriptionForm.tsx';
+import MapNameForm from './MapNameForm.tsx';
+import MapOptions from './MapOptions.tsx';
+import PositionForm from './PositionForm.tsx';
 
 type Props = {
   open: boolean;

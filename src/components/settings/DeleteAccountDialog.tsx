@@ -1,8 +1,8 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import { deleteAccount } from '../../actions/users';
-import useDictionary from '../../hooks/useDictionary';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
+import { deleteAccount } from '../../actions/users.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 
 type Props = {
   open: boolean;

@@ -2,7 +2,7 @@
 
 import { Box } from '@mui/material';
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   loading: boolean;

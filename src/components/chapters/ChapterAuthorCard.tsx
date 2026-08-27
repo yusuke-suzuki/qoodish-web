@@ -3,10 +3,10 @@
 import { Box, Divider, Link as MuiLink, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Author, Journal } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import ProfileAvatar from '../common/ProfileAvatar';
-import JournalBookmarkButton from '../profiles/JournalBookmarkButton';
+import type { Author, Journal } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import JournalBookmarkButton from '../profiles/JournalBookmarkButton.tsx';
 
 type Props = {
   author: Author;

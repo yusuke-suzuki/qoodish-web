@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import JourneyDetailView from '../../../../../components/journeys/JourneyDetailView';
-import { getServerAuthState } from '../../../../../lib/auth';
-import { getChapter } from '../../../../../lib/chapters';
-import { getMyJourney } from '../../../../../lib/journeys';
-import { getMap, getMapReviews } from '../../../../../lib/maps';
-import { getDictionary } from '../../../../../utils/getDictionary';
+import JourneyDetailView from '../../../../../components/journeys/JourneyDetailView.tsx';
+import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getChapter } from '../../../../../lib/chapters.ts';
+import { getMyJourney } from '../../../../../lib/journeys.ts';
+import { getMap, getMapReviews } from '../../../../../lib/maps.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
 
 type Props = {
   params: Promise<{ lang: string; journeyId: string }>;

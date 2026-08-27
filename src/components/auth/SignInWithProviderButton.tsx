@@ -9,7 +9,7 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, type ReactNode, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   provider: GoogleAuthProvider;

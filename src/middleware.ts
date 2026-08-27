@@ -3,7 +3,7 @@ import {
   type NextRequest,
   NextResponse
 } from 'next/server';
-import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales';
+import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales.ts';
 
 const WARMUP_INTERVAL_MS = 60000;
 

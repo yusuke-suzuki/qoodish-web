@@ -17,12 +17,12 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useContext, useRef, useState } from 'react';
-import type { AppMap, Profile } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import { localePath } from '../../utils/locales';
-import { SITE_ORIGIN } from '../../utils/metadata';
-import CoauthorInviteDialog from './CoauthorInviteDialog';
+import type { AppMap, Profile } from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { localePath } from '../../utils/locales.ts';
+import { SITE_ORIGIN } from '../../utils/metadata.ts';
+import CoauthorInviteDialog from './CoauthorInviteDialog.tsx';
 
 type Props = {
   map: AppMap | null;

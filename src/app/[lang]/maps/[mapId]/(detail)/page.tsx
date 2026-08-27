@@ -1,19 +1,22 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import MapDetailView from '../../../../../components/maps/MapDetailView';
-import { getServerAuthState } from '../../../../../lib/auth';
-import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys';
+import MapDetailView from '../../../../../components/maps/MapDetailView.tsx';
+import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys.ts';
 import {
   getMap,
   getMapChapters,
   getMapCoauthors,
   getMapReviews
-} from '../../../../../lib/maps';
-import { getMyProfile } from '../../../../../lib/users';
-import { getDictionary } from '../../../../../utils/getDictionary';
-import { localePath } from '../../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../../utils/metadata';
+} from '../../../../../lib/maps.ts';
+import { getMyProfile } from '../../../../../lib/users.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../utils/locales.ts';
+import {
+  buildAlternates,
+  defaultOgImage
+} from '../../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;

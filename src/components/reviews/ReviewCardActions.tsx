@@ -1,12 +1,12 @@
 import { Box, Button, CardActions, Stack, TextField } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState, useTransition } from 'react';
-import type { Review } from '../../../types';
-import { createComment } from '../../actions/comments';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import LikeReviewButton from './LikeReviewButton';
-import PosterAvatar from './PosterAvatar';
+import type { Review } from '../../../types/index.ts';
+import { createComment } from '../../actions/comments.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import LikeReviewButton from './LikeReviewButton.tsx';
+import PosterAvatar from './PosterAvatar.tsx';
 
 type Props = {
   review: Review;

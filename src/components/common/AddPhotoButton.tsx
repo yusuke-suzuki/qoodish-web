@@ -1,7 +1,7 @@
 import { AddAPhoto } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { type ChangeEvent, memo, useEffect, useId, useState } from 'react';
-import fileToDataUrl from '../../utils/fileToDataUrl';
+import fileToDataUrl from '../../utils/fileToDataUrl.ts';
 
 type Props = {
   onChange: (dataUrls: string[]) => void;

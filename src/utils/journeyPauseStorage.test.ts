@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import { deletePaused, loadPaused, savePaused } from './journeyPauseStorage';
+import { deletePaused, loadPaused, savePaused } from './journeyPauseStorage.ts';
 
 type StorageStub = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 

@@ -19,9 +19,9 @@ import type {
   SerializedEditorState
 } from 'lexical';
 import { memo, type RefObject } from 'react';
-import ChapterFloatingToolbar from './ChapterFloatingToolbar';
-import ChapterSlashMenu from './ChapterSlashMenu';
-import ChapterToolbar from './ChapterToolbar';
+import ChapterFloatingToolbar from './ChapterFloatingToolbar.tsx';
+import ChapterSlashMenu from './ChapterSlashMenu.tsx';
+import ChapterToolbar from './ChapterToolbar.tsx';
 import {
   chapterAutoLinkMatchers,
   chapterContentStyles,
@@ -29,8 +29,8 @@ import {
   chapterNodes,
   chapterTheme,
   validateUrl
-} from './chapterEditorConfig';
-import EmptyBlockPlaceholderPlugin from './EmptyBlockPlaceholderPlugin';
+} from './chapterEditorConfig.ts';
+import EmptyBlockPlaceholderPlugin from './EmptyBlockPlaceholderPlugin.tsx';
 
 type Props = {
   initialContent: SerializedEditorState;

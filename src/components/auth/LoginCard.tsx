@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import SignInButtons from './SignInButtons';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import SignInButtons from './SignInButtons.tsx';
 
 export default memo(function LoginCard() {
   const dictionary = useDictionary();

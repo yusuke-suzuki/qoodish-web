@@ -1,10 +1,10 @@
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { AppMap } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import MapGridList from '../maps/MapGridList';
+import type { AppMap } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import MapGridList from '../maps/MapGridList.tsx';
 
 type Props = {
   maps?: AppMap[];

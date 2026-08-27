@@ -1,9 +1,9 @@
 'use server';
 
-import type { Review } from '../../types';
-import { apiFetch } from '../lib/api';
-import { getTimelineReviews } from '../lib/reviews';
-import { getMyReviews, getUserReviews } from '../lib/users';
+import type { Review } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
+import { getTimelineReviews } from '../lib/reviews.ts';
+import { getMyReviews, getUserReviews } from '../lib/users.ts';
 
 export async function fetchMoreTimelineReviews(
   nextTimestamp: string

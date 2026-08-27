@@ -1,8 +1,8 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import InfoWindow from './InfoWindow';
+import useDictionary from '../../hooks/useDictionary.ts';
+import InfoWindow from './InfoWindow.tsx';
 
 type Props = {
   disableCreateReview: boolean;

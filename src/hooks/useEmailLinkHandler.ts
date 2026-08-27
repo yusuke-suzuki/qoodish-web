@@ -14,7 +14,7 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useRef } from 'react';
-import useDictionary from './useDictionary';
+import useDictionary from './useDictionary.ts';
 
 type Dictionary = { [key: string]: string };
 

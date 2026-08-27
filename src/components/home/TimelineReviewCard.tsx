@@ -8,12 +8,12 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Review } from '../../../types';
-import useLocalePath from '../../hooks/useLocalePath';
-import LikeReviewButton from '../reviews/LikeReviewButton';
-import ReviewCardHeader from '../reviews/ReviewCardHeader';
-import ReviewImageList from '../reviews/ReviewImageList';
-import ReviewMenuButton from '../reviews/ReviewMenuButton';
+import type { Review } from '../../../types/index.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
+import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
+import ReviewImageList from '../reviews/ReviewImageList.tsx';
+import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
 
 type Props = {
   review: Review;

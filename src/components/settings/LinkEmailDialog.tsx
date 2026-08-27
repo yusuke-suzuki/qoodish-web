@@ -2,9 +2,9 @@ import { Alert, DialogContentText } from '@mui/material';
 import { type AuthError, getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from '../common/AppDialog';
-import EmailField from '../common/EmailField';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from '../common/AppDialog.tsx';
+import EmailField from '../common/EmailField.tsx';
 
 type Props = {
   open: boolean;

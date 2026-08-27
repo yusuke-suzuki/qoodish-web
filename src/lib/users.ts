@@ -4,8 +4,8 @@ import type {
   Notification,
   Profile,
   Review
-} from '../../types';
-import { apiFetch, assertApiAvailable } from './api';
+} from '../../types/index.ts';
+import { apiFetch, assertApiAvailable } from './api.ts';
 
 export async function getProfile(
   userId: string,

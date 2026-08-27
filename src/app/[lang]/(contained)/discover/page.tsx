@@ -1,18 +1,18 @@
 import { Explore, FiberNew, Whatshot } from '@mui/icons-material';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
-import PickUpMap from '../../../../components/discover/PickUpMap';
-import MapGridList from '../../../../components/maps/MapGridList';
-import ReviewGridList from '../../../../components/reviews/ReviewGridList';
+import PickUpMap from '../../../../components/discover/PickUpMap.tsx';
+import MapGridList from '../../../../components/maps/MapGridList.tsx';
+import ReviewGridList from '../../../../components/reviews/ReviewGridList.tsx';
 import {
   getActiveMaps,
   getFeaturedMap,
   getRecentMaps
-} from '../../../../lib/maps';
-import { getRecentReviews } from '../../../../lib/reviews';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+} from '../../../../lib/maps.ts';
+import { getRecentReviews } from '../../../../lib/reviews.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

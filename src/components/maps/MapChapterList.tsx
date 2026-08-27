@@ -10,11 +10,11 @@ import {
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo } from 'react';
-import type { Chapter } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import AuthorAvatar from '../common/AuthorAvatar';
-import NoContents from '../common/NoContents';
+import type { Chapter } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import AuthorAvatar from '../common/AuthorAvatar.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',

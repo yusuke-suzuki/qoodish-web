@@ -15,7 +15,7 @@ import {
   chapterNodes,
   chapterTheme,
   validateUrl
-} from './chapterEditorConfig';
+} from './chapterEditorConfig.ts';
 
 type Props = {
   content: SerializedEditorState;

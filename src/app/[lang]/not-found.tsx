@@ -4,7 +4,7 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, Container, Grid } from '@mui/material';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 export default function NotFound() {
   const dictionary = useDictionary();

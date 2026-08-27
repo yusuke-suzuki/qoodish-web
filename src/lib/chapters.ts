@@ -1,5 +1,5 @@
-import type { Chapter } from '../../types';
-import { apiFetch, assertApiAvailable } from './api';
+import type { Chapter } from '../../types/index.ts';
+import { apiFetch, assertApiAvailable } from './api.ts';
 
 export async function getChapter(
   chapterId: string | number,

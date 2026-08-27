@@ -1,10 +1,10 @@
 import { Box, Paper, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import CurrentPositionButton from './CurrentPositionButton';
-import MapControl from './MapControl';
-import PlaceAutocomplete from './PlaceAutocomplete';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import CurrentPositionButton from './CurrentPositionButton.tsx';
+import MapControl from './MapControl.tsx';
+import PlaceAutocomplete from './PlaceAutocomplete.tsx';
 
 type Props = {
   onPlaceChange: (place: google.maps.places.Place) => void;

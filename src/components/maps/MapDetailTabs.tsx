@@ -2,10 +2,10 @@ import { HistoryEdu, Place } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { memo, type SyntheticEvent, useState } from 'react';
-import type { Chapter, Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import MapChapterList from './MapChapterList';
-import MapReviewList from './MapReviewList';
+import type { Chapter, Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import MapChapterList from './MapChapterList.tsx';
+import MapReviewList from './MapReviewList.tsx';
 
 type Props = {
   reviews: Review[];

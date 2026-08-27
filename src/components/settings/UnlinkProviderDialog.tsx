@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import ConfirmDialog from '../common/ConfirmDialog';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ConfirmDialog from '../common/ConfirmDialog.tsx';
 
 type Props = {
   open: boolean;

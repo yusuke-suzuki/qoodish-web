@@ -2,8 +2,8 @@
 
 import { Avatar, AvatarGroup, ButtonBase } from '@mui/material';
 import { memo, useState } from 'react';
-import type { AppMap, Coauthor, Profile } from '../../../types';
-import CoauthorsDialog from './CoauthorsDialog';
+import type { AppMap, Coauthor, Profile } from '../../../types/index.ts';
+import CoauthorsDialog from './CoauthorsDialog.tsx';
 
 type Props = {
   coauthors: Coauthor[];

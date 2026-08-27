@@ -1,7 +1,7 @@
 'use server';
 
-import type { Profile } from '../../types';
-import { apiFetch } from '../lib/api';
+import type { Profile } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
 
 type UpdateProfileParams = {
   name: string;

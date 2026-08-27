@@ -12,13 +12,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useState, useTransition } from 'react';
-import type { CoauthorshipInvitation } from '../../../types';
+import type { CoauthorshipInvitation } from '../../../types/index.ts';
 import {
   acceptCoauthorshipInvitation,
   declineCoauthorshipInvitation
-} from '../../actions/coauthors';
-import useDictionary from '../../hooks/useDictionary';
-import NoContents from '../common/NoContents';
+} from '../../actions/coauthors.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import NoContents from '../common/NoContents.tsx';
 
 type Props = {
   invitations: CoauthorshipInvitation[];

@@ -17,11 +17,11 @@ import {
   Typography
 } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
-import type { Profile } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import ProfileAvatar from '../common/ProfileAvatar';
-import MarkerView from './MarkerView';
+import type { Profile } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import MarkerView from './MarkerView.tsx';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {

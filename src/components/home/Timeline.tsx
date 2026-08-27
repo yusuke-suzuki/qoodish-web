@@ -3,14 +3,14 @@
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
 import { memo, useState, useTransition } from 'react';
-import type { Review } from '../../../types';
-import { fetchMoreTimelineReviews } from '../../actions/reviews';
-import useDictionary from '../../hooks/useDictionary';
-import IssueDialog from '../common/IssueDialog';
-import LoadingStatus from '../common/LoadingStatus';
-import NoContents from '../common/NoContents';
-import TimelineReviewCard from './TimelineReviewCard';
-import TimelineReviewCardSkeleton from './TimelineReviewCardSkeleton';
+import type { Review } from '../../../types/index.ts';
+import { fetchMoreTimelineReviews } from '../../actions/reviews.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import IssueDialog from '../common/IssueDialog.tsx';
+import LoadingStatus from '../common/LoadingStatus.tsx';
+import NoContents from '../common/NoContents.tsx';
+import TimelineReviewCard from './TimelineReviewCard.tsx';
+import TimelineReviewCardSkeleton from './TimelineReviewCardSkeleton.tsx';
 
 type Props = {
   initialReviews: Review[];

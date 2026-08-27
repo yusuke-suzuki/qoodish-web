@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import AssetGenerator from '../../../../components/assets/AssetGenerator';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+import AssetGenerator from '../../../../components/assets/AssetGenerator.tsx';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

@@ -1,7 +1,7 @@
 import { SvgIcon } from '@mui/material';
 import { GoogleAuthProvider } from 'firebase/auth';
 import { memo } from 'react';
-import SignInWithProviderButton from './SignInWithProviderButton';
+import SignInWithProviderButton from './SignInWithProviderButton.tsx';
 
 type Props = {
   onSignInSuccess: () => void;

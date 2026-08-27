@@ -9,19 +9,19 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useContext, useState } from 'react';
-import type { Review } from '../../../types';
-import ReviewCardHeader from '../reviews/ReviewCardHeader';
-import ReviewMenuButton from '../reviews/ReviewMenuButton';
+import type { Review } from '../../../types/index.ts';
+import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
+import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ProfileContext from '../../context/ProfileContext';
-import useLocalePath from '../../hooks/useLocalePath';
-import IssueDialog from '../common/IssueDialog';
-import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
-import EditReviewDialog from '../reviews/EditReviewDialog';
-import LikeReviewButton from '../reviews/LikeReviewButton';
+import ProfileContext from '../../context/ProfileContext.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import IssueDialog from '../common/IssueDialog.tsx';
+import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
+import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
+import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
 
 type Props = {
   currentReview: Review | null;

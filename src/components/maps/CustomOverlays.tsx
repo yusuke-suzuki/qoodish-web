@@ -8,16 +8,16 @@ import {
   useRef,
   useState
 } from 'react';
-import type { AppMap, Review } from '../../../types';
-import ProfileContext from '../../context/ProfileContext';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import CreateReviewDialog from '../reviews/CreateReviewDialog';
-import CurrentPositionMarker from './CurrentPositionMarker';
-import CustomMapControls from './CustomMapControls';
-import PlaceInfoWindow from './PlaceInfoWindow';
-import PositionInfoWindow from './PositionInfoWindow';
-import ReviewMarker from './ReviewMarker';
-import ReviewPopover from './ReviewPopover';
+import type { AppMap, Review } from '../../../types/index.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import CreateReviewDialog from '../reviews/CreateReviewDialog.tsx';
+import CurrentPositionMarker from './CurrentPositionMarker.tsx';
+import CustomMapControls from './CustomMapControls.tsx';
+import PlaceInfoWindow from './PlaceInfoWindow.tsx';
+import PositionInfoWindow from './PositionInfoWindow.tsx';
+import ReviewMarker from './ReviewMarker.tsx';
+import ReviewPopover from './ReviewPopover.tsx';
 
 type Props = {
   map: AppMap | null;

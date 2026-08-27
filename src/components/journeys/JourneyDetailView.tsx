@@ -55,34 +55,34 @@ import type {
   Journey,
   JourneyCheckin,
   Review
-} from '../../../types';
-import { createChapter } from '../../actions/chapters';
+} from '../../../types/index.ts';
+import { createChapter } from '../../actions/chapters.ts';
 import {
   addCheckin,
   deleteJourney,
   finishJourney,
   removeCheckin,
   updateCheckin
-} from '../../actions/journeys';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+} from '../../actions/journeys.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime, {
   LOCAL_DATE_TIME_PLACEHOLDER
-} from '../../hooks/useLocalDateTime';
-import { createChapterContent } from '../../utils/chapterContent';
-import { trailDistanceMeters } from '../../utils/geo';
-import { deletePaused } from '../../utils/journeyPauseStorage';
-import { deleteTrail, loadTrail } from '../../utils/journeyTrailStorage';
-import { createMapFeatures } from '../../utils/mapFeatures';
-import { decodePath, encodePath } from '../../utils/polyline';
-import MapLinkChip from '../chapters/MapLinkChip';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
-import NoContents from '../common/NoContents';
-import CheckinImageStrip from './CheckinImageStrip';
-import CheckinNoteField from './CheckinNoteField';
-import EndJourneyDialog from './EndJourneyDialog';
-import JourneyMap from './JourneyMap';
-import SpotPickerDialog from './SpotPickerDialog';
+} from '../../hooks/useLocalDateTime.ts';
+import { createChapterContent } from '../../utils/chapterContent.ts';
+import { trailDistanceMeters } from '../../utils/geo.ts';
+import { deletePaused } from '../../utils/journeyPauseStorage.ts';
+import { deleteTrail, loadTrail } from '../../utils/journeyTrailStorage.ts';
+import { createMapFeatures } from '../../utils/mapFeatures.ts';
+import { decodePath, encodePath } from '../../utils/polyline.ts';
+import MapLinkChip from '../chapters/MapLinkChip.tsx';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import NoContents from '../common/NoContents.tsx';
+import CheckinImageStrip from './CheckinImageStrip.tsx';
+import CheckinNoteField from './CheckinNoteField.tsx';
+import EndJourneyDialog from './EndJourneyDialog.tsx';
+import JourneyMap from './JourneyMap.tsx';
+import SpotPickerDialog from './SpotPickerDialog.tsx';
 
 const DAY_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',

@@ -18,12 +18,12 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { type MouseEvent, memo, useState } from 'react';
-import type { JourneySummary } from '../../../types';
-import { deleteJourney } from '../../actions/journeys';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
-import NoContents from '../common/NoContents';
+import type { JourneySummary } from '../../../types/index.ts';
+import { deleteJourney } from '../../actions/journeys.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',

@@ -16,19 +16,19 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import type { AppMap, Chapter, Journal } from '../../../types';
-import { deleteChapter } from '../../actions/chapters';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import { featureSpots } from '../../utils/mapFeatures';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
-import ChapterActions from './ChapterActions';
-import ChapterAuthorCard from './ChapterAuthorCard';
-import ChapterAuthorHeader from './ChapterAuthorHeader';
-import ChapterContentReader from './ChapterContentReader';
-import ChapterCover from './ChapterCover';
-import ChapterMapCard from './ChapterMapCard';
-import MapLinkChip from './MapLinkChip';
+import type { AppMap, Chapter, Journal } from '../../../types/index.ts';
+import { deleteChapter } from '../../actions/chapters.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import { featureSpots } from '../../utils/mapFeatures.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import ChapterActions from './ChapterActions.tsx';
+import ChapterAuthorCard from './ChapterAuthorCard.tsx';
+import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
+import ChapterContentReader from './ChapterContentReader.tsx';
+import ChapterCover from './ChapterCover.tsx';
+import ChapterMapCard from './ChapterMapCard.tsx';
+import MapLinkChip from './MapLinkChip.tsx';
 
 const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',

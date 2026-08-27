@@ -1,6 +1,6 @@
 'use server';
 
-import { apiFetch } from '../lib/api';
+import { apiFetch } from '../lib/api.ts';
 
 type ActionResult = {
   success: boolean;

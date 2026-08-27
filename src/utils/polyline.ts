@@ -1,4 +1,4 @@
-import type { JourneyPathPoint } from '../../types';
+import type { JourneyPathPoint } from '../../types/index.ts';
 
 function encodeValue(value: number, output: string[]): void {
   let coded = value < 0 ? ~(value << 1) : value << 1;

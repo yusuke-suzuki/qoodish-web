@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, type ReactNode } from 'react';
-import type { AppMap, JourneyPathPoint, Spot } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import JourneyMap from '../journeys/JourneyMap';
+import type { AppMap, JourneyPathPoint, Spot } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import JourneyMap from '../journeys/JourneyMap.tsx';
 
 type Props = {
   map: AppMap | null;

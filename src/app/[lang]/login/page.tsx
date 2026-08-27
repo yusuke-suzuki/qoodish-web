@@ -9,11 +9,11 @@ import {
   Typography
 } from '@mui/material';
 import type { Metadata } from 'next';
-import LoginCard from '../../../components/auth/LoginCard';
-import Footer from '../../../components/layouts/Footer';
-import { getDictionary } from '../../../utils/getDictionary';
-import { localePath } from '../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../utils/metadata';
+import LoginCard from '../../../components/auth/LoginCard.tsx';
+import Footer from '../../../components/layouts/Footer.tsx';
+import { getDictionary } from '../../../utils/getDictionary.ts';
+import { localePath } from '../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../utils/metadata.ts';
 
 const HERO_IMAGE_URL =
   'https://storage.googleapis.com/qoodish.appspot.com/assets/qoodish-lp-carousel-1-2019-05-06.jpg';

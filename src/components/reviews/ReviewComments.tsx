@@ -13,13 +13,13 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
-import type { Comment } from '../../../types';
-import ProfileContext from '../../context/ProfileContext';
-import useLocalePath from '../../hooks/useLocalePath';
-import AuthorAvatar from '../common/AuthorAvatar';
-import IssueDialog from '../common/IssueDialog';
-import CommentMenuButton from './CommentMenuButton';
-import DeleteCommentDialog from './DeleteCommentDialog';
+import type { Comment } from '../../../types/index.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import AuthorAvatar from '../common/AuthorAvatar.tsx';
+import IssueDialog from '../common/IssueDialog.tsx';
+import CommentMenuButton from './CommentMenuButton.tsx';
+import DeleteCommentDialog from './DeleteCommentDialog.tsx';
 
 type Props = {
   comments: Comment[];

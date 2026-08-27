@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import ChapterEditor from '../../../../../../components/chapters/ChapterEditor';
-import { getServerAuthState } from '../../../../../../lib/auth';
-import { getChapter, getUserChapters } from '../../../../../../lib/chapters';
-import { getMyJourney } from '../../../../../../lib/journeys';
-import { getMap, getMapReviews } from '../../../../../../lib/maps';
-import { getUserJournal } from '../../../../../../lib/users';
-import { getDictionary } from '../../../../../../utils/getDictionary';
+import ChapterEditor from '../../../../../../components/chapters/ChapterEditor.tsx';
+import { getServerAuthState } from '../../../../../../lib/auth.ts';
+import { getChapter, getUserChapters } from '../../../../../../lib/chapters.ts';
+import { getMyJourney } from '../../../../../../lib/journeys.ts';
+import { getMap, getMapReviews } from '../../../../../../lib/maps.ts';
+import { getUserJournal } from '../../../../../../lib/users.ts';
+import { getDictionary } from '../../../../../../utils/getDictionary.ts';
 
 type Props = {
   params: Promise<{ lang: string; chapterId: string }>;

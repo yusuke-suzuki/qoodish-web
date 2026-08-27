@@ -22,11 +22,11 @@ import {
   useEffect,
   useState
 } from 'react';
-import { updatePreferences } from '../../actions/users';
-import ProfileContext from '../../context/ProfileContext';
-import ServiceWorkerContext from '../../context/ServiceWorkerContext';
-import useDictionary from '../../hooks/useDictionary';
-import { usePushManager } from '../../hooks/usePushManager';
+import { updatePreferences } from '../../actions/users.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { usePushManager } from '../../hooks/usePushManager.ts';
 
 function PushNotificationsCard() {
   const dictionary = useDictionary();

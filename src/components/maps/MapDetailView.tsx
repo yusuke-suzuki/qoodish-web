@@ -11,23 +11,23 @@ import type {
   Journey,
   Profile,
   Review
-} from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useJourney, { type PauseReason } from '../../hooks/useJourney';
-import IssueDialog from '../common/IssueDialog';
-import EndJourneyDialog from '../journeys/EndJourneyDialog';
-import JourneyFab from '../journeys/JourneyFab';
-import JourneyOverlay from '../journeys/JourneyOverlay';
-import JourneyProgressSheet from '../journeys/JourneyProgressSheet';
-import StartJourneyDialog from '../journeys/StartJourneyDialog';
-import CustomOverlays from './CustomOverlays';
-import { drawerBleeding } from './constants';
-import DeleteMapDialog from './DeleteMapDialog';
-import EditMapDialog from './EditMapDialog';
-import GoogleMaps from './GoogleMaps';
-import MapSummaryCard from './MapSummaryCard';
-import MobileMapDrawer from './MobileMapDrawer';
-import ReviewDrawer from './ReviewDrawer';
+} from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useJourney, { type PauseReason } from '../../hooks/useJourney.ts';
+import IssueDialog from '../common/IssueDialog.tsx';
+import EndJourneyDialog from '../journeys/EndJourneyDialog.tsx';
+import JourneyFab from '../journeys/JourneyFab.tsx';
+import JourneyOverlay from '../journeys/JourneyOverlay.tsx';
+import JourneyProgressSheet from '../journeys/JourneyProgressSheet.tsx';
+import StartJourneyDialog from '../journeys/StartJourneyDialog.tsx';
+import CustomOverlays from './CustomOverlays.tsx';
+import { drawerBleeding } from './constants.ts';
+import DeleteMapDialog from './DeleteMapDialog.tsx';
+import EditMapDialog from './EditMapDialog.tsx';
+import GoogleMaps from './GoogleMaps.tsx';
+import MapSummaryCard from './MapSummaryCard.tsx';
+import MobileMapDrawer from './MobileMapDrawer.tsx';
+import ReviewDrawer from './ReviewDrawer.tsx';
 
 const summaryCardHeight = 360;
 

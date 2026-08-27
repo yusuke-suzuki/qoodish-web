@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import NotificationsFeed from '../../../../components/notifications/NotificationsFeed';
-import { getNotifications } from '../../../../lib/users';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+import NotificationsFeed from '../../../../components/notifications/NotificationsFeed.tsx';
+import { getNotifications } from '../../../../lib/users.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

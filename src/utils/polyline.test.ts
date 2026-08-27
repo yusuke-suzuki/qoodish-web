@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import type { JourneyPathPoint } from '../../types';
-import { decodePath, encodePath } from './polyline';
+import type { JourneyPathPoint } from '../../types/index.ts';
+import { decodePath, encodePath } from './polyline.ts';
 
 // Worked example from Google's Encoded Polyline Algorithm Format reference.
 const REFERENCE_POINTS: JourneyPathPoint[] = [

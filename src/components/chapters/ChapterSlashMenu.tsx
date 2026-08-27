@@ -16,7 +16,7 @@ import {
 import type { TextNode } from 'lexical';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { type BlockAction, useBlockActions } from './chapterBlockActions';
+import { type BlockAction, useBlockActions } from './chapterBlockActions.tsx';
 
 class BlockOption extends MenuOption {
   action: BlockAction;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Image } from '../../types';
-import uploadImage from '../utils/uploadImage';
+import type { Image } from '../../types/index.ts';
+import uploadImage from '../utils/uploadImage.ts';
 
 export type PhotoItem =
   | { key: string; status: 'uploading'; previewUrl: string }

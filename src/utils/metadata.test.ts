@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildAlternates, defaultOgImage } from './metadata';
+import { buildAlternates, defaultOgImage } from './metadata.ts';
 
 describe('defaultOgImage', () => {
   it('returns the English image for en', () => {

@@ -17,11 +17,11 @@ import {
   useEffect,
   useState
 } from 'react';
-import type { ImageVariants } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import fileToDataUrl from '../../utils/fileToDataUrl';
-import uploadImage from '../../utils/uploadImage';
-import { coverAspectRatio } from './constants';
+import type { ImageVariants } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import fileToDataUrl from '../../utils/fileToDataUrl.ts';
+import uploadImage from '../../utils/uploadImage.ts';
+import { coverAspectRatio } from './constants.ts';
 
 type Props = {
   image: ImageVariants | null;

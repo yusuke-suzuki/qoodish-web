@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { distanceInMeters, trailDistanceMeters } from './geo';
+import { distanceInMeters, trailDistanceMeters } from './geo.ts';
 
 const EQUATOR_ONE_DEGREE_METERS = 111194.93;
 

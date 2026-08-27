@@ -1,7 +1,7 @@
 import debounce from 'lodash.debounce';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useGoogleMap } from './useGoogleMap';
+import { useGoogleMap } from './useGoogleMap.ts';
 
 const PLACE_FIELDS = [
   'id',

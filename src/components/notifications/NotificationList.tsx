@@ -14,14 +14,14 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, useContext, useEffect, useRef, useState } from 'react';
-import type { Notification } from '../../../types';
-import { markNotificationAsRead } from '../../actions/notifications';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import { LOCAL_DATE_TIME_PLACEHOLDER } from '../../hooks/useLocalDateTime';
-import sleep from '../../utils/sleep';
-import AuthorAvatar from '../common/AuthorAvatar';
-import NoContents from '../common/NoContents';
+import type { Notification } from '../../../types/index.ts';
+import { markNotificationAsRead } from '../../actions/notifications.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { LOCAL_DATE_TIME_PLACEHOLDER } from '../../hooks/useLocalDateTime.ts';
+import sleep from '../../utils/sleep.ts';
+import AuthorAvatar from '../common/AuthorAvatar.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 type Props = {
   notifications: Notification[];

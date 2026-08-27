@@ -12,7 +12,7 @@ import {
   useTheme
 } from '@mui/material';
 import { memo } from 'react';
-import type { PhotoItem } from '../../hooks/usePhotoUploads';
+import type { PhotoItem } from '../../hooks/usePhotoUploads.ts';
 
 type Props = {
   items: PhotoItem[];

@@ -30,15 +30,15 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo, useContext, useRef, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import NotificationsContext from '../../context/NotificationsContext';
-import ProfileContext from '../../context/ProfileContext';
-import ShellContext from '../../context/ShellContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import NotificationList from '../notifications/NotificationList';
-import AccountMenuButton from './AccountMenuButton';
-import LogoAvatar from './LogoAvatar';
+import AuthContext from '../../context/AuthContext.ts';
+import NotificationsContext from '../../context/NotificationsContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import ShellContext from '../../context/ShellContext.tsx';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import NotificationList from '../notifications/NotificationList.tsx';
+import AccountMenuButton from './AccountMenuButton.tsx';
+import LogoAvatar from './LogoAvatar.tsx';
 
 export default memo(function MiniDrawer() {
   const { openSearch, openCreateMap } = useContext(ShellContext);

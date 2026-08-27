@@ -25,7 +25,7 @@ import {
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import type { Theme } from '@mui/material';
 import type { EditorThemeClasses, Klass, LexicalNode } from 'lexical';
-import { ImageNode } from './ImageNode';
+import { ImageNode } from './ImageNode.tsx';
 
 export const chapterNodes: Klass<LexicalNode>[] = [
   ImageNode,

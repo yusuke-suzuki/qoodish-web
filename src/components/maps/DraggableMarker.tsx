@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 
 type Props = {
   defaultPosition?: google.maps.LatLng | google.maps.LatLngLiteral | null;
