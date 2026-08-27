@@ -16,8 +16,8 @@ import {
   useRef,
   useState
 } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import { usePlaceSearch } from '../../hooks/usePlaceSearch';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { usePlaceSearch } from '../../hooks/usePlaceSearch.ts';
 
 type Props = {
   ref: MutableRefObject<HTMLInputElement>;
@@ -39,8 +39,8 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
 
   const { predictions, isLoading, resolvePlace } = usePlaceSearch(query);
 
-  // 選択済みの候補が options から外れると MUI が value を不正とみなすため、
-  // 最新の候補に含まれていない場合は選択済みの候補を補う
+  // MUI reads a value that is missing from the options as invalid, so the
+  // selection is kept in the list whenever the latest suggestions drop it.
   const options =
     !value ||
     predictions.some((prediction) => prediction.placeId === value.placeId)
@@ -51,8 +51,8 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
     _event: SyntheticEvent,
     prediction: google.maps.places.PlacePrediction | null
   ) => {
-    // Place の取得中に別の候補が選択された場合、
-    // 遅れて解決した Place で新しい選択を上書きしないようにする
+    // A Place that resolves late must not overwrite a suggestion the visitor
+    // picked while it was still loading.
     const selectionId = ++selectionIdRef.current;
 
     setValue(prediction);
@@ -87,8 +87,9 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   ) => {
     setInputValue(newInputValue);
 
-    // 候補選択時に書き戻されるラベルまで検索すると、resolvePlace が終了させた
-    // 直後に新しいセッションが始まり、fetchFields で閉じられないまま課金される
+    // Searching for the label MUI writes back on selection would open a new
+    // billing session the moment resolvePlace closed one, and no place lookup
+    // would ever close it.
     if (reason === 'input' || reason === 'clear') {
       setQuery(newInputValue);
     }

@@ -22,8 +22,9 @@ export function usePlaceSearch(input: string) {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 入力開始から Place の取得までを 1 セッションとして課金させるためのトークン。
-  // fetchFields でセッションが終了するので、そのたびに破棄して次のセッション用に再発行する。
+  // The token bills everything from the first keystroke to the place lookup
+  // as one session. fetchFields ends that session, so the token is discarded
+  // and reissued for the next one.
   const sessionTokenRef =
     useRef<google.maps.places.AutocompleteSessionToken | null>(null);
   const requestIdRef = useRef(0);
@@ -75,8 +76,9 @@ export function usePlaceSearch(input: string) {
   const resolvePlace = async (
     prediction: google.maps.places.PlacePrediction
   ) => {
-    // セッションは fetchFields の応答ではなく呼び出しで終了するため、
-    // 待っている間に始まった入力が終了済みのトークンを使い回さないよう先に破棄する
+    // The session ends when fetchFields is called rather than when it
+    // answers, so the token goes first: input that starts while the response
+    // is in flight must not reuse a spent one.
     sessionTokenRef.current = null;
 
     const { place } = await prediction
@@ -87,8 +89,8 @@ export function usePlaceSearch(input: string) {
   };
 
   useEffect(() => {
-    // 実行中のリクエストは debounce の待ち時間中にも解決しうるため、
-    // ID の採番は待ち時間の前、入力が変わった時点で行う
+    // A request already in flight can resolve during the debounce wait, so
+    // the id is taken when the input changes rather than after the wait.
     const requestId = ++requestIdRef.current;
 
     if (!input) {
@@ -100,9 +102,9 @@ export function usePlaceSearch(input: string) {
       return;
     }
 
-    // デバウンスの待ち時間もリクエスト中と同じ扱いにする。
-    // 本体の先頭で立てると、その間だけ候補ゼロかつ非ローディングになり
-    // Autocomplete が「見つかりません」を表示してしまう。
+    // The debounce wait counts as part of the request. Raising this inside
+    // the debounced body instead leaves a window with no suggestions and no
+    // loading flag, which is what the Autocomplete renders "not found" for.
     setIsLoading(true);
 
     fetchSuggestions(input, requestId);
