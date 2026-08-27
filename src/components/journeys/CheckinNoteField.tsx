@@ -45,8 +45,9 @@ function CheckinNoteField({ checkin, onSave }: Props) {
 
     stateRef.current.dirty = false;
 
-    // 保存できなかった下書きを保存済みとして扱うと、離脱時の flush でも
-    // 送られずに失われるため、失敗したら未保存に戻して再送の対象にする
+    // Treating a draft that failed to save as saved would lose it outright:
+    // even the flush on leaving the page would find nothing to send. A
+    // failure puts it back in the pending state so the next flush retries.
     save(latest, draft.trim() ? draft : null)
       .catch(() => false)
       .then((saved) => {
