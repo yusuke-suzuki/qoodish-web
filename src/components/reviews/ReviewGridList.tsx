@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Review } from '../../../types';
-import useLocalePath from '../../hooks/useLocalePath';
+import type { Review } from '../../../types/index.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
 
 type Props = {
   reviews: Review[];

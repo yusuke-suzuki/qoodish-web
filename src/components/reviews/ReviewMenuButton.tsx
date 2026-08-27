@@ -17,11 +17,11 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useContext, useRef, useState } from 'react';
-import type { Profile, Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import { localePath } from '../../utils/locales';
-import { SITE_ORIGIN } from '../../utils/metadata';
+import type { Profile, Review } from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { localePath } from '../../utils/locales.ts';
+import { SITE_ORIGIN } from '../../utils/metadata.ts';
 
 type Props = {
   review: Review | null;

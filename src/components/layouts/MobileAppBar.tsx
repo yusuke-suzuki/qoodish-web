@@ -13,15 +13,15 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import NotificationsContext from '../../context/NotificationsContext';
-import ProfileContext from '../../context/ProfileContext';
-import ShellContext from '../../context/ShellContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import ProfileAvatar from '../common/ProfileAvatar';
-import Logo from './Logo';
-import MobileDrawer from './MobileDrawer';
+import AuthContext from '../../context/AuthContext.ts';
+import NotificationsContext from '../../context/NotificationsContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import ShellContext from '../../context/ShellContext.tsx';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import Logo from './Logo.tsx';
+import MobileDrawer from './MobileDrawer.tsx';
 
 function MobileAppBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);

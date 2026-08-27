@@ -1,9 +1,9 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Comment } from '../../../types';
-import { deleteComment } from '../../actions/comments';
-import useDictionary from '../../hooks/useDictionary';
-import ConfirmDialog from '../common/ConfirmDialog';
+import type { Comment } from '../../../types/index.ts';
+import { deleteComment } from '../../actions/comments.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ConfirmDialog from '../common/ConfirmDialog.tsx';
 
 type Props = {
   comment: Comment | null;

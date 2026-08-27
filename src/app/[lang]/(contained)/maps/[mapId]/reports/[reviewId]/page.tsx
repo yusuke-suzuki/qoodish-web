@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail';
-import { getServerAuthState } from '../../../../../../../lib/auth';
-import { getReview } from '../../../../../../../lib/reviews';
-import { getDictionary } from '../../../../../../../utils/getDictionary';
-import { localePath } from '../../../../../../../utils/locales';
+import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail.tsx';
+import { getServerAuthState } from '../../../../../../../lib/auth.ts';
+import { getReview } from '../../../../../../../lib/reviews.ts';
+import { getDictionary } from '../../../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage
-} from '../../../../../../../utils/metadata';
+} from '../../../../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;

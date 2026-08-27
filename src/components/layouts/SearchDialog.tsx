@@ -16,13 +16,13 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { memo, useDeferredValue, useState } from 'react';
-import type { AppMap } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import { useMapSearch } from '../../hooks/useMapSearch';
-import AutocompleteListItem from '../common/AutocompleteListItem';
-import NoContents from '../common/NoContents';
-import SlideUpTransition from '../common/SlideUpTransition';
+import type { AppMap } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import { useMapSearch } from '../../hooks/useMapSearch.ts';
+import AutocompleteListItem from '../common/AutocompleteListItem.tsx';
+import NoContents from '../common/NoContents.tsx';
+import SlideUpTransition from '../common/SlideUpTransition.tsx';
 
 type Props = {
   open: boolean;

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import MarkdownContent from '../../../../components/common/MarkdownContent';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { getLegalDocument } from '../../../../utils/getLegalDocument';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+import MarkdownContent from '../../../../components/common/MarkdownContent.tsx';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { getLegalDocument } from '../../../../utils/getLegalDocument.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

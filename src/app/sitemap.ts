@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { getRecentChapters } from '../lib/chapters';
-import { getActiveMaps, getPopularMaps, getRecentMaps } from '../lib/maps';
-import { getPopularReviews, getRecentReviews } from '../lib/reviews';
-import { DEFAULT_LOCALE, LOCALES, localePath } from '../utils/locales';
-import { SITE_ORIGIN } from '../utils/metadata';
+import { getRecentChapters } from '../lib/chapters.ts';
+import { getActiveMaps, getPopularMaps, getRecentMaps } from '../lib/maps.ts';
+import { getPopularReviews, getRecentReviews } from '../lib/reviews.ts';
+import { DEFAULT_LOCALE, LOCALES, localePath } from '../utils/locales.ts';
+import { SITE_ORIGIN } from '../utils/metadata.ts';
 
 export const revalidate = 3600;
 

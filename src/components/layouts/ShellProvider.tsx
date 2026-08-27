@@ -2,13 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { type ReactNode, useContext, useState } from 'react';
-import type { AppMap } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import ShellContext from '../../context/ShellContext';
-import useLocalePath from '../../hooks/useLocalePath';
-import SignInRequiredDialog from '../auth/SignInRequiredDialog';
-import CreateMapDialog from '../maps/CreateMapDialog';
-import SearchDialog from './SearchDialog';
+import type { AppMap } from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import ShellContext from '../../context/ShellContext.tsx';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import SignInRequiredDialog from '../auth/SignInRequiredDialog.tsx';
+import CreateMapDialog from '../maps/CreateMapDialog.tsx';
+import SearchDialog from './SearchDialog.tsx';
 
 type Props = {
   children: ReactNode;

@@ -1,8 +1,8 @@
 'use server';
 
 import type { SerializedEditorState } from 'lexical';
-import type { Chapter, MapFeatureCollection } from '../../types';
-import { apiFetch } from '../lib/api';
+import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
 
 type ActionResult<T = null> = {
   success: boolean;

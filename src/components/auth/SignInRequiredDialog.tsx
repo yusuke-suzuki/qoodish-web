@@ -1,10 +1,10 @@
 import { Container, Typography } from '@mui/material';
 import { memo, useContext } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import BottomSheet from '../common/BottomSheet';
-import Logo from '../layouts/Logo';
-import SignInButtons from './SignInButtons';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import BottomSheet from '../common/BottomSheet.tsx';
+import Logo from '../layouts/Logo.tsx';
+import SignInButtons from './SignInButtons.tsx';
 
 function SignInRequiredDialog() {
   const dictionary = useDictionary();

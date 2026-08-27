@@ -6,8 +6,8 @@ import type {
   MapFeature,
   MapFeatureCollection,
   Spot
-} from '../../types';
-import { createMapFeatures, featureSpots, spotFeature } from './mapFeatures';
+} from '../../types/index.ts';
+import { createMapFeatures, featureSpots, spotFeature } from './mapFeatures.ts';
 
 function buildCheckin(
   id: number,

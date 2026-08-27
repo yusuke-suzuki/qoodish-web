@@ -1,7 +1,7 @@
 'use server';
 
-import type { AppMap } from '../../types';
-import { apiFetch } from '../lib/api';
+import type { AppMap } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
 
 type CreateMapParams = {
   name: string;

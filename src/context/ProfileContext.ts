@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { Profile } from '../../types';
+import type { Profile } from '../../types/index.ts';
 
 const ProfileContext = createContext<Profile | null>(null);
 

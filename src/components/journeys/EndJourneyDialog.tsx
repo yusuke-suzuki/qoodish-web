@@ -1,8 +1,8 @@
 import { Check, HistoryEdu, LocationOff } from '@mui/icons-material';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from '../common/AppDialog';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from '../common/AppDialog.tsx';
 
 type Props = {
   open: boolean;

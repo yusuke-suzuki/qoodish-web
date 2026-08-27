@@ -2,8 +2,8 @@
 
 import { TextField } from '@mui/material';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import type { JourneyCheckin } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
+import type { JourneyCheckin } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 const AUTOSAVE_DELAY = 800;
 const NOTE_MAX_LENGTH = 500;

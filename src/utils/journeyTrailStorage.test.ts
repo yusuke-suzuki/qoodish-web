@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import { deleteTrail, loadTrail, saveTrail } from './journeyTrailStorage';
+import { deleteTrail, loadTrail, saveTrail } from './journeyTrailStorage.ts';
 
 type StorageStub = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 

@@ -11,17 +11,17 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useCallback, useContext, useState } from 'react';
-import type { Review } from '../../../types';
-import ProfileContext from '../../context/ProfileContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import BottomSheet from '../common/BottomSheet';
-import IssueDialog from '../common/IssueDialog';
-import DeleteReviewDialog from '../reviews/DeleteReviewDialog';
-import EditReviewDialog from '../reviews/EditReviewDialog';
-import LikeReviewButton from '../reviews/LikeReviewButton';
-import ReviewCardHeader from '../reviews/ReviewCardHeader';
-import ReviewMenuButton from '../reviews/ReviewMenuButton';
+import type { Review } from '../../../types/index.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import BottomSheet from '../common/BottomSheet.tsx';
+import IssueDialog from '../common/IssueDialog.tsx';
+import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
+import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
+import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
+import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
+import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
 
 type MilestoneAction = {
   selected: boolean;

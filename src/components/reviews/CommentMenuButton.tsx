@@ -7,9 +7,9 @@ import {
   MenuItem
 } from '@mui/material';
 import { memo, useContext, useRef, useState } from 'react';
-import type { Comment, Profile } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+import type { Comment, Profile } from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   comment: Comment;

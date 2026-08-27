@@ -29,12 +29,12 @@ import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo, useContext } from 'react';
-import AuthContext from '../../context/AuthContext';
-import ProfileContext from '../../context/ProfileContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import ProfileAvatar from '../common/ProfileAvatar';
-import Logo from './Logo';
+import AuthContext from '../../context/AuthContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import Logo from './Logo.tsx';
 
 type Props = {
   open: boolean;

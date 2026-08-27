@@ -6,7 +6,7 @@ import type {
   SerializedRootNode,
   SerializedTextNode
 } from 'lexical';
-import type { Image, Journey } from '../../types';
+import type { Image, Journey } from '../../types/index.ts';
 
 export const IMAGE_NODE_TYPE = 'image';
 

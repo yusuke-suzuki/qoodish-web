@@ -1,10 +1,10 @@
 import { Box, Paper } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import DraggableMarker from './DraggableMarker';
-import MapControl from './MapControl';
-import PlaceAutocomplete from './PlaceAutocomplete';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import DraggableMarker from './DraggableMarker.tsx';
+import MapControl from './MapControl.tsx';
+import PlaceAutocomplete from './PlaceAutocomplete.tsx';
 
 type Props = {
   onChange: (center: google.maps.LatLngLiteral) => void;

@@ -14,9 +14,9 @@ import {
   useId,
   useState
 } from 'react';
-import { createIssue } from '../../actions/issues';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from './AppDialog';
+import { createIssue } from '../../actions/issues.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from './AppDialog.tsx';
 
 type Props = {
   open: boolean;

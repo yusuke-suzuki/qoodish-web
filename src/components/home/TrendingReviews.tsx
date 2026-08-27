@@ -4,11 +4,11 @@ import { Reviews } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import NoContents from '../common/NoContents';
-import TimelineReviewCard from './TimelineReviewCard';
+import type { Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import NoContents from '../common/NoContents.tsx';
+import TimelineReviewCard from './TimelineReviewCard.tsx';
 
 type Props = {
   reviews: Review[];

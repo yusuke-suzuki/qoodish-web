@@ -9,8 +9,8 @@ import {
   useRef,
   useState
 } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useEmailLinkHandler from '../../hooks/useEmailLinkHandler';
+import AuthContext from '../../context/AuthContext.ts';
+import useEmailLinkHandler from '../../hooks/useEmailLinkHandler.ts';
 
 type Props = {
   children: ReactNode;

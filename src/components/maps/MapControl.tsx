@@ -1,6 +1,6 @@
 import { memo, type ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 
 type Props = {
   children: ReactNode;

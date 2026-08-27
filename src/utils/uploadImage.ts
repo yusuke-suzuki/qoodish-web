@@ -1,5 +1,5 @@
-import type { Image, ImageVariants } from '../../types';
-import dataUrlToBlob from './dataUrlToBlob';
+import type { Image, ImageVariants } from '../../types/index.ts';
+import dataUrlToBlob from './dataUrlToBlob.ts';
 
 type DirectUploadAllocation = {
   upload_url: string;

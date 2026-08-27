@@ -3,10 +3,10 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Card, Tab } from '@mui/material';
 import { memo, type SyntheticEvent, useState } from 'react';
-import type { AppMap, Journal } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import UserBookmarks from '../profiles/UserBookmarks';
-import BookmarkedJournalList from './BookmarkedJournalList';
+import type { AppMap, Journal } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import UserBookmarks from '../profiles/UserBookmarks.tsx';
+import BookmarkedJournalList from './BookmarkedJournalList.tsx';
 
 type Props = {
   maps: AppMap[];

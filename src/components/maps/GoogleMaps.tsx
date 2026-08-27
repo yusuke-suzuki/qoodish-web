@@ -9,7 +9,7 @@ import {
   useRef,
   useState
 } from 'react';
-import GoogleMapsContext from '../../context/GoogleMapsContext';
+import GoogleMapsContext from '../../context/GoogleMapsContext.ts';
 
 type Props = {
   mapId: string;

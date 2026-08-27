@@ -8,10 +8,10 @@ import {
   ListItemText
 } from '@mui/material';
 import { memo } from 'react';
-import type { Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from '../common/AppDialog';
-import NoContents from '../common/NoContents';
+import type { Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from '../common/AppDialog.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 type Props = {
   open: boolean;

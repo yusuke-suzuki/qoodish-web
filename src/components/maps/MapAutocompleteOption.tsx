@@ -3,7 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { memo } from 'react';
-import type { AppMap } from '../../../types';
+import type { AppMap } from '../../../types/index.ts';
 
 type Props = {
   option: AppMap;

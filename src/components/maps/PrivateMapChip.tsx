@@ -1,7 +1,7 @@
 import { Lock } from '@mui/icons-material';
 import { Chip, Typography } from '@mui/material';
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 function PrivateMapChip() {
   const dictionary = useDictionary();

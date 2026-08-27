@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import { memo, useContext, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import ChangeEmailDialog from './ChangeEmailDialog';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ChangeEmailDialog from './ChangeEmailDialog.tsx';
 
 function AccountEmailCard() {
   const dictionary = useDictionary();

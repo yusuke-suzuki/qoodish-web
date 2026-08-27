@@ -15,11 +15,11 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useState } from 'react';
-import type { AppMap, Coauthor } from '../../../types';
-import { removeCoauthor } from '../../actions/coauthors';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from '../common/AppDialog';
-import ConfirmDialog from '../common/ConfirmDialog';
+import type { AppMap, Coauthor } from '../../../types/index.ts';
+import { removeCoauthor } from '../../actions/coauthors.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from '../common/AppDialog.tsx';
+import ConfirmDialog from '../common/ConfirmDialog.tsx';
 
 type Props = {
   open: boolean;

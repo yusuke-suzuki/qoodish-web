@@ -17,10 +17,10 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { AppMap, UserSearchResult } from '../../../types';
-import { inviteCoauthor, searchUsers } from '../../actions/coauthors';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from '../common/AppDialog';
+import type { AppMap, UserSearchResult } from '../../../types/index.ts';
+import { inviteCoauthor, searchUsers } from '../../actions/coauthors.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from '../common/AppDialog.tsx';
 
 type Props = {
   open: boolean;

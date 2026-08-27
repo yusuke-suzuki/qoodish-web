@@ -22,7 +22,8 @@
       },
       "correctness": {
         "useExhaustiveDependencies": "warn",
-        "useHookAtTopLevel": "error"
+        "useHookAtTopLevel": "error",
+        "useImportExtensions": "error"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"

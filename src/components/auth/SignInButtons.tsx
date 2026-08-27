@@ -1,8 +1,8 @@
 import { Divider, Stack } from '@mui/material';
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import SignInWithEmailLinkButton from './SignInWithEmailLinkButton';
-import SignInWithGoogleButton from './SignInWithGoogleButton';
+import useDictionary from '../../hooks/useDictionary.ts';
+import SignInWithEmailLinkButton from './SignInWithEmailLinkButton.tsx';
+import SignInWithGoogleButton from './SignInWithGoogleButton.tsx';
 
 type Props = {
   onSignInSuccess: () => void;

@@ -8,8 +8,8 @@ import {
   createSerializedImage,
   IMAGE_NODE_TYPE,
   type SerializedImageNode
-} from '../../utils/chapterContent';
-import useBlockSelection from './useBlockSelection';
+} from '../../utils/chapterContent.ts';
+import useBlockSelection from './useBlockSelection.ts';
 
 type ImageViewProps = {
   nodeKey: NodeKey;

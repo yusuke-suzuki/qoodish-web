@@ -1,7 +1,7 @@
 import { AccountCircle } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { memo } from 'react';
-import type { ImageVariants } from '../../../types';
+import type { ImageVariants } from '../../../types/index.ts';
 
 type Props = {
   profile?: { name: string; image: ImageVariants | null } | null;

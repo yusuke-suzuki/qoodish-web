@@ -1,9 +1,9 @@
 'use client';
 
 import { type ReactNode, use } from 'react';
-import type { Notification, Profile } from '../../../types';
-import NotificationsContext from '../../context/NotificationsContext';
-import ProfileContext from '../../context/ProfileContext';
+import type { Notification, Profile } from '../../../types/index.ts';
+import NotificationsContext from '../../context/NotificationsContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
 
 type Props = {
   profilePromise: Promise<Profile | null>;

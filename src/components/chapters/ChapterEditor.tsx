@@ -30,26 +30,32 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useRef, useState } from 'react';
-import type { AppMap, Chapter, Journal, Journey, Review } from '../../../types';
-import useChapter from '../../hooks/useChapter';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import { isContentEmpty } from '../../utils/chapterContent';
+import type {
+  AppMap,
+  Chapter,
+  Journal,
+  Journey,
+  Review
+} from '../../../types/index.ts';
+import useChapter from '../../hooks/useChapter.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import { isContentEmpty } from '../../utils/chapterContent.ts';
 import {
   createMapFeatures,
   featureSpots,
   spotFeature
-} from '../../utils/mapFeatures';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
-import ConfirmDialog from '../common/ConfirmDialog';
-import SpotPickerDialog from '../journeys/SpotPickerDialog';
-import ChapterAuthorCard from './ChapterAuthorCard';
-import ChapterAuthorHeader from './ChapterAuthorHeader';
-import ChapterContentEditor from './ChapterContentEditor';
-import ChapterCover from './ChapterCover';
-import ChapterMapCard from './ChapterMapCard';
-import MapLinkChip from './MapLinkChip';
-import { $replaceChapterContent } from './replaceChapterContent';
+} from '../../utils/mapFeatures.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import ConfirmDialog from '../common/ConfirmDialog.tsx';
+import SpotPickerDialog from '../journeys/SpotPickerDialog.tsx';
+import ChapterAuthorCard from './ChapterAuthorCard.tsx';
+import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
+import ChapterContentEditor from './ChapterContentEditor.tsx';
+import ChapterCover from './ChapterCover.tsx';
+import ChapterMapCard from './ChapterMapCard.tsx';
+import MapLinkChip from './MapLinkChip.tsx';
+import { $replaceChapterContent } from './replaceChapterContent.ts';
 
 const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',

@@ -10,11 +10,11 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { AppMap } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import RecommendMaps from './RecommendMaps';
-import TrendingMaps from './TrendingMaps';
+import type { AppMap } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import RecommendMaps from './RecommendMaps.tsx';
+import TrendingMaps from './TrendingMaps.tsx';
 
 type Props = {
   popularMaps?: AppMap[];

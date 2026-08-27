@@ -1,7 +1,7 @@
 'use server';
 
-import type { UserSearchResult } from '../../types';
-import { apiFetch } from '../lib/api';
+import type { UserSearchResult } from '../../types/index.ts';
+import { apiFetch } from '../lib/api.ts';
 
 type ActionResult = {
   success: boolean;

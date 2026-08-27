@@ -1,5 +1,5 @@
-import type { CoauthorshipInvitation } from '../../types';
-import { apiFetch } from './api';
+import type { CoauthorshipInvitation } from '../../types/index.ts';
+import { apiFetch } from './api.ts';
 
 export async function getCoauthorshipInvitations(
   lang: string

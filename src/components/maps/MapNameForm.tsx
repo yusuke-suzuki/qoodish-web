@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 import { type ChangeEvent, memo, useEffect, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 const MAX_LENGTH = 30;
 

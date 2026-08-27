@@ -50,8 +50,8 @@ import {
   useRef,
   useState
 } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import { type BlockAction, useBlockActions } from './chapterBlockActions';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { type BlockAction, useBlockActions } from './chapterBlockActions.tsx';
 
 function ToolButton({
   label,

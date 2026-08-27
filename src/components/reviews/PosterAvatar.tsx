@@ -1,8 +1,8 @@
 import { Person } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { memo, useContext } from 'react';
-import AuthContext from '../../context/AuthContext';
-import ProfileContext from '../../context/ProfileContext';
+import AuthContext from '../../context/AuthContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
 
 export default memo(function PosterAvatar() {
   const { authenticated } = useContext(AuthContext);

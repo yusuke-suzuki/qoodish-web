@@ -32,12 +32,12 @@ import type {
   Milestone,
   Review,
   Spot
-} from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import BottomSheet from '../common/BottomSheet';
-import CheckinImageStrip from './CheckinImageStrip';
-import CheckinNoteField from './CheckinNoteField';
+} from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import BottomSheet from '../common/BottomSheet.tsx';
+import CheckinImageStrip from './CheckinImageStrip.tsx';
+import CheckinNoteField from './CheckinNoteField.tsx';
 
 const TIME_OPTIONS: Intl.DateTimeFormatOptions = {
   hour: '2-digit',

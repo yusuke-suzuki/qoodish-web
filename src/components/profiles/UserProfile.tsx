@@ -19,15 +19,21 @@ import {
   useContext,
   useState
 } from 'react';
-import type { AppMap, Chapter, Journal, Profile, Review } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import ProfileAvatar from '../common/ProfileAvatar';
-import EditProfileDialog from './EditProfileDialog';
-import JournalBookmarkButton from './JournalBookmarkButton';
-import UserChapters from './UserChapters';
-import UserMaps from './UserMaps';
-import UserReviews from './UserReviews';
+import type {
+  AppMap,
+  Chapter,
+  Journal,
+  Profile,
+  Review
+} from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import EditProfileDialog from './EditProfileDialog.tsx';
+import JournalBookmarkButton from './JournalBookmarkButton.tsx';
+import UserChapters from './UserChapters.tsx';
+import UserMaps from './UserMaps.tsx';
+import UserReviews from './UserReviews.tsx';
 
 type Props = {
   profile: Profile;

@@ -1,5 +1,5 @@
-import type { AppMap, Chapter, Coauthor, Review } from '../../types';
-import { apiFetch, assertApiAvailable } from './api';
+import type { AppMap, Chapter, Coauthor, Review } from '../../types/index.ts';
+import { apiFetch, assertApiAvailable } from './api.ts';
 
 export async function getMap(
   mapId: string,

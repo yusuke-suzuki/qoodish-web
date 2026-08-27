@@ -12,9 +12,9 @@ import {
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo } from 'react';
-import type { Journal } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import NoContents from '../common/NoContents';
+import type { Journal } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import NoContents from '../common/NoContents.tsx';
 
 type Props = {
   journals: Journal[];

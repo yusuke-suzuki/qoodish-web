@@ -1,15 +1,15 @@
 import { Reviews } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import { memo, useState, useTransition } from 'react';
-import type { Review } from '../../../types';
+import type { Review } from '../../../types/index.ts';
 import {
   fetchMoreMyReviews,
   fetchMoreUserReviews
-} from '../../actions/reviews';
-import useDictionary from '../../hooks/useDictionary';
-import LoadingStatus from '../common/LoadingStatus';
-import NoContents from '../common/NoContents';
-import ReviewGridList from '../reviews/ReviewGridList';
+} from '../../actions/reviews.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import LoadingStatus from '../common/LoadingStatus.tsx';
+import NoContents from '../common/NoContents.tsx';
+import ReviewGridList from '../reviews/ReviewGridList.tsx';
 
 type Props = {
   userId: number;

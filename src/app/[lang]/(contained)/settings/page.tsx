@@ -1,12 +1,12 @@
 import { Stack } from '@mui/material';
 import type { Metadata } from 'next';
-import AccountEmailCard from '../../../../components/settings/AccountEmailCard';
-import DeleteAccountCard from '../../../../components/settings/DeleteAccountCard';
-import ProvidersCard from '../../../../components/settings/ProvidersCard';
-import PushNotificationsCard from '../../../../components/settings/PushNotificationsCard';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+import AccountEmailCard from '../../../../components/settings/AccountEmailCard.tsx';
+import DeleteAccountCard from '../../../../components/settings/DeleteAccountCard.tsx';
+import ProvidersCard from '../../../../components/settings/ProvidersCard.tsx';
+import PushNotificationsCard from '../../../../components/settings/PushNotificationsCard.tsx';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

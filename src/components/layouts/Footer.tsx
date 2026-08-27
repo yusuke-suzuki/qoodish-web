@@ -11,8 +11,8 @@ import {
 import { amber } from '@mui/material/colors';
 import Link from 'next/link';
 import { memo } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
 
 export default memo(function Footer() {
   const dictionary = useDictionary();

@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { localePath } from '../utils/locales';
+import { localePath } from '../utils/locales.ts';
 
 /**
  * Builds an in-app href carrying the active locale prefix. Locale-less hrefs

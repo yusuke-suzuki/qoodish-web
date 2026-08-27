@@ -1,5 +1,5 @@
 import { Box, Divider, Paper, Skeleton } from '@mui/material';
-import { coverAspectRatio } from '../../../../../components/chapters/constants';
+import { coverAspectRatio } from '../../../../../components/chapters/constants.ts';
 
 const ENTRY_COUNT = 3;
 

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildVariants } from './uploadImage';
+import { buildVariants } from './uploadImage.ts';
 
 const DELIVERY_BASE = 'https://imagedelivery.net/hash/image-1';
 

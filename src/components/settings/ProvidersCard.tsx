@@ -33,10 +33,10 @@ import {
   useMemo,
   useState
 } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import LinkEmailDialog from './LinkEmailDialog';
-import UnlinkProviderDialog from './UnlinkProviderDialog';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import LinkEmailDialog from './LinkEmailDialog.tsx';
+import UnlinkProviderDialog from './UnlinkProviderDialog.tsx';
 
 function ProvidersCard() {
   const dictionary = useDictionary();

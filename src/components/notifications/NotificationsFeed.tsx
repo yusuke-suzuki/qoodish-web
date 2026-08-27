@@ -1,8 +1,8 @@
 'use client';
 import { List } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import type { Notification } from '../../../types';
-import NotificationList from './NotificationList';
+import type { Notification } from '../../../types/index.ts';
+import NotificationList from './NotificationList.tsx';
 
 type Props = {
   notifications: Notification[];

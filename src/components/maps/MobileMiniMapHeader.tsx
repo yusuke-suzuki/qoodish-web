@@ -1,9 +1,9 @@
 import { Lock } from '@mui/icons-material';
 import { Avatar, CardHeader, Skeleton, type SxProps } from '@mui/material';
 import { memo, type ReactNode } from 'react';
-import type { AppMap, Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import DrawerPuller from '../common/DrawerPuller';
+import type { AppMap, Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import DrawerPuller from '../common/DrawerPuller.tsx';
 
 type Props = {
   map: AppMap | null;

@@ -1,5 +1,3 @@
-import { cookies, headers } from 'next/headers';
-
 type ApiFetchOptions = RequestInit & {
   guest?: boolean;
   lang?: string;
@@ -22,7 +20,10 @@ export type ApiResult<T> = {
 
 const DEFAULT_TIMEOUT_MS = 15000;
 
+// Imported lazily: `next` ships no exports map, so a static specifier fails
+// Node's strict ESM resolution when this module runs under the test runner.
 async function getAuthToken(): Promise<string | null> {
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
   return cookieStore.get('__session')?.value ?? null;
 }
@@ -32,6 +33,7 @@ async function getAcceptLanguage(lang?: string): Promise<string> {
     return lang;
   }
 
+  const { headers } = await import('next/headers');
   const headerStore = await headers();
   return headerStore.get('accept-language')?.split(',')[0] ?? 'en';
 }

@@ -3,8 +3,8 @@ import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { type FormEvent, memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import EmailField from '../common/EmailField';
+import useDictionary from '../../hooks/useDictionary.ts';
+import EmailField from '../common/EmailField.tsx';
 
 function SignInWithEmailLinkButton() {
   const { lang } = useParams<{ lang: string }>();

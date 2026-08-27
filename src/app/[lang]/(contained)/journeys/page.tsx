@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import UserJourneys from '../../../../components/profiles/UserJourneys';
-import { getServerAuthState } from '../../../../lib/auth';
-import { getMyJourneys } from '../../../../lib/journeys';
-import { getDictionary } from '../../../../utils/getDictionary';
+import UserJourneys from '../../../../components/profiles/UserJourneys.tsx';
+import { getServerAuthState } from '../../../../lib/auth.ts';
+import { getMyJourneys } from '../../../../lib/journeys.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

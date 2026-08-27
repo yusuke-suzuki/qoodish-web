@@ -3,8 +3,8 @@
 import { Box, Link as MuiLink, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Author } from '../../../types';
-import ProfileAvatar from '../common/ProfileAvatar';
+import type { Author } from '../../../types/index.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
 type Props = {
   author: Author | null;

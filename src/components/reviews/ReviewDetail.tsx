@@ -5,17 +5,17 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
-import type { Review } from '../../../types';
-import ProfileContext from '../../context/ProfileContext';
-import useDictionary from '../../hooks/useDictionary';
-import IssueDialog from '../common/IssueDialog';
-import DeleteReviewDialog from './DeleteReviewDialog';
-import EditReviewDialog from './EditReviewDialog';
-import ReviewCardActions from './ReviewCardActions';
-import ReviewCardHeader from './ReviewCardHeader';
-import ReviewComments from './ReviewComments';
-import ReviewImageList from './ReviewImageList';
-import ReviewMenuButton from './ReviewMenuButton';
+import type { Review } from '../../../types/index.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import IssueDialog from '../common/IssueDialog.tsx';
+import DeleteReviewDialog from './DeleteReviewDialog.tsx';
+import EditReviewDialog from './EditReviewDialog.tsx';
+import ReviewCardActions from './ReviewCardActions.tsx';
+import ReviewCardHeader from './ReviewCardHeader.tsx';
+import ReviewComments from './ReviewComments.tsx';
+import ReviewImageList from './ReviewImageList.tsx';
+import ReviewMenuButton from './ReviewMenuButton.tsx';
 
 type Props = {
   review: Review;

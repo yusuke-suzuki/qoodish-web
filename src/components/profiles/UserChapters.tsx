@@ -19,12 +19,12 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { type MouseEvent, memo, useState } from 'react';
-import type { Chapter } from '../../../types';
-import { deleteChapter } from '../../actions/chapters';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalDateTime from '../../hooks/useLocalDateTime';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
-import NoContents from '../common/NoContents';
+import type { Chapter } from '../../../types/index.ts';
+import { deleteChapter } from '../../actions/chapters.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 const THUMBNAIL_SIZE = { xs: 80, sm: 100 };
 

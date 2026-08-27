@@ -8,7 +8,7 @@ import {
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { memo, type ReactNode } from 'react';
-import type { AutocompleteOption } from '../../../types';
+import type { AutocompleteOption } from '../../../types/index.ts';
 
 type Props = {
   option: AutocompleteOption;

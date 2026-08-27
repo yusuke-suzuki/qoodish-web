@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import UserProfile from '../../../../../components/profiles/UserProfile';
-import { getServerAuthState } from '../../../../../lib/auth';
-import { getMyChapters, getUserChapters } from '../../../../../lib/chapters';
+import UserProfile from '../../../../../components/profiles/UserProfile.tsx';
+import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getMyChapters, getUserChapters } from '../../../../../lib/chapters.ts';
 import {
   getMyJournal,
   getMyMaps,
@@ -11,10 +11,13 @@ import {
   getUserJournal,
   getUserMaps,
   getUserReviews
-} from '../../../../../lib/users';
-import { getDictionary } from '../../../../../utils/getDictionary';
-import { localePath } from '../../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../../utils/metadata';
+} from '../../../../../lib/users.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../utils/locales.ts';
+import {
+  buildAlternates,
+  defaultOgImage
+} from '../../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string; userId: string }>;

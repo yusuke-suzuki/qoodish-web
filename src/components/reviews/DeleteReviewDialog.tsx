@@ -1,9 +1,9 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Review } from '../../../types';
-import { deleteReview } from '../../actions/reviews';
-import useDictionary from '../../hooks/useDictionary';
-import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog';
+import type { Review } from '../../../types/index.ts';
+import { deleteReview } from '../../actions/reviews.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 
 type Props = {
   review: Review | null;

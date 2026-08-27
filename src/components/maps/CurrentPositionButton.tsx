@@ -1,7 +1,7 @@
 import { MyLocation } from '@mui/icons-material';
 import { Box, CircularProgress, Fab } from '@mui/material';
 import { memo, useState } from 'react';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 
 function CurrentPositionButton() {
   const { googleMap, setCurrentPosition } = useGoogleMap();

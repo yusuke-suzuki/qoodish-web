@@ -3,11 +3,11 @@
 import { Flag, Place } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
 import { memo, useEffect, useRef, useState } from 'react';
-import type { JourneyPathPoint, Spot } from '../../../types';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { footprintIcons } from '../../utils/journeyTrailIcons';
-import GoogleMaps from '../maps/GoogleMaps';
-import MarkerView from '../maps/MarkerView';
+import type { JourneyPathPoint, Spot } from '../../../types/index.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import { footprintIcons } from '../../utils/journeyTrailIcons.ts';
+import GoogleMaps from '../maps/GoogleMaps.tsx';
+import MarkerView from '../maps/MarkerView.tsx';
 
 // A flag in the primary color marks a milestone still to reach, the same way
 // ReviewMarker badges one on the map screen.

@@ -1,4 +1,4 @@
-import type { JourneyPathPoint } from '../../types';
+import type { JourneyPathPoint } from '../../types/index.ts';
 
 const KEY_PREFIX = 'qoodish.journeyTrail.v1';
 

@@ -1,12 +1,12 @@
 import { DirectionsWalk, Pause } from '@mui/icons-material';
 import { Box, Fab } from '@mui/material';
 import { memo, useContext, useEffect, useState } from 'react';
-import type { Journey } from '../../../types';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import WalkingFootprints from '../common/WalkingFootprints';
-import MapControl from '../maps/MapControl';
+import type { Journey } from '../../../types/index.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import WalkingFootprints from '../common/WalkingFootprints.tsx';
+import MapControl from '../maps/MapControl.tsx';
 
 type Props = {
   disabled: boolean;

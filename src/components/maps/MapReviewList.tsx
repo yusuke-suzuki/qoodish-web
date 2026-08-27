@@ -9,10 +9,10 @@ import {
 } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo } from 'react';
-import type { Review } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import AuthorAvatar from '../common/AuthorAvatar';
-import NoContents from '../common/NoContents';
+import type { Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AuthorAvatar from '../common/AuthorAvatar.tsx';
+import NoContents from '../common/NoContents.tsx';
 
 type Props = {
   reviews: Review[];

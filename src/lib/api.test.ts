@@ -5,7 +5,7 @@ import {
   apiFetchOrThrow,
   assertApiAvailable,
   performApiFetch
-} from './api';
+} from './api.ts';
 
 process.env.API_ENDPOINT = 'https://api.example.com';
 

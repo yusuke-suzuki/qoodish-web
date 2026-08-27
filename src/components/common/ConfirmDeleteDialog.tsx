@@ -2,8 +2,8 @@
 
 import { Checkbox, DialogContentText, FormControlLabel } from '@mui/material';
 import { memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog from './AppDialog';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog from './AppDialog.tsx';
 
 type Props = {
   open: boolean;

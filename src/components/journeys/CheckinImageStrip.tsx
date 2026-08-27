@@ -13,10 +13,10 @@ import {
 } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { type ChangeEvent, memo, useCallback, useId, useState } from 'react';
-import type { Image, JourneyCheckin } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import fileToDataUrl from '../../utils/fileToDataUrl';
-import uploadImage from '../../utils/uploadImage';
+import type { Image, JourneyCheckin } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import fileToDataUrl from '../../utils/fileToDataUrl.ts';
+import uploadImage from '../../utils/uploadImage.ts';
 
 const IMAGE_SIZE = 96;
 

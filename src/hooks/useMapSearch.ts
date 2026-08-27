@@ -1,6 +1,6 @@
 import debounce from 'lodash.debounce';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { AppMap } from '../../types';
+import type { AppMap } from '../../types/index.ts';
 
 export function useMapSearch(input: string | null | undefined) {
   const [options, setOptions] = useState<AppMap[]>([]);

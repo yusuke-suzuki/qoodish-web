@@ -9,10 +9,10 @@ import {
 } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { memo, useCallback, useContext, useMemo, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import AppDialog, { type ConfirmAction } from '../common/AppDialog';
-import EmailField from '../common/EmailField';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import AppDialog, { type ConfirmAction } from '../common/AppDialog.tsx';
+import EmailField from '../common/EmailField.tsx';
 
 type Props = {
   open: boolean;

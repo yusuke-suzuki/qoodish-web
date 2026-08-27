@@ -9,9 +9,9 @@ import {
   useRef,
   useState
 } from 'react';
-import type { Chapter, MapFeatureCollection } from '../../types';
-import { deleteChapter, updateChapter } from '../actions/chapters';
-import useDictionary from './useDictionary';
+import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
+import { deleteChapter, updateChapter } from '../actions/chapters.ts';
+import useDictionary from './useDictionary.ts';
 
 const AUTOSAVE_DELAY = 800;
 

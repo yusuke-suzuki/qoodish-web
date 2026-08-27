@@ -4,13 +4,13 @@ import { Bookmark, BookmarkBorder } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState, useTransition } from 'react';
-import type { Journal } from '../../../types';
+import type { Journal } from '../../../types/index.ts';
 import {
   bookmarkJournal,
   removeJournalBookmark
-} from '../../actions/journalBookmarks';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+} from '../../actions/journalBookmarks.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   journal: Journal;

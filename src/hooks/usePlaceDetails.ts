@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useGoogleMap } from './useGoogleMap';
+import { useGoogleMap } from './useGoogleMap.ts';
 
 const placeCache = new Map<string, google.maps.places.Place>();
 

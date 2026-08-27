@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DEFAULT_LOCALE, localePath } from './locales';
+import { DEFAULT_LOCALE, localePath } from './locales.ts';
 
 export const SITE_ORIGIN = 'https://qoodish.com';
 

@@ -24,8 +24,8 @@ import {
   type ReactNode,
   useId
 } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import SlideUpTransition from './SlideUpTransition';
+import useDictionary from '../../hooks/useDictionary.ts';
+import SlideUpTransition from './SlideUpTransition.tsx';
 
 // In full screen the form has to fill the dialog's height, or the content
 // cannot grow and the action row is not pinned to the bottom.

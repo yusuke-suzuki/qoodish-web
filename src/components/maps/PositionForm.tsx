@@ -1,10 +1,10 @@
 import { Done, Edit } from '@mui/icons-material';
 import { Box, Button, Chip, Stack } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
-import CoodinatesConverter from './CoodinatesConverter';
-import GoogleMaps from './GoogleMaps';
-import StaticMap from './StaticMap';
+import useDictionary from '../../hooks/useDictionary.ts';
+import CoodinatesConverter from './CoodinatesConverter.tsx';
+import GoogleMaps from './GoogleMaps.tsx';
+import StaticMap from './StaticMap.tsx';
 
 type Props = {
   onChange: (position: google.maps.LatLngLiteral) => void;

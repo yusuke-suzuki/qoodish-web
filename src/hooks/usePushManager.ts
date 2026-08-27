@@ -1,7 +1,7 @@
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useContext, useEffect, useState } from 'react';
-import { registerDevice } from '../actions/devices';
-import AuthContext from '../context/AuthContext';
+import { registerDevice } from '../actions/devices.ts';
+import AuthContext from '../context/AuthContext.ts';
 
 export function usePushManager(registration: ServiceWorkerRegistration | null) {
   const [subscription, setSubscription] = useState<PushSubscription>(null);

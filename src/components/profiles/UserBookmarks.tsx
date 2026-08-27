@@ -1,9 +1,9 @@
 import { Bookmarks } from '@mui/icons-material';
 import { memo } from 'react';
-import type { AppMap } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import NoContents from '../common/NoContents';
-import MapGridList from '../maps/MapGridList';
+import type { AppMap } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import NoContents from '../common/NoContents.tsx';
+import MapGridList from '../maps/MapGridList.tsx';
 
 type Props = {
   maps: AppMap[];

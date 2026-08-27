@@ -1,5 +1,5 @@
-import type { Journey, JourneySummary } from '../../types';
-import { apiFetch } from './api';
+import type { Journey, JourneySummary } from '../../types/index.ts';
+import { apiFetch } from './api.ts';
 
 export async function getMyJourneys(
   lang: string,

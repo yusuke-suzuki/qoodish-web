@@ -11,10 +11,10 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Chapter } from '../../../types';
-import { likeChapter, unlikeChapter } from '../../actions/chapterLikes';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+import type { Chapter } from '../../../types/index.ts';
+import { likeChapter, unlikeChapter } from '../../actions/chapterLikes.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   chapter: Chapter;

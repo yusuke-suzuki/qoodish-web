@@ -2,10 +2,10 @@ import { BookmarkBorder } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState, useTransition } from 'react';
-import type { AppMap } from '../../../types';
-import { bookmarkMap } from '../../actions/mapBookmarks';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
+import type { AppMap } from '../../../types/index.ts';
+import { bookmarkMap } from '../../actions/mapBookmarks.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   map: AppMap | null;

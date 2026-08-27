@@ -16,7 +16,7 @@ import type {
   JourneyPathPoint,
   Milestone,
   Review
-} from '../../types';
+} from '../../types/index.ts';
 import {
   addCheckin,
   addMilestone as addMilestoneAction,
@@ -27,13 +27,13 @@ import {
   removeMilestone as removeMilestoneAction,
   startJourney,
   updateCheckin
-} from '../actions/journeys';
-import AuthContext from '../context/AuthContext';
+} from '../actions/journeys.ts';
+import AuthContext from '../context/AuthContext.ts';
 import {
   deletePaused,
   loadPaused,
   savePaused
-} from '../utils/journeyPauseStorage';
+} from '../utils/journeyPauseStorage.ts';
 import {
   MOVING_SAMPLE_MIN_INTERVAL_MS,
   nextHighAccuracy,
@@ -41,13 +41,13 @@ import {
   type StationaryAnchor,
   type TrackingFix,
   trackPosition
-} from '../utils/journeyTracking';
+} from '../utils/journeyTracking.ts';
 import {
   deleteTrail,
   loadTrail,
   saveTrail
-} from '../utils/journeyTrailStorage';
-import { encodePath } from '../utils/polyline';
+} from '../utils/journeyTrailStorage.ts';
+import { encodePath } from '../utils/polyline.ts';
 
 const CHECKIN_VIBRATION_MS = 30;
 

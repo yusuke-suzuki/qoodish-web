@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   value: string;

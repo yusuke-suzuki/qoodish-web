@@ -6,8 +6,8 @@ import {
   Switch
 } from '@mui/material';
 import { type ChangeEvent, memo, useEffect, useState } from 'react';
-import type { AppMap } from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
+import type { AppMap } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 type MapOptions = {
   isPrivate: boolean;

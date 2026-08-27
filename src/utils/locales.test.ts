@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { DEFAULT_LOCALE, isLocale, localePath, toLocale } from './locales';
+import { DEFAULT_LOCALE, isLocale, localePath, toLocale } from './locales.ts';
 
 describe('isLocale', () => {
   it('accepts every supported locale', () => {

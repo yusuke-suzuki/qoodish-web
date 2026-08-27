@@ -2,7 +2,7 @@ import privacyEn from '../content/legal/privacy.en.md';
 import privacyJa from '../content/legal/privacy.ja.md';
 import termsEn from '../content/legal/terms.en.md';
 import termsJa from '../content/legal/terms.ja.md';
-import { type Locale, toLocale } from './locales';
+import { type Locale, toLocale } from './locales.ts';
 
 type LegalDocumentName = 'privacy' | 'terms';
 

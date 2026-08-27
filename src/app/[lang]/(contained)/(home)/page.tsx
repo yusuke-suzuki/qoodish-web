@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
-import Timeline from '../../../../components/home/Timeline';
-import TrendingReviews from '../../../../components/home/TrendingReviews';
-import { getServerAuthState } from '../../../../lib/auth';
-import { getPopularReviews, getTimelineReviews } from '../../../../lib/reviews';
-import { getDictionary } from '../../../../utils/getDictionary';
-import { localePath } from '../../../../utils/locales';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata';
+import Timeline from '../../../../components/home/Timeline.tsx';
+import TrendingReviews from '../../../../components/home/TrendingReviews.tsx';
+import { getServerAuthState } from '../../../../lib/auth.ts';
+import {
+  getPopularReviews,
+  getTimelineReviews
+} from '../../../../lib/reviews.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../utils/locales.ts';
+import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

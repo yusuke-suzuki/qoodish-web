@@ -1,9 +1,9 @@
 import { Container, Grid } from '@mui/material';
 import type { ReactNode } from 'react';
-import BottomNav from '../../../components/layouts/BottomNav';
-import Sidebar from '../../../components/layouts/Sidebar';
-import { getServerAuthState } from '../../../lib/auth';
-import { getPopularMaps, getRecommendMaps } from '../../../lib/maps';
+import BottomNav from '../../../components/layouts/BottomNav.tsx';
+import Sidebar from '../../../components/layouts/Sidebar.tsx';
+import { getServerAuthState } from '../../../lib/auth.ts';
+import { getPopularMaps, getRecommendMaps } from '../../../lib/maps.ts';
 
 type Props = {
   children: ReactNode;

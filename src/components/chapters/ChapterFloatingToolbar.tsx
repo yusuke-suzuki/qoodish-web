@@ -34,7 +34,7 @@ import {
   useRef,
   useState
 } from 'react';
-import useDictionary from '../../hooks/useDictionary';
+import useDictionary from '../../hooks/useDictionary.ts';
 
 function FormatButton({
   label,

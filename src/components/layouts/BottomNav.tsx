@@ -16,11 +16,11 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useEffect, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import ProfileContext from '../../context/ProfileContext';
-import ShellContext from '../../context/ShellContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
+import AuthContext from '../../context/AuthContext.ts';
+import ProfileContext from '../../context/ProfileContext.ts';
+import ShellContext from '../../context/ShellContext.tsx';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
 
 export default memo(function BottomNav() {
   const { authenticated } = useContext(AuthContext);

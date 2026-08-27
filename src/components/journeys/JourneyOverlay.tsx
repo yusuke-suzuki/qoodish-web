@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, useState } from 'react';
-import type { JourneyPathPoint } from '../../../types';
-import { useGoogleMap } from '../../hooks/useGoogleMap';
-import { footprintIcons } from '../../utils/journeyTrailIcons';
+import type { JourneyPathPoint } from '../../../types/index.ts';
+import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import { footprintIcons } from '../../utils/journeyTrailIcons.ts';
 
 type Props = {
   position: GeolocationPosition | null;

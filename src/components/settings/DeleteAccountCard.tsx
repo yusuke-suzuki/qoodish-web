@@ -10,10 +10,10 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
-import AuthContext from '../../context/AuthContext';
-import useDictionary from '../../hooks/useDictionary';
-import useLocalePath from '../../hooks/useLocalePath';
-import DeleteAccountDialog from './DeleteAccountDialog';
+import AuthContext from '../../context/AuthContext.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import DeleteAccountDialog from './DeleteAccountDialog.tsx';
 
 function DeleteAccountCard() {
   const dictionary = useDictionary();

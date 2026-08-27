@@ -3,7 +3,7 @@
 import { keyframes } from '@emotion/react';
 import { Box } from '@mui/material';
 import { memo } from 'react';
-import { FOOTPRINT_PATH_RIGHT } from '../../utils/journeyTrailIcons';
+import { FOOTPRINT_PATH_RIGHT } from '../../utils/journeyTrailIcons.ts';
 
 const VIEW_SIZE = 400;
 const STEP_COUNT = 10;

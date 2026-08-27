@@ -3,7 +3,7 @@ import type {
   MapFeature,
   MapFeatureCollection,
   Spot
-} from '../../types';
+} from '../../types/index.ts';
 
 export function spotFeature(spot: Spot): MapFeature {
   return {

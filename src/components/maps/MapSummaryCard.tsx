@@ -16,15 +16,15 @@ import type {
   Coauthor,
   Profile,
   Review
-} from '../../../types';
-import useDictionary from '../../hooks/useDictionary';
-import BookmarkButton from './BookmarkButton';
-import Coauthors from './Coauthors';
-import MapCardHeader from './MapCardHeader';
-import MapDetailTabs from './MapDetailTabs';
-import MapMenuButton from './MapMenuButton';
-import PrivateMapChip from './PrivateMapChip';
-import RemoveBookmarkButton from './RemoveBookmarkButton';
+} from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
+import BookmarkButton from './BookmarkButton.tsx';
+import Coauthors from './Coauthors.tsx';
+import MapCardHeader from './MapCardHeader.tsx';
+import MapDetailTabs from './MapDetailTabs.tsx';
+import MapMenuButton from './MapMenuButton.tsx';
+import PrivateMapChip from './PrivateMapChip.tsx';
+import RemoveBookmarkButton from './RemoveBookmarkButton.tsx';
 
 type Props = {
   map: AppMap | null;

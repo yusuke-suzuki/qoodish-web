@@ -9,9 +9,9 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, type ReactNode } from 'react';
-import type { AppMap } from '../../../types';
-import useLocalePath from '../../hooks/useLocalePath';
-import AuthorAvatar from '../common/AuthorAvatar';
+import type { AppMap } from '../../../types/index.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import AuthorAvatar from '../common/AuthorAvatar.tsx';
 
 type Props = {
   map: AppMap | null;
