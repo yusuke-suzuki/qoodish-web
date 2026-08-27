@@ -48,15 +48,22 @@ export async function performApiFetch<T>(
 
   const apiPath = token ? path : `/guest${path}`;
 
-  const requestHeaders: Record<string, string> = {
+  // Headers matches names case-insensitively, so a caller's 'content-type'
+  // replaces the default instead of the two being sent comma-joined as one
+  // value, which is what merging plain objects by spread produced.
+  const requestHeaders = new Headers({
     Accept: 'application/json',
     'Accept-Language': acceptLanguage,
     'Content-Type': 'application/json'
-  };
+  });
 
   if (token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
+    requestHeaders.set('Authorization', `Bearer ${token}`);
   }
+
+  new Headers(fetchOptions.headers).forEach((value, name) => {
+    requestHeaders.set(name, value);
+  });
 
   try {
     const res = await fetch(`${process.env.API_ENDPOINT}${apiPath}`, {
@@ -64,10 +71,7 @@ export async function performApiFetch<T>(
       signal:
         fetchOptions.signal ??
         AbortSignal.timeout(timeoutMs ?? DEFAULT_TIMEOUT_MS),
-      headers: {
-        ...requestHeaders,
-        ...Object.fromEntries(new Headers(fetchOptions.headers).entries())
-      },
+      headers: requestHeaders,
       next
     });
 
