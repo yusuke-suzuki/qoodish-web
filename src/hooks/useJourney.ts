@@ -652,9 +652,18 @@ export default function useJourney({
       milestones.length < 1 &&
       latest.checkins.length < 1
     ) {
-      deleteJourney(latest.id);
-      commitJourney(null);
-      return;
+      const { success: deleted, error: deleteError } = await deleteJourney(
+        latest.id
+      );
+
+      if (deleted) {
+        commitJourney(null);
+        return;
+      }
+
+      // Clearing a journey the server still holds would strand it: the next
+      // milestone would open a second one for the same map.
+      onError(deleteError);
     }
 
     commitJourney({ ...latest, milestones });
