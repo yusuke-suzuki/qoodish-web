@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { SerializedEditorState } from 'lexical';
 import type { Image, Journey, JourneyCheckin } from '../../types/index.ts';
+import { buildCheckin, buildJourney } from '../test/journeys.ts';
 import {
   chapterSections,
   createChapterContent,
@@ -17,38 +18,6 @@ function buildImage(id: number): Image {
     card: `https://images.example.com/${id}/card`,
     hero: `https://images.example.com/${id}/hero`,
     ogp: `https://images.example.com/${id}/ogp`
-  };
-}
-
-function buildCheckin(
-  id: number,
-  checkedInAt: string,
-  overrides: Partial<JourneyCheckin> = {}
-): JourneyCheckin {
-  return {
-    id,
-    review_id: id * 100,
-    spot: { name: `Spot ${id}`, latitude: 35, longitude: 139 },
-    checked_in_at: checkedInAt,
-    note: null,
-    images: [],
-    ...overrides
-  };
-}
-
-function buildJourney(checkins: JourneyCheckin[]): Journey {
-  return {
-    id: 1,
-    map_id: 10,
-    started_at: '2026-08-01T00:00:00Z',
-    finished_at: null,
-    milestones: [],
-    checkins,
-    encoded_path: null,
-    chapter_id: null,
-    map: null,
-    created_at: '2026-08-01T00:00:00Z',
-    updated_at: '2026-08-01T00:00:00Z'
   };
 }
 
