@@ -2,16 +2,11 @@
 
 import type { SerializedEditorState } from 'lexical';
 import { enqueueSnackbar } from 'notistack';
-import {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
 import { deleteChapter, updateChapter } from '../actions/chapters.ts';
 import useDictionary from './useDictionary.ts';
+import useLatestCallback from './useLatestCallback.ts';
 
 const AUTOSAVE_DELAY = 800;
 
@@ -97,9 +92,9 @@ export default function useChapter(initialChapter: Chapter) {
   };
 
   // The debounce timer and the pagehide listener outlive the render that
-  // registered them, so they flush through an effect event, which always
-  // sees the latest committed values. Event handlers call flush directly.
-  const flushLatest = useEffectEvent(flush);
+  // registered them, so they flush through the latest committed closure,
+  // which sees the newest draft. Event handlers call flush directly.
+  const flushLatest = useLatestCallback(flush);
 
   useEffect(() => {
     if (chapter.updated_at === savedAt) {
@@ -109,7 +104,7 @@ export default function useChapter(initialChapter: Chapter) {
     const timer = window.setTimeout(() => flushLatest(), AUTOSAVE_DELAY);
 
     return () => window.clearTimeout(timer);
-  }, [chapter, savedAt]);
+  }, [chapter, savedAt, flushLatest]);
 
   useEffect(() => {
     const handlePageHide = () => {
@@ -122,7 +117,7 @@ export default function useChapter(initialChapter: Chapter) {
       window.removeEventListener('pagehide', handlePageHide);
       flushLatest();
     };
-  }, []);
+  }, [flushLatest]);
 
   const mutate = useCallback((updater: (chapter: Chapter) => Chapter) => {
     setChapter((current) => ({

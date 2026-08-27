@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type {
   AppMap,
   Image,
@@ -48,6 +41,7 @@ import {
   saveTrail
 } from '../utils/journeyTrailStorage.ts';
 import { encodePath } from '../utils/polyline.ts';
+import useLatestCallback from './useLatestCallback.ts';
 
 const CHECKIN_VIBRATION_MS = 30;
 
@@ -364,11 +358,11 @@ export default function useJourney({
   };
 
   // The geolocation watch and the sampling timer outlive the render that
-  // registered them, so they deliver fixes through an effect event, which
-  // always sees the latest committed review list without the watch having to
+  // registered them, so they deliver fixes through the latest committed
+  // closure, which sees the newest review list without the watch having to
   // re-register every time that list changes. Event handlers call
   // processPosition directly.
-  const handlePosition = useEffectEvent(processPosition);
+  const handlePosition = useLatestCallback(processPosition);
 
   // Losing the permission mid-journey must not cost the traveller their
   // milestones and check-ins, so recording only pauses.
@@ -487,7 +481,15 @@ export default function useJourney({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [uid, watching, highAccuracy, stationary, handleError, onLocationError]);
+  }, [
+    uid,
+    watching,
+    highAccuracy,
+    stationary,
+    handlePosition,
+    handleError,
+    onLocationError
+  ]);
 
   const requestPosition =
     useCallback((): Promise<GeolocationPosition | null> => {
