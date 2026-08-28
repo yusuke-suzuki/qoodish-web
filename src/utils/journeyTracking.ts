@@ -122,14 +122,36 @@ export function shouldExtendTrail(
   return distanceInMeters(fix, lastPoint) >= minDistance;
 }
 
-export function nearestSpotDistance(
-  from: TrackedSpot,
-  spots: TrackedSpot[]
-): number {
-  return spots.reduce(
-    (shortest, spot) => Math.min(shortest, distanceInMeters(from, spot)),
-    Number.POSITIVE_INFINITY
-  );
+export type SpotSurvey<S extends TrackedSpot> = {
+  nearestMeters: number;
+  reached: S[];
+};
+
+// The sampling cadence and the check-in decision both need the distance to
+// every remaining spot, and haversine over that list is the heaviest work a
+// continuous watch repeats at roughly 1 Hz. One pass answers both.
+export function surveySpots<S extends TrackedSpot>(
+  fix: TrackingFix,
+  spots: S[]
+): SpotSurvey<S> {
+  const canCheckIn = fix.accuracy <= CHECKIN_MAX_ACCURACY_METERS;
+
+  let nearestMeters = Number.POSITIVE_INFINITY;
+  const reached: S[] = [];
+
+  for (const spot of spots) {
+    const meters = distanceInMeters(fix, spot);
+
+    if (meters < nearestMeters) {
+      nearestMeters = meters;
+    }
+
+    if (canCheckIn && meters <= CHECKIN_RADIUS_METERS) {
+      reached.push(spot);
+    }
+  }
+
+  return { nearestMeters, reached };
 }
 
 export function nextHighAccuracy(
@@ -187,19 +209,6 @@ export function movingSampleIntervalMs(
   );
 }
 
-export function reachedSpots<S extends TrackedSpot>(
-  fix: TrackingFix,
-  spots: S[]
-): S[] {
-  if (fix.accuracy > CHECKIN_MAX_ACCURACY_METERS) {
-    return [];
-  }
-
-  return spots.filter(
-    (spot) => distanceInMeters(fix, spot) <= CHECKIN_RADIUS_METERS
-  );
-}
-
 export type TrackingState = {
   anchor: StationaryAnchor | null;
   stationary: boolean;
@@ -222,7 +231,7 @@ export function trackPosition<S extends TrackedSpot>(
   remainingSpots: S[]
 ): TrackingDecision<S> {
   const { anchor, stationary } = nextAnchorState(state, fix);
-  const nearestMeters = nearestSpotDistance(fix, remainingSpots);
+  const { nearestMeters, reached } = surveySpots(fix, remainingSpots);
 
   const sampleIntervalMs =
     stationary && anchor
@@ -235,6 +244,6 @@ export function trackPosition<S extends TrackedSpot>(
     extendTrail: shouldExtendTrail(state.lastTrailPoint, fix),
     nearestMeters,
     sampleIntervalMs,
-    reached: reachedSpots(fix, remainingSpots)
+    reached
   };
 }

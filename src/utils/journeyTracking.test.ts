@@ -3,13 +3,12 @@ import { describe, it } from 'node:test';
 import { assertCloseTo } from '../test/assertions.ts';
 import {
   movingSampleIntervalMs,
-  nearestSpotDistance,
   nextAnchorState,
   nextHighAccuracy,
-  reachedSpots,
   type StationaryAnchor,
   shouldExtendTrail,
   stationarySampleIntervalMs,
+  surveySpots,
   type TrackingFix,
   trackPosition
 } from './journeyTracking.ts';
@@ -182,18 +181,46 @@ describe('shouldExtendTrail', () => {
   });
 });
 
-describe('nearestSpotDistance', () => {
+describe('surveySpots', () => {
   it('is infinite without spots', () => {
-    assert.equal(nearestSpotDistance(pointAt(0), []), Number.POSITIVE_INFINITY);
+    const survey = surveySpots(buildFix(0), []);
+
+    assert.equal(survey.nearestMeters, Number.POSITIVE_INFINITY);
+    assert.deepEqual(survey.reached, []);
   });
 
   it('picks the closest spot', () => {
-    const nearest = nearestSpotDistance(pointAt(0), [
-      pointAt(200),
-      pointAt(100)
-    ]);
+    const survey = surveySpots(buildFix(0), [pointAt(200), pointAt(100)]);
 
-    assertCloseTo(nearest, 100, 0.001);
+    assertCloseTo(survey.nearestMeters, 100, 0.001);
+  });
+
+  it('reaches only spots inside the check-in radius', () => {
+    const near = pointAt(49);
+    const far = pointAt(60);
+
+    assert.deepEqual(surveySpots(buildFix(0), [near, far]).reached, [near]);
+  });
+
+  it('never checks in from a coarse fix', () => {
+    const survey = surveySpots(buildFix(0, { accuracy: 101 }), [pointAt(0)]);
+
+    assert.deepEqual(survey.reached, []);
+  });
+
+  it('still measures the distance a coarse fix may not check in from', () => {
+    const survey = surveySpots(buildFix(0, { accuracy: 101 }), [pointAt(100)]);
+
+    assertCloseTo(survey.nearestMeters, 100, 0.001);
+  });
+
+  it('still checks in at the accuracy limit', () => {
+    const spot = pointAt(10);
+
+    assert.deepEqual(
+      surveySpots(buildFix(0, { accuracy: 100 }), [spot]).reached,
+      [spot]
+    );
   });
 });
 
@@ -286,30 +313,6 @@ describe('movingSampleIntervalMs', () => {
     const fix = buildFix(0, { speed: -1 });
 
     assert.equal(movingSampleIntervalMs(fix, null, 375), 50000);
-  });
-});
-
-describe('reachedSpots', () => {
-  it('reaches only spots inside the check-in radius', () => {
-    const near = pointAt(49);
-    const far = pointAt(60);
-
-    assert.deepEqual(reachedSpots(buildFix(0), [near, far]), [near]);
-  });
-
-  it('never checks in from a coarse fix', () => {
-    assert.deepEqual(
-      reachedSpots(buildFix(0, { accuracy: 101 }), [pointAt(0)]),
-      []
-    );
-  });
-
-  it('still checks in at the accuracy limit', () => {
-    const spot = pointAt(10);
-
-    assert.deepEqual(reachedSpots(buildFix(0, { accuracy: 100 }), [spot]), [
-      spot
-    ]);
   });
 });
 

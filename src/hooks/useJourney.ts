@@ -69,7 +69,43 @@ const LOW_ACCURACY_OPTIONS: PositionOptions = {
 // A fix that never resolves would otherwise stall the sampling loop.
 const SAMPLE_TIMEOUT_MS = 30000;
 
+// Every write serialises the whole trail, so writing on each point makes the
+// cost grow with the journey inside the position callback. The store only has
+// to survive a reload, and a flush before the page goes away covers that.
+const TRAIL_SAVE_INTERVAL_MS = 15000;
+
 export type PauseReason = 'permission' | 'inactivity';
+
+type RemainingSpots = {
+  reviews: Review[];
+  checkins: JourneyCheckin[];
+  spots: Review[];
+};
+
+// A fix arrives at roughly 1 Hz, while the two inputs change only on a
+// check-in or a router refresh, so the derived list outlives the fix that
+// asked for it.
+function remainingSpots(
+  previous: RemainingSpots | null,
+  reviews: Review[],
+  checkins: JourneyCheckin[]
+): RemainingSpots {
+  if (
+    previous &&
+    previous.reviews === reviews &&
+    previous.checkins === checkins
+  ) {
+    return previous;
+  }
+
+  const visitedIds = new Set(checkins.map((checkin) => checkin.review_id));
+
+  return {
+    reviews,
+    checkins,
+    spots: reviews.filter((review) => !visitedIds.has(review.id))
+  };
+}
 
 type Args = {
   map: AppMap;
@@ -132,24 +168,69 @@ export default function useJourney({
     reviewsRef.current = reviews;
   }, [reviews]);
 
+  const remainingRef = useRef<RemainingSpots | null>(null);
+
+  const trailSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const trailDirtyRef = useRef(false);
+
   const commitJourney = useCallback((next: Journey | null) => {
     journeyRef.current = next;
     setJourney(next);
   }, []);
+
+  const discardTrailSave = useCallback(() => {
+    if (trailSaveRef.current !== null) {
+      clearTimeout(trailSaveRef.current);
+      trailSaveRef.current = null;
+    }
+
+    trailDirtyRef.current = false;
+  }, []);
+
+  const flushTrail = useCallback(() => {
+    const dirty = trailDirtyRef.current;
+
+    discardTrailSave();
+
+    const current = journeyRef.current;
+
+    if (dirty && uid && current) {
+      saveTrail(uid, current.id, trailRef.current);
+    }
+  }, [uid, discardTrailSave]);
 
   const commitTrail = useCallback(
     (points: JourneyPathPoint[]) => {
       trailRef.current = points;
       setTrail(points);
 
-      const current = journeyRef.current;
+      trailDirtyRef.current = true;
 
-      if (uid && current) {
-        saveTrail(uid, current.id, points);
+      if (trailSaveRef.current === null) {
+        trailSaveRef.current = setTimeout(flushTrail, TRAIL_SAVE_INTERVAL_MS);
       }
     },
-    [uid]
+    [flushTrail]
   );
+
+  useEffect(() => {
+    const flush = () => {
+      if (document.visibilityState === 'hidden') {
+        flushTrail();
+      }
+    };
+
+    // pagehide is the only one of the two a bfcache navigation guarantees,
+    // and visibilitychange the only one backgrounding an app fires.
+    window.addEventListener('pagehide', flushTrail);
+    document.addEventListener('visibilitychange', flush);
+
+    return () => {
+      window.removeEventListener('pagehide', flushTrail);
+      document.removeEventListener('visibilitychange', flush);
+      flushTrail();
+    };
+  }, [flushTrail]);
 
   const commitPaused = useCallback(
     (next: boolean) => {
@@ -334,8 +415,10 @@ export default function useJourney({
       timestamp: position.timestamp
     };
 
-    const visitedIds = new Set(
-      current.checkins.map((checkin) => checkin.review_id)
+    remainingRef.current = remainingSpots(
+      remainingRef.current,
+      reviewsRef.current,
+      current.checkins
     );
 
     const decision = trackPosition(
@@ -346,7 +429,7 @@ export default function useJourney({
         lastTrailPoint: trailRef.current.at(-1) ?? null
       },
       fix,
-      reviewsRef.current.filter((review) => !visitedIds.has(review.id))
+      remainingRef.current.spots
     );
 
     lastFixRef.current = {
@@ -716,6 +799,9 @@ export default function useJourney({
       onError(error);
       return null;
     }
+
+    // A pending write would put the finished trail straight back.
+    discardTrailSave();
 
     deleteTrail(uid, current.id);
     deletePaused(uid, current.id);
