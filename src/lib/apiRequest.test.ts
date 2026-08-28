@@ -17,6 +17,7 @@ describe('parseAcceptLanguage', () => {
 
   it('ignores a language the reader refuses', () => {
     assert.equal(parseAcceptLanguage('ja;q=0,en'), 'en');
+    assert.equal(parseAcceptLanguage('ja;Q=0,en'), 'en');
   });
 
   it('names no locale for a wildcard', () => {
