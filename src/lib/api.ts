@@ -1,3 +1,12 @@
+import {
+  apiUrl,
+  buildApiHeaders,
+  DEFAULT_TIMEOUT_MS,
+  getAcceptLanguage,
+  getAuthToken,
+  isTimeoutError
+} from './apiRequest.ts';
+
 type ApiFetchOptions = RequestInit & {
   guest?: boolean;
   lang?: string;
@@ -18,26 +27,6 @@ export type ApiResult<T> = {
   status: number;
 };
 
-const DEFAULT_TIMEOUT_MS = 15000;
-
-// Imported lazily: `next` ships no exports map, so a static specifier fails
-// Node's strict ESM resolution when this module runs under the test runner.
-async function getAuthToken(): Promise<string | null> {
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  return cookieStore.get('__session')?.value ?? null;
-}
-
-async function getAcceptLanguage(lang?: string): Promise<string> {
-  if (lang) {
-    return lang;
-  }
-
-  const { headers } = await import('next/headers');
-  const headerStore = await headers();
-  return headerStore.get('accept-language')?.split(',')[0] ?? 'en';
-}
-
 // The transport half of apiFetch: everything below the request-context
 // lookups, so it stays callable outside a Next.js request scope.
 export async function performApiFetch<T>(
@@ -48,30 +37,17 @@ export async function performApiFetch<T>(
 
   const apiPath = token ? path : `/guest${path}`;
 
-  // Headers matches names case-insensitively, so a caller's 'content-type'
-  // replaces the default instead of the two being sent comma-joined as one
-  // value, which is what merging plain objects by spread produced.
-  const requestHeaders = new Headers({
-    Accept: 'application/json',
-    'Accept-Language': acceptLanguage,
-    'Content-Type': 'application/json'
-  });
-
-  if (token) {
-    requestHeaders.set('Authorization', `Bearer ${token}`);
-  }
-
-  new Headers(fetchOptions.headers).forEach((value, name) => {
-    requestHeaders.set(name, value);
-  });
-
   try {
-    const res = await fetch(`${process.env.API_ENDPOINT}${apiPath}`, {
+    const res = await fetch(apiUrl(apiPath), {
       ...fetchOptions,
       signal:
         fetchOptions.signal ??
         AbortSignal.timeout(timeoutMs ?? DEFAULT_TIMEOUT_MS),
-      headers: requestHeaders,
+      headers: buildApiHeaders({
+        token,
+        acceptLanguage,
+        headers: fetchOptions.headers
+      }),
       next
     });
 
@@ -90,12 +66,9 @@ export async function performApiFetch<T>(
   } catch (error) {
     console.error(`API fetch error for ${path}:`, error);
 
-    const timedOut =
-      error instanceof DOMException && error.name === 'TimeoutError';
-
     return {
       data: null,
-      error: timedOut ? 'Request timed out' : 'Network error',
+      error: isTimeoutError(error) ? 'Request timed out' : 'Network error',
       status: 0
     };
   }
