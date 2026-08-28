@@ -16,7 +16,9 @@ export async function getAuthToken(): Promise<string | null> {
 
 function quality(params: string[]): number {
   for (const param of params) {
-    const trimmed = param.trim();
+    // A parameter name is case-insensitive, and a 'Q=0' read as no weight at
+    // all would let through a language the reader had refused.
+    const trimmed = param.trim().toLowerCase();
 
     if (trimmed.startsWith('q=')) {
       const value = Number.parseFloat(trimmed.slice(2));
