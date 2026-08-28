@@ -1,5 +1,12 @@
-import { cookies } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
+import {
+  apiUrl,
+  buildApiHeaders,
+  DEFAULT_TIMEOUT_MS,
+  getAuthToken,
+  isTimeoutError,
+  parseAcceptLanguage
+} from '../../../../lib/apiRequest.ts';
 
 type Params = {
   params: Promise<{ path: string[] }>;
@@ -39,39 +46,31 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
     return NextResponse.json({ detail: 'Not found' }, { status: 404 });
   }
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get('__session')?.value;
+  const token = classification === 'auth' ? await getAuthToken() : null;
 
   if (classification === 'auth' && !token) {
     return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
   }
 
   const url = new URL(request.url);
-  const apiUrl = `${process.env.API_ENDPOINT}/${joinedPath}${url.search}`;
-
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-    'Accept-Language':
-      request.headers.get('accept-language')?.split(',')[0] ?? 'en'
-  };
-
-  if (classification === 'auth' && token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   const init: RequestInit = {
     method: request.method,
-    headers,
-    signal: AbortSignal.timeout(30000)
+    headers: buildApiHeaders({
+      token,
+      acceptLanguage: parseAcceptLanguage(
+        request.headers.get('accept-language')
+      )
+    }),
+    signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
   };
 
   if (request.method === 'POST') {
-    headers['Content-Type'] = 'application/json';
     init.body = await request.text();
   }
 
   try {
-    const res = await fetch(apiUrl, init);
+    const res = await fetch(apiUrl(`/${joinedPath}${url.search}`), init);
     const body = await res.text();
 
     return new NextResponse(body, {
@@ -83,7 +82,7 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
   } catch (error) {
     console.error(`Proxy error for /${joinedPath}:`, error);
 
-    if (error instanceof DOMException && error.name === 'TimeoutError') {
+    if (isTimeoutError(error)) {
       return NextResponse.json({ detail: 'Upstream timeout' }, { status: 504 });
     }
 
