@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { SerializedEditorState } from 'lexical';
-import type { Image, Journey, JourneyCheckin } from '../../types/index.ts';
+import type { Image } from '../../types/index.ts';
 import { buildCheckin, buildJourney } from '../test/journeys.ts';
 import {
   chapterSections,
