@@ -14,9 +14,41 @@ export async function getAuthToken(): Promise<string | null> {
   return cookieStore.get('__session')?.value ?? null;
 }
 
-// The Rails API takes one locale, not a q-weighted list.
+function quality(params: string[]): number {
+  for (const param of params) {
+    const trimmed = param.trim();
+
+    if (trimmed.startsWith('q=')) {
+      const value = Number.parseFloat(trimmed.slice(2));
+      return Number.isFinite(value) ? value : 1;
+    }
+  }
+
+  return 1;
+}
+
+// The Rails API takes one locale, not a q-weighted list. The header is under
+// no obligation to be ordered by preference, so the first entry is not
+// necessarily the wanted one, and a weight left on the value would reach the
+// backend as part of the locale.
 export function parseAcceptLanguage(header: string | null): string {
-  return header?.split(',')[0] ?? 'en';
+  let best = '';
+  let bestQuality = 0;
+
+  for (const entry of header?.split(',') ?? []) {
+    const [tag, ...params] = entry.trim().split(';');
+    const weight = quality(params);
+
+    // A wildcard names no locale, and a zero weight refuses one.
+    if (!tag || tag === '*' || weight <= 0 || weight <= bestQuality) {
+      continue;
+    }
+
+    best = tag;
+    bestQuality = weight;
+  }
+
+  return best || 'en';
 }
 
 export async function getAcceptLanguage(lang?: string): Promise<string> {

@@ -7,8 +7,25 @@ describe('parseAcceptLanguage', () => {
     assert.equal(parseAcceptLanguage('ja,en-US;q=0.9,en;q=0.8'), 'ja');
   });
 
-  it('falls back to English without a header', () => {
+  it('prefers the heaviest language over the first one', () => {
+    assert.equal(parseAcceptLanguage('en;q=0.5,ja'), 'ja');
+  });
+
+  it('leaves the weight off the language it picks', () => {
+    assert.equal(parseAcceptLanguage('en-US;q=0.9'), 'en-US');
+  });
+
+  it('ignores a language the reader refuses', () => {
+    assert.equal(parseAcceptLanguage('ja;q=0,en'), 'en');
+  });
+
+  it('names no locale for a wildcard', () => {
+    assert.equal(parseAcceptLanguage('*'), 'en');
+  });
+
+  it('falls back to English without a usable header', () => {
     assert.equal(parseAcceptLanguage(null), 'en');
+    assert.equal(parseAcceptLanguage(''), 'en');
   });
 });
 
