@@ -38,6 +38,7 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import NotificationList from '../notifications/NotificationList.tsx';
 import AccountMenuButton from './AccountMenuButton.tsx';
+import LocaleMenuButton from './LocaleMenuButton.tsx';
 import LogoAvatar from './LogoAvatar.tsx';
 
 export default memo(function MiniDrawer() {
@@ -267,6 +268,8 @@ export default memo(function MiniDrawer() {
         </List>
 
         <List component="nav">
+          <LocaleMenuButton variant="rail" />
+
           <AccountMenuButton />
         </List>
       </Drawer>

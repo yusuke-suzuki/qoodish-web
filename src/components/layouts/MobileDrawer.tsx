@@ -4,7 +4,6 @@ import {
   Bookmarks,
   ChevronLeft,
   DirectionsWalk,
-  ExitToApp,
   Explore,
   Home,
   Mail,
@@ -34,6 +33,7 @@ import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
 
 type Props = {
@@ -236,9 +236,6 @@ export default memo(function MobileDrawer({
             href={localePath('/login')}
             title={dictionary.login}
           >
-            <ListItemIcon>
-              <ExitToApp />
-            </ListItemIcon>
             <ListItemText
               primary={dictionary.login}
               slotProps={{
@@ -247,6 +244,7 @@ export default memo(function MobileDrawer({
             />
           </ListItemButton>
         )}
+        <LocaleMenuButton variant="list" onNavigate={onClose} />
         <ListItemButton
           dense
           onClick={onClose}
