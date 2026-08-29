@@ -380,5 +380,8 @@
   "record as chapter": "チャプターを執筆",
   "not recorded as chapter": "この旅のチャプターはまだ執筆されていません。",
   "checkins count": "{count} 件のチェックイン",
-  "no checkins": "チェックインがありません。"
+  "no checkins": "チェックインがありません。",
+  "language": "言語",
+  "en language": "English",
+  "ja language": "日本語"
 }

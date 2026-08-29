@@ -380,5 +380,8 @@
   "record as chapter": "Write a chapter",
   "not recorded as chapter": "This journey hasn't been written up as a chapter yet.",
   "checkins count": "{count} check-ins",
-  "no checkins": "No check-ins."
+  "no checkins": "No check-ins.",
+  "language": "Language",
+  "en language": "English",
+  "ja language": "日本語"
 }
