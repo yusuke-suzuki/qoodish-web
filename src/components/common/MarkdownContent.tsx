@@ -1,3 +1,10 @@
+'use client';
+
+// react-markdown takes its renderers as props, and a component is a function.
+// Building this map on the server would mean handing functions across the
+// boundary, which fails the render rather than degrading it: the document goes
+// missing from the server's HTML and only the client puts it back.
+
 import { Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import Markdown, { type Components } from 'react-markdown';
