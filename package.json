@@ -14,10 +14,13 @@
     "typecheck": "tsc --noEmit",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"src/**/*.test.ts\"",
     "e2e": "playwright test",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "deploy:dev": "opennextjs-cloudflare build --env dev && opennextjs-cloudflare deploy --env dev",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "preview": "pnpm run cf:build && opennextjs-cloudflare preview",
+    "deploy": "pnpm run cf:build && pnpm run cf:deploy",
+    "deploy:dev": "pnpm run cf:build:dev && pnpm run cf:deploy:dev",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:build:dev": "opennextjs-cloudflare build --env dev",
+    "cf:deploy": "opennextjs-cloudflare deploy",
+    "cf:deploy:dev": "opennextjs-cloudflare deploy --env dev",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
