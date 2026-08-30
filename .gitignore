@@ -90,3 +90,9 @@ credentials.*.json
 .claude/settings.local.json
 
 spec
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
