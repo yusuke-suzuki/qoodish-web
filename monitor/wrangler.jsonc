@@ -1,0 +1,31 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "qoodish-web-monitor",
+  "account_id": "9671c836ad132f87d892b12ccd1809e0",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "observability": {
+    "enabled": true
+  },
+  "browser": {
+    "binding": "BROWSER"
+  },
+  "triggers": {
+    "crons": ["*/30 * * * *"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "MONITOR_STATE",
+      // Create the namespace before the first deploy and paste its id here:
+      //   pnpm exec wrangler kv namespace create MONITOR_STATE
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+    }
+  ],
+  "vars": {
+    "TARGET_ORIGIN": "https://qoodish.com"
+  }
+  // Secrets, set once with `pnpm exec wrangler secret put <name>` in this
+  // directory: SLACK_BOT_TOKEN, SLACK_CHANNEL_ID.
+}

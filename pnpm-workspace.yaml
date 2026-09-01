@@ -1,3 +1,5 @@
+packages:
+  - monitor
 allowBuilds:
   '@biomejs/biome': true
   '@firebase/util': true
