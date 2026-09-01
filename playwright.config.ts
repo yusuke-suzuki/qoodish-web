@@ -5,6 +5,10 @@ import { defineConfig, devices } from '@playwright/test';
 // answer to the commit under test.
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:8787';
 
+// A remote target means the post-deploy workflow, which uploads test-results
+// as an artifact, so failures there keep their evidence.
+const isRemoteTarget = !!process.env.E2E_BASE_URL;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -16,9 +20,9 @@ export default defineConfig({
   expect: { timeout: 15000 },
   use: {
     baseURL,
-    // Nothing collects these from a CI run: it reports through its log.
-    trace: process.env.CI ? 'off' : 'retain-on-failure',
-    screenshot: process.env.CI ? 'off' : 'only-on-failure'
+    // Nothing collects these from a PR run: it reports through its log.
+    trace: process.env.CI && !isRemoteTarget ? 'off' : 'retain-on-failure',
+    screenshot: process.env.CI && !isRemoteTarget ? 'off' : 'only-on-failure'
   },
   webServer: process.env.E2E_BASE_URL
     ? undefined
