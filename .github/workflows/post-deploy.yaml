@@ -1,0 +1,83 @@
+name: Post-deploy E2E
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+# A newer master push supersedes this verification: its commit is the one the
+# Git integration will leave deployed, so the stale run would poll for a SHA
+# that never arrives.
+concurrency:
+  group: post-deploy
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: dev
+            base_url: ${{ vars.E2E_DEV_BASE_URL }}
+          - target: prod
+            base_url: https://qoodish.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      # Deployment belongs to the Cloudflare Git integration, so the only way
+      # to know this commit is live is to ask the app itself. Any answer other
+      # than the expected SHA — a 404 from a worker that predates the health
+      # route included — just keeps the loop waiting.
+      - name: Wait for the deployment of this commit
+        run: |
+          for i in $(seq 1 80); do
+            deployed=$(curl -sf --max-time 10 "$BASE_URL/api/health" | jq -r '.sha // empty' || true)
+            if [ "$deployed" = "${{ github.sha }}" ]; then
+              echo "Deployed SHA matches ${{ github.sha }}"
+              exit 0
+            fi
+            echo "Attempt $i: deployed=${deployed:-unavailable}, want=${{ github.sha }}"
+            sleep 15
+          done
+          echo "Timed out waiting for the deployment" >&2
+          exit 1
+        env:
+          BASE_URL: ${{ matrix.base_url }}
+      - name: Smoke test ${{ matrix.target }}
+        run: pnpm e2e
+        env:
+          E2E_BASE_URL: ${{ matrix.base_url }}
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results-${{ matrix.target }}
+          path: test-results/
+          retention-days: 7
+      - name: Notify Slack
+        if: failure()
+        run: |
+          curl -sf -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "$(jq -n \
+              --arg channel "$SLACK_CHANNEL_ID" \
+              --arg text ":rotating_light: Post-deploy E2E failed for ${{ matrix.target }} (commit ${{ github.sha }}): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              '{channel: $channel, text: $text}')"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ vars.SLACK_CHANNEL_ID }}
