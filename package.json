@@ -10,7 +10,7 @@
     "dev": "next dev --webpack -p 5000",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "biome ci ./src ./e2e playwright.config.ts",
+    "lint": "biome ci ./src ./e2e ./monitor/src playwright.config.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"src/**/*.test.ts\"",
     "e2e": "playwright test",

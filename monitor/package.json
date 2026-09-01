@@ -1,0 +1,17 @@
+{
+  "name": "qoodish-web-monitor",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cloudflare/playwright": "^1.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260901.1",
+    "typescript": "^5.2.2",
+    "wrangler": "^4.114.0"
+  }
+}

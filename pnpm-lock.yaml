@@ -110,7 +110,7 @@ importers:
         version: 2.5.10
       '@opennextjs/cloudflare':
         specifier: ^1.20.2
-        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)
+        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.62.1
@@ -146,7 +146,23 @@ importers:
         version: 5.9.2
       wrangler:
         specifier: ^4.114.0
-        version: 4.118.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
+
+  monitor:
+    dependencies:
+      '@cloudflare/playwright':
+        specifier: ^1.3.6
+        version: 1.3.6(playwright-core@1.62.1)
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260901.1
+        version: 5.20260901.1
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.114.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
 
 packages:
 
@@ -508,6 +524,14 @@ packages:
     resolution: {integrity: sha512-jxQYkj8dSIzc0cD6cMMNdOc1UVjqSqu8BZdor5s8cGjW2I8BjODt/kWPVdY+u9zj3ms75Q5qaZgnxUad83+eAg==}
     engines: {node: '>=22.0.0'}
 
+  '@cloudflare/playwright@1.3.6':
+    resolution: {integrity: sha512-pwNuh5/eUTcVVhXComAWfS9Im0mqBBVoU73dBXPv5cbUyOIuPGxd3bD2GrTgMOe6jJEK4ZHgQBYctYEwkzPH8w==}
+    peerDependencies:
+      playwright-core: '*'
+    peerDependenciesMeta:
+      playwright-core:
+        optional: true
+
   '@cloudflare/unenv-preset@2.16.1':
     resolution: {integrity: sha512-ECxObrMfyTl5bhQf/lZCXwo5G6xX9IAUo+nDMKK4SZ8m4Jvvxp52vilxyySSWh2YTZz8+HQ07qGH/2rEom1vDw==}
     peerDependencies:
@@ -546,6 +570,9 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
+
+  '@cloudflare/workers-types@5.20260901.1':
+    resolution: {integrity: sha512-m1rNbR3UYC1pgaEyXkSlwLFLDB11QziYUlY0z/nqjwuYtg5dw9zBrgDudoSfYM6ebbPDKU81ogBQAzLp6h1y4w==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -4458,6 +4485,10 @@ snapshots:
 
   '@cloudflare/kv-asset-handler@0.5.0': {}
 
+  '@cloudflare/playwright@1.3.6(playwright-core@1.62.1)':
+    optionalDependencies:
+      playwright-core: 1.62.1
+
   '@cloudflare/unenv-preset@2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260730.1)':
     dependencies:
       unenv: 2.0.0-rc.24
@@ -4478,6 +4509,8 @@ snapshots:
 
   '@cloudflare/workerd-windows-64@1.20260730.1':
     optional: true
+
+  '@cloudflare/workers-types@5.20260901.1': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -5756,7 +5789,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)':
+  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@dotenvx/dotenvx': 1.31.0
@@ -5768,7 +5801,7 @@ snapshots:
       glob: 12.0.0
       next: 16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-tqdm: 0.8.6
-      wrangler: 4.118.0
+      wrangler: 4.118.0(@cloudflare/workers-types@5.20260901.1)
       yargs: 18.1.0
     transitivePeerDependencies:
       - encoding
@@ -7832,7 +7865,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20260730.1
       '@cloudflare/workerd-windows-64': 1.20260730.1
 
-  wrangler@4.118.0:
+  wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260730.1)
@@ -7843,6 +7876,7 @@ snapshots:
       unenv: 2.0.0-rc.24
       workerd: 1.20260730.1
     optionalDependencies:
+      '@cloudflare/workers-types': 5.20260901.1
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
