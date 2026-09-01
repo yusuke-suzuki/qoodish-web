@@ -16,6 +16,13 @@ const withSerwist = withSerwistInit({
 });
 
 const nextConfig: NextConfig = {
+  // Workers Builds exposes the commit only while building, so the health
+  // endpoint has to capture it here or the deployed worker cannot say which
+  // commit it is running.
+  env: {
+    DEPLOYED_COMMIT_SHA:
+      process.env.WORKERS_CI_COMMIT_SHA ?? process.env.GITHUB_SHA ?? 'unknown'
+  },
   reactCompiler: true,
   experimental: {
     globalNotFound: true

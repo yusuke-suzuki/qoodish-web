@@ -50,6 +50,19 @@ for (const lang of LOCALES) {
   }
 }
 
+// The post-deploy workflow polls this route to learn which commit is live, so
+// the PR run proves the contract before it ships.
+test('answers the health check', async ({ request }) => {
+  const res = await request.get('/api/health');
+
+  expect(res.status(), '/api/health answered with an error').toBe(200);
+
+  const body = (await res.json()) as { status: string; sha: string };
+
+  expect(body.status).toBe('ok');
+  expect(body.sha).not.toHaveLength(0);
+});
+
 for (const lang of LOCALES) {
   test(`boots the map detail page in ${lang}`, async ({ page, request }) => {
     const mapId = await firstMapId(request);
