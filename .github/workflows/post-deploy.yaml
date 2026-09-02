@@ -60,16 +60,3 @@ jobs:
         run: pnpm e2e
         env:
           E2E_BASE_URL: ${{ env.BASE_URL }}
-      - name: Notify Slack
-        if: failure()
-        run: |
-          curl -sf -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            -d "$(jq -n \
-              --arg channel "$SLACK_CHANNEL_ID" \
-              --arg text ":rotating_light: Post-deploy E2E failed for production (commit ${{ github.sha }}): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-              '{channel: $channel, text: $text}')"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ vars.SLACK_CHANNEL_ID }}
