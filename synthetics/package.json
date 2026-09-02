@@ -1,5 +1,5 @@
 {
-  "name": "qoodish-web-monitor",
+  "name": "qoodish-web-synthetics",
   "private": true,
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
