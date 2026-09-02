@@ -5,9 +5,6 @@ on:
       - master
   workflow_dispatch:
 
-# A newer master push supersedes this verification: its commit is the one the
-# Git integration will leave deployed, so the stale run would poll for a SHA
-# that never arrives.
 concurrency:
   group: post-deploy
   cancel-in-progress: true
@@ -26,9 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Nothing after the checkout talks to Git, so the token has no
-          # business staying in the local Git config where any later step
-          # could read it.
           persist-credentials: false
       - uses: pnpm/action-setup@v4
         with:
@@ -58,9 +52,6 @@ jobs:
           done
           echo "Timed out waiting for the deployment" >&2
           exit 1
-      # No artifact upload: traces and screenshots would carry the Maps API
-      # key into a download anyone can fetch, so the run reports through its
-      # log alone, as the PR run does.
       - name: Smoke test production
         run: pnpm e2e
         env:
