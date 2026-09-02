@@ -40,6 +40,6 @@
   "exclude": [
     "node_modules",
     "public/sw.js",
-    "monitor"
+    "synthetics"
   ]
 }

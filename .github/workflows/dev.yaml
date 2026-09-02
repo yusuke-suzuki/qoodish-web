@@ -28,9 +28,9 @@ jobs:
       - name: Type check
         run: |
           pnpm typecheck
-      - name: Type check the monitor worker
+      - name: Type check the synthetics worker
         run: |
-          pnpm --filter qoodish-web-monitor typecheck
+          pnpm --filter qoodish-web-synthetics typecheck
       - name: Test
         run: |
           pnpm test
