@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
-    "deploy": "wrangler deploy",
+    "cf:deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
