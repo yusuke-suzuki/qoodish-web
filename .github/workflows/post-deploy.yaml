@@ -25,6 +25,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Nothing after the checkout talks to Git, so the token has no
+          # business staying in the local Git config where any later step
+          # could read it.
+          persist-credentials: false
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
