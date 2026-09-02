@@ -20,10 +20,16 @@ async function checkHealth(env: Env): Promise<void> {
     throw new Error(`/api/health answered ${res.status}`);
   }
 
-  const body = (await res.json()) as { status?: string };
+  const body = (await res.json()) as { status?: string; sha?: string };
 
   if (body.status !== 'ok') {
     throw new Error(`/api/health reported status ${body.status ?? 'none'}`);
+  }
+
+  // The post-deploy workflow keys on this field, so a build that lost it
+  // would leave every future deploy unverifiable.
+  if (!body.sha) {
+    throw new Error('/api/health reported no deployment SHA');
   }
 }
 
