@@ -50,8 +50,6 @@ for (const lang of LOCALES) {
   }
 }
 
-// The post-deploy workflow polls this route to learn which commit is live, so
-// the PR run proves the contract before it ships.
 test('answers the health check', async ({ request }) => {
   const res = await request.get('/api/health');
 

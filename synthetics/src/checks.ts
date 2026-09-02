@@ -26,8 +26,6 @@ async function checkHealth(env: Env): Promise<void> {
     throw new Error(`/api/health reported status ${body.status ?? 'none'}`);
   }
 
-  // The post-deploy workflow keys on this field, so a build that lost it
-  // would leave every future deploy unverifiable.
   if (!body.sha) {
     throw new Error('/api/health reported no deployment SHA');
   }
@@ -53,8 +51,7 @@ async function openPage(
 
   await assert(page);
 
-  // A render crash still answers 200 with an error page, so the thrown errors
-  // are the signal the shell checks above cannot give.
+  // A render crash still answers 200 with an error page.
   if (errors.length > 0) {
     throw new Error(`the page threw while loading: ${errors.join('; ')}`);
   }
@@ -77,9 +74,8 @@ async function checkTopPage(browser: Browser, env: Env): Promise<void> {
 }
 
 async function checkMapDetailPage(browser: Browser, env: Env): Promise<void> {
-  // Resolve a public map through the app's own proxy route, the same way the
-  // e2e suite does. Asking without a filter is not an option: the API reads a
-  // missing search term as an invalid parameter rather than as no filter.
+  // Asking without a filter is not an option: the API reads a missing search
+  // term as an invalid parameter rather than as no filter at all.
   const res = await fetch(
     new URL('/api/v1/guest/maps?active=true', env.TARGET_ORIGIN),
     { signal: AbortSignal.timeout(15000) }
@@ -141,8 +137,6 @@ export async function runChecks(env: Env): Promise<CheckResult[]> {
       await run('top page', () => checkTopPage(browser, env));
       await run('map detail page', () => checkMapDetailPage(browser, env));
     } finally {
-      // A Browser Rendering session keeps counting against the concurrency
-      // limit until it is closed.
       await browser.close();
     }
   } catch (error) {
