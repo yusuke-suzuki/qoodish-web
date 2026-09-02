@@ -12,19 +12,17 @@ concurrency:
   group: post-deploy
   cancel-in-progress: true
 
+# Production is the only target on purpose. The dev worker is built with a
+# Maps API key loose enough to work on localhost, and every log line of a
+# public repository is readable by anyone, so nothing here may drive it.
+env:
+  BASE_URL: https://qoodish.com
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: dev
-            base_url: ${{ vars.E2E_DEV_BASE_URL }}
-          - target: prod
-            base_url: https://qoodish.com
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -55,19 +53,13 @@ jobs:
           done
           echo "Timed out waiting for the deployment" >&2
           exit 1
-        env:
-          BASE_URL: ${{ matrix.base_url }}
-      - name: Smoke test ${{ matrix.target }}
+      # No artifact upload: traces and screenshots would carry the Maps API
+      # key into a download anyone can fetch, so the run reports through its
+      # log alone, as the PR run does.
+      - name: Smoke test production
         run: pnpm e2e
         env:
-          E2E_BASE_URL: ${{ matrix.base_url }}
-      - name: Upload traces
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-results-${{ matrix.target }}
-          path: test-results/
-          retention-days: 7
+          E2E_BASE_URL: ${{ env.BASE_URL }}
       - name: Notify Slack
         if: failure()
         run: |
@@ -76,7 +68,7 @@ jobs:
             -H "Content-Type: application/json; charset=utf-8" \
             -d "$(jq -n \
               --arg channel "$SLACK_CHANNEL_ID" \
-              --arg text ":rotating_light: Post-deploy E2E failed for ${{ matrix.target }} (commit ${{ github.sha }}): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+              --arg text ":rotating_light: Post-deploy E2E failed for production (commit ${{ github.sha }}): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
               '{channel: $channel, text: $text}')"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
