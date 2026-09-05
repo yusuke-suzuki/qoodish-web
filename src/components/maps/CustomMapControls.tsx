@@ -89,7 +89,8 @@ function CustomMapControls({ onPlaceChange }: Props) {
       </MapControl>
 
       <MapControl controlPosition={buttonPosition}>
-        <Stack spacing={2} sx={{ p: 2 }}>
+        {/* The Maps API gives its own controls a 10px margin. */}
+        <Stack spacing={2} sx={{ p: '10px' }}>
           <CurrentPositionButton />
         </Stack>
       </MapControl>
