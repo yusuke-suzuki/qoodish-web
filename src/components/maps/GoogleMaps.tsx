@@ -91,6 +91,50 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
   }, [googleMap, loader, initGoogleMaps]);
 
   useEffect(() => {
+    if (!('geolocation' in navigator) || !('permissions' in navigator)) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const restoreCurrentPosition = async () => {
+      let status: PermissionStatus;
+
+      try {
+        status = await navigator.permissions.query({ name: 'geolocation' });
+      } catch {
+        // Safari below 16 rejects the geolocation query; without a readable
+        // permission state, getCurrentPosition could raise the browser prompt.
+        return;
+      }
+
+      if (cancelled || status.state !== 'granted') {
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (!cancelled) {
+            setCurrentPosition(position);
+          }
+        },
+        () => {},
+        {
+          enableHighAccuracy: false,
+          maximumAge: 30000,
+          timeout: 10000
+        }
+      );
+    };
+
+    restoreCurrentPosition();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (googleMap && center) {
       googleMap.panTo(center);
     }

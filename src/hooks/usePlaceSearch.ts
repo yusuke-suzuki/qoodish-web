@@ -13,7 +13,7 @@ export const PLACE_FIELDS = [
 ];
 
 export function usePlaceSearch(input: string) {
-  const { loader } = useGoogleMap();
+  const { loader, googleMap, currentPosition } = useGoogleMap();
   const { lang } = useParams<{ lang: string }>();
   const language = toLocale(lang);
 
@@ -40,14 +40,23 @@ export function usePlaceSearch(input: string) {
         await AutocompleteSuggestion.fetchAutocompleteSuggestions({
           input: query,
           language,
-          sessionToken: sessionTokenRef.current
+          sessionToken: sessionTokenRef.current,
+          locationBias: googleMap?.getBounds(),
+          // origin only yields distanceMeters on each prediction; it does
+          // not affect ranking.
+          origin: currentPosition
+            ? {
+                lat: currentPosition.coords.latitude,
+                lng: currentPosition.coords.longitude
+              }
+            : undefined
         });
 
       return suggestions
         .map((suggestion) => suggestion.placePrediction)
         .filter((prediction) => prediction !== null);
     },
-    [loader, language]
+    [loader, language, googleMap, currentPosition]
   );
 
   const { results: predictions, isLoading } = useDebouncedSearch(input, search);

@@ -6,8 +6,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  TextField
+  Stack,
+  TextField,
+  Typography
 } from '@mui/material';
+import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import {
   type MutableRefObject,
@@ -18,6 +21,8 @@ import {
 } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { usePlaceSearch } from '../../hooks/usePlaceSearch.ts';
+import { formatDistanceMeters } from '../../utils/geo.ts';
+import { toLocale } from '../../utils/locales.ts';
 
 type Props = {
   ref: MutableRefObject<HTMLInputElement>;
@@ -28,6 +33,9 @@ type Props = {
 
 function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
   const dictionary = useDictionary();
+
+  const { lang } = useParams<{ lang: string }>();
+  const locale = toLocale(lang);
 
   const [value, setValue] = useState<google.maps.places.PlacePrediction | null>(
     null
@@ -123,13 +131,24 @@ function PlaceAutocomplete({ ref, onChange, label, autoFocus = true }: Props) {
         option.placeId === selected.placeId
       }
       renderOption={({ key, ...optionProps }, option) => (
-        <ListItem key={key} {...optionProps}>
+        <ListItem key={key} divider {...optionProps}>
           <ListItemIcon>
-            <LocationOn />
+            <Stack alignItems="center" spacing={0.5}>
+              <LocationOn />
+              {option.distanceMeters !== null && (
+                <Typography variant="caption" color="text.secondary">
+                  {formatDistanceMeters(option.distanceMeters, locale)}
+                </Typography>
+              )}
+            </Stack>
           </ListItemIcon>
           <ListItemText
             primary={option.mainText?.text ?? option.text.text}
             secondary={option.secondaryText?.text}
+            slotProps={{
+              primary: { noWrap: true },
+              secondary: { noWrap: true }
+            }}
           />
         </ListItem>
       )}

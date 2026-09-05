@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { assertCloseTo } from '../test/assertions.ts';
-import { distanceInMeters, trailDistanceMeters } from './geo.ts';
+import {
+  distanceInMeters,
+  formatDistanceMeters,
+  trailDistanceMeters
+} from './geo.ts';
 
 const EQUATOR_ONE_DEGREE_METERS = 111194.93;
 
@@ -48,6 +52,24 @@ describe('distanceInMeters', () => {
     const b = { latitude: -0.0000001, longitude: 179.9999999 };
 
     assert.ok(Number.isFinite(distanceInMeters(a, b)));
+  });
+});
+
+describe('formatDistanceMeters', () => {
+  it('formats sub-kilometer distances as whole meters', () => {
+    assert.equal(formatDistanceMeters(350.4, 'en'), '350 m');
+  });
+
+  it('formats kilometer distances with one decimal', () => {
+    assert.equal(formatDistanceMeters(1234, 'ja'), '1.2 km');
+  });
+
+  it('switches to kilometers when meters round up to a thousand', () => {
+    assert.equal(formatDistanceMeters(999.6, 'en'), '1 km');
+  });
+
+  it('keeps zero in meters', () => {
+    assert.equal(formatDistanceMeters(0, 'en'), '0 m');
   });
 });
 
