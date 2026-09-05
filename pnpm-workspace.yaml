@@ -1,5 +1,6 @@
 packages:
   - synthetics
+  - tail
 allowBuilds:
   '@biomejs/biome': true
   '@firebase/util': true

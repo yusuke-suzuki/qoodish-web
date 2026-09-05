@@ -31,3 +31,15 @@ $ cd synthetics
 $ pnpm wrangler secret put ALERT_WEBHOOK_URL
 $ pnpm cf:deploy
 ```
+
+## Error monitoring
+
+Server errors are logged as JSON lines from `src/instrumentation.ts`, and client errors are posted to `/api/errors` and logged the same way, so both are searchable in Workers Logs. `tail/` is a Tail Worker that receives those events from the production worker and posts anything with an exception or an error-level log to the same `ALERT_WEBHOOK_URL` secret, at most once every five minutes per instance.
+
+The production worker names `qoodish-web-tail` in `tail_consumers`, so the tail worker has to be deployed before any change that adds or renames it:
+
+```bash
+$ cd tail
+$ pnpm wrangler secret put ALERT_WEBHOOK_URL
+$ pnpm cf:deploy
+```

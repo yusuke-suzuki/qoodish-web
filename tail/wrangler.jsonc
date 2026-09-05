@@ -1,0 +1,11 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "qoodish-web-tail",
+  "account_id": "9671c836ad132f87d892b12ccd1809e0",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "workers_dev": false,
+  "observability": {
+    "enabled": true
+  }
+}
