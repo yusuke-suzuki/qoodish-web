@@ -235,6 +235,8 @@
   "page not found": "Page Not Found",
   "page not found description": "Looks like you've followed a broken link or entered a URL that doesn't exist on this site.",
   "back to our site": "Back to our site",
+  "error page description": "Sorry, we couldn't load this page. Please try again in a moment.",
+  "retry": "Try again",
   "back to map": "Back to the map",
   "user not found": "User Not Found",
   "places": "Places",

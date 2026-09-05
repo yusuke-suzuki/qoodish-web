@@ -235,6 +235,8 @@
   "page not found": "ページが見つかりません",
   "page not found description": "壊れたリンクをたどったか、このサイトに存在しないURLを入力したようです。",
   "back to our site": "サイトに戻る",
+  "error page description": "ページを表示できませんでした。しばらくしてからもう一度お試しください。",
+  "retry": "もう一度試す",
   "back to map": "マップに戻る",
   "user not found": "ユーザーが見つかりません",
   "places": "場所",
