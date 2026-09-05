@@ -12,14 +12,20 @@ const step = keyframes`
   35% { opacity: 1; }
 `;
 
+// In a trail the prints walk to the right: toes rotate toward the travel
+// direction, the right foot lands below the walking line and the left
+// foot (mirrored across it) above. A single print stays upright for
+// icon-like usage.
 function Footprint({
   flip,
   size,
-  shift
+  shift,
+  walking
 }: {
   flip: boolean;
   size: number;
   shift: number;
+  walking: boolean;
 }) {
   return (
     <Box
@@ -30,9 +36,11 @@ function Footprint({
         width: size,
         height: (size * 30) / 24,
         fill: 'currentColor',
-        transform: flip
-          ? `scaleX(-1) translateY(${shift}px)`
-          : `translateY(${-shift}px)`
+        transform: walking
+          ? flip
+            ? `translateY(${-shift}px) scaleY(-1) rotate(90deg)`
+            : `translateY(${shift}px) rotate(90deg)`
+          : undefined
       }}
     >
       <path d={FOOTPRINT_PATH_RIGHT} />
@@ -46,10 +54,17 @@ type Props = {
 };
 
 function WalkingFootprints({ count = 5, size = 18 }: Props) {
-  const shift = count > 1 ? size * 0.44 : 0;
+  const walking = count > 1;
+  const shift = walking ? size * 0.44 : 0;
 
   return (
-    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+    <Box
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: walking ? 1 : 0.5
+      }}
+    >
       {Array.from({ length: count }).map((_, index) => (
         <Box
           // biome-ignore lint/suspicious/noArrayIndexKey: static footprint trail
@@ -64,7 +79,12 @@ function WalkingFootprints({ count = 5, size = 18 }: Props) {
             }
           }}
         >
-          <Footprint flip={index % 2 === 1} size={size} shift={shift} />
+          <Footprint
+            flip={index % 2 === 1}
+            size={size}
+            shift={shift}
+            walking={walking}
+          />
         </Box>
       ))}
     </Box>
