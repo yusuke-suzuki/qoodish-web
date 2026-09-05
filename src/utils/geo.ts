@@ -15,6 +15,22 @@ export function trailDistanceMeters(points: LatLng[]): number {
   return meters;
 }
 
+export function formatDistanceMeters(meters: number, locale: string): string {
+  if (Math.round(meters) < 1000) {
+    return new Intl.NumberFormat(locale, {
+      style: 'unit',
+      unit: 'meter',
+      maximumFractionDigits: 0
+    }).format(meters);
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: 'unit',
+    unit: 'kilometer',
+    maximumFractionDigits: 1
+  }).format(meters / 1000);
+}
+
 export function distanceInMeters(a: LatLng, b: LatLng): number {
   const toRad = (deg: number) => (deg * Math.PI) / 180;
 
