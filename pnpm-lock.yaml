@@ -62,12 +62,6 @@ importers:
       autosuggest-highlight:
         specifier: ^3.1.1
         version: 3.3.4
-      blueimp-canvas-to-blob:
-        specifier: ^3.27.0
-        version: 3.29.0
-      blueimp-load-image:
-        specifier: ^5.12.0
-        version: 5.16.0
       date-fns:
         specifier: ^2.17.0
         version: 2.30.0
@@ -110,7 +104,7 @@ importers:
         version: 2.5.10
       '@opennextjs/cloudflare':
         specifier: ^1.20.2
-        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))
+        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.62.1
@@ -146,7 +140,7 @@ importers:
         version: 5.9.2
       wrangler:
         specifier: ^4.114.0
-        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
+        version: 4.118.0
 
   synthetics:
     dependencies:
@@ -2368,12 +2362,6 @@ packages:
 
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
-
-  blueimp-canvas-to-blob@3.29.0:
-    resolution: {integrity: sha512-0pcSSGxC0QxT+yVkivxIqW0Y4VlO2XSDPofBAqoJ1qJxgH9eiUDLv50Rixij2cDuEfx4M6DpD9UGZpRhT5Q8qg==}
-
-  blueimp-load-image@5.16.0:
-    resolution: {integrity: sha512-3DUSVdOtlfNRk7moRZuTwDmA3NnG8KIJuLcq3c0J7/BIr6X3Vb/EpX3kUH1joxUhmoVF4uCpDfz7wHkz8pQajA==}
 
   body-parser@2.3.0:
     resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
@@ -5789,7 +5777,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))':
+  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@dotenvx/dotenvx': 1.31.0
@@ -5801,7 +5789,7 @@ snapshots:
       glob: 12.0.0
       next: 16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-tqdm: 0.8.6
-      wrangler: 4.118.0(@cloudflare/workers-types@5.20260901.1)
+      wrangler: 4.118.0
       yargs: 18.1.0
     transitivePeerDependencies:
       - encoding
@@ -6225,10 +6213,6 @@ snapshots:
   baseline-browser-mapping@2.11.19: {}
 
   blake3-wasm@2.1.5: {}
-
-  blueimp-canvas-to-blob@3.29.0: {}
-
-  blueimp-load-image@5.16.0: {}
 
   body-parser@2.3.0:
     dependencies:
@@ -7864,6 +7848,22 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20260730.1
       '@cloudflare/workerd-linux-arm64': 1.20260730.1
       '@cloudflare/workerd-windows-64': 1.20260730.1
+
+  wrangler@4.118.0:
+    dependencies:
+      '@cloudflare/kv-asset-handler': 0.5.0
+      '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260730.1)
+      blake3-wasm: 2.1.5
+      esbuild: 0.28.1
+      miniflare: 5.20260730.0-alpha
+      path-to-regexp: 6.3.0
+      unenv: 2.0.0-rc.24
+      workerd: 1.20260730.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
   wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1):
     dependencies:

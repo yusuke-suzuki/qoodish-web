@@ -1,10 +1,12 @@
 import { AddAPhoto } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { type ChangeEvent, memo, useEffect, useId, useState } from 'react';
-import fileToDataUrl from '../../utils/fileToDataUrl.ts';
+import { enqueueSnackbar } from 'notistack';
+import { type ChangeEvent, memo, useId } from 'react';
+import useDictionary from '../../hooks/useDictionary.ts';
+import { splitOversizedImages } from '../../utils/uploadImage.ts';
 
 type Props = {
-  onChange: (dataUrls: string[]) => void;
+  onChange: (files: File[]) => void;
   disabled?: boolean;
   multiple?: boolean;
   color?: 'inherit' | 'disabled' | 'secondary' | 'action' | 'primary' | 'error';
@@ -16,26 +18,23 @@ export default memo(function AddPhotoButton({
   multiple,
   color
 }: Props) {
+  const dictionary = useDictionary();
   const inputId = useId();
-  const [dataUrls, setDataUrls] = useState<string[] | undefined>(undefined);
 
-  const handleImageFilesChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const files: File[] = Array.from(e.target.files);
-    const items = [];
+  const handleImageFilesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { accepted, oversized } = splitOversizedImages(
+      Array.from(e.target.files ?? [])
+    );
+    e.target.value = '';
 
-    for (const file of files) {
-      const dataUrl = await fileToDataUrl(file);
-      items.push(dataUrl);
+    if (oversized.length > 0) {
+      enqueueSnackbar(dictionary['image too large'], { variant: 'error' });
     }
 
-    setDataUrls(items);
+    if (accepted.length > 0) {
+      onChange(accepted);
+    }
   };
-
-  useEffect(() => {
-    if (dataUrls) {
-      onChange(dataUrls);
-    }
-  }, [dataUrls, onChange]);
 
   return (
     <>

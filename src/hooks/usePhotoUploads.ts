@@ -15,11 +15,12 @@ export default function usePhotoUploads() {
     item.status === 'uploaded' ? [item.image] : []
   );
 
-  const upload = async (dataUrls: string[]) => {
-    const pending = dataUrls.map((dataUrl) => ({
+  const upload = async (files: File[]) => {
+    const pending = files.map((file) => ({
       key: crypto.randomUUID(),
       status: 'uploading' as const,
-      previewUrl: dataUrl
+      previewUrl: URL.createObjectURL(file),
+      file
     }));
     setItems((prevState) => [...prevState, ...pending]);
 
@@ -27,7 +28,7 @@ export default function usePhotoUploads() {
 
     for (const item of pending) {
       try {
-        const uploaded = await uploadImage(item.previewUrl);
+        const uploaded = await uploadImage(item.file);
         setItems((prevState) =>
           prevState.map((prevItem) =>
             prevItem.key === item.key
@@ -40,6 +41,8 @@ export default function usePhotoUploads() {
         setItems((prevState) =>
           prevState.filter((prevItem) => prevItem.key !== item.key)
         );
+      } finally {
+        URL.revokeObjectURL(item.previewUrl);
       }
     }
 

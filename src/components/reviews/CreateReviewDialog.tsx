@@ -110,9 +110,9 @@ export default memo(function CreateReviewDialog({
   }, [onExited, reset]);
 
   const handleImagesChange = useCallback(
-    async (dataUrls: string[]) => {
+    async (files: File[]) => {
       try {
-        await upload(dataUrls);
+        await upload(files);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }
