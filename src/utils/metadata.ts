@@ -12,6 +12,14 @@ export function defaultOgImage(lang: string): string {
   return lang === 'en' ? DEFAULT_OG_IMAGES.en : DEFAULT_OG_IMAGES.ja;
 }
 
+// Both the static fallback assets and the Cloudflare Images "ogp" variant are
+// rendered at 1200x630.
+export function ogImages(
+  url: string
+): { url: string; width: number; height: number }[] {
+  return [{ url, width: 1200, height: 630 }];
+}
+
 export function buildAlternates(
   lang: string,
   path = ''

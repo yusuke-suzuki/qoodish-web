@@ -8,7 +8,8 @@ import { getDictionary } from '../../../../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../../../../utils/locales.ts';
 import {
   buildAlternates,
-  defaultOgImage
+  defaultOgImage,
+  ogImages
 } from '../../../../../../../utils/metadata.ts';
 
 type Props = {
@@ -40,12 +41,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: !review || review.map.private ? 'noindex' : undefined,
     alternates: buildAlternates(lang, path),
     openGraph: {
+      type: 'article',
       title,
       description,
       url: localePath(lang, path),
-      images: [{ url: thumbnailUrl }],
+      images: ogImages(thumbnailUrl),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
-      siteName: dict['meta headline']
+      siteName: dict['meta headline'],
+      publishedTime: review?.created_at,
+      modifiedTime: review?.updated_at
     },
     twitter: {
       card: 'summary_large_image'
