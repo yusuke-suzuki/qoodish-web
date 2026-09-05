@@ -1,4 +1,8 @@
-import { initializeServerApp } from 'firebase/app';
+import {
+  deleteApp,
+  type FirebaseServerApp,
+  initializeServerApp
+} from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
@@ -18,6 +22,36 @@ type ServerAuthState = {
   token?: string;
 };
 
+async function resolveUid(idToken: string): Promise<string | null> {
+  let serverApp: FirebaseServerApp;
+
+  try {
+    serverApp = initializeServerApp(firebaseConfig, {
+      authIdToken: idToken
+    });
+  } catch {
+    return null;
+  }
+
+  // Server apps stay registered until deleteApp drops their reference count
+  // to zero, so skipping it pins one Auth instance per token for the life of
+  // the isolate.
+  try {
+    const auth = getAuth(serverApp);
+    await auth.authStateReady();
+
+    return auth.currentUser?.uid ?? null;
+  } catch {
+    return null;
+  } finally {
+    await deleteApp(serverApp);
+  }
+}
+
+export async function verifyIdToken(idToken: string): Promise<boolean> {
+  return (await resolveUid(idToken)) !== null;
+}
+
 export const getServerAuthState = cache(async (): Promise<ServerAuthState> => {
   const cookieStore = await cookies();
   const idToken = cookieStore.get('__session')?.value;
@@ -26,20 +60,11 @@ export const getServerAuthState = cache(async (): Promise<ServerAuthState> => {
     return { authenticated: false };
   }
 
-  try {
-    const serverApp = initializeServerApp(firebaseConfig, {
-      authIdToken: idToken
-    });
-    const auth = getAuth(serverApp);
-    await auth.authStateReady();
-    const user = auth.currentUser;
+  const uid = await resolveUid(idToken);
 
-    if (user) {
-      return { authenticated: true, uid: user.uid, token: idToken };
-    }
-
-    return { authenticated: false };
-  } catch {
-    return { authenticated: false };
+  if (uid) {
+    return { authenticated: true, uid, token: idToken };
   }
+
+  return { authenticated: false };
 });
