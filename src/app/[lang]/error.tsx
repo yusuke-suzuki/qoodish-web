@@ -4,6 +4,7 @@ import { Refresh } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, Container, Grid } from '@mui/material';
 import { useEffect } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
+import reportClientError from '../../utils/reportClientError.ts';
 
 type Props = {
   error: Error & { digest?: string };
@@ -14,7 +15,7 @@ export default function ErrorPage({ error, reset }: Props) {
   const dictionary = useDictionary();
 
   useEffect(() => {
-    console.error(error);
+    reportClientError(error, 'error-boundary');
   }, [error]);
 
   return (

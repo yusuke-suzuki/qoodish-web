@@ -22,6 +22,7 @@ import {
 } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
+import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx';
 import SplashScreen from '../../components/common/SplashScreen.tsx';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -182,6 +183,7 @@ export default function Providers({
             </Button>
           )}
         >
+          <ClientErrorReporter />
           <AuthProvider
             serverAuthenticated={serverAuthenticated}
             serverUid={serverUid ?? null}
