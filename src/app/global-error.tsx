@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useSyncExternalStore } from 'react';
+import reportClientError from '../utils/reportClientError.ts';
 
 type Props = {
   error: Error & { digest?: string };
@@ -32,7 +33,7 @@ const messages = {
 // self-contained: no theme provider, no dictionary hook, inline styles only.
 export default function GlobalError({ error, reset }: Props) {
   useEffect(() => {
-    console.error(error);
+    reportClientError(error, 'global-error');
   }, [error]);
 
   const lang = useSyncExternalStore(subscribe, getBrowserLang, getServerLang);

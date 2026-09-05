@@ -21,6 +21,8 @@
   "observability": {
     "enabled": true
   },
+  // The tail worker must already be deployed or this worker's deploy fails.
+  "tail_consumers": [{ "service": "qoodish-web-tail" }],
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",

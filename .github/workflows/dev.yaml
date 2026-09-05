@@ -31,6 +31,9 @@ jobs:
       - name: Type check the synthetics worker
         run: |
           pnpm --filter qoodish-web-synthetics typecheck
+      - name: Type check the tail worker
+        run: |
+          pnpm --filter qoodish-web-tail typecheck
       - name: Test
         run: |
           pnpm test

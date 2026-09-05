@@ -104,7 +104,7 @@ importers:
         version: 2.5.10
       '@opennextjs/cloudflare':
         specifier: ^1.20.2
-        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)
+        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.62.1
@@ -140,13 +140,25 @@ importers:
         version: 5.9.2
       wrangler:
         specifier: ^4.114.0
-        version: 4.118.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
 
   synthetics:
     dependencies:
       '@cloudflare/playwright':
         specifier: ^1.3.6
         version: 1.3.6(playwright-core@1.62.1)
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260901.1
+        version: 5.20260901.1
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.114.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
+
+  tail:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^5.20260901.1
@@ -5777,7 +5789,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)':
+  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@dotenvx/dotenvx': 1.31.0
@@ -5789,7 +5801,7 @@ snapshots:
       glob: 12.0.0
       next: 16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-tqdm: 0.8.6
-      wrangler: 4.118.0
+      wrangler: 4.118.0(@cloudflare/workers-types@5.20260901.1)
       yargs: 18.1.0
     transitivePeerDependencies:
       - encoding
@@ -7848,22 +7860,6 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20260730.1
       '@cloudflare/workerd-linux-arm64': 1.20260730.1
       '@cloudflare/workerd-windows-64': 1.20260730.1
-
-  wrangler@4.118.0:
-    dependencies:
-      '@cloudflare/kv-asset-handler': 0.5.0
-      '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260730.1)
-      blake3-wasm: 2.1.5
-      esbuild: 0.28.1
-      miniflare: 5.20260730.0-alpha
-      path-to-regexp: 6.3.0
-      unenv: 2.0.0-rc.24
-      workerd: 1.20260730.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1):
     dependencies:
