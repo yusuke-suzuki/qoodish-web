@@ -23,6 +23,27 @@ const nextConfig: NextConfig = {
     DEPLOYED_COMMIT_SHA:
       process.env.WORKERS_CI_COMMIT_SHA ?? process.env.GITHUB_SHA ?? 'unknown'
   },
+  // public/_headers only covers the Cloudflare asset host, so document
+  // responses rendered by the worker have to attach security headers here.
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=31536000; includeSubDomains'
+        },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=(self), payment=()'
+        }
+      ]
+    }
+  ],
   reactCompiler: true,
   experimental: {
     globalNotFound: true
