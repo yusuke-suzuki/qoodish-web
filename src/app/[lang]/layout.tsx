@@ -9,7 +9,7 @@ import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
-import { defaultOgImage, SITE_ORIGIN } from '../../utils/metadata.ts';
+import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import Providers from './Providers.tsx';
 
 const lobster = Lobster({
@@ -96,17 +96,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       statusBarStyle: 'black-translucent'
     },
     openGraph: {
+      type: 'website',
       title: 'Qoodish',
       description: dict['meta description'],
       siteName: 'Qoodish',
-      images: [{ url: defaultThumbnailUrl }],
+      images: ogImages(defaultThumbnailUrl),
       locale: lang === 'en' ? 'en_US' : 'ja_JP'
     },
     twitter: {
       card: 'summary_large_image'
     },
+    // `other` renders <meta name="...">, which Open Graph parsers ignore.
     other: {
-      'og:type': 'website',
       'twitter:domain': 'qoodish.com',
       'mobile-web-app-capable': 'yes'
     }

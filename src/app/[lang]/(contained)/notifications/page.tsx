@@ -3,7 +3,11 @@ import NotificationsFeed from '../../../../components/notifications/Notification
 import { getNotifications } from '../../../../lib/users.ts';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../utils/locales.ts';
-import { buildAlternates, defaultOgImage } from '../../../../utils/metadata.ts';
+import {
+  buildAlternates,
+  defaultOgImage,
+  ogImages
+} from '../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -23,10 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip',
     alternates: buildAlternates(lang, '/notifications'),
     openGraph: {
+      type: 'website',
       title,
       description,
       url: localePath(lang, '/notifications'),
-      images: [{ url: thumbnailUrl }],
+      images: ogImages(thumbnailUrl),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
     },

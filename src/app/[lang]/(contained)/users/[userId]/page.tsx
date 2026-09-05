@@ -16,7 +16,8 @@ import { getDictionary } from '../../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../../utils/locales.ts';
 import {
   buildAlternates,
-  defaultOgImage
+  defaultOgImage,
+  ogImages
 } from '../../../../../utils/metadata.ts';
 
 type Props = {
@@ -38,10 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip',
     alternates: buildAlternates(lang, path),
     openGraph: {
+      type: 'website',
       title: 'Qoodish',
       description,
       url: localePath(lang, path),
-      images: [{ url: thumbnailUrl }],
+      images: ogImages(thumbnailUrl),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
     },
