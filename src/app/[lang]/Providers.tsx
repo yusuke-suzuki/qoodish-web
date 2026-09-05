@@ -2,7 +2,6 @@
 
 import { css } from '@emotion/react';
 import {
-  Box,
   Button,
   CssBaseline,
   createTheme,
@@ -23,7 +22,7 @@ import {
 } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
-import FootprintsLoader from '../../components/common/FootprintsLoader.tsx';
+import SplashScreen from '../../components/common/SplashScreen.tsx';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
@@ -187,22 +186,7 @@ export default function Providers({
             serverAuthenticated={serverAuthenticated}
             serverUid={serverUid ?? null}
           >
-            <Suspense
-              fallback={
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '100vw',
-                    height: '100vh',
-                    bgcolor: 'background.default'
-                  }}
-                >
-                  <FootprintsLoader label={dictionary.loading} />
-                </Box>
-              }
-            >
+            <Suspense fallback={<SplashScreen label={dictionary.loading} />}>
               <AccountProviders
                 profilePromise={profilePromise}
                 notificationsPromise={notificationsPromise}
