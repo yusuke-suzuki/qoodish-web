@@ -1,5 +1,7 @@
 # Privacy Policy
 
+Last updated: August 24, 2026
+
 The operator of "Qoodish" (the "Service") ("we," "us," or "our") establishes this Privacy Policy (this "Policy") regarding the handling of users' personal information in the Service.
 
 ## Article 1 (Operator Information)
