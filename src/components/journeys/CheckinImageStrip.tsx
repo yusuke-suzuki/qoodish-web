@@ -15,8 +15,7 @@ import { enqueueSnackbar } from 'notistack';
 import { type ChangeEvent, memo, useCallback, useId, useState } from 'react';
 import type { Image, JourneyCheckin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import fileToDataUrl from '../../utils/fileToDataUrl.ts';
-import uploadImage from '../../utils/uploadImage.ts';
+import uploadImage, { splitOversizedImages } from '../../utils/uploadImage.ts';
 
 const IMAGE_SIZE = 96;
 
@@ -36,19 +35,24 @@ function CheckinImageStrip({ checkin, onAttach, onRemove }: Props) {
 
   const handleFilesChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(event.target.files ?? []);
+      const { accepted, oversized } = splitOversizedImages(
+        Array.from(event.target.files ?? [])
+      );
       event.target.value = '';
 
-      if (files.length < 1) {
+      if (oversized.length > 0) {
+        enqueueSnackbar(dictionary['image too large'], { variant: 'error' });
+      }
+
+      if (accepted.length < 1) {
         return;
       }
 
       setUploading(true);
 
       try {
-        for (const file of files) {
-          const dataUrl = await fileToDataUrl(file);
-          const image = await uploadImage(dataUrl);
+        for (const file of accepted) {
+          const image = await uploadImage(file);
           await onAttach(checkin, image);
         }
       } catch {

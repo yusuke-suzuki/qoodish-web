@@ -62,13 +62,13 @@ export default memo(function EditProfileDialog({
   const thumbnailUrl = newThumbnailUrl ?? currentProfile?.image?.card ?? null;
 
   const handleImagesChange = useCallback(
-    async (dataUrls: string[]) => {
-      if (dataUrls.length < 1) {
+    async (files: File[]) => {
+      if (files.length < 1) {
         return;
       }
       reset();
       try {
-        await upload([dataUrls[0]]);
+        await upload([files[0]]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }

@@ -1,5 +1,4 @@
 import type { Image, ImageVariants } from '../../types/index.ts';
-import dataUrlToBlob from './dataUrlToBlob.ts';
 
 type DirectUploadAllocation = {
   upload_url: string;
@@ -13,6 +12,24 @@ type CloudflareUploadResponse = {
   };
   success: boolean;
 };
+
+// Cloudflare Images rejects hosted uploads above this size, so oversized files
+// are filtered out before an upload URL is allocated for them.
+export const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024;
+
+export function splitOversizedImages(files: File[]): {
+  accepted: File[];
+  oversized: File[];
+} {
+  const accepted: File[] = [];
+  const oversized: File[] = [];
+
+  for (const file of files) {
+    (file.size > MAX_IMAGE_FILE_SIZE ? oversized : accepted).push(file);
+  }
+
+  return { accepted, oversized };
+}
 
 // The Rails `image` payload keys the full-size URL as `url`, but the matching
 // Cloudflare variant is the built-in `public`; the sized variants share their
@@ -48,7 +65,7 @@ export function buildVariants(urls: string[]): ImageVariants {
   return variants;
 }
 
-export default async function uploadImage(dataUrl: string): Promise<Image> {
+export default async function uploadImage(file: File): Promise<Image> {
   const allocRes = await fetch('/api/v1/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -60,10 +77,8 @@ export default async function uploadImage(dataUrl: string): Promise<Image> {
   const { upload_url: uploadUrl, id }: DirectUploadAllocation =
     await allocRes.json();
 
-  const blob = await dataUrlToBlob(dataUrl);
-  const ext = blob.type.split('/')[1] ?? 'bin';
   const form = new FormData();
-  form.append('file', blob, `${id}.${ext}`);
+  form.append('file', file, file.name);
 
   const cfRes = await fetch(uploadUrl, { method: 'POST', body: form });
   if (!cfRes.ok) {

@@ -58,13 +58,13 @@ export default memo(function CreateMapDialog({
   }, [name, description, position, isUploading]);
 
   const handleImagesChange = useCallback(
-    async (dataUrls: string[]) => {
-      if (dataUrls.length < 1) {
+    async (files: File[]) => {
+      if (files.length < 1) {
         return;
       }
       reset();
       try {
-        await upload([dataUrls[0]]);
+        await upload([files[0]]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
       }

@@ -19,8 +19,7 @@ import {
 } from 'react';
 import type { ImageVariants } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import fileToDataUrl from '../../utils/fileToDataUrl.ts';
-import uploadImage from '../../utils/uploadImage.ts';
+import uploadImage, { MAX_IMAGE_FILE_SIZE } from '../../utils/uploadImage.ts';
 import { coverAspectRatio } from './constants.ts';
 
 type Props = {
@@ -65,10 +64,15 @@ function ChapterCover({ image, editable, onChange, onSavingChange }: Props) {
         return;
       }
 
+      if (file.size > MAX_IMAGE_FILE_SIZE) {
+        enqueueSnackbar(dictionary['image too large'], { variant: 'error' });
+        return;
+      }
+
       setSaving(true);
 
       try {
-        const uploaded = await uploadImage(await fileToDataUrl(file));
+        const uploaded = await uploadImage(file);
         await onChange?.([uploaded.id]);
       } catch (_error) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
