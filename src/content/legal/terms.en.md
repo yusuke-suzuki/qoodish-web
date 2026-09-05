@@ -1,5 +1,7 @@
 # Terms of Service
 
+Last updated: August 24, 2026
+
 These Terms of Service (these "Terms") set out the conditions for using "Qoodish" (the "Service"), as established by its operator ("we," "us," or "our"). Users shall use the Service in accordance with these Terms after agreeing to them.
 
 ## Article 1 (Application)
