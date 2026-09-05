@@ -11,6 +11,7 @@
   "surely your friends know": "作品の舞台を巡る地図、商店街の食べ歩き地図、近所の散策地図。誰かが残した地図を手にした瞬間、冒険はもう動き出しています。気になる地図をブックマークして、街へ出かけましょう。",
   "terms of service": "利用規約",
   "privacy policy": "プライバシーポリシー",
+  "agree to terms on sign in": "続行することで、{terms} および {privacy} に同意したものとみなされます。",
   "load more": "さらに読み込む",
   "loading": "読み込み中",
   "reports will see here": "マップにピンを追加するとここに表示されます。",
