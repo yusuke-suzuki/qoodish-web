@@ -42,7 +42,7 @@ jobs:
       - name: Wait for the deployment of this commit
         run: |
           for i in $(seq 1 80); do
-            deployed=$(curl -sf --max-time 10 "$BASE_URL/api/health" | jq -r '.sha // empty' || true)
+            deployed=$(curl -s --max-time 10 "$BASE_URL/api/health" | jq -r '.sha // empty' || true)
             if [ "$deployed" = "${{ github.sha }}" ]; then
               echo "Deployed SHA matches ${{ github.sha }}"
               exit 0
