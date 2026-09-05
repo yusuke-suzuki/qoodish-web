@@ -1,10 +1,12 @@
-import { MyLocation } from '@mui/icons-material';
-import { Box, CircularProgress, Fab } from '@mui/material';
+import { LocationSearching, MyLocation } from '@mui/icons-material';
+import { CircularProgress, IconButton } from '@mui/material';
 import { memo, useState } from 'react';
+import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 
 function CurrentPositionButton() {
-  const { googleMap, setCurrentPosition } = useGoogleMap();
+  const { googleMap, currentPosition, setCurrentPosition } = useGoogleMap();
+  const dictionary = useDictionary();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -43,28 +45,32 @@ function CurrentPositionButton() {
   };
 
   return (
-    <Box position="relative">
-      <Fab
-        onClick={handleClick}
-        sx={{
-          bgcolor: 'background.paper'
-        }}
-      >
-        <MyLocation fontSize="small" />
-      </Fab>
-      {loading && (
-        <CircularProgress
-          size={68}
-          sx={{
-            color: 'info.main',
-            position: 'absolute',
-            top: -6,
-            left: -6,
-            zIndex: 1
-          }}
-        />
+    <IconButton
+      onClick={handleClick}
+      aria-label={dictionary['current position']}
+      // Fixed colors rather than theme tokens: the button sits among the
+      // Maps API's own controls, which keep their palette in every theme.
+      sx={{
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        bgcolor: '#fff',
+        color: '#666',
+        boxShadow: '0 1px 4px -1px rgba(0,0,0,0.3)',
+        '&:hover': {
+          bgcolor: '#fff',
+          color: '#333'
+        }
+      }}
+    >
+      {loading ? (
+        <CircularProgress size={20} color="inherit" />
+      ) : currentPosition ? (
+        <MyLocation fontSize="small" sx={{ color: '#1A73E8' }} />
+      ) : (
+        <LocationSearching fontSize="small" />
       )}
-    </Box>
+    </IconButton>
   );
 }
 
