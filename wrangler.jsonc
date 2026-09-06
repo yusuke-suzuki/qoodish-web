@@ -18,8 +18,18 @@
       "service": "prod-qoodish-web"
     }
   ],
+  // The destinations are registered in the dashboard under these names; the
+  // worker name tells the environments apart on the receiving side.
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+      "destinations": ["grafana-traces"]
+    },
+    "logs": {
+      "enabled": true,
+      "destinations": ["grafana-logs"]
+    }
   },
   "r2_buckets": [
     {
