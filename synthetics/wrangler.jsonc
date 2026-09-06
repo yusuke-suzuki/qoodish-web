@@ -7,7 +7,15 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+      "destinations": ["grafana-traces"]
+    },
+    "logs": {
+      "enabled": true,
+      "destinations": ["grafana-logs"]
+    }
   },
   "browser": {
     "binding": "BROWSER"
