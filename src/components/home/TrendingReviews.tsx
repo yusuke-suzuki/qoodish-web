@@ -22,7 +22,7 @@ export default memo(function TrendingReviews({ reviews }: Props) {
     <>
       <Typography
         variant="h6"
-        component="h1"
+        component="h2"
         color="text.secondary"
         gutterBottom
       >

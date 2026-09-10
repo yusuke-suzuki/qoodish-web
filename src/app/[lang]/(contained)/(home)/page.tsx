@@ -1,4 +1,7 @@
+import { Stack } from '@mui/material';
 import type { Metadata } from 'next';
+import LandingFeatures from '../../../../components/home/LandingFeatures.tsx';
+import LandingHero from '../../../../components/home/LandingHero.tsx';
 import Timeline from '../../../../components/home/Timeline.tsx';
 import TrendingReviews from '../../../../components/home/TrendingReviews.tsx';
 import { getServerAuthState } from '../../../../lib/auth.ts';
@@ -21,7 +24,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const title = 'Qoodish';
+  const title = dict['meta headline'];
   const description = dict['meta description'];
   const thumbnailUrl = defaultOgImage(lang);
 
@@ -56,5 +59,12 @@ export default async function HomePage({ params }: Props) {
   }
 
   const popularReviews = await getPopularReviews(lang);
-  return <TrendingReviews reviews={popularReviews} />;
+
+  return (
+    <Stack spacing={{ xs: 2, md: 4 }}>
+      <LandingHero />
+      <LandingFeatures />
+      <TrendingReviews reviews={popularReviews} />
+    </Stack>
+  );
 }
