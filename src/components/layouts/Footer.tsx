@@ -14,26 +14,28 @@ import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 
+// Kept in step with Article 17 of the terms, which publishes the same address.
+const SUPPORT_EMAIL = 'support@qoodish.com';
+
 export default memo(function Footer() {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   return (
-    <Paper square>
-      <Box
-        sx={{
-          bgcolor: amber[500],
-          p: 3
-        }}
-      >
+    <Paper component="footer" square>
+      <Box sx={{ bgcolor: amber[500], py: 3 }}>
         <Container>
-          <Stack>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={{ xs: 1, sm: 3 }}
+            useFlexGap
+            sx={{ flexWrap: 'wrap' }}
+          >
             <MuiLink
               href={localePath('/terms')}
               underline="hover"
               color="inherit"
               component={Link}
-              title={dictionary['terms of service']}
             >
               {dictionary['terms of service']}
             </MuiLink>
@@ -42,31 +44,35 @@ export default memo(function Footer() {
               underline="hover"
               color="inherit"
               component={Link}
-              title={dictionary['privacy policy']}
             >
               {dictionary['privacy policy']}
+            </MuiLink>
+            <MuiLink
+              href={`mailto:${SUPPORT_EMAIL}`}
+              underline="hover"
+              color="inherit"
+            >
+              {dictionary.contact}
             </MuiLink>
             <MuiLink
               href="https://github.com/yusuke-suzuki/qoodish-web"
               underline="hover"
               color="inherit"
-              title="GitHub"
               target="_blank"
+              rel="noopener"
             >
               GitHub
             </MuiLink>
           </Stack>
         </Container>
       </Box>
-      <Box
-        sx={{
-          bgcolor: amber[700],
-          p: 2
-        }}
-      >
+
+      <Box sx={{ bgcolor: amber[700], py: 2 }}>
         <Container>
+          {/* A year read at render time disagrees between the UTC worker and a
+              JST reader for the first nine hours of every January. */}
           <Typography variant="caption">
-            © 2023 Qoodish, All rights reserved.
+            © Qoodish, All rights reserved.
           </Typography>
         </Container>
       </Box>

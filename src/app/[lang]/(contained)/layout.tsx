@@ -1,6 +1,7 @@
 import { Container, Grid } from '@mui/material';
 import type { ReactNode } from 'react';
 import BottomNav from '../../../components/layouts/BottomNav.tsx';
+import Footer from '../../../components/layouts/Footer.tsx';
 import Sidebar from '../../../components/layouts/Sidebar.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
 import { getPopularMaps, getRecommendMaps } from '../../../lib/maps.ts';
@@ -32,6 +33,9 @@ export default async function ContainedLayout({ children, params }: Props) {
           </Grid>
         </Grid>
       </Container>
+
+      <Footer />
+
       <BottomNav />
     </>
   );
