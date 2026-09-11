@@ -78,7 +78,7 @@ export default async function HomePage({ params }: Props) {
     <>
       <LandingHero />
 
-      <ContainedShell lang={lang}>
+      <ContainedShell lang={lang} sidebar={false}>
         <Stack spacing={{ xs: 2, md: 4 }}>
           <LandingFeatures />
           <TrendingReviews reviews={popularReviews} />
