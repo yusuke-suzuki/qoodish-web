@@ -42,6 +42,7 @@ type Props = {
   children: ReactNode;
   lang: string;
   serverAuthenticated: boolean;
+  serverPending: boolean;
   serverUid?: string;
   profilePromise: Promise<Profile | null>;
   notificationsPromise: Promise<Notification[]>;
@@ -51,6 +52,7 @@ export default function Providers({
   children,
   lang,
   serverAuthenticated,
+  serverPending,
   serverUid,
   profilePromise,
   notificationsPromise
@@ -186,6 +188,7 @@ export default function Providers({
           <ClientErrorReporter />
           <AuthProvider
             serverAuthenticated={serverAuthenticated}
+            serverPending={serverPending}
             serverUid={serverUid ?? null}
           >
             <Suspense fallback={<SplashScreen label={dictionary.loading} />}>

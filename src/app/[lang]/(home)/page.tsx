@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import LandingFeatures from '../../../components/home/LandingFeatures.tsx';
 import LandingHero from '../../../components/home/LandingHero.tsx';
 import Timeline from '../../../components/home/Timeline.tsx';
+import TimelineSkeleton from '../../../components/home/TimelineSkeleton.tsx';
 import TrendingReviews from '../../../components/home/TrendingReviews.tsx';
 import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
@@ -49,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HomePage({ params }: Props) {
   const { lang } = await params;
-  const { authenticated } = await getServerAuthState();
+  const { authenticated, pending } = await getServerAuthState();
 
   if (authenticated) {
     const initialReviews = await getTimelineReviews();
@@ -57,6 +58,16 @@ export default async function HomePage({ params }: Props) {
     return (
       <ContainedShell lang={lang}>
         <Timeline initialReviews={initialReviews} />
+      </ContainedShell>
+    );
+  }
+
+  // Someone who already has an account has no use for the pitch, and the
+  // client refreshes this away as soon as it has a token again.
+  if (pending) {
+    return (
+      <ContainedShell lang={lang}>
+        <TimelineSkeleton />
       </ContainedShell>
     );
   }

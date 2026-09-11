@@ -116,7 +116,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
-  const { authenticated, uid, token } = await getServerAuthState();
+  const { authenticated, pending, uid, token } = await getServerAuthState();
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
     : Promise.resolve<Profile | null>(null);
@@ -148,6 +148,7 @@ export default async function RootLayout({ children, params }: Props) {
         <Providers
           lang={lang}
           serverAuthenticated={authenticated}
+          serverPending={pending}
           serverUid={uid}
           profilePromise={profilePromise}
           notificationsPromise={notificationsPromise}
