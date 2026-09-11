@@ -1,21 +1,19 @@
 import { Stack } from '@mui/material';
 import type { Metadata } from 'next';
-import LandingFeatures from '../../../../components/home/LandingFeatures.tsx';
-import LandingHero from '../../../../components/home/LandingHero.tsx';
-import Timeline from '../../../../components/home/Timeline.tsx';
-import TrendingReviews from '../../../../components/home/TrendingReviews.tsx';
-import { getServerAuthState } from '../../../../lib/auth.ts';
-import {
-  getPopularReviews,
-  getTimelineReviews
-} from '../../../../lib/reviews.ts';
-import { getDictionary } from '../../../../utils/getDictionary.ts';
-import { localePath } from '../../../../utils/locales.ts';
+import LandingFeatures from '../../../components/home/LandingFeatures.tsx';
+import LandingHero from '../../../components/home/LandingHero.tsx';
+import Timeline from '../../../components/home/Timeline.tsx';
+import TrendingReviews from '../../../components/home/TrendingReviews.tsx';
+import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
+import { getServerAuthState } from '../../../lib/auth.ts';
+import { getPopularReviews, getTimelineReviews } from '../../../lib/reviews.ts';
+import { getDictionary } from '../../../utils/getDictionary.ts';
+import { localePath } from '../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
-} from '../../../../utils/metadata.ts';
+} from '../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -55,16 +53,26 @@ export default async function HomePage({ params }: Props) {
 
   if (authenticated) {
     const initialReviews = await getTimelineReviews();
-    return <Timeline initialReviews={initialReviews} />;
+
+    return (
+      <ContainedShell lang={lang}>
+        <Timeline initialReviews={initialReviews} />
+      </ContainedShell>
+    );
   }
 
   const popularReviews = await getPopularReviews(lang);
 
   return (
-    <Stack spacing={{ xs: 2, md: 4 }}>
+    <>
       <LandingHero />
-      <LandingFeatures />
-      <TrendingReviews reviews={popularReviews} />
-    </Stack>
+
+      <ContainedShell lang={lang}>
+        <Stack spacing={{ xs: 2, md: 4 }}>
+          <LandingFeatures />
+          <TrendingReviews reviews={popularReviews} />
+        </Stack>
+      </ContainedShell>
+    </>
   );
 }

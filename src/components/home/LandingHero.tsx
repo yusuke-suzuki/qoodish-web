@@ -13,7 +13,14 @@ export default memo(function LandingHero() {
 
   return (
     <HeroBackground
-      sx={{ borderRadius: 2, overflow: 'hidden', py: { xs: 6, md: 10 } }}
+      sx={{
+        minHeight: {
+          xs: 'calc(100dvh - 56px)',
+          sm: 'calc(100dvh - 64px)',
+          md: '70vh'
+        },
+        py: { xs: 6, md: 10 }
+      }}
     >
       <Container maxWidth="sm">
         <Stack spacing={3}>
