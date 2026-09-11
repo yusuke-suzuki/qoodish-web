@@ -15,7 +15,9 @@ export default async function ContainedShell({ children, lang }: Props) {
   const { token } = await getServerAuthState();
   const [popularMaps, recommendMaps] = await Promise.all([
     getPopularMaps(lang),
-    getRecommendMaps(lang, token)
+    // Without an account there is nothing to recommend from, and the guest
+    // endpoint answers with a list that is recommended to nobody.
+    token ? getRecommendMaps(lang, token) : undefined
   ]);
 
   return (

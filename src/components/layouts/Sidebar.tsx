@@ -27,9 +27,13 @@ function Sidebar({ popularMaps, recommendMaps }: Props) {
 
   return (
     <Stack spacing={2}>
-      <RecommendMaps maps={recommendMaps} />
+      {recommendMaps && (
+        <>
+          <RecommendMaps maps={recommendMaps} />
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       <TrendingMaps maps={popularMaps} />
 
@@ -55,7 +59,7 @@ function Sidebar({ popularMaps, recommendMaps }: Props) {
               {dictionary['privacy policy']}
             </MuiLink>
             <Typography variant="caption">
-              © 2023 Qoodish, All rights reserved.
+              © Qoodish, All rights reserved.
             </Typography>
           </Stack>
         </CardContent>
