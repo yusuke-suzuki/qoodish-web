@@ -7,12 +7,15 @@ import SignInWithEmailLinkButton from './SignInWithEmailLinkButton.tsx';
 import SignInWithGoogleButton from './SignInWithGoogleButton.tsx';
 
 type Props = {
-  onSignInSuccess: () => void;
+  onSignInSuccess?: () => void;
 };
 
 function SignInButtons({ onSignInSuccess }: Props) {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
+  // Nothing to close when these sit on the page rather than in a sheet; the
+  // route refreshes itself once the token lands.
+  const handleSignInSuccess = onSignInSuccess ?? (() => {});
 
   const legalLinks: { [placeholder: string]: { href: string; label: string } } =
     {
@@ -50,7 +53,7 @@ function SignInButtons({ onSignInSuccess }: Props) {
 
   return (
     <Stack spacing={2}>
-      <SignInWithGoogleButton onSignInSuccess={onSignInSuccess} />
+      <SignInWithGoogleButton onSignInSuccess={handleSignInSuccess} />
       <Divider>{dictionary.or}</Divider>
       <SignInWithEmailLinkButton />
       <Typography variant="caption" color="text.secondary">
