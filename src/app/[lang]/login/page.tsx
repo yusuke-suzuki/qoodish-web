@@ -1,6 +1,7 @@
 import { Container, Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
 import LoginCard from '../../../components/auth/LoginCard.tsx';
+import HeroBackground from '../../../components/common/HeroBackground.tsx';
 import Footer from '../../../components/layouts/Footer.tsx';
 import { getDictionary } from '../../../utils/getDictionary.ts';
 import { localePath } from '../../../utils/locales.ts';
@@ -48,20 +49,32 @@ export default async function LoginPage({ params }: Props) {
 
   return (
     <>
-      <Container maxWidth="sm" sx={{ py: { xs: 4, md: 8 } }}>
-        <Stack spacing={4}>
-          <Typography
-            variant="h4"
-            component="h1"
-            align="center"
-            sx={{ typography: { md: 'h3' } }}
-          >
-            {dict['start new adventure']}
-          </Typography>
+      <HeroBackground
+        sx={{
+          minHeight: {
+            xs: 'calc(100dvh - 56px)',
+            sm: 'calc(100dvh - 64px)',
+            md: 'auto'
+          },
+          py: { xs: 6, md: 12 }
+        }}
+      >
+        <Container maxWidth="sm">
+          <Stack spacing={4}>
+            <Typography
+              variant="h4"
+              component="h1"
+              align="center"
+              color="common.white"
+              sx={{ typography: { md: 'h3' } }}
+            >
+              {dict['start new adventure']}
+            </Typography>
 
-          <LoginCard />
-        </Stack>
-      </Container>
+            <LoginCard />
+          </Stack>
+        </Container>
+      </HeroBackground>
 
       <Footer />
     </>
