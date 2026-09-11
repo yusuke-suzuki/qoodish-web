@@ -2,7 +2,8 @@
 
 import { Button, Container, Stack, Typography } from '@mui/material';
 import Link from 'next/link';
-import { memo } from 'react';
+import { memo, useContext } from 'react';
+import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import HeroBackground from '../common/HeroBackground.tsx';
@@ -10,6 +11,7 @@ import HeroBackground from '../common/HeroBackground.tsx';
 export default memo(function LandingHero() {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
+  const { setSignInRequired } = useContext(AuthContext);
 
   return (
     <HeroBackground
@@ -53,8 +55,7 @@ export default memo(function LandingHero() {
             <Button
               variant="contained"
               size="large"
-              component={Link}
-              href={localePath('/login')}
+              onClick={() => setSignInRequired(true)}
             >
               {dictionary['get started']}
             </Button>

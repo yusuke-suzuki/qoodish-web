@@ -28,7 +28,7 @@ function DeleteAccountCard() {
     const auth = getAuth();
     await signOut(auth);
 
-    push(localePath('/login'));
+    push(localePath('/'));
   };
 
   return (

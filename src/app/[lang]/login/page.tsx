@@ -1,82 +1,15 @@
-import { Container, Stack, Typography } from '@mui/material';
-import type { Metadata } from 'next';
-import LoginCard from '../../../components/auth/LoginCard.tsx';
-import HeroBackground from '../../../components/common/HeroBackground.tsx';
-import Footer from '../../../components/layouts/Footer.tsx';
-import { getDictionary } from '../../../utils/getDictionary.ts';
+import { permanentRedirect } from 'next/navigation';
 import { localePath } from '../../../utils/locales.ts';
-import {
-  buildAlternates,
-  defaultOgImage,
-  ogImages
-} from '../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = getDictionary(lang);
-  const title = `${dict.login} | Qoodish`;
-  const description = dict['meta description'];
-  const thumbnailUrl = defaultOgImage(lang);
-
-  return {
-    title,
-    description,
-    keywords:
-      'Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, maps, travel, food, group, trip',
-    alternates: buildAlternates(lang, '/login'),
-    openGraph: {
-      type: 'website',
-      title,
-      description,
-      url: localePath(lang, '/login'),
-      images: ogImages(thumbnailUrl),
-      locale: lang === 'en' ? 'en_US' : 'ja_JP',
-      siteName: dict['meta headline']
-    },
-    twitter: {
-      card: 'summary_large_image'
-    }
-  };
-}
-
+// Signing in happens in a sheet over whatever the reader was looking at, so
+// this route has nothing left to render. It stays behind as a redirect for the
+// links and bookmarks that still point at it.
 export default async function LoginPage({ params }: Props) {
   const { lang } = await params;
-  const dict = getDictionary(lang);
 
-  return (
-    <>
-      <HeroBackground
-        sx={{
-          minHeight: {
-            xs: 'calc(100dvh - 56px)',
-            sm: 'calc(100dvh - 64px)',
-            md: 'auto'
-          },
-          py: { xs: 6, md: 12 }
-        }}
-      >
-        <Container maxWidth="sm">
-          <Stack spacing={4}>
-            <Typography
-              variant="h4"
-              component="h1"
-              align="center"
-              color="common.white"
-              sx={{ typography: { md: 'h3' } }}
-            >
-              {dict['start new adventure']}
-            </Typography>
-
-            <LoginCard />
-          </Stack>
-        </Container>
-      </HeroBackground>
-
-      <Footer />
-    </>
-  );
+  permanentRedirect(localePath(lang));
 }
