@@ -22,9 +22,9 @@ export default memo(function TrendingReviews({ reviews }: Props) {
   return (
     <LandingSection sx={{ bgcolor: 'background.default' }}>
       <Typography
-        variant="h5"
+        variant="h4"
         component="h2"
-        sx={{ typography: { md: 'h3' }, mb: { xs: 4, md: 6 } }}
+        sx={{ typography: { sm: 'h3' }, mb: { xs: 5, md: 7 } }}
       >
         {dictionary['trending reviews']}
       </Typography>
@@ -54,14 +54,21 @@ export default memo(function TrendingReviews({ reviews }: Props) {
         ))}
       </Box>
 
-      <Stack alignItems="center" sx={{ mt: { xs: 5, md: 7 } }}>
+      <Stack alignItems="flex-start" sx={{ mt: { xs: 5, md: 7 } }}>
         <Button
           component={Link}
           href={localePath('/discover')}
-          variant="outlined"
+          variant="contained"
           size="large"
-          color="inherit"
-          sx={{ borderRadius: 999, px: 4, py: 1.25 }}
+          disableElevation
+          sx={{
+            borderRadius: 999,
+            px: 4,
+            py: 1.25,
+            bgcolor: 'text.primary',
+            color: 'background.paper',
+            '&:hover': { bgcolor: 'common.black' }
+          }}
         >
           {dictionary['discover more']}
         </Button>

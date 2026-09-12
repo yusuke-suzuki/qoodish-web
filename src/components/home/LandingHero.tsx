@@ -28,12 +28,12 @@ export default memo(function LandingHero() {
           <Grid size={{ xs: 12, md: 7 }}>
             {/* Capped: the column is as wide as the container once it stacks,
                 which runs the lines past reading length. */}
-            <Stack spacing={4} sx={{ maxWidth: 640 }}>
+            <Stack spacing={4} sx={{ maxWidth: 720 }}>
               <Typography
-                variant="h4"
+                variant="h3"
                 component="h1"
                 color="common.white"
-                sx={{ typography: { sm: 'h3', md: 'h2' } }}
+                sx={{ typography: { md: 'h2' } }}
               >
                 {dictionary['create map together']}
               </Typography>
@@ -42,7 +42,7 @@ export default memo(function LandingHero() {
                 variant="body1"
                 component="p"
                 color="common.white"
-                sx={{ maxWidth: 520 }}
+                sx={{ maxWidth: 520, fontSize: { md: '1.125rem' } }}
               >
                 {dictionary['meta description']}
               </Typography>
@@ -51,16 +51,18 @@ export default memo(function LandingHero() {
                   to the column. */}
               <Box>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="large"
+                  disableElevation
                   component={Link}
                   href={localePath('/discover')}
                   sx={{
                     borderRadius: 999,
                     px: 4,
                     py: 1.25,
-                    color: 'common.white',
-                    borderColor: 'common.white'
+                    bgcolor: 'common.white',
+                    color: 'text.primary',
+                    '&:hover': { bgcolor: 'grey.200' }
                   }}
                 >
                   {dictionary.discover}
