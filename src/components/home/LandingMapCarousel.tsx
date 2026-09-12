@@ -3,7 +3,7 @@
 import { styled } from '@mui/material/styles';
 import { memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
-import LandingMapCard from './LandingMapCard.tsx';
+import MapCard from '../maps/MapCard.tsx';
 
 // Written as CSS rather than through sx: the scroll marker properties are CSS
 // Overflow 5 and have no entry in the style types yet. Where they are not
@@ -77,7 +77,7 @@ export default memo(function LandingMapCarousel({ maps, label }: Props) {
     <Rail aria-label={label}>
       {maps.map((map) => (
         <li key={map.id}>
-          <LandingMapCard map={map} />
+          <MapCard map={map} />
         </li>
       ))}
     </Rail>

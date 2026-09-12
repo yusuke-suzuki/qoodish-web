@@ -62,41 +62,53 @@ export default async function DiscoverPage({ params }: Props) {
 
   return (
     <Stack spacing={4} divider={<Divider />}>
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <Explore color="secondary" />
-          <Typography variant="subtitle1">{dict['pick up']}</Typography>
+      {/* A section with nothing behind it used to render a grid of skeletons
+          that never resolved, so each one is dropped when its list is empty. */}
+      {pickUpMap && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Explore color="secondary" />
+            <Typography variant="subtitle1">{dict['pick up']}</Typography>
+          </Box>
+
+          <PickUpMap map={pickUpMap} />
         </Box>
+      )}
 
-        <PickUpMap map={pickUpMap} />
-      </Box>
+      {recentReviews.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">
+              {dict['recent reports']}
+            </Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <FiberNew color="secondary" />
-          <Typography variant="subtitle1">{dict['recent reports']}</Typography>
+          <ReviewGridList reviews={recentReviews} />
         </Box>
+      )}
 
-        <ReviewGridList reviews={recentReviews} />
-      </Box>
+      {activeMaps.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Whatshot color="secondary" />
+            <Typography variant="subtitle1">{dict['active maps']}</Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <Whatshot color="secondary" />
-          <Typography variant="subtitle1">{dict['active maps']}</Typography>
+          <MapGridList maps={activeMaps} />
         </Box>
+      )}
 
-        <MapGridList maps={activeMaps} />
-      </Box>
+      {recentMaps.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">{dict['recent maps']}</Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <FiberNew color="secondary" />
-          <Typography variant="subtitle1">{dict['recent maps']}</Typography>
+          <MapGridList maps={recentMaps} />
         </Box>
-
-        <MapGridList maps={recentMaps} />
-      </Box>
+      )}
     </Stack>
   );
 }
