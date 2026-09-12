@@ -19,9 +19,14 @@ const loadingTileKeys = [
   'loading-6'
 ];
 
-// Columns follow the width the grid is actually given rather than the viewport,
-// so the same list works in the main column and in a narrower one.
-const gridTemplateColumns = 'repeat(auto-fill, minmax(240px, 1fr))';
+// Above a phone the columns follow the width the grid is actually given, so the
+// same list works in the main column and in a narrower one. A phone is narrower
+// than one of those columns, and a single column of cards makes a browsing page
+// as long to scroll as the rails on the landing were meant to avoid.
+const gridTemplateColumns = {
+  xs: 'repeat(2, 1fr)',
+  sm: 'repeat(auto-fill, minmax(240px, 1fr))'
+};
 
 function ReviewGridList({ reviews, loading }: Props) {
   return (
