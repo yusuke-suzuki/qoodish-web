@@ -5,6 +5,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { type ElementType, memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import LandingListLabel from './LandingListLabel.tsx';
 import LandingMapCarousel from './LandingMapCarousel.tsx';
 import LandingSection from './LandingSection.tsx';
 
@@ -96,13 +97,9 @@ export default memo(function LandingFeatures({ maps }: Props) {
               <Box sx={{ mt: { xs: 5, md: 7 } }}>
                 {/* The lists overlap by nature — a popular map can also be a
                     recent one — and without a name the repeat reads as a bug. */}
-                <Typography
-                  variant="subtitle2"
-                  component="h3"
-                  sx={{ mb: 2, opacity: 0.7 }}
-                >
+                <LandingListLabel component="h3">
                   {dictionary[listLabel]}
-                </Typography>
+                </LandingListLabel>
 
                 <LandingMapCarousel
                   maps={sectionMaps}

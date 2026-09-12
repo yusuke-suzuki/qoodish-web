@@ -1,13 +1,14 @@
 'use client';
 
 import { Reviews } from '@mui/icons-material';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
 import type { Review } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import NoContents from '../common/NoContents.tsx';
+import LandingListLabel from './LandingListLabel.tsx';
 import LandingSection from './LandingSection.tsx';
 import TimelineReviewCard from './TimelineReviewCard.tsx';
 
@@ -21,13 +22,9 @@ export default memo(function TrendingReviews({ reviews }: Props) {
 
   return (
     <LandingSection sx={{ bgcolor: 'background.default' }}>
-      <Typography
-        variant="h4"
-        component="h2"
-        sx={{ typography: { sm: 'h3' }, mb: { xs: 5, md: 7 } }}
-      >
+      <LandingListLabel component="h2">
         {dictionary['trending reviews']}
-      </Typography>
+      </LandingListLabel>
 
       {reviews.length < 1 && (
         <NoContents
