@@ -1,21 +1,24 @@
 'use client';
 
-import { Search } from '@mui/icons-material';
+import { Menu, Search } from '@mui/icons-material';
 import { AppBar, Box, Button, IconButton, Toolbar } from '@mui/material';
 import Link from 'next/link';
-import { memo, useContext } from 'react';
+import { memo, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
+import MobileDrawer from './MobileDrawer.tsx';
 
 export default memo(function PublicAppBar() {
-  const { openSearch } = useContext(ShellContext);
+  const { openSearch, openCreateMap } = useContext(ShellContext);
   const { setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     // Light rather than the app's amber: white on amber falls short of the
@@ -28,6 +31,19 @@ export default memo(function PublicAppBar() {
       sx={{ borderBottom: 1, borderColor: 'divider' }}
     >
       <Toolbar sx={{ gap: 1 }}>
+        {/* Only where the bar has no room to name anywhere to go. Above that
+            breakpoint the way to look around is spelled out beside the mark,
+            and a menu holding the same two places would say it twice. */}
+        <IconButton
+          edge="start"
+          onClick={() => setDrawerOpen(true)}
+          title={dictionary.menu}
+          aria-label={dictionary.menu}
+          sx={{ display: { xs: 'inline-flex', sm: 'none' } }}
+        >
+          <Menu />
+        </IconButton>
+
         <Box
           component={Link}
           href={localePath('/')}
@@ -69,6 +85,13 @@ export default memo(function PublicAppBar() {
           {dictionary.login}
         </Button>
       </Toolbar>
+
+      <MobileDrawer
+        open={drawerOpen}
+        onOpen={() => setDrawerOpen(true)}
+        onClose={() => setDrawerOpen(false)}
+        onCreateMapClick={openCreateMap}
+      />
     </AppBar>
   );
 });
