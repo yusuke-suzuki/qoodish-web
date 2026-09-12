@@ -47,7 +47,6 @@ export default memo(function PublicAppBar() {
 
         <IconButton
           onClick={openSearch}
-          color="inherit"
           title={dictionary.search}
           aria-label={dictionary.search}
         >

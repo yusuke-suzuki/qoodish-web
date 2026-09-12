@@ -37,7 +37,6 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
       {variant === 'bar' ? (
         <IconButton
           onClick={(event) => setAnchorEl(event.currentTarget)}
-          color="inherit"
           title={dictionary.language}
           aria-label={dictionary.language}
         >
@@ -52,7 +51,7 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
         >
           {variant === 'rail' ? (
             <ListItemIcon sx={{ minWidth: 0 }}>
-              <Language sx={{ color: 'primary.contrastText' }} />
+              <Language />
             </ListItemIcon>
           ) : (
             <ListItemText

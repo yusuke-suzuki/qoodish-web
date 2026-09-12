@@ -55,30 +55,31 @@ function MobileAppBarContent() {
           elevation={0}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
-          <Toolbar
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: '1fr auto 1fr'
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <IconButton
-                size="small"
-                edge="start"
-                onClick={() => setDrawerOpen(true)}
-              >
-                <ProfileAvatar profile={profile} size={32} />
-              </IconButton>
+          {/* The mark sits where it sits on the signed-out bar. Centred here
+              it moved across the screen the moment a reader signed in, and it
+              was the one place in the app where it led nowhere. */}
+          <Toolbar sx={{ gap: 1 }}>
+            <IconButton
+              size="small"
+              edge="start"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <ProfileAvatar profile={profile} size={32} />
+            </IconButton>
+
+            <Box
+              component={Link}
+              href={localePath('/')}
+              sx={{ display: 'flex', mr: 'auto', textDecoration: 'none' }}
+            >
+              <Logo />
             </Box>
 
-            <Logo />
-
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex' }}>
               {authenticated && (
                 <IconButton
                   component={Link}
                   href={localePath('/notifications')}
-                  color="inherit"
                   title={dictionary.notifications}
                   aria-label={dictionary.notifications}
                 >
@@ -91,7 +92,6 @@ function MobileAppBarContent() {
               <IconButton
                 onClick={openSearch}
                 edge="end"
-                color="inherit"
                 title={dictionary.search}
                 aria-label={dictionary.search}
               >
