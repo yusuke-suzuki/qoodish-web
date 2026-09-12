@@ -8,6 +8,11 @@ import BottomNav from '../../../components/layouts/BottomNav.tsx';
 import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
 import Footer from '../../../components/layouts/Footer.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
+import {
+  getActiveMaps,
+  getPopularMaps,
+  getRecentMaps
+} from '../../../lib/maps.ts';
 import { getPopularReviews, getTimelineReviews } from '../../../lib/reviews.ts';
 import { getDictionary } from '../../../utils/getDictionary.ts';
 import { localePath } from '../../../utils/locales.ts';
@@ -73,12 +78,17 @@ export default async function HomePage({ params }: Props) {
     );
   }
 
-  const popularReviews = await getPopularReviews(lang);
+  const [popularReviews, active, popular, recent] = await Promise.all([
+    getPopularReviews(lang),
+    getActiveMaps(lang),
+    getPopularMaps(lang),
+    getRecentMaps(lang)
+  ]);
 
   return (
     <>
       <LandingHero />
-      <LandingFeatures />
+      <LandingFeatures maps={{ active, popular, recent }} />
       <TrendingReviews reviews={popularReviews} />
 
       <Footer />
