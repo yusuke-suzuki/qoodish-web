@@ -62,14 +62,20 @@ export default function Loading() {
       <GridSection
         count={MAP_TILE_COUNT}
         rowHeight={240}
+        keyPrefix="skeleton-discover-recent-chapters"
+        cols={{ xs: 2, sm: 3 }}
+      />
+      <GridSection
+        count={MAP_TILE_COUNT}
+        rowHeight={240}
         keyPrefix="skeleton-discover-active-maps"
-        cols={{ xs: 1, sm: 3 }}
+        cols={{ xs: 2, sm: 3 }}
       />
       <GridSection
         count={MAP_TILE_COUNT}
         rowHeight={240}
         keyPrefix="skeleton-discover-recent-maps"
-        cols={{ xs: 1, sm: 3 }}
+        cols={{ xs: 2, sm: 3 }}
       />
     </Stack>
   );
