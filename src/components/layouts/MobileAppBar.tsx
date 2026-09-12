@@ -1,6 +1,6 @@
 'use client';
 
-import { Notifications, Search } from '@mui/icons-material';
+import { Menu, Notifications, Search } from '@mui/icons-material';
 import {
   AppBar,
   Badge,
@@ -15,18 +15,15 @@ import { usePathname } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext.ts';
 import NotificationsContext from '../../context/NotificationsContext.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
-import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import Logo from './Logo.tsx';
 import MobileDrawer from './MobileDrawer.tsx';
 
 function MobileAppBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);
   const { authenticated } = useContext(AuthContext);
-  const profile = useContext(ProfileContext);
   const notifications = useContext(NotificationsContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
@@ -59,12 +56,16 @@ function MobileAppBarContent() {
               it moved across the screen the moment a reader signed in, and it
               was the one place in the app where it led nowhere. */}
           <Toolbar sx={{ gap: 1 }}>
+            {/* The bottom bar carries the reader's face, so this one opens
+                what is left over — settings, bookmarks, invites — rather than
+                printing the same avatar a second time. */}
             <IconButton
-              size="small"
               edge="start"
               onClick={() => setDrawerOpen(true)}
+              title={dictionary.menu}
+              aria-label={dictionary.menu}
             >
-              <ProfileAvatar profile={profile} size={32} />
+              <Menu />
             </IconButton>
 
             <Box
