@@ -55,6 +55,10 @@ export default memo(function PublicAppBar() {
 
         <LocaleMenuButton variant="bar" />
 
+        {/* The pitch belongs on the landing, which says "get started" over the
+            same sheet. In the bar this is the way back in, and someone
+            returning to sign in should not have to read an invitation to
+            start. */}
         <Button
           variant="contained"
           color="primary"
@@ -62,7 +66,7 @@ export default memo(function PublicAppBar() {
           onClick={() => setSignInRequired(true)}
           sx={{ borderRadius: 999, px: 3, flexShrink: 0 }}
         >
-          {dictionary['get started']}
+          {dictionary.login}
         </Button>
       </Toolbar>
     </AppBar>
