@@ -1,10 +1,8 @@
-import { Box } from '@mui/material';
 import type { Metadata, Viewport } from 'next';
 import { Cinzel, Lobster, Shippori_Mincho } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
-import MiniDrawer from '../../components/layouts/MiniDrawer.tsx';
-import MobileAppBar from '../../components/layouts/MobileAppBar.tsx';
+import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
@@ -154,21 +152,7 @@ export default async function RootLayout({ children, params }: Props) {
           notificationsPromise={notificationsPromise}
         >
           <ShellProvider>
-            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-              <MobileAppBar />
-            </Box>
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <MiniDrawer />
-            </Box>
-            <Box
-              component="main"
-              sx={{
-                pl: { md: 8 },
-                pt: { xs: 7, sm: 8, md: 0 }
-              }}
-            >
-              {children}
-            </Box>
+            <Shell serverPending={pending}>{children}</Shell>
           </ShellProvider>
         </Providers>
       </body>

@@ -2,7 +2,6 @@ import { Container, Grid } from '@mui/material';
 import type { ReactNode } from 'react';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getPopularMaps, getRecommendMaps } from '../../lib/maps.ts';
-import BottomNav from './BottomNav.tsx';
 import Footer from './Footer.tsx';
 import Sidebar from './Sidebar.tsx';
 
@@ -37,8 +36,6 @@ export default async function ContainedShell({ children, lang }: Props) {
       </Container>
 
       <Footer />
-
-      <BottomNav />
     </>
   );
 }

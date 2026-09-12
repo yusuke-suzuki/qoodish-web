@@ -256,7 +256,7 @@ export default function MapDetailView({
             display: { xs: 'none', md: 'block' },
             width: summaryCardHeight,
             zIndex: 1,
-            height: '100dvh'
+            height: 'calc(100dvh - var(--chrome-top, 0px))'
           }}
         >
           <MapSummaryCard
@@ -276,12 +276,11 @@ export default function MapDetailView({
           mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
           sx={{
             height: {
-              xs: `calc(100dvh - ${drawerBleeding}px - ${theme.spacing(7)})`,
-              sm: `calc(100dvh - ${drawerBleeding}px - ${theme.spacing(8)})`,
-              md: '100dvh'
+              xs: `calc(100dvh - ${drawerBleeding}px - var(--chrome-top, 0px))`,
+              md: 'calc(100dvh - var(--chrome-top, 0px))'
             },
             width: {
-              md: `calc(100dvw - ${summaryCardHeight}px - ${theme.spacing(8)})`
+              md: `calc(100dvw - ${summaryCardHeight}px - var(--chrome-left, 0px))`
             }
           }}
           center={center}
