@@ -1,5 +1,6 @@
 'use client';
 
+import { Photo } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -11,6 +12,7 @@ import Link from 'next/link';
 import { memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
 
 type Props = {
   map: AppMap | null;
@@ -30,13 +32,20 @@ function PickUpMap({ map }: Props) {
         href={localePath(`/maps/${map.id}`)}
         title={map.name}
       >
-        <CardMedia
-          component="img"
-          image={map.image?.hero}
-          alt={map.name}
-          loading="lazy"
-          sx={{ height: 240, objectFit: 'cover' }}
-        />
+        {map.image ? (
+          <CardMedia
+            component="img"
+            image={map.image.hero}
+            alt={map.name}
+            loading="lazy"
+            sx={{ height: 240, objectFit: 'cover' }}
+          />
+        ) : (
+          <MediaPlaceholder
+            icon={Photo}
+            sx={{ aspectRatio: 'auto', height: 240 }}
+          />
+        )}
 
         <Box
           sx={{

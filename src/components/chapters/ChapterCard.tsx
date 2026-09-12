@@ -2,7 +2,6 @@
 
 import { HistoryEdu } from '@mui/icons-material';
 import {
-  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -14,6 +13,7 @@ import { memo } from 'react';
 import type { Chapter } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
 
 type Props = {
   chapter: Chapter;
@@ -43,16 +43,7 @@ export default memo(function ChapterCard({ chapter }: Props) {
             sx={{ aspectRatio: '3 / 2', objectFit: 'cover' }}
           />
         ) : (
-          <Box
-            sx={{
-              aspectRatio: '3 / 2',
-              display: 'grid',
-              placeItems: 'center',
-              bgcolor: 'action.hover'
-            }}
-          >
-            <HistoryEdu color="disabled" fontSize="large" />
-          </Box>
+          <MediaPlaceholder icon={HistoryEdu} />
         )}
 
         <CardContent>

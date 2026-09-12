@@ -1,83 +1,74 @@
 'use client';
 
-import { Lock, Photo } from '@mui/icons-material';
+import { PhotoLibrary, Place } from '@mui/icons-material';
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
-  Chip,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { AppMap } from '../../../types/index.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
+import type { Review } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
 
 type Props = {
-  map: AppMap;
+  review: Review;
 };
 
-export default memo(function MapCard({ map }: Props) {
-  const dictionary = useDictionary();
+export default memo(function ReviewCard({ review }: Props) {
   const localePath = useLocalePath();
+
+  const [image] = review.images;
 
   return (
     <Card sx={{ height: '100%' }}>
       <CardActionArea
         component={Link}
-        href={localePath(`/maps/${map.id}`)}
+        href={localePath(`/maps/${review.map.id}/reports/${review.id}`)}
         sx={{ height: '100%' }}
       >
         <Box sx={{ position: 'relative' }}>
-          {map.image ? (
+          {image ? (
             <CardMedia
               component="img"
-              image={map.image.card}
-              alt={map.name}
+              image={image.card}
+              alt={review.name}
               loading="lazy"
               sx={{ aspectRatio: '3 / 2', objectFit: 'cover' }}
             />
           ) : (
-            <MediaPlaceholder icon={Photo} />
+            <MediaPlaceholder icon={Place} />
           )}
 
-          {map.private && (
-            <Chip
-              size="small"
-              icon={<Lock fontSize="small" />}
-              label={dictionary.private}
-              sx={{ position: 'absolute', top: 8, left: 8 }}
+          {review.images.length > 1 && (
+            <PhotoLibrary
+              htmlColor="white"
+              fontSize="small"
+              sx={{ position: 'absolute', top: 8, right: 8 }}
             />
           )}
         </Box>
 
         <CardContent>
           <Typography variant="h6" component="h3">
-            {map.name}
+            {review.name}
           </Typography>
 
           <Typography variant="caption" color="text.secondary">
-            {map.author.name}
+            {review.author.name}
           </Typography>
 
-          {/* Descriptions run to any length, and a rail or a grid of cards only
-              reads as one while the cards are the same height. */}
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{
-              mt: 1,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}
+            noWrap
+            sx={{ mt: 1 }}
           >
-            {map.description}
+            {review.map.name}
           </Typography>
         </CardContent>
       </CardActionArea>
