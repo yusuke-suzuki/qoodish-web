@@ -8,7 +8,6 @@ import type { Review } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import NoContents from '../common/NoContents.tsx';
-import LandingListLabel from './LandingListLabel.tsx';
 import LandingSection from './LandingSection.tsx';
 import TimelineReviewCard from './TimelineReviewCard.tsx';
 
@@ -22,10 +21,6 @@ export default memo(function TrendingReviews({ reviews }: Props) {
 
   return (
     <LandingSection sx={{ bgcolor: 'background.default' }}>
-      <LandingListLabel component="h2">
-        {dictionary['trending reviews']}
-      </LandingListLabel>
-
       {reviews.length < 1 && (
         <NoContents
           message={dictionary['reports will see here']}
