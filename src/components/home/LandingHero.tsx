@@ -77,10 +77,14 @@ export default memo(function LandingHero() {
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Stack spacing={3}>
                   {/* Not "Sign in": the reader this card is aimed at has no
-                      account yet, and the buttons already say what they do. */}
+                      account yet, and the buttons already say what they do.
+                      Centred against the card rather than ranged left with the
+                      page: everything under it is a full width control with a
+                      label on the same axis. */}
                   <Typography
                     variant="h6"
                     component="h2"
+                    align="center"
                     sx={{ typography: { md: 'h5' } }}
                   >
                     {dictionary['get started']}
