@@ -2,6 +2,15 @@ import { Box } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { type ElementType, memo } from 'react';
 
+// A height in lines, for a piece of text set in one of the theme's variants.
+// The `lh` unit says this directly, but a browser that does not know it drops
+// the declaration and the card goes back to being as tall as its contents; an
+// em against the variant's own line height holds everywhere.
+export function lines(count: number, variant: 'h6' | 'body2') {
+  return (theme: Theme) =>
+    `${count * Number(theme.typography[variant].lineHeight)}em`;
+}
+
 // Laid on a card title, for the three things a reader meets in a list: which
 // of them this one is.
 //
@@ -23,7 +32,7 @@ export const TYPE_TITLE_TEXT: SxProps<Theme> = {
   WebkitLineClamp: 2,
   WebkitBoxOrient: 'vertical',
   overflow: 'hidden',
-  minHeight: '2lh'
+  minHeight: lines(2, 'h6')
 };
 
 type Props = {
@@ -37,7 +46,7 @@ export default memo(function TypeMark({ icon: Icon }: Props) {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        height: '1lh',
+        height: lines(1, 'h6'),
         flexShrink: 0
       }}
     >

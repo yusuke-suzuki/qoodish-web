@@ -16,7 +16,11 @@ import type { AppMap } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import TypeMark, { TYPE_TITLE, TYPE_TITLE_TEXT } from '../common/TypeMark.tsx';
+import TypeMark, {
+  lines,
+  TYPE_TITLE,
+  TYPE_TITLE_TEXT
+} from '../common/TypeMark.tsx';
 
 type Props = {
   map: AppMap;
@@ -83,7 +87,7 @@ export default memo(function MapCard({ map }: Props) {
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              minHeight: '2lh'
+              minHeight: lines(2, 'body2')
             }}
           >
             {map.description}
