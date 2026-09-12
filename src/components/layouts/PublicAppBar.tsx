@@ -58,16 +58,10 @@ export default memo(function PublicAppBar() {
 
         <Button
           variant="contained"
+          color="primary"
           disableElevation
           onClick={() => setSignInRequired(true)}
-          sx={{
-            borderRadius: 999,
-            px: 3,
-            flexShrink: 0,
-            bgcolor: 'text.primary',
-            color: 'background.paper',
-            '&:hover': { bgcolor: 'common.black' }
-          }}
+          sx={{ borderRadius: 999, px: 3, flexShrink: 0 }}
         >
           {dictionary['get started']}
         </Button>

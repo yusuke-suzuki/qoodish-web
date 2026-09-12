@@ -72,17 +72,19 @@ export default function Providers({
     return createTheme(
       {
         palette: {
+          // contrastText is left to MUI. Both of these are light enough that
+          // white on them lands near 1.6:1 and 2.6:1, and the theme used to
+          // name white anyway; the computed value is the dark one, which is
+          // what the amber footer had been using all along.
           primary: {
             light: amber[300],
             main: amber[500],
-            dark: amber[700],
-            contrastText: '#fff'
+            dark: amber[700]
           },
           secondary: {
             light: lightBlue[300],
             main: lightBlue[500],
-            dark: lightBlue[700],
-            contrastText: '#fff'
+            dark: lightBlue[700]
           },
           background: {
             default: '#f1f1f1'
