@@ -6,6 +6,7 @@ import TimelineSkeleton from '../../../components/home/TimelineSkeleton.tsx';
 import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
 import Footer from '../../../components/layouts/Footer.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
+import { getRecentChapters } from '../../../lib/chapters.ts';
 import {
   getActiveMaps,
   getPopularMaps,
@@ -76,10 +77,11 @@ export default async function HomePage({ params }: Props) {
     );
   }
 
-  const [active, popular, recent] = await Promise.all([
+  const [active, popular, recent, chapters] = await Promise.all([
     getActiveMaps(lang),
     getPopularMaps(lang),
-    getRecentMaps(lang)
+    getRecentMaps(lang),
+    getRecentChapters(lang)
   ]);
 
   // One sample of the catalogue rather than three overlapping views of it. The
@@ -94,7 +96,7 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       <LandingHero />
-      <LandingFeatures maps={maps} />
+      <LandingFeatures maps={maps} chapters={chapters} />
 
       <Footer />
     </>

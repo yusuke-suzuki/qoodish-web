@@ -1,9 +1,7 @@
 'use client';
 
 import { styled } from '@mui/material/styles';
-import { memo } from 'react';
-import type { AppMap } from '../../../types/index.ts';
-import MapCard from '../maps/MapCard.tsx';
+import { memo, type ReactNode } from 'react';
 
 // Written as CSS rather than through sx: the scroll marker properties are CSS
 // Overflow 5 and have no entry in the style types yet. Where they are not
@@ -68,18 +66,11 @@ const Rail = styled('ul')(
 );
 
 type Props = {
-  maps: AppMap[];
+  // One `li` per item: the markers are drawn by the list items themselves.
+  children: ReactNode;
   label: string;
 };
 
-export default memo(function LandingMapCarousel({ maps, label }: Props) {
-  return (
-    <Rail aria-label={label}>
-      {maps.map((map) => (
-        <li key={map.id}>
-          <MapCard map={map} />
-        </li>
-      ))}
-    </Rail>
-  );
+export default memo(function LandingCarousel({ children, label }: Props) {
+  return <Rail aria-label={label}>{children}</Rail>;
 });
