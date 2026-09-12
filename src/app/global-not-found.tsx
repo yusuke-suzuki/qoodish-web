@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { BRAND_COLOR, BRAND_COLOR_CONTRAST } from '../utils/brand.ts';
 
 export const metadata: Metadata = {
   title: '404 - Page Not Found',
@@ -31,7 +32,7 @@ export default async function GlobalNotFound() {
   return (
     <html lang={lang}>
       <head>
-        <meta name="theme-color" content="#ffc107" />
+        <meta name="theme-color" content={BRAND_COLOR} />
       </head>
       <body
         style={{
@@ -60,8 +61,8 @@ export default async function GlobalNotFound() {
             style={{
               display: 'inline-block',
               padding: '0.75rem 1.5rem',
-              backgroundColor: '#ffc107',
-              color: '#333',
+              backgroundColor: BRAND_COLOR,
+              color: BRAND_COLOR_CONTRAST,
               textDecoration: 'none',
               borderRadius: '4px',
               fontWeight: 500

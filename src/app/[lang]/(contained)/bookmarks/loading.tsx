@@ -10,7 +10,7 @@ export default function Loading() {
     <>
       {/* Plain boxes rather than Tabs: a skeleton must not expose focusable
           tab roles that carry no accessible name. */}
-      <Card elevation={0}>
+      <Card>
         <Box
           sx={{
             height: tabBarHeight,

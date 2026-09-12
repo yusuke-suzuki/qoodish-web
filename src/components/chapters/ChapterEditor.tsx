@@ -241,7 +241,7 @@ export default function ChapterEditor({
 
   return (
     <>
-      <Paper elevation={0} sx={{ overflow: 'hidden' }}>
+      <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
         <ChapterCover
           image={chapter.image}
           editable

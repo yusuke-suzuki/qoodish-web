@@ -1,18 +1,8 @@
 'use client';
 
-import {
-  CardContent,
-  Divider,
-  Link as MuiLink,
-  Paper,
-  Stack,
-  Typography
-} from '@mui/material';
-import Link from 'next/link';
+import { Divider, Stack } from '@mui/material';
 import { memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
-import useLocalePath from '../../hooks/useLocalePath.ts';
 import RecommendMaps from './RecommendMaps.tsx';
 import TrendingMaps from './TrendingMaps.tsx';
 
@@ -21,45 +11,20 @@ type Props = {
   recommendMaps?: AppMap[];
 };
 
+// The legal links and the copyright used to close this rail. The footer now
+// carries them under every page, so keeping them here printed both twice.
 function Sidebar({ popularMaps, recommendMaps }: Props) {
-  const dictionary = useDictionary();
-  const localePath = useLocalePath();
-
   return (
     <Stack spacing={2}>
-      <RecommendMaps maps={recommendMaps} />
+      {recommendMaps && (
+        <>
+          <RecommendMaps maps={recommendMaps} />
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       <TrendingMaps maps={popularMaps} />
-
-      <Paper elevation={0}>
-        <CardContent>
-          <Stack spacing={1}>
-            <MuiLink
-              href={localePath('/terms')}
-              underline="hover"
-              color="inherit"
-              component={Link}
-              title={dictionary['terms of service']}
-            >
-              {dictionary['terms of service']}
-            </MuiLink>
-            <MuiLink
-              href={localePath('/privacy')}
-              underline="hover"
-              color="inherit"
-              component={Link}
-              title={dictionary['privacy policy']}
-            >
-              {dictionary['privacy policy']}
-            </MuiLink>
-            <Typography variant="caption">
-              © 2023 Qoodish, All rights reserved.
-            </Typography>
-          </Stack>
-        </CardContent>
-      </Paper>
     </Stack>
   );
 }

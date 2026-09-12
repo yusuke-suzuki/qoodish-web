@@ -73,8 +73,7 @@ export default memo(function MiniDrawer() {
             sx: {
               display: 'flex',
               justifyContent: 'space-between',
-              flexDirection: 'column',
-              backgroundColor: 'primary.main'
+              flexDirection: 'column'
             }
           }
         }}
@@ -106,9 +105,9 @@ export default memo(function MiniDrawer() {
           >
             <ListItemIcon sx={{ minWidth: 0 }}>
               {/^\/[a-z]+\/?$/.test(pathname) ? (
-                <Home sx={{ color: 'primary.contrastText' }} />
+                <Home color="primary" />
               ) : (
-                <HomeOutlined sx={{ color: 'primary.contrastText' }} />
+                <HomeOutlined />
               )}
             </ListItemIcon>
           </ListItemButton>
@@ -124,9 +123,9 @@ export default memo(function MiniDrawer() {
           >
             <ListItemIcon sx={{ minWidth: 0 }}>
               {pathname.endsWith('/discover') ? (
-                <Explore sx={{ color: 'primary.contrastText' }} />
+                <Explore color="primary" />
               ) : (
-                <ExploreOutlined sx={{ color: 'primary.contrastText' }} />
+                <ExploreOutlined />
               )}
             </ListItemIcon>
           </ListItemButton>
@@ -143,11 +142,9 @@ export default memo(function MiniDrawer() {
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 {pathname.endsWith('/journeys') ? (
-                  <DirectionsWalk sx={{ color: 'primary.contrastText' }} />
+                  <DirectionsWalk color="primary" />
                 ) : (
-                  <DirectionsWalkOutlined
-                    sx={{ color: 'primary.contrastText' }}
-                  />
+                  <DirectionsWalkOutlined />
                 )}
               </ListItemIcon>
             </ListItemButton>
@@ -166,11 +163,9 @@ export default memo(function MiniDrawer() {
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 {pathname.endsWith(`/users/${profile?.id}`) ? (
-                  <AccountCircle sx={{ color: 'primary.contrastText' }} />
+                  <AccountCircle color="primary" />
                 ) : (
-                  <AccountCircleOutlined
-                    sx={{ color: 'primary.contrastText' }}
-                  />
+                  <AccountCircleOutlined />
                 )}
               </ListItemIcon>
             </ListItemButton>
@@ -188,9 +183,9 @@ export default memo(function MiniDrawer() {
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 {pathname.endsWith('/bookmarks') ? (
-                  <Bookmarks sx={{ color: 'primary.contrastText' }} />
+                  <Bookmarks color="primary" />
                 ) : (
-                  <BookmarkBorder sx={{ color: 'primary.contrastText' }} />
+                  <BookmarkBorder />
                 )}
               </ListItemIcon>
             </ListItemButton>
@@ -211,11 +206,9 @@ export default memo(function MiniDrawer() {
                   color="secondary"
                 >
                   {anchorEl ? (
-                    <Notifications sx={{ color: 'primary.contrastText' }} />
+                    <Notifications color="primary" />
                   ) : (
-                    <NotificationsOutlined
-                      sx={{ color: 'primary.contrastText' }}
-                    />
+                    <NotificationsOutlined />
                   )}
                 </Badge>
               </ListItemIcon>
@@ -234,9 +227,9 @@ export default memo(function MiniDrawer() {
             >
               <ListItemIcon sx={{ minWidth: 0 }}>
                 {pathname.endsWith('/coauthorship_invitations') ? (
-                  <Mail sx={{ color: 'primary.contrastText' }} />
+                  <Mail color="primary" />
                 ) : (
-                  <MailOutline sx={{ color: 'primary.contrastText' }} />
+                  <MailOutline />
                 )}
               </ListItemIcon>
             </ListItemButton>
@@ -250,7 +243,7 @@ export default memo(function MiniDrawer() {
             }}
           >
             <ListItemIcon sx={{ minWidth: 0 }}>
-              <SearchOutlined sx={{ color: 'primary.contrastText' }} />
+              <SearchOutlined />
             </ListItemIcon>
           </ListItemButton>
 

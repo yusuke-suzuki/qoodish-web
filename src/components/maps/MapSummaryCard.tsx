@@ -1,4 +1,4 @@
-import { Photo } from '@mui/icons-material';
+import { Map as MapIcon } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -18,6 +18,7 @@ import type {
   Review
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
 import BookmarkButton from './BookmarkButton.tsx';
 import Coauthors from './Coauthors.tsx';
 import MapCardHeader from './MapCardHeader.tsx';
@@ -65,17 +66,10 @@ export default memo(function MapSummaryCard({
           }}
         />
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            placeContent: 'center',
-            bgcolor: 'background.paper',
-            width: '100%',
-            height: 180
-          }}
-        >
-          <Photo color="disabled" fontSize="large" />
-        </Box>
+        <MediaPlaceholder
+          icon={MapIcon}
+          sx={{ aspectRatio: 'auto', width: '100%', height: 180 }}
+        />
       )}
       <CardContent sx={{ pb: 0 }}>
         {map ? (

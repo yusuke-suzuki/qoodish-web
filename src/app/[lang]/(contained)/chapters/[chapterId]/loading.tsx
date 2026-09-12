@@ -5,7 +5,7 @@ const ENTRY_COUNT = 3;
 
 export default function Loading() {
   return (
-    <Paper elevation={0} sx={{ overflow: 'hidden' }}>
+    <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
       {/* Skeleton keeps a 1.2em height unless it is cleared, which would
           override the aspect ratio. */}
       <Skeleton

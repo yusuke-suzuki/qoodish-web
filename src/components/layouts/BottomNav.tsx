@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  AccountCircle,
-  AddBox,
-  DirectionsWalk,
-  Explore,
-  Home
-} from '@mui/icons-material';
+import { AddBox, DirectionsWalk, Explore, Home } from '@mui/icons-material';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -21,6 +15,7 @@ import ProfileContext from '../../context/ProfileContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
 export default memo(function BottomNav() {
   const { authenticated } = useContext(AuthContext);
@@ -91,9 +86,24 @@ export default memo(function BottomNav() {
               LinkComponent={Link}
               href={localePath('/journeys')}
             />
+            {/* The reader's own face rather than a generic mark: it is the
+                one destination on the bar that is about them, and it says so
+                without a label. */}
             <BottomNavigationAction
               title={dictionary.profile}
-              icon={<AccountCircle />}
+              icon={
+                <Box
+                  sx={{
+                    display: 'flex',
+                    borderRadius: '50%',
+                    border: 2,
+                    borderColor:
+                      bottomNavValue === 4 ? 'primary.main' : 'transparent'
+                  }}
+                >
+                  <ProfileAvatar profile={profile} size={22} />
+                </Box>
+              }
               LinkComponent={profile ? Link : 'button'}
               href={profile ? localePath(`/users/${profile.id}`) : undefined}
               disabled={!profile}

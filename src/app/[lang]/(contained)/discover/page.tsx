@@ -1,9 +1,11 @@
-import { Explore, FiberNew, Whatshot } from '@mui/icons-material';
+import { Explore, FiberNew, HistoryEdu, Whatshot } from '@mui/icons-material';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
+import ChapterGridList from '../../../../components/chapters/ChapterGridList.tsx';
 import PickUpMap from '../../../../components/discover/PickUpMap.tsx';
 import MapGridList from '../../../../components/maps/MapGridList.tsx';
 import ReviewGridList from '../../../../components/reviews/ReviewGridList.tsx';
+import { getRecentChapters } from '../../../../lib/chapters.ts';
 import {
   getActiveMaps,
   getFeaturedMap,
@@ -53,50 +55,77 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DiscoverPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const [recentReviews, activeMaps, recentMaps, pickUpMap] = await Promise.all([
-    getRecentReviews(lang),
-    getActiveMaps(lang),
-    getRecentMaps(lang),
-    getFeaturedMap(lang)
-  ]);
+  const [recentReviews, recentChapters, activeMaps, recentMaps, pickUpMap] =
+    await Promise.all([
+      getRecentReviews(lang),
+      getRecentChapters(lang),
+      getActiveMaps(lang),
+      getRecentMaps(lang),
+      getFeaturedMap(lang)
+    ]);
 
   return (
     <Stack spacing={4} divider={<Divider />}>
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <Explore color="secondary" />
-          <Typography variant="subtitle1">{dict['pick up']}</Typography>
+      {/* A section with nothing behind it used to render a grid of skeletons
+          that never resolved, so each one is dropped when its list is empty. */}
+      {pickUpMap && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Explore color="secondary" />
+            <Typography variant="subtitle1">{dict['pick up']}</Typography>
+          </Box>
+
+          <PickUpMap map={pickUpMap} />
         </Box>
+      )}
 
-        <PickUpMap map={pickUpMap} />
-      </Box>
+      {recentReviews.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">
+              {dict['recent reports']}
+            </Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <FiberNew color="secondary" />
-          <Typography variant="subtitle1">{dict['recent reports']}</Typography>
+          <ReviewGridList reviews={recentReviews} />
         </Box>
+      )}
 
-        <ReviewGridList reviews={recentReviews} />
-      </Box>
+      {recentChapters.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <HistoryEdu color="secondary" />
+            <Typography variant="subtitle1">
+              {dict['recent chapters']}
+            </Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <Whatshot color="secondary" />
-          <Typography variant="subtitle1">{dict['active maps']}</Typography>
+          <ChapterGridList chapters={recentChapters} />
         </Box>
+      )}
 
-        <MapGridList maps={activeMaps} />
-      </Box>
+      {activeMaps.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Whatshot color="secondary" />
+            <Typography variant="subtitle1">{dict['active maps']}</Typography>
+          </Box>
 
-      <Box component="section">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <FiberNew color="secondary" />
-          <Typography variant="subtitle1">{dict['recent maps']}</Typography>
+          <MapGridList maps={activeMaps} />
         </Box>
+      )}
 
-        <MapGridList maps={recentMaps} />
-      </Box>
+      {recentMaps.length > 0 && (
+        <Box component="section">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FiberNew color="secondary" />
+            <Typography variant="subtitle1">{dict['recent maps']}</Typography>
+          </Box>
+
+          <MapGridList maps={recentMaps} />
+        </Box>
+      )}
     </Stack>
   );
 }

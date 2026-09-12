@@ -1,138 +1,32 @@
 'use client';
 
-import { Lock, Map as MapIcon } from '@mui/icons-material';
-import {
-  Box,
-  ButtonBase,
-  Card,
-  CardMedia,
-  Chip,
-  ImageListItemBar,
-  Link as MuiLink,
-  Paper,
-  Skeleton,
-  Typography
-} from '@mui/material';
-import Link from 'next/link';
+import { Box } from '@mui/material';
 import { memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
-import useLocalePath from '../../hooks/useLocalePath.ts';
+import MapCard from './MapCard.tsx';
 
 type Props = {
   maps: AppMap[];
-  skeletonSize?: number;
   cols?: number;
 };
 
-const tileImageHeight = 240;
-
-function MapGridList({ maps, skeletonSize, cols }: Props) {
-  const dictionary = useDictionary();
-  const localePath = useLocalePath();
-
+function MapGridList({ maps, cols }: Props) {
+  // Above a phone the columns follow the width the grid is actually given, so
+  // the same list works in the main column and in the rail. A phone is narrower
+  // than one of those columns, and a single column of cards makes a browsing
+  // page as long to scroll as the rails on the landing were meant to avoid.
   const gridTemplateColumns = cols
     ? `repeat(${cols}, 1fr)`
-    : { xs: 'repeat(1, 1fr)', sm: 'repeat(3, 1fr)' };
+    : {
+        xs: 'repeat(2, 1fr)',
+        sm: 'repeat(auto-fill, minmax(240px, 1fr))'
+      };
 
   return (
-    <Box sx={{ display: 'grid', gap: 1, gridTemplateColumns }}>
-      {(!maps.length ? Array.from(new Array(skeletonSize || 6)) : maps).map(
-        (map: AppMap | null, i) => (
-          <MuiLink
-            href={localePath(map ? `/maps/${map.id}` : '/')}
-            key={map ? map.id : i}
-            underline={map ? 'hover' : 'none'}
-            color="inherit"
-            component={Link}
-            title={map?.name}
-          >
-            <Box
-              sx={{
-                position: 'relative',
-                height: tileImageHeight,
-                overflow: 'hidden'
-              }}
-            >
-              {!map && <Skeleton variant="rectangular" height="100%" />}
-
-              {map?.image && (
-                <Card sx={{ height: '100%' }} elevation={0}>
-                  <ButtonBase sx={{ width: '100%', height: '100%' }}>
-                    <CardMedia
-                      component="img"
-                      image={map.image.hero}
-                      alt={map.name}
-                      title={map.name}
-                      loading="lazy"
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  </ButtonBase>
-                </Card>
-              )}
-
-              {map && !map.image && (
-                <Paper
-                  sx={{
-                    display: 'grid',
-                    placeContent: 'center',
-                    width: '100%',
-                    height: '100%'
-                  }}
-                  component={ButtonBase}
-                  elevation={0}
-                >
-                  <MapIcon color="primary" fontSize="large" />
-                </Paper>
-              )}
-
-              <ImageListItemBar
-                position="top"
-                actionIcon={
-                  map?.private && (
-                    <Chip
-                      size="small"
-                      icon={<Lock fontSize="small" />}
-                      label={dictionary.private}
-                      sx={{ m: 1 }}
-                    />
-                  )
-                }
-                sx={{
-                  background: 'transparent'
-                }}
-              />
-            </Box>
-
-            <ImageListItemBar
-              position="below"
-              title={
-                map ? (
-                  <Typography variant="subtitle2" fontWeight={600} noWrap>
-                    {map.name}
-                  </Typography>
-                ) : (
-                  <Skeleton height={32} />
-                )
-              }
-              subtitle={
-                map ? (
-                  <Typography variant="caption" color="text.secondary">
-                    {map.author.name}
-                  </Typography>
-                ) : (
-                  <Skeleton width="60%" height={24} />
-                )
-              }
-              sx={{ display: 'grid' }}
-            />
-          </MuiLink>
-        )
-      )}
+    <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns }}>
+      {maps.map((map) => (
+        <MapCard key={map.id} map={map} />
+      ))}
     </Box>
   );
 }

@@ -18,7 +18,7 @@ import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
 export default memo(function AccountMenuButton() {
-  const { authenticated } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
@@ -38,7 +38,14 @@ export default memo(function AccountMenuButton() {
     const auth = getAuth();
     await signOut(auth);
 
-    push(localePath('/login'));
+    // Staying put would leave the reader on a page their account was the only
+    // way into.
+    push(localePath('/'));
+  };
+
+  const handleSignInClick = () => {
+    setAnchorEl(null);
+    setSignInRequired(true);
   };
 
   return (
@@ -100,12 +107,7 @@ export default memo(function AccountMenuButton() {
             <ListItemText>{dictionary.logout}</ListItemText>
           </ListItemButton>
         ) : (
-          <ListItemButton
-            onClick={handleLinkClick}
-            LinkComponent={Link}
-            href={localePath('/login')}
-            title={dictionary.login}
-          >
+          <ListItemButton onClick={handleSignInClick} title={dictionary.login}>
             <ListItemIcon>
               <Login fontSize="small" />
             </ListItemIcon>

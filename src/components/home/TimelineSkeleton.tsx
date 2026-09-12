@@ -9,14 +9,13 @@ import {
 
 const PLACEHOLDER_COUNT = 3;
 
-export default function Loading() {
+export default function TimelineSkeleton() {
   return (
     <Box sx={{ display: 'grid', gap: 3 }}>
       {Array.from({ length: PLACEHOLDER_COUNT }).map((_, index) => (
         <Card
           // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
           key={`skeleton-review-card-${index}`}
-          elevation={0}
         >
           <CardHeader
             avatar={<Skeleton variant="circular" width={40} height={40} />}

@@ -2,6 +2,7 @@
 
 import { Check, Language } from '@mui/icons-material';
 import {
+  IconButton,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -9,13 +10,14 @@ import {
   MenuItem
 } from '@mui/material';
 import Link from 'next/link';
-import { memo, useRef, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocaleLinks from '../../hooks/useLocaleLinks.ts';
 
 type Props = {
-  // The rail shows icons alone, so the label has to live in a tooltip there.
-  variant: 'rail' | 'list';
+  // The rail and the bar show icons alone, so the label has to live in a
+  // tooltip there.
+  variant: 'rail' | 'list' | 'bar';
   onNavigate?: () => void;
 };
 
@@ -23,7 +25,6 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
   const dictionary = useDictionary();
   const links = useLocaleLinks();
 
-  const buttonRef = useRef<HTMLDivElement | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleSelect = () => {
@@ -33,24 +34,33 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
 
   return (
     <>
-      <ListItemButton
-        ref={buttonRef}
-        dense={variant === 'list'}
-        onClick={() => setAnchorEl(buttonRef.current)}
-        title={dictionary.language}
-        sx={variant === 'rail' ? { justifyContent: 'center' } : undefined}
-      >
-        {variant === 'rail' ? (
-          <ListItemIcon sx={{ minWidth: 0 }}>
-            <Language sx={{ color: 'primary.contrastText' }} />
-          </ListItemIcon>
-        ) : (
-          <ListItemText
-            primary={dictionary.language}
-            slotProps={{ primary: { color: 'text.secondary' } }}
-          />
-        )}
-      </ListItemButton>
+      {variant === 'bar' ? (
+        <IconButton
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          title={dictionary.language}
+          aria-label={dictionary.language}
+        >
+          <Language />
+        </IconButton>
+      ) : (
+        <ListItemButton
+          dense={variant === 'list'}
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          title={dictionary.language}
+          sx={variant === 'rail' ? { justifyContent: 'center' } : undefined}
+        >
+          {variant === 'rail' ? (
+            <ListItemIcon sx={{ minWidth: 0 }}>
+              <Language />
+            </ListItemIcon>
+          ) : (
+            <ListItemText
+              primary={dictionary.language}
+              slotProps={{ primary: { color: 'text.secondary' } }}
+            />
+          )}
+        </ListItemButton>
+      )}
 
       <Menu
         anchorEl={anchorEl}

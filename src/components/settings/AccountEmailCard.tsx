@@ -22,7 +22,7 @@ function AccountEmailCard() {
 
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom>
             {dictionary['account email']}
