@@ -23,7 +23,12 @@ export default memo(function Footer() {
   return (
     <Paper component="footer" square>
       <Box
-        sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', py: 3 }}
+        sx={{
+          borderTop: 1,
+          borderColor: 'divider',
+          color: 'text.secondary',
+          py: 3
+        }}
       >
         <Container>
           <Stack
@@ -69,7 +74,7 @@ export default memo(function Footer() {
       </Box>
 
       <Box
-        sx={{ bgcolor: 'primary.dark', color: 'primary.contrastText', py: 2 }}
+        sx={{ bgcolor: 'background.default', color: 'text.secondary', py: 2 }}
       >
         <Container>
           {/* A year read at render time disagrees between the UTC worker and a

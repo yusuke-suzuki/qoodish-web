@@ -75,12 +75,14 @@ export default function Providers({
           // Shades of the Material palettes; light, dark and contrastText are
           // all derived from main rather than named.
           //
-          // The amber is deeper than the 500 it started at, honey rather than
-          // signal yellow, but it is still the bright end of the scale. It can
-          // be: MUI reads 2.29:1 against white and answers with dark text at
-          // 9.18:1. What broke the original was naming white on it by hand.
+          // Bright enough to keep the daylight the brand started with; MUI
+          // reads 1.79:1 against white and answers with dark text at 11.70:1.
+          // What broke the original was naming white on it by hand. The
+          // hazard-sign look it picked up later was the footer painting a
+          // full-width band in it, not the hue — primary carries actions here,
+          // not surfaces.
           primary: {
-            main: amber[800]
+            main: amber[600]
           },
           // The sky the amber is lit by. 800 rather than the 500 it was, which
           // could not carry a label at 2.63:1; this takes white at 4.80:1.
