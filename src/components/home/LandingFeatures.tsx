@@ -79,7 +79,10 @@ export default memo(function LandingFeatures({ maps, chapters }: Props) {
         return (
           <LandingSection key={title}>
             <Stack spacing={3}>
-              <Icon color="primary" sx={{ fontSize: 48 }} />
+              {/* Sized against the heading under it rather than in its own
+                  right: an icon's glyph sits inset in its box, so one set to
+                  the heading's own size reads smaller than the words do. */}
+              <Icon color="primary" sx={{ fontSize: { xs: 48, sm: 72 } }} />
 
               <Typography
                 variant="h4"
