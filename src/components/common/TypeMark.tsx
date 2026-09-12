@@ -15,6 +15,17 @@ export const TYPE_TITLE: SxProps<Theme> = {
   gap: 1
 };
 
+// Titles run from a word to a sentence, and a card whose title takes three
+// lines pushes everything under it out of step with the card beside it. Two
+// lines, whether or not the title fills them.
+export const TYPE_TITLE_TEXT: SxProps<Theme> = {
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  minHeight: '2lh'
+};
+
 type Props = {
   icon: ElementType;
 };

@@ -2,6 +2,7 @@
 
 import { HistoryEdu } from '@mui/icons-material';
 import {
+  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -14,7 +15,7 @@ import type { Chapter } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import TypeMark, { TYPE_TITLE } from '../common/TypeMark.tsx';
+import TypeMark, { TYPE_TITLE, TYPE_TITLE_TEXT } from '../common/TypeMark.tsx';
 
 type Props = {
   chapter: Chapter;
@@ -50,23 +51,26 @@ export default memo(function ChapterCard({ chapter }: Props) {
         <CardContent>
           <Typography variant="h6" component="h3" sx={TYPE_TITLE}>
             <TypeMark icon={HistoryEdu} />
-            {chapter.title || dictionary['untitled chapter']}
+
+            <Box component="span" sx={TYPE_TITLE_TEXT}>
+              {chapter.title || dictionary['untitled chapter']}
+            </Box>
           </Typography>
 
           <Typography variant="caption" color="text.secondary">
             {chapter.author.name}
           </Typography>
 
-          {source && (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              noWrap
-              sx={{ mt: 1 }}
-            >
-              {source}
-            </Typography>
-          )}
+          {/* Rendered even when a chapter belongs to neither, so a card with
+              nothing to say here still ends level with the one beside it. */}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            noWrap
+            sx={{ mt: 1 }}
+          >
+            {source ?? ' '}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>

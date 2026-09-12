@@ -16,7 +16,7 @@ import type { AppMap } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import TypeMark, { TYPE_TITLE } from '../common/TypeMark.tsx';
+import TypeMark, { TYPE_TITLE, TYPE_TITLE_TEXT } from '../common/TypeMark.tsx';
 
 type Props = {
   map: AppMap;
@@ -62,15 +62,18 @@ export default memo(function MapCard({ map }: Props) {
               the mark read as part of the name — a place, not a person. */}
           <Typography variant="h6" component="h3" sx={TYPE_TITLE}>
             <TypeMark icon={MapIcon} />
-            {map.name}
+
+            <Box component="span" sx={TYPE_TITLE_TEXT}>
+              {map.name}
+            </Box>
           </Typography>
 
           <Typography variant="caption" color="text.secondary">
             {map.author.name}
           </Typography>
 
-          {/* Descriptions run to any length, and a rail or a grid of cards only
-              reads as one while the cards are the same height. */}
+          {/* Descriptions run from nothing to a paragraph, and the card keeps
+              two lines for one either way so the cards beside it end level. */}
           <Typography
             variant="body2"
             color="text.secondary"
@@ -79,7 +82,8 @@ export default memo(function MapCard({ map }: Props) {
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              minHeight: '2lh'
             }}
           >
             {map.description}
