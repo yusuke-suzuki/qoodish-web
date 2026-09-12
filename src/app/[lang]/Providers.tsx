@@ -8,7 +8,7 @@ import {
   GlobalStyles,
   ThemeProvider
 } from '@mui/material';
-import { brown, deepOrange, teal } from '@mui/material/colors';
+import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
@@ -72,20 +72,23 @@ export default function Providers({
     return createTheme(
       {
         palette: {
-          // Shades of the Material palettes, as the theme has always taken
-          // them. 900 and 700 rather than the usual 500: at 500 neither can
-          // carry a label, at 3.16:1 and 3.67:1 against white, where these
-          // reach 5.60:1 and 5.32:1. light, dark and contrastText are left to
-          // MUI rather than picked by hand.
+          // Shades of the Material palettes; light, dark and contrastText are
+          // all derived from main rather than named.
+          //
+          // The amber is deeper than the 500 it started at, honey rather than
+          // signal yellow, but it is still the bright end of the scale. It can
+          // be: MUI reads 2.29:1 against white and answers with dark text at
+          // 9.18:1. What broke the original was naming white on it by hand.
           primary: {
-            main: deepOrange[900]
+            main: amber[800]
           },
-          // The sea on an old map, against the land of the primary.
+          // The sky the amber is lit by. 800 rather than the 500 it was, which
+          // could not carry a label at 2.63:1; this takes white at 4.80:1.
           secondary: {
-            main: teal[700]
+            main: lightBlue[800]
           },
           background: {
-            default: brown[50]
+            default: amber[50]
           }
         },
         shape: {
