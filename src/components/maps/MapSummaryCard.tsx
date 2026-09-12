@@ -1,4 +1,4 @@
-import { Photo } from '@mui/icons-material';
+import { Map as MapIcon } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -67,7 +67,7 @@ export default memo(function MapSummaryCard({
         />
       ) : (
         <MediaPlaceholder
-          icon={Photo}
+          icon={MapIcon}
           sx={{ aspectRatio: 'auto', width: '100%', height: 180 }}
         />
       )}

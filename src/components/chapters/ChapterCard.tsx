@@ -6,6 +6,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  Stack,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -51,9 +52,15 @@ export default memo(function ChapterCard({ chapter }: Props) {
             {chapter.title || dictionary['untitled chapter']}
           </Typography>
 
-          <Typography variant="caption" color="text.secondary">
-            {chapter.author.name}
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{ alignItems: 'center', color: 'text.secondary' }}
+          >
+            <HistoryEdu sx={{ fontSize: 14 }} />
+
+            <Typography variant="caption">{chapter.author.name}</Typography>
+          </Stack>
 
           {source && (
             <Typography

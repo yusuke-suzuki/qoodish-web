@@ -1,6 +1,6 @@
 'use client';
 
-import { Photo } from '@mui/icons-material';
+import { Map as MapIcon } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -42,7 +42,7 @@ function PickUpMap({ map }: Props) {
           />
         ) : (
           <MediaPlaceholder
-            icon={Photo}
+            icon={MapIcon}
             sx={{ aspectRatio: 'auto', height: 240 }}
           />
         )}

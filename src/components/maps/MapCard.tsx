@@ -1,6 +1,6 @@
 'use client';
 
-import { Lock, Photo } from '@mui/icons-material';
+import { Lock, Map as MapIcon } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -8,6 +8,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  Stack,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -42,7 +43,7 @@ export default memo(function MapCard({ map }: Props) {
               sx={{ aspectRatio: '3 / 2', objectFit: 'cover' }}
             />
           ) : (
-            <MediaPlaceholder icon={Photo} />
+            <MediaPlaceholder icon={MapIcon} />
           )}
 
           {map.private && (
@@ -60,9 +61,18 @@ export default memo(function MapCard({ map }: Props) {
             {map.name}
           </Typography>
 
-          <Typography variant="caption" color="text.secondary">
-            {map.author.name}
-          </Typography>
+          {/* One layout serves maps, reports and chapters, so the line under
+              the title is where a reader is told which of the three they are
+              looking at. */}
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{ alignItems: 'center', color: 'text.secondary' }}
+          >
+            <MapIcon sx={{ fontSize: 14 }} />
+
+            <Typography variant="caption">{map.author.name}</Typography>
+          </Stack>
 
           {/* Descriptions run to any length, and a rail or a grid of cards only
               reads as one while the cards are the same height. */}

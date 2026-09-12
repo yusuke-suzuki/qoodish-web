@@ -7,6 +7,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  Stack,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -58,9 +59,15 @@ export default memo(function ReviewCard({ review }: Props) {
             {review.name}
           </Typography>
 
-          <Typography variant="caption" color="text.secondary">
-            {review.author.name}
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{ alignItems: 'center', color: 'text.secondary' }}
+          >
+            <Place sx={{ fontSize: 14 }} />
+
+            <Typography variant="caption">{review.author.name}</Typography>
+          </Stack>
 
           <Typography
             variant="body2"
