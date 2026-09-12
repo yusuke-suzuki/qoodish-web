@@ -7,7 +7,6 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Stack,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -15,6 +14,7 @@ import { memo } from 'react';
 import type { Review } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
+import { TYPE_MARK } from '../common/typeMark.ts';
 
 type Props = {
   review: Review;
@@ -55,13 +55,10 @@ export default memo(function ReviewCard({ review }: Props) {
         </Box>
 
         <CardContent>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
-            <Place sx={{ fontSize: 18, color: 'text.secondary' }} />
-
-            <Typography variant="h6" component="h3">
-              {review.name}
-            </Typography>
-          </Stack>
+          <Typography variant="h6" component="h3">
+            <Place sx={TYPE_MARK} />
+            {review.name}
+          </Typography>
 
           <Typography variant="caption" color="text.secondary">
             {review.author.name}

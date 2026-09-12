@@ -6,7 +6,6 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Stack,
   Typography
 } from '@mui/material';
 import Link from 'next/link';
@@ -15,6 +14,7 @@ import type { Chapter } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
+import { TYPE_MARK } from '../common/typeMark.ts';
 
 type Props = {
   chapter: Chapter;
@@ -48,13 +48,10 @@ export default memo(function ChapterCard({ chapter }: Props) {
         )}
 
         <CardContent>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
-            <HistoryEdu sx={{ fontSize: 18, color: 'text.secondary' }} />
-
-            <Typography variant="h6" component="h3">
-              {chapter.title || dictionary['untitled chapter']}
-            </Typography>
-          </Stack>
+          <Typography variant="h6" component="h3">
+            <HistoryEdu sx={TYPE_MARK} />
+            {chapter.title || dictionary['untitled chapter']}
+          </Typography>
 
           <Typography variant="caption" color="text.secondary">
             {chapter.author.name}
