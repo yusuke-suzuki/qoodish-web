@@ -14,7 +14,7 @@ import { memo } from 'react';
 import type { Review } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import { TYPE_MARK } from '../common/typeMark.ts';
+import TypeMark, { TYPE_TITLE } from '../common/TypeMark.tsx';
 
 type Props = {
   review: Review;
@@ -55,8 +55,8 @@ export default memo(function ReviewCard({ review }: Props) {
         </Box>
 
         <CardContent>
-          <Typography variant="h6" component="h3">
-            <Place sx={TYPE_MARK} />
+          <Typography variant="h6" component="h3" sx={TYPE_TITLE}>
+            <TypeMark icon={Place} />
             {review.name}
           </Typography>
 

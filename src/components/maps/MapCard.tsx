@@ -16,7 +16,7 @@ import type { AppMap } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import { TYPE_MARK } from '../common/typeMark.ts';
+import TypeMark, { TYPE_TITLE } from '../common/TypeMark.tsx';
 
 type Props = {
   map: AppMap;
@@ -60,8 +60,8 @@ export default memo(function MapCard({ map }: Props) {
           {/* One layout serves maps, reports and chapters, so the title is
               labelled with the mark of what it is. Beside the byline instead
               the mark read as part of the name — a place, not a person. */}
-          <Typography variant="h6" component="h3">
-            <MapIcon sx={TYPE_MARK} />
+          <Typography variant="h6" component="h3" sx={TYPE_TITLE}>
+            <TypeMark icon={MapIcon} />
             {map.name}
           </Typography>
 

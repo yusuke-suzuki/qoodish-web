@@ -14,7 +14,7 @@ import type { Chapter } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
-import { TYPE_MARK } from '../common/typeMark.ts';
+import TypeMark, { TYPE_TITLE } from '../common/TypeMark.tsx';
 
 type Props = {
   chapter: Chapter;
@@ -48,8 +48,8 @@ export default memo(function ChapterCard({ chapter }: Props) {
         )}
 
         <CardContent>
-          <Typography variant="h6" component="h3">
-            <HistoryEdu sx={TYPE_MARK} />
+          <Typography variant="h6" component="h3" sx={TYPE_TITLE}>
+            <TypeMark icon={HistoryEdu} />
             {chapter.title || dictionary['untitled chapter']}
           </Typography>
 
