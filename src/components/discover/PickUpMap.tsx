@@ -24,7 +24,7 @@ function PickUpMap({ map }: Props) {
   }
 
   return (
-    <Card elevation={0}>
+    <Card>
       <CardActionArea
         component={Link}
         href={localePath(`/maps/${map.id}`)}

@@ -14,7 +14,7 @@ const tabBarHeight = 48;
 export default function Loading() {
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardContent>
           <Stack spacing={1.5}>
             <Skeleton variant="circular" width={96} height={96} />

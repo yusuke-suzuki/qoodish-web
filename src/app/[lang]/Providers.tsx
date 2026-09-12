@@ -88,9 +88,6 @@ export default function Providers({
           // could not carry a label at 2.63:1; this takes white at 4.80:1.
           secondary: {
             main: lightBlue[800]
-          },
-          background: {
-            default: amber[50]
           }
         },
         shape: {
@@ -127,6 +124,13 @@ export default function Providers({
           }
         },
         components: {
+          MuiCard: {
+            // The page and the card share one surface, so a card needs an edge
+            // of its own rather than a shadow it does not cast.
+            defaultProps: {
+              variant: 'outlined'
+            }
+          },
           MuiDialog: {
             defaultProps: {
               fullWidth: true

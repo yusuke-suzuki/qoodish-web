@@ -97,7 +97,7 @@ function UserJourneys({
 
   return (
     <>
-      <Paper elevation={0}>
+      <Paper variant="outlined">
         <List disablePadding>
           {journeys.map((journey, index) => {
             const started = Boolean(journey.started_at);

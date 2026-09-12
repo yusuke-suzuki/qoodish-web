@@ -21,7 +21,6 @@ function ReviewImageList({ review }: Props) {
           sx={{ aspectRatio: '1 / 1', overflow: 'hidden' }}
         >
           <Card
-            elevation={0}
             component="a"
             href={image.url}
             target="_blank"

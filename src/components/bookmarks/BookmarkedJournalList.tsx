@@ -34,7 +34,7 @@ function BookmarkedJournalList({ journals }: Props) {
   }
 
   return (
-    <Paper elevation={0}>
+    <Paper variant="outlined">
       <List disablePadding>
         {journals.map((journal) => (
           <ListItemButton

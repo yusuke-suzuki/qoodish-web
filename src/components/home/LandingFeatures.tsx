@@ -58,10 +58,6 @@ export default memo(function LandingFeatures({ maps, chapters }: Props) {
   return (
     <>
       {FEATURES.map(({ icon: Icon, title, body, content }, index) => {
-        // Parchment against white. The bands were a dark ground and a light
-        // one, which gave the page its rhythm at the cost of reading as a
-        // different service by the second screen.
-        const parchment = index % 2 === 0;
         const slot = FEATURES.slice(0, index).filter(
           (feature) => feature.content === 'maps'
         ).length;
@@ -81,12 +77,7 @@ export default memo(function LandingFeatures({ maps, chapters }: Props) {
               ));
 
         return (
-          <LandingSection
-            key={title}
-            sx={{
-              bgcolor: parchment ? 'background.default' : 'background.paper'
-            }}
-          >
+          <LandingSection key={title}>
             <Stack spacing={3}>
               <Icon color="primary" sx={{ fontSize: 48 }} />
 

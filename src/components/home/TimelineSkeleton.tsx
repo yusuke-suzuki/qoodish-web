@@ -16,7 +16,6 @@ export default function TimelineSkeleton() {
         <Card
           // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
           key={`skeleton-review-card-${index}`}
-          elevation={0}
         >
           <CardHeader
             avatar={<Skeleton variant="circular" width={40} height={40} />}

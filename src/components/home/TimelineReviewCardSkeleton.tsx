@@ -10,7 +10,7 @@ import { memo } from 'react';
 
 export default memo(function TimelineReviewCardSkeleton() {
   return (
-    <Card elevation={0}>
+    <Card>
       <CardHeader
         avatar={<Skeleton variant="circular" width={40} height={40} />}
         title={<Skeleton variant="text" width="40%" />}

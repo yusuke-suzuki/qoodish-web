@@ -38,7 +38,7 @@ export default function ReviewDetail({ review }: Props) {
 
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <ReviewCardHeader
           review={review}
           action={

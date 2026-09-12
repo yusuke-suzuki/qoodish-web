@@ -20,14 +20,12 @@ type Props = {
   map: AppMap;
 };
 
-// Outlined rather than raised: the landing alternates a cream band with a white
-// one, and a white card on the white band has no edge of its own.
 export default memo(function MapCard({ map }: Props) {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   return (
-    <Card variant="outlined" sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%' }}>
       <CardActionArea
         component={Link}
         href={localePath(`/maps/${map.id}`)}

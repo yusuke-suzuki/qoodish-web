@@ -28,7 +28,7 @@ export default memo(function ChapterCard({ chapter }: Props) {
   const source = chapter.map?.name ?? chapter.journal?.title;
 
   return (
-    <Card variant="outlined" sx={{ height: '100%' }}>
+    <Card sx={{ height: '100%' }}>
       <CardActionArea
         component={Link}
         href={localePath(`/chapters/${chapter.id}`)}

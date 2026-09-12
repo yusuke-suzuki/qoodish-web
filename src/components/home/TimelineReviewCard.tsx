@@ -27,7 +27,7 @@ export default memo(function TimelineReviewCard({
   const localePath = useLocalePath();
 
   return (
-    <Card elevation={0}>
+    <Card>
       <ReviewCardHeader
         review={review}
         action={

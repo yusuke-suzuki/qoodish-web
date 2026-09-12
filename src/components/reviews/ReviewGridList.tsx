@@ -74,7 +74,7 @@ function ReviewGridList({ reviews, hideSkeleton, loading }: Props) {
               {!review && <Skeleton variant="rounded" height="100%" />}
 
               {review?.images.length > 0 && (
-                <Card sx={{ height: '100%' }} elevation={0}>
+                <Card sx={{ height: '100%' }}>
                   <ButtonBase sx={{ display: 'contents' }}>
                     <CardMedia
                       component="img"
@@ -97,7 +97,7 @@ function ReviewGridList({ reviews, hideSkeleton, loading }: Props) {
                     height: '100%'
                   }}
                   component={ButtonBase}
-                  elevation={0}
+                  variant="outlined"
                 >
                   <Place color="primary" fontSize="large" />
                 </Paper>

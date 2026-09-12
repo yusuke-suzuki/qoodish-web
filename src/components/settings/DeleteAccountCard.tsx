@@ -33,7 +33,7 @@ function DeleteAccountCard() {
 
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom color="error">
             {dictionary['delete account']}
