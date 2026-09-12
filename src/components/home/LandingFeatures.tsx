@@ -41,7 +41,10 @@ export default memo(function LandingFeatures({ maps }: Props) {
   return (
     <>
       {FEATURES.map(({ icon: Icon, title, body }, index) => {
-        const dark = index % 2 === 0;
+        // Parchment against white. The bands were a dark ground and a light
+        // one, which gave the page its rhythm at the cost of reading as a
+        // different service by the second screen.
+        const parchment = index % 2 === 0;
         const sectionMaps = maps.slice(
           index * perSection,
           (index + 1) * perSection
@@ -50,16 +53,12 @@ export default memo(function LandingFeatures({ maps }: Props) {
         return (
           <LandingSection
             key={title}
-            sx={
-              dark
-                ? { bgcolor: 'primary.dark', color: 'primary.contrastText' }
-                : { bgcolor: 'background.paper' }
-            }
+            sx={{
+              bgcolor: parchment ? 'background.default' : 'background.paper'
+            }}
           >
             <Stack spacing={3}>
-              {/* The gilt rather than the ink: the mark has to read on the
-                  dark band as well as the light one. */}
-              <Icon color="secondary" sx={{ fontSize: 48 }} />
+              <Icon color="primary" sx={{ fontSize: 48 }} />
 
               <Typography
                 variant="h4"
@@ -78,7 +77,7 @@ export default memo(function LandingFeatures({ maps }: Props) {
                 sx={{
                   maxWidth: 640,
                   fontSize: { md: '1.125rem' },
-                  opacity: dark ? 0.8 : 0.7
+                  opacity: 0.7
                 }}
               >
                 {dictionary[body]}

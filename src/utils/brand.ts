@@ -1,7 +1,7 @@
-// The brand colours as literals, for the places that cannot reach the MUI
+// The brand colour as a literal, for the places that cannot reach the MUI
 // theme: the manifest, the viewport's theme-color, and the two global error
-// documents, which render outside every provider. Keep these in step with the
-// palette in `Providers.tsx`.
-export const BRAND_INK = '#2e2419';
+// documents, which render outside every provider. Keep in step with
+// `palette.primary` in `Providers.tsx`.
+export const BRAND_COLOR = '#a85418';
 
-export const BRAND_INK_CONTRAST = '#ffffff';
+export const BRAND_COLOR_CONTRAST = '#ffffff';

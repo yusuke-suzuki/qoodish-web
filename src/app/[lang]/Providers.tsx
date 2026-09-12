@@ -71,23 +71,23 @@ export default function Providers({
     return createTheme(
       {
         palette: {
-          // Ink and gilt on paper, which is what the type has been asking for:
-          // a mincho body under a Roman display face reads as a printed book,
-          // and a signal yellow filling the chrome read as a warning strip.
-          // contrastText is left to MUI throughout; every value here is dark
-          // enough or deep enough that the computed choice clears 4.5:1.
+          // A warm ground with a deep terracotta on it. The signal yellow it
+          // replaces was too light to carry a label either way; this is the
+          // same warmth taken far enough down that white sits on it at 5.32:1.
+          // contrastText is left to MUI throughout.
           primary: {
-            light: '#54463a',
-            main: '#2e2419',
-            dark: '#1a140e'
+            light: '#c9762f',
+            main: '#a85418',
+            dark: '#7e4415'
           },
+          // The sea on an old map, against the land of the primary.
           secondary: {
-            light: '#b0803a',
-            main: '#8a6428',
-            dark: '#6b4d1e'
+            light: '#2e7d72',
+            main: '#1f6f6b',
+            dark: '#174f4c'
           },
           background: {
-            default: '#f6f2ea'
+            default: '#f2ebdd'
           }
         },
         shape: {
