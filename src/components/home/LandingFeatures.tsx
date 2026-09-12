@@ -41,9 +41,7 @@ export default memo(function LandingFeatures() {
                 : { bgcolor: 'background.paper' }
             }
           >
-            {/* Held short of the container: a heading this size runs to a
-                single word per line once the measure gets long. */}
-            <Stack spacing={3} sx={{ maxWidth: 880 }}>
+            <Stack spacing={3}>
               <Icon color="primary" sx={{ fontSize: 48 }} />
 
               <Typography
@@ -54,10 +52,17 @@ export default memo(function LandingFeatures() {
                 {dictionary[title]}
               </Typography>
 
+              {/* Held to a reading measure while the heading spans the band:
+                  across the full container these paragraphs run past the line
+                  length an eye can track back from. */}
               <Typography
                 variant="body1"
                 component="p"
-                sx={{ fontSize: { md: '1.125rem' }, opacity: dark ? 0.8 : 0.7 }}
+                sx={{
+                  maxWidth: 640,
+                  fontSize: { md: '1.125rem' },
+                  opacity: dark ? 0.8 : 0.7
+                }}
               >
                 {dictionary[body]}
               </Typography>

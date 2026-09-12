@@ -26,9 +26,7 @@ export default memo(function LandingHero() {
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
           <Grid size={{ xs: 12, md: 7 }}>
-            {/* Capped: the column is as wide as the container once it stacks,
-                which runs the lines past reading length. */}
-            <Stack spacing={4} sx={{ maxWidth: 720 }}>
+            <Stack spacing={4}>
               <Typography
                 variant="h3"
                 component="h1"
