@@ -8,6 +8,7 @@ import {
   GlobalStyles,
   ThemeProvider
 } from '@mui/material';
+import { brown, deepOrange, teal } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
@@ -71,23 +72,20 @@ export default function Providers({
     return createTheme(
       {
         palette: {
-          // A warm ground with a deep terracotta on it. The signal yellow it
-          // replaces was too light to carry a label either way; this is the
-          // same warmth taken far enough down that white sits on it at 5.32:1.
-          // contrastText is left to MUI throughout.
+          // Shades of the Material palettes, as the theme has always taken
+          // them. 900 and 700 rather than the usual 500: at 500 neither can
+          // carry a label, at 3.16:1 and 3.67:1 against white, where these
+          // reach 5.60:1 and 5.32:1. light, dark and contrastText are left to
+          // MUI rather than picked by hand.
           primary: {
-            light: '#c9762f',
-            main: '#a85418',
-            dark: '#7e4415'
+            main: deepOrange[900]
           },
           // The sea on an old map, against the land of the primary.
           secondary: {
-            light: '#2e7d72',
-            main: '#1f6f6b',
-            dark: '#174f4c'
+            main: teal[700]
           },
           background: {
-            default: '#f2ebdd'
+            default: brown[50]
           }
         },
         shape: {
