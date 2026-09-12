@@ -36,12 +36,15 @@ export default function HeroBackground({ children, sx }: Props) {
       />
 
       {/* Holds the text above the 4.5:1 contrast ratio wherever the photo is
-          bright. */}
+          bright. Weighted to the ends rather than flat: the headline sits high
+          in the frame and the card low, and a wash dark enough for both at once
+          flattened the picture between them. */}
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
-          bgcolor: 'rgba(0, 0, 0, 0.45)'
+          backgroundImage:
+            'linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.75) 100%)'
         }}
       />
 

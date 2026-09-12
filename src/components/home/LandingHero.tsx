@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -21,19 +22,18 @@ export default memo(function LandingHero() {
   const localePath = useLocalePath();
 
   return (
-    <HeroBackground sx={{ py: { xs: 6, md: 10 } }}>
+    <HeroBackground sx={{ minHeight: { md: '88vh' }, py: { xs: 10, md: 14 } }}>
       <Container maxWidth="lg">
-        <Grid container spacing={4} alignItems="center">
+        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
           <Grid size={{ xs: 12, md: 7 }}>
-            {/* Capped and centred: stacked below md the column is as wide as
-                the container, which runs the lines past reading length. */}
-            <Stack spacing={2} sx={{ maxWidth: 600, mx: 'auto' }}>
+            {/* Capped: the column is as wide as the container once it stacks,
+                which runs the lines past reading length. */}
+            <Stack spacing={4} sx={{ maxWidth: 640 }}>
               <Typography
                 variant="h4"
                 component="h1"
-                align="center"
                 color="common.white"
-                sx={{ typography: { md: 'h3' } }}
+                sx={{ typography: { sm: 'h3', md: 'h2' } }}
               >
                 {dictionary['create map together']}
               </Typography>
@@ -41,49 +41,58 @@ export default memo(function LandingHero() {
               <Typography
                 variant="body1"
                 component="p"
-                align="center"
                 color="common.white"
+                sx={{ maxWidth: 520 }}
               >
                 {dictionary['meta description']}
               </Typography>
+
+              {/* Boxed so the button takes its own width instead of stretching
+                  to the column. */}
+              <Box>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  component={Link}
+                  href={localePath('/discover')}
+                  sx={{
+                    borderRadius: 999,
+                    px: 4,
+                    py: 1.25,
+                    color: 'common.white',
+                    borderColor: 'common.white'
+                  }}
+                >
+                  {dictionary.discover}
+                </Button>
+              </Box>
             </Stack>
           </Grid>
 
           <Grid size={{ xs: 12, md: 5 }}>
-            <Stack spacing={3} sx={{ maxWidth: 480, mx: 'auto' }}>
-              {/* A card rather than the bare buttons: the email field and the
-                  terms notice need a surface of their own to stay legible on
-                  the photo. */}
-              <Card>
-                <CardContent>
-                  <Stack spacing={2}>
-                    {/* Not "Sign in": the reader this card is aimed at has no
-                        account yet, and the buttons already say what they do. */}
-                    <Typography
-                      variant="h6"
-                      component="h2"
-                      align="center"
-                      sx={{ typography: { md: 'h5' } }}
-                    >
-                      {dictionary['get started']}
-                    </Typography>
+            {/* A card rather than the bare buttons: the email field and the
+                terms notice need a surface of their own to stay legible on
+                the photo. */}
+            <Card
+              elevation={0}
+              sx={{ borderRadius: 6, maxWidth: 440, ml: { md: 'auto' } }}
+            >
+              <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                <Stack spacing={3}>
+                  {/* Not "Sign in": the reader this card is aimed at has no
+                      account yet, and the buttons already say what they do. */}
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    sx={{ typography: { md: 'h5' } }}
+                  >
+                    {dictionary['get started']}
+                  </Typography>
 
-                    <SignInButtons />
-                  </Stack>
-                </CardContent>
-              </Card>
-
-              <Stack alignItems="center">
-                <Button
-                  variant="outlined"
-                  component={Link}
-                  href={localePath('/discover')}
-                  sx={{ color: 'common.white', borderColor: 'common.white' }}
-                >
-                  {dictionary.discover}
-                </Button>
-              </Stack>
-            </Stack>
+                  <SignInButtons />
+                </Stack>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
       </Container>

@@ -1,11 +1,12 @@
-import { Stack } from '@mui/material';
 import type { Metadata } from 'next';
 import LandingFeatures from '../../../components/home/LandingFeatures.tsx';
 import LandingHero from '../../../components/home/LandingHero.tsx';
 import Timeline from '../../../components/home/Timeline.tsx';
 import TimelineSkeleton from '../../../components/home/TimelineSkeleton.tsx';
 import TrendingReviews from '../../../components/home/TrendingReviews.tsx';
+import BottomNav from '../../../components/layouts/BottomNav.tsx';
 import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
+import Footer from '../../../components/layouts/Footer.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
 import { getPopularReviews, getTimelineReviews } from '../../../lib/reviews.ts';
 import { getDictionary } from '../../../utils/getDictionary.ts';
@@ -77,13 +78,11 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       <LandingHero />
+      <LandingFeatures />
+      <TrendingReviews reviews={popularReviews} />
 
-      <ContainedShell lang={lang} sidebar={false}>
-        <Stack spacing={{ xs: 2, md: 4 }}>
-          <LandingFeatures />
-          <TrendingReviews reviews={popularReviews} />
-        </Stack>
-      </ContainedShell>
+      <Footer />
+      <BottomNav />
     </>
   );
 }
