@@ -35,10 +35,7 @@ export default memo(function TrendingReviews({ reviews }: Props) {
           gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
           // The cards run to different lengths, and stretching them to the
           // tallest of a row leaves the short ones with a well of empty card.
-          alignItems: 'start',
-          // The card is shared with the timeline, where it sits at the radius
-          // the rest of the app uses; on this page it has to match the bands.
-          '& > .MuiPaper-root': { borderRadius: 6 }
+          alignItems: 'start'
         }}
       >
         {reviews.map((review) => (

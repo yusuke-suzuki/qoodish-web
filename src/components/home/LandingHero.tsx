@@ -73,10 +73,7 @@ export default memo(function LandingHero() {
             {/* A card rather than the bare buttons: the email field and the
                 terms notice need a surface of their own to stay legible on
                 the photo. */}
-            <Card
-              elevation={0}
-              sx={{ borderRadius: 6, maxWidth: 440, ml: { md: 'auto' } }}
-            >
+            <Card elevation={0} sx={{ maxWidth: 440, ml: { md: 'auto' } }}>
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Stack spacing={3}>
                   {/* Not "Sign in": the reader this card is aimed at has no

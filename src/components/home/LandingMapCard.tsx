@@ -22,7 +22,7 @@ export default memo(function LandingMapCard({ map }: Props) {
   const localePath = useLocalePath();
 
   return (
-    <Card elevation={0} sx={{ height: '100%', borderRadius: 6 }}>
+    <Card elevation={0} sx={{ height: '100%' }}>
       <CardActionArea
         component={Link}
         href={localePath(`/maps/${map.id}`)}

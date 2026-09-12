@@ -88,6 +88,9 @@ export default function Providers({
             default: '#f1f1f1'
           }
         },
+        shape: {
+          borderRadius: 12
+        },
         typography: {
           fontFamily:
             'var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif',
