@@ -8,53 +8,44 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import LandingMapCarousel from './LandingMapCarousel.tsx';
 import LandingSection from './LandingSection.tsx';
 
-type MapList = 'active' | 'popular' | 'recent';
-
-// Each band carries the list its own sentence is about: the one about writing
-// shows the maps being written in, the one about setting out shows what other
-// readers are walking, and the one about the journal shows the maps just begun.
-const FEATURES: {
-  icon: ElementType;
-  title: string;
-  body: string;
-  list: MapList;
-  listLabel: string;
-}[] = [
+const FEATURES: { icon: ElementType; title: string; body: string }[] = [
   {
     icon: Place,
     title: 'share favorite spot',
-    body: 'tell friends spot',
-    list: 'active',
-    listLabel: 'active maps'
+    body: 'tell friends spot'
   },
   {
     icon: Explore,
     title: 'find your best place',
-    body: 'surely your friends know',
-    list: 'popular',
-    listLabel: 'trending maps'
+    body: 'surely your friends know'
   },
   {
     icon: AutoStories,
     title: 'everyone has a journal',
-    body: 'journey to journal',
-    list: 'recent',
-    listLabel: 'recent maps'
+    body: 'journey to journal'
   }
 ];
 
 type Props = {
-  maps: Record<MapList, AppMap[]>;
+  maps: AppMap[];
 };
 
 export default memo(function LandingFeatures({ maps }: Props) {
   const dictionary = useDictionary();
 
+  // Each band gets a run of its own. Nothing on the page says which list a rail
+  // is drawn from, so the same map under two different sentences would read as
+  // a fault rather than as two selections that happen to agree.
+  const perSection = Math.ceil(maps.length / FEATURES.length);
+
   return (
     <>
-      {FEATURES.map(({ icon: Icon, title, body, list, listLabel }, index) => {
+      {FEATURES.map(({ icon: Icon, title, body }, index) => {
         const dark = index % 2 === 0;
-        const sectionMaps = maps[list];
+        const sectionMaps = maps.slice(
+          index * perSection,
+          (index + 1) * perSection
+        );
 
         return (
           <LandingSection
@@ -94,21 +85,12 @@ export default memo(function LandingFeatures({ maps }: Props) {
 
             {sectionMaps.length > 0 && (
               <Box sx={{ mt: { xs: 5, md: 7 } }}>
-                {/* The lists overlap by nature — a popular map can also be a
-                    recent one — and without a name the repeat reads as a bug.
-                    Kept well under the heading sizes: a list is named, not
-                    spoken. */}
-                <Typography
-                  variant="subtitle2"
-                  component="h3"
-                  sx={{ mb: 2, opacity: 0.7 }}
-                >
-                  {dictionary[listLabel]}
-                </Typography>
-
+                {/* Named after the sentence it sits under: the rail prints no
+                    heading of its own, and a scrollable region still has to
+                    answer to someone who cannot see where it is. */}
                 <LandingMapCarousel
                   maps={sectionMaps}
-                  label={dictionary[listLabel]}
+                  label={dictionary[title]}
                 />
               </Box>
             )}

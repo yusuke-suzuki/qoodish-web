@@ -85,10 +85,19 @@ export default async function HomePage({ params }: Props) {
     getRecentMaps(lang)
   ]);
 
+  // One sample of the catalogue rather than three overlapping views of it. The
+  // landing shows maps without saying which list they come from, so the three
+  // are merged and the duplicates between them dropped.
+  const maps = Array.from(
+    new Map(
+      [...active, ...popular, ...recent].map((map) => [map.id, map])
+    ).values()
+  );
+
   return (
     <>
       <LandingHero />
-      <LandingFeatures maps={{ active, popular, recent }} />
+      <LandingFeatures maps={maps} />
       <TrendingReviews reviews={popularReviews} />
 
       <Footer />
