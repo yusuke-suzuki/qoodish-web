@@ -46,7 +46,15 @@ function MobileAppBarContent() {
         direction="down"
         in={!appBarHidden && !scrollTrigger}
       >
-        <AppBar position="fixed">
+        {/* The same light bar a visitor without an account sees. Filled with
+            the brand colour it took the wordmark's colour away from it, and
+            left the icons as dark shapes on a slab of amber. */}
+        <AppBar
+          position="fixed"
+          color="inherit"
+          elevation={0}
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
           <Toolbar
             sx={{
               display: 'grid',
@@ -63,7 +71,7 @@ function MobileAppBarContent() {
               </IconButton>
             </Box>
 
-            <Logo color="inherit" />
+            <Logo />
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               {authenticated && (
