@@ -55,19 +55,17 @@ export default memo(function ReviewCard({ review }: Props) {
         </Box>
 
         <CardContent>
-          <Typography variant="h6" component="h3">
-            {review.name}
-          </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
+            <Place sx={{ fontSize: 18, color: 'text.secondary' }} />
 
-          <Stack
-            direction="row"
-            spacing={0.5}
-            sx={{ alignItems: 'center', color: 'text.secondary' }}
-          >
-            <Place sx={{ fontSize: 14 }} />
-
-            <Typography variant="caption">{review.author.name}</Typography>
+            <Typography variant="h6" component="h3">
+              {review.name}
+            </Typography>
           </Stack>
+
+          <Typography variant="caption" color="text.secondary">
+            {review.author.name}
+          </Typography>
 
           <Typography
             variant="body2"

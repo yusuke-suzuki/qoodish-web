@@ -48,19 +48,17 @@ export default memo(function ChapterCard({ chapter }: Props) {
         )}
 
         <CardContent>
-          <Typography variant="h6" component="h3">
-            {chapter.title || dictionary['untitled chapter']}
-          </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
+            <HistoryEdu sx={{ fontSize: 18, color: 'text.secondary' }} />
 
-          <Stack
-            direction="row"
-            spacing={0.5}
-            sx={{ alignItems: 'center', color: 'text.secondary' }}
-          >
-            <HistoryEdu sx={{ fontSize: 14 }} />
-
-            <Typography variant="caption">{chapter.author.name}</Typography>
+            <Typography variant="h6" component="h3">
+              {chapter.title || dictionary['untitled chapter']}
+            </Typography>
           </Stack>
+
+          <Typography variant="caption" color="text.secondary">
+            {chapter.author.name}
+          </Typography>
 
           {source && (
             <Typography

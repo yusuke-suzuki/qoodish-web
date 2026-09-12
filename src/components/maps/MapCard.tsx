@@ -57,22 +57,20 @@ export default memo(function MapCard({ map }: Props) {
         </Box>
 
         <CardContent>
-          <Typography variant="h6" component="h3">
-            {map.name}
-          </Typography>
+          {/* One layout serves maps, reports and chapters, so the title is
+              labelled with the mark of what it is. Beside the byline instead
+              the mark read as part of the name — a place, not a person. */}
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
+            <MapIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
 
-          {/* One layout serves maps, reports and chapters, so the line under
-              the title is where a reader is told which of the three they are
-              looking at. */}
-          <Stack
-            direction="row"
-            spacing={0.5}
-            sx={{ alignItems: 'center', color: 'text.secondary' }}
-          >
-            <MapIcon sx={{ fontSize: 14 }} />
-
-            <Typography variant="caption">{map.author.name}</Typography>
+            <Typography variant="h6" component="h3">
+              {map.name}
+            </Typography>
           </Stack>
+
+          <Typography variant="caption" color="text.secondary">
+            {map.author.name}
+          </Typography>
 
           {/* Descriptions run to any length, and a rail or a grid of cards only
               reads as one while the cards are the same height. */}
