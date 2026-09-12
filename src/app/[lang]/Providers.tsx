@@ -8,7 +8,6 @@ import {
   GlobalStyles,
   ThemeProvider
 } from '@mui/material';
-import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
@@ -72,22 +71,23 @@ export default function Providers({
     return createTheme(
       {
         palette: {
-          // contrastText is left to MUI. Both of these are light enough that
-          // white on them lands near 1.6:1 and 2.6:1, and the theme used to
-          // name white anyway; the computed value is the dark one, which is
-          // what the amber footer had been using all along.
+          // Ink and gilt on paper, which is what the type has been asking for:
+          // a mincho body under a Roman display face reads as a printed book,
+          // and a signal yellow filling the chrome read as a warning strip.
+          // contrastText is left to MUI throughout; every value here is dark
+          // enough or deep enough that the computed choice clears 4.5:1.
           primary: {
-            light: amber[300],
-            main: amber[500],
-            dark: amber[700]
+            light: '#54463a',
+            main: '#2e2419',
+            dark: '#1a140e'
           },
           secondary: {
-            light: lightBlue[300],
-            main: lightBlue[500],
-            dark: lightBlue[700]
+            light: '#b0803a',
+            main: '#8a6428',
+            dark: '#6b4d1e'
           },
           background: {
-            default: '#f1f1f1'
+            default: '#f6f2ea'
           }
         },
         shape: {

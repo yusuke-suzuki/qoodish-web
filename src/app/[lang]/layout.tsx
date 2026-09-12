@@ -6,6 +6,7 @@ import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
+import { BRAND_INK } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import Providers from './Providers.tsx';
@@ -38,7 +39,7 @@ type Props = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ffc107',
+  themeColor: BRAND_INK,
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',

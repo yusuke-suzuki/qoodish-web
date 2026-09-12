@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useSyncExternalStore } from 'react';
+import { BRAND_INK, BRAND_INK_CONTRAST } from '../utils/brand.ts';
 import reportClientError from '../utils/reportClientError.ts';
 
 type Props = {
@@ -42,7 +43,7 @@ export default function GlobalError({ error, reset }: Props) {
   return (
     <html lang={lang}>
       <head>
-        <meta name="theme-color" content="#ffc107" />
+        <meta name="theme-color" content={BRAND_INK} />
       </head>
       <body
         style={{
@@ -72,8 +73,8 @@ export default function GlobalError({ error, reset }: Props) {
             style={{
               display: 'inline-block',
               padding: '0.75rem 1.5rem',
-              backgroundColor: '#ffc107',
-              color: '#333',
+              backgroundColor: BRAND_INK,
+              color: BRAND_INK_CONTRAST,
               border: 'none',
               borderRadius: '4px',
               fontWeight: 500,

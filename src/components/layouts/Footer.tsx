@@ -8,7 +8,6 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import { amber } from '@mui/material/colors';
 import Link from 'next/link';
 import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -23,7 +22,9 @@ export default memo(function Footer() {
 
   return (
     <Paper component="footer" square>
-      <Box sx={{ bgcolor: amber[500], py: 3 }}>
+      <Box
+        sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', py: 3 }}
+      >
         <Container>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
@@ -67,7 +68,9 @@ export default memo(function Footer() {
         </Container>
       </Box>
 
-      <Box sx={{ bgcolor: amber[700], py: 2 }}>
+      <Box
+        sx={{ bgcolor: 'primary.dark', color: 'primary.contrastText', py: 2 }}
+      >
         <Container>
           {/* A year read at render time disagrees between the UTC worker and a
               JST reader for the first nine hours of every January. */}

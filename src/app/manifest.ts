@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { BRAND_INK } from '../utils/brand.ts';
 
 const ICON_BASE_URL =
   'https://storage.googleapis.com/qoodish.appspot.com/assets';
@@ -21,7 +22,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Qoodish',
     start_url: '/?utm_source=homescreen',
     display: 'standalone',
-    theme_color: '#ffc107',
+    theme_color: BRAND_INK,
     background_color: '#f1f1f1',
     orientation: 'portrait',
     icons

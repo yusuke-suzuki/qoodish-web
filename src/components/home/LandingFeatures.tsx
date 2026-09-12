@@ -52,12 +52,14 @@ export default memo(function LandingFeatures({ maps }: Props) {
             key={title}
             sx={
               dark
-                ? { bgcolor: '#17130F', color: 'common.white' }
+                ? { bgcolor: 'primary.dark', color: 'primary.contrastText' }
                 : { bgcolor: 'background.paper' }
             }
           >
             <Stack spacing={3}>
-              <Icon color="primary" sx={{ fontSize: 48 }} />
+              {/* The gilt rather than the ink: the mark has to read on the
+                  dark band as well as the light one. */}
+              <Icon color="secondary" sx={{ fontSize: 48 }} />
 
               <Typography
                 variant="h4"

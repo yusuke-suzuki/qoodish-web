@@ -33,7 +33,7 @@ export default memo(function PublicAppBar() {
           href={localePath('/')}
           sx={{ display: 'flex', mr: 'auto', textDecoration: 'none' }}
         >
-          <Logo />
+          <Logo color="secondary" />
         </Box>
 
         <Button
