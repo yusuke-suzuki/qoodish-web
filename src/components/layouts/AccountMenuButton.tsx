@@ -1,6 +1,7 @@
-import { Login, Logout, Settings } from '@mui/icons-material';
+import { Bookmarks, Login, Logout, Mail, Settings } from '@mui/icons-material';
 import {
   Divider,
+  IconButton,
   ListItemAvatar,
   ListItemButton,
   ListItemIcon,
@@ -24,7 +25,7 @@ export default memo(function AccountMenuButton() {
   const localePath = useLocalePath();
   const { push } = useRouter();
 
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -50,17 +51,14 @@ export default memo(function AccountMenuButton() {
 
   return (
     <>
-      <ListItemButton
+      <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
-        sx={{
-          justifyContent: 'center'
-        }}
+        title={dictionary.account}
+        aria-label={dictionary.account}
       >
-        <ListItemAvatar sx={{ minWidth: 0 }}>
-          <ProfileAvatar profile={profile} size={30} />
-        </ListItemAvatar>
-      </ListItemButton>
+        <ProfileAvatar profile={profile} size={30} />
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -85,6 +83,30 @@ export default memo(function AccountMenuButton() {
         <Divider />
 
         {authenticated && [
+          <ListItemButton
+            LinkComponent={Link}
+            key="bookmarks"
+            href={localePath('/bookmarks')}
+            title={dictionary.bookmarks}
+            onClick={handleLinkClick}
+          >
+            <ListItemIcon>
+              <Bookmarks fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={dictionary.bookmarks} />
+          </ListItemButton>,
+          <ListItemButton
+            LinkComponent={Link}
+            key="invites"
+            href={localePath('/coauthorship_invitations')}
+            title={dictionary.invites}
+            onClick={handleLinkClick}
+          >
+            <ListItemIcon>
+              <Mail fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={dictionary.invites} />
+          </ListItemButton>,
           <ListItemButton
             LinkComponent={Link}
             key="settings"
