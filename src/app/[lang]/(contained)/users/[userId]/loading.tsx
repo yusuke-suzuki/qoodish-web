@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   Divider,
+  Grid,
   Skeleton,
   Stack
 } from '@mui/material';
@@ -14,7 +15,7 @@ const tabBarHeight = 48;
 export default function Loading() {
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardContent>
           <Stack spacing={1.5}>
             <Skeleton variant="circular" width={96} height={96} />
@@ -68,23 +69,34 @@ export default function Loading() {
         </Box>
       </Card>
 
-      <Box
-        sx={{
-          mt: 2,
-          display: 'grid',
-          gap: 1,
-          gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' }
-        }}
-      >
+      {/* The sizes ReviewGridList gives the photographs it draws. Skeleton
+          keeps a 1.2em height unless it is cleared, which would override the
+          aspect ratio. */}
+      <Grid container spacing={2} sx={{ mt: 2 }}>
         {Array.from({ length: REVIEW_TILE_COUNT }).map((_, index) => (
-          <Skeleton
+          <Grid
             // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
             key={`skeleton-profile-review-${index}`}
-            variant="rectangular"
-            height={180}
-          />
+            size={{ xs: 6, sm: 4, md: 3 }}
+          >
+            <Skeleton
+              variant="rounded"
+              sx={{ height: 'auto', aspectRatio: '1 / 1' }}
+            />
+
+            <Skeleton
+              variant="text"
+              width="80%"
+              sx={{ typography: 'subtitle2', mt: 1 }}
+            />
+            <Skeleton
+              variant="text"
+              width="50%"
+              sx={{ typography: 'caption' }}
+            />
+          </Grid>
         ))}
-      </Box>
+      </Grid>
     </>
   );
 }

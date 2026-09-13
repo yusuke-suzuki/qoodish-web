@@ -14,8 +14,12 @@ function SignInWithGoogleButton({ onSignInSuccess }: Props) {
     <SignInWithProviderButton
       provider={provider}
       onSignInSuccess={onSignInSuccess}
+      // Google publishes this button's colours, so none of them are the
+      // theme's to decide — the label stays white whatever contrast text the
+      // palette computes for the app's own buttons.
       sx={{
         textTransform: 'none',
+        color: '#FFFFFF',
         backgroundColor: '#4285F4',
         '&:hover': {
           backgroundColor: '#357AE8'

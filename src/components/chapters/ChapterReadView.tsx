@@ -92,7 +92,7 @@ export default function ChapterReadView({
 
   return (
     <>
-      <Paper elevation={0} sx={{ overflow: 'hidden' }}>
+      <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
         <ChapterCover image={chapter.image} editable={false} />
 
         <Box sx={{ px: { xs: 2.5, sm: 5 }, py: { xs: 4, sm: 6 } }}>

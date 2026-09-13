@@ -26,7 +26,7 @@ function BookmarksView({ maps, journals }: Props) {
 
   return (
     <TabContext value={tabValue}>
-      <Card elevation={0}>
+      <Card>
         <TabList onChange={handleTabChange} variant="fullWidth">
           <Tab label={dictionary.maps} value="1" />
           <Tab label={dictionary.journal} value="2" />

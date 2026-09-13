@@ -1,13 +1,12 @@
-import { Box } from '@mui/material';
 import type { Metadata, Viewport } from 'next';
 import { Cinzel, Lobster, Shippori_Mincho } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
-import MiniDrawer from '../../components/layouts/MiniDrawer.tsx';
-import MobileAppBar from '../../components/layouts/MobileAppBar.tsx';
+import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
+import { BRAND_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import Providers from './Providers.tsx';
@@ -40,7 +39,7 @@ type Props = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ffc107',
+  themeColor: BRAND_COLOR,
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -116,7 +115,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
-  const { authenticated, uid, token } = await getServerAuthState();
+  const { authenticated, pending, uid, token } = await getServerAuthState();
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
     : Promise.resolve<Profile | null>(null);
@@ -148,26 +147,13 @@ export default async function RootLayout({ children, params }: Props) {
         <Providers
           lang={lang}
           serverAuthenticated={authenticated}
+          serverPending={pending}
           serverUid={uid}
           profilePromise={profilePromise}
           notificationsPromise={notificationsPromise}
         >
           <ShellProvider>
-            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-              <MobileAppBar />
-            </Box>
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <MiniDrawer />
-            </Box>
-            <Box
-              component="main"
-              sx={{
-                pl: { md: 8 },
-                pt: { xs: 7, sm: 8, md: 0 }
-              }}
-            >
-              {children}
-            </Box>
+            <Shell serverPending={pending}>{children}</Shell>
           </ShellProvider>
         </Providers>
       </body>

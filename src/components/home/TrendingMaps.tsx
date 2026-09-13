@@ -37,7 +37,7 @@ const TrendingMaps = ({ maps }: Props) => {
         </ListSubheader>
       }
       component={Paper}
-      elevation={0}
+      variant="outlined"
       sx={{ pt: 2 }}
     >
       {maps.map((map, i) => (

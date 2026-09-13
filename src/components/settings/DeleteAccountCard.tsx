@@ -28,12 +28,12 @@ function DeleteAccountCard() {
     const auth = getAuth();
     await signOut(auth);
 
-    push(localePath('/login'));
+    push(localePath('/'));
   };
 
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom color="error">
             {dictionary['delete account']}

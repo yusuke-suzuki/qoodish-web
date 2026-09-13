@@ -76,7 +76,7 @@ function UserProfile({
   return (
     <>
       <TabContext value={tabValue}>
-        <Card elevation={0}>
+        <Card>
           <CardContent>
             <Stack spacing={1.5}>
               <ProfileAvatar size={96} profile={profile} />

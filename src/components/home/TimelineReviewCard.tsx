@@ -1,3 +1,5 @@
+'use client';
+
 import { Comment } from '@mui/icons-material';
 import {
   Card,
@@ -9,6 +11,7 @@ import {
 import Link from 'next/link';
 import { memo } from 'react';
 import type { Review } from '../../../types/index.ts';
+import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
 import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
@@ -24,10 +27,11 @@ export default memo(function TimelineReviewCard({
   review,
   onReportClick
 }: Props) {
+  const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   return (
-    <Card elevation={0}>
+    <Card>
       <ReviewCardHeader
         review={review}
         action={
@@ -51,6 +55,8 @@ export default memo(function TimelineReviewCard({
         <IconButton
           LinkComponent={Link}
           href={localePath(`/maps/${review.map.id}/reports/${review.id}`)}
+          title={dictionary.comment}
+          aria-label={dictionary.comment}
         >
           <Comment />
         </IconButton>

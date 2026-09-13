@@ -1,0 +1,100 @@
+'use client';
+
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Stack,
+  Typography
+} from '@mui/material';
+import Link from 'next/link';
+import { memo } from 'react';
+import useDictionary from '../../hooks/useDictionary.ts';
+import useLocalePath from '../../hooks/useLocalePath.ts';
+import { PHOTOS } from '../../utils/photos.ts';
+import SignInButtons from '../auth/SignInButtons.tsx';
+import HeroBackground from '../common/HeroBackground.tsx';
+
+export default memo(function LandingHero() {
+  const dictionary = useDictionary();
+  const localePath = useLocalePath();
+
+  return (
+    <HeroBackground
+      photo={PHOTOS.fujiFromTheRidge}
+      sx={{ minHeight: { md: '88vh' }, py: { xs: 10, md: 14 } }}
+    >
+      <Container maxWidth="lg">
+        <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Stack spacing={4}>
+              <Typography
+                variant="h3"
+                component="h1"
+                color="common.white"
+                sx={{ typography: { md: 'h2' } }}
+              >
+                {dictionary['create map together']}
+              </Typography>
+
+              <Typography
+                variant="body1"
+                component="p"
+                color="common.white"
+                sx={{ maxWidth: 520, fontSize: { md: '1.125rem' } }}
+              >
+                {dictionary['meta description']}
+              </Typography>
+
+              {/* Boxed so the button takes its own width instead of stretching
+                  to the column. */}
+              <Box>
+                <Button
+                  variant="contained"
+                  size="large"
+                  disableElevation
+                  component={Link}
+                  href={localePath('/discover')}
+                  sx={{
+                    borderRadius: 999,
+                    px: 4,
+                    py: 1.25,
+                    bgcolor: 'common.white',
+                    color: 'text.primary',
+                    '&:hover': { bgcolor: 'grey.200' }
+                  }}
+                >
+                  {dictionary.discover}
+                </Button>
+              </Box>
+            </Stack>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 5 }}>
+            {/* The email field and the terms notice need a surface of their
+                own to stay legible on the photograph. */}
+            <Card sx={{ maxWidth: 440, ml: { md: 'auto' } }}>
+              <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                <Stack spacing={3}>
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    align="center"
+                    sx={{ typography: { md: 'h5' } }}
+                  >
+                    {dictionary['get started']}
+                  </Typography>
+
+                  <SignInButtons />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </HeroBackground>
+  );
+});

@@ -9,7 +9,7 @@ export default memo(function LogoAvatar() {
         fontWeight: 800,
         fontSize: '1.4rem',
         bgcolor: 'primary.main',
-        color: 'white',
+        color: 'primary.contrastText',
         width: 30,
         height: 30
       }}

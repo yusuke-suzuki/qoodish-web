@@ -31,7 +31,7 @@ function RecommendMaps({ maps }: Props) {
         </Button>
       </Box>
 
-      <MapGridList maps={maps ?? []} skeletonSize={2} cols={1} />
+      <MapGridList maps={maps ?? []} cols={1} />
     </>
   );
 }

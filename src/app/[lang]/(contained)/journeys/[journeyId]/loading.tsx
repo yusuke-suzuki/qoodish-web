@@ -5,7 +5,7 @@ const CHECKIN_ROW_COUNT = 4;
 export default function Loading() {
   return (
     <>
-      <Paper elevation={0} sx={{ overflow: 'hidden' }}>
+      <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
         <Skeleton
           variant="rectangular"
           sx={{ width: '100%', height: { xs: 260, sm: 320 } }}
@@ -53,7 +53,7 @@ export default function Loading() {
         </Box>
       </Paper>
 
-      <Card elevation={0} sx={{ mt: 2 }}>
+      <Card sx={{ mt: 2 }}>
         <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Skeleton variant="circular" width={24} height={24} />
           <Box sx={{ flex: 1 }}>

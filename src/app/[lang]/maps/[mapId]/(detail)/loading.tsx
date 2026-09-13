@@ -22,7 +22,7 @@ export default function Loading() {
         sx={{
           display: { xs: 'none', md: 'block' },
           width: summaryCardWidth,
-          height: '100dvh'
+          height: 'calc(100dvh - var(--chrome-top, 0px))'
         }}
       >
         <Card sx={{ height: '100%', width: '100%', overflowY: 'auto' }}>
@@ -94,12 +94,11 @@ export default function Loading() {
         variant="rectangular"
         sx={{
           height: {
-            xs: `calc(100dvh - ${drawerBleeding}px - 56px)`,
-            sm: `calc(100dvh - ${drawerBleeding}px - 64px)`,
-            md: '100dvh'
+            xs: `calc(100dvh - ${drawerBleeding}px - var(--chrome-top, 0px))`,
+            md: 'calc(100dvh - var(--chrome-top, 0px))'
           },
           width: {
-            md: `calc(100dvw - ${summaryCardWidth}px)`
+            md: `calc(100dvw - ${summaryCardWidth}px - var(--chrome-left, 0px))`
           },
           flexGrow: 1
         }}

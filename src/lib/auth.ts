@@ -16,8 +16,15 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+export const SIGNED_IN_COOKIE = 'signed_in';
+
 type ServerAuthState = {
   authenticated: boolean;
+  // The browser carries a session the server cannot read yet: the ID token has
+  // expired and the client has not exchanged its refresh token. Rendering
+  // anything addressed to a stranger would be wrong for the few hundred
+  // milliseconds until it does.
+  pending: boolean;
   uid?: string;
   token?: string;
 };
@@ -55,16 +62,17 @@ export async function verifyIdToken(idToken: string): Promise<boolean> {
 export const getServerAuthState = cache(async (): Promise<ServerAuthState> => {
   const cookieStore = await cookies();
   const idToken = cookieStore.get('__session')?.value;
+  const pending = cookieStore.get(SIGNED_IN_COOKIE)?.value === '1';
 
   if (!idToken) {
-    return { authenticated: false };
+    return { authenticated: false, pending };
   }
 
   const uid = await resolveUid(idToken);
 
   if (uid) {
-    return { authenticated: true, uid, token: idToken };
+    return { authenticated: true, pending: false, uid, token: idToken };
   }
 
-  return { authenticated: false };
+  return { authenticated: false, pending };
 });

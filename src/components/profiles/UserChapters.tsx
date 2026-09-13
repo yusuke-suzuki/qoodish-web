@@ -89,7 +89,7 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
 
   return (
     <>
-      <Paper elevation={0}>
+      <Paper variant="outlined">
         {chapters.map((chapter, index) => (
           <Box key={chapter.id}>
             <CardActionArea

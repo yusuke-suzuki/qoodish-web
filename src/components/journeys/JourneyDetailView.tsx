@@ -441,7 +441,7 @@ export default function JourneyDetailView({
 
   return (
     <>
-      <Paper elevation={0} sx={{ overflow: 'hidden' }}>
+      <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
         <JourneyMap
           spots={checkinSpots}
           milestones={pendingMilestones}
@@ -697,7 +697,7 @@ export default function JourneyDetailView({
       </Paper>
 
       {(chapter || map) && (
-        <Card elevation={0} sx={{ mt: 2 }}>
+        <Card sx={{ mt: 2 }}>
           {chapter ? (
             <CardActionArea
               component={Link}

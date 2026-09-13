@@ -42,6 +42,7 @@ type Props = {
   children: ReactNode;
   lang: string;
   serverAuthenticated: boolean;
+  serverPending: boolean;
   serverUid?: string;
   profilePromise: Promise<Profile | null>;
   notificationsPromise: Promise<Notification[]>;
@@ -51,6 +52,7 @@ export default function Providers({
   children,
   lang,
   serverAuthenticated,
+  serverPending,
   serverUid,
   profilePromise,
   notificationsPromise
@@ -70,21 +72,21 @@ export default function Providers({
     return createTheme(
       {
         palette: {
+          // Only main is named, so that light, dark and contrastText are
+          // derived from it: this amber reads 1.79:1 against white, and MUI
+          // answers with dark text on it at 11.70:1. Naming white here instead
+          // would put 1.79:1 type on every button.
           primary: {
-            light: amber[300],
-            main: amber[500],
-            dark: amber[700],
-            contrastText: '#fff'
+            main: amber[600]
           },
+          // 800 rather than 500, which carried a white label at only 2.63:1;
+          // this takes one at 4.80:1.
           secondary: {
-            light: lightBlue[300],
-            main: lightBlue[500],
-            dark: lightBlue[700],
-            contrastText: '#fff'
-          },
-          background: {
-            default: '#f1f1f1'
+            main: lightBlue[800]
           }
+        },
+        shape: {
+          borderRadius: 12
         },
         typography: {
           fontFamily:
@@ -117,6 +119,13 @@ export default function Providers({
           }
         },
         components: {
+          MuiCard: {
+            // The page and the card share one surface, so a card needs an edge
+            // rather than a shadow to be told from it.
+            defaultProps: {
+              variant: 'outlined'
+            }
+          },
           MuiDialog: {
             defaultProps: {
               fullWidth: true
@@ -186,6 +195,7 @@ export default function Providers({
           <ClientErrorReporter />
           <AuthProvider
             serverAuthenticated={serverAuthenticated}
+            serverPending={serverPending}
             serverUid={serverUid ?? null}
           >
             <Suspense fallback={<SplashScreen label={dictionary.loading} />}>
