@@ -15,9 +15,8 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import useLocaleLinks from '../../hooks/useLocaleLinks.ts';
 
 type Props = {
-  // The rail and the bar show icons alone, so the label has to live in a
-  // tooltip there.
-  variant: 'rail' | 'list' | 'bar';
+  // The bar shows an icon alone, so the label has to live in a tooltip there.
+  variant: 'list' | 'bar';
   onNavigate?: () => void;
 };
 
@@ -44,21 +43,14 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
         </IconButton>
       ) : (
         <ListItemButton
-          dense={variant === 'list'}
+          dense
           onClick={(event) => setAnchorEl(event.currentTarget)}
           title={dictionary.language}
-          sx={variant === 'rail' ? { justifyContent: 'center' } : undefined}
         >
-          {variant === 'rail' ? (
-            <ListItemIcon sx={{ minWidth: 0 }}>
-              <Language />
-            </ListItemIcon>
-          ) : (
-            <ListItemText
-              primary={dictionary.language}
-              slotProps={{ primary: { color: 'text.secondary' } }}
-            />
-          )}
+          <ListItemText
+            primary={dictionary.language}
+            slotProps={{ primary: { color: 'text.secondary' } }}
+          />
         </ListItemButton>
       )}
 
