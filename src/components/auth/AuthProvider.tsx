@@ -15,6 +15,7 @@ import useEmailLinkHandler from '../../hooks/useEmailLinkHandler.ts';
 type Props = {
   children: ReactNode;
   serverAuthenticated: boolean;
+  serverPending: boolean;
   serverUid: string | null;
 };
 
@@ -29,7 +30,12 @@ if (!getApps().length) {
   });
 }
 
-function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
+function AuthProvider({
+  children,
+  serverAuthenticated,
+  serverPending,
+  serverUid
+}: Props) {
   const router = useRouter();
   const [authenticated, setAuthenticated] = useState(serverAuthenticated);
   const [uid, setUid] = useState<string | null>(serverUid);
@@ -37,6 +43,10 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
   const [signInRequired, setSignInRequired] = useState(false);
   const authStateRef = useRef(serverAuthenticated);
   const pendingRegistrationRef = useRef(false);
+  // The server withheld both the signed-in and the signed-out page, so this
+  // render has to be replaced whichever way the token resolves. Without it a
+  // reader whose session has actually ended keeps the placeholder for good.
+  const provisionalRenderRef = useRef(serverPending);
 
   useEmailLinkHandler({ isLoading: loading });
 
@@ -103,8 +113,9 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
             setUid(null);
             setLoading(false);
 
-            if (authStateRef.current) {
+            if (authStateRef.current || provisionalRenderRef.current) {
               authStateRef.current = false;
+              provisionalRenderRef.current = false;
               await clearNavigationCache();
               router.refresh();
             }
@@ -123,6 +134,7 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
               pendingRegistrationRef.current = !(await registerBackendUser());
 
               if (firstAuth || !pendingRegistrationRef.current) {
+                provisionalRenderRef.current = false;
                 await clearNavigationCache();
                 router.refresh();
               }
@@ -137,8 +149,9 @@ function AuthProvider({ children, serverAuthenticated, serverUid }: Props) {
           setUid(null);
           setLoading(false);
 
-          if (authStateRef.current) {
+          if (authStateRef.current || provisionalRenderRef.current) {
             authStateRef.current = false;
+            provisionalRenderRef.current = false;
             await clearNavigationCache();
             router.refresh();
           }

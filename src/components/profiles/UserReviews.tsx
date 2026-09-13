@@ -57,7 +57,7 @@ export default memo(function UserReviews({
 
       <LoadingStatus loading={isPending} />
 
-      <ReviewGridList reviews={reviews} hideSkeleton loading={isPending} />
+      <ReviewGridList reviews={reviews} loading={isPending} />
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
         {!isPending && !noMoreResults && reviews.length > 0 && (

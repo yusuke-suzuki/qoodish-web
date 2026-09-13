@@ -4,7 +4,7 @@ const ROW_COUNT = 5;
 
 export default function Loading() {
   return (
-    <Paper elevation={0}>
+    <Paper variant="outlined">
       <List disablePadding>
         {Array.from({ length: ROW_COUNT }).map((_, index) => (
           <ListItem

@@ -1,6 +1,12 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { verifyIdToken } from '../../../../lib/auth.ts';
+import { SIGNED_IN_COOKIE, verifyIdToken } from '../../../../lib/auth.ts';
+
+// The ID token in __session expires within the hour, so a reader who comes
+// back the next day arrives without one and the server cannot tell them from
+// someone who has never signed in. This outlives it and says only that the
+// browser had a session, which is enough to withhold the landing page.
+const SIGNED_IN_MAX_AGE = 60 * 60 * 24 * 30;
 
 export async function POST(request: Request) {
   // Browsers always attach Origin to cross-site POSTs, so a missing header
@@ -29,15 +35,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    cookieStore.set('__session', idToken, {
+    const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60,
+      sameSite: 'lax' as const,
       path: '/'
+    };
+
+    cookieStore.set('__session', idToken, { ...options, maxAge: 60 * 60 });
+    cookieStore.set(SIGNED_IN_COOKIE, '1', {
+      ...options,
+      maxAge: SIGNED_IN_MAX_AGE
     });
   } else {
     cookieStore.delete('__session');
+    cookieStore.delete(SIGNED_IN_COOKIE);
   }
 
   return NextResponse.json({ status: 'ok' });

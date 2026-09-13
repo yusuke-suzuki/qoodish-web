@@ -10,7 +10,7 @@ import {
 export default function Loading() {
   return (
     <>
-      <Card elevation={0}>
+      <Card>
         <CardHeader
           avatar={<Skeleton variant="circular" width={40} height={40} />}
           title={<Skeleton width="40%" />}

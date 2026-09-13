@@ -12,7 +12,7 @@ import { memo } from 'react';
 
 const SkeletonTrendingList = () => {
   return (
-    <Paper elevation={0}>
+    <Paper variant="outlined">
       <CardContent>
         <List
           disablePadding

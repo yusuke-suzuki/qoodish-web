@@ -54,7 +54,7 @@ export default memo(function MobileDrawer({
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
-  const { authenticated } = useContext(AuthContext);
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
 
   const handleSignOutClick = async () => {
@@ -63,7 +63,14 @@ export default memo(function MobileDrawer({
     const auth = getAuth();
     await signOut(auth);
 
-    push(localePath('/login'));
+    // Staying put would leave the reader on a page their account was the only
+    // way into.
+    push(localePath('/'));
+  };
+
+  const handleSignInClick = () => {
+    onClose();
+    setSignInRequired(true);
   };
 
   const handleCreateMapClick = () => {
@@ -231,9 +238,7 @@ export default memo(function MobileDrawer({
         ) : (
           <ListItemButton
             dense
-            onClick={onClose}
-            LinkComponent={Link}
-            href={localePath('/login')}
+            onClick={handleSignInClick}
             title={dictionary.login}
           >
             <ListItemText

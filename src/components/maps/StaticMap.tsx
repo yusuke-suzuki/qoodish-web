@@ -13,7 +13,7 @@ function StaticMap({ position, width, height }: Props) {
   }
 
   return (
-    <Card elevation={0}>
+    <Card>
       <ButtonBase
         component="a"
         href={`https://www.google.com/maps/search/?api=1&query=${position.lat},${position.lng}`}
