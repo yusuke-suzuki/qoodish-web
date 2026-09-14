@@ -3,6 +3,8 @@ import {
   type NextRequest,
   NextResponse
 } from 'next/server';
+import { isTimeoutError } from './lib/apiRequest.ts';
+import describeError from './utils/describeError.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales.ts';
 
 const WARMUP_INTERVAL_MS = 60000;
@@ -21,7 +23,9 @@ async function warmUpApi(): Promise<void> {
       signal: AbortSignal.timeout(10000)
     });
   } catch (error) {
-    console.warn('API warmup request failed:', error);
+    console.warn(
+      `API warmup request failed [${isTimeoutError(error) ? 'timeout' : 'network'}]: ${describeError(error)}`
+    );
   }
 }
 
