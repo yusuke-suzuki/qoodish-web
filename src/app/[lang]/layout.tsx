@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Qoodish',
       description: dict['meta description'],
       siteName: 'Qoodish',
-      images: ogImages(defaultThumbnailUrl),
+      images: ogImages(defaultThumbnailUrl, dict['meta headline']),
       locale: lang === 'en' ? 'en_US' : 'ja_JP'
     },
     twitter: {

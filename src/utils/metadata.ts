@@ -13,11 +13,13 @@ export function defaultOgImage(lang: string): string {
 }
 
 // Both the static fallback assets and the Cloudflare Images "ogp" variant are
-// rendered at 1200x630.
+// rendered at 1200x630. Stating the size lets a crawler draw the large card
+// on the first share instead of a small one while it measures the image.
 export function ogImages(
-  url: string
-): { url: string; width: number; height: number }[] {
-  return [{ url, width: 1200, height: 630 }];
+  url: string,
+  alt: string
+): { url: string; width: number; height: number; alt: string }[] {
+  return [{ url, width: 1200, height: 630, alt }];
 }
 
 export function buildAlternates(
