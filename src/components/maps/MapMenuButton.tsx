@@ -115,12 +115,12 @@ export default memo(function MapMenuButton({
           <ListItemText primary={dictionary['copy link']} />
         </MenuItem>
 
-        {!isAuthor && currentProfile && (
+        {!isAuthor && (
           <MenuItem onClick={handleReportClick}>
             <ListItemIcon>
               <ReportProblem fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary={dictionary.report} />
+            <ListItemText primary={dictionary['report content']} />
           </MenuItem>
         )}
 

@@ -28,7 +28,7 @@ type Props = {
   currentProfile?: Profile | null;
   onEditClick?: (review: Review) => void;
   onDeleteClick?: (review: Review) => void;
-  onReportClick?: (review: Review) => void;
+  onReportClick: (review: Review) => void;
   hideDetail?: boolean;
 };
 
@@ -124,12 +124,12 @@ export default memo(function ReviewMenuButton({
             <ListItemText primary={dictionary.detail} />
           </MenuItem>
         )}
-        {!isAuthor && currentProfile && (
+        {!isAuthor && (
           <MenuItem onClick={handleReportClick}>
             <ListItemIcon>
               <ReportProblem fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary={dictionary.report} />
+            <ListItemText primary={dictionary['report content']} />
           </MenuItem>
         )}
         {isAuthor && <Divider />}

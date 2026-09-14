@@ -1,6 +1,6 @@
 'use client';
 
-import { Delete, Edit, MoreVert } from '@mui/icons-material';
+import { Delete, Edit, MoreVert, ReportProblem } from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -15,13 +15,15 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import type { AppMap, Chapter, Journal } from '../../../types/index.ts';
 import { deleteChapter } from '../../actions/chapters.ts';
+import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
 import { featureSpots } from '../../utils/mapFeatures.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import IssueDialog from '../common/IssueDialog.tsx';
 import ChapterActions from './ChapterActions.tsx';
 import ChapterAuthorCard from './ChapterAuthorCard.tsx';
 import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
@@ -55,8 +57,11 @@ export default function ChapterReadView({
   const formatDateTime = useLocalDateTime();
   const router = useRouter();
 
+  const { authenticated, setSignInRequired } = useContext(AuthContext);
+
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
 
   const markerSpots = featureSpots(chapter.map_features);
 
@@ -67,6 +72,17 @@ export default function ChapterReadView({
   const handleDeleteClick = () => {
     setMenuAnchor(null);
     setDeleteDialogOpen(true);
+  };
+
+  const handleReportClick = () => {
+    setMenuAnchor(null);
+
+    if (!authenticated) {
+      setSignInRequired(true);
+      return;
+    }
+
+    setIssueDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -109,15 +125,14 @@ export default function ChapterReadView({
               />
             </Box>
 
-            {chapter.editable && (
-              <IconButton
-                size="small"
-                aria-label={dictionary.more}
-                onClick={(event) => setMenuAnchor(event.currentTarget)}
-              >
-                <MoreVert fontSize="small" />
-              </IconButton>
-            )}
+            <IconButton
+              size="small"
+              title={dictionary.more}
+              aria-label={dictionary.more}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+            >
+              <MoreVert fontSize="small" />
+            </IconButton>
           </Box>
 
           <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
@@ -164,24 +179,42 @@ export default function ChapterReadView({
         open={Boolean(menuAnchor)}
         onClose={() => setMenuAnchor(null)}
       >
-        <MenuItem
-          component={Link}
-          href={`/${lang}/chapters/${chapter.id}/edit`}
-          onClick={() => setMenuAnchor(null)}
-        >
-          <ListItemIcon>
-            <Edit fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary={dictionary.edit} />
-        </MenuItem>
-
-        <MenuItem onClick={handleDeleteClick}>
-          <ListItemIcon>
-            <Delete fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary={dictionary.delete} />
-        </MenuItem>
+        {chapter.editable ? (
+          [
+            <MenuItem
+              key="edit"
+              component={Link}
+              href={`/${lang}/chapters/${chapter.id}/edit`}
+              onClick={() => setMenuAnchor(null)}
+            >
+              <ListItemIcon>
+                <Edit fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary={dictionary.edit} />
+            </MenuItem>,
+            <MenuItem key="delete" onClick={handleDeleteClick}>
+              <ListItemIcon>
+                <Delete fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary={dictionary.delete} />
+            </MenuItem>
+          ]
+        ) : (
+          <MenuItem onClick={handleReportClick}>
+            <ListItemIcon>
+              <ReportProblem fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={dictionary['report content']} />
+          </MenuItem>
+        )}
       </Menu>
+
+      <IssueDialog
+        open={issueDialogOpen}
+        onClose={() => setIssueDialogOpen(false)}
+        contentType="chapter"
+        contentId={chapter.id}
+      />
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
