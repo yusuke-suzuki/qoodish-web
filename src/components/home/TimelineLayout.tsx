@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import { type ReactNode, Suspense } from 'react';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getPopularMaps, getRecommendMaps } from '../../lib/maps.ts';
+import SectionErrorBoundary from '../common/SectionErrorBoundary.tsx';
 import TimelineSidebar from './TimelineSidebar.tsx';
 
 type Props = {
@@ -32,9 +33,11 @@ export default function TimelineLayout({ children, lang }: Props) {
       <Grid size={{ md: 4 }} sx={{ display: { xs: 'none', md: 'block' } }}>
         {/* The rail is an aside, so the timeline is sent without waiting for
             it. Given nothing, the same component draws its own skeleton. */}
-        <Suspense fallback={<TimelineSidebar />}>
-          <SidebarSection lang={lang} />
-        </Suspense>
+        <SectionErrorBoundary>
+          <Suspense fallback={<TimelineSidebar />}>
+            <SidebarSection lang={lang} />
+          </Suspense>
+        </SectionErrorBoundary>
       </Grid>
     </Grid>
   );

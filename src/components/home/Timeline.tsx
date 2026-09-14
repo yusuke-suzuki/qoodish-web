@@ -2,6 +2,7 @@
 
 import { Reviews } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { memo, useState, useTransition } from 'react';
 import type { Review } from '../../../types/index.ts';
 import { fetchMoreTimelineReviews } from '../../actions/reviews.ts';
@@ -46,9 +47,15 @@ export default memo(function Timeline({ initialReviews }: Props) {
     }
 
     startTransition(async () => {
-      const moreReviews = await fetchMoreTimelineReviews(lastReview.created_at);
-      setReviews((prev) => [...prev, ...moreReviews]);
-      setNoMoreResults(moreReviews.length < 1);
+      try {
+        const moreReviews = await fetchMoreTimelineReviews(
+          lastReview.created_at
+        );
+        setReviews((prev) => [...prev, ...moreReviews]);
+        setNoMoreResults(moreReviews.length < 1);
+      } catch {
+        enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
+      }
     });
   };
 

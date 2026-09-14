@@ -1,19 +1,18 @@
 import type { Journey, JourneySummary } from '../../types/index.ts';
-import { apiFetch } from './api.ts';
+import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 
-export async function getMyJourneys(
+export function getMyJourneys(
   lang: string,
   token?: string
 ): Promise<JourneySummary[]> {
   if (!token) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  const { data } = await apiFetch<JourneySummary[]>('/me/journeys', {
+  return apiFetchList<JourneySummary>('/me/journeys', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
 
 export async function getMyJourney(
@@ -25,9 +24,11 @@ export async function getMyJourney(
     return null;
   }
 
-  const { data } = await apiFetch<Journey>(`/me/journeys/${journeyId}`, {
+  const path = `/me/journeys/${journeyId}`;
+  const { data, status } = await apiFetch<Journey>(path, {
     lang,
     next: { revalidate: 0 }
   });
+  assertApiAvailable(status, path);
   return data;
 }

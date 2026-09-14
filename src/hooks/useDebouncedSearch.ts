@@ -18,6 +18,7 @@ export function useDebouncedSearch<R>(
 ) {
   const [results, setResults] = useState<R[]>(NO_RESULTS);
   const [isLoading, setIsLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const run = useMemo(
     () =>
@@ -32,10 +33,12 @@ export function useDebouncedSearch<R>(
 
             if (isCurrent()) {
               setResults(next);
+              setFailed(false);
             }
           } catch {
             if (isCurrent()) {
               setResults(NO_RESULTS);
+              setFailed(true);
             }
           } finally {
             if (isCurrent()) {
@@ -65,6 +68,7 @@ export function useDebouncedSearch<R>(
 
       setResults(NO_RESULTS);
       setIsLoading(false);
+      setFailed(false);
 
       return abandon;
     }
@@ -84,5 +88,5 @@ export function useDebouncedSearch<R>(
     };
   }, [input, run]);
 
-  return { results, isLoading };
+  return { results, isLoading, failed };
 }

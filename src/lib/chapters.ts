@@ -1,5 +1,5 @@
 import type { Chapter } from '../../types/index.ts';
-import { apiFetch, assertApiAvailable } from './api.ts';
+import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { CHAPTERS_TAG, CONTENT_TAG, chapterTag, userTag } from './cacheTags.ts';
 
 export async function getChapter(
@@ -20,40 +20,37 @@ export async function getChapter(
   return data;
 }
 
-export async function getRecentChapters(lang: string): Promise<Chapter[]> {
-  const { data } = await apiFetch<Chapter[]>('/chapters', {
+export function getRecentChapters(lang: string): Promise<Chapter[]> {
+  return apiFetchList<Chapter>('/chapters', {
     lang,
     guest: true,
     next: { revalidate: 900, tags: [CHAPTERS_TAG] }
   });
-  return data ?? [];
 }
 
-export async function getUserChapters(
+export function getUserChapters(
   userId: string | number,
   lang: string,
   token?: string
 ): Promise<Chapter[]> {
   const guest = !token;
-  const { data } = await apiFetch<Chapter[]>(`/users/${userId}/chapters`, {
+  return apiFetchList<Chapter>(`/users/${userId}/chapters`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0, tags: [userTag(userId), CHAPTERS_TAG] }
   });
-  return data ?? [];
 }
 
-export async function getMyChapters(
+export function getMyChapters(
   lang: string,
   token?: string
 ): Promise<Chapter[]> {
   if (!token) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  const { data } = await apiFetch<Chapter[]>('/me/chapters', {
+  return apiFetchList<Chapter>('/me/chapters', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
