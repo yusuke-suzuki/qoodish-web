@@ -27,10 +27,11 @@ export function getRecentChapters(lang: string): Promise<Chapter[]> {
 
 export function getChapterFeed(
   lang: string,
-  nextTimestamp?: string
+  nextTimestamp?: string,
+  nextId?: number
 ): Promise<Chapter[]> {
   const query = nextTimestamp
-    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}${nextId ? `&next_id=${nextId}` : ''}`
     : '';
   return apiFetchList<Chapter>(`/chapters${query}`, {
     lang,

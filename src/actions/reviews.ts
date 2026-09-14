@@ -15,9 +15,10 @@ export async function fetchMoreTimelineReviews(
 
 export async function fetchMoreReviewFeed(
   lang: string,
-  nextTimestamp: string
+  nextTimestamp: string,
+  nextId: number
 ): Promise<Review[]> {
-  return getReviewFeed(lang, nextTimestamp);
+  return getReviewFeed(lang, nextTimestamp, nextId);
 }
 
 export async function fetchMoreUserReviews(

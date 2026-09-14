@@ -35,7 +35,8 @@ export default memo(function ReviewFeed({ initialReviews }: Props) {
       try {
         const moreReviews = await fetchMoreReviewFeed(
           lang,
-          lastReview.created_at
+          lastReview.created_at,
+          lastReview.id
         );
         setReviews((prev) => [...prev, ...moreReviews]);
         setNoMoreResults(moreReviews.length < 1);

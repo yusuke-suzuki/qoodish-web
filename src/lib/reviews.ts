@@ -40,10 +40,11 @@ export function getRecentReviews(lang: string): Promise<Review[]> {
 
 export function getReviewFeed(
   lang: string,
-  nextTimestamp?: string
+  nextTimestamp?: string,
+  nextId?: number
 ): Promise<Review[]> {
   const query = nextTimestamp
-    ? `&next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    ? `&next_timestamp=${encodeURIComponent(nextTimestamp)}${nextId ? `&next_id=${nextId}` : ''}`
     : '';
   return apiFetchList<Review>(`/reviews?feed=true${query}`, {
     lang,
