@@ -59,12 +59,6 @@ function AuthProvider({
     });
   }, []);
 
-  const clearNavigationCache = useCallback(async () => {
-    if (typeof caches !== 'undefined') {
-      await caches.delete('pages');
-    }
-  }, []);
-
   const registerBackendUser = useCallback(async () => {
     // This loop runs between the 10s-bounded session-cookie sync and the
     // first router.refresh() after sign-in; its worst case (3 attempts x
@@ -116,7 +110,6 @@ function AuthProvider({
             if (authStateRef.current || provisionalRenderRef.current) {
               authStateRef.current = false;
               provisionalRenderRef.current = false;
-              await clearNavigationCache();
               router.refresh();
             }
           } else {
@@ -135,7 +128,6 @@ function AuthProvider({
 
               if (firstAuth || !pendingRegistrationRef.current) {
                 provisionalRenderRef.current = false;
-                await clearNavigationCache();
                 router.refresh();
               }
             }
@@ -152,7 +144,6 @@ function AuthProvider({
           if (authStateRef.current || provisionalRenderRef.current) {
             authStateRef.current = false;
             provisionalRenderRef.current = false;
-            await clearNavigationCache();
             router.refresh();
           }
         }
@@ -161,7 +152,7 @@ function AuthProvider({
         setLoading(false);
       }
     },
-    [syncSessionCookie, clearNavigationCache, registerBackendUser, router]
+    [syncSessionCookie, registerBackendUser, router]
   );
 
   useEffect(() => {

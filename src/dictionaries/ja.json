@@ -214,6 +214,7 @@
   "image too large": "画像は 10 MB 以下にしてください。",
   "upload rate limited": "短時間にアップロードしすぎています。1 分ほど待ってから再度お試しください。",
   "request timed out": "リクエストがタイムアウトしました。時間をおいて再度お試しください。",
+  "network error": "サーバーに接続できませんでした。時間をおいて再度お試しください。",
   "send feedback": "フィードバックを送信",
   "feedback negative": "Qoodish の改善すべきと思った点を教えてください。",
   "feedback positive": "Qoodish の良いと思った点を教えてください。",

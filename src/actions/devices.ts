@@ -23,3 +23,20 @@ export async function registerDevice(
 
   return { success: true };
 }
+
+export async function unregisterDevice(
+  registrationToken: string
+): Promise<ActionResult> {
+  const { error } = await apiFetch(
+    `/me/devices/${encodeURIComponent(registrationToken)}`,
+    {
+      method: 'DELETE'
+    }
+  );
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+}

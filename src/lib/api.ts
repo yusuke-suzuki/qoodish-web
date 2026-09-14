@@ -1,4 +1,5 @@
 import describeError from '../utils/describeError.ts';
+import { getDictionary } from '../utils/getDictionary.ts';
 import {
   apiUrl,
   buildApiHeaders,
@@ -28,6 +29,12 @@ export type ApiResult<T> = {
   status: number;
 };
 
+// The error string travels straight into a snackbar, so a failure the API
+// never answered is worded in the reader's language like one it did.
+function messages(acceptLanguage: string): Record<string, string> {
+  return getDictionary(acceptLanguage.split('-')[0]);
+}
+
 // The transport half of apiFetch: everything below the request-context
 // lookups, so it stays callable outside a Next.js request scope.
 export async function performApiFetch<T>(
@@ -54,7 +61,8 @@ export async function performApiFetch<T>(
 
     if (!res.ok) {
       const body = await res.json().catch(() => null);
-      const detail = body?.detail ?? `Request failed with status ${res.status}`;
+      const detail =
+        body?.detail ?? messages(acceptLanguage)['an error occurred'];
       return { data: null, error: detail, status: res.status };
     }
 
@@ -73,7 +81,10 @@ export async function performApiFetch<T>(
 
     return {
       data: null,
-      error: timedOut ? 'Request timed out' : 'Network error',
+      error:
+        messages(acceptLanguage)[
+          timedOut ? 'request timed out' : 'network error'
+        ],
       status: 0
     };
   }

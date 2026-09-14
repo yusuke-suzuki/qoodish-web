@@ -116,9 +116,26 @@ describe('performApiFetch', () => {
 
     assert.deepEqual(result, {
       data: null,
-      error: 'Request failed with status 500',
+      error: 'An error occurred.',
       status: 500
     });
+  });
+
+  it('words a transport failure in the reader’s language', async (t) => {
+    t.mock.method(console, 'error', () => {});
+    t.mock.method(globalThis, 'fetch', async () => {
+      throw new TypeError('fetch failed');
+    });
+
+    const result = await performApiFetch('/maps', {
+      token: null,
+      acceptLanguage: 'ja-JP'
+    });
+
+    assert.equal(
+      result.error,
+      'サーバーに接続できませんでした。時間をおいて再度お試しください。'
+    );
   });
 
   it('treats 204 as success without a body', async (t) => {
@@ -150,7 +167,7 @@ describe('performApiFetch', () => {
 
     assert.deepEqual(result, {
       data: null,
-      error: 'Request timed out',
+      error: 'The request timed out. Please try again later.',
       status: 0
     });
   });
@@ -166,7 +183,11 @@ describe('performApiFetch', () => {
       acceptLanguage: 'en'
     });
 
-    assert.deepEqual(result, { data: null, error: 'Network error', status: 0 });
+    assert.deepEqual(result, {
+      data: null,
+      error: 'Could not reach the server. Please try again later.',
+      status: 0
+    });
   });
 
   it('prefers a caller-provided abort signal', async (t) => {

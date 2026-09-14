@@ -214,6 +214,7 @@
   "image too large": "Images must be 10 MB or smaller.",
   "upload rate limited": "You are uploading too quickly. Please wait a minute and try again.",
   "request timed out": "The request timed out. Please try again later.",
+  "network error": "Could not reach the server. Please try again later.",
   "send feedback": "Send Feedback",
   "feedback negative": "Please tell me what you think is not good for Qoodish.",
   "feedback positive": "Please tell me what you think is good for Qoodish.",

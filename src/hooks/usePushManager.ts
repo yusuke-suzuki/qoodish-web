@@ -1,6 +1,6 @@
 import { getMessaging, getToken } from 'firebase/messaging';
 import { useContext, useEffect, useState } from 'react';
-import { registerDevice } from '../actions/devices.ts';
+import { registerDevice, unregisterDevice } from '../actions/devices.ts';
 import AuthContext from '../context/AuthContext.ts';
 
 export function usePushManager(registration: ServiceWorkerRegistration | null) {
@@ -28,6 +28,15 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
     if (!successful) {
       console.warn('Push subscription was already inactive');
+    }
+
+    // The server would otherwise keep sending to a token no browser holds.
+    if (registrationToken) {
+      const { success, error } = await unregisterDevice(registrationToken);
+
+      if (!success) {
+        console.error('Failed to remove registration token', error);
+      }
     }
 
     // Either outcome leaves no active subscription behind, and the token
