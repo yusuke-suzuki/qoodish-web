@@ -1,5 +1,6 @@
 import { Reviews } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 import { memo, useState, useTransition } from 'react';
 import type { Review } from '../../../types/index.ts';
 import {
@@ -38,11 +39,15 @@ export default memo(function UserReviews({
     }
 
     startTransition(async () => {
-      const moreReviews = isOwnProfile
-        ? await fetchMoreMyReviews(lastReview.created_at)
-        : await fetchMoreUserReviews(userId, lastReview.created_at);
-      setReviews((prev) => [...prev, ...moreReviews]);
-      setNoMoreResults(moreReviews.length < 1);
+      try {
+        const moreReviews = isOwnProfile
+          ? await fetchMoreMyReviews(lastReview.created_at)
+          : await fetchMoreUserReviews(userId, lastReview.created_at);
+        setReviews((prev) => [...prev, ...moreReviews]);
+        setNoMoreResults(moreReviews.length < 1);
+      } catch {
+        enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
+      }
     });
   };
 

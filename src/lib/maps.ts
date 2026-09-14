@@ -1,5 +1,5 @@
 import type { AppMap, Chapter, Coauthor, Review } from '../../types/index.ts';
-import { apiFetch, assertApiAvailable } from './api.ts';
+import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 
 export async function getMap(
   mapId: string,
@@ -28,84 +28,77 @@ export async function getFeaturedMap(lang: string): Promise<AppMap | null> {
   return data;
 }
 
-export async function getMapReviews(
+export function getMapReviews(
   mapId: string,
   lang: string,
   token?: string
 ): Promise<Review[]> {
   const guest = !token;
-  const { data } = await apiFetch<Review[]>(`/maps/${mapId}/reviews`, {
+  return apiFetchList<Review>(`/maps/${mapId}/reviews`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
-  return data ?? [];
 }
 
-export async function getMapCoauthors(
+export function getMapCoauthors(
   mapId: string,
   lang: string,
   token?: string
 ): Promise<Coauthor[]> {
   const guest = !token;
-  const { data } = await apiFetch<Coauthor[]>(`/maps/${mapId}/coauthors`, {
+  return apiFetchList<Coauthor>(`/maps/${mapId}/coauthors`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
-  return data ?? [];
 }
 
-export async function getMapChapters(
+export function getMapChapters(
   mapId: string,
   lang: string,
   token?: string
 ): Promise<Chapter[]> {
   const guest = !token;
-  const { data } = await apiFetch<Chapter[]>(`/maps/${mapId}/chapters`, {
+  return apiFetchList<Chapter>(`/maps/${mapId}/chapters`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
-  return data ?? [];
 }
 
-export async function getActiveMaps(lang: string): Promise<AppMap[]> {
-  const { data } = await apiFetch<AppMap[]>('/maps?active=true', {
+export function getActiveMaps(lang: string): Promise<AppMap[]> {
+  return apiFetchList<AppMap>('/maps?active=true', {
     lang,
     guest: true,
     next: { revalidate: 900 }
   });
-  return data ?? [];
 }
 
-export async function getPopularMaps(lang: string): Promise<AppMap[]> {
-  const { data } = await apiFetch<AppMap[]>('/maps?popular=true', {
+export function getPopularMaps(lang: string): Promise<AppMap[]> {
+  return apiFetchList<AppMap>('/maps?popular=true', {
     lang,
     guest: true,
     next: { revalidate: 900 }
   });
-  return data ?? [];
 }
 
-export async function getRecentMaps(lang: string): Promise<AppMap[]> {
-  const { data } = await apiFetch<AppMap[]>('/maps?recent=true', {
+export function getRecentMaps(lang: string): Promise<AppMap[]> {
+  return apiFetchList<AppMap>('/maps?recent=true', {
     lang,
     guest: true,
     next: { revalidate: 900 }
   });
-  return data ?? [];
 }
 
-export async function getRecommendMaps(
+export function getRecommendMaps(
   lang: string,
   token?: string
 ): Promise<AppMap[]> {
   const guest = !token;
-  const { data } = await apiFetch<AppMap[]>('/maps?recommend=true', {
+  return apiFetchList<AppMap>('/maps?recommend=true', {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0 }
   });
-  return data ?? [];
 }

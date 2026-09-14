@@ -119,8 +119,10 @@ export default async function RootLayout({ children, params }: Props) {
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
     : Promise.resolve<Profile | null>(null);
+  // The bell is chrome, drawn above every error boundary: an outage there
+  // must cost the unread count, not the page.
   const notificationsPromise = authenticated
-    ? getNotifications(lang)
+    ? getNotifications(lang).catch(() => [])
     : Promise.resolve<Notification[]>([]);
 
   return (

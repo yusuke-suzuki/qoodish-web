@@ -10,16 +10,17 @@ export function useMapSearch(input: string | null | undefined) {
     );
 
     if (!res.ok) {
-      return [];
+      throw new Error(`Map search failed with status ${res.status}`);
     }
 
     return (await res.json()) as AppMap[];
   }, []);
 
-  const { results, isLoading } = useDebouncedSearch(input, search);
+  const { results, isLoading, failed } = useDebouncedSearch(input, search);
 
   return {
     options: results,
-    isLoading
+    isLoading,
+    failed
   };
 }
