@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: localePath(lang, '/reports'),
-      images: ogImages(defaultOgImage(lang), dict['meta headline']),
+      images: ogImages(defaultOgImage(lang)),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
     },

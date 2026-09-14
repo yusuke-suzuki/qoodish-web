@@ -37,7 +37,8 @@ export default memo(function ChapterFeed({ initialChapters }: Props) {
       try {
         const moreChapters = await fetchMoreChapterFeed(
           lang,
-          lastChapter.created_at
+          lastChapter.created_at,
+          lastChapter.id
         );
         setChapters((prev) => [...prev, ...moreChapters]);
         setNoMoreResults(moreChapters.length < 1);

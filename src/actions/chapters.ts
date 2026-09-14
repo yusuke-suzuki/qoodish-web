@@ -30,9 +30,10 @@ type UpdateChapterParams = {
 
 export async function fetchMoreChapterFeed(
   lang: string,
-  nextTimestamp: string
+  nextTimestamp: string,
+  nextId: number
 ): Promise<Chapter[]> {
-  return getChapterFeed(lang, nextTimestamp);
+  return getChapterFeed(lang, nextTimestamp, nextId);
 }
 
 export async function createChapter(
