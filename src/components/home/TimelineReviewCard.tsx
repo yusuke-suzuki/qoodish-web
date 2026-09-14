@@ -13,6 +13,7 @@ import { memo } from 'react';
 import type { Review } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
 import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
 import ReviewImageList from '../reviews/ReviewImageList.tsx';
@@ -20,7 +21,7 @@ import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
 
 type Props = {
   review: Review;
-  onReportClick?: (review: Review) => void;
+  onReportClick: (review: Review) => void;
 };
 
 export default memo(function TimelineReviewCard({
@@ -35,7 +36,15 @@ export default memo(function TimelineReviewCard({
       <ReviewCardHeader
         review={review}
         action={
-          <ReviewMenuButton review={review} onReportClick={onReportClick} />
+          <ProfileBoundary>
+            {(profile) => (
+              <ReviewMenuButton
+                review={review}
+                currentProfile={profile}
+                onReportClick={onReportClick}
+              />
+            )}
+          </ProfileBoundary>
         }
       />
       <CardContent sx={{ pt: 0 }}>

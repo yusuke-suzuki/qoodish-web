@@ -71,7 +71,7 @@ export default memo(function CommentMenuButton({
             <ListItemIcon>
               <ReportProblem />
             </ListItemIcon>
-            <ListItemText primary={dictionary.report} />
+            <ListItemText primary={dictionary['report content']} />
           </MenuItem>
         )}
         {onDeleteClick && isAuthor && (
