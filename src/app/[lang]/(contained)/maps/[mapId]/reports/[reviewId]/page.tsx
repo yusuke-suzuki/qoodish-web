@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import JsonLd from '../../../../../../../components/common/JsonLd.tsx';
 import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail.tsx';
 import { getServerAuthState } from '../../../../../../../lib/auth.ts';
 import { getReview } from '../../../../../../../lib/reviews.ts';
@@ -11,6 +12,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../../../utils/metadata.ts';
+import { reviewJsonLd } from '../../../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string; reviewId: string }>;
@@ -67,8 +69,11 @@ export default async function ReviewPage({ params }: Props) {
   }
 
   return (
-    <Suspense>
-      <ReviewDetail review={review} />
-    </Suspense>
+    <>
+      {!review.map.private && <JsonLd data={reviewJsonLd(lang, review)} />}
+      <Suspense>
+        <ReviewDetail review={review} />
+      </Suspense>
+    </>
   );
 }

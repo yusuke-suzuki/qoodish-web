@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Cinzel, Lobster, Shippori_Mincho } from 'next/font/google';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
+import JsonLd from '../../components/common/JsonLd.tsx';
 import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
@@ -9,6 +10,10 @@ import { getMyProfile, getNotifications } from '../../lib/users.ts';
 import { BRAND_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
+import {
+  organizationJsonLd,
+  webSiteJsonLd
+} from '../../utils/structuredData.ts';
 import Providers from './Providers.tsx';
 
 const lobster = Lobster({
@@ -115,6 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
+  const dict = getDictionary(lang);
   const { authenticated, pending, uid, token } = await getServerAuthState();
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
@@ -146,6 +152,12 @@ export default async function RootLayout({ children, params }: Props) {
         />
       </head>
       <body>
+        <JsonLd
+          data={[
+            organizationJsonLd(lang),
+            webSiteJsonLd(lang, dict['meta description'])
+          ]}
+        />
         <Providers
           lang={lang}
           serverAuthenticated={authenticated}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import MapDetailView from '../../../../../components/maps/MapDetailView.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys.ts';
@@ -18,6 +19,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../utils/metadata.ts';
+import { mapJsonLd } from '../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;
@@ -82,15 +84,18 @@ export default async function MapPage({ params }: Props) {
     : null;
 
   return (
-    <Suspense>
-      <MapDetailView
-        map={map}
-        reviews={reviews}
-        coauthors={coauthors}
-        chapters={chapters}
-        currentProfile={profile}
-        currentJourney={currentJourney}
-      />
-    </Suspense>
+    <>
+      {!map.private && <JsonLd data={mapJsonLd(lang, map, reviews)} />}
+      <Suspense>
+        <MapDetailView
+          map={map}
+          reviews={reviews}
+          coauthors={coauthors}
+          chapters={chapters}
+          currentProfile={profile}
+          currentJourney={currentJourney}
+        />
+      </Suspense>
+    </>
   );
 }

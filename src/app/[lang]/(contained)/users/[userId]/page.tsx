@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import UserProfile from '../../../../../components/profiles/UserProfile.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getMyChapters, getUserChapters } from '../../../../../lib/chapters.ts';
@@ -19,6 +20,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../utils/metadata.ts';
+import { profileJsonLd } from '../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; userId: string }>;
@@ -82,12 +84,15 @@ export default async function UserPage({ params }: Props) {
   ]);
 
   return (
-    <UserProfile
-      profile={profile}
-      initialReviews={initialReviews}
-      maps={maps}
-      journal={journal}
-      chapters={chapters}
-    />
+    <>
+      <JsonLd data={profileJsonLd(lang, profile, maps, chapters)} />
+      <UserProfile
+        profile={profile}
+        initialReviews={initialReviews}
+        maps={maps}
+        journal={journal}
+        chapters={chapters}
+      />
+    </>
   );
 }

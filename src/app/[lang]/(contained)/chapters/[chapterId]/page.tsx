@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ChapterReadView from '../../../../../components/chapters/ChapterReadView.tsx';
+import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getChapter, getUserChapters } from '../../../../../lib/chapters.ts';
 import { getMap } from '../../../../../lib/maps.ts';
@@ -12,6 +13,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../utils/metadata.ts';
+import { chapterJsonLd } from '../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; chapterId: string }>;
@@ -72,11 +74,22 @@ export default async function ChapterPage({ params }: Props) {
   ]);
 
   return (
-    <ChapterReadView
-      chapter={chapter}
-      map={map}
-      authorJournal={authorJournal}
-      authorPageCount={authorChapters.length}
-    />
+    <>
+      {chapter.status === 'published' && (
+        <JsonLd
+          data={chapterJsonLd(
+            lang,
+            chapter,
+            chapter.title || getDictionary(lang)['untitled chapter']
+          )}
+        />
+      )}
+      <ChapterReadView
+        chapter={chapter}
+        map={map}
+        authorJournal={authorJournal}
+        authorPageCount={authorChapters.length}
+      />
+    </>
   );
 }
