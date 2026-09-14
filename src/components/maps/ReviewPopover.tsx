@@ -2,20 +2,14 @@ import { Comment } from '@mui/icons-material';
 import {
   CardActions,
   CardContent,
-  CardMedia,
   IconButton,
   Popover,
   Typography
 } from '@mui/material';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { memo, useState } from 'react';
 import type { Review } from '../../../types/index.ts';
-import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
-import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import useProfile from '../../hooks/useProfile.ts';
@@ -23,6 +17,15 @@ import IssueDialog from '../common/IssueDialog.tsx';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
 import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
 import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
+import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
+import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
+
+// Swiper is only wanted once a pin with photographs is opened, so the map
+// page does not carry it in its first load.
+const ReviewImageCarousel = dynamic(
+  () => import('../reviews/ReviewImageCarousel.tsx'),
+  { ssr: false }
+);
 
 type Props = {
   currentReview: Review | null;
@@ -86,23 +89,13 @@ function ReviewPopover({
             />
           }
         />
-        <Swiper pagination={true} modules={[Pagination]}>
-          {review?.images.map((image) => (
-            <SwiperSlide key={image.id}>
-              <CardMedia
-                component="img"
-                alt={review.name}
-                image={image.card}
-                width={1200}
-                height={630}
-                sx={{
-                  height: 168,
-                  cursor: 'grab'
-                }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {review && review.images.length > 0 && (
+          <ReviewImageCarousel
+            images={review.images}
+            alt={review.name}
+            height={168}
+          />
+        )}
         <CardContent sx={{ pt: review?.images.length > 0 ? 2 : 0, pb: 0 }}>
           <Typography variant="h6" gutterBottom>
             {review?.name}

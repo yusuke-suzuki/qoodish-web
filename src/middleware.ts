@@ -5,7 +5,12 @@ import {
 } from 'next/server';
 import { isTimeoutError } from './lib/apiRequest.ts';
 import describeError from './utils/describeError.ts';
-import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales.ts';
+import {
+  DEFAULT_LOCALE,
+  LOCALE_COOKIE,
+  LOCALES,
+  type Locale
+} from './utils/locales.ts';
 
 const WARMUP_INTERVAL_MS = 60000;
 
@@ -29,7 +34,16 @@ async function warmUpApi(): Promise<void> {
   }
 }
 
+// A locale chosen from the menu outlives the URL it was chosen on, so a
+// reader who comes back without one is not handed the browser's default
+// again.
 function getPreferredLocale(request: NextRequest): Locale {
+  const chosen = request.cookies.get(LOCALE_COOKIE)?.value;
+
+  if (chosen && LOCALES.includes(chosen as Locale)) {
+    return chosen as Locale;
+  }
+
   const acceptLanguage = request.headers.get('accept-language') ?? '';
   const preferred = acceptLanguage
     .split(',')

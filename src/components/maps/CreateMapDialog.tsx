@@ -18,6 +18,7 @@ import type { AppMap } from '../../../types/index.ts';
 import { createMap } from '../../actions/maps.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import trackEvent from '../../utils/trackEvent.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
@@ -111,6 +112,7 @@ export default memo(function CreateMapDialog({
             enqueueSnackbar(dictionary['create map success'], {
               variant: 'success'
             });
+            trackEvent('create_map', { private: isPrivate });
 
             onClose();
             onSaved(result.data);

@@ -12,6 +12,7 @@ import type { AppMap } from '../../../types/index.ts';
 import { createReview } from '../../actions/reviews.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import trackEvent from '../../utils/trackEvent.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
@@ -79,6 +80,10 @@ export default memo(function CreateReviewDialog({
           if (result.success) {
             enqueueSnackbar(dictionary['create review success'], {
               variant: 'success'
+            });
+            trackEvent('create_report', {
+              map_id: map.id,
+              image_count: uploadedImages.length
             });
 
             onClose();

@@ -46,6 +46,7 @@ import {
   featureSpots,
   spotFeature
 } from '../../utils/mapFeatures.ts';
+import trackEvent from '../../utils/trackEvent.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 import ConfirmDialog from '../common/ConfirmDialog.tsx';
 import SpotPickerDialog from '../journeys/SpotPickerDialog.tsx';
@@ -175,6 +176,7 @@ export default function ChapterEditor({
     enqueueSnackbar(dictionary['publish chapter success'], {
       variant: 'success'
     });
+    trackEvent('publish_chapter', { chapter_id: chapter.id });
     router.push(readPath);
   };
 

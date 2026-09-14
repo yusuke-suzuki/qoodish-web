@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocaleLinks from '../../hooks/useLocaleLinks.ts';
+import { rememberLocale } from '../../utils/locales.ts';
 
 type Props = {
   // The bar shows an icon alone, so the label has to live in a tooltip there.
@@ -26,7 +27,8 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleSelect = () => {
+  const handleSelect = (locale: string) => {
+    rememberLocale(locale);
     setAnchorEl(null);
     onNavigate?.();
   };
@@ -67,7 +69,7 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
             href={link.href}
             hrefLang={link.locale}
             lang={link.locale}
-            onClick={handleSelect}
+            onClick={() => handleSelect(link.locale)}
           >
             <ListItemIcon>
               {link.current && <Check fontSize="small" />}
