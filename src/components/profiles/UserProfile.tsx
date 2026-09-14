@@ -154,7 +154,7 @@ function UserProfile({
           />
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>
-          <UserMaps maps={maps} />
+          <UserMaps maps={maps} isOwnProfile={isOwnProfile} />
         </TabPanel>
         <TabPanel value="3" sx={{ px: 0 }}>
           <UserChapters chapters={chapters} />

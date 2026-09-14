@@ -1,12 +1,13 @@
 import { Icon, Stack, Typography, useTheme } from '@mui/material';
-import { type ElementType, memo } from 'react';
+import { type ElementType, memo, type ReactNode } from 'react';
 
 type Props = {
   icon: ElementType;
   message: string;
+  action?: ReactNode;
 };
 
-export default memo(function NoContents({ icon, message }: Props) {
+export default memo(function NoContents({ icon, message, action }: Props) {
   const theme = useTheme();
 
   return (
@@ -29,6 +30,16 @@ export default memo(function NoContents({ icon, message }: Props) {
       <Typography variant="body2" align="center">
         {message}
       </Typography>
+
+      {action && (
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1}
+          sx={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
+        >
+          {action}
+        </Stack>
+      )}
     </Stack>
   );
 });
