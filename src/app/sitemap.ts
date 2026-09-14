@@ -45,6 +45,21 @@ function expand({
   }));
 }
 
+// The build prerenders this route with no API to ask, so there a failed
+// list is an empty one. At revalidation the failure is rethrown instead:
+// ISR then keeps serving the last good sitemap rather than a truncated one.
+async function listOrEmpty<T>(list: Promise<T[]>): Promise<T[]> {
+  try {
+    return await list;
+  } catch (error) {
+    if (process.env.NEXT_PHASE === 'phase-production-build') {
+      return [];
+    }
+
+    throw error;
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [
     activeMaps,
@@ -54,12 +69,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     recentReviews,
     recentChapters
   ] = await Promise.all([
-    getActiveMaps(DEFAULT_LOCALE),
-    getPopularMaps(DEFAULT_LOCALE),
-    getRecentMaps(DEFAULT_LOCALE),
-    getPopularReviews(DEFAULT_LOCALE),
-    getRecentReviews(DEFAULT_LOCALE),
-    getRecentChapters(DEFAULT_LOCALE)
+    listOrEmpty(getActiveMaps(DEFAULT_LOCALE)),
+    listOrEmpty(getPopularMaps(DEFAULT_LOCALE)),
+    listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
+    listOrEmpty(getPopularReviews(DEFAULT_LOCALE)),
+    listOrEmpty(getRecentReviews(DEFAULT_LOCALE)),
+    listOrEmpty(getRecentChapters(DEFAULT_LOCALE))
   ]);
 
   const mapEntries = new Map<number, Entry>();
