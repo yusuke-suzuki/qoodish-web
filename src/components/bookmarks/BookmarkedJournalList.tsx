@@ -14,6 +14,7 @@ import { useParams } from 'next/navigation';
 import { memo } from 'react';
 import type { Journal } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import DiscoverButton from '../common/DiscoverButton.tsx';
 import NoContents from '../common/NoContents.tsx';
 
 type Props = {
@@ -29,6 +30,7 @@ function BookmarkedJournalList({ journals }: Props) {
       <NoContents
         icon={Bookmarks}
         message={dictionary['no bookmarked journals']}
+        action={<DiscoverButton />}
       />
     );
   }

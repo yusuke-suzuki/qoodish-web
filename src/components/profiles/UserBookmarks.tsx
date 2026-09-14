@@ -2,6 +2,7 @@ import { Bookmarks } from '@mui/icons-material';
 import { memo } from 'react';
 import type { AppMap } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import DiscoverButton from '../common/DiscoverButton.tsx';
 import NoContents from '../common/NoContents.tsx';
 import MapGridList from '../maps/MapGridList.tsx';
 
@@ -14,7 +15,11 @@ export default memo(function UserBookmarks({ maps }: Props) {
 
   if (maps.length < 1) {
     return (
-      <NoContents icon={Bookmarks} message={dictionary['no bookmarked maps']} />
+      <NoContents
+        icon={Bookmarks}
+        message={dictionary['no bookmarked maps']}
+        action={<DiscoverButton />}
+      />
     );
   }
 

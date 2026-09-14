@@ -7,6 +7,8 @@ import { memo, useState, useTransition } from 'react';
 import type { Review } from '../../../types/index.ts';
 import { fetchMoreTimelineReviews } from '../../actions/reviews.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import CreateMapButton from '../common/CreateMapButton.tsx';
+import DiscoverButton from '../common/DiscoverButton.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
 import LoadingStatus from '../common/LoadingStatus.tsx';
 import NoContents from '../common/NoContents.tsx';
@@ -77,8 +79,14 @@ export default memo(function Timeline({ initialReviews }: Props) {
     <>
       {reviews.length < 1 && !isPending && (
         <NoContents
-          message={dictionary['reports will see here']}
+          message={dictionary['empty timeline']}
           icon={Reviews}
+          action={
+            <>
+              <DiscoverButton />
+              <CreateMapButton />
+            </>
+          }
         />
       )}
 

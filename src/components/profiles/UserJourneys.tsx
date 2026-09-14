@@ -23,6 +23,7 @@ import { deleteJourney } from '../../actions/journeys.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import DiscoverButton from '../common/DiscoverButton.tsx';
 import NoContents from '../common/NoContents.tsx';
 
 const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
@@ -91,6 +92,7 @@ function UserJourneys({
       <NoContents
         icon={DirectionsWalk}
         message={dictionary['journeys will see here']}
+        action={<DiscoverButton />}
       />
     );
   }
