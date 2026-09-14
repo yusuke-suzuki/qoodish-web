@@ -1,5 +1,6 @@
 import type { Review } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import { REVIEWS_TAG, reviewTag } from './cacheTags.ts';
 
 export async function getReview(
   reviewId: string,
@@ -15,7 +16,7 @@ export async function getReview(
   const { data, status } = await apiFetch<Review>(path, {
     lang,
     guest,
-    next: { revalidate: guest ? 300 : 0 }
+    next: { revalidate: guest ? 300 : 0, tags: [reviewTag(reviewId)] }
   });
   assertApiAvailable(status, path);
   return data;
@@ -25,7 +26,7 @@ export function getPopularReviews(lang: string): Promise<Review[]> {
   return apiFetchList<Review>('/reviews?popular=true', {
     lang,
     guest: true,
-    next: { revalidate: 900 }
+    next: { revalidate: 900, tags: [REVIEWS_TAG] }
   });
 }
 
@@ -33,7 +34,7 @@ export function getRecentReviews(lang: string): Promise<Review[]> {
   return apiFetchList<Review>('/reviews?recent=true', {
     lang,
     guest: true,
-    next: { revalidate: 900 }
+    next: { revalidate: 900, tags: [REVIEWS_TAG] }
   });
 }
 

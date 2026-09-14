@@ -1,5 +1,6 @@
 import type { Chapter } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import { CHAPTERS_TAG, chapterTag, userTag } from './cacheTags.ts';
 
 export async function getChapter(
   chapterId: string | number,
@@ -10,7 +11,7 @@ export async function getChapter(
   const { data, status } = await apiFetch<Chapter>(`/chapters/${chapterId}`, {
     lang,
     guest,
-    next: { revalidate: guest ? 300 : 0 }
+    next: { revalidate: guest ? 300 : 0, tags: [chapterTag(chapterId)] }
   });
   assertApiAvailable(status, `/chapters/${chapterId}`);
   return data;
@@ -20,7 +21,7 @@ export function getRecentChapters(lang: string): Promise<Chapter[]> {
   return apiFetchList<Chapter>('/chapters', {
     lang,
     guest: true,
-    next: { revalidate: 900 }
+    next: { revalidate: 900, tags: [CHAPTERS_TAG] }
   });
 }
 
@@ -33,7 +34,7 @@ export function getUserChapters(
   return apiFetchList<Chapter>(`/users/${userId}/chapters`, {
     lang,
     guest,
-    next: { revalidate: guest ? 300 : 0 }
+    next: { revalidate: guest ? 300 : 0, tags: [userTag(userId), CHAPTERS_TAG] }
   });
 }
 

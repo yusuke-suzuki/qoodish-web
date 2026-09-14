@@ -3,6 +3,8 @@
 import type { SerializedEditorState } from 'lexical';
 import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { CHAPTERS_TAG, chapterTag, mapTag, userTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 import {
   assertChapterContent,
   ChapterContentError
@@ -63,6 +65,12 @@ export async function createChapter(
     return { success: false, error };
   }
 
+  revalidateTags([
+    CHAPTERS_TAG,
+    mapTag(mapId),
+    data && userTag(data.author.id)
+  ]);
+
   return { success: true, data };
 }
 
@@ -86,10 +94,21 @@ export async function updateChapter(
     return { success: false, error };
   }
 
+  revalidateTags([
+    chapterTag(chapterId),
+    CHAPTERS_TAG,
+    data?.map_id && mapTag(data.map_id),
+    data && userTag(data.author.id)
+  ]);
+
   return { success: true, data };
 }
 
-export async function deleteChapter(chapterId: number): Promise<ActionResult> {
+export async function deleteChapter(
+  chapterId: number,
+  mapId?: number | null,
+  authorId?: number
+): Promise<ActionResult> {
   const { error } = await apiFetch(`/me/chapters/${chapterId}`, {
     method: 'DELETE'
   });
@@ -97,6 +116,13 @@ export async function deleteChapter(chapterId: number): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([
+    chapterTag(chapterId),
+    CHAPTERS_TAG,
+    mapId && mapTag(mapId),
+    authorId && userTag(authorId)
+  ]);
 
   return { success: true };
 }

@@ -35,7 +35,10 @@ function CoauthorshipInvitationList({ invitations }: Props) {
     setActingId(invitation.id);
 
     startTransition(async () => {
-      const result = await acceptCoauthorshipInvitation(invitation.id);
+      const result = await acceptCoauthorshipInvitation(
+        invitation.id,
+        invitation.map.id
+      );
 
       if (result.success) {
         enqueueSnackbar(dictionary['accept invitation success'], {

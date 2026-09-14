@@ -6,6 +6,7 @@ import type {
   Review
 } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import { MAPS_TAG, userTag } from './cacheTags.ts';
 
 export async function getProfile(
   userId: string,
@@ -16,7 +17,7 @@ export async function getProfile(
   const { data, status } = await apiFetch<Profile>(`/users/${userId}`, {
     lang,
     guest,
-    next: { revalidate: guest ? 300 : 0 }
+    next: { revalidate: guest ? 300 : 0, tags: [userTag(userId)] }
   });
   assertApiAvailable(status, `/users/${userId}`);
   return data;
@@ -46,7 +47,7 @@ export function getUserMaps(
   return apiFetchList<AppMap>(`/users/${userId}/maps`, {
     lang,
     guest,
-    next: { revalidate: guest ? 300 : 0 }
+    next: { revalidate: guest ? 300 : 0, tags: [userTag(userId), MAPS_TAG] }
   });
 }
 

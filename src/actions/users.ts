@@ -2,6 +2,8 @@
 
 import type { Profile } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { userTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 
 type UpdateProfileParams = {
   name: string;
@@ -35,6 +37,8 @@ export async function updateProfile(
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([data && userTag(data.id)]);
 
   return { success: true, data };
 }
