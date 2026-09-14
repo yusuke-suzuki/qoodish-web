@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
+import SignInRequired from '../../../../components/auth/SignInRequired.tsx';
 import CoauthorshipInvitationList from '../../../../components/coauthors/CoauthorshipInvitationList.tsx';
+import { getServerAuthState } from '../../../../lib/auth.ts';
 import { getCoauthorshipInvitations } from '../../../../lib/coauthorshipInvitations.ts';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { buildAlternates } from '../../../../utils/metadata.ts';
@@ -24,6 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function InvitationsPage({ params }: Props) {
   const { lang } = await params;
+  const { authenticated } = await getServerAuthState();
+
+  if (!authenticated) {
+    return <SignInRequired title={getDictionary(lang).invites} />;
+  }
+
   const invitations = await getCoauthorshipInvitations(lang);
 
   return <CoauthorshipInvitationList invitations={invitations} />;

@@ -185,6 +185,8 @@
   "search failed": "検索を利用できません。時間をおいて再度お試しください。",
   "section load failed": "この項目を読み込めませんでした。時間をおいて再度お試しください。",
   "load more failed": "続きを読み込めませんでした。時間をおいて再度お試しください。",
+  "sign in to continue": "このページを表示するにはログインが必要です。",
+  "page not found or sign in": "このページは存在しないか、表示するにはログインが必要です。",
   "create map success": "マップを作成しました！",
   "edit map success": "マップを更新しました！",
   "edit profile success": "プロフィールを更新しました！",
