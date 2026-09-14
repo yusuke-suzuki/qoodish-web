@@ -185,6 +185,8 @@
   "search failed": "Search is unavailable right now. Please try again later.",
   "section load failed": "This section could not be loaded. Please try again later.",
   "load more failed": "Could not load more. Please try again later.",
+  "sign in to continue": "You need to sign in to view this page.",
+  "page not found or sign in": "This page doesn't exist, or you need to sign in to view it.",
   "create map success": "Successfully created the map!",
   "edit map success": "Successfully updated the map!",
   "edit profile success": "Successfully updated your profile!",
