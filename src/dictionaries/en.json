@@ -182,6 +182,8 @@
   "this action requires sign in": "Sign in to Qoodish to start your journey. Bookmark maps you like, or start one of your own.",
   "place not found": "Place not found.",
   "map not found": "Map not found.",
+  "sign in to continue": "Sign in to Qoodish to see this page.",
+  "sign in if yours": "If this page belongs to you, sign in to see it.",
   "search failed": "Search is unavailable right now. Please try again later.",
   "section load failed": "This section could not be loaded. Please try again later.",
   "load more failed": "Could not load more. Please try again later.",

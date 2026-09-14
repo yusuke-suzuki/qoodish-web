@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import SignInRequired from '../../../../../components/auth/SignInRequired.tsx';
 import JourneyDetailView from '../../../../../components/journeys/JourneyDetailView.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getChapter } from '../../../../../lib/chapters.ts';
@@ -26,7 +27,7 @@ export default async function JourneyPage({ params }: Props) {
   const { authenticated, token } = await getServerAuthState();
 
   if (!authenticated) {
-    notFound();
+    return <SignInRequired title={getDictionary(lang)['journey log']} />;
   }
 
   const journey = await getMyJourney(journeyId, lang, token);

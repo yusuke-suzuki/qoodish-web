@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
+import SignInRequired from '../../../../../../components/auth/SignInRequired.tsx';
 import ChapterEditor from '../../../../../../components/chapters/ChapterEditor.tsx';
 import { getServerAuthState } from '../../../../../../lib/auth.ts';
 import { getChapter, getUserChapters } from '../../../../../../lib/chapters.ts';
@@ -27,7 +28,7 @@ export default async function ChapterEditPage({ params }: Props) {
   const { token } = await getServerAuthState();
 
   if (!token) {
-    notFound();
+    return <SignInRequired title={getDictionary(lang).edit} />;
   }
 
   const chapter = await getChapter(chapterId, lang, token);

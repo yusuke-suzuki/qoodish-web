@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import SignInRequired from '../../../../components/auth/SignInRequired.tsx';
 import BookmarksView from '../../../../components/bookmarks/BookmarksView.tsx';
 import { getServerAuthState } from '../../../../lib/auth.ts';
 import {
@@ -27,7 +27,7 @@ export default async function BookmarksPage({ params }: Props) {
   const { authenticated, token } = await getServerAuthState();
 
   if (!authenticated) {
-    notFound();
+    return <SignInRequired title={getDictionary(lang).bookmarks} />;
   }
 
   const [maps, journals] = await Promise.all([
