@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   apiFetch,
+  apiFetchList,
   apiFetchOrThrow,
   assertApiAvailable,
   performApiFetch
@@ -246,6 +247,46 @@ describe('apiFetchOrThrow', () => {
       apiFetchOrThrow('/maps/7', { guest: true, lang: 'en' }),
       /Not found/
     );
+  });
+});
+
+describe('apiFetchList', () => {
+  it('returns the list the API gave', async (t) => {
+    t.mock.method(globalThis, 'fetch', async () => jsonResponse([{ id: 1 }]));
+
+    assert.deepEqual(await apiFetchList('/maps', { guest: true, lang: 'en' }), [
+      { id: 1 }
+    ]);
+  });
+
+  it('reads a 4xx as an empty list', async (t) => {
+    t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ detail: 'Unauthorized' }, 401)
+    );
+
+    assert.deepEqual(
+      await apiFetchList('/maps', { guest: true, lang: 'en' }),
+      []
+    );
+  });
+
+  it('throws when the API is down instead of answering empty', async (t) => {
+    t.mock.method(console, 'error', () => {});
+    t.mock.method(globalThis, 'fetch', async () => {
+      throw new TypeError('fetch failed');
+    });
+
+    await assert.rejects(apiFetchList('/maps', { guest: true, lang: 'en' }));
+  });
+
+  it('throws on a server error', async (t) => {
+    t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response('oops', { status: 502 })
+    );
+
+    await assert.rejects(apiFetchList('/maps', { guest: true, lang: 'en' }));
   });
 });
 

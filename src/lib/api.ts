@@ -123,3 +123,14 @@ export function assertApiAvailable(status: number, path: string): void {
     throw new Error(`API request for ${path} failed with status ${status}`);
   }
 }
+
+// An empty list and an unreachable API used to look the same to the page.
+// Only a response the API actually gave, 4xx included, reads as empty.
+export async function apiFetchList<T>(
+  path: string,
+  options: ApiFetchOptions = {}
+): Promise<T[]> {
+  const { data, status } = await apiFetch<T[]>(path, options);
+  assertApiAvailable(status, path);
+  return data ?? [];
+}

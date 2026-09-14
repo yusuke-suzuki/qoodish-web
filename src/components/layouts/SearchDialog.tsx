@@ -1,4 +1,4 @@
-import { Close, Search } from '@mui/icons-material';
+import { Close, Search, SearchOff } from '@mui/icons-material';
 import {
   AppBar,
   Avatar,
@@ -41,7 +41,7 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const deferredInputValue = useDeferredValue(inputValue);
 
-  const { options } = useMapSearch(deferredInputValue);
+  const { options, failed } = useMapSearch(deferredInputValue);
 
   const handleMapClick = (option: AppMap) => {
     onClose();
@@ -129,7 +129,14 @@ const SearchDialog = ({ open, onClose }: Props) => {
             width="100%"
             height="100%"
           >
-            <NoContents icon={Search} message={dictionary['map not found']} />
+            <NoContents
+              icon={failed ? SearchOff : Search}
+              message={
+                failed
+                  ? dictionary['search failed']
+                  : dictionary['map not found']
+              }
+            />
           </Box>
         )}
       </DialogContent>

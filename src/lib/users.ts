@@ -5,7 +5,7 @@ import type {
   Profile,
   Review
 } from '../../types/index.ts';
-import { apiFetch, assertApiAvailable } from './api.ts';
+import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { MAPS_TAG, userTag } from './cacheTags.ts';
 
 export async function getProfile(
@@ -38,33 +38,28 @@ export async function getMyProfile(
   return data;
 }
 
-export async function getUserMaps(
+export function getUserMaps(
   userId: string,
   lang: string,
   token?: string
 ): Promise<AppMap[]> {
   const guest = !token;
-  const { data } = await apiFetch<AppMap[]>(`/users/${userId}/maps`, {
+  return apiFetchList<AppMap>(`/users/${userId}/maps`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0, tags: [userTag(userId), MAPS_TAG] }
   });
-  return data ?? [];
 }
 
-export async function getMyMaps(
-  lang: string,
-  token?: string
-): Promise<AppMap[]> {
+export function getMyMaps(lang: string, token?: string): Promise<AppMap[]> {
   if (!token) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  const { data } = await apiFetch<AppMap[]>('/me/maps', {
+  return apiFetchList<AppMap>('/me/maps', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
 
 export async function getUserJournal(
@@ -76,10 +71,12 @@ export async function getUserJournal(
     return null;
   }
 
-  const { data } = await apiFetch<Journal>(`/users/${userId}/journal`, {
+  const path = `/users/${userId}/journal`;
+  const { data, status } = await apiFetch<Journal>(path, {
     lang,
     next: { revalidate: 0 }
   });
+  assertApiAvailable(status, path);
   return data;
 }
 
@@ -91,44 +88,43 @@ export async function getMyJournal(
     return null;
   }
 
-  const { data } = await apiFetch<Journal>('/me/journal', {
+  const { data, status } = await apiFetch<Journal>('/me/journal', {
     lang,
     next: { revalidate: 0 }
   });
+  assertApiAvailable(status, '/me/journal');
   return data;
 }
 
-export async function getBookmarkedMaps(
+export function getBookmarkedMaps(
   lang: string,
   token?: string
 ): Promise<AppMap[]> {
   if (!token) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  const { data } = await apiFetch<AppMap[]>('/me/bookmarks/maps', {
+  return apiFetchList<AppMap>('/me/bookmarks/maps', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
 
-export async function getBookmarkedJournals(
+export function getBookmarkedJournals(
   lang: string,
   token?: string
 ): Promise<Journal[]> {
   if (!token) {
-    return [];
+    return Promise.resolve([]);
   }
 
-  const { data } = await apiFetch<Journal[]>('/me/bookmarks/journals', {
+  return apiFetchList<Journal>('/me/bookmarks/journals', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
 
-export async function getUserReviews(
+export function getUserReviews(
   userId: string,
   lang?: string,
   nextTimestamp?: string
@@ -136,34 +132,28 @@ export async function getUserReviews(
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
     : '';
-  const { data } = await apiFetch<Review[]>(
-    `/users/${userId}/reviews${query}`,
-    {
-      lang,
-      next: { revalidate: 0 }
-    }
-  );
-  return data ?? [];
+  return apiFetchList<Review>(`/users/${userId}/reviews${query}`, {
+    lang,
+    next: { revalidate: 0 }
+  });
 }
 
-export async function getMyReviews(
+export function getMyReviews(
   lang?: string,
   nextTimestamp?: string
 ): Promise<Review[]> {
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
     : '';
-  const { data } = await apiFetch<Review[]>(`/me/reviews${query}`, {
+  return apiFetchList<Review>(`/me/reviews${query}`, {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
 
-export async function getNotifications(lang: string): Promise<Notification[]> {
-  const { data } = await apiFetch<Notification[]>('/me/notifications', {
+export function getNotifications(lang: string): Promise<Notification[]> {
+  return apiFetchList<Notification>('/me/notifications', {
     lang,
     next: { revalidate: 0 }
   });
-  return data ?? [];
 }
