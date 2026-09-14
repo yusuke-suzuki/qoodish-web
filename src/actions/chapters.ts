@@ -4,6 +4,7 @@ import type { SerializedEditorState } from 'lexical';
 import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { CHAPTERS_TAG, chapterTag, mapTag, userTag } from '../lib/cacheTags.ts';
+import { getChapterFeed } from '../lib/chapters.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult<T = null> = {
@@ -26,6 +27,13 @@ type UpdateChapterParams = {
   map_features?: MapFeatureCollection;
   image_ids?: number[];
 };
+
+export async function fetchMoreChapterFeed(
+  lang: string,
+  nextTimestamp: string
+): Promise<Chapter[]> {
+  return getChapterFeed(lang, nextTimestamp);
+}
 
 export async function createChapter(
   mapId: number,

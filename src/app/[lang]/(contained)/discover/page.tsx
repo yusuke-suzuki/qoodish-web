@@ -1,6 +1,8 @@
 import { Explore, FiberNew, HistoryEdu, Whatshot } from '@mui/icons-material';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import type { ReactNode } from 'react';
 import ChapterList from '../../../../components/chapters/ChapterList.tsx';
 import PickUpMap from '../../../../components/discover/PickUpMap.tsx';
 import MapGridList from '../../../../components/maps/MapGridList.tsx';
@@ -23,6 +25,29 @@ import {
 type Props = {
   params: Promise<{ lang: string }>;
 };
+
+type SectionHeadingProps = {
+  icon: ReactNode;
+  title: string;
+  href: string;
+  linkLabel: string;
+};
+
+// A section shows one page of its source; the heading carries the way to
+// the rest.
+function SectionHeading({ icon, title, href, linkLabel }: SectionHeadingProps) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+      {icon}
+      <Typography variant="subtitle1" sx={{ flex: 1, minWidth: 0 }}>
+        {title}
+      </Typography>
+      <Button component={Link} href={href} size="small" color="secondary">
+        {linkLabel}
+      </Button>
+    </Box>
+  );
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
@@ -84,12 +109,12 @@ export default async function DiscoverPage({ params }: Props) {
 
         {recentReviews.length > 0 && (
           <Box component="section">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <FiberNew color="secondary" />
-              <Typography variant="subtitle1">
-                {dict['recent reports']}
-              </Typography>
-            </Box>
+            <SectionHeading
+              icon={<FiberNew color="secondary" />}
+              title={dict['recent reports']}
+              href={localePath(lang, '/reports')}
+              linkLabel={dict['see all']}
+            />
 
             <ReviewGridList reviews={recentReviews} />
           </Box>
@@ -97,12 +122,12 @@ export default async function DiscoverPage({ params }: Props) {
 
         {recentChapters.length > 0 && (
           <Box component="section">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <HistoryEdu color="secondary" />
-              <Typography variant="subtitle1">
-                {dict['recent chapters']}
-              </Typography>
-            </Box>
+            <SectionHeading
+              icon={<HistoryEdu color="secondary" />}
+              title={dict['recent chapters']}
+              href={localePath(lang, '/chapters')}
+              linkLabel={dict['see all']}
+            />
 
             <ChapterList chapters={recentChapters} />
           </Box>
