@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildAlternates, defaultOgImage } from './metadata.ts';
+import { buildAlternates, defaultOgImage, ogImages } from './metadata.ts';
+
+describe('ogImages', () => {
+  it('states the size and a description of the image', () => {
+    assert.deepEqual(ogImages('https://example.com/og.png', 'A map'), [
+      {
+        url: 'https://example.com/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'A map'
+      }
+    ]);
+  });
+});
 
 describe('defaultOgImage', () => {
   it('returns the English image for en', () => {

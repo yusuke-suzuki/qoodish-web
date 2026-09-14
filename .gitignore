@@ -63,8 +63,6 @@ public/*
 !public/favicon.ico
 !public/manifest.json
 !public/app.webmanifest
-!public/robots.txt
-!public/sitemap.xml
 
 .vscode
 
