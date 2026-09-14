@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -42,6 +43,7 @@ function ReviewPopover({
   onSaved,
   onDeleted
 }: Props) {
+  const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -119,6 +121,8 @@ function ReviewPopover({
             LinkComponent={Link}
             href={localePath(`/maps/${review?.map.id}/reports/${review?.id}`)}
             disabled={!review}
+            title={dictionary.comment}
+            aria-label={dictionary.comment}
           >
             <Comment />
           </IconButton>

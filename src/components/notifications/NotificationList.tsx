@@ -121,7 +121,12 @@ const NotificationList = ({
             disableTypography
           />
           {notification.notifiable.image && (
-            <IconButton href={notification.click_action} LinkComponent={Link}>
+            <IconButton
+              href={notification.click_action}
+              LinkComponent={Link}
+              title={dictionary.detail}
+              aria-label={dictionary.detail}
+            >
               <Avatar
                 src={notification.notifiable.image.avatar}
                 variant="rounded"

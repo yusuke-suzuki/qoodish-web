@@ -56,6 +56,8 @@ export default memo(function CommentMenuButton({
       <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
+        title={dictionary.more}
+        aria-label={dictionary.more}
       >
         <MoreVert />
       </IconButton>

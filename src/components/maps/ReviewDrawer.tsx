@@ -193,6 +193,8 @@ function ReviewDrawer({
                   `/maps/${review?.map.id}/reports/${review?.id}`
                 )}
                 disabled={!review}
+                title={dictionary.comment}
+                aria-label={dictionary.comment}
               >
                 <Comment />
               </IconButton>

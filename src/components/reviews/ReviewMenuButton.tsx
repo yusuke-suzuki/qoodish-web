@@ -100,6 +100,8 @@ export default memo(function ReviewMenuButton({
       <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
+        title={dictionary.more}
+        aria-label={dictionary.more}
       >
         <MoreVert />
       </IconButton>

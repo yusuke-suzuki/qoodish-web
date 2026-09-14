@@ -86,7 +86,12 @@ function MobileDrawerContent({
     <SwipeableDrawer open={open} onOpen={onOpen} onClose={onClose}>
       <List disablePadding component="nav">
         <Toolbar>
-          <IconButton onClick={onClose} edge="start">
+          <IconButton
+            onClick={onClose}
+            edge="start"
+            title={dictionary.close}
+            aria-label={dictionary.close}
+          >
             <ChevronLeft />
           </IconButton>
 
