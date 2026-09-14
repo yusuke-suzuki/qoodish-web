@@ -16,6 +16,8 @@ type Entry = {
 const STATIC_ENTRIES: Entry[] = [
   { path: '/', priority: 1 },
   { path: '/discover', priority: 0.8 },
+  { path: '/reports', priority: 0.7 },
+  { path: '/chapters', priority: 0.7 },
   { path: '/terms', priority: 0.3 },
   { path: '/privacy', priority: 0.3 }
 ];

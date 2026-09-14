@@ -38,6 +38,20 @@ export function getRecentReviews(lang: string): Promise<Review[]> {
   });
 }
 
+export function getReviewFeed(
+  lang: string,
+  nextTimestamp?: string
+): Promise<Review[]> {
+  const query = nextTimestamp
+    ? `&next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    : '';
+  return apiFetchList<Review>(`/reviews?feed=true${query}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [REVIEWS_TAG] }
+  });
+}
+
 export function getTimelineReviews(nextTimestamp?: string): Promise<Review[]> {
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`

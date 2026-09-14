@@ -25,6 +25,20 @@ export function getRecentChapters(lang: string): Promise<Chapter[]> {
   });
 }
 
+export function getChapterFeed(
+  lang: string,
+  nextTimestamp?: string
+): Promise<Chapter[]> {
+  const query = nextTimestamp
+    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
+    : '';
+  return apiFetchList<Chapter>(`/chapters${query}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [CHAPTERS_TAG] }
+  });
+}
+
 export function getUserChapters(
   userId: string | number,
   lang: string,
