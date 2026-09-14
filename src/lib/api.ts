@@ -1,3 +1,4 @@
+import describeError from '../utils/describeError.ts';
 import {
   apiUrl,
   buildApiHeaders,
@@ -64,11 +65,15 @@ export async function performApiFetch<T>(
     const data = await res.json();
     return { data, error: null, status: res.status };
   } catch (error) {
-    console.error(`API fetch error for ${path}:`, error);
+    const timedOut = isTimeoutError(error);
+
+    console.error(
+      `API fetch error for ${path} [${timedOut ? 'timeout' : 'network'}]: ${describeError(error)}`
+    );
 
     return {
       data: null,
-      error: isTimeoutError(error) ? 'Request timed out' : 'Network error',
+      error: timedOut ? 'Request timed out' : 'Network error',
       status: 0
     };
   }
