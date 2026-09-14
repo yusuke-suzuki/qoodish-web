@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: 'Assets | Qoodish',
       description,
       url: localePath(lang, '/assets'),
-      images: ogImages(thumbnailUrl),
+      images: ogImages(thumbnailUrl, dict['meta headline']),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
     },
