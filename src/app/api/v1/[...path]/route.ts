@@ -7,6 +7,7 @@ import {
   isTimeoutError,
   parseAcceptLanguage
 } from '../../../../lib/apiRequest.ts';
+import describeError from '../../../../utils/describeError.ts';
 
 type Params = {
   params: Promise<{ path: string[] }>;
@@ -80,9 +81,13 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
       }
     });
   } catch (error) {
-    console.error(`Proxy error for /${joinedPath}:`, error);
+    const timedOut = isTimeoutError(error);
 
-    if (isTimeoutError(error)) {
+    console.error(
+      `Proxy error for /${joinedPath} [${timedOut ? 'timeout' : 'network'}]: ${describeError(error)}`
+    );
+
+    if (timedOut) {
       return NextResponse.json({ detail: 'Upstream timeout' }, { status: 504 });
     }
 
