@@ -1,5 +1,6 @@
 'use client';
 
+import { ReportProblem } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import {
   Box,
@@ -7,6 +8,7 @@ import {
   Card,
   CardContent,
   Divider,
+  IconButton,
   Stack,
   Tab,
   Typography
@@ -28,6 +30,7 @@ import type {
 } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import EditProfileDialog from './EditProfileDialog.tsx';
 import JournalBookmarkButton from './JournalBookmarkButton.tsx';
@@ -50,11 +53,12 @@ function UserProfile({
   journal,
   chapters
 }: Props) {
-  const { uid } = useContext(AuthContext);
+  const { uid, authenticated, setSignInRequired } = useContext(AuthContext);
   const router = useRouter();
 
   const [tabValue, setTabValue] = useState('1');
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
 
   const dictionary = useDictionary();
 
@@ -71,6 +75,15 @@ function UserProfile({
 
   const handleProfileSaved = () => {
     router.refresh();
+  };
+
+  const handleReportClick = () => {
+    if (!authenticated) {
+      setSignInRequired(true);
+      return;
+    }
+
+    setIssueDialogOpen(true);
   };
 
   return (
@@ -134,7 +147,23 @@ function UserProfile({
                   {dictionary['edit profile']}
                 </Button>
               ) : (
-                journal && <JournalBookmarkButton journal={journal} fullWidth />
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: 'center' }}
+                >
+                  {journal && (
+                    <JournalBookmarkButton journal={journal} fullWidth />
+                  )}
+
+                  <IconButton
+                    title={dictionary['report content']}
+                    aria-label={dictionary['report content']}
+                    onClick={handleReportClick}
+                  >
+                    <ReportProblem />
+                  </IconButton>
+                </Stack>
               )}
             </Stack>
           </CardContent>
@@ -167,6 +196,13 @@ function UserProfile({
         currentProfile={profile}
         journal={journal}
         onSaved={handleProfileSaved}
+      />
+
+      <IssueDialog
+        open={issueDialogOpen}
+        onClose={() => setIssueDialogOpen(false)}
+        contentType="user"
+        contentId={profile.id}
       />
     </>
   );

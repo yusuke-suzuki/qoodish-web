@@ -116,6 +116,11 @@ const IssueDialog = ({ open, onClose, contentId, contentType }: Props) => {
             control={<Radio />}
             label={dictionary['abusive or harmful']}
           />
+          <FormControlLabel
+            value="4"
+            control={<Radio />}
+            label={dictionary['copyright infringement']}
+          />
         </RadioGroup>
       </FormControl>
     </AppDialog>
