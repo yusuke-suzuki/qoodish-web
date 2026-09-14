@@ -65,12 +65,31 @@ export function buildVariants(urls: string[]): ImageVariants {
   return variants;
 }
 
+export class UploadRateLimitedError extends Error {
+  constructor() {
+    super('Upload rate limit reached');
+    this.name = 'UploadRateLimitedError';
+  }
+}
+
+export function uploadFailureMessage(
+  error: unknown,
+  dictionary: Record<string, string>
+): string {
+  return error instanceof UploadRateLimitedError
+    ? dictionary['upload rate limited']
+    : dictionary['an error occurred'];
+}
+
 export default async function uploadImage(file: File): Promise<Image> {
   const allocRes = await fetch('/api/v1/images', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: '{}'
   });
+  if (allocRes.status === 429) {
+    throw new UploadRateLimitedError();
+  }
   if (!allocRes.ok) {
     throw new Error('Failed to allocate upload URL');
   }

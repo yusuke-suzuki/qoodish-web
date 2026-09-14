@@ -1,3 +1,4 @@
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { type NextRequest, NextResponse } from 'next/server';
 import {
   apiUrl,
@@ -7,6 +8,7 @@ import {
   isTimeoutError,
   parseAcceptLanguage
 } from '../../../../lib/apiRequest.ts';
+import { getServerAuthState } from '../../../../lib/auth.ts';
 import describeError from '../../../../utils/describeError.ts';
 
 type Params = {
@@ -19,6 +21,8 @@ const ALLOWED_GUEST_GET_PATTERNS = [
 ];
 
 const ALLOWED_AUTH_POST_PATTERNS = [/^users$/, /^images$/];
+
+const IMAGE_UPLOAD_PATH = 'images';
 
 type PathClass = 'guest' | 'auth' | 'unknown';
 
@@ -38,6 +42,27 @@ function classifyPath(joinedPath: string, method: string): PathClass {
   return 'unknown';
 }
 
+// The file itself goes straight to Cloudflare Images, so the only thing this
+// route can meter is how often one account asks for somewhere to put one.
+async function imageUploadAllowed(): Promise<boolean> {
+  const { uid } = await getServerAuthState();
+
+  if (!uid) {
+    return false;
+  }
+
+  const { IMAGE_UPLOAD_BURST_LIMIT, IMAGE_UPLOAD_LIMIT } =
+    getCloudflareContext().env;
+
+  for (const limiter of [IMAGE_UPLOAD_BURST_LIMIT, IMAGE_UPLOAD_LIMIT]) {
+    if (limiter && !(await limiter.limit({ key: uid })).success) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 async function proxyRequest(request: NextRequest, { params }: Params) {
   const { path } = await params;
   const joinedPath = path.join('/');
@@ -51,6 +76,13 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
 
   if (classification === 'auth' && !token) {
     return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (joinedPath === IMAGE_UPLOAD_PATH && !(await imageUploadAllowed())) {
+    return NextResponse.json(
+      { detail: 'Too many uploads' },
+      { status: 429, headers: { 'Retry-After': '60' } }
+    );
   }
 
   const url = new URL(request.url);

@@ -59,6 +59,20 @@
       "new_sqlite_classes": ["DOShardedTagCache"]
     }
   ],
+  // Cloudflare Images is paid for and shared, so one account allocating
+  // uploads in a loop is held to a burst and a per-minute ceiling.
+  "ratelimits": [
+    {
+      "name": "IMAGE_UPLOAD_BURST_LIMIT",
+      "namespace_id": "1001",
+      "simple": { "limit": 10, "period": 10 }
+    },
+    {
+      "name": "IMAGE_UPLOAD_LIMIT",
+      "namespace_id": "1002",
+      "simple": { "limit": 30, "period": 60 }
+    }
+  ],
   "vars": {
     "APP_ENV": "production",
     "API_ENDPOINT": "https://api.qoodish.com"
@@ -96,6 +110,18 @@
           }
         ]
       },
+      "ratelimits": [
+        {
+          "name": "IMAGE_UPLOAD_BURST_LIMIT",
+          "namespace_id": "2001",
+          "simple": { "limit": 10, "period": 10 }
+        },
+        {
+          "name": "IMAGE_UPLOAD_LIMIT",
+          "namespace_id": "2002",
+          "simple": { "limit": 30, "period": 60 }
+        }
+      ],
       "vars": {
         "APP_ENV": "development",
         "API_ENDPOINT": "https://api-dev.qoodish.com"

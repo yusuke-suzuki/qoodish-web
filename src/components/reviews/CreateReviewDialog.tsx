@@ -12,6 +12,7 @@ import type { AppMap } from '../../../types/index.ts';
 import { createReview } from '../../actions/reviews.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
 import PhotoPreviewList from '../common/PhotoPreviewList.tsx';
@@ -113,8 +114,10 @@ export default memo(function CreateReviewDialog({
     async (files: File[]) => {
       try {
         await upload(files);
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } catch (error) {
+        enqueueSnackbar(uploadFailureMessage(error, dictionary), {
+          variant: 'error'
+        });
       }
     },
     [upload, dictionary]

@@ -19,6 +19,7 @@ import { updateJournal } from '../../actions/journals.ts';
 import { updateProfile } from '../../actions/users.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
 import BiographyForm from './BiographyForm.tsx';
@@ -69,8 +70,10 @@ export default memo(function EditProfileDialog({
       reset();
       try {
         await upload([files[0]]);
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } catch (error) {
+        enqueueSnackbar(uploadFailureMessage(error, dictionary), {
+          variant: 'error'
+        });
       }
     },
     [reset, upload, dictionary]

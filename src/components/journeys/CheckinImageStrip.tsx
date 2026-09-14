@@ -15,7 +15,10 @@ import { enqueueSnackbar } from 'notistack';
 import { type ChangeEvent, memo, useCallback, useId, useState } from 'react';
 import type { Image, JourneyCheckin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import uploadImage, { splitOversizedImages } from '../../utils/uploadImage.ts';
+import uploadImage, {
+  splitOversizedImages,
+  uploadFailureMessage
+} from '../../utils/uploadImage.ts';
 
 const IMAGE_SIZE = 96;
 
@@ -55,8 +58,10 @@ function CheckinImageStrip({ checkin, onAttach, onRemove }: Props) {
           const image = await uploadImage(file);
           await onAttach(checkin, image);
         }
-      } catch {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } catch (error) {
+        enqueueSnackbar(uploadFailureMessage(error, dictionary), {
+          variant: 'error'
+        });
       } finally {
         setUploading(false);
       }
