@@ -162,6 +162,7 @@ function CurrentPositionMarker({
               bgcolor: 'secondary.light'
             }}
             ref={ref}
+            aria-label={dictionary['current position']}
           >
             <StyledBadge
               overlap="circular"

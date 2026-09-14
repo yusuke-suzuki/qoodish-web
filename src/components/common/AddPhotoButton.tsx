@@ -48,7 +48,13 @@ export default memo(function AddPhotoButton({
       />
 
       <label htmlFor={inputId}>
-        <IconButton component="span" size="small" disabled={disabled}>
+        <IconButton
+          component="span"
+          size="small"
+          disabled={disabled}
+          title={dictionary['add photos']}
+          aria-label={dictionary['add photos']}
+        >
           <AddAPhoto color={color ? color : 'secondary'} />
         </IconButton>
       </label>

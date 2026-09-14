@@ -12,6 +12,7 @@ import {
   useTheme
 } from '@mui/material';
 import { memo } from 'react';
+import useDictionary from '../../hooks/useDictionary.ts';
 import type { PhotoItem } from '../../hooks/usePhotoUploads.ts';
 
 type Props = {
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export default memo(function PhotoPreviewList({ items, onDelete }: Props) {
+  const dictionary = useDictionary();
   const theme = useTheme();
   const mdUp = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -63,6 +65,8 @@ export default memo(function PhotoPreviewList({ items, onDelete }: Props) {
                 <IconButton
                   onClick={() => onDelete(i)}
                   disabled={item.status === 'uploading'}
+                  title={dictionary.remove}
+                  aria-label={dictionary.remove}
                 >
                   <Cancel />
                 </IconButton>

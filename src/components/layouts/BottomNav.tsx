@@ -65,32 +65,34 @@ function BottomNavContent({ profile }: ContentProps) {
         }}
       >
         <Paper>
-          <BottomNavigation value={bottomNavValue}>
+          {/* A touch device has no hover to reveal a tooltip, so the labels
+              stay visible. */}
+          <BottomNavigation value={bottomNavValue} showLabels>
             <BottomNavigationAction
-              title={dictionary.home}
+              label={dictionary.home}
               icon={<Home />}
               LinkComponent={Link}
               href={localePath('/')}
             />
             <BottomNavigationAction
-              title={dictionary.discover}
+              label={dictionary.discover}
               icon={<Explore />}
               LinkComponent={Link}
               href={localePath('/discover')}
             />
             <BottomNavigationAction
-              title={dictionary['create new map']}
+              label={dictionary['create new map']}
               icon={<AddBox color="secondary" />}
               onClick={openCreateMap}
             />
             <BottomNavigationAction
-              title={dictionary['journey log']}
+              label={dictionary['journey log']}
               icon={<DirectionsWalk />}
               LinkComponent={Link}
               href={localePath('/journeys')}
             />
             <BottomNavigationAction
-              title={dictionary.profile}
+              label={dictionary.profile}
               icon={
                 <Box
                   sx={{
