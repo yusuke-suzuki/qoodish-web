@@ -204,6 +204,7 @@
   "push unavailable": "This browser does not support push notifications.",
   "an error occurred": "An error occurred.",
   "image too large": "Images must be 10 MB or smaller.",
+  "upload rate limited": "You are uploading too quickly. Please wait a minute and try again.",
   "request timed out": "The request timed out. Please try again later.",
   "network error": "Could not reach the server. Please try again later.",
   "send feedback": "Send Feedback",
