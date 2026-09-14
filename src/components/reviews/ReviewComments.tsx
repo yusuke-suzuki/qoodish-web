@@ -12,10 +12,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useContext, useState } from 'react';
+import { memo, useState } from 'react';
 import type { Comment } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
@@ -30,7 +30,7 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
 
   const [currentComment, setCurrentComment] = useState<Comment | null>(null);
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);

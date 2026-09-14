@@ -11,16 +11,20 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { memo, useContext, useRef, useState } from 'react';
+import { memo, Suspense, useContext, useRef, useState } from 'react';
+import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
-export default memo(function AccountMenuButton() {
+type ContentProps = {
+  profile: Profile | null;
+};
+
+function AccountMenuButtonContent({ profile }: ContentProps) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
-  const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
   const { push } = useRouter();
@@ -170,5 +174,17 @@ export default memo(function AccountMenuButton() {
         </ListItemButton>
       </Menu>
     </>
+  );
+}
+
+function AccountMenuButtonWithProfile() {
+  return <AccountMenuButtonContent profile={useProfile()} />;
+}
+
+export default memo(function AccountMenuButton() {
+  return (
+    <Suspense fallback={<AccountMenuButtonContent profile={null} />}>
+      <AccountMenuButtonWithProfile />
+    </Suspense>
   );
 });

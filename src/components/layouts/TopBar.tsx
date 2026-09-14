@@ -1,14 +1,8 @@
 'use client';
 
-import {
-  AddBox,
-  Menu as MenuIcon,
-  Notifications,
-  Search
-} from '@mui/icons-material';
+import { AddBox, Menu as MenuIcon, Search } from '@mui/icons-material';
 import {
   AppBar,
-  Badge,
   Box,
   Button,
   IconButton,
@@ -21,7 +15,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { memo, useContext, useState } from 'react';
 import AuthContext from '../../context/AuthContext.ts';
-import NotificationsContext from '../../context/NotificationsContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
@@ -29,17 +22,13 @@ import AccountMenuButton from './AccountMenuButton.tsx';
 import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
 import MobileDrawer from './MobileDrawer.tsx';
+import NotificationsBadge from './NotificationsBadge.tsx';
 
 function TopBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);
   const { authenticated, setSignInRequired } = useContext(AuthContext);
-  const notifications = useContext(NotificationsContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
-
-  const unreadCount = notifications.filter(
-    (notification) => notification.read === false
-  ).length;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -138,9 +127,7 @@ function TopBarContent() {
                 title={dictionary.notifications}
                 aria-label={dictionary.notifications}
               >
-                <Badge badgeContent={unreadCount} color="secondary">
-                  <Notifications />
-                </Badge>
+                <NotificationsBadge />
               </IconButton>
             )}
 

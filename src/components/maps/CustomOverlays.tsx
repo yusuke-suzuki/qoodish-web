@@ -3,14 +3,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   type MutableRefObject,
   memo,
-  useContext,
   useEffect,
   useRef,
   useState
 } from 'react';
 import type { AppMap, Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import CreateReviewDialog from '../reviews/CreateReviewDialog.tsx';
 import CurrentPositionMarker from './CurrentPositionMarker.tsx';
 import CustomMapControls from './CustomMapControls.tsx';
@@ -57,7 +56,7 @@ function CustomOverlays({
 }: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
 
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
 
   const { replace } = useRouter();
   const pathname = usePathname();

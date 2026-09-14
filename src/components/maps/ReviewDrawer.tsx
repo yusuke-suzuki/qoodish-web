@@ -10,11 +10,11 @@ import {
   Typography
 } from '@mui/material';
 import Link from 'next/link';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
@@ -49,7 +49,7 @@ function ReviewDrawer({
   onSaved,
   onDeleted
 }: Props) {
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 

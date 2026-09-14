@@ -27,11 +27,12 @@ import {
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, useContext } from 'react';
+import { memo, Suspense, useContext } from 'react';
+import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
@@ -43,19 +44,23 @@ type Props = {
   onCreateMapClick: () => void;
 };
 
-export default memo(function MobileDrawer({
+type ContentProps = Props & {
+  profile: Profile | null;
+};
+
+function MobileDrawerContent({
   open,
   onOpen,
   onClose,
-  onCreateMapClick
-}: Props) {
+  onCreateMapClick,
+  profile
+}: ContentProps) {
   const { push } = useRouter();
   const pathname = usePathname();
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   const { authenticated, setSignInRequired } = useContext(AuthContext);
-  const profile = useContext(ProfileContext);
 
   const handleSignOutClick = async () => {
     onClose();
@@ -280,5 +285,17 @@ export default memo(function MobileDrawer({
         </ListItemButton>
       </List>
     </SwipeableDrawer>
+  );
+}
+
+function MobileDrawerWithProfile(props: Props) {
+  return <MobileDrawerContent {...props} profile={useProfile()} />;
+}
+
+export default memo(function MobileDrawer(props: Props) {
+  return (
+    <Suspense fallback={<MobileDrawerContent {...props} profile={null} />}>
+      <MobileDrawerWithProfile {...props} />
+    </Suspense>
   );
 });

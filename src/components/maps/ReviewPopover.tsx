@@ -8,7 +8,7 @@ import {
   Typography
 } from '@mui/material';
 import Link from 'next/link';
-import { memo, useContext, useState } from 'react';
+import { memo, useState } from 'react';
 import type { Review } from '../../../types/index.ts';
 import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
 import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
@@ -16,8 +16,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
 import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
@@ -42,7 +42,7 @@ function ReviewPopover({
   onSaved,
   onDeleted
 }: Props) {
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
   const localePath = useLocalePath();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);

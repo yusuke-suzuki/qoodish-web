@@ -4,10 +4,10 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import type { Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
 import DeleteReviewDialog from './DeleteReviewDialog.tsx';
 import EditReviewDialog from './EditReviewDialog.tsx';
@@ -30,7 +30,7 @@ export default function ReviewDetail({ review }: Props) {
   }>();
   const router = useRouter();
 
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);

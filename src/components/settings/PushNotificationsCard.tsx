@@ -23,9 +23,9 @@ import {
   useState
 } from 'react';
 import { updatePreferences } from '../../actions/users.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
 
 function PushNotificationsCard() {
@@ -36,7 +36,7 @@ function PushNotificationsCard() {
 
   const { isSubscribed, subscribe, unsubscribe } = usePushManager(registration);
 
-  const profile = useContext(ProfileContext);
+  const profile = useProfile();
 
   const [loading, setLoading] = useState(false);
   const [likedEnabled, setLikedEnabled] = useState(false);
