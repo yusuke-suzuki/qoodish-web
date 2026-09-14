@@ -1,10 +1,42 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import {
+import uploadImage, {
   buildVariants,
   MAX_IMAGE_FILE_SIZE,
-  splitOversizedImages
+  splitOversizedImages,
+  UploadRateLimitedError,
+  uploadFailureMessage
 } from './uploadImage.ts';
+
+describe('uploadImage', () => {
+  it('names a refused allocation so the reader is told to wait', async (t) => {
+    t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response('{}', { status: 429 })
+    );
+
+    await assert.rejects(
+      uploadImage(new File([], 'a.jpg')),
+      UploadRateLimitedError
+    );
+  });
+});
+
+describe('uploadFailureMessage', () => {
+  const dictionary = {
+    'upload rate limited': 'wait',
+    'an error occurred': 'error'
+  };
+
+  it('tells a rate limit apart from any other failure', () => {
+    assert.equal(
+      uploadFailureMessage(new UploadRateLimitedError(), dictionary),
+      'wait'
+    );
+    assert.equal(uploadFailureMessage(new Error('x'), dictionary), 'error');
+  });
+});
 
 const DELIVERY_BASE = 'https://imagedelivery.net/hash/image-1';
 

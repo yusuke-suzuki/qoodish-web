@@ -24,7 +24,7 @@ export default function usePhotoUploads() {
     }));
     setItems((prevState) => [...prevState, ...pending]);
 
-    let failed = false;
+    let failure: unknown = null;
 
     for (const item of pending) {
       try {
@@ -36,8 +36,8 @@ export default function usePhotoUploads() {
               : prevItem
           )
         );
-      } catch (_error) {
-        failed = true;
+      } catch (error) {
+        failure ??= error;
         setItems((prevState) =>
           prevState.filter((prevItem) => prevItem.key !== item.key)
         );
@@ -46,8 +46,8 @@ export default function usePhotoUploads() {
       }
     }
 
-    if (failed) {
-      throw new Error('Failed to upload one or more images');
+    if (failure) {
+      throw failure;
     }
   };
 

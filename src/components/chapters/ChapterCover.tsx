@@ -19,7 +19,10 @@ import {
 } from 'react';
 import type { ImageVariants } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import uploadImage, { MAX_IMAGE_FILE_SIZE } from '../../utils/uploadImage.ts';
+import uploadImage, {
+  MAX_IMAGE_FILE_SIZE,
+  uploadFailureMessage
+} from '../../utils/uploadImage.ts';
 import { coverAspectRatio } from './constants.ts';
 
 type Props = {
@@ -74,8 +77,10 @@ function ChapterCover({ image, editable, onChange, onSavingChange }: Props) {
       try {
         const uploaded = await uploadImage(file);
         await onChange?.([uploaded.id]);
-      } catch (_error) {
-        enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
+      } catch (error) {
+        enqueueSnackbar(uploadFailureMessage(error, dictionary), {
+          variant: 'error'
+        });
       } finally {
         setSaving(false);
       }
