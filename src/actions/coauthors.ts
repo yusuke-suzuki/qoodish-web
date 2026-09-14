@@ -2,6 +2,8 @@
 
 import type { UserSearchResult } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { mapTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
   success: boolean;
@@ -50,11 +52,14 @@ export async function removeCoauthor(
     return { success: false, error };
   }
 
+  revalidateTags([mapTag(mapId)]);
+
   return { success: true };
 }
 
 export async function acceptCoauthorshipInvitation(
-  invitationId: number
+  invitationId: number,
+  mapId?: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
     `/me/coauthorship_invitations/${invitationId}/accept`,
@@ -66,6 +71,8 @@ export async function acceptCoauthorshipInvitation(
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([mapId && mapTag(mapId)]);
 
   return { success: true };
 }

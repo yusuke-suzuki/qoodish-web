@@ -63,7 +63,11 @@ function UserChapters({ chapters: initialChapters }: { chapters: Chapter[] }) {
     }
 
     const target = deleteTarget;
-    const { success } = await deleteChapter(target.id);
+    const { success } = await deleteChapter(
+      target.id,
+      target.map_id,
+      target.author.id
+    );
 
     if (!success) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
