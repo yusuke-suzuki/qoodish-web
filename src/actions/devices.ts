@@ -10,9 +10,12 @@ type ActionResult = {
 export async function registerDevice(
   registrationToken: string
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(`/me/devices/${registrationToken}`, {
-    method: 'PUT'
-  });
+  const { error } = await apiFetch(
+    `/me/devices/${encodeURIComponent(registrationToken)}`,
+    {
+      method: 'PUT'
+    }
+  );
 
   if (error) {
     return { success: false, error };
