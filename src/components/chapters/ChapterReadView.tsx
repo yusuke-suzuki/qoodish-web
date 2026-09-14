@@ -70,7 +70,11 @@ export default function ChapterReadView({
   };
 
   const handleDeleteConfirm = async () => {
-    const { success } = await deleteChapter(chapter.id);
+    const { success } = await deleteChapter(
+      chapter.id,
+      chapter.map_id,
+      chapter.author.id
+    );
 
     if (!success) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });

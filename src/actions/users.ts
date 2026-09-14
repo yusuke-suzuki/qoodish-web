@@ -2,6 +2,14 @@
 
 import type { Profile } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import {
+  CHAPTERS_TAG,
+  CONTENT_TAG,
+  MAPS_TAG,
+  REVIEWS_TAG,
+  userTag
+} from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 
 type UpdateProfileParams = {
   name: string;
@@ -36,10 +44,12 @@ export async function updateProfile(
     return { success: false, error };
   }
 
+  revalidateTags([data && userTag(data.id)]);
+
   return { success: true, data };
 }
 
-export async function deleteAccount(): Promise<ActionResult> {
+export async function deleteAccount(userId?: number): Promise<ActionResult> {
   const { error } = await apiFetch('/me/account', {
     method: 'DELETE'
   });
@@ -47,6 +57,14 @@ export async function deleteAccount(): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([
+    MAPS_TAG,
+    REVIEWS_TAG,
+    CHAPTERS_TAG,
+    CONTENT_TAG,
+    userId && userTag(userId)
+  ]);
 
   return { success: true };
 }

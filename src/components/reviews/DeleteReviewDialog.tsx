@@ -22,7 +22,11 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
     }
 
     try {
-      const result = await deleteReview(review.id);
+      const result = await deleteReview(
+        review.id,
+        review.map.id,
+        review.author.id
+      );
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete report success'], {

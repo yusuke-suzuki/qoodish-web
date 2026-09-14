@@ -2,6 +2,8 @@
 
 import type { AppMap } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { MAPS_TAG, mapTag, userTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 
 type CreateMapParams = {
   name: string;
@@ -32,6 +34,8 @@ export async function createMap(
     return { success: false, error };
   }
 
+  revalidateTags([MAPS_TAG, data && userTag(data.author.id)]);
+
   return { success: true, data };
 }
 
@@ -48,10 +52,15 @@ export async function updateMap(
     return { success: false, error };
   }
 
+  revalidateTags([mapTag(mapId), MAPS_TAG, data && userTag(data.author.id)]);
+
   return { success: true, data };
 }
 
-export async function deleteMap(mapId: number): Promise<ActionResult> {
+export async function deleteMap(
+  mapId: number,
+  authorId?: number
+): Promise<ActionResult> {
   const { error } = await apiFetch(`/maps/${mapId}`, {
     method: 'DELETE'
   });
@@ -59,6 +68,8 @@ export async function deleteMap(mapId: number): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([mapTag(mapId), MAPS_TAG, authorId && userTag(authorId)]);
 
   return { success: true };
 }

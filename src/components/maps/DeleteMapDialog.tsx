@@ -22,7 +22,7 @@ const DeleteMapDialog = ({ map, open, onClose, onDeleted }: Props) => {
     }
 
     try {
-      const result = await deleteMap(map.id);
+      const result = await deleteMap(map.id, map.author.id);
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete map success'], {

@@ -2,6 +2,8 @@
 
 import type { Review } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { mapTag, REVIEWS_TAG, reviewTag, userTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 import { getTimelineReviews } from '../lib/reviews.ts';
 import { getMyReviews, getUserReviews } from '../lib/users.ts';
 
@@ -53,6 +55,8 @@ export async function createReview(
     return { success: false, error };
   }
 
+  revalidateTags([mapTag(mapId), REVIEWS_TAG, data && userTag(data.author.id)]);
+
   return { success: true, data };
 }
 
@@ -69,10 +73,21 @@ export async function updateReview(
     return { success: false, error };
   }
 
+  revalidateTags([
+    reviewTag(reviewId),
+    REVIEWS_TAG,
+    data && mapTag(data.map.id),
+    data && userTag(data.author.id)
+  ]);
+
   return { success: true, data };
 }
 
-export async function deleteReview(reviewId: number): Promise<ActionResult> {
+export async function deleteReview(
+  reviewId: number,
+  mapId?: number,
+  authorId?: number
+): Promise<ActionResult> {
   const { error } = await apiFetch(`/me/reviews/${reviewId}`, {
     method: 'DELETE'
   });
@@ -80,6 +95,13 @@ export async function deleteReview(reviewId: number): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([
+    reviewTag(reviewId),
+    REVIEWS_TAG,
+    mapId && mapTag(mapId),
+    authorId && userTag(authorId)
+  ]);
 
   return { success: true };
 }

@@ -1,6 +1,8 @@
 'use server';
 
 import { apiFetch } from '../lib/api.ts';
+import { reviewTag } from '../lib/cacheTags.ts';
+import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
   success: boolean;
@@ -16,6 +18,8 @@ export async function likeReview(reviewId: number): Promise<ActionResult> {
     return { success: false, error };
   }
 
+  revalidateTags([reviewTag(reviewId)]);
+
   return { success: true };
 }
 
@@ -27,6 +31,8 @@ export async function unlikeReview(reviewId: number): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  revalidateTags([reviewTag(reviewId)]);
 
   return { success: true };
 }

@@ -42,6 +42,10 @@
       {
         "name": "NEXT_CACHE_DO_QUEUE",
         "class_name": "DOQueueHandler"
+      },
+      {
+        "name": "NEXT_TAG_CACHE_DO_SHARDED",
+        "class_name": "DOShardedTagCache"
       }
     ]
   },
@@ -49,6 +53,10 @@
     {
       "tag": "v1",
       "new_sqlite_classes": ["DOQueueHandler"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["DOShardedTagCache"]
     }
   ],
   "vars": {
@@ -81,6 +89,10 @@
           {
             "name": "NEXT_CACHE_DO_QUEUE",
             "class_name": "DOQueueHandler"
+          },
+          {
+            "name": "NEXT_TAG_CACHE_DO_SHARDED",
+            "class_name": "DOShardedTagCache"
           }
         ]
       },
