@@ -3,14 +3,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   type MutableRefObject,
   memo,
-  useContext,
   useEffect,
   useRef,
   useState
 } from 'react';
 import type { AppMap, Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import CreateReviewDialog from '../reviews/CreateReviewDialog.tsx';
 import CurrentPositionMarker from './CurrentPositionMarker.tsx';
 import CustomMapControls from './CustomMapControls.tsx';
@@ -56,8 +55,6 @@ function CustomOverlays({
   onReviewClick
 }: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
-
-  const profile = useContext(ProfileContext);
 
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -200,11 +197,15 @@ function CustomOverlays({
 
   return (
     <>
-      <CurrentPositionMarker
-        profile={profile}
-        disableCreateReview={!map?.editable}
-        onCreateReviewClick={handleCreateReviewOpen}
-      />
+      <ProfileBoundary>
+        {(profile) => (
+          <CurrentPositionMarker
+            profile={profile}
+            disableCreateReview={!map?.editable}
+            onCreateReviewClick={handleCreateReviewOpen}
+          />
+        )}
+      </ProfileBoundary>
 
       {filteredReviews.map((review) => (
         <ReviewMarker

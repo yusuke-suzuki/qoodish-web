@@ -12,12 +12,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { memo, useContext, useState } from 'react';
+import { memo, useState } from 'react';
 import type { Comment } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
 import DeleteCommentDialog from './DeleteCommentDialog.tsx';
 
@@ -29,8 +29,6 @@ type Props = {
 const ReviewComments = ({ comments, onDeleted }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
-
-  const profile = useContext(ProfileContext);
 
   const [currentComment, setCurrentComment] = useState<Comment | null>(null);
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
@@ -84,12 +82,16 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
               secondary={comment.body}
             />
             <ListItemSecondaryAction>
-              <CommentMenuButton
-                comment={comment}
-                onReportClick={handleReportClick}
-                onDeleteClick={handleDeleteClick}
-                currentProfile={profile}
-              />
+              <ProfileBoundary>
+                {(profile) => (
+                  <CommentMenuButton
+                    comment={comment}
+                    onReportClick={handleReportClick}
+                    onDeleteClick={handleDeleteClick}
+                    currentProfile={profile}
+                  />
+                )}
+              </ProfileBoundary>
             </ListItemSecondaryAction>
           </ListItem>
         ))}

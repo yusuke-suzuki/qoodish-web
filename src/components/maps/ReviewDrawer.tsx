@@ -10,13 +10,13 @@ import {
   Typography
 } from '@mui/material';
 import Link from 'next/link';
-import { memo, useCallback, useContext, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
 import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
 import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
@@ -49,7 +49,6 @@ function ReviewDrawer({
   onSaved,
   onDeleted
 }: Props) {
-  const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
@@ -102,13 +101,17 @@ function ReviewDrawer({
             review={review}
             hideMapLink
             action={
-              <ReviewMenuButton
-                review={review}
-                currentProfile={profile}
-                onReportClick={() => setIssueDialogOpen(true)}
-                onEditClick={() => setEditDialogOpen(true)}
-                onDeleteClick={() => setDeleteDialogOpen(true)}
-              />
+              <ProfileBoundary>
+                {(profile) => (
+                  <ReviewMenuButton
+                    review={review}
+                    currentProfile={profile}
+                    onReportClick={() => setIssueDialogOpen(true)}
+                    onEditClick={() => setEditDialogOpen(true)}
+                    onDeleteClick={() => setDeleteDialogOpen(true)}
+                  />
+                )}
+              </ProfileBoundary>
             }
           />
 
