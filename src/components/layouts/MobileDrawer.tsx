@@ -24,7 +24,7 @@ import {
   Toolbar,
   Typography
 } from '@mui/material';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo, useContext } from 'react';
@@ -54,14 +54,13 @@ export default memo(function MobileDrawer({
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired, signOut } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
 
   const handleSignOutClick = async () => {
     onClose();
 
-    const auth = getAuth();
-    await signOut(auth);
+    await signOut();
 
     // Staying put would leave the reader on a page their account was the only
     // way into.

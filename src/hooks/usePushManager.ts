@@ -6,9 +6,24 @@ import AuthContext from '../context/AuthContext.ts';
 export function usePushManager(registration: ServiceWorkerRegistration | null) {
   const [subscription, setSubscription] = useState<PushSubscription>(null);
 
-  const { authenticated, isLoading } = useContext(AuthContext);
+  const { authenticated, isLoading, addSignOutCleanup } =
+    useContext(AuthContext);
 
   const [registrationToken, setRegistrationToken] = useState(null);
+
+  useEffect(() => {
+    if (!registrationToken) {
+      return;
+    }
+
+    return addSignOutCleanup(async () => {
+      const { success, error } = await unregisterDevice(registrationToken);
+
+      if (!success) {
+        console.error('Failed to remove registration token', error);
+      }
+    });
+  }, [registrationToken, addSignOutCleanup]);
 
   const subscribe = async () => {
     const sub = await registration.pushManager.subscribe({

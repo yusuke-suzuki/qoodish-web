@@ -1,5 +1,10 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { getAuth, onIdTokenChanged, type User } from 'firebase/auth';
+import {
+  getAuth,
+  onIdTokenChanged,
+  signOut as signOutOfFirebase,
+  type User
+} from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import {
   memo,
@@ -9,7 +14,7 @@ import {
   useRef,
   useState
 } from 'react';
-import AuthContext from '../../context/AuthContext.ts';
+import AuthContext, { type SignOutCleanup } from '../../context/AuthContext.ts';
 import useEmailLinkHandler from '../../hooks/useEmailLinkHandler.ts';
 
 type Props = {
@@ -161,6 +166,30 @@ function AuthProvider({
     return () => unsubscribe();
   }, [handleIdTokenChanged]);
 
+  const signOutCleanupsRef = useRef(new Set<SignOutCleanup>());
+
+  const addSignOutCleanup = useCallback((cleanup: SignOutCleanup) => {
+    signOutCleanupsRef.current.add(cleanup);
+    return () => {
+      signOutCleanupsRef.current.delete(cleanup);
+    };
+  }, []);
+
+  // Server-side state that belongs to the session, such as a push device
+  // registration, can only be removed while the session cookie still exists,
+  // so every cleanup runs before Firebase is told to sign out.
+  const signOut = useCallback(async () => {
+    await Promise.all(
+      Array.from(signOutCleanupsRef.current, (cleanup) =>
+        cleanup().catch((error) => {
+          console.error('Sign-out cleanup failed:', error);
+        })
+      )
+    );
+
+    await signOutOfFirebase(getAuth());
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -168,7 +197,9 @@ function AuthProvider({
         uid,
         isLoading: loading,
         signInRequired,
-        setSignInRequired
+        setSignInRequired,
+        signOut,
+        addSignOutCleanup
       }}
     >
       {children}
