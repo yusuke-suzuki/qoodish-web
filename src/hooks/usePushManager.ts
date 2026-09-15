@@ -51,11 +51,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
 
       if (!success) {
         console.error('Failed to remove registration token', error);
+        return false;
       }
     }
 
-    // Either outcome leaves no active subscription behind, and the token
-    // belongs to the subscription that is now gone.
     setSubscription(null);
     setRegistrationToken(null);
 
