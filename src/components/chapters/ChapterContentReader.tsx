@@ -10,6 +10,8 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { Box } from '@mui/material';
 import type { SerializedEditorState } from 'lexical';
 import { memo } from 'react';
+import useDictionary from '../../hooks/useDictionary.ts';
+import SectionErrorBoundary from '../common/SectionErrorBoundary.tsx';
 import {
   chapterContentStyles,
   chapterNodes,
@@ -22,38 +24,44 @@ type Props = {
 };
 
 function ChapterContentReader({ content }: Props) {
+  const dictionary = useDictionary();
+
   return (
-    <LexicalComposer
-      initialConfig={{
-        namespace: 'journal',
-        nodes: chapterNodes,
-        editable: false,
-        editorState: JSON.stringify(content),
-        theme: chapterTheme,
-        onError: (error) => {
-          throw error;
-        }
-      }}
-    >
-      <Box
-        sx={(theme) => ({
-          position: 'relative',
-          '& .journal-editor-input': {
-            outline: 'none',
-            ...theme.typography.body1
-          },
-          ...chapterContentStyles(theme)
-        })}
+    <SectionErrorBoundary message={dictionary['chapter content unreadable']}>
+      <LexicalComposer
+        initialConfig={{
+          namespace: 'journal',
+          nodes: chapterNodes,
+          editable: false,
+          editorState: JSON.stringify(content),
+          theme: chapterTheme,
+          onError: (error) => {
+            throw error;
+          }
+        }}
       >
-        <RichTextPlugin
-          contentEditable={<ContentEditable className="journal-editor-input" />}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <ListPlugin />
-        <LinkPlugin validateUrl={validateUrl} />
-        <ClickableLinkPlugin newTab />
-      </Box>
-    </LexicalComposer>
+        <Box
+          sx={(theme) => ({
+            position: 'relative',
+            '& .journal-editor-input': {
+              outline: 'none',
+              ...theme.typography.body1
+            },
+            ...chapterContentStyles(theme)
+          })}
+        >
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="journal-editor-input" />
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <ListPlugin />
+          <LinkPlugin validateUrl={validateUrl} />
+          <ClickableLinkPlugin newTab />
+        </Box>
+      </LexicalComposer>
+    </SectionErrorBoundary>
   );
 }
 
