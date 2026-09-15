@@ -1,21 +1,24 @@
 'use server';
 
 import { apiFetch } from '../lib/api.ts';
+import devicePath from '../utils/devicePath.ts';
 
 type ActionResult = {
   success: boolean;
   error?: string;
 };
 
-export async function registerDevice(
-  registrationToken: string
+async function requestDevice(
+  registrationToken: string,
+  method: 'PUT' | 'DELETE'
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(
-    `/me/devices/${encodeURIComponent(registrationToken)}`,
-    {
-      method: 'PUT'
-    }
-  );
+  const path = devicePath(registrationToken);
+
+  if (!path) {
+    return { success: false, error: 'Invalid registration token' };
+  }
+
+  const { error } = await apiFetch(path, { method });
 
   if (error) {
     return { success: false, error };
@@ -24,19 +27,14 @@ export async function registerDevice(
   return { success: true };
 }
 
+export async function registerDevice(
+  registrationToken: string
+): Promise<ActionResult> {
+  return requestDevice(registrationToken, 'PUT');
+}
+
 export async function unregisterDevice(
   registrationToken: string
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(
-    `/me/devices/${encodeURIComponent(registrationToken)}`,
-    {
-      method: 'DELETE'
-    }
-  );
-
-  if (error) {
-    return { success: false, error };
-  }
-
-  return { success: true };
+  return requestDevice(registrationToken, 'DELETE');
 }
