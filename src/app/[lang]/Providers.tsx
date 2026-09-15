@@ -14,7 +14,6 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { closeSnackbar, SnackbarProvider } from 'notistack';
 import {
   type ReactNode,
-  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -23,7 +22,6 @@ import {
 import type { Notification, Profile } from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
 import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx';
-import SplashScreen from '../../components/common/SplashScreen.tsx';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
@@ -198,17 +196,15 @@ export default function Providers({
             serverPending={serverPending}
             serverUid={serverUid ?? null}
           >
-            <Suspense fallback={<SplashScreen label={dictionary.loading} />}>
-              <AccountProviders
-                profilePromise={profilePromise}
-                notificationsPromise={notificationsPromise}
-              >
-                <ServiceWorkerContext.Provider value={serviceWorkerValue}>
-                  <AnalyticsTracker />
-                  {children}
-                </ServiceWorkerContext.Provider>
-              </AccountProviders>
-            </Suspense>
+            <AccountProviders
+              profilePromise={profilePromise}
+              notificationsPromise={notificationsPromise}
+            >
+              <ServiceWorkerContext.Provider value={serviceWorkerValue}>
+                <AnalyticsTracker />
+                {children}
+              </ServiceWorkerContext.Provider>
+            </AccountProviders>
           </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>

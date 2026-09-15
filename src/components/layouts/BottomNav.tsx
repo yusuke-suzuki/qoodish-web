@@ -9,19 +9,22 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { memo, useContext, useEffect, useState } from 'react';
+import { memo, Suspense, useContext, useEffect, useState } from 'react';
+import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useProfile from '../../hooks/useProfile.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
-export default memo(function BottomNav() {
+type ContentProps = {
+  profile: Profile | null;
+};
+
+function BottomNavContent({ profile }: ContentProps) {
   const { authenticated } = useContext(AuthContext);
   const { openCreateMap } = useContext(ShellContext);
-
-  const profile = useContext(ProfileContext);
 
   const [bottomNavValue, setBottomNavValue] = useState<number | undefined>(
     undefined
@@ -109,5 +112,17 @@ export default memo(function BottomNav() {
         </Paper>
       </Box>
     </Box>
+  );
+}
+
+function BottomNavWithProfile() {
+  return <BottomNavContent profile={useProfile()} />;
+}
+
+export default memo(function BottomNav() {
+  return (
+    <Suspense fallback={<BottomNavContent profile={null} />}>
+      <BottomNavWithProfile />
+    </Suspense>
   );
 });

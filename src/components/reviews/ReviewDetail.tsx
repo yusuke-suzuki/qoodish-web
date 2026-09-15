@@ -4,11 +4,11 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import type { Review } from '../../../types/index.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import DeleteReviewDialog from './DeleteReviewDialog.tsx';
 import EditReviewDialog from './EditReviewDialog.tsx';
 import ReviewCardActions from './ReviewCardActions.tsx';
@@ -30,8 +30,6 @@ export default function ReviewDetail({ review }: Props) {
   }>();
   const router = useRouter();
 
-  const profile = useContext(ProfileContext);
-
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -42,14 +40,18 @@ export default function ReviewDetail({ review }: Props) {
         <ReviewCardHeader
           review={review}
           action={
-            <ReviewMenuButton
-              review={review}
-              currentProfile={profile}
-              onReportClick={() => setIssueDialogOpen(true)}
-              onEditClick={() => setEditDialogOpen(true)}
-              onDeleteClick={() => setDeleteDialogOpen(true)}
-              hideDetail
-            />
+            <ProfileBoundary>
+              {(profile) => (
+                <ReviewMenuButton
+                  review={review}
+                  currentProfile={profile}
+                  onReportClick={() => setIssueDialogOpen(true)}
+                  onEditClick={() => setEditDialogOpen(true)}
+                  onDeleteClick={() => setDeleteDialogOpen(true)}
+                  hideDetail
+                />
+              )}
+            </ProfileBoundary>
           }
         />
         <CardContent sx={{ py: 0 }}>

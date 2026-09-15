@@ -22,21 +22,24 @@ import {
   useEffect,
   useState
 } from 'react';
+import type { Profile } from '../../../types/index.ts';
 import { updatePreferences } from '../../actions/users.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 
-function PushNotificationsCard() {
+function PushNotificationsCardContent({
+  profile
+}: {
+  profile: Profile | null;
+}) {
   const dictionary = useDictionary();
   const router = useRouter();
 
   const { registration } = useContext(ServiceWorkerContext);
 
   const { isSubscribed, subscribe, unsubscribe } = usePushManager(registration);
-
-  const profile = useContext(ProfileContext);
 
   const [loading, setLoading] = useState(false);
   const [likedEnabled, setLikedEnabled] = useState(false);
@@ -151,7 +154,12 @@ function PushNotificationsCard() {
           </FormGroup>
         </FormControl>
 
-        <FormControl component="fieldset" color="secondary" margin="normal">
+        <FormControl
+          component="fieldset"
+          color="secondary"
+          margin="normal"
+          disabled={!profile}
+        >
           <FormLabel component="legend">{dictionary.notifications}</FormLabel>
           <FormGroup>
             <FormControlLabel
@@ -212,6 +220,7 @@ function PushNotificationsCard() {
       <CardActions>
         <Button
           loading={loading}
+          disabled={!profile}
           variant="contained"
           onClick={handleSave}
           color="secondary"
@@ -223,4 +232,10 @@ function PushNotificationsCard() {
   );
 }
 
-export default memo(PushNotificationsCard);
+export default memo(function PushNotificationsCard() {
+  return (
+    <ProfileBoundary>
+      {(profile) => <PushNotificationsCardContent profile={profile} />}
+    </ProfileBoundary>
+  );
+});

@@ -1,9 +1,9 @@
 import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext } from 'react';
+import { memo, useCallback } from 'react';
 import { deleteAccount } from '../../actions/users.ts';
-import ProfileContext from '../../context/ProfileContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import ProfileBoundary from '../common/ProfileBoundary.tsx';
 
 type Props = {
   open: boolean;
@@ -11,9 +11,17 @@ type Props = {
   onDeleted: () => void;
 };
 
-function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
+type ContentProps = Props & {
+  userId?: number;
+};
+
+function DeleteAccountDialogContent({
+  open,
+  onClose,
+  onDeleted,
+  userId
+}: ContentProps) {
   const dictionary = useDictionary();
-  const userId = useContext(ProfileContext)?.id;
 
   const handleConfirm = useCallback(async () => {
     try {
@@ -48,4 +56,12 @@ function DeleteAccountDialog({ open, onClose, onDeleted }: Props) {
   );
 }
 
-export default memo(DeleteAccountDialog);
+export default memo(function DeleteAccountDialog(props: Props) {
+  return (
+    <ProfileBoundary>
+      {(profile) => (
+        <DeleteAccountDialogContent {...props} userId={profile?.id} />
+      )}
+    </ProfileBoundary>
+  );
+});
