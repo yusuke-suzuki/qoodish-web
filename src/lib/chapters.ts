@@ -29,6 +29,27 @@ export async function getRecentChapters(lang: string): Promise<Chapter[]> {
   return data ?? [];
 }
 
+export async function getChapterFeed(
+  lang: string,
+  nextTimestamp?: string,
+  nextId?: number
+): Promise<Chapter[]> {
+  const params = new URLSearchParams();
+  if (nextTimestamp) {
+    params.set('next_timestamp', nextTimestamp);
+  }
+  if (nextId) {
+    params.set('next_id', String(nextId));
+  }
+  const query = params.size > 0 ? `?${params}` : '';
+  const { data } = await apiFetch<Chapter[]>(`/chapters${query}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [CHAPTERS_TAG] }
+  });
+  return data ?? [];
+}
+
 export async function getUserChapters(
   userId: string | number,
   lang: string,

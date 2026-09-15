@@ -43,6 +43,26 @@ export async function getRecentReviews(lang: string): Promise<Review[]> {
   return data ?? [];
 }
 
+export async function getReviewFeed(
+  lang: string,
+  nextTimestamp?: string,
+  nextId?: number
+): Promise<Review[]> {
+  const params = new URLSearchParams({ feed: 'true' });
+  if (nextTimestamp) {
+    params.set('next_timestamp', nextTimestamp);
+  }
+  if (nextId) {
+    params.set('next_id', String(nextId));
+  }
+  const { data } = await apiFetch<Review[]>(`/reviews?${params}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [REVIEWS_TAG] }
+  });
+  return data ?? [];
+}
+
 export async function getTimelineReviews(
   nextTimestamp?: string
 ): Promise<Review[]> {

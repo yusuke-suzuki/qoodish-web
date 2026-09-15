@@ -4,13 +4,21 @@ import type { Review } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { mapTag, REVIEWS_TAG, reviewTag, userTag } from '../lib/cacheTags.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
-import { getTimelineReviews } from '../lib/reviews.ts';
+import { getReviewFeed, getTimelineReviews } from '../lib/reviews.ts';
 import { getMyReviews, getUserReviews } from '../lib/users.ts';
 
 export async function fetchMoreTimelineReviews(
   nextTimestamp: string
 ): Promise<Review[]> {
   return getTimelineReviews(nextTimestamp);
+}
+
+export async function fetchMoreReviewFeed(
+  lang: string,
+  nextTimestamp: string,
+  nextId: number
+): Promise<Review[]> {
+  return getReviewFeed(lang, nextTimestamp, nextId);
 }
 
 export async function fetchMoreUserReviews(
