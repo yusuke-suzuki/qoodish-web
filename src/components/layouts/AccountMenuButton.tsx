@@ -8,7 +8,7 @@ import {
   ListItemText,
   Menu
 } from '@mui/material';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo, useContext, useRef, useState } from 'react';
@@ -19,7 +19,7 @@ import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 
 export default memo(function AccountMenuButton() {
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
+  const { authenticated, setSignInRequired, signOut } = useContext(AuthContext);
   const profile = useContext(ProfileContext);
   const dictionary = useDictionary();
   const localePath = useLocalePath();
@@ -36,8 +36,7 @@ export default memo(function AccountMenuButton() {
   const handleSignOutClick = async () => {
     setAnchorEl(null);
 
-    const auth = getAuth();
-    await signOut(auth);
+    await signOut();
 
     // Staying put would leave the reader on a page their account was the only
     // way into.

@@ -1,11 +1,15 @@
 import { createContext } from 'react';
 
+export type SignOutCleanup = () => Promise<void>;
+
 type ContextProps = {
   authenticated: boolean;
   uid: string | null;
   isLoading: boolean;
   signInRequired: boolean;
   setSignInRequired: (value: boolean) => void;
+  signOut: () => Promise<void>;
+  addSignOutCleanup: (cleanup: SignOutCleanup) => () => void;
 };
 
 const AuthContext = createContext<ContextProps>({
@@ -13,7 +17,9 @@ const AuthContext = createContext<ContextProps>({
   uid: null,
   isLoading: true,
   signInRequired: false,
-  setSignInRequired: () => {}
+  setSignInRequired: () => {},
+  signOut: async () => {},
+  addSignOutCleanup: () => () => {}
 });
 
 export default AuthContext;
