@@ -56,3 +56,4 @@ jobs:
         run: pnpm e2e
         env:
           E2E_BASE_URL: ${{ env.BASE_URL }}
+          E2E_API_URL: https://api.qoodish.com
