@@ -16,7 +16,7 @@ type Entry = {
 const STATIC_ENTRIES: Entry[] = [
   { path: '/', priority: 1 },
   { path: '/discover', priority: 0.8 },
-  { path: '/reports', priority: 0.7 },
+  { path: '/pins', priority: 0.7 },
   { path: '/chapters', priority: 0.7 },
   { path: '/terms', priority: 0.3 },
   { path: '/privacy', priority: 0.3 }
@@ -101,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     reviewEntries.set(review.id, {
-      path: `/maps/${review.map.id}/reports/${review.id}`,
+      path: `/pins/${review.id}`,
       lastModified: review.updated_at,
       priority: 0.6
     });

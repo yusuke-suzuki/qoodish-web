@@ -5,14 +5,10 @@ import { CONTENT_TAG, REVIEWS_TAG, reviewTag } from './cacheTags.ts';
 export async function getReview(
   reviewId: string,
   lang: string,
-  token?: string,
-  mapId?: string
+  token?: string
 ): Promise<Review | null> {
-  const guest = !token || !mapId;
-  const path =
-    !guest && mapId
-      ? `/maps/${mapId}/reviews/${reviewId}`
-      : `/reviews/${reviewId}`;
+  const guest = !token;
+  const path = `/reviews/${reviewId}`;
   const { data, status } = await apiFetch<Review>(path, {
     lang,
     guest,

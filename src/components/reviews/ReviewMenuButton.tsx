@@ -51,7 +51,7 @@ export default memo(function ReviewMenuButton({
 
   const isAuthor = currentProfile?.id === review?.author.id;
 
-  const reviewPath = `/maps/${review?.map.id}/reports/${review?.id}`;
+  const reviewPath = `/pins/${review?.id}`;
   const url = `${SITE_ORIGIN}${localePath(lang, reviewPath)}`;
 
   const handleCopyClick = async () => {

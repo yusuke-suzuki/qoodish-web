@@ -63,7 +63,7 @@ export default memo(function TimelineReviewCard({
 
         <IconButton
           LinkComponent={Link}
-          href={localePath(`/maps/${review.map.id}/reports/${review.id}`)}
+          href={localePath(`/pins/${review.id}`)}
           title={dictionary.comment}
           aria-label={dictionary.comment}
         >

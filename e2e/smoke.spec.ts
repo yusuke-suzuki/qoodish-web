@@ -10,7 +10,7 @@ const API_BASE_URL = process.env.E2E_API_URL ?? 'https://api-dev.qoodish.com';
 const PUBLIC_PATHS = [
   '',
   '/discover',
-  '/reports',
+  '/pins',
   '/chapters',
   '/terms',
   '/privacy'
@@ -146,7 +146,7 @@ for (const lang of LOCALES) {
 
   test(`boots the pin detail page in ${lang}`, async ({ page, request }) => {
     const review = await firstPublicReview(request);
-    const route = `/${lang}/maps/${review.map.id}/reports/${review.id}`;
+    const route = `/${lang}/pins/${review.id}`;
 
     const response = await page.goto(route);
 
