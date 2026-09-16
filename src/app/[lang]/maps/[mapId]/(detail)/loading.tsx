@@ -13,7 +13,7 @@ const summaryCardWidth = 360;
 
 const reviewSkeletonKeys = ['a', 'b', 'c'];
 
-const tabSkeletonKeys = ['spots', 'chapters'];
+const tabSkeletonKeys = ['pins', 'chapters'];
 
 export default function Loading() {
   return (

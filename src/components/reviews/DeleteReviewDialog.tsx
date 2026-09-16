@@ -17,7 +17,7 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
 
   const handleConfirm = useCallback(async () => {
     if (!review) {
-      enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
+      enqueueSnackbar(dictionary['delete pin failed'], { variant: 'error' });
       return;
     }
 
@@ -29,7 +29,7 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
       );
 
       if (result.success) {
-        enqueueSnackbar(dictionary['delete report success'], {
+        enqueueSnackbar(dictionary['delete pin success'], {
           variant: 'success'
         });
 
@@ -38,18 +38,18 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
         return;
       }
 
-      enqueueSnackbar(result.error ?? dictionary['delete report failed'], {
+      enqueueSnackbar(result.error ?? dictionary['delete pin failed'], {
         variant: 'error'
       });
     } catch (_error) {
-      enqueueSnackbar(dictionary['delete report failed'], { variant: 'error' });
+      enqueueSnackbar(dictionary['delete pin failed'], { variant: 'error' });
     }
   }, [review, dictionary, onClose, onDeleted]);
 
   return (
     <ConfirmDeleteDialog
       open={open}
-      title={dictionary['sure to delete report']}
+      title={dictionary['sure to delete pin']}
       onClose={onClose}
       onConfirm={handleConfirm}
     />

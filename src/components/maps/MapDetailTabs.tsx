@@ -16,7 +16,7 @@ type Props = {
 function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
   const dictionary = useDictionary();
 
-  const [tabValue, setTabValue] = useState('spots');
+  const [tabValue, setTabValue] = useState('pins');
 
   const handleTabChange = (
     _event: SyntheticEvent<Element, Event>,
@@ -32,8 +32,8 @@ function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
           <Tab
             icon={<Place />}
             iconPosition="start"
-            label={dictionary.spots}
-            value="spots"
+            label={dictionary.pins}
+            value="pins"
           />
           <Tab
             icon={<HistoryEdu />}
@@ -44,7 +44,7 @@ function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
         </TabList>
       </Box>
 
-      <TabPanel value="spots" sx={{ px: 2, py: 0 }}>
+      <TabPanel value="pins" sx={{ px: 2, py: 0 }}>
         <MapReviewList reviews={reviews} onReviewClick={onReviewClick} />
       </TabPanel>
       <TabPanel value="chapters" sx={{ px: 2, py: 0 }}>

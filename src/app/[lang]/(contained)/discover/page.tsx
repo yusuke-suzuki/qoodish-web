@@ -87,7 +87,7 @@ export default async function DiscoverPage({ params }: Props) {
           <Box component="section">
             <SectionHeading
               icon={<FiberNew color="secondary" />}
-              title={dict['recent reports']}
+              title={dict['recent pins']}
               href={localePath(lang, '/reports')}
               linkLabel={dict['see all']}
             />

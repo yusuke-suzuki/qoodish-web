@@ -67,7 +67,7 @@ function PlaceInfoWindow({
           onClick={handleCreateReviewClick}
           startIcon={<Add />}
         >
-          {dictionary['add new spot']}
+          {dictionary['add to map']}
         </Button>
       </Box>
     </InfoWindow>

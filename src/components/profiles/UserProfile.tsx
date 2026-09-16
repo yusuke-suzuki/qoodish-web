@@ -113,7 +113,7 @@ function UserProfile({
                     {profile.reviews_count ?? 0}
                   </Typography>
                   <Typography variant="subtitle2" color="text.secondary">
-                    {dictionary.spots}
+                    {dictionary.pins}
                   </Typography>
                 </Box>
 
@@ -169,7 +169,7 @@ function UserProfile({
           </CardContent>
 
           <TabList onChange={handleTabChange}>
-            <Tab label={dictionary.spots} value="1" />
+            <Tab label={dictionary.pins} value="1" />
             <Tab label={dictionary.maps} value="2" />
             <Tab label={dictionary.chapters} value="3" />
           </TabList>

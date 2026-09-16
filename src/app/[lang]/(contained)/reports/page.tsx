@@ -18,7 +18,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const title = `${dict['recent reports']} | Qoodish`;
+  const title = `${dict['recent pins']} | Qoodish`;
   const description = dict['meta description'];
 
   return {
@@ -50,7 +50,7 @@ export default async function ReportsPage({ params }: Props) {
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
         <FiberNew color="secondary" />
         <Typography variant="h5" component="h1">
-          {dict['recent reports']}
+          {dict['recent pins']}
         </Typography>
       </Box>
 

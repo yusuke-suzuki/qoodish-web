@@ -36,7 +36,7 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
         title={map ? map.name : <Skeleton width="100%" />}
         subheader={
           map ? (
-            `${reviews.length} ${dictionary['spots count']}`
+            `${reviews.length} ${dictionary['pins count']}`
           ) : (
             <Skeleton width="50%" />
           )
