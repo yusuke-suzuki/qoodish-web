@@ -26,3 +26,18 @@ gcloud secrets versions access latest --secret=QOODISH_WEB_DOTENV --project=$PRO
 ```bash
 pnpm dev
 ```
+
+## Checks
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm e2e
+```
+
+## Deployment
+
+Production deploys from `master` through the Cloudflare Workers Builds git
+integration. How a deploy is verified and how to roll one back is written down
+in [docs/RUNBOOK.md](docs/RUNBOOK.md).
