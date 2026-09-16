@@ -41,6 +41,25 @@ export function getRecentReviews(lang: string): Promise<Review[]> {
   });
 }
 
+export function getReviewFeed(
+  lang: string,
+  nextTimestamp?: string,
+  nextId?: number
+): Promise<Review[]> {
+  const params = new URLSearchParams({ feed: 'true' });
+  if (nextTimestamp) {
+    params.set('next_timestamp', nextTimestamp);
+  }
+  if (nextId) {
+    params.set('next_id', String(nextId));
+  }
+  return apiFetchList<Review>(`/reviews?${params}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [REVIEWS_TAG] }
+  });
+}
+
 export function getTimelineReviews(nextTimestamp?: string): Promise<Review[]> {
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`

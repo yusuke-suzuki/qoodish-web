@@ -28,6 +28,26 @@ export function getRecentChapters(lang: string): Promise<Chapter[]> {
   });
 }
 
+export function getChapterFeed(
+  lang: string,
+  nextTimestamp?: string,
+  nextId?: number
+): Promise<Chapter[]> {
+  const params = new URLSearchParams();
+  if (nextTimestamp) {
+    params.set('next_timestamp', nextTimestamp);
+  }
+  if (nextId) {
+    params.set('next_id', String(nextId));
+  }
+  const query = params.size > 0 ? `?${params}` : '';
+  return apiFetchList<Chapter>(`/chapters${query}`, {
+    lang,
+    guest: true,
+    next: { revalidate: nextTimestamp ? 300 : 900, tags: [CHAPTERS_TAG] }
+  });
+}
+
 export function getUserChapters(
   userId: string | number,
   lang: string,
