@@ -24,10 +24,7 @@ type Props = {
 export default function ReviewDetail({ review }: Props) {
   const dictionary = useDictionary();
 
-  const { lang, mapId } = useParams<{
-    lang: string;
-    mapId: string;
-  }>();
+  const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
 
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
@@ -83,7 +80,7 @@ export default function ReviewDetail({ review }: Props) {
           color="secondary"
           startIcon={<KeyboardArrowLeft />}
           LinkComponent={Link}
-          href={`/${lang}/maps/${mapId}`}
+          href={`/${lang}/maps/${review.map.id}`}
         >
           {dictionary['back to map']}
         </Button>

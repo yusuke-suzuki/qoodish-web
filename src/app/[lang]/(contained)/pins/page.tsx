@@ -24,12 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: buildAlternates(lang, '/reports'),
+    alternates: buildAlternates(lang, '/pins'),
     openGraph: {
       type: 'website',
       title,
       description,
-      url: localePath(lang, '/reports'),
+      url: localePath(lang, '/pins'),
       images: ogImages(defaultOgImage(lang), title),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline']
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ReportsPage({ params }: Props) {
+export default async function PinsPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
   const reviews = await getReviewFeed(lang);

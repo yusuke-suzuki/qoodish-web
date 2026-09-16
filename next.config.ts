@@ -44,6 +44,20 @@ const nextConfig: NextConfig = {
       ]
     }
   ],
+  // Pins lived under /reports and inside their map's path before the URL
+  // followed the name; shared links and search results still carry those.
+  redirects: async () => [
+    {
+      source: '/:lang(ja|en)/reports',
+      destination: '/:lang/pins',
+      permanent: true
+    },
+    {
+      source: '/:lang(ja|en)/maps/:mapId/reports/:pinId',
+      destination: '/:lang/pins/:pinId',
+      permanent: true
+    }
+  ],
   reactCompiler: true,
   experimental: {
     globalNotFound: true

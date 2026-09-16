@@ -20,7 +20,7 @@ export default memo(function ReviewCard({ review }: Props) {
   return (
     <ButtonBase
       component={Link}
-      href={localePath(`/maps/${review.map.id}/reports/${review.id}`)}
+      href={localePath(`/pins/${review.id}`)}
       sx={{
         display: 'block',
         width: '100%',

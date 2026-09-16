@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import ReviewDetail from '../../../../../../../components/reviews/ReviewDetail.tsx';
-import { getServerAuthState } from '../../../../../../../lib/auth.ts';
-import { getReview } from '../../../../../../../lib/reviews.ts';
-import { getDictionary } from '../../../../../../../utils/getDictionary.ts';
-import { localePath } from '../../../../../../../utils/locales.ts';
+import ReviewDetail from '../../../../../components/reviews/ReviewDetail.tsx';
+import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getReview } from '../../../../../lib/reviews.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
-} from '../../../../../../../utils/metadata.ts';
+} from '../../../../../utils/metadata.ts';
 
 type Props = {
-  params: Promise<{ lang: string; mapId: string; reviewId: string }>;
+  params: Promise<{ lang: string; pinId: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { lang, mapId, reviewId } = await params;
+  const { lang, pinId } = await params;
   const dict = getDictionary(lang);
-  const review = await getReview(reviewId, lang);
+  const review = await getReview(pinId, lang);
 
   const title = review
     ? `${review.name} - ${review.map.name} | Qoodish`
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     review && review.images.length > 0
       ? review.images[0].ogp
       : defaultOgImage(lang);
-  const path = `/maps/${mapId}/reports/${reviewId}`;
+  const path = `/pins/${pinId}`;
 
   return {
     title,
@@ -57,10 +57,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ReviewPage({ params }: Props) {
-  const { lang, mapId, reviewId } = await params;
+export default async function PinPage({ params }: Props) {
+  const { lang, pinId } = await params;
   const { token } = await getServerAuthState();
-  const review = await getReview(reviewId, lang, token, mapId);
+  const review = await getReview(pinId, lang, token);
 
   if (!review) {
     notFound();
