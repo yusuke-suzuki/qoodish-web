@@ -54,10 +54,7 @@ export default memo(function UserReviews({
   return (
     <>
       {reviews.length < 1 && !isPending && (
-        <NoContents
-          message={dictionary['reports will see here']}
-          icon={Reviews}
-        />
+        <NoContents message={dictionary['pins will see here']} icon={Reviews} />
       )}
 
       <LoadingStatus loading={isPending} />

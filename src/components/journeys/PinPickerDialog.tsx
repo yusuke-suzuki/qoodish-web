@@ -21,7 +21,7 @@ type Props = {
   usedReviewIds: Set<number>;
 };
 
-export default memo(function SpotPickerDialog({
+export default memo(function PinPickerDialog({
   open,
   onClose,
   onSelect,
@@ -41,7 +41,7 @@ export default memo(function SpotPickerDialog({
       cancelLabel={dictionary.close}
     >
       {reviews.length < 1 ? (
-        <NoContents icon={Place} message={dictionary['spots will see here']} />
+        <NoContents icon={Place} message={dictionary['pins will see here']} />
       ) : (
         <List disablePadding>
           {reviews.map((review) => (

@@ -82,7 +82,7 @@ import CheckinImageStrip from './CheckinImageStrip.tsx';
 import CheckinNoteField from './CheckinNoteField.tsx';
 import EndJourneyDialog from './EndJourneyDialog.tsx';
 import JourneyMap from './JourneyMap.tsx';
-import SpotPickerDialog from './SpotPickerDialog.tsx';
+import PinPickerDialog from './PinPickerDialog.tsx';
 
 const DAY_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',
@@ -779,7 +779,7 @@ export default function JourneyDetailView({
         title={dictionary['sure to delete checkin']}
       />
 
-      <SpotPickerDialog
+      <PinPickerDialog
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onSelect={handleSelectReview}

@@ -48,7 +48,7 @@ import {
 } from '../../utils/mapFeatures.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 import ConfirmDialog from '../common/ConfirmDialog.tsx';
-import SpotPickerDialog from '../journeys/SpotPickerDialog.tsx';
+import PinPickerDialog from '../journeys/PinPickerDialog.tsx';
 import ChapterAuthorCard from './ChapterAuthorCard.tsx';
 import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
 import ChapterContentEditor from './ChapterContentEditor.tsx';
@@ -429,7 +429,7 @@ export default function ChapterEditor({
         </MenuItem>
       </Menu>
 
-      <SpotPickerDialog
+      <PinPickerDialog
         open={markerPickerOpen}
         onClose={() => setMarkerPickerOpen(false)}
         onSelect={handleAddMarker}

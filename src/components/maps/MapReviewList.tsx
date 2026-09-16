@@ -38,7 +38,7 @@ function MapReviewList({ reviews, onReviewClick }: Props) {
   if (reviews.length < 1) {
     return (
       <Box sx={{ py: 4 }}>
-        <NoContents icon={Place} message={dictionary['spots will see here']} />
+        <NoContents icon={Place} message={dictionary['pins will see here']} />
       </Box>
     );
   }

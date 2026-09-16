@@ -24,8 +24,8 @@ type Feature = {
 const FEATURES: Feature[] = [
   {
     icon: Place,
-    title: 'share favorite spot',
-    body: 'tell friends spot',
+    title: 'every place has a story',
+    body: 'leave them on the map',
     photo: PHOTOS.drinkAtTheLookout
   },
   {
