@@ -1,6 +1,8 @@
 # Terms of Service
 
-Last updated: August 24, 2026
+Last updated: September 23, 2026
+
+Effective: October 7, 2026
 
 These Terms of Service (these "Terms") set out the conditions for using "Qoodish" (the "Service"), as established by its operator ("we," "us," or "our"). Users shall use the Service in accordance with these Terms after agreeing to them.
 
@@ -56,6 +58,7 @@ In using the Service, users shall not engage in any of the following acts.
 - Acts of placing an excessive load on the network or systems of the Service
 - Acts of providing false information at the time of registration
 - Acts that damage the credit of our services
+- Acts of filing a false report or otherwise abusing the reporting function under Article 9
 - Other acts that we determine to be inappropriate
 
 ## Article 7 (Suspension of the Service and the Like)
@@ -75,13 +78,23 @@ In using the Service, users shall not engage in any of the following acts.
    - Where we otherwise determine that use of the Service is not appropriate
 2. We bear no liability for any damage caused to a user by measures we take under this Article.
 
-## Article 9 (Withdrawal)
+## Article 9 (Reporting and Removal of Posted Content)
+
+1. Users and any other person may report to us Posted Content that they consider to violate these Terms, through the reporting function on the Service or the contact set out in Article 18. A report may be filed whether or not the person is registered; a person who reports without registering must provide an email address for contact so that we can notify them of receipt and of the outcome.
+2. A report based on an infringement of rights (such as copyright, trademark, privacy, or honor) must state the right claimed to be infringed and the part of the Posted Content claimed to infringe it. We may decline to make a decision on a report that lacks these particulars.
+3. When we accept a report, we will notify the reporter of its receipt, examine the Posted Content against these Terms and applicable laws, and, as a rule within 14 days of receipt, decide whether to remove the Posted Content or take other measures and notify the reporter of the outcome. Where a decision requires more time, we may extend the period after notifying the reporter.
+4. Notwithstanding the preceding paragraph, we handle with priority a report concerning a risk to a person's life or body, the sexual exploitation of a child, or anything else we judge to call for urgent action.
+5. When we remove Posted Content or take other measures, we will notify the user who posted it of the measure and the reason. This does not apply where notice is prohibited by law or where notice would impair the safe operation of the Service.
+6. A user subject to a measure may object through the contact set out in Article 18. We will examine the objection and reconsider the measure where we find it necessary.
+7. We retain records of reports and of the measures taken on them, as a history of our handling, for the period required by law or necessary for the safe operation of the Service.
+
+## Article 10 (Withdrawal)
 
 1. Users may withdraw from the Service by the procedure we designate.
 2. Upon withdrawal, a user loses all rights relating to the user's account for the Service.
-3. Even after withdrawal, Article 5 (Posted Content and Copyright), Article 10 (Disclaimer of Warranties and Limitation of Liability), Article 13 (Handling of Personal Information), and Article 16 (Governing Law and Jurisdiction) shall remain in effect.
+3. Even after withdrawal, Article 5 (Posted Content and Copyright), Article 11 (Disclaimer of Warranties and Limitation of Liability), Article 14 (Handling of Personal Information), and Article 17 (Governing Law and Jurisdiction) shall remain in effect.
 
-## Article 10 (Disclaimer of Warranties and Limitation of Liability)
+## Article 11 (Disclaimer of Warranties and Limitation of Liability)
 
 1. We make no warranty of any kind, whether express or implied, regarding the Service and the information provided through the Service (including information about posted places, the content of Reports, and map information), including as to its completeness, accuracy, usefulness, fitness for a particular purpose, or non-infringement of the rights of third parties.
 2. We recommend that, before visiting a place using the Service, users confirm the address, business hours, and other information directly with the place in advance. We bear no liability for any damage caused to a user by the use of posted information.
@@ -89,36 +102,41 @@ In using the Service, users shall not engage in any of the following acts.
 4. We bear no liability for any third-party website or service linked from the Service.
 5. We bear no liability for any transaction, communication, or dispute that arises between a user and another user or a third party.
 
-## Article 11 (Changes to the Content of the Service and the Like)
+## Article 12 (Changes to the Content of the Service and the Like)
 
 We may change the content of the Service or terminate provision of the Service without prior notice to users. We bear no liability for any damage caused to a user thereby.
 
-## Article 12 (Changes to the Terms of Service)
+## Article 13 (Changes to the Terms of Service)
 
 1. We may change these Terms without the individual consent of users where we determine it to be necessary. However, where a change does not conform to the general interest of users, we will make it only within a reasonable scope in light of the necessity of the change, the appropriateness of its content, and other circumstances.
 2. Where we change these Terms, we will inform users of the content of the changed Terms and the time at which they take effect, by posting on the Service or by other appropriate means, before that time arrives. For changes that materially affect users, we will give advance notice a reasonable period beforehand.
 3. Where a user uses the Service on or after the time the changed Terms take effect, the user is deemed to have agreed to the change to these Terms.
 
-## Article 13 (Handling of Personal Information)
+## Article 14 (Handling of Personal Information)
 
 We will appropriately handle users' personal information obtained through use of the Service in accordance with our separately established [Privacy Policy](/privacy).
 
-## Article 14 (Notice or Communication)
+## Article 15 (Notice or Communication)
 
 Notice or communication between users and us shall be made by the method we designate. Unless a user notifies us of a change of contact details in the manner we designate, we will treat the currently registered contact details as valid and give notice or communication to those details, and such notice or communication is deemed to have reached the user at the time of dispatch.
 
-## Article 15 (Prohibition of Assignment of Rights and Obligations)
+## Article 16 (Prohibition of Assignment of Rights and Obligations)
 
 Users may not, without our prior written consent, assign to a third party or provide as security their status under these Terms or any right or obligation under these Terms.
 
-## Article 16 (Governing Law and Jurisdiction)
+## Article 17 (Governing Law and Jurisdiction)
 
 1. These Terms shall be governed by and construed in accordance with the laws of Japan.
 2. In the event of a dispute between a user and us concerning the Service, the Tokyo District Court shall be the court of exclusive agreed jurisdiction for the first instance.
 
-## Article 17 (Contact)
+## Article 18 (Contact)
 
-For inquiries regarding these Terms, please contact the following.
+For inquiries regarding these Terms, and for reports and objections under Article 9, please contact the following.
 
 - Operator: Qoodish
 - Email: support@qoodish.com
+
+## Revision history
+
+- Revised September 23, 2026 (effective October 7, 2026): added Article 9 on the procedure for reporting and removing Posted Content, renumbering the articles that follow, and added reporting with false content to the prohibited acts.
+- Revised August 24, 2026

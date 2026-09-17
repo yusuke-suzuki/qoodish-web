@@ -15,15 +15,14 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import type { AppMap, Chapter, Journal } from '../../../types/index.ts';
 import { deleteChapter } from '../../actions/chapters.ts';
-import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
 import { featureSpots } from '../../utils/mapFeatures.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
-import IssueDialog from '../common/IssueDialog.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import ChapterActions from './ChapterActions.tsx';
 import ChapterAuthorCard from './ChapterAuthorCard.tsx';
 import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
@@ -57,11 +56,9 @@ export default function ChapterReadView({
   const formatDateTime = useLocalDateTime();
   const router = useRouter();
 
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
-
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const markerSpots = featureSpots(chapter.map_features);
 
@@ -76,13 +73,7 @@ export default function ChapterReadView({
 
   const handleReportClick = () => {
     setMenuAnchor(null);
-
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
-
-    setIssueDialogOpen(true);
+    setReportDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -209,11 +200,11 @@ export default function ChapterReadView({
         )}
       </Menu>
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="chapter"
-        contentId={chapter.id}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Chapter"
+        moderatableId={chapter.id}
       />
 
       <ConfirmDeleteDialog

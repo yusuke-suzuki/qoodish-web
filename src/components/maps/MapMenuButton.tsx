@@ -16,9 +16,8 @@ import {
 } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useContext, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import type { AppMap, Profile } from '../../../types/index.ts';
-import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
@@ -39,7 +38,6 @@ export default memo(function MapMenuButton({
   onDeleteClick,
   onReportClick
 }: Props) {
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -66,11 +64,6 @@ export default memo(function MapMenuButton({
 
   const handleReportClick = () => {
     setAnchorEl(null);
-
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
 
     onReportClick();
   };

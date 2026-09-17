@@ -7,8 +7,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from './DeletePinDialog.tsx';
 import EditPinDialog from './EditPinDialog.tsx';
 import PinCardActions from './PinCardActions.tsx';
@@ -27,7 +27,7 @@ export default function PinDetail({ pin }: Props) {
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
 
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -42,7 +42,7 @@ export default function PinDetail({ pin }: Props) {
                 <PinMenuButton
                   pin={pin}
                   currentProfile={profile}
-                  onReportClick={() => setIssueDialogOpen(true)}
+                  onReportClick={() => setReportDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
                   onDeleteClick={() => setDeleteDialogOpen(true)}
                   hideDetail
@@ -97,11 +97,11 @@ export default function PinDetail({ pin }: Props) {
         onDeleted={router.refresh}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="pin"
-        contentId={pin.id}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Pin"
+        moderatableId={pin.id}
       />
     </>
   );

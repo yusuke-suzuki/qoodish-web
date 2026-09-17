@@ -9,9 +9,9 @@ import { fetchMoreTimelinePins } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CreateMapButton from '../common/CreateMapButton.tsx';
 import DiscoverButton from '../common/DiscoverButton.tsx';
-import IssueDialog from '../common/IssueDialog.tsx';
 import LoadingStatus from '../common/LoadingStatus.tsx';
 import NoContents from '../common/NoContents.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import TimelinePinCard from './TimelinePinCard.tsx';
 import TimelinePinCardSkeleton from './TimelinePinCardSkeleton.tsx';
 
@@ -19,8 +19,8 @@ type Props = {
   initialPins: Pin[];
 };
 
-type IssueReportOptions = {
-  contentId: number | null;
+type ReportTarget = {
+  pinId: number | null;
   dialogOpen: boolean;
 };
 
@@ -33,11 +33,10 @@ export default memo(function Timeline({ initialPins }: Props) {
   const [noMoreResults, setNoMoreResults] = useState(initialPins.length < 1);
   const [isPending, startTransition] = useTransition();
 
-  const [issueReportOptions, setIssueReportOptions] =
-    useState<IssueReportOptions>({
-      contentId: null,
-      dialogOpen: false
-    });
+  const [reportTarget, setReportTarget] = useState<ReportTarget>({
+    pinId: null,
+    dialogOpen: false
+  });
 
   const loadMore = () => {
     if (noMoreResults || isPending) return;
@@ -60,15 +59,15 @@ export default memo(function Timeline({ initialPins }: Props) {
   };
 
   const handleReportClick = (pin: Pin) => {
-    setIssueReportOptions({
-      contentId: pin.id,
+    setReportTarget({
+      pinId: pin.id,
       dialogOpen: true
     });
   };
 
-  const handleIssueDialogClose = () => {
-    setIssueReportOptions({
-      contentId: null,
+  const handleReportDialogClose = () => {
+    setReportTarget({
+      pinId: null,
       dialogOpen: false
     });
   };
@@ -111,11 +110,11 @@ export default memo(function Timeline({ initialPins }: Props) {
         )}
       </Stack>
 
-      <IssueDialog
-        open={issueReportOptions.dialogOpen}
-        onClose={handleIssueDialogClose}
-        contentType="pin"
-        contentId={issueReportOptions.contentId}
+      <ReportDialog
+        open={reportTarget.dialogOpen}
+        onClose={handleReportDialogClose}
+        moderatableType="Pin"
+        moderatableId={reportTarget.pinId}
       />
     </>
   );

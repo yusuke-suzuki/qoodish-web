@@ -6,9 +6,8 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
-import { memo, useContext, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import type { Comment, Profile } from '../../../types/index.ts';
-import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
@@ -24,8 +23,6 @@ export default memo(function CommentMenuButton({
   currentProfile,
   onDeleteClick
 }: Props) {
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
-
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -36,11 +33,6 @@ export default memo(function CommentMenuButton({
 
   const handleReportClick = () => {
     setAnchorEl(null);
-
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
 
     onReportClick(comment);
   };
