@@ -18,8 +18,8 @@ import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from '../pins/DeletePinDialog.tsx';
 import EditPinDialog from '../pins/EditPinDialog.tsx';
 import LikePinButton from '../pins/LikePinButton.tsx';
@@ -48,7 +48,7 @@ function PinPopover({
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const pin = currentPin;
 
@@ -81,7 +81,7 @@ function PinPopover({
                 <PinMenuButton
                   pin={pin}
                   currentProfile={profile}
-                  onReportClick={() => setIssueDialogOpen(true)}
+                  onReportClick={() => setReportDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
                   onDeleteClick={() => setDeleteDialogOpen(true)}
                 />
@@ -143,11 +143,11 @@ function PinPopover({
         onDeleted={onDeleted}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="pin"
-        contentId={pin ? pin.id : null}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Pin"
+        moderatableId={pin ? pin.id : null}
       />
     </>
   );

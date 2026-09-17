@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: August 24, 2026
+Last updated: September 23, 2026
 
 The operator of "Qoodish" (the "Service") ("we," "us," or "our") establishes this Privacy Policy (this "Policy") regarding the handling of users' personal information in the Service.
 
@@ -31,6 +31,9 @@ In providing the Service, we collect the following personal information.
   - The names, comments, and images of maps and reports, and the location information (latitude and longitude) of the places concerned
 - Location information
   - Location information obtained from the user's device when the "current location" feature is used. Location information is obtained only based on the user's action and the permission granted on the device.
+- Information relating to reports of posted content
+  - The category of the report, the description written by the reporter, and any reference URL
+  - The contact email address given by a reporter who reports by email without signing in
 - Information relating to the device and notifications
   - The device registration token used to deliver push notifications (we use Firebase Cloud Messaging).
 - Information relating to use of the Service
@@ -48,6 +51,7 @@ We use the personal information we collect within the scope of the following pur
 - To deliver push notifications and other communications
 - To analyze how the Service is used and to maintain, improve, and develop the Service
 - To respond to conduct that violates the Terms of Service and otherwise to operate the Service safely
+- To handle reports of posted content and to notify the reporter and the author of the outcome
 - To respond to inquiries from users
 - For purposes incidental to the purposes set out above
 
@@ -70,7 +74,7 @@ We will not provide personal data to any third party without obtaining the prior
 We may entrust all or part of the handling of personal data to external service providers within the scope necessary to achieve the purposes of use. In such cases, we exercise necessary and appropriate supervision over those providers. The principal external providers used by the Service are as follows.
 
 - Google LLC (provision of Google Cloud Identity Platform, Firebase Cloud Messaging, Google Analytics for Firebase, and Google Maps Platform)
-- Cloudflare, Inc. (hosting of the Service, and the storage and delivery of images)
+- Cloudflare, Inc. (hosting of the Service, the storage and delivery of images, and the sending of email)
 
 ## Article 8 (Provision to Third Parties in Foreign Countries)
 
@@ -130,3 +134,8 @@ For inquiries regarding this Policy, please contact the following.
 
 - Operator: Qoodish
 - Email: support@qoodish.com
+
+## Revision history
+
+- Revised September 23, 2026: added the information handled for reports of Posted Content and the purposes of its use, and added the sending of email to what is entrusted to Cloudflare, Inc.
+- Revised August 24, 2026

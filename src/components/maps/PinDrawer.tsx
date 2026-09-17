@@ -15,8 +15,8 @@ import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from '../pins/DeletePinDialog.tsx';
 import EditPinDialog from '../pins/EditPinDialog.tsx';
 import LikePinButton from '../pins/LikePinButton.tsx';
@@ -52,7 +52,7 @@ function PinDrawer({
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [milestoneLoading, setMilestoneLoading] = useState(false);
@@ -106,7 +106,7 @@ function PinDrawer({
                   <PinMenuButton
                     pin={pin}
                     currentProfile={profile}
-                    onReportClick={() => setIssueDialogOpen(true)}
+                    onReportClick={() => setReportDialogOpen(true)}
                     onEditClick={() => setEditDialogOpen(true)}
                     onDeleteClick={() => setDeleteDialogOpen(true)}
                   />
@@ -212,11 +212,11 @@ function PinDrawer({
         pin={pin}
         onDeleted={handlePinDeleted}
       />
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="pin"
-        contentId={pin ? pin.id : null}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Pin"
+        moderatableId={pin ? pin.id : null}
       />
     </>
   );

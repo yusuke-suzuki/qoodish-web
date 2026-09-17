@@ -16,8 +16,8 @@ import { memo, useState } from 'react';
 import type { Comment } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
 import DeleteCommentDialog from './DeleteCommentDialog.tsx';
 import LikeCommentButton from './LikeCommentButton.tsx';
@@ -33,7 +33,7 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
   const localePath = useLocalePath();
 
   const [currentComment, setCurrentComment] = useState<Comment | null>(null);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDeleteClick = (comment: Comment) => {
@@ -43,7 +43,7 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
 
   const handleReportClick = (comment: Comment) => {
     setCurrentComment(comment);
-    setIssueDialogOpen(true);
+    setReportDialogOpen(true);
   };
 
   return (
@@ -115,11 +115,11 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
         onDeleted={onDeleted}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="comment"
-        contentId={currentComment ? currentComment.id : null}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Comment"
+        moderatableId={currentComment ? currentComment.id : null}
       />
     </>
   );
