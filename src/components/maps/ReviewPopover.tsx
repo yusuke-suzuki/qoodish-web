@@ -18,8 +18,8 @@ import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
 import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
 import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
@@ -48,7 +48,7 @@ function ReviewPopover({
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const review = currentReview;
 
@@ -81,7 +81,7 @@ function ReviewPopover({
                 <ReviewMenuButton
                   review={review}
                   currentProfile={profile}
-                  onReportClick={() => setIssueDialogOpen(true)}
+                  onReportClick={() => setReportDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
                   onDeleteClick={() => setDeleteDialogOpen(true)}
                 />
@@ -143,11 +143,11 @@ function ReviewPopover({
         onDeleted={onDeleted}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={review ? review.id : null}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Review"
+        moderatableId={review ? review.id : null}
       />
     </>
   );

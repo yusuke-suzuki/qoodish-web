@@ -14,7 +14,7 @@ import type {
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useJourney, { type PauseReason } from '../../hooks/useJourney.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import EndJourneyDialog from '../journeys/EndJourneyDialog.tsx';
 import JourneyFab from '../journeys/JourneyFab.tsx';
 import JourneyOverlay from '../journeys/JourneyOverlay.tsx';
@@ -188,7 +188,7 @@ export default function MapDetailView({
   const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
   const [currentZoom, setCurrentZoom] = useState(17);
 
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -226,7 +226,7 @@ export default function MapDetailView({
         currentProfile={currentProfile}
         onEditClick={() => setEditDialogOpen(true)}
         onDeleteClick={() => setDeleteDialogOpen(true)}
-        onReportClick={() => setIssueDialogOpen(true)}
+        onReportClick={() => setReportDialogOpen(true)}
         onSaved={router.refresh}
         onReviewClick={handleReviewClick}
         reviewDrawerOpen={reviewDrawerOpen}
@@ -267,7 +267,7 @@ export default function MapDetailView({
             currentProfile={currentProfile}
             onEditClick={() => setEditDialogOpen(true)}
             onDeleteClick={() => setDeleteDialogOpen(true)}
-            onReportClick={() => setIssueDialogOpen(true)}
+            onReportClick={() => setReportDialogOpen(true)}
             onSaved={router.refresh}
           />
         </Box>
@@ -343,11 +343,11 @@ export default function MapDetailView({
         onDeleted={router.refresh}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="map"
-        contentId={map.id}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Map"
+        moderatableId={map.id}
       />
 
       <StartJourneyDialog
