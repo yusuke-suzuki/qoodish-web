@@ -9,13 +9,9 @@ type ActionResult = {
   error?: string;
 };
 
-export async function createComment(
-  pinId: number,
-  comment: string
-): Promise<ActionResult> {
-  const { error } = await apiFetch(`/pins/${pinId}/comments`, {
-    method: 'POST',
-    body: JSON.stringify({ comment })
+export async function likePin(pinId: number): Promise<ActionResult> {
+  const { error } = await apiFetch(`/pins/${pinId}/like`, {
+    method: 'POST'
   });
 
   if (error) {
@@ -27,11 +23,8 @@ export async function createComment(
   return { success: true };
 }
 
-export async function deleteComment(
-  pinId: number,
-  commentId: number
-): Promise<ActionResult> {
-  const { error } = await apiFetch(`/pins/${pinId}/comments/${commentId}`, {
+export async function unlikePin(pinId: number): Promise<ActionResult> {
+  const { error } = await apiFetch(`/pins/${pinId}/like`, {
     method: 'DELETE'
   });
 

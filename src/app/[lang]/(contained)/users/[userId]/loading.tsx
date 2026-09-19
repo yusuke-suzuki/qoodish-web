@@ -8,7 +8,7 @@ import {
   Stack
 } from '@mui/material';
 
-const REVIEW_TILE_COUNT = 6;
+const PIN_TILE_COUNT = 6;
 const TAB_COUNT = 3;
 const tabBarHeight = 48;
 
@@ -69,14 +69,14 @@ export default function Loading() {
         </Box>
       </Card>
 
-      {/* The sizes ReviewGridList gives the photographs it draws. Skeleton
+      {/* The sizes PinGridList gives the photographs it draws. Skeleton
           keeps a 1.2em height unless it is cleared, which would override the
           aspect ratio. */}
       <Grid container spacing={2} sx={{ mt: 2 }}>
-        {Array.from({ length: REVIEW_TILE_COUNT }).map((_, index) => (
+        {Array.from({ length: PIN_TILE_COUNT }).map((_, index) => (
           <Grid
             // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
-            key={`skeleton-profile-review-${index}`}
+            key={`skeleton-profile-pin-${index}`}
             size={{ xs: 6, sm: 4, md: 3 }}
           >
             <Skeleton

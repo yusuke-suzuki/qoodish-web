@@ -1,4 +1,4 @@
-import type { AppMap, Chapter, Coauthor, Review } from '../../types/index.ts';
+import type { AppMap, Chapter, Coauthor, Pin } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { CHAPTERS_TAG, CONTENT_TAG, MAPS_TAG, mapTag } from './cacheTags.ts';
 
@@ -29,13 +29,13 @@ export async function getFeaturedMap(lang: string): Promise<AppMap | null> {
   return data;
 }
 
-export function getMapReviews(
+export function getMapPins(
   mapId: string,
   lang: string,
   token?: string
-): Promise<Review[]> {
+): Promise<Pin[]> {
   const guest = !token;
-  return apiFetchList<Review>(`/maps/${mapId}/reviews`, {
+  return apiFetchList<Pin>(`/maps/${mapId}/pins`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0, tags: [mapTag(mapId), CONTENT_TAG] }

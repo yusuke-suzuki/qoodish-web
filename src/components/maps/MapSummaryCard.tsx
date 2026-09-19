@@ -14,8 +14,8 @@ import type {
   AppMap,
   Chapter,
   Coauthor,
-  Profile,
-  Review
+  Pin,
+  Profile
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
@@ -29,7 +29,7 @@ import RemoveBookmarkButton from './RemoveBookmarkButton.tsx';
 
 type Props = {
   map: AppMap | null;
-  reviews: Review[];
+  pins: Pin[];
   coauthors: Coauthor[];
   chapters: Chapter[];
   currentProfile: Profile | null;
@@ -41,7 +41,7 @@ type Props = {
 
 export default memo(function MapSummaryCard({
   map,
-  reviews,
+  pins,
   coauthors,
   chapters,
   currentProfile,
@@ -145,7 +145,7 @@ export default memo(function MapSummaryCard({
         </Box>
       </CardContent>
       <Divider />
-      <MapDetailTabs reviews={reviews} chapters={chapters} />
+      <MapDetailTabs pins={pins} chapters={chapters} />
     </Card>
   );
 });

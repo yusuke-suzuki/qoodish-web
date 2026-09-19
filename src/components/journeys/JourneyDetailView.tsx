@@ -54,7 +54,7 @@ import type {
   Image,
   Journey,
   JourneyCheckin,
-  Review
+  Pin
 } from '../../../types/index.ts';
 import { createChapter } from '../../actions/chapters.ts';
 import {
@@ -116,14 +116,14 @@ type Props = {
   chapter: Chapter | null;
   // Deleting a map nullifies the journeys on it, so the journey outlives it.
   map: AppMap | null;
-  reviews: Review[];
+  pins: Pin[];
 };
 
 export default function JourneyDetailView({
   journey,
   chapter,
   map,
-  reviews
+  pins
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
@@ -139,7 +139,7 @@ export default function JourneyDetailView({
   const [ended, setEnded] = useState(false);
   const [recording, setRecording] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [pendingReview, setPendingReview] = useState<Review | null>(null);
+  const [pendingPin, setPendingPin] = useState<Pin | null>(null);
   const [pendingTime, setPendingTime] = useState('');
   const [addingCheckin, setAddingCheckin] = useState(false);
   const [pendingDeleteCheckin, setPendingDeleteCheckin] =
@@ -173,16 +173,14 @@ export default function JourneyDetailView({
   );
 
   const milestones = useMemo(() => {
-    const visitedReviewIds = new Set(
-      checkins.map((checkin) => checkin.review_id)
-    );
+    const visitedPinIds = new Set(checkins.map((checkin) => checkin.pin_id));
 
     return journey.milestones.map((milestone) => ({
       id: milestone.id,
       name: milestone.name,
       latitude: milestone.latitude,
       longitude: milestone.longitude,
-      visited: visitedReviewIds.has(milestone.review_id)
+      visited: visitedPinIds.has(milestone.pin_id)
     }));
   }, [journey.milestones, checkins]);
 
@@ -259,15 +257,15 @@ export default function JourneyDetailView({
     [saveCheckin]
   );
 
-  const usedReviewIds = useMemo(
-    () => new Set(checkins.map((checkin) => checkin.review_id)),
+  const usedPinIds = useMemo(
+    () => new Set(checkins.map((checkin) => checkin.pin_id)),
     [checkins]
   );
 
-  const handleSelectReview = useCallback(
-    (review: Review) => {
+  const handleSelectPin = useCallback(
+    (pin: Pin) => {
       setPickerOpen(false);
-      setPendingReview(review);
+      setPendingPin(pin);
 
       const last = checkinsRef.current.at(-1);
       const seed =
@@ -297,7 +295,7 @@ export default function JourneyDetailView({
     pendingTime <= timeRange.max;
 
   const handleConfirmCheckin = useCallback(async () => {
-    if (!pendingReview) {
+    if (!pendingPin) {
       return;
     }
 
@@ -305,7 +303,7 @@ export default function JourneyDetailView({
 
     const { success, data, error } = await addCheckin(
       journey.id,
-      pendingReview.id,
+      pendingPin.id,
       new Date(pendingTime).toISOString()
     );
 
@@ -320,8 +318,8 @@ export default function JourneyDetailView({
 
     checkinsRef.current = [...checkinsRef.current, data];
     setCheckins(checkinsRef.current);
-    setPendingReview(null);
-  }, [journey.id, pendingReview, pendingTime, dictionary]);
+    setPendingPin(null);
+  }, [journey.id, pendingPin, pendingTime, dictionary]);
 
   const handleRemoveCheckin = useCallback(async () => {
     if (!pendingDeleteCheckin) {
@@ -650,7 +648,7 @@ export default function JourneyDetailView({
             </Timeline>
           )}
 
-          {started && map && reviews.length > 0 && (
+          {started && map && pins.length > 0 && (
             <Button
               fullWidth
               variant="outlined"
@@ -782,21 +780,21 @@ export default function JourneyDetailView({
       <PinPickerDialog
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onSelect={handleSelectReview}
-        reviews={reviews}
-        usedReviewIds={usedReviewIds}
+        onSelect={handleSelectPin}
+        pins={pins}
+        usedPinIds={usedPinIds}
       />
 
       <Dialog
-        open={Boolean(pendingReview)}
-        onClose={() => setPendingReview(null)}
+        open={Boolean(pendingPin)}
+        onClose={() => setPendingPin(null)}
         fullWidth
         maxWidth="xs"
       >
         <DialogTitle>{dictionary['add checkin']}</DialogTitle>
         <DialogContent>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>
-            {pendingReview?.name}
+            {pendingPin?.name}
           </Typography>
           <TextField
             fullWidth
@@ -812,7 +810,7 @@ export default function JourneyDetailView({
           />
         </DialogContent>
         <DialogActions>
-          <Button color="inherit" onClick={() => setPendingReview(null)}>
+          <Button color="inherit" onClick={() => setPendingPin(null)}>
             {dictionary.cancel}
           </Button>
           <Button

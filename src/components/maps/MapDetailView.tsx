@@ -9,8 +9,8 @@ import type {
   Chapter,
   Coauthor,
   Journey,
-  Profile,
-  Review
+  Pin,
+  Profile
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useJourney, { type PauseReason } from '../../hooks/useJourney.ts';
@@ -27,13 +27,13 @@ import EditMapDialog from './EditMapDialog.tsx';
 import GoogleMaps from './GoogleMaps.tsx';
 import MapSummaryCard from './MapSummaryCard.tsx';
 import MobileMapDrawer from './MobileMapDrawer.tsx';
-import ReviewDrawer from './ReviewDrawer.tsx';
+import PinDrawer from './PinDrawer.tsx';
 
 const summaryCardHeight = 360;
 
 type Props = {
   map: AppMap;
-  reviews: Review[];
+  pins: Pin[];
   coauthors: Coauthor[];
   chapters: Chapter[];
   currentProfile: Profile | null;
@@ -42,7 +42,7 @@ type Props = {
 
 export default function MapDetailView({
   map,
-  reviews,
+  pins,
   coauthors,
   chapters,
   currentProfile,
@@ -58,8 +58,8 @@ export default function MapDetailView({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const handleCheckin = (review: Review) => {
-    enqueueSnackbar(dictionary['checked in'].replace('{name}', review.name), {
+  const handleCheckin = (pin: Pin) => {
+    enqueueSnackbar(dictionary['checked in'].replace('{name}', pin.name), {
       variant: 'success'
     });
   };
@@ -102,7 +102,7 @@ export default function MapDetailView({
     updateCheckinNote
   } = useJourney({
     map,
-    reviews,
+    pins,
     initialJourney: currentJourney,
     canRecord,
     onCheckin: handleCheckin,
@@ -115,31 +115,31 @@ export default function MapDetailView({
   const [progressOpen, setProgressOpen] = useState(false);
   const [startDialogOpen, setStartDialogOpen] = useState(false);
   const [endDialogOpen, setEndDialogOpen] = useState(false);
-  const [currentReview, setCurrentReview] = useState<Review | null>(null);
-  const [reviewDrawerOpen, setReviewDrawerOpen] = useState(false);
+  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
+  const [pinDrawerOpen, setPinDrawerOpen] = useState(false);
 
   const journeyActive = Boolean(journey?.started_at && !journey?.finished_at);
 
   const milestoneOrders = new Map(
     (journey?.milestones ?? []).map((milestone, index) => [
-      milestone.review_id,
+      milestone.pin_id,
       index + 1
     ])
   );
 
-  const checkedInReviewIds = new Set(
-    (journey?.checkins ?? []).map((checkin) => checkin.review_id)
+  const checkedInPinIds = new Set(
+    (journey?.checkins ?? []).map((checkin) => checkin.pin_id)
   );
 
-  const handleAddMilestone = async (review: Review) => {
-    const added = await addMilestone(review);
+  const handleAddMilestone = async (pin: Pin) => {
+    const added = await addMilestone(pin);
 
     if (added) {
       enqueueSnackbar(
-        dictionary['added to milestones'].replace('{name}', review.name),
+        dictionary['added to milestones'].replace('{name}', pin.name),
         { variant: 'success' }
       );
-      setReviewDrawerOpen(false);
+      setPinDrawerOpen(false);
     }
   };
 
@@ -192,13 +192,13 @@ export default function MapDetailView({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleReviewSaved = () => {
+  const handlePinSaved = () => {
     router.refresh();
   };
 
-  const handleReviewClick = (review: Review) => {
-    setCurrentReview(review);
-    setReviewDrawerOpen(true);
+  const handlePinClick = (pin: Pin) => {
+    setCurrentPin(pin);
+    setPinDrawerOpen(true);
   };
 
   useEffect(() => {
@@ -220,7 +220,7 @@ export default function MapDetailView({
     <>
       <MobileMapDrawer
         map={map}
-        reviews={reviews}
+        pins={pins}
         coauthors={coauthors}
         chapters={chapters}
         currentProfile={currentProfile}
@@ -228,26 +228,26 @@ export default function MapDetailView({
         onDeleteClick={() => setDeleteDialogOpen(true)}
         onReportClick={() => setIssueDialogOpen(true)}
         onSaved={router.refresh}
-        onReviewClick={handleReviewClick}
-        reviewDrawerOpen={reviewDrawerOpen}
+        onPinClick={handlePinClick}
+        pinDrawerOpen={pinDrawerOpen}
       />
 
-      <ReviewDrawer
-        currentReview={currentReview}
-        open={reviewDrawerOpen}
-        onOpen={() => setReviewDrawerOpen(true)}
-        onClose={() => setReviewDrawerOpen(false)}
-        onExited={() => setCurrentReview(null)}
+      <PinDrawer
+        currentPin={currentPin}
+        open={pinDrawerOpen}
+        onOpen={() => setPinDrawerOpen(true)}
+        onClose={() => setPinDrawerOpen(false)}
+        onExited={() => setCurrentPin(null)}
         milestoneAction={
-          currentReview
+          currentPin
             ? {
-                selected: milestoneOrders.has(currentReview.id),
-                onAdd: () => handleAddMilestone(currentReview)
+                selected: milestoneOrders.has(currentPin.id),
+                onAdd: () => handleAddMilestone(currentPin)
               }
             : null
         }
-        onSaved={handleReviewSaved}
-        onDeleted={handleReviewSaved}
+        onSaved={handlePinSaved}
+        onDeleted={handlePinSaved}
       />
 
       <Box sx={{ display: { xs: 'block', md: 'flex' } }}>
@@ -261,7 +261,7 @@ export default function MapDetailView({
         >
           <MapSummaryCard
             map={map}
-            reviews={reviews}
+            pins={pins}
             coauthors={coauthors}
             chapters={chapters}
             currentProfile={currentProfile}
@@ -288,11 +288,11 @@ export default function MapDetailView({
         >
           <CustomOverlays
             map={map}
-            reviews={reviews}
+            pins={pins}
             milestoneOrders={milestoneOrders}
-            checkedInReviewIds={checkedInReviewIds}
-            onReviewSaved={handleReviewSaved}
-            onReviewClick={handleReviewClick}
+            checkedInPinIds={checkedInPinIds}
+            onPinSaved={handlePinSaved}
+            onPinClick={handlePinClick}
           />
           <JourneyOverlay
             position={journeyPosition}
@@ -312,7 +312,7 @@ export default function MapDetailView({
                 onClose={() => setProgressOpen(false)}
                 onOpen={() => setProgressOpen(true)}
                 journey={journey}
-                reviews={reviews}
+                pins={pins}
                 paused={paused}
                 onRemoveMilestone={removeMilestone}
                 onRemoveCheckin={removeCheckin}

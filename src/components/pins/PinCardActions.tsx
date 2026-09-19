@@ -1,19 +1,19 @@
 import { Box, Button, CardActions, Stack, TextField } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback, useContext, useState, useTransition } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import { createComment } from '../../actions/comments.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import LikeReviewButton from './LikeReviewButton.tsx';
+import LikePinButton from './LikePinButton.tsx';
 import PosterAvatar from './PosterAvatar.tsx';
 
 type Props = {
-  review: Review;
+  pin: Pin;
   onCommentAdded: () => void;
 };
 
-const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
+const PinCardActions = ({ pin, onCommentAdded }: Props) => {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
 
   const [commentFormActive, setCommentFormActive] = useState(false);
@@ -30,7 +30,7 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
 
     startTransition(async () => {
       try {
-        const result = await createComment(review.id, comment);
+        const result = await createComment(pin.id, comment);
 
         if (result.success) {
           enqueueSnackbar(dictionary['added comment'], { variant: 'success' });
@@ -48,7 +48,7 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
     });
   }, [
     authenticated,
-    review,
+    pin,
     comment,
     onCommentAdded,
     setSignInRequired,
@@ -84,7 +84,7 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
           </Box>
 
           <Box display="flex" alignItems="center">
-            {!commentFormActive && <LikeReviewButton review={review} />}
+            {!commentFormActive && <LikePinButton pin={pin} />}
           </Box>
         </Box>
 
@@ -117,4 +117,4 @@ const ReviewCardActions = ({ review, onCommentAdded }: Props) => {
   );
 };
 
-export default memo(ReviewCardActions);
+export default memo(PinCardActions);

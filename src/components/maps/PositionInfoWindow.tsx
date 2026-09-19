@@ -12,25 +12,25 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import InfoWindow from './InfoWindow.tsx';
 
 type Props = {
-  disableCreateReview: boolean;
+  disableCreatePin: boolean;
   position: google.maps.LatLng | null;
-  onCreateReviewClick: () => void;
+  onCreatePinClick: () => void;
   onClose: () => void;
 };
 
 function PositionInfoWindow({
-  disableCreateReview,
+  disableCreatePin,
   position,
-  onCreateReviewClick,
+  onCreatePinClick,
   onClose
 }: Props) {
   const dictionary = useDictionary();
 
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
-  const handleCreateReviewClick = () => {
+  const handleCreatePinClick = () => {
     setInfoWindowOpen(false);
-    onCreateReviewClick();
+    onCreatePinClick();
   };
 
   const handleClose = () => {
@@ -72,8 +72,8 @@ function PositionInfoWindow({
           color="secondary"
           fullWidth
           size="small"
-          disabled={disableCreateReview}
-          onClick={handleCreateReviewClick}
+          disabled={disableCreatePin}
+          onClick={handleCreatePinClick}
           startIcon={<Add />}
         >
           {dictionary['add to map']}

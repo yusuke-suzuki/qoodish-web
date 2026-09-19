@@ -9,7 +9,7 @@ import {
   useTransition
 } from 'react';
 import type { AppMap } from '../../../types/index.ts';
-import { createReview } from '../../actions/reviews.ts';
+import { createPin } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
@@ -17,8 +17,8 @@ import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
 import PhotoPreviewList from '../common/PhotoPreviewList.tsx';
 import PositionForm from '../maps/PositionForm.tsx';
-import ReviewDescriptionForm from './ReviewDescriptionForm.tsx';
-import ReviewNameForm from './ReviewNameForm.tsx';
+import PinDescriptionForm from './PinDescriptionForm.tsx';
+import PinNameForm from './PinNameForm.tsx';
 
 type Props = {
   open: boolean;
@@ -31,7 +31,7 @@ type Props = {
   pinnedPosition?: google.maps.LatLng | null;
 };
 
-export default memo(function CreateReviewDialog({
+export default memo(function CreatePinDialog({
   open,
   onClose,
   onExited,
@@ -68,7 +68,7 @@ export default memo(function CreateReviewDialog({
 
       startTransition(async () => {
         try {
-          const result = await createReview(map.id, {
+          const result = await createPin(map.id, {
             name,
             comment,
             latitude: position.lat,
@@ -77,7 +77,7 @@ export default memo(function CreateReviewDialog({
           });
 
           if (result.success) {
-            enqueueSnackbar(dictionary['create review success'], {
+            enqueueSnackbar(dictionary['create pin success'], {
               variant: 'success'
             });
 
@@ -192,9 +192,9 @@ export default memo(function CreateReviewDialog({
         />
       </Box>
 
-      <ReviewNameForm defaultValue={place?.displayName} onChange={setName} />
+      <PinNameForm defaultValue={place?.displayName} onChange={setName} />
 
-      <ReviewDescriptionForm onChange={setComment} />
+      <PinDescriptionForm onChange={setComment} />
 
       <PhotoPreviewList items={items} onDelete={removeAt} />
     </AppDialog>

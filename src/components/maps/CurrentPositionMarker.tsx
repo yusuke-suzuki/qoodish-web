@@ -54,14 +54,14 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 type Props = {
   profile: Profile | null;
-  onCreateReviewClick: () => void;
-  disableCreateReview: boolean;
+  onCreatePinClick: () => void;
+  disableCreatePin: boolean;
 };
 
 function CurrentPositionMarker({
   profile,
-  onCreateReviewClick,
-  disableCreateReview
+  onCreatePinClick,
+  disableCreatePin
 }: Props) {
   const { loader, currentPosition } = useGoogleMap();
 
@@ -91,10 +91,10 @@ function CurrentPositionMarker({
     setOpen(true);
   };
 
-  const handleCreateReviewClick = () => {
+  const handleCreatePinClick = () => {
     setPopoverAnchorEl(null);
 
-    onCreateReviewClick();
+    onCreatePinClick();
   };
 
   const popoverOpen = Boolean(popoverAnchorEl);
@@ -229,8 +229,8 @@ function CurrentPositionMarker({
             color="secondary"
             fullWidth
             size="small"
-            disabled={disableCreateReview}
-            onClick={handleCreateReviewClick}
+            disabled={disableCreatePin}
+            onClick={handleCreatePinClick}
             startIcon={<Add />}
           >
             {dictionary['add to map']}

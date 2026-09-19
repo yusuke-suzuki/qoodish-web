@@ -7,7 +7,7 @@ export function buildCheckin(
 ): JourneyCheckin {
   return {
     id,
-    review_id: id * 100,
+    pin_id: id * 100,
     spot: { name: `Spot ${id}`, latitude: 35, longitude: 139 },
     checked_in_at: checkedInAt,
     note: null,

@@ -16,7 +16,7 @@ import type {
   JourneyCheckin,
   JourneyPathPoint,
   Milestone,
-  Review
+  Pin
 } from '../../types/index.ts';
 import {
   addCheckin,
@@ -77,9 +77,9 @@ const TRAIL_SAVE_INTERVAL_MS = 15000;
 export type PauseReason = 'permission' | 'inactivity';
 
 type RemainingSpots = {
-  reviews: Review[];
+  pins: Pin[];
   checkins: JourneyCheckin[];
-  spots: Review[];
+  spots: Pin[];
 };
 
 // A fix arrives at roughly 1 Hz, while the two inputs change only on a
@@ -87,32 +87,28 @@ type RemainingSpots = {
 // asked for it.
 function remainingSpots(
   previous: RemainingSpots | null,
-  reviews: Review[],
+  pins: Pin[],
   checkins: JourneyCheckin[]
 ): RemainingSpots {
-  if (
-    previous &&
-    previous.reviews === reviews &&
-    previous.checkins === checkins
-  ) {
+  if (previous && previous.pins === pins && previous.checkins === checkins) {
     return previous;
   }
 
-  const visitedIds = new Set(checkins.map((checkin) => checkin.review_id));
+  const visitedIds = new Set(checkins.map((checkin) => checkin.pin_id));
 
   return {
-    reviews,
+    pins,
     checkins,
-    spots: reviews.filter((review) => !visitedIds.has(review.id))
+    spots: pins.filter((pin) => !visitedIds.has(pin.id))
   };
 }
 
 type Args = {
   map: AppMap;
-  reviews: Review[];
+  pins: Pin[];
   initialJourney: Journey | null;
   canRecord: boolean;
-  onCheckin: (review: Review) => void;
+  onCheckin: (pin: Pin) => void;
   onPosition: (position: GeolocationPosition) => void;
   onLocationError: () => void;
   onPaused: (reason: PauseReason) => void;
@@ -126,7 +122,7 @@ type FinishedJourney = {
 
 export default function useJourney({
   map,
-  reviews,
+  pins,
   initialJourney,
   canRecord,
   onCheckin,
@@ -162,11 +158,11 @@ export default function useJourney({
   // The copy runs as a layout effect so it lands in the commit itself: a
   // geolocation callback is a task, and no task can run before the commit
   // finishes, whereas one can arrive ahead of a passive effect.
-  const reviewsRef = useRef(reviews);
+  const pinsRef = useRef(pins);
 
   useLayoutEffect(() => {
-    reviewsRef.current = reviews;
-  }, [reviews]);
+    pinsRef.current = pins;
+  }, [pins]);
 
   const remainingRef = useRef<RemainingSpots | null>(null);
 
@@ -362,18 +358,18 @@ export default function useJourney({
   };
 
   const performCheckin = useCallback(
-    async (review: Review) => {
+    async (pin: Pin) => {
       const current = journeyRef.current;
 
-      if (!current || pendingCheckinsRef.current.has(review.id)) {
+      if (!current || pendingCheckinsRef.current.has(pin.id)) {
         return;
       }
 
-      pendingCheckinsRef.current.add(review.id);
+      pendingCheckinsRef.current.add(pin.id);
 
-      const { success, data } = await addCheckin(current.id, review.id);
+      const { success, data } = await addCheckin(current.id, pin.id);
 
-      pendingCheckinsRef.current.delete(review.id);
+      pendingCheckinsRef.current.delete(pin.id);
 
       if (!success || !data) {
         return;
@@ -391,7 +387,7 @@ export default function useJourney({
         navigator.vibrate(CHECKIN_VIBRATION_MS);
       }
 
-      onCheckin(review);
+      onCheckin(pin);
     },
     [commitJourney, onCheckin]
   );
@@ -417,7 +413,7 @@ export default function useJourney({
 
     remainingRef.current = remainingSpots(
       remainingRef.current,
-      reviewsRef.current,
+      pinsRef.current,
       current.checkins
     );
 
@@ -454,8 +450,8 @@ export default function useJourney({
       nextHighAccuracy(enabled, decision.nearestMeters)
     );
 
-    for (const review of decision.reached) {
-      performCheckin(review);
+    for (const pin of decision.reached) {
+      performCheckin(pin);
     }
   };
 
@@ -636,7 +632,7 @@ export default function useJourney({
     return data;
   }, [map.id, commitJourney, onError]);
 
-  const addMilestone = async (review: Review): Promise<boolean> => {
+  const addMilestone = async (pin: Pin): Promise<boolean> => {
     if (!authenticated || !uid) {
       setSignInRequired(true);
       return false;
@@ -648,15 +644,13 @@ export default function useJourney({
       return false;
     }
 
-    if (
-      current.milestones.some((existing) => existing.review_id === review.id)
-    ) {
+    if (current.milestones.some((existing) => existing.pin_id === pin.id)) {
       return true;
     }
 
     const { success, data, error } = await addMilestoneAction(
       current.id,
-      review.id
+      pin.id
     );
 
     if (!success || !data) {

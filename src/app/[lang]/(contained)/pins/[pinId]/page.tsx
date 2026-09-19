@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import ReviewDetail from '../../../../../components/reviews/ReviewDetail.tsx';
+import PinDetail from '../../../../../components/pins/PinDetail.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
-import { getReview } from '../../../../../lib/reviews.ts';
+import { getPin } from '../../../../../lib/pins.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../../utils/locales.ts';
 import {
@@ -19,37 +19,33 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, pinId } = await params;
   const dict = getDictionary(lang);
-  const review = await getReview(pinId, lang);
+  const pin = await getPin(pinId, lang);
 
-  const title = review
-    ? `${review.name} - ${review.map.name} | Qoodish`
-    : 'Qoodish';
-  const description = review ? review.comment : dict['meta description'];
+  const title = pin ? `${pin.name} - ${pin.map.name} | Qoodish` : 'Qoodish';
+  const description = pin ? pin.comment : dict['meta description'];
   const keywords = `${
-    review ? `${review.map.name}, ${review.name}, ` : ''
+    pin ? `${pin.map.name}, ${pin.name}, ` : ''
   }Qoodish, qoodish, 食べ物, グルメ, 食事, マップ, 地図, 友だち, グループ, 旅行, 観光, 観光スポット, maps, travel, food, group, trip`;
   const thumbnailUrl =
-    review && review.images.length > 0
-      ? review.images[0].ogp
-      : defaultOgImage(lang);
+    pin && pin.images.length > 0 ? pin.images[0].ogp : defaultOgImage(lang);
   const path = `/pins/${pinId}`;
 
   return {
     title,
     description,
     keywords,
-    robots: !review || review.map.private ? 'noindex' : undefined,
+    robots: !pin || pin.map.private ? 'noindex' : undefined,
     alternates: buildAlternates(lang, path),
     openGraph: {
       type: 'article',
       title,
       description,
       url: localePath(lang, path),
-      images: ogImages(thumbnailUrl, review?.name ?? dict['meta headline']),
+      images: ogImages(thumbnailUrl, pin?.name ?? dict['meta headline']),
       locale: lang === 'en' ? 'en_US' : 'ja_JP',
       siteName: dict['meta headline'],
-      publishedTime: review?.created_at,
-      modifiedTime: review?.updated_at
+      publishedTime: pin?.created_at,
+      modifiedTime: pin?.updated_at
     },
     twitter: {
       card: 'summary_large_image'
@@ -60,15 +56,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PinPage({ params }: Props) {
   const { lang, pinId } = await params;
   const { token } = await getServerAuthState();
-  const review = await getReview(pinId, lang, token);
+  const pin = await getPin(pinId, lang, token);
 
-  if (!review) {
+  if (!pin) {
     notFound();
   }
 
   return (
     <Suspense>
-      <ReviewDetail review={review} />
+      <PinDetail pin={pin} />
     </Suspense>
   );
 }

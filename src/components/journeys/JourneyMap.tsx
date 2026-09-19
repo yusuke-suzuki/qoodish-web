@@ -10,7 +10,7 @@ import GoogleMaps from '../maps/GoogleMaps.tsx';
 import MarkerView from '../maps/MarkerView.tsx';
 
 // A flag in the primary color marks a milestone still to reach, the same way
-// ReviewMarker badges one on the map screen.
+// PinMarker badges one on the map screen.
 const markerVariants = {
   checkin: { Icon: Place, color: 'secondary.main' },
   milestone: { Icon: Flag, color: 'primary.main' }

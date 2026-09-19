@@ -4,23 +4,23 @@ import { PhotoLibrary, Place } from '@mui/icons-material';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import MediaPlaceholder from '../common/MediaPlaceholder.tsx';
 
 type Props = {
-  review: Review;
+  pin: Pin;
 };
 
-export default memo(function ReviewCard({ review }: Props) {
+export default memo(function PinCard({ pin }: Props) {
   const localePath = useLocalePath();
 
-  const [image] = review.images;
+  const [image] = pin.images;
 
   return (
     <ButtonBase
       component={Link}
-      href={localePath(`/pins/${review.id}`)}
+      href={localePath(`/pins/${pin.id}`)}
       sx={{
         display: 'block',
         width: '100%',
@@ -50,7 +50,7 @@ export default memo(function ReviewCard({ review }: Props) {
           />
         )}
 
-        {review.images.length > 1 && (
+        {pin.images.length > 1 && (
           <PhotoLibrary
             htmlColor="white"
             fontSize="small"
@@ -60,7 +60,7 @@ export default memo(function ReviewCard({ review }: Props) {
       </Box>
 
       <Typography variant="subtitle2" component="h3" noWrap sx={{ mt: 1 }}>
-        {review.name}
+        {pin.name}
       </Typography>
 
       <Typography
@@ -69,7 +69,7 @@ export default memo(function ReviewCard({ review }: Props) {
         noWrap
         sx={{ display: 'block' }}
       >
-        {review.map.name}
+        {pin.map.name}
       </Typography>
     </ButtonBase>
   );

@@ -11,7 +11,7 @@ import { drawerBleeding } from '../../../../../components/maps/constants.ts';
 
 const summaryCardWidth = 360;
 
-const reviewSkeletonKeys = ['a', 'b', 'c'];
+const pinSkeletonKeys = ['a', 'b', 'c'];
 
 const tabSkeletonKeys = ['pins', 'chapters'];
 
@@ -73,7 +73,7 @@ export default function Loading() {
             ))}
           </Box>
           <Box sx={{ px: 2 }}>
-            {reviewSkeletonKeys.map((key) => (
+            {pinSkeletonKeys.map((key) => (
               <Box
                 key={key}
                 sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}

@@ -9,9 +9,9 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useState } from 'react';
-import type { Review } from '../../../types/index.ts';
-import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
-import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
+import type { Pin } from '../../../types/index.ts';
+import PinCardHeader from '../pins/PinCardHeader.tsx';
+import PinMenuButton from '../pins/PinMenuButton.tsx';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination } from 'swiper/modules';
@@ -20,12 +20,12 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
-import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
-import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
+import DeletePinDialog from '../pins/DeletePinDialog.tsx';
+import EditPinDialog from '../pins/EditPinDialog.tsx';
+import LikePinButton from '../pins/LikePinButton.tsx';
 
 type Props = {
-  currentReview: Review | null;
+  currentPin: Pin | null;
   anchorEl: HTMLButtonElement | null;
   popoverId: string | undefined;
   popoverOpen: boolean;
@@ -34,8 +34,8 @@ type Props = {
   onDeleted: () => void;
 };
 
-function ReviewPopover({
-  currentReview,
+function PinPopover({
+  currentPin,
   anchorEl,
   popoverId,
   popoverOpen,
@@ -50,7 +50,7 @@ function ReviewPopover({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [issueDialogOpen, setIssueDialogOpen] = useState(false);
 
-  const review = currentReview;
+  const pin = currentPin;
 
   return (
     <>
@@ -72,14 +72,14 @@ function ReviewPopover({
         }}
         disableScrollLock
       >
-        <ReviewCardHeader
-          review={review}
+        <PinCardHeader
+          pin={pin}
           hideMapLink
           action={
             <ProfileBoundary>
               {(profile) => (
-                <ReviewMenuButton
-                  review={review}
+                <PinMenuButton
+                  pin={pin}
                   currentProfile={profile}
                   onReportClick={() => setIssueDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
@@ -90,11 +90,11 @@ function ReviewPopover({
           }
         />
         <Swiper pagination={true} modules={[Pagination]}>
-          {review?.images.map((image) => (
+          {pin?.images.map((image) => (
             <SwiperSlide key={image.id}>
               <CardMedia
                 component="img"
-                alt={review.name}
+                alt={pin.name}
                 image={image.card}
                 width={1200}
                 height={630}
@@ -106,21 +106,21 @@ function ReviewPopover({
             </SwiperSlide>
           ))}
         </Swiper>
-        <CardContent sx={{ pt: review?.images.length > 0 ? 2 : 0, pb: 0 }}>
+        <CardContent sx={{ pt: pin?.images.length > 0 ? 2 : 0, pb: 0 }}>
           <Typography variant="h6" gutterBottom>
-            {review?.name}
+            {pin?.name}
           </Typography>
           <Typography variant="body2" component="p">
-            {review?.comment}
+            {pin?.comment}
           </Typography>
         </CardContent>
         <CardActions>
-          {review && <LikeReviewButton review={review} onSaved={onSaved} />}
+          {pin && <LikePinButton pin={pin} onSaved={onSaved} />}
 
           <IconButton
             LinkComponent={Link}
-            href={localePath(`/pins/${review?.id}`)}
-            disabled={!review}
+            href={localePath(`/pins/${pin?.id}`)}
+            disabled={!pin}
             title={dictionary.comment}
             aria-label={dictionary.comment}
           >
@@ -129,28 +129,28 @@ function ReviewPopover({
         </CardActions>
       </Popover>
 
-      <EditReviewDialog
+      <EditPinDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        currentReview={review}
+        currentPin={pin}
         onSaved={onSaved}
       />
 
-      <DeleteReviewDialog
+      <DeletePinDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        review={review}
+        pin={pin}
         onDeleted={onDeleted}
       />
 
       <IssueDialog
         open={issueDialogOpen}
         onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={review ? review.id : null}
+        contentType="pin"
+        contentId={pin ? pin.id : null}
       />
     </>
   );
 }
 
-export default memo(ReviewPopover);
+export default memo(PinPopover);

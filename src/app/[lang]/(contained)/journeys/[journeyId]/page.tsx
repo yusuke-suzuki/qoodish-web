@@ -5,7 +5,7 @@ import JourneyDetailView from '../../../../../components/journeys/JourneyDetailV
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getChapter } from '../../../../../lib/chapters.ts';
 import { getMyJourney } from '../../../../../lib/journeys.ts';
-import { getMap, getMapReviews } from '../../../../../lib/maps.ts';
+import { getMap, getMapPins } from '../../../../../lib/maps.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
 
 type Props = {
@@ -39,9 +39,9 @@ export default async function JourneyPage({ params }: Props) {
   // The map can be gone or out of reach by now; the journey outlives it.
   const mapId = journey.map_id;
 
-  const [map, reviews, chapter] = await Promise.all([
+  const [map, pins, chapter] = await Promise.all([
     mapId ? getMap(String(mapId), lang, token) : null,
-    mapId ? getMapReviews(String(mapId), lang, token) : [],
+    mapId ? getMapPins(String(mapId), lang, token) : [],
     journey.chapter_id ? getChapter(journey.chapter_id, lang, token) : null
   ]);
 
@@ -50,7 +50,7 @@ export default async function JourneyPage({ params }: Props) {
       journey={journey}
       chapter={chapter}
       map={map}
-      reviews={reviews}
+      pins={pins}
     />
   );
 }

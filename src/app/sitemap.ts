@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getRecentChapters } from '../lib/chapters.ts';
 import { getActiveMaps, getPopularMaps, getRecentMaps } from '../lib/maps.ts';
-import { getPopularReviews, getRecentReviews } from '../lib/reviews.ts';
+import { getPopularPins, getRecentPins } from '../lib/pins.ts';
 import { DEFAULT_LOCALE, LOCALES, localePath } from '../utils/locales.ts';
 import { SITE_ORIGIN } from '../utils/metadata.ts';
 
@@ -67,15 +67,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     activeMaps,
     popularMaps,
     recentMaps,
-    popularReviews,
-    recentReviews,
+    popularPins,
+    recentPins,
     recentChapters
   ] = await Promise.all([
     listOrEmpty(getActiveMaps(DEFAULT_LOCALE)),
     listOrEmpty(getPopularMaps(DEFAULT_LOCALE)),
     listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
-    listOrEmpty(getPopularReviews(DEFAULT_LOCALE)),
-    listOrEmpty(getRecentReviews(DEFAULT_LOCALE)),
+    listOrEmpty(getPopularPins(DEFAULT_LOCALE)),
+    listOrEmpty(getRecentPins(DEFAULT_LOCALE)),
     listOrEmpty(getRecentChapters(DEFAULT_LOCALE))
   ]);
 
@@ -93,16 +93,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  const reviewEntries = new Map<number, Entry>();
+  const pinEntries = new Map<number, Entry>();
 
-  for (const review of [...popularReviews, ...recentReviews]) {
-    if (review.map.private) {
+  for (const pin of [...popularPins, ...recentPins]) {
+    if (pin.map.private) {
       continue;
     }
 
-    reviewEntries.set(review.id, {
-      path: `/pins/${review.id}`,
-      lastModified: review.updated_at,
+    pinEntries.set(pin.id, {
+      path: `/pins/${pin.id}`,
+      lastModified: pin.updated_at,
       priority: 0.6
     });
   }
@@ -124,7 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...STATIC_ENTRIES,
     ...Array.from(mapEntries.values()),
-    ...Array.from(reviewEntries.values()),
+    ...Array.from(pinEntries.values()),
     ...Array.from(chapterEntries.values())
   ].flatMap(expand);
 }

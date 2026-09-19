@@ -35,7 +35,7 @@ import type {
   Chapter,
   Journal,
   Journey,
-  Review
+  Pin
 } from '../../../types/index.ts';
 import useChapter from '../../hooks/useChapter.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -68,7 +68,7 @@ type Props = {
   // Deleting a map nullifies the chapters on it, so the chapter outlives it.
   map: AppMap | null;
   journey: Journey | null;
-  reviews: Review[];
+  pins: Pin[];
   authorJournal: Journal | null;
   authorPageCount: number;
 };
@@ -77,7 +77,7 @@ export default function ChapterEditor({
   chapter: initialChapter,
   map,
   journey,
-  reviews,
+  pins,
   authorJournal,
   authorPageCount
 }: Props) {
@@ -109,28 +109,27 @@ export default function ChapterEditor({
   const [coverSaving, setCoverSaving] = useState(false);
   const [markerPickerOpen, setMarkerPickerOpen] = useState(false);
 
-  const usedReviewIds = new Set(
-    reviews
-      .filter((review) =>
+  const usedPinIds = new Set(
+    pins
+      .filter((pin) =>
         markerSpots.some(
           (spot) =>
-            spot.latitude === review.latitude &&
-            spot.longitude === review.longitude
+            spot.latitude === pin.latitude && spot.longitude === pin.longitude
         )
       )
-      .map((review) => review.id)
+      .map((pin) => pin.id)
   );
 
-  const handleAddMarker = (review: Review) => {
+  const handleAddMarker = (pin: Pin) => {
     setMarkerPickerOpen(false);
     updateMapFeatures({
       type: 'FeatureCollection',
       features: [
         ...chapter.map_features.features,
         spotFeature({
-          name: review.name,
-          latitude: review.latitude,
-          longitude: review.longitude
+          name: pin.name,
+          latitude: pin.latitude,
+          longitude: pin.longitude
         })
       ]
     });
@@ -433,8 +432,8 @@ export default function ChapterEditor({
         open={markerPickerOpen}
         onClose={() => setMarkerPickerOpen(false)}
         onSelect={handleAddMarker}
-        reviews={reviews}
-        usedReviewIds={usedReviewIds}
+        pins={pins}
+        usedPinIds={usedPinIds}
       />
 
       <ConfirmDeleteDialog

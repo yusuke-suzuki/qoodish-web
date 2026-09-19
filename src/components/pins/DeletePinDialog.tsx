@@ -1,32 +1,28 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Review } from '../../../types/index.ts';
-import { deleteReview } from '../../actions/reviews.ts';
+import type { Pin } from '../../../types/index.ts';
+import { deletePin } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 
 type Props = {
-  review: Review | null;
+  pin: Pin | null;
   open: boolean;
   onClose: () => void;
   onDeleted: () => void;
 };
 
-const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
+const DeletePinDialog = ({ pin, open, onClose, onDeleted }: Props) => {
   const dictionary = useDictionary();
 
   const handleConfirm = useCallback(async () => {
-    if (!review) {
+    if (!pin) {
       enqueueSnackbar(dictionary['delete pin failed'], { variant: 'error' });
       return;
     }
 
     try {
-      const result = await deleteReview(
-        review.id,
-        review.map.id,
-        review.author.id
-      );
+      const result = await deletePin(pin.id, pin.map.id, pin.author.id);
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete pin success'], {
@@ -44,7 +40,7 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
     } catch (_error) {
       enqueueSnackbar(dictionary['delete pin failed'], { variant: 'error' });
     }
-  }, [review, dictionary, onClose, onDeleted]);
+  }, [pin, dictionary, onClose, onDeleted]);
 
   return (
     <ConfirmDeleteDialog
@@ -56,4 +52,4 @@ const DeleteReviewDialog = ({ review, open, onClose, onDeleted }: Props) => {
   );
 };
 
-export default memo(DeleteReviewDialog);
+export default memo(DeletePinDialog);

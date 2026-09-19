@@ -5,48 +5,48 @@ import { Button, Stack } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useState, useTransition } from 'react';
-import type { Review } from '../../../types/index.ts';
-import { fetchMoreReviewFeed } from '../../actions/reviews.ts';
+import type { Pin } from '../../../types/index.ts';
+import { fetchMorePinFeed } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import LoadingStatus from '../common/LoadingStatus.tsx';
 import NoContents from '../common/NoContents.tsx';
-import ReviewGridList from './ReviewGridList.tsx';
+import PinGridList from './PinGridList.tsx';
 
 type Props = {
-  initialReviews: Review[];
+  initialPins: Pin[];
 };
 
-export default memo(function ReviewFeed({ initialReviews }: Props) {
+export default memo(function PinFeed({ initialPins }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
 
-  const [reviews, setReviews] = useState(initialReviews);
-  const [noMoreResults, setNoMoreResults] = useState(initialReviews.length < 1);
+  const [pins, setPins] = useState(initialPins);
+  const [noMoreResults, setNoMoreResults] = useState(initialPins.length < 1);
   const [isPending, startTransition] = useTransition();
 
   const loadMore = () => {
-    const lastReview = reviews[reviews.length - 1];
+    const lastPin = pins[pins.length - 1];
 
-    if (noMoreResults || isPending || !lastReview) {
+    if (noMoreResults || isPending || !lastPin) {
       return;
     }
 
     startTransition(async () => {
       try {
-        const moreReviews = await fetchMoreReviewFeed(
+        const morePins = await fetchMorePinFeed(
           lang,
-          lastReview.created_at,
-          lastReview.id
+          lastPin.created_at,
+          lastPin.id
         );
-        setReviews((prev) => [...prev, ...moreReviews]);
-        setNoMoreResults(moreReviews.length < 1);
+        setPins((prev) => [...prev, ...morePins]);
+        setNoMoreResults(morePins.length < 1);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
     });
   };
 
-  if (reviews.length < 1) {
+  if (pins.length < 1) {
     return <NoContents icon={Reviews} message={dictionary['no pins yet']} />;
   }
 
@@ -54,7 +54,7 @@ export default memo(function ReviewFeed({ initialReviews }: Props) {
     <>
       <LoadingStatus loading={isPending} />
 
-      <ReviewGridList reviews={reviews} loading={isPending} />
+      <PinGridList pins={pins} loading={isPending} />
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
         {!isPending && !noMoreResults && (

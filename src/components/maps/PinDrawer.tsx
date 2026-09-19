@@ -11,17 +11,17 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useCallback, useState } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
 import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import DeleteReviewDialog from '../reviews/DeleteReviewDialog.tsx';
-import EditReviewDialog from '../reviews/EditReviewDialog.tsx';
-import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
-import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
-import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
+import DeletePinDialog from '../pins/DeletePinDialog.tsx';
+import EditPinDialog from '../pins/EditPinDialog.tsx';
+import LikePinButton from '../pins/LikePinButton.tsx';
+import PinCardHeader from '../pins/PinCardHeader.tsx';
+import PinMenuButton from '../pins/PinMenuButton.tsx';
 
 type MilestoneAction = {
   selected: boolean;
@@ -33,18 +33,18 @@ type Props = {
   onOpen: () => void;
   onClose: () => void;
   onExited: () => void;
-  currentReview: Review | null;
+  currentPin: Pin | null;
   milestoneAction?: MilestoneAction | null;
   onSaved: () => void;
   onDeleted: () => void;
 };
 
-function ReviewDrawer({
+function PinDrawer({
   open,
   onOpen,
   onClose,
   onExited,
-  currentReview,
+  currentPin,
   milestoneAction,
   onSaved,
   onDeleted
@@ -57,7 +57,7 @@ function ReviewDrawer({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [milestoneLoading, setMilestoneLoading] = useState(false);
 
-  const handleReviewDeleted = useCallback(() => {
+  const handlePinDeleted = useCallback(() => {
     onClose();
     onDeleted();
   }, [onClose, onDeleted]);
@@ -76,7 +76,7 @@ function ReviewDrawer({
     }
   }, [milestoneAction]);
 
-  const review = currentReview;
+  const pin = currentPin;
 
   return (
     <>
@@ -93,18 +93,18 @@ function ReviewDrawer({
       >
         <Box sx={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto' }}>
           <CardContent sx={{ pt: 0, pb: 1 }}>
-            <Typography variant="h6">{review?.name}</Typography>
+            <Typography variant="h6">{pin?.name}</Typography>
           </CardContent>
 
-          <ReviewCardHeader
+          <PinCardHeader
             sx={{ pt: 0 }}
-            review={review}
+            pin={pin}
             hideMapLink
             action={
               <ProfileBoundary>
                 {(profile) => (
-                  <ReviewMenuButton
-                    review={review}
+                  <PinMenuButton
+                    pin={pin}
                     currentProfile={profile}
                     onReportClick={() => setIssueDialogOpen(true)}
                     onEditClick={() => setEditDialogOpen(true)}
@@ -117,7 +117,7 @@ function ReviewDrawer({
 
           <CardContent sx={{ pt: 0 }}>
             <Typography variant="body2" component="p">
-              {review?.comment}
+              {pin?.comment}
             </Typography>
           </CardContent>
 
@@ -130,7 +130,7 @@ function ReviewDrawer({
               py: 0
             }}
           >
-            {review?.images.map((image) => (
+            {pin?.images.map((image) => (
               <Box
                 key={image.id}
                 sx={{
@@ -143,7 +143,7 @@ function ReviewDrawer({
               >
                 <CardMedia
                   component="img"
-                  alt={review.name}
+                  alt={pin.name}
                   image={image.card}
                   sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
@@ -160,7 +160,7 @@ function ReviewDrawer({
             borderColor: 'divider'
           }}
         >
-          {review && milestoneAction && (
+          {pin && milestoneAction && (
             <Chip
               clickable
               color="default"
@@ -184,13 +184,13 @@ function ReviewDrawer({
           )}
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {review && <LikeReviewButton review={review} />}
+            {pin && <LikePinButton pin={pin} />}
 
-            {review && (
+            {pin && (
               <IconButton
                 LinkComponent={Link}
-                href={localePath(`/pins/${review?.id}`)}
-                disabled={!review}
+                href={localePath(`/pins/${pin?.id}`)}
+                disabled={!pin}
                 title={dictionary.comment}
                 aria-label={dictionary.comment}
               >
@@ -200,26 +200,26 @@ function ReviewDrawer({
           </Box>
         </CardActions>
       </BottomSheet>
-      <EditReviewDialog
+      <EditPinDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        currentReview={review}
+        currentPin={pin}
         onSaved={onSaved}
       />
-      <DeleteReviewDialog
+      <DeletePinDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        review={review}
-        onDeleted={handleReviewDeleted}
+        pin={pin}
+        onDeleted={handlePinDeleted}
       />
       <IssueDialog
         open={issueDialogOpen}
         onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={review ? review.id : null}
+        contentType="pin"
+        contentId={pin ? pin.id : null}
       />
     </>
   );
 }
 
-export default memo(ReviewDrawer);
+export default memo(PinDrawer);
