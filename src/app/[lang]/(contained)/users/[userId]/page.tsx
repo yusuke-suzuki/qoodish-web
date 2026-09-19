@@ -6,11 +6,11 @@ import { getMyChapters, getUserChapters } from '../../../../../lib/chapters.ts';
 import {
   getMyJournal,
   getMyMaps,
-  getMyReviews,
+  getMyPins,
   getProfile,
   getUserJournal,
   getUserMaps,
-  getUserReviews
+  getUserPins
 } from '../../../../../lib/users.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../../utils/locales.ts';
@@ -70,8 +70,8 @@ export default async function UserPage({ params }: Props) {
 
   const isOwnProfile = Boolean(uid && profile.uid === uid);
 
-  const [initialReviews, maps, journal, chapters] = await Promise.all([
-    isOwnProfile ? getMyReviews(lang) : getUserReviews(userId, lang),
+  const [initialPins, maps, journal, chapters] = await Promise.all([
+    isOwnProfile ? getMyPins(lang) : getUserPins(userId, lang),
     isOwnProfile ? getMyMaps(lang, token) : getUserMaps(userId, lang, token),
     isOwnProfile
       ? getMyJournal(lang, token)
@@ -84,7 +84,7 @@ export default async function UserPage({ params }: Props) {
   return (
     <UserProfile
       profile={profile}
-      initialReviews={initialReviews}
+      initialPins={initialPins}
       maps={maps}
       journal={journal}
       chapters={chapters}

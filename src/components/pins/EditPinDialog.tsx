@@ -8,8 +8,8 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Review } from '../../../types/index.ts';
-import { updateReview } from '../../actions/reviews.ts';
+import type { Pin } from '../../../types/index.ts';
+import { updatePin } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
@@ -17,21 +17,21 @@ import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
 import PhotoPreviewList from '../common/PhotoPreviewList.tsx';
 import PositionForm from '../maps/PositionForm.tsx';
-import ReviewDescriptionForm from './ReviewDescriptionForm.tsx';
-import ReviewNameForm from './ReviewNameForm.tsx';
+import PinDescriptionForm from './PinDescriptionForm.tsx';
+import PinNameForm from './PinNameForm.tsx';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   onSaved: () => void;
-  currentReview: Review | null;
+  currentPin: Pin | null;
 };
 
-export default memo(function EditReviewDialog({
+export default memo(function EditPinDialog({
   open,
   onClose,
   onSaved,
-  currentReview
+  currentPin
 }: Props) {
   const dictionary = useDictionary();
 
@@ -53,14 +53,14 @@ export default memo(function EditReviewDialog({
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (!currentReview || !position) {
+      if (!currentPin || !position) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
         return;
       }
 
       startTransition(async () => {
         try {
-          const result = await updateReview(currentReview.id, {
+          const result = await updatePin(currentPin.id, {
             name,
             comment,
             latitude: position.lat,
@@ -69,7 +69,7 @@ export default memo(function EditReviewDialog({
           });
 
           if (result.success) {
-            enqueueSnackbar(dictionary['edit review success'], {
+            enqueueSnackbar(dictionary['edit pin success'], {
               variant: 'success'
             });
 
@@ -89,7 +89,7 @@ export default memo(function EditReviewDialog({
       });
     },
     [
-      currentReview,
+      currentPin,
       position,
       uploadedImages,
       name,
@@ -121,23 +121,23 @@ export default memo(function EditReviewDialog({
   );
 
   const setCurrentImages = useCallback(() => {
-    if (!currentReview) {
+    if (!currentPin) {
       return;
     }
 
-    reset(currentReview.images);
-  }, [currentReview, reset]);
+    reset(currentPin.images);
+  }, [currentPin, reset]);
 
   const defaultPosition = useMemo(() => {
-    if (!currentReview) {
+    if (!currentPin) {
       return null;
     }
 
     return {
-      lat: currentReview.latitude,
-      lng: currentReview.longitude
+      lat: currentPin.latitude,
+      lng: currentPin.longitude
     };
-  }, [currentReview]);
+  }, [currentPin]);
 
   return (
     <AppDialog
@@ -169,10 +169,10 @@ export default memo(function EditReviewDialog({
         <PositionForm onChange={setPosition} defaultValue={defaultPosition} />
       </Box>
 
-      <ReviewNameForm defaultValue={currentReview?.name} onChange={setName} />
+      <PinNameForm defaultValue={currentPin?.name} onChange={setName} />
 
-      <ReviewDescriptionForm
-        defaultValue={currentReview?.comment}
+      <PinDescriptionForm
+        defaultValue={currentPin?.comment}
         onChange={setComment}
       />
 

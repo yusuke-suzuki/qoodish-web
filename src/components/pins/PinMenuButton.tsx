@@ -17,23 +17,23 @@ import {
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useContext, useRef, useState } from 'react';
-import type { Profile, Review } from '../../../types/index.ts';
+import type { Pin, Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
 
 type Props = {
-  review: Review | null;
+  pin: Pin | null;
   currentProfile?: Profile | null;
-  onEditClick?: (review: Review) => void;
-  onDeleteClick?: (review: Review) => void;
-  onReportClick: (review: Review) => void;
+  onEditClick?: (pin: Pin) => void;
+  onDeleteClick?: (pin: Pin) => void;
+  onReportClick: (pin: Pin) => void;
   hideDetail?: boolean;
 };
 
-export default memo(function ReviewMenuButton({
-  review,
+export default memo(function PinMenuButton({
+  pin,
   currentProfile,
   onEditClick,
   onDeleteClick,
@@ -49,10 +49,10 @@ export default memo(function ReviewMenuButton({
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
 
-  const isAuthor = currentProfile?.id === review?.author.id;
+  const isAuthor = currentProfile?.id === pin?.author.id;
 
-  const reviewPath = `/pins/${review?.id}`;
-  const url = `${SITE_ORIGIN}${localePath(lang, reviewPath)}`;
+  const pinPath = `/pins/${pin?.id}`;
+  const url = `${SITE_ORIGIN}${localePath(lang, pinPath)}`;
 
   const handleCopyClick = async () => {
     if (!url) {
@@ -74,25 +74,25 @@ export default memo(function ReviewMenuButton({
       return;
     }
 
-    onReportClick(review);
+    onReportClick(pin);
   };
 
   const handleEditClick = () => {
     setAnchorEl(null);
 
-    onEditClick(review);
+    onEditClick(pin);
   };
 
   const handleDeleteClick = () => {
     setAnchorEl(null);
 
-    onDeleteClick(review);
+    onDeleteClick(pin);
   };
 
   const handleDetailClick = () => {
     setAnchorEl(null);
 
-    push(localePath(lang, reviewPath));
+    push(localePath(lang, pinPath));
   };
 
   return (

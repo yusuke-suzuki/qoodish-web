@@ -2,11 +2,11 @@
 
 import { Grid, Skeleton } from '@mui/material';
 import { memo } from 'react';
-import type { Review } from '../../../types/index.ts';
-import ReviewCard from './ReviewCard.tsx';
+import type { Pin } from '../../../types/index.ts';
+import PinCard from './PinCard.tsx';
 
 type Props = {
-  reviews: Review[];
+  pins: Pin[];
   loading?: boolean;
 };
 
@@ -21,12 +21,12 @@ const loadingTileKeys = [
 
 const SIZE = { xs: 6, sm: 4, md: 3 };
 
-function ReviewGridList({ reviews, loading }: Props) {
+function PinGridList({ pins, loading }: Props) {
   return (
     <Grid container spacing={2} aria-busy={loading}>
-      {reviews.map((review) => (
-        <Grid key={review.id} size={SIZE}>
-          <ReviewCard review={review} />
+      {pins.map((pin) => (
+        <Grid key={pin.id} size={SIZE}>
+          <PinCard pin={pin} />
         </Grid>
       ))}
 
@@ -45,4 +45,4 @@ function ReviewGridList({ reviews, loading }: Props) {
   );
 }
 
-export default memo(ReviewGridList);
+export default memo(PinGridList);

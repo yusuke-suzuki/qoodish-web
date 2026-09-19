@@ -15,7 +15,7 @@ export default function TimelineSkeleton() {
       {Array.from({ length: PLACEHOLDER_COUNT }).map((_, index) => (
         <Card
           // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
-          key={`skeleton-review-card-${index}`}
+          key={`skeleton-pin-card-${index}`}
         >
           <CardHeader
             avatar={<Skeleton variant="circular" width={40} height={40} />}

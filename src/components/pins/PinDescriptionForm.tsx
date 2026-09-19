@@ -2,59 +2,61 @@ import { TextField } from '@mui/material';
 import { type ChangeEvent, memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 
-const MAX_LENGTH = 30;
+const MAX_LENGTH = 500;
 
 type Props = {
-  onChange: (name: string | null) => void;
-  defaultValue?: string;
+  onChange: (comment: string | null) => void;
+  defaultValue?: string | null;
 };
 
-function ReviewNameForm({ onChange, defaultValue }: Props) {
+function PinDescriptionForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
-  const [name, setName] = useState('');
+  const [comment, setComment] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleChange = (
+  const handleCommentChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const input = e.target.value;
 
     if (input) {
       if (input.length > MAX_LENGTH) {
-        setError(dictionary['max characters 30']);
+        setError(dictionary['max characters 500']);
       } else {
         setError(null);
       }
     } else {
-      setError(dictionary['name is required']);
+      setError(dictionary['comment is required']);
     }
 
-    setName(input);
+    setComment(input);
   };
 
   useEffect(() => {
-    onChange(name);
-  }, [name, onChange]);
+    onChange(comment);
+  }, [comment, onChange]);
 
   useEffect(() => {
     if (defaultValue) {
-      setName(defaultValue);
+      setComment(defaultValue);
     }
   }, [defaultValue]);
 
   return (
     <TextField
-      label={dictionary.name}
-      onChange={handleChange}
+      label={dictionary.description}
+      onChange={handleCommentChange}
       error={!!error}
       helperText={error}
       fullWidth
-      value={name}
+      value={comment}
+      multiline
       margin="normal"
       variant="outlined"
+      minRows={3}
     />
   );
 }
 
-export default memo(ReviewNameForm);
+export default memo(PinDescriptionForm);

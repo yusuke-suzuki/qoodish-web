@@ -2,6 +2,7 @@ import type { PrecacheEntry, RuntimeCaching } from 'serwist';
 import { Serwist, StaleWhileRevalidate } from 'serwist';
 import en from '../dictionaries/en.json';
 import ja from '../dictionaries/ja.json';
+import { notificationMessageKey } from '../utils/notificationMessage.ts';
 
 declare const self: ServiceWorkerGlobalScope & {
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
@@ -69,7 +70,9 @@ const notificationTitle = (_data: NotificationData): string => {
 };
 
 const notificationBody = (data: NotificationData): string => {
-  const message = I18n.t(`${data.key} ${data.notifiable_type}`);
+  const message = I18n.t(
+    notificationMessageKey(data.key, data.notifiable_type)
+  );
   return `${data.notifier_name} ${message}`;
 };
 

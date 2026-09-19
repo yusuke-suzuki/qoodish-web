@@ -9,21 +9,21 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Review } from '../../../types/index.ts';
-import { likeReview, unlikeReview } from '../../actions/reviewLikes.ts';
+import type { Pin } from '../../../types/index.ts';
+import { likePin, unlikePin } from '../../actions/pinLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
-  review: Review;
+  pin: Pin;
   onSaved?: () => void;
 };
 
-export default memo(function LikeReviewButton({ review, onSaved }: Props) {
+export default memo(function LikePinButton({ pin, onSaved }: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
-  const [checked, setChecked] = useState(review.liked);
+  const [checked, setChecked] = useState(pin.liked);
   const [isPending, startTransition] = useTransition();
 
   const handleChange = useCallback(
@@ -38,9 +38,7 @@ export default memo(function LikeReviewButton({ review, onSaved }: Props) {
 
       startTransition(async () => {
         try {
-          const result = next
-            ? await likeReview(review.id)
-            : await unlikeReview(review.id);
+          const result = next ? await likePin(pin.id) : await unlikePin(pin.id);
 
           if (result.success) {
             const message = next ? 'liked!' : 'unliked';
@@ -61,7 +59,7 @@ export default memo(function LikeReviewButton({ review, onSaved }: Props) {
         }
       });
     },
-    [authenticated, review, setSignInRequired, dictionary, onSaved]
+    [authenticated, pin, setSignInRequired, dictionary, onSaved]
   );
 
   return (

@@ -6,7 +6,7 @@ import {
   CHAPTERS_TAG,
   CONTENT_TAG,
   MAPS_TAG,
-  REVIEWS_TAG,
+  PINS_TAG,
   userTag
 } from '../lib/cacheTags.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
@@ -60,7 +60,7 @@ export async function deleteAccount(userId?: number): Promise<ActionResult> {
 
   revalidateTags([
     MAPS_TAG,
-    REVIEWS_TAG,
+    PINS_TAG,
     CHAPTERS_TAG,
     CONTENT_TAG,
     userId && userTag(userId)

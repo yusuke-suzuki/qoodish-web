@@ -2,18 +2,18 @@ import { HistoryEdu, Place } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { memo, type SyntheticEvent, useState } from 'react';
-import type { Chapter, Review } from '../../../types/index.ts';
+import type { Chapter, Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import MapChapterList from './MapChapterList.tsx';
-import MapReviewList from './MapReviewList.tsx';
+import MapPinList from './MapPinList.tsx';
 
 type Props = {
-  reviews: Review[];
+  pins: Pin[];
   chapters: Chapter[];
-  onReviewClick?: (review: Review) => void;
+  onPinClick?: (pin: Pin) => void;
 };
 
-function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
+function MapDetailTabs({ pins, chapters, onPinClick }: Props) {
   const dictionary = useDictionary();
 
   const [tabValue, setTabValue] = useState('pins');
@@ -45,7 +45,7 @@ function MapDetailTabs({ reviews, chapters, onReviewClick }: Props) {
       </Box>
 
       <TabPanel value="pins" sx={{ px: 2, py: 0 }}>
-        <MapReviewList reviews={reviews} onReviewClick={onReviewClick} />
+        <MapPinList pins={pins} onPinClick={onPinClick} />
       </TabPanel>
       <TabPanel value="chapters" sx={{ px: 2, py: 0 }}>
         <MapChapterList chapters={chapters} />

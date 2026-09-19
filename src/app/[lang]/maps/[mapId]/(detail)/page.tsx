@@ -8,7 +8,7 @@ import {
   getMap,
   getMapChapters,
   getMapCoauthors,
-  getMapReviews
+  getMapPins
 } from '../../../../../lib/maps.ts';
 import { getMyProfile } from '../../../../../lib/users.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
@@ -60,15 +60,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MapPage({ params }: Props) {
   const { lang, mapId } = await params;
   const { token } = await getServerAuthState();
-  const [map, reviews, coauthors, chapters, profile, journeys] =
-    await Promise.all([
+  const [map, pins, coauthors, chapters, profile, journeys] = await Promise.all(
+    [
       getMap(mapId, lang, token),
-      getMapReviews(mapId, lang, token),
+      getMapPins(mapId, lang, token),
       getMapCoauthors(mapId, lang, token),
       getMapChapters(mapId, lang, token),
       getMyProfile(lang, token),
       getMyJourneys(lang, token)
-    ]);
+    ]
+  );
 
   if (!map) {
     notFound();
@@ -85,7 +86,7 @@ export default async function MapPage({ params }: Props) {
     <Suspense>
       <MapDetailView
         map={map}
-        reviews={reviews}
+        pins={pins}
         coauthors={coauthors}
         chapters={chapters}
         currentProfile={profile}

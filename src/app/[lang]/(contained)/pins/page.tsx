@@ -1,8 +1,8 @@
 import { FiberNew } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import type { Metadata } from 'next';
-import ReviewFeed from '../../../../components/reviews/ReviewFeed.tsx';
-import { getReviewFeed } from '../../../../lib/reviews.ts';
+import PinFeed from '../../../../components/pins/PinFeed.tsx';
+import { getPinFeed } from '../../../../lib/pins.ts';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../utils/locales.ts';
 import {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PinsPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const reviews = await getReviewFeed(lang);
+  const pins = await getPinFeed(lang);
 
   return (
     <>
@@ -54,7 +54,7 @@ export default async function PinsPage({ params }: Props) {
         </Typography>
       </Box>
 
-      <ReviewFeed initialReviews={reviews} />
+      <PinFeed initialPins={pins} />
     </>
   );
 }

@@ -8,7 +8,7 @@ import TimelineSkeleton from '../../../components/home/TimelineSkeleton.tsx';
 import ContainedShell from '../../../components/layouts/ContainedShell.tsx';
 import Footer from '../../../components/layouts/Footer.tsx';
 import { getServerAuthState } from '../../../lib/auth.ts';
-import { getTimelineReviews } from '../../../lib/reviews.ts';
+import { getTimelinePins } from '../../../lib/pins.ts';
 import { getDictionary } from '../../../utils/getDictionary.ts';
 import { localePath } from '../../../utils/locales.ts';
 import {
@@ -54,12 +54,12 @@ export default async function HomePage({ params }: Props) {
   const { authenticated, pending } = await getServerAuthState();
 
   if (authenticated) {
-    const initialReviews = await getTimelineReviews();
+    const initialPins = await getTimelinePins();
 
     return (
       <ContainedShell>
         <TimelineLayout lang={lang}>
-          <Timeline initialReviews={initialReviews} />
+          <Timeline initialPins={initialPins} />
         </TimelineLayout>
       </ContainedShell>
     );

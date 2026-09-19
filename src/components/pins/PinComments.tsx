@@ -26,7 +26,7 @@ type Props = {
   onDeleted: () => void;
 };
 
-const ReviewComments = ({ comments, onDeleted }: Props) => {
+const PinComments = ({ comments, onDeleted }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
@@ -114,4 +114,4 @@ const ReviewComments = ({ comments, onDeleted }: Props) => {
   );
 };
 
-export default memo(ReviewComments);
+export default memo(PinComments);

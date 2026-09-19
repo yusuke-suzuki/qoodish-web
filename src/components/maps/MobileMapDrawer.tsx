@@ -12,8 +12,8 @@ import type {
   AppMap,
   Chapter,
   Coauthor,
-  Profile,
-  Review
+  Pin,
+  Profile
 } from '../../../types/index.ts';
 import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -29,7 +29,7 @@ import RemoveBookmarkButton from './RemoveBookmarkButton.tsx';
 
 type Props = {
   map: AppMap | null;
-  reviews: Review[];
+  pins: Pin[];
   coauthors: Coauthor[];
   chapters: Chapter[];
   currentProfile: Profile | null;
@@ -37,13 +37,13 @@ type Props = {
   onDeleteClick: () => void;
   onReportClick: () => void;
   onSaved: () => void;
-  onReviewClick: (review: Review) => void;
-  reviewDrawerOpen: boolean;
+  onPinClick: (pin: Pin) => void;
+  pinDrawerOpen: boolean;
 };
 
 function MobileMapDrawer({
   map,
-  reviews,
+  pins,
   coauthors,
   chapters,
   currentProfile,
@@ -51,8 +51,8 @@ function MobileMapDrawer({
   onDeleteClick,
   onReportClick,
   onSaved,
-  onReviewClick,
-  reviewDrawerOpen
+  onPinClick,
+  pinDrawerOpen
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -67,19 +67,19 @@ function MobileMapDrawer({
     setOpen(false);
   };
 
-  // The review drawer overrides this drawer's open prop, so while it is open
+  // The pin drawer overrides this drawer's open prop, so while it is open
   // this drawer is visually closed even when `open` is still true. Keep the
   // AppBar visible in that case.
   useEffect(() => {
-    setAppBarHidden(open && !reviewDrawerOpen);
-  }, [open, reviewDrawerOpen, setAppBarHidden]);
+    setAppBarHidden(open && !pinDrawerOpen);
+  }, [open, pinDrawerOpen, setAppBarHidden]);
 
   useEffect(() => {
     return () => setAppBarHidden(false);
   }, [setAppBarHidden]);
 
-  const handleReviewClick = (review: Review) => {
-    onReviewClick(review);
+  const handlePinClick = (pin: Pin) => {
+    onPinClick(pin);
   };
 
   return (
@@ -88,7 +88,7 @@ function MobileMapDrawer({
       variant="temporary"
       hideBackdrop
       disableSwipeToOpen={false}
-      open={reviewDrawerOpen ? false : open}
+      open={pinDrawerOpen ? false : open}
       onOpen={handleOpen}
       onClose={handleClose}
       swipeAreaWidth={drawerBleeding}
@@ -133,7 +133,7 @@ function MobileMapDrawer({
           borderTopRightRadius: 16
         }}
       >
-        <MobileMiniMapHeader map={map} reviews={reviews} draggable />
+        <MobileMiniMapHeader map={map} pins={pins} draggable />
       </Box>
       <Divider />
       <Box sx={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
@@ -193,9 +193,9 @@ function MobileMapDrawer({
         </CardContent>
         <Divider />
         <MapDetailTabs
-          reviews={reviews}
+          pins={pins}
           chapters={chapters}
-          onReviewClick={handleReviewClick}
+          onPinClick={handlePinClick}
         />
       </Box>
     </SwipeableDrawer>

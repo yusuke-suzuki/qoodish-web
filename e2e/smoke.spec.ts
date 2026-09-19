@@ -18,7 +18,7 @@ const PUBLIC_PATHS = [
 
 type GuestMap = { id: number; private: boolean };
 
-type GuestReview = {
+type GuestPin = {
   id: number;
   map: GuestMap;
   author: { id: number };
@@ -69,23 +69,21 @@ async function firstMapId(request: APIRequestContext): Promise<string> {
   return String(publicMaps[0].id);
 }
 
-async function firstPublicReview(
-  request: APIRequestContext
-): Promise<GuestReview> {
-  const reviews = await fetchGuestList<GuestReview>(
+async function firstPublicPin(request: APIRequestContext): Promise<GuestPin> {
+  const pins = await fetchGuestList<GuestPin>(
     request,
-    `${API_BASE_URL}/guest/reviews?recent=true`,
+    `${API_BASE_URL}/guest/pins?recent=true`,
     'guest recent pins'
   );
 
-  const publicReviews = reviews.filter((review) => !review.map.private);
+  const publicPins = pins.filter((pin) => !pin.map.private);
 
   expect(
-    publicReviews.length,
+    publicPins.length,
     'the API needs at least one pin on a public map to smoke test'
   ).toBeGreaterThan(0);
 
-  return publicReviews[0];
+  return publicPins[0];
 }
 
 async function firstChapterId(
@@ -142,8 +140,8 @@ for (const lang of LOCALES) {
   });
 
   test(`boots the pin detail page in ${lang}`, async ({ page, request }) => {
-    const review = await firstPublicReview(request);
-    const route = `/${lang}/pins/${review.id}`;
+    const pin = await firstPublicPin(request);
+    const route = `/${lang}/pins/${pin.id}`;
 
     const response = await page.goto(route);
 
@@ -152,8 +150,8 @@ for (const lang of LOCALES) {
   });
 
   test(`boots the profile page in ${lang}`, async ({ page, request }) => {
-    const review = await firstPublicReview(request);
-    const route = `/${lang}/users/${review.author.id}`;
+    const pin = await firstPublicPin(request);
+    const route = `/${lang}/users/${pin.author.id}`;
 
     const response = await page.goto(route);
 

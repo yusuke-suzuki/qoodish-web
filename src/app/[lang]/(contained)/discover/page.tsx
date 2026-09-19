@@ -5,14 +5,14 @@ import ChapterList from '../../../../components/chapters/ChapterList.tsx';
 import PickUpMap from '../../../../components/discover/PickUpMap.tsx';
 import SectionHeading from '../../../../components/discover/SectionHeading.tsx';
 import MapGridList from '../../../../components/maps/MapGridList.tsx';
-import ReviewGridList from '../../../../components/reviews/ReviewGridList.tsx';
+import PinGridList from '../../../../components/pins/PinGridList.tsx';
 import { getRecentChapters } from '../../../../lib/chapters.ts';
 import {
   getActiveMaps,
   getFeaturedMap,
   getRecentMaps
 } from '../../../../lib/maps.ts';
-import { getRecentReviews } from '../../../../lib/reviews.ts';
+import { getRecentPins } from '../../../../lib/pins.ts';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../utils/locales.ts';
 import {
@@ -56,9 +56,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DiscoverPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const [recentReviews, recentChapters, activeMaps, recentMaps, pickUpMap] =
+  const [recentPins, recentChapters, activeMaps, recentMaps, pickUpMap] =
     await Promise.all([
-      getRecentReviews(lang),
+      getRecentPins(lang),
       getRecentChapters(lang),
       getActiveMaps(lang),
       getRecentMaps(lang),
@@ -83,7 +83,7 @@ export default async function DiscoverPage({ params }: Props) {
           </Box>
         )}
 
-        {recentReviews.length > 0 && (
+        {recentPins.length > 0 && (
           <Box component="section">
             <SectionHeading
               icon={<FiberNew color="secondary" />}
@@ -92,7 +92,7 @@ export default async function DiscoverPage({ params }: Props) {
               linkLabel={dict['see all']}
             />
 
-            <ReviewGridList reviews={recentReviews} />
+            <PinGridList pins={recentPins} />
           </Box>
         )}
 

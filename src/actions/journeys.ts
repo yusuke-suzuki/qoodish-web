@@ -73,13 +73,13 @@ export async function deleteJourney(journeyId: number): Promise<ActionResult> {
 
 export async function addMilestone(
   journeyId: number,
-  reviewId: number
+  pinId: number
 ): Promise<ActionResult<Milestone>> {
   const { data, error } = await apiFetch<Milestone>(
     `/me/journeys/${journeyId}/milestones`,
     {
       method: 'POST',
-      body: JSON.stringify({ review_id: reviewId })
+      body: JSON.stringify({ pin_id: pinId })
     }
   );
 
@@ -110,7 +110,7 @@ export async function removeMilestone(
 
 export async function addCheckin(
   journeyId: number,
-  reviewId: number,
+  pinId: number,
   checkedInAt?: string
 ): Promise<ActionResult<JourneyCheckin>> {
   const { data, error } = await apiFetch<JourneyCheckin>(
@@ -118,7 +118,7 @@ export async function addCheckin(
     {
       method: 'POST',
       body: JSON.stringify({
-        review_id: reviewId,
+        pin_id: pinId,
         ...(checkedInAt ? { checked_in_at: checkedInAt } : {})
       })
     }

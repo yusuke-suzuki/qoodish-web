@@ -10,25 +10,25 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, type ReactNode } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 
 type Props = {
-  review: Review | null;
+  pin: Pin | null;
   action: ReactNode;
   hideMapLink?: boolean;
   sx?: SxProps;
 };
 
-function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
+function PinCardHeader({ pin, action, hideMapLink, sx }: Props) {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
   return (
     <CardHeader
       sx={sx}
-      avatar={review && <AuthorAvatar author={review.author} />}
+      avatar={pin && <AuthorAvatar author={pin.author} />}
       action={action}
       title={
         <Box
@@ -42,16 +42,16 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
             underline="hover"
             color="inherit"
             component={Link}
-            href={localePath(`/users/${review?.author.id}`)}
-            title={review?.author.name}
+            href={localePath(`/users/${pin?.author.id}`)}
+            title={pin?.author.name}
           >
-            {review?.author.name}
+            {pin?.author.name}
           </MuiLink>
 
           {hideMapLink ? null : (
             <Typography variant="body2" color="text.secondary">
-              {review &&
-                formatDistanceToNow(new Date(review.created_at), {
+              {pin &&
+                formatDistanceToNow(new Date(pin.created_at), {
                   addSuffix: true,
                   locale: lang === 'ja' ? ja : enUS
                 })}
@@ -62,8 +62,8 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
       subheader={
         hideMapLink ? (
           <Typography variant="body2" color="text.secondary">
-            {review &&
-              formatDistanceToNow(new Date(review.created_at), {
+            {pin &&
+              formatDistanceToNow(new Date(pin.created_at), {
                 addSuffix: true,
                 locale: lang === 'ja' ? ja : enUS
               })}
@@ -72,10 +72,10 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
           <MuiLink
             underline="hover"
             component={Link}
-            href={localePath(`/maps/${review?.map.id}`)}
-            title={review?.map.name}
+            href={localePath(`/maps/${pin?.map.id}`)}
+            title={pin?.map.name}
           >
-            {review?.map.name}
+            {pin?.map.name}
           </MuiLink>
         )
       }
@@ -83,4 +83,4 @@ function ReviewCardHeader({ review, action, hideMapLink, sx }: Props) {
   );
 }
 
-export default memo(ReviewCardHeader);
+export default memo(PinCardHeader);

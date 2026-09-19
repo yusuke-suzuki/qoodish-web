@@ -2,8 +2,8 @@ import type {
   AppMap,
   Journal,
   Notification,
-  Profile,
-  Review
+  Pin,
+  Profile
 } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { MAPS_TAG, userTag } from './cacheTags.ts';
@@ -124,28 +124,28 @@ export function getBookmarkedJournals(
   });
 }
 
-export function getUserReviews(
+export function getUserPins(
   userId: string,
   lang?: string,
   nextTimestamp?: string
-): Promise<Review[]> {
+): Promise<Pin[]> {
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
     : '';
-  return apiFetchList<Review>(`/users/${userId}/reviews${query}`, {
+  return apiFetchList<Pin>(`/users/${userId}/pins${query}`, {
     lang,
     next: { revalidate: 0 }
   });
 }
 
-export function getMyReviews(
+export function getMyPins(
   lang?: string,
   nextTimestamp?: string
-): Promise<Review[]> {
+): Promise<Pin[]> {
   const query = nextTimestamp
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
     : '';
-  return apiFetchList<Review>(`/me/reviews${query}`, {
+  return apiFetchList<Pin>(`/me/pins${query}`, {
     lang,
     next: { revalidate: 0 }
   });

@@ -19,6 +19,7 @@ import { markNotificationAsRead } from '../../actions/notifications.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { LOCAL_DATE_TIME_PLACEHOLDER } from '../../hooks/useLocalDateTime.ts';
+import { notificationMessageKey } from '../../utils/notificationMessage.ts';
 import sleep from '../../utils/sleep.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 import NoContents from '../common/NoContents.tsx';
@@ -103,7 +104,10 @@ const NotificationList = ({
                 <strong>{notification.notifier.name}</strong>
                 {` ${
                   dictionary[
-                    `${notification.key} ${notification.notifiable.type}`
+                    notificationMessageKey(
+                      notification.key,
+                      notification.notifiable.type
+                    )
                   ]
                 }`}
               </Typography>

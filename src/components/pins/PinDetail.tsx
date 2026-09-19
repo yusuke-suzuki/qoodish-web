@@ -5,23 +5,23 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import DeleteReviewDialog from './DeleteReviewDialog.tsx';
-import EditReviewDialog from './EditReviewDialog.tsx';
-import ReviewCardActions from './ReviewCardActions.tsx';
-import ReviewCardHeader from './ReviewCardHeader.tsx';
-import ReviewComments from './ReviewComments.tsx';
-import ReviewImageList from './ReviewImageList.tsx';
-import ReviewMenuButton from './ReviewMenuButton.tsx';
+import DeletePinDialog from './DeletePinDialog.tsx';
+import EditPinDialog from './EditPinDialog.tsx';
+import PinCardActions from './PinCardActions.tsx';
+import PinCardHeader from './PinCardHeader.tsx';
+import PinComments from './PinComments.tsx';
+import PinImageList from './PinImageList.tsx';
+import PinMenuButton from './PinMenuButton.tsx';
 
 type Props = {
-  review: Review;
+  pin: Pin;
 };
 
-export default function ReviewDetail({ review }: Props) {
+export default function PinDetail({ pin }: Props) {
   const dictionary = useDictionary();
 
   const { lang } = useParams<{ lang: string }>();
@@ -34,13 +34,13 @@ export default function ReviewDetail({ review }: Props) {
   return (
     <>
       <Card>
-        <ReviewCardHeader
-          review={review}
+        <PinCardHeader
+          pin={pin}
           action={
             <ProfileBoundary>
               {(profile) => (
-                <ReviewMenuButton
-                  review={review}
+                <PinMenuButton
+                  pin={pin}
                   currentProfile={profile}
                   onReportClick={() => setIssueDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
@@ -53,23 +53,20 @@ export default function ReviewDetail({ review }: Props) {
         />
         <CardContent sx={{ py: 0 }}>
           <Typography variant="h5" component="h2" gutterBottom>
-            {review.name}
+            {pin.name}
           </Typography>
 
           <Typography component="p" gutterBottom>
-            {review.comment}
+            {pin.comment}
           </Typography>
 
-          {review.images.length > 0 && <ReviewImageList review={review} />}
+          {pin.images.length > 0 && <PinImageList pin={pin} />}
         </CardContent>
-        <ReviewCardActions review={review} onCommentAdded={router.refresh} />
+        <PinCardActions pin={pin} onCommentAdded={router.refresh} />
 
-        {review.comments.length > 0 && (
+        {pin.comments.length > 0 && (
           <CardContent>
-            <ReviewComments
-              comments={review.comments}
-              onDeleted={router.refresh}
-            />
+            <PinComments comments={pin.comments} onDeleted={router.refresh} />
           </CardContent>
         )}
         <div />
@@ -80,31 +77,31 @@ export default function ReviewDetail({ review }: Props) {
           color="secondary"
           startIcon={<KeyboardArrowLeft />}
           LinkComponent={Link}
-          href={`/${lang}/maps/${review.map.id}`}
+          href={`/${lang}/maps/${pin.map.id}`}
         >
           {dictionary['back to map']}
         </Button>
       </Box>
 
-      <EditReviewDialog
+      <EditPinDialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        currentReview={review}
+        currentPin={pin}
         onSaved={router.refresh}
       />
 
-      <DeleteReviewDialog
+      <DeletePinDialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        review={review}
+        pin={pin}
         onDeleted={router.refresh}
       />
 
       <IssueDialog
         open={issueDialogOpen}
         onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={review.id}
+        contentType="pin"
+        contentId={pin.id}
       />
     </>
   );

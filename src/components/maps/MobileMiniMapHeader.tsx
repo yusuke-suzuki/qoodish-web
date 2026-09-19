@@ -1,19 +1,19 @@
 import { Lock } from '@mui/icons-material';
 import { Avatar, CardHeader, Skeleton, type SxProps } from '@mui/material';
 import { memo, type ReactNode } from 'react';
-import type { AppMap, Review } from '../../../types/index.ts';
+import type { AppMap, Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import DrawerPuller from '../common/DrawerPuller.tsx';
 
 type Props = {
   map: AppMap | null;
-  reviews: Review[];
+  pins: Pin[];
   draggable?: boolean;
   action?: ReactNode;
   sx?: SxProps;
 };
 
-function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
+function MobileMiniMapHeader({ map, pins, draggable, action, sx }: Props) {
   const dictionary = useDictionary();
 
   return (
@@ -36,7 +36,7 @@ function MobileMiniMapHeader({ map, reviews, draggable, action, sx }: Props) {
         title={map ? map.name : <Skeleton width="100%" />}
         subheader={
           map ? (
-            `${reviews.length} ${dictionary['pins count']}`
+            `${pins.length} ${dictionary['pins count']}`
           ) : (
             <Skeleton width="50%" />
           )

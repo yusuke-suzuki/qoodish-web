@@ -118,7 +118,7 @@ export default function Loading() {
         </Box>
 
         <GridSection
-          keyPrefix="skeleton-discover-recent-reviews"
+          keyPrefix="skeleton-discover-recent-pins"
           aspectRatio="1 / 1"
           size={REPORT_SIZE}
           captioned
