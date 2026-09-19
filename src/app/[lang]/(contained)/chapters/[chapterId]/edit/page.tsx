@@ -5,7 +5,7 @@ import ChapterEditor from '../../../../../../components/chapters/ChapterEditor.t
 import { getServerAuthState } from '../../../../../../lib/auth.ts';
 import { getChapter, getUserChapters } from '../../../../../../lib/chapters.ts';
 import { getMyJourney } from '../../../../../../lib/journeys.ts';
-import { getMap, getMapReviews } from '../../../../../../lib/maps.ts';
+import { getMap, getMapPins } from '../../../../../../lib/maps.ts';
 import { getUserJournal } from '../../../../../../lib/users.ts';
 import { getDictionary } from '../../../../../../utils/getDictionary.ts';
 
@@ -44,23 +44,24 @@ export default async function ChapterEditPage({ params }: Props) {
   // Deleting a map nullifies the chapters on it, so the chapter outlives it.
   const mapId = chapter.map_id;
 
-  const [map, authorChapters, journey, reviews, authorJournal] =
-    await Promise.all([
+  const [map, authorChapters, journey, pins, authorJournal] = await Promise.all(
+    [
       mapId ? getMap(String(mapId), lang, token) : null,
       getUserChapters(chapter.author.id, lang, token),
       chapter.journey_id
         ? getMyJourney(String(chapter.journey_id), lang, token)
         : null,
-      mapId ? getMapReviews(String(mapId), lang, token) : [],
+      mapId ? getMapPins(String(mapId), lang, token) : [],
       getUserJournal(String(chapter.author.id), lang, token)
-    ]);
+    ]
+  );
 
   return (
     <ChapterEditor
       chapter={chapter}
       map={map}
       journey={journey}
-      reviews={reviews}
+      pins={pins}
       authorJournal={authorJournal}
       authorPageCount={authorChapters.length}
     />

@@ -55,7 +55,7 @@ function JourneyFab({
   const active = Boolean(journey?.started_at && !journey?.finished_at);
 
   // A journey that exists but has not started still holds milestones worth
-  // reviewing, so the sheet opens first and starting happens from there.
+  // pining, so the sheet opens first and starting happens from there.
   const handleClick = () => {
     if (journey) {
       onOpenProgress();

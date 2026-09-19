@@ -8,7 +8,7 @@ import {
   ListItemText
 } from '@mui/material';
 import { memo } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from '../common/AppDialog.tsx';
 import NoContents from '../common/NoContents.tsx';
@@ -16,17 +16,17 @@ import NoContents from '../common/NoContents.tsx';
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSelect: (review: Review) => void;
-  reviews: Review[];
-  usedReviewIds: Set<number>;
+  onSelect: (pin: Pin) => void;
+  pins: Pin[];
+  usedPinIds: Set<number>;
 };
 
 export default memo(function PinPickerDialog({
   open,
   onClose,
   onSelect,
-  reviews,
-  usedReviewIds
+  pins,
+  usedPinIds
 }: Props) {
   const dictionary = useDictionary();
 
@@ -40,32 +40,28 @@ export default memo(function PinPickerDialog({
       disableContentPadding
       cancelLabel={dictionary.close}
     >
-      {reviews.length < 1 ? (
+      {pins.length < 1 ? (
         <NoContents icon={Place} message={dictionary['pins will see here']} />
       ) : (
         <List disablePadding>
-          {reviews.map((review) => (
-            <ListItemButton
-              key={review.id}
-              divider
-              onClick={() => onSelect(review)}
-            >
+          {pins.map((pin) => (
+            <ListItemButton key={pin.id} divider onClick={() => onSelect(pin)}>
               <ListItemAvatar>
-                {review.images.length > 0 ? (
+                {pin.images.length > 0 ? (
                   <Avatar
-                    alt={review.name}
+                    alt={pin.name}
                     variant="rounded"
-                    src={review.images[0].avatar}
+                    src={pin.images[0].avatar}
                   />
                 ) : (
-                  <Avatar alt={review.name} variant="rounded">
+                  <Avatar alt={pin.name} variant="rounded">
                     <HistoryEdu />
                   </Avatar>
                 )}
               </ListItemAvatar>
               <ListItemText
-                primary={review.name}
-                secondary={review.comment}
+                primary={pin.name}
+                secondary={pin.comment}
                 slotProps={{
                   primary: {
                     noWrap: true
@@ -75,7 +71,7 @@ export default memo(function PinPickerDialog({
                   }
                 }}
               />
-              {usedReviewIds.has(review.id) && (
+              {usedPinIds.has(pin.id) && (
                 <ListItemIcon sx={{ minWidth: 'auto' }}>
                   <Check color="disabled" fontSize="small" />
                 </ListItemIcon>

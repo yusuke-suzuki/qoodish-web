@@ -30,7 +30,7 @@ import type {
   Journey,
   JourneyCheckin,
   Milestone,
-  Review,
+  Pin,
   Spot
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -49,7 +49,7 @@ type TimelineItem = {
   spot: Spot;
   image: string | undefined;
   checkin: JourneyCheckin | undefined;
-  reviewId: number;
+  pinId: number;
   milestone: Milestone | undefined;
 };
 
@@ -196,7 +196,7 @@ type Props = {
   onClose: () => void;
   onOpen: () => void;
   journey: Journey | null;
-  reviews: Review[];
+  pins: Pin[];
   paused: boolean;
   onRemoveMilestone: (milestone: Milestone) => void;
   onRemoveCheckin: (checkin: JourneyCheckin) => void;
@@ -217,7 +217,7 @@ function JourneyProgressSheet({
   onClose,
   onOpen,
   journey,
-  reviews,
+  pins,
   paused,
   onRemoveMilestone,
   onRemoveCheckin,
@@ -232,17 +232,15 @@ function JourneyProgressSheet({
   const dictionary = useDictionary();
   const formatLocal = useLocalDateTime();
 
-  const imagesByReview = useMemo(() => {
-    return new Map(
-      reviews.map((review) => [review.id, review.images[0]?.avatar])
-    );
-  }, [reviews]);
+  const imagesByPin = useMemo(() => {
+    return new Map(pins.map((pin) => [pin.id, pin.images[0]?.avatar]));
+  }, [pins]);
 
-  const checkinsByReview = useMemo(() => {
+  const checkinsByPin = useMemo(() => {
     const map = new Map<number, JourneyCheckin>();
 
     for (const checkin of journey?.checkins ?? []) {
-      map.set(checkin.review_id, checkin);
+      map.set(checkin.pin_id, checkin);
     }
 
     return map;
@@ -257,28 +255,28 @@ function JourneyProgressSheet({
           latitude: milestone.latitude,
           longitude: milestone.longitude
         },
-        image: imagesByReview.get(milestone.review_id),
-        checkin: checkinsByReview.get(milestone.review_id),
-        reviewId: milestone.review_id,
+        image: imagesByPin.get(milestone.pin_id),
+        checkin: checkinsByPin.get(milestone.pin_id),
+        pinId: milestone.pin_id,
         milestone
       })),
-    [journey, checkinsByReview, imagesByReview]
+    [journey, checkinsByPin, imagesByPin]
   );
 
   const extraItems = useMemo<TimelineItem[]>(() => {
-    const plannedReviewIds = new Set(plannedItems.map((item) => item.reviewId));
+    const plannedPinIds = new Set(plannedItems.map((item) => item.pinId));
 
     return (journey?.checkins ?? [])
-      .filter((checkin) => !plannedReviewIds.has(checkin.review_id))
+      .filter((checkin) => !plannedPinIds.has(checkin.pin_id))
       .map((checkin) => ({
         key: `checkin-${checkin.id}`,
         spot: checkin.spot,
-        image: imagesByReview.get(checkin.review_id),
+        image: imagesByPin.get(checkin.pin_id),
         checkin,
-        reviewId: checkin.review_id,
+        pinId: checkin.pin_id,
         milestone: undefined
       }));
-  }, [journey, plannedItems, imagesByReview]);
+  }, [journey, plannedItems, imagesByPin]);
 
   const items = useMemo(
     () => [...plannedItems, ...extraItems],

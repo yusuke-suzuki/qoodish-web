@@ -28,7 +28,7 @@ export type Profile = {
   image: ImageVariants | null;
   maps_count: number;
   bookmarked_maps_count: number;
-  reviews_count: number;
+  pins_count: number;
   push_notification: PushNotification;
 };
 
@@ -41,7 +41,7 @@ export type Author = {
 
 export type Comment = {
   id: number;
-  review_id: number;
+  pin_id: number;
   author: Author;
   body: string;
   editable: boolean;
@@ -114,7 +114,7 @@ export type Like = {
   voter: Author;
 };
 
-export type Review = {
+export type Pin = {
   id: number;
   author: Author;
   name: string;
@@ -139,7 +139,7 @@ export type Spot = {
 
 export type Milestone = Spot & {
   id: number;
-  review_id: number;
+  pin_id: number;
 };
 
 export type MapRef = {
@@ -214,7 +214,7 @@ export type Chapter = {
 
 export type JourneyCheckin = {
   id: number;
-  review_id: number;
+  pin_id: number;
   spot: Spot;
   checked_in_at: string;
   note: string | null;

@@ -14,18 +14,18 @@ import {
   useRef,
   useState
 } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import MarkerView from './MarkerView.tsx';
 
 type Props = {
-  review: Review;
+  pin: Pin;
   milestone?: 'planned' | 'visited';
-  onClick: (review: Review, ref: MutableRefObject<HTMLButtonElement>) => void;
+  onClick: (pin: Pin, ref: MutableRefObject<HTMLButtonElement>) => void;
 };
 
-function ReviewMarker({ review, milestone, onClick }: Props) {
+function PinMarker({ pin, milestone, onClick }: Props) {
   const { loader } = useGoogleMap();
   const dictionary = useDictionary();
 
@@ -38,7 +38,7 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
-    onClick(review, ref);
+    onClick(pin, ref);
   };
 
   const handleTooltipClose = () => {
@@ -63,7 +63,7 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
         return;
       }
 
-      setPosition(new LatLng(review.latitude, review.longitude));
+      setPosition(new LatLng(pin.latitude, pin.longitude));
     };
 
     updatePosition();
@@ -71,16 +71,16 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [loader, review.latitude, review.longitude]);
+  }, [loader, pin.latitude, pin.longitude]);
 
   if (!position) {
     return null;
   }
 
   const avatar =
-    review.images.length > 0 ? (
+    pin.images.length > 0 ? (
       <Avatar
-        src={review.images[0].avatar}
+        src={pin.images[0].avatar}
         sx={{
           width: theme.spacing(4),
           height: theme.spacing(4),
@@ -88,7 +88,7 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
         }}
         slotProps={{
           img: {
-            alt: review.name,
+            alt: pin.name,
             loading: 'lazy'
           }
         }}
@@ -115,7 +115,7 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
       <Tooltip
         title={
           <Typography noWrap variant="subtitle2">
-            {review.name}
+            {pin.name}
           </Typography>
         }
         open={open}
@@ -134,8 +134,8 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
           ref={ref}
           aria-label={
             milestone
-              ? `${review.name} — ${dictionary[`${milestone} milestone`]}`
-              : review.name
+              ? `${pin.name} — ${dictionary[`${milestone} milestone`]}`
+              : pin.name
           }
         >
           {milestone === undefined ? (
@@ -167,4 +167,4 @@ function ReviewMarker({ review, milestone, onClick }: Props) {
   );
 }
 
-export default memo(ReviewMarker);
+export default memo(PinMarker);

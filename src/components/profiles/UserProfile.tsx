@@ -25,8 +25,8 @@ import type {
   AppMap,
   Chapter,
   Journal,
-  Profile,
-  Review
+  Pin,
+  Profile
 } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -36,23 +36,17 @@ import EditProfileDialog from './EditProfileDialog.tsx';
 import JournalBookmarkButton from './JournalBookmarkButton.tsx';
 import UserChapters from './UserChapters.tsx';
 import UserMaps from './UserMaps.tsx';
-import UserReviews from './UserReviews.tsx';
+import UserPins from './UserPins.tsx';
 
 type Props = {
   profile: Profile;
-  initialReviews: Review[];
+  initialPins: Pin[];
   maps: AppMap[];
   journal: Journal | null;
   chapters: Chapter[];
 };
 
-function UserProfile({
-  profile,
-  initialReviews,
-  maps,
-  journal,
-  chapters
-}: Props) {
+function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
   const { uid, authenticated, setSignInRequired } = useContext(AuthContext);
   const router = useRouter();
 
@@ -110,7 +104,7 @@ function UserProfile({
               >
                 <Box>
                   <Typography variant="h6" fontWeight="bold">
-                    {profile.reviews_count ?? 0}
+                    {profile.pins_count ?? 0}
                   </Typography>
                   <Typography variant="subtitle2" color="text.secondary">
                     {dictionary.pins}
@@ -176,9 +170,9 @@ function UserProfile({
         </Card>
 
         <TabPanel value="1" sx={{ px: 0 }}>
-          <UserReviews
+          <UserPins
             userId={profile.id}
-            initialReviews={initialReviews}
+            initialPins={initialPins}
             isOwnProfile={isOwnProfile}
           />
         </TabPanel>

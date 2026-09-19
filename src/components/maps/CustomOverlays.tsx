@@ -7,24 +7,24 @@ import {
   useRef,
   useState
 } from 'react';
-import type { AppMap, Review } from '../../../types/index.ts';
+import type { AppMap, Pin } from '../../../types/index.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import CreateReviewDialog from '../reviews/CreateReviewDialog.tsx';
+import CreatePinDialog from '../pins/CreatePinDialog.tsx';
 import CurrentPositionMarker from './CurrentPositionMarker.tsx';
 import CustomMapControls from './CustomMapControls.tsx';
+import PinMarker from './PinMarker.tsx';
+import PinPopover from './PinPopover.tsx';
 import PlaceInfoWindow from './PlaceInfoWindow.tsx';
 import PositionInfoWindow from './PositionInfoWindow.tsx';
-import ReviewMarker from './ReviewMarker.tsx';
-import ReviewPopover from './ReviewPopover.tsx';
 
 type Props = {
   map: AppMap | null;
-  reviews: Review[];
+  pins: Pin[];
   milestoneOrders: Map<number, number>;
-  checkedInReviewIds: Set<number>;
-  onReviewSaved: () => void;
-  onReviewClick: (review: Review) => void;
+  checkedInPinIds: Set<number>;
+  onPinSaved: () => void;
+  onPinClick: (pin: Pin) => void;
 };
 
 function positionInBounds(
@@ -48,11 +48,11 @@ function positionInBounds(
 
 function CustomOverlays({
   map,
-  reviews,
+  pins,
   milestoneOrders,
-  checkedInReviewIds,
-  onReviewSaved,
-  onReviewClick
+  checkedInPinIds,
+  onPinSaved,
+  onPinClick
 }: Props) {
   const { googleMap, currentPosition } = useGoogleMap();
 
@@ -64,46 +64,46 @@ function CustomOverlays({
 
   const [currentBounds, setCurrentBounds] =
     useState<google.maps.LatLngBounds | null>(null);
-  const [currentReview, setCurrentReview] = useState<Review | null>(null);
+  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
-  const [createReviewDialogOpen, setCreateReviewDialogOpen] = useState(false);
+  const [createPinDialogOpen, setCreatePinDialogOpen] = useState(false);
   const [currentPlace, setCurrentPlace] =
     useState<google.maps.places.Place | null>(null);
   const [pinnedPosition, setPinnedPosition] =
     useState<google.maps.LatLng | null>(null);
 
-  const filteredReviews = currentBounds
-    ? reviews.filter((review) =>
+  const filteredPins = currentBounds
+    ? pins.filter((pin) =>
         positionInBounds(
-          { lat: review.latitude, lng: review.longitude },
+          { lat: pin.latitude, lng: pin.longitude },
           currentBounds
         )
       )
     : [];
 
-  const handleReviewDeleted = () => {
-    setCurrentReview(null);
+  const handlePinDeleted = () => {
+    setCurrentPin(null);
     setPopoverAnchorEl(null);
-    onReviewSaved();
+    onPinSaved();
   };
 
-  const handleReviewClick = (
-    review: Review,
+  const handlePinClick = (
+    pin: Pin,
     ref: MutableRefObject<HTMLButtonElement>
   ) => {
-    setCurrentReview(review);
-    onReviewClick(review);
+    setCurrentPin(pin);
+    onPinClick(pin);
 
     setPopoverAnchorEl(ref.current);
   };
 
-  const handleCreateReviewOpen = () => {
-    setCreateReviewDialogOpen(true);
+  const handleCreatePinOpen = () => {
+    setCreatePinDialogOpen(true);
   };
 
-  const handleCreateReviewClose = () => {
-    setCreateReviewDialogOpen(false);
+  const handleCreatePinClose = () => {
+    setCreatePinDialogOpen(false);
   };
 
   const handlePlaceClose = () => {
@@ -190,10 +190,8 @@ function CustomOverlays({
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
-  const reviewPopoverId =
-    popoverOpen && currentReview
-      ? `review-popover-${currentReview.id}`
-      : undefined;
+  const pinPopoverId =
+    popoverOpen && currentPin ? `pin-popover-${currentPin.id}` : undefined;
 
   return (
     <>
@@ -201,63 +199,63 @@ function CustomOverlays({
         {(profile) => (
           <CurrentPositionMarker
             profile={profile}
-            disableCreateReview={!map?.editable}
-            onCreateReviewClick={handleCreateReviewOpen}
+            disableCreatePin={!map?.editable}
+            onCreatePinClick={handleCreatePinOpen}
           />
         )}
       </ProfileBoundary>
 
-      {filteredReviews.map((review) => (
-        <ReviewMarker
-          key={review.id}
-          review={review}
+      {filteredPins.map((pin) => (
+        <PinMarker
+          key={pin.id}
+          pin={pin}
           milestone={
-            milestoneOrders.has(review.id)
-              ? checkedInReviewIds.has(review.id)
+            milestoneOrders.has(pin.id)
+              ? checkedInPinIds.has(pin.id)
                 ? 'visited'
                 : 'planned'
               : undefined
           }
-          onClick={handleReviewClick}
+          onClick={handlePinClick}
         />
       ))}
 
       {mdUp && (
-        <ReviewPopover
-          currentReview={currentReview}
+        <PinPopover
+          currentPin={currentPin}
           anchorEl={popoverAnchorEl}
-          popoverId={reviewPopoverId}
+          popoverId={pinPopoverId}
           popoverOpen={popoverOpen}
           onPopoverClose={handlePopoverClose}
-          onSaved={onReviewSaved}
-          onDeleted={handleReviewDeleted}
+          onSaved={onPinSaved}
+          onDeleted={handlePinDeleted}
         />
       )}
 
       <PlaceInfoWindow
         place={currentPlace}
-        disableCreateReview={!map?.editable}
-        onCreateReviewClick={handleCreateReviewOpen}
+        disableCreatePin={!map?.editable}
+        onCreatePinClick={handleCreatePinOpen}
         onClose={handlePlaceClose}
       />
 
       <PositionInfoWindow
         position={pinnedPosition}
-        disableCreateReview={!map?.editable}
-        onCreateReviewClick={handleCreateReviewOpen}
+        disableCreatePin={!map?.editable}
+        onCreatePinClick={handleCreatePinOpen}
         onClose={handlePinnedPositionClose}
       />
 
       <CustomMapControls onPlaceChange={setCurrentPlace} />
 
-      <CreateReviewDialog
-        open={createReviewDialogOpen}
-        onClose={handleCreateReviewClose}
+      <CreatePinDialog
+        open={createPinDialogOpen}
+        onClose={handleCreatePinClose}
         map={map}
         place={currentPlace}
         currentPosition={currentPosition}
         pinnedPosition={pinnedPosition}
-        onSaved={onReviewSaved}
+        onSaved={onPinSaved}
       />
     </>
   );

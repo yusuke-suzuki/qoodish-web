@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { memo } from 'react';
 
-export default memo(function TimelineReviewCardSkeleton() {
+export default memo(function TimelinePinCardSkeleton() {
   return (
     <Card>
       <CardHeader

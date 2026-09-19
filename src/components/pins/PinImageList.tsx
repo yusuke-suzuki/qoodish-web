@@ -1,13 +1,13 @@
 import { Box, ButtonBase, ImageList, ImageListItem } from '@mui/material';
 import { memo } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 
 type Props = {
-  review: Review;
+  pin: Pin;
 };
 
-function ReviewImageList({ review }: Props) {
-  const { images } = review;
+function PinImageList({ pin }: Props) {
+  const { images } = pin;
 
   return (
     <ImageList cols={2} gap={8}>
@@ -33,8 +33,8 @@ function ReviewImageList({ review }: Props) {
               // photographs have to be told apart by it.
               alt={
                 images.length > 1
-                  ? `${review.name} (${index + 1}/${images.length})`
-                  : review.name
+                  ? `${pin.name} (${index + 1}/${images.length})`
+                  : pin.name
               }
               loading="lazy"
               sx={{
@@ -51,4 +51,4 @@ function ReviewImageList({ review }: Props) {
   );
 }
 
-export default memo(ReviewImageList);
+export default memo(PinImageList);

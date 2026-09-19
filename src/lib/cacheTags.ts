@@ -1,5 +1,5 @@
 export const MAPS_TAG = 'maps';
-export const REVIEWS_TAG = 'reviews';
+export const PINS_TAG = 'pins';
 export const CHAPTERS_TAG = 'chapters';
 export const CONTENT_TAG = 'content';
 
@@ -7,8 +7,8 @@ export function mapTag(mapId: number | string): string {
   return `map:${mapId}`;
 }
 
-export function reviewTag(reviewId: number | string): string {
-  return `review:${reviewId}`;
+export function pinTag(pinId: number | string): string {
+  return `pin:${pinId}`;
 }
 
 export function chapterTag(chapterId: number | string): string {

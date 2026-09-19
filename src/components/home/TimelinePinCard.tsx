@@ -10,36 +10,33 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
-import type { Review } from '../../../types/index.ts';
+import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import LikeReviewButton from '../reviews/LikeReviewButton.tsx';
-import ReviewCardHeader from '../reviews/ReviewCardHeader.tsx';
-import ReviewImageList from '../reviews/ReviewImageList.tsx';
-import ReviewMenuButton from '../reviews/ReviewMenuButton.tsx';
+import LikePinButton from '../pins/LikePinButton.tsx';
+import PinCardHeader from '../pins/PinCardHeader.tsx';
+import PinImageList from '../pins/PinImageList.tsx';
+import PinMenuButton from '../pins/PinMenuButton.tsx';
 
 type Props = {
-  review: Review;
-  onReportClick: (review: Review) => void;
+  pin: Pin;
+  onReportClick: (pin: Pin) => void;
 };
 
-export default memo(function TimelineReviewCard({
-  review,
-  onReportClick
-}: Props) {
+export default memo(function TimelinePinCard({ pin, onReportClick }: Props) {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
   return (
     <Card>
-      <ReviewCardHeader
-        review={review}
+      <PinCardHeader
+        pin={pin}
         action={
           <ProfileBoundary>
             {(profile) => (
-              <ReviewMenuButton
-                review={review}
+              <PinMenuButton
+                pin={pin}
                 currentProfile={profile}
                 onReportClick={onReportClick}
               />
@@ -49,21 +46,21 @@ export default memo(function TimelineReviewCard({
       />
       <CardContent sx={{ pt: 0 }}>
         <Typography variant="h5" component="h2" gutterBottom>
-          {review.name}
+          {pin.name}
         </Typography>
 
         <Typography component="p" gutterBottom>
-          {review.comment}
+          {pin.comment}
         </Typography>
 
-        {review.images.length > 0 && <ReviewImageList review={review} />}
+        {pin.images.length > 0 && <PinImageList pin={pin} />}
       </CardContent>
       <CardActions>
-        <LikeReviewButton review={review} />
+        <LikePinButton pin={pin} />
 
         <IconButton
           LinkComponent={Link}
-          href={localePath(`/pins/${review.id}`)}
+          href={localePath(`/pins/${pin.id}`)}
           title={dictionary.comment}
           aria-label={dictionary.comment}
         >

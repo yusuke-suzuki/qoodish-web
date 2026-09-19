@@ -22,7 +22,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
     }
 
     try {
-      const result = await deleteComment(comment.review_id, comment.id);
+      const result = await deleteComment(comment.pin_id, comment.id);
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete comment success'], {
