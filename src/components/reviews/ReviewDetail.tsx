@@ -7,8 +7,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Review } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import DeleteReviewDialog from './DeleteReviewDialog.tsx';
 import EditReviewDialog from './EditReviewDialog.tsx';
 import ReviewCardActions from './ReviewCardActions.tsx';
@@ -27,7 +27,7 @@ export default function ReviewDetail({ review }: Props) {
   const { lang } = useParams<{ lang: string }>();
   const router = useRouter();
 
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -42,7 +42,7 @@ export default function ReviewDetail({ review }: Props) {
                 <ReviewMenuButton
                   review={review}
                   currentProfile={profile}
-                  onReportClick={() => setIssueDialogOpen(true)}
+                  onReportClick={() => setReportDialogOpen(true)}
                   onEditClick={() => setEditDialogOpen(true)}
                   onDeleteClick={() => setDeleteDialogOpen(true)}
                   hideDetail
@@ -100,11 +100,11 @@ export default function ReviewDetail({ review }: Props) {
         onDeleted={router.refresh}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="review"
-        contentId={review.id}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="Review"
+        moderatableId={review.id}
       />
     </>
   );

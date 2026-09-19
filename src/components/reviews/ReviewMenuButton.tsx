@@ -16,9 +16,8 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { memo, useContext, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import type { Profile, Review } from '../../../types/index.ts';
-import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
@@ -40,7 +39,6 @@ export default memo(function ReviewMenuButton({
   onReportClick,
   hideDetail
 }: Props) {
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -68,11 +66,6 @@ export default memo(function ReviewMenuButton({
 
   const handleReportClick = () => {
     setAnchorEl(null);
-
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
 
     onReportClick(review);
   };

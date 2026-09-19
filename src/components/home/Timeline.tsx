@@ -9,9 +9,9 @@ import { fetchMoreTimelineReviews } from '../../actions/reviews.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CreateMapButton from '../common/CreateMapButton.tsx';
 import DiscoverButton from '../common/DiscoverButton.tsx';
-import IssueDialog from '../common/IssueDialog.tsx';
 import LoadingStatus from '../common/LoadingStatus.tsx';
 import NoContents from '../common/NoContents.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import TimelineReviewCard from './TimelineReviewCard.tsx';
 import TimelineReviewCardSkeleton from './TimelineReviewCardSkeleton.tsx';
 
@@ -19,8 +19,8 @@ type Props = {
   initialReviews: Review[];
 };
 
-type IssueReportOptions = {
-  contentId: number | null;
+type ReportTarget = {
+  reviewId: number | null;
   dialogOpen: boolean;
 };
 
@@ -33,11 +33,10 @@ export default memo(function Timeline({ initialReviews }: Props) {
   const [noMoreResults, setNoMoreResults] = useState(initialReviews.length < 1);
   const [isPending, startTransition] = useTransition();
 
-  const [issueReportOptions, setIssueReportOptions] =
-    useState<IssueReportOptions>({
-      contentId: null,
-      dialogOpen: false
-    });
+  const [reportTarget, setReportTarget] = useState<ReportTarget>({
+    reviewId: null,
+    dialogOpen: false
+  });
 
   const loadMore = () => {
     if (noMoreResults || isPending) return;
@@ -62,15 +61,15 @@ export default memo(function Timeline({ initialReviews }: Props) {
   };
 
   const handleReportClick = (review: Review) => {
-    setIssueReportOptions({
-      contentId: review.id,
+    setReportTarget({
+      reviewId: review.id,
       dialogOpen: true
     });
   };
 
-  const handleIssueDialogClose = () => {
-    setIssueReportOptions({
-      contentId: null,
+  const handleReportDialogClose = () => {
+    setReportTarget({
+      reviewId: null,
       dialogOpen: false
     });
   };
@@ -113,11 +112,11 @@ export default memo(function Timeline({ initialReviews }: Props) {
         )}
       </Stack>
 
-      <IssueDialog
-        open={issueReportOptions.dialogOpen}
-        onClose={handleIssueDialogClose}
-        contentType="review"
-        contentId={issueReportOptions.contentId}
+      <ReportDialog
+        open={reportTarget.dialogOpen}
+        onClose={handleReportDialogClose}
+        moderatableType="Review"
+        moderatableId={reportTarget.reviewId}
       />
     </>
   );

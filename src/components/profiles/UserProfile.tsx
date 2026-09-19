@@ -30,8 +30,8 @@ import type {
 } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
+import ReportDialog from '../common/ReportDialog.tsx';
 import EditProfileDialog from './EditProfileDialog.tsx';
 import JournalBookmarkButton from './JournalBookmarkButton.tsx';
 import UserChapters from './UserChapters.tsx';
@@ -53,12 +53,12 @@ function UserProfile({
   journal,
   chapters
 }: Props) {
-  const { uid, authenticated, setSignInRequired } = useContext(AuthContext);
+  const { uid } = useContext(AuthContext);
   const router = useRouter();
 
   const [tabValue, setTabValue] = useState('1');
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [issueDialogOpen, setIssueDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const dictionary = useDictionary();
 
@@ -78,12 +78,7 @@ function UserProfile({
   };
 
   const handleReportClick = () => {
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
-
-    setIssueDialogOpen(true);
+    setReportDialogOpen(true);
   };
 
   return (
@@ -198,11 +193,11 @@ function UserProfile({
         onSaved={handleProfileSaved}
       />
 
-      <IssueDialog
-        open={issueDialogOpen}
-        onClose={() => setIssueDialogOpen(false)}
-        contentType="user"
-        contentId={profile.id}
+      <ReportDialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        moderatableType="User"
+        moderatableId={profile.id}
       />
     </>
   );
