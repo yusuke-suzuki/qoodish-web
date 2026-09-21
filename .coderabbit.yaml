@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+reviews:
+  pre_merge_checks:
+    # This codebase carries almost no docstrings by design: a name, a type or a
+    # test is preferred, and a comment is a last resort. The check warns on
+    # every pull request, so it reports the convention rather than a defect.
+    docstrings:
+      mode: "off"
