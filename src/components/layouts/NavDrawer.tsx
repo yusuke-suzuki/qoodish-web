@@ -1,15 +1,4 @@
-import {
-  AccountCircle,
-  AddBox,
-  Bookmarks,
-  ChevronLeft,
-  DirectionsWalk,
-  Explore,
-  Home,
-  Mail,
-  NotificationsNone,
-  Settings
-} from '@mui/icons-material';
+import { AddBox, ChevronLeft } from '@mui/icons-material';
 import {
   Box,
   Divider,
@@ -26,13 +15,15 @@ import {
 } from '@mui/material';
 import { getAuth } from 'firebase/auth';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { memo, Suspense, useContext } from 'react';
 import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useNavDestinations from '../../hooks/useNavDestinations.ts';
 import useProfile from '../../hooks/useProfile.ts';
+import { SUPPORT_EMAIL } from '../../utils/brand.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
@@ -48,7 +39,7 @@ type ContentProps = Props & {
   profile: Profile | null;
 };
 
-function MobileDrawerContent({
+function NavDrawerContent({
   open,
   onOpen,
   onClose,
@@ -56,9 +47,9 @@ function MobileDrawerContent({
   profile
 }: ContentProps) {
   const { push } = useRouter();
-  const pathname = usePathname();
   const dictionary = useDictionary();
   const localePath = useLocalePath();
+  const destinations = useNavDestinations(profile);
 
   const { authenticated, setSignInRequired, signOut } = useContext(AuthContext);
 
@@ -120,108 +111,22 @@ function MobileDrawerContent({
           </Stack>
         </Box>
 
-        <ListItemButton
-          selected={/^\/[a-z]+\/?$/.test(pathname)}
-          onClick={onClose}
-          LinkComponent={Link}
-          href={localePath('/')}
-          title={dictionary.home}
-        >
-          <ListItemIcon>
-            <Home />
-          </ListItemIcon>
-          <ListItemText primary={dictionary.home} />
-        </ListItemButton>
-        <ListItemButton
-          selected={pathname.endsWith('/discover')}
-          onClick={onClose}
-          LinkComponent={Link}
-          href={localePath('/discover')}
-          title={dictionary.discover}
-        >
-          <ListItemIcon>
-            <Explore />
-          </ListItemIcon>
-          <ListItemText primary={dictionary.discover} />
-        </ListItemButton>
-
-        {authenticated && (
-          <>
-            <ListItemButton
-              selected={pathname.endsWith('/journeys')}
-              onClick={onClose}
-              LinkComponent={Link}
-              href={localePath('/journeys')}
-              title={dictionary['journey log']}
-            >
-              <ListItemIcon>
-                <DirectionsWalk />
-              </ListItemIcon>
-              <ListItemText primary={dictionary['journey log']} />
-            </ListItemButton>
-            <ListItemButton
-              selected={pathname.includes('/users/')}
-              onClick={onClose}
-              LinkComponent={profile ? Link : 'button'}
-              href={profile ? localePath(`/users/${profile.id}`) : undefined}
-              disabled={!profile}
-              title={dictionary.profile}
-            >
-              <ListItemIcon>
-                <AccountCircle />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.profile} />
-            </ListItemButton>
-            <ListItemButton
-              selected={pathname.endsWith('/bookmarks')}
-              onClick={onClose}
-              LinkComponent={Link}
-              href={localePath('/bookmarks')}
-              title={dictionary.bookmarks}
-            >
-              <ListItemIcon>
-                <Bookmarks />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.bookmarks} />
-            </ListItemButton>
-            <ListItemButton
-              selected={pathname.endsWith('/notifications')}
-              onClick={onClose}
-              LinkComponent={Link}
-              href={localePath('/notifications')}
-              title={dictionary.notifications}
-            >
-              <ListItemIcon>
-                <NotificationsNone />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.notifications} />
-            </ListItemButton>
-            <ListItemButton
-              selected={pathname.endsWith('/coauthorship_invitations')}
-              onClick={onClose}
-              LinkComponent={Link}
-              href={localePath('/coauthorship_invitations')}
-              title={dictionary.invites}
-            >
-              <ListItemIcon>
-                <Mail />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.invites} />
-            </ListItemButton>
-            <ListItemButton
-              selected={pathname.endsWith('/settings')}
-              onClick={onClose}
-              LinkComponent={Link}
-              href={localePath('/settings')}
-              title={dictionary.settings}
-            >
-              <ListItemIcon>
-                <Settings />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.settings} />
-            </ListItemButton>
-          </>
-        )}
+        {destinations.map((destination) => (
+          <ListItemButton
+            key={destination.key}
+            selected={destination.selected}
+            disabled={destination.disabled}
+            onClick={onClose}
+            LinkComponent={destination.href ? Link : 'button'}
+            href={destination.href}
+            title={destination.label}
+          >
+            <ListItemIcon>
+              <destination.icon />
+            </ListItemIcon>
+            <ListItemText primary={destination.label} />
+          </ListItemButton>
+        ))}
       </List>
       <Divider />
       <Box sx={{ p: 2 }}>
@@ -287,19 +192,32 @@ function MobileDrawerContent({
             }}
           />
         </ListItemButton>
+        <ListItemButton
+          dense
+          onClick={onClose}
+          href={`mailto:${SUPPORT_EMAIL}`}
+          title={dictionary.contact}
+        >
+          <ListItemText
+            primary={dictionary.contact}
+            slotProps={{
+              primary: { color: 'text.secondary' }
+            }}
+          />
+        </ListItemButton>
       </List>
     </SwipeableDrawer>
   );
 }
 
-function MobileDrawerWithProfile(props: Props) {
-  return <MobileDrawerContent {...props} profile={useProfile()} />;
+function NavDrawerWithProfile(props: Props) {
+  return <NavDrawerContent {...props} profile={useProfile()} />;
 }
 
-export default memo(function MobileDrawer(props: Props) {
+export default memo(function NavDrawer(props: Props) {
   return (
-    <Suspense fallback={<MobileDrawerContent {...props} profile={null} />}>
-      <MobileDrawerWithProfile {...props} />
+    <Suspense fallback={<NavDrawerContent {...props} profile={null} />}>
+      <NavDrawerWithProfile {...props} />
     </Suspense>
   );
 });

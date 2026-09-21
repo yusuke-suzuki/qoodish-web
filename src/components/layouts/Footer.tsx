@@ -11,10 +11,8 @@ import Link from 'next/link';
 import { memo } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import { SUPPORT_EMAIL } from '../../utils/brand.ts';
 import Logo from './Logo.tsx';
-
-// Kept in step with Article 17 of the terms, which publishes the same address.
-const SUPPORT_EMAIL = 'support@qoodish.com';
 
 export default memo(function Footer() {
   const dictionary = useDictionary();
