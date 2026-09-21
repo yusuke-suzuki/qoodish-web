@@ -23,6 +23,7 @@ import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
 import MobileDrawer from './MobileDrawer.tsx';
 import NotificationsBadge from './NotificationsBadge.tsx';
+import TopBarSearch from './TopBarSearch.tsx';
 
 function TopBarContent() {
   const { openSearch, openCreateMap, appBarHidden } = useContext(ShellContext);
@@ -74,16 +75,36 @@ function TopBarContent() {
             <Box
               component={Link}
               href={localePath('/')}
-              sx={{ display: 'flex', mr: 'auto', textDecoration: 'none' }}
+              sx={{ display: 'flex', flexShrink: 0, textDecoration: 'none' }}
             >
               <Logo />
+            </Box>
+
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                px: { lg: 2 }
+              }}
+            >
+              <Box
+                sx={{
+                  display: { xs: 'none', lg: 'block' },
+                  width: '100%',
+                  maxWidth: { lg: 400, xl: 560 }
+                }}
+              >
+                <TopBarSearch />
+              </Box>
             </Box>
 
             <Button
               component={Link}
               href={localePath('/discover')}
               color="inherit"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+              sx={{ display: { xs: 'none', sm: 'inline-flex' }, flexShrink: 0 }}
             >
               {dictionary.discover}
             </Button>
@@ -116,6 +137,7 @@ function TopBarContent() {
               onClick={openSearch}
               title={dictionary.search}
               aria-label={dictionary.search}
+              sx={{ display: { xs: 'inline-flex', lg: 'none' } }}
             >
               <Search />
             </IconButton>
