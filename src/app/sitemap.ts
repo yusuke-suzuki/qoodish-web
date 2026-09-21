@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next';
-import { getRecentChapters } from '../lib/chapters.ts';
+import { getChapterFeed } from '../lib/chapters.ts';
 import { getActiveMaps, getPopularMaps, getRecentMaps } from '../lib/maps.ts';
-import { getPopularPins, getRecentPins } from '../lib/pins.ts';
+import { getPinFeed, getPopularPins } from '../lib/pins.ts';
 import { DEFAULT_LOCALE, LOCALES, localePath } from '../utils/locales.ts';
 import { SITE_ORIGIN } from '../utils/metadata.ts';
+import pageAll from '../utils/pageAll.ts';
 
 export const revalidate = 3600;
 
@@ -62,22 +63,36 @@ async function listOrEmpty<T>(list: Promise<T[]>): Promise<T[]> {
   }
 }
 
+// The route waits on every page in turn, so what is worth capping is the round
+// trips it spends, not the URLs they yield. Each source is walked this far and
+// no further; what that covers is the budget times whatever the feed serves per
+// page, which the API decides and may change. A site with more content than
+// this reaches needs a sitemap index and a cheaper way to enumerate it, not a
+// larger number here.
+const PAGING = { maxRequests: 25 };
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [
-    activeMaps,
-    popularMaps,
-    recentMaps,
-    popularPins,
-    recentPins,
-    recentChapters
-  ] = await Promise.all([
-    listOrEmpty(getActiveMaps(DEFAULT_LOCALE)),
-    listOrEmpty(getPopularMaps(DEFAULT_LOCALE)),
-    listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
-    listOrEmpty(getPopularPins(DEFAULT_LOCALE)),
-    listOrEmpty(getRecentPins(DEFAULT_LOCALE)),
-    listOrEmpty(getRecentChapters(DEFAULT_LOCALE))
-  ]);
+  const [activeMaps, popularMaps, recentMaps, popularPins, pins, chapters] =
+    await Promise.all([
+      listOrEmpty(getActiveMaps(DEFAULT_LOCALE)),
+      listOrEmpty(getPopularMaps(DEFAULT_LOCALE)),
+      listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
+      listOrEmpty(getPopularPins(DEFAULT_LOCALE)),
+      listOrEmpty(
+        pageAll(
+          (cursor) =>
+            getPinFeed(DEFAULT_LOCALE, cursor?.created_at, cursor?.id),
+          PAGING
+        )
+      ),
+      listOrEmpty(
+        pageAll(
+          (cursor) =>
+            getChapterFeed(DEFAULT_LOCALE, cursor?.created_at, cursor?.id),
+          PAGING
+        )
+      )
+    ]);
 
   const mapEntries = new Map<number, Entry>();
 
@@ -95,7 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const pinEntries = new Map<number, Entry>();
 
-  for (const pin of [...popularPins, ...recentPins]) {
+  for (const pin of [...popularPins, ...pins]) {
     if (pin.map.private) {
       continue;
     }
@@ -109,7 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const chapterEntries = new Map<number, Entry>();
 
-  for (const chapter of recentChapters) {
+  for (const chapter of chapters) {
     if (chapter.status !== 'published') {
       continue;
     }
