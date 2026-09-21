@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import PinDetail from '../../../../../components/pins/PinDetail.tsx';
 import PinGridSkeleton from '../../../../../components/pins/PinGridSkeleton.tsx';
 import RecommendedPins from '../../../../../components/pins/RecommendedPins.tsx';
@@ -14,6 +15,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../utils/metadata.ts';
+import { pinStructuredData } from '../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; pinId: string }>;
@@ -67,6 +69,8 @@ export default async function PinPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={pinStructuredData(pin, lang)} />
+
       <Suspense>
         <PinDetail pin={pin} />
       </Suspense>

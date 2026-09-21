@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import MapDetailView from '../../../../../components/maps/MapDetailView.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getMyJourney, getMyJourneys } from '../../../../../lib/journeys.ts';
@@ -18,6 +19,7 @@ import {
   defaultOgImage,
   ogImages
 } from '../../../../../utils/metadata.ts';
+import { mapStructuredData } from '../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; mapId: string }>;
@@ -84,6 +86,7 @@ export default async function MapPage({ params }: Props) {
 
   return (
     <Suspense>
+      <JsonLd data={mapStructuredData(map, pins, lang)} />
       <MapDetailView
         map={map}
         pins={pins}

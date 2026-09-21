@@ -1,4 +1,4 @@
-import type { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext, Page } from '@playwright/test';
 import { expect, test } from './fixtures.ts';
 
 const LOCALES = ['ja', 'en'] as const;
@@ -86,6 +86,21 @@ async function firstPublicPin(request: APIRequestContext): Promise<GuestPin> {
   return publicPins[0];
 }
 
+// A payload that fails to parse is the failure this guards: the script
+// carries author-written text, and an unescaped `<` would close it early.
+async function structuredDataTypes(page: Page): Promise<string[]> {
+  const payloads = await page
+    .locator('script[type="application/ld+json"]')
+    .allTextContents();
+
+  return payloads.flatMap((payload) => {
+    const data = JSON.parse(payload);
+    const graph = data['@graph'] as { '@type': string }[] | undefined;
+
+    return graph ? graph.map((node) => node['@type']) : [data['@type']];
+  });
+}
+
 async function firstChapterId(
   request: APIRequestContext
 ): Promise<string | null> {
@@ -137,6 +152,12 @@ for (const lang of LOCALES) {
     await expect(page.locator('.gm-style').first()).toBeVisible({
       timeout: 30000
     });
+
+    const types = await structuredDataTypes(page);
+
+    expect(types, `${route} published no structured data`).toContain(
+      'CollectionPage'
+    );
   });
 
   test(`boots the pin detail page in ${lang}`, async ({ page, request }) => {
@@ -147,6 +168,12 @@ for (const lang of LOCALES) {
 
     expect(response?.status(), `${route} answered with an error`).toBe(200);
     await expect(page.locator('body')).not.toBeEmpty();
+
+    const types = await structuredDataTypes(page);
+
+    expect(types, `${route} published no structured data`).toEqual(
+      expect.arrayContaining(['Organization', 'WebSite', 'Article'])
+    );
   });
 
   test(`boots the profile page in ${lang}`, async ({ page, request }) => {
@@ -157,6 +184,15 @@ for (const lang of LOCALES) {
 
     expect(response?.status(), `${route} answered with an error`).toBe(200);
     await expect(page.locator('body')).not.toBeEmpty();
+
+    // Profiles are deliberately not indexed, so the page says nothing about
+    // the person beyond the chrome every page carries.
+    const types = await structuredDataTypes(page);
+
+    expect(types, `${route} described the person`).toEqual([
+      'Organization',
+      'WebSite'
+    ]);
   });
 
   test(`boots the chapter detail page in ${lang}`, async ({
