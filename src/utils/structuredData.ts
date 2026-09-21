@@ -1,12 +1,18 @@
 import type { AppMap, Author, Chapter, Pin } from '../../types/index.ts';
 import { localePath } from './locales.ts';
 import { SITE_ORIGIN } from './metadata.ts';
+import { imageUrl } from './photos.ts';
 
 const ORGANIZATION_ID = `${SITE_ORIGIN}/#organization`;
 const WEBSITE_ID = `${SITE_ORIGIN}/#website`;
 
-const ORGANIZATION_LOGO =
-  'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone-retina.png';
+// The mark drawn from the live theme, so the logo a search result shows is the
+// amber the app is built in. The public variant serves it at the 512 square it
+// was uploaded as; ogp would reshape it to 1200x630 and stop it being a square.
+const ORGANIZATION_LOGO = imageUrl(
+  '5afc3ed9-4adb-48fd-ee3a-ae83ce267900',
+  'public'
+);
 
 // A map can hold far more pins than a search engine will read, and every
 // entry is repeated in the page it is already rendered in.
