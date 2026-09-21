@@ -4,6 +4,11 @@ import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 
+// The Maps API draws its own controls at 18px from the breakpoint where it
+// shows them, and this button stands in the same row.
+const GLYPH_SIZE = { xs: 20, md: 18 };
+const PROGRESS_SIZE = 18;
+
 function CurrentPositionButton() {
   const { googleMap, currentPosition, setCurrentPosition } = useGoogleMap();
   const dictionary = useDictionary();
@@ -64,11 +69,11 @@ function CurrentPositionButton() {
       }}
     >
       {loading ? (
-        <CircularProgress size={20} color="inherit" />
+        <CircularProgress size={PROGRESS_SIZE} color="inherit" />
       ) : currentPosition ? (
-        <MyLocation fontSize="small" sx={{ color: '#1A73E8' }} />
+        <MyLocation sx={{ fontSize: GLYPH_SIZE, color: '#1A73E8' }} />
       ) : (
-        <LocationSearching fontSize="small" />
+        <LocationSearching sx={{ fontSize: GLYPH_SIZE }} />
       )}
     </IconButton>
   );

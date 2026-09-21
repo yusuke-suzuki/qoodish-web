@@ -6,6 +6,7 @@ import {
   CardHeader,
   Skeleton
 } from '@mui/material';
+import PinGridSkeleton from '../../../../../components/pins/PinGridSkeleton.tsx';
 
 export default function Loading() {
   return (
@@ -35,6 +36,10 @@ export default function Loading() {
 
       <Box sx={{ mt: 2 }}>
         <Skeleton variant="rounded" width={120} height={32} />
+      </Box>
+
+      <Box sx={{ mt: { xs: 4, sm: 6 } }}>
+        <PinGridSkeleton keyPrefix="skeleton-recommended-pins" count={4} />
       </Box>
     </>
   );

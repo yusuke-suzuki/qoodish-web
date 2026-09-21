@@ -1,7 +1,10 @@
+import { Box } from '@mui/material';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import PinDetail from '../../../../../components/pins/PinDetail.tsx';
+import PinGridSkeleton from '../../../../../components/pins/PinGridSkeleton.tsx';
+import RecommendedPins from '../../../../../components/pins/RecommendedPins.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
 import { getPin } from '../../../../../lib/pins.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
@@ -63,8 +66,20 @@ export default async function PinPage({ params }: Props) {
   }
 
   return (
-    <Suspense>
-      <PinDetail pin={pin} />
-    </Suspense>
+    <>
+      <Suspense>
+        <PinDetail pin={pin} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <Box sx={{ mt: { xs: 4, sm: 6 } }}>
+            <PinGridSkeleton keyPrefix="skeleton-recommended-pins" count={4} />
+          </Box>
+        }
+      >
+        <RecommendedPins pin={pin} lang={lang} token={token} />
+      </Suspense>
+    </>
   );
 }

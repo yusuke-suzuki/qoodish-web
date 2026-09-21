@@ -1,12 +1,10 @@
 import { Box, Divider, Grid, Paper, Skeleton, Stack } from '@mui/material';
 
-const TILE_COUNT = 6;
+const PIN_TILE_COUNT = 8;
+const MAP_TILE_COUNT = 6;
 const CHAPTER_ROW_COUNT = 3;
 
-// The same sizes the lists themselves take, so nothing jumps when the data
-// lands: a wide cover for the pick up, square photographs under two lines of
-// text for reports, wide covers for maps, ruled rows for chapters.
-const REPORT_SIZE = { xs: 6, sm: 4, md: 3 };
+const PIN_SIZE = { xs: 6, sm: 4, md: 3 };
 const MAP_SIZE = { xs: 12, sm: 6, lg: 4 };
 // Skeleton keeps a 1.2em height unless it is cleared, which would override
 // the aspect ratio.
@@ -17,11 +15,20 @@ const COVER = {
 };
 const CHAPTER_THUMBNAIL = { xs: 80, sm: 100 };
 
-function SectionHeader() {
+function SectionHeader({ seeAll }: { seeAll?: boolean }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
       <Skeleton variant="circular" width={24} height={24} />
-      <Skeleton variant="text" width={120} />
+      <Skeleton variant="text" width={120} sx={{ typography: 'subtitle1' }} />
+
+      {seeAll && (
+        <Skeleton
+          variant="rounded"
+          width={72}
+          height={30}
+          sx={{ ml: 'auto' }}
+        />
+      )}
     </Box>
   );
 }
@@ -30,6 +37,8 @@ type GridSectionProps = {
   keyPrefix: string;
   aspectRatio: string;
   size: Record<string, number>;
+  count: number;
+  seeAll?: boolean;
   captioned?: boolean;
 };
 
@@ -37,14 +46,16 @@ function GridSection({
   keyPrefix,
   aspectRatio,
   size,
+  count,
+  seeAll,
   captioned
 }: GridSectionProps) {
   return (
     <Box component="section">
-      <SectionHeader />
+      <SectionHeader seeAll={seeAll} />
 
       <Grid container spacing={2}>
-        {Array.from({ length: TILE_COUNT }).map((_, index) => (
+        {Array.from({ length: count }).map((_, index) => (
           <Grid
             // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
             key={`${keyPrefix}-${index}`}
@@ -120,12 +131,14 @@ export default function Loading() {
         <GridSection
           keyPrefix="skeleton-discover-recent-pins"
           aspectRatio="1 / 1"
-          size={REPORT_SIZE}
+          size={PIN_SIZE}
+          count={PIN_TILE_COUNT}
+          seeAll
           captioned
         />
 
         <Box component="section">
-          <SectionHeader />
+          <SectionHeader seeAll />
 
           <Paper variant="outlined">
             <Stack divider={<Divider />}>
@@ -143,12 +156,14 @@ export default function Loading() {
           keyPrefix="skeleton-discover-active-maps"
           aspectRatio="16 / 9"
           size={MAP_SIZE}
+          count={MAP_TILE_COUNT}
         />
 
         <GridSection
           keyPrefix="skeleton-discover-recent-maps"
           aspectRatio="16 / 9"
           size={MAP_SIZE}
+          count={MAP_TILE_COUNT}
         />
       </Stack>
     </>
