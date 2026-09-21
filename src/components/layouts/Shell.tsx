@@ -3,17 +3,11 @@
 import { Box } from '@mui/material';
 import type { ReactNode } from 'react';
 import BottomNav from './BottomNav.tsx';
+import SideNav, { RAIL_WIDTH } from './SideNav.tsx';
 import TopBar from './TopBar.tsx';
 
 type Props = {
   children: ReactNode;
-};
-
-// Published so a page that sizes itself against the viewport can subtract the
-// chrome rather than assume it. The map is the reason: it fills the screen.
-const CHROME = {
-  '--chrome-top': '56px',
-  '--chrome-left': '0px'
 };
 
 export default function Shell({ children }: Props) {
@@ -21,17 +15,30 @@ export default function Shell({ children }: Props) {
     <>
       <TopBar />
 
+      {/* Published so a page that sizes itself against the viewport can
+          subtract the chrome rather than assume it. The map is the reason:
+          it fills the screen. */}
       <Box
-        component="main"
         sx={(theme) => ({
-          ...CHROME,
+          '--chrome-top': '56px',
+          '--chrome-left': '0px',
           [theme.breakpoints.up('sm')]: { '--chrome-top': '64px' },
-          pt: 'var(--chrome-top)'
+          [theme.breakpoints.up('md')]: {
+            '--chrome-left': `${RAIL_WIDTH}px`
+          },
+          display: 'flex'
         })}
       >
-        {children}
+        <SideNav />
 
-        <BottomNav />
+        <Box
+          component="main"
+          sx={{ flex: 1, minWidth: 0, pt: 'var(--chrome-top)' }}
+        >
+          {children}
+
+          <BottomNav />
+        </Box>
       </Box>
     </>
   );

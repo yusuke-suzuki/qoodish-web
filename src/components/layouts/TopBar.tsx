@@ -21,7 +21,7 @@ import useLocalePath from '../../hooks/useLocalePath.ts';
 import AccountMenuButton from './AccountMenuButton.tsx';
 import LocaleMenuButton from './LocaleMenuButton.tsx';
 import Logo from './Logo.tsx';
-import MobileDrawer from './MobileDrawer.tsx';
+import NavDrawer from './NavDrawer.tsx';
 import NotificationsBadge from './NotificationsBadge.tsx';
 import TopBarSearch from './TopBarSearch.tsx';
 
@@ -53,21 +53,11 @@ function TopBarContent() {
           sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
           <Toolbar sx={{ gap: 1 }}>
-            {/* A reader with an account has more destinations than a bar can
-                spell out, so the drawer carries them until the bar is wide
-                enough; a visitor has one, which the bar says itself. */}
             <IconButton
               edge="start"
               onClick={() => setDrawerOpen(true)}
               title={dictionary.menu}
               aria-label={dictionary.menu}
-              sx={{
-                display: {
-                  xs: 'inline-flex',
-                  sm: authenticated ? 'inline-flex' : 'none',
-                  md: 'none'
-                }
-              }}
             >
               <MenuIcon />
             </IconButton>
@@ -86,58 +76,57 @@ function TopBarContent() {
                 minWidth: 0,
                 display: 'flex',
                 justifyContent: 'center',
-                px: { lg: 2 }
+                px: { md: 2 }
               }}
             >
               <Box
                 sx={{
-                  display: { xs: 'none', lg: 'block' },
+                  display: { xs: 'none', md: 'block' },
                   width: '100%',
-                  maxWidth: { lg: 400, xl: 560 }
+                  maxWidth: { md: 400, xl: 560 }
                 }}
               >
                 <TopBarSearch />
               </Box>
             </Box>
 
+            {/* Below md nothing else lists the destinations while the drawer
+                is shut, so the bar names the one a visitor is most likely to
+                want; from md the rail carries it. */}
             <Button
               component={Link}
               href={localePath('/discover')}
               color="inherit"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' }, flexShrink: 0 }}
+              sx={{
+                display: { xs: 'none', sm: 'inline-flex', md: 'none' },
+                flexShrink: 0
+              }}
             >
               {dictionary.discover}
             </Button>
 
-            {/* From md the bottom bar is down and the drawer is gone, so the
-                bar carries what they held, the reader's own face included. */}
             {authenticated && (
               <Button
-                component={Link}
-                href={localePath('/journeys')}
-                color="inherit"
-                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
-              >
-                {dictionary['journey log']}
-              </Button>
-            )}
-
-            {authenticated && (
-              <IconButton
                 onClick={openCreateMap}
-                title={dictionary['create new map']}
-                aria-label={dictionary['create new map']}
-                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                variant="contained"
+                color="secondary"
+                disableElevation
+                startIcon={<AddBox />}
+                sx={{
+                  display: { xs: 'none', md: 'inline-flex' },
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap'
+                }}
               >
-                <AddBox color="secondary" />
-              </IconButton>
+                {dictionary['create new map']}
+              </Button>
             )}
 
             <IconButton
               onClick={openSearch}
               title={dictionary.search}
               aria-label={dictionary.search}
-              sx={{ display: { xs: 'inline-flex', lg: 'none' } }}
+              sx={{ display: { xs: 'inline-flex', md: 'none' } }}
             >
               <Search />
             </IconButton>
@@ -178,7 +167,7 @@ function TopBarContent() {
         </AppBar>
       </Slide>
 
-      <MobileDrawer
+      <NavDrawer
         open={drawerOpen}
         onOpen={() => setDrawerOpen(true)}
         onClose={() => setDrawerOpen(false)}

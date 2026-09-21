@@ -5,3 +5,6 @@
 export const BRAND_COLOR = '#ffb300';
 
 export const BRAND_COLOR_CONTRAST = 'rgba(0, 0, 0, 0.87)';
+
+// Kept in step with Article 17 of the terms, which publishes the same address.
+export const SUPPORT_EMAIL = 'support@qoodish.com';

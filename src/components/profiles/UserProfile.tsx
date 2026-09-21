@@ -130,13 +130,15 @@ function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
                 </Box>
               </Stack>
 
+              {/* A phone has room for one action across the card and nothing
+                  else; from sm the card is far wider than the words. */}
               {isOwnProfile ? (
                 <Button
-                  fullWidth
                   variant="contained"
                   disableElevation
                   color="inherit"
                   onClick={() => setEditDialogOpen(true)}
+                  sx={{ alignSelf: { sm: 'flex-start' } }}
                 >
                   {dictionary['edit profile']}
                 </Button>
@@ -144,7 +146,10 @@ function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
                 <Stack
                   direction="row"
                   spacing={1}
-                  sx={{ alignItems: 'center' }}
+                  sx={{
+                    alignItems: 'center',
+                    alignSelf: { sm: 'flex-start' }
+                  }}
                 >
                   {journal && (
                     <JournalBookmarkButton journal={journal} fullWidth />
