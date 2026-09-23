@@ -24,7 +24,7 @@ export default function Shell({ children }: Props) {
           '--chrome-left': '0px',
           [theme.breakpoints.up('sm')]: { '--chrome-top': '64px' },
           [theme.breakpoints.up('md')]: {
-            '--chrome-left': `${RAIL_WIDTH}px`
+            '--chrome-left': RAIL_WIDTH
           },
           display: 'flex'
         })}
