@@ -19,8 +19,20 @@ describe('countLabel', () => {
     assert.equal(countLabel('ja', ja, 'comment count', 2), '2件のコメント');
   });
 
-  it('falls back to the plural form for an unknown locale', () => {
-    assert.equal(countLabel('fr', en, 'comment count', 3), '3 comments');
+  it('falls back to the plural form for a category the locale omits', () => {
+    assert.equal(
+      countLabel(
+        'en',
+        { 'guest count other': '{count} guests' },
+        'guest count',
+        1
+      ),
+      '1 guests'
+    );
+  });
+
+  it('shows the bare count rather than throwing on a missing key', () => {
+    assert.equal(countLabel('en', {}, 'guest count', 3), '3');
   });
 
   it('labels chapters as well as comments', () => {
