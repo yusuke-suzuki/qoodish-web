@@ -91,7 +91,7 @@ const CommentList = ({ commentable, comments, onDeleted, onLiked }: Props) => {
                       comment={comment}
                       onSaved={onLiked}
                     />
-                    {comment.likes_count > 0 && comment.likes_count}
+                    {comment.likes_count ? comment.likes_count : null}
                   </Box>
                 </>
               }

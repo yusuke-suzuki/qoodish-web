@@ -28,7 +28,7 @@ export default memo(function LikeCommentButton({
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
-  const [checked, setChecked] = useState(comment.liked);
+  const [checked, setChecked] = useState(comment.liked ?? false);
   const [isPending, startTransition] = useTransition();
 
   const handleChange = useCallback(
