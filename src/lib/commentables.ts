@@ -6,12 +6,15 @@ const API_SEGMENT: Record<Commentable['type'], string> = {
   chapter: 'chapters'
 };
 
+const CACHE_TAG: Record<Commentable['type'], (id: number) => string> = {
+  pin: pinTag,
+  chapter: chapterTag
+};
+
 export function commentsPath(commentable: Commentable): string {
   return `/${API_SEGMENT[commentable.type]}/${commentable.id}/comments`;
 }
 
 export function commentableTag(commentable: Commentable): string {
-  return commentable.type === 'pin'
-    ? pinTag(commentable.id)
-    : chapterTag(commentable.id);
+  return CACHE_TAG[commentable.type](commentable.id);
 }

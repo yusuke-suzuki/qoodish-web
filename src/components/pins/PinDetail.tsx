@@ -4,8 +4,8 @@ import { KeyboardArrowLeft } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import type { Pin } from '../../../types/index.ts';
+import { useMemo, useState } from 'react';
+import type { Commentable, Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CommentList from '../common/CommentList.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -30,6 +30,11 @@ export default function PinDetail({ pin }: Props) {
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const commentable = useMemo<Commentable>(
+    () => ({ type: 'pin', id: pin.id }),
+    [pin.id]
+  );
 
   return (
     <>
@@ -67,7 +72,7 @@ export default function PinDetail({ pin }: Props) {
         {pin.comments.length > 0 && (
           <CardContent>
             <CommentList
-              commentable={{ type: 'pin', id: pin.id }}
+              commentable={commentable}
               comments={pin.comments}
               onDeleted={router.refresh}
               onLiked={router.refresh}

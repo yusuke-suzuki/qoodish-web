@@ -1,6 +1,6 @@
 import { CardActions } from '@mui/material';
-import { memo } from 'react';
-import type { Pin } from '../../../types/index.ts';
+import { memo, useMemo } from 'react';
+import type { Commentable, Pin } from '../../../types/index.ts';
 import CommentForm from '../common/CommentForm.tsx';
 import LikePinButton from './LikePinButton.tsx';
 
@@ -9,14 +9,23 @@ type Props = {
   onCommentAdded: () => void;
 };
 
-const PinCardActions = ({ pin, onCommentAdded }: Props) => (
-  <CardActions sx={{ p: 2 }}>
-    <CommentForm
-      commentable={{ type: 'pin', id: pin.id }}
-      onCommentAdded={onCommentAdded}
-      collapsedAction={<LikePinButton pin={pin} />}
-    />
-  </CardActions>
-);
+const PinCardActions = ({ pin, onCommentAdded }: Props) => {
+  const commentable = useMemo<Commentable>(
+    () => ({ type: 'pin', id: pin.id }),
+    [pin.id]
+  );
+
+  const likeButton = useMemo(() => <LikePinButton pin={pin} />, [pin]);
+
+  return (
+    <CardActions sx={{ p: 2 }}>
+      <CommentForm
+        commentable={commentable}
+        onCommentAdded={onCommentAdded}
+        collapsedAction={likeButton}
+      />
+    </CardActions>
+  );
+};
 
 export default memo(PinCardActions);
