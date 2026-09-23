@@ -1,4 +1,4 @@
-import type { Chapter } from '../../types/index.ts';
+import type { Chapter, Comment } from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { CHAPTERS_TAG, CONTENT_TAG, chapterTag, userTag } from './cacheTags.ts';
 
@@ -18,6 +18,22 @@ export async function getChapter(
   });
   assertApiAvailable(status, `/chapters/${chapterId}`);
   return data;
+}
+
+export function getChapterComments(
+  chapterId: string | number,
+  lang: string,
+  token?: string
+): Promise<Comment[]> {
+  const guest = !token;
+  return apiFetchList<Comment>(`/chapters/${chapterId}/comments`, {
+    lang,
+    guest,
+    next: {
+      revalidate: guest ? 300 : 0,
+      tags: [chapterTag(chapterId), CONTENT_TAG]
+    }
+  });
 }
 
 export function getRecentChapters(lang: string): Promise<Chapter[]> {

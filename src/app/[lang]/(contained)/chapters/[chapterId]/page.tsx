@@ -3,7 +3,11 @@ import { notFound } from 'next/navigation';
 import ChapterReadView from '../../../../../components/chapters/ChapterReadView.tsx';
 import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
-import { getChapter, getUserChapters } from '../../../../../lib/chapters.ts';
+import {
+  getChapter,
+  getChapterComments,
+  getUserChapters
+} from '../../../../../lib/chapters.ts';
 import { getMap } from '../../../../../lib/maps.ts';
 import { getUserJournal } from '../../../../../lib/users.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
@@ -70,10 +74,11 @@ export default async function ChapterPage({ params }: Props) {
   }
 
   // Deleting a map nullifies the chapters on it, so the chapter outlives it.
-  const [map, authorChapters, authorJournal] = await Promise.all([
+  const [map, authorChapters, authorJournal, comments] = await Promise.all([
     chapter.map_id ? getMap(String(chapter.map_id), lang, token) : null,
     getUserChapters(chapter.author.id, lang, token),
-    getUserJournal(String(chapter.author.id), lang, token)
+    getUserJournal(String(chapter.author.id), lang, token),
+    getChapterComments(chapterId, lang, token)
   ]);
 
   return (
@@ -84,6 +89,7 @@ export default async function ChapterPage({ params }: Props) {
         map={map}
         authorJournal={authorJournal}
         authorPageCount={authorChapters.length}
+        comments={comments}
       />
     </>
   );

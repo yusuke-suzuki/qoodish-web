@@ -15,12 +15,20 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useState } from 'react';
-import type { AppMap, Chapter, Journal } from '../../../types/index.ts';
+import { useMemo, useState } from 'react';
+import type {
+  AppMap,
+  Chapter,
+  Comment,
+  ContentRef,
+  Journal
+} from '../../../types/index.ts';
 import { deleteChapter } from '../../actions/chapters.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
 import { featureSpots } from '../../utils/mapFeatures.ts';
+import CommentForm from '../common/CommentForm.tsx';
+import CommentList from '../common/CommentList.tsx';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import ChapterActions from './ChapterActions.tsx';
@@ -43,13 +51,15 @@ type Props = {
   map: AppMap | null;
   authorJournal: Journal | null;
   authorPageCount: number;
+  comments: Comment[];
 };
 
 export default function ChapterReadView({
   chapter,
   map,
   authorJournal,
-  authorPageCount
+  authorPageCount,
+  comments
 }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
@@ -61,6 +71,11 @@ export default function ChapterReadView({
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const markerSpots = featureSpots(chapter.map_features);
+
+  const subject = useMemo<ContentRef>(
+    () => ({ type: 'chapter', id: chapter.id }),
+    [chapter.id]
+  );
 
   const mapCenter = map
     ? { latitude: map.latitude, longitude: map.longitude }
@@ -162,6 +177,25 @@ export default function ChapterReadView({
             locale={lang}
             pageCount={authorPageCount}
           />
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+            {`${comments.length} ${dictionary['comment count']}`}
+          </Typography>
+
+          <CommentForm subject={subject} onCommentAdded={router.refresh} />
+
+          {comments.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <CommentList
+                subject={subject}
+                comments={comments}
+                onDeleted={router.refresh}
+                onLiked={router.refresh}
+              />
+            </Box>
+          )}
         </Box>
       </Paper>
 
