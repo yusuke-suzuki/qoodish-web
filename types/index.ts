@@ -39,12 +39,14 @@ export type Author = {
   image: ImageVariants | null;
 };
 
+// A guest payload leaves the reader's own state out, so a signed-out page
+// renders a comment without these.
 export type Comment = {
   id: number;
   author: Author;
   body: string;
-  liked: boolean;
-  likes_count: number;
+  liked?: boolean;
+  likes_count?: number;
   created_at: string;
 };
 
