@@ -1,5 +1,7 @@
+'use client';
 import { useParams } from 'next/navigation';
 import { countLabel } from '../utils/countLabel.ts';
+import { toLocale } from '../utils/locales.ts';
 import useDictionary from './useDictionary.ts';
 
 export default function useCountLabel(): (
@@ -10,5 +12,5 @@ export default function useCountLabel(): (
   const dictionary = useDictionary();
 
   return (key, count) =>
-    countLabel(params?.lang ?? 'en', dictionary, key, count);
+    countLabel(toLocale(params?.lang), dictionary, key, count);
 }
