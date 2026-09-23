@@ -1,6 +1,6 @@
 import { CardActions } from '@mui/material';
 import { memo, useMemo } from 'react';
-import type { Commentable, Pin } from '../../../types/index.ts';
+import type { ContentRef, Pin } from '../../../types/index.ts';
 import CommentForm from '../common/CommentForm.tsx';
 import LikePinButton from './LikePinButton.tsx';
 
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const PinCardActions = ({ pin, onCommentAdded }: Props) => {
-  const commentable = useMemo<Commentable>(
+  const subject = useMemo<ContentRef>(
     () => ({ type: 'pin', id: pin.id }),
     [pin.id]
   );
@@ -20,7 +20,7 @@ const PinCardActions = ({ pin, onCommentAdded }: Props) => {
   return (
     <CardActions sx={{ p: 2 }}>
       <CommentForm
-        commentable={commentable}
+        subject={subject}
         onCommentAdded={onCommentAdded}
         collapsedAction={likeButton}
       />

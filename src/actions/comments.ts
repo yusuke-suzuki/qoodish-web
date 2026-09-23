@@ -1,8 +1,8 @@
 'use server';
 
-import type { Commentable } from '../../types/index.ts';
+import type { ContentRef } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
-import { commentableTag, commentsPath } from '../lib/commentables.ts';
+import { cacheTagFor, commentsPath } from '../lib/contentRefs.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
@@ -11,10 +11,10 @@ type ActionResult = {
 };
 
 export async function createComment(
-  commentable: Commentable,
+  subject: ContentRef,
   comment: string
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(commentsPath(commentable), {
+  const { error } = await apiFetch(commentsPath(subject), {
     method: 'POST',
     body: JSON.stringify({ comment })
   });
@@ -23,27 +23,24 @@ export async function createComment(
     return { success: false, error };
   }
 
-  revalidateTags([commentableTag(commentable)]);
+  revalidateTags([cacheTagFor(subject)]);
 
   return { success: true };
 }
 
 export async function deleteComment(
-  commentable: Commentable,
+  subject: ContentRef,
   commentId: number
 ): Promise<ActionResult> {
-  const { error } = await apiFetch(
-    `${commentsPath(commentable)}/${commentId}`,
-    {
-      method: 'DELETE'
-    }
-  );
+  const { error } = await apiFetch(`${commentsPath(subject)}/${commentId}`, {
+    method: 'DELETE'
+  });
 
   if (error) {
     return { success: false, error };
   }
 
-  revalidateTags([commentableTag(commentable)]);
+  revalidateTags([cacheTagFor(subject)]);
 
   return { success: true };
 }

@@ -9,19 +9,19 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Comment, Commentable } from '../../../types/index.ts';
+import type { Comment, ContentRef } from '../../../types/index.ts';
 import { likeComment, unlikeComment } from '../../actions/commentLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
-  commentable: Commentable;
+  subject: ContentRef;
   comment: Comment;
   onSaved?: () => void;
 };
 
 export default memo(function LikeCommentButton({
-  commentable,
+  subject,
   comment,
   onSaved
 }: Props) {
@@ -44,8 +44,8 @@ export default memo(function LikeCommentButton({
       startTransition(async () => {
         try {
           const result = next
-            ? await likeComment(commentable, comment.id)
-            : await unlikeComment(commentable, comment.id);
+            ? await likeComment(subject, comment.id)
+            : await unlikeComment(subject, comment.id);
 
           if (result.success) {
             const message = next ? 'liked!' : 'unliked';
@@ -66,14 +66,7 @@ export default memo(function LikeCommentButton({
         }
       });
     },
-    [
-      authenticated,
-      commentable,
-      comment,
-      setSignInRequired,
-      dictionary,
-      onSaved
-    ]
+    [authenticated, subject, comment, setSignInRequired, dictionary, onSaved]
   );
 
   return (

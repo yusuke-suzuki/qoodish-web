@@ -1,12 +1,12 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Comment, Commentable } from '../../../types/index.ts';
+import type { Comment, ContentRef } from '../../../types/index.ts';
 import { deleteComment } from '../../actions/comments.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
 
 type Props = {
-  commentable: Commentable;
+  subject: ContentRef;
   comment: Comment | null;
   open: boolean;
   onClose: () => void;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const DeleteCommentDialog = ({
-  commentable,
+  subject,
   comment,
   open,
   onClose,
@@ -29,7 +29,7 @@ const DeleteCommentDialog = ({
     }
 
     try {
-      const result = await deleteComment(commentable, comment.id);
+      const result = await deleteComment(subject, comment.id);
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete comment success'], {
@@ -47,7 +47,7 @@ const DeleteCommentDialog = ({
     } catch (_error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [commentable, comment, dictionary, onClose, onDeleted]);
+  }, [subject, comment, dictionary, onClose, onDeleted]);
 
   return (
     <ConfirmDialog

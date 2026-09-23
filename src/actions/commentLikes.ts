@@ -1,8 +1,8 @@
 'use server';
 
-import type { Commentable } from '../../types/index.ts';
+import type { ContentRef } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
-import { commentableTag, commentsPath } from '../lib/commentables.ts';
+import { cacheTagFor, commentsPath } from '../lib/contentRefs.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
@@ -11,11 +11,11 @@ type ActionResult = {
 };
 
 export async function likeComment(
-  commentable: Commentable,
+  subject: ContentRef,
   commentId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `${commentsPath(commentable)}/${commentId}/like`,
+    `${commentsPath(subject)}/${commentId}/like`,
     {
       method: 'POST'
     }
@@ -25,17 +25,17 @@ export async function likeComment(
     return { success: false, error };
   }
 
-  revalidateTags([commentableTag(commentable)]);
+  revalidateTags([cacheTagFor(subject)]);
 
   return { success: true };
 }
 
 export async function unlikeComment(
-  commentable: Commentable,
+  subject: ContentRef,
   commentId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `${commentsPath(commentable)}/${commentId}/like`,
+    `${commentsPath(subject)}/${commentId}/like`,
     {
       method: 'DELETE'
     }
@@ -45,7 +45,7 @@ export async function unlikeComment(
     return { success: false, error };
   }
 
-  revalidateTags([commentableTag(commentable)]);
+  revalidateTags([cacheTagFor(subject)]);
 
   return { success: true };
 }
