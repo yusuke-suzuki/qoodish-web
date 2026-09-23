@@ -24,6 +24,7 @@ import type {
   Journal
 } from '../../../types/index.ts';
 import { deleteChapter } from '../../actions/chapters.ts';
+import useCountLabel from '../../hooks/useCountLabel.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
 import { featureSpots } from '../../utils/mapFeatures.ts';
@@ -62,6 +63,7 @@ export default function ChapterReadView({
   comments
 }: Props) {
   const dictionary = useDictionary();
+  const countLabel = useCountLabel();
   const { lang } = useParams<{ lang: string }>();
   const formatDateTime = useLocalDateTime();
   const router = useRouter();
@@ -181,7 +183,7 @@ export default function ChapterReadView({
           <Divider sx={{ my: 4 }} />
 
           <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-            {`${comments.length} ${dictionary['comment count']}`}
+            {countLabel('comment count', comments.length)}
           </Typography>
 
           <CommentForm subject={subject} onCommentAdded={router.refresh} />
