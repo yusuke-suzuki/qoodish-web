@@ -9,9 +9,16 @@ import useNavDestinations, {
 } from '../../hooks/useNavDestinations.ts';
 import useProfile from '../../hooks/useProfile.ts';
 
-// The toolbar's own padding puts the menu icon 32px from the edge, and the
-// rail's icons read as that button's column continued down the page.
-export const RAIL_WIDTH = 64;
+const TOOLBAR_GUTTER = 24;
+const ICON_BUTTON_EDGE_INSET = 12;
+const ICON_BUTTON_PADDING = 8;
+const MENU_ICON_SIZE = '1.5rem';
+
+const MENU_ICON_CENTER = `calc(${
+  TOOLBAR_GUTTER - ICON_BUTTON_EDGE_INSET + ICON_BUTTON_PADDING
+}px + ${MENU_ICON_SIZE} / 2)`;
+
+export const RAIL_WIDTH = `calc(2 * ${MENU_ICON_CENTER})`;
 
 type ContentProps = {
   profile: Profile | null;
