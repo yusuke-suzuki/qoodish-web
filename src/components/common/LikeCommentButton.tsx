@@ -9,17 +9,22 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Comment } from '../../../types/index.ts';
+import type { Comment, Commentable } from '../../../types/index.ts';
 import { likeComment, unlikeComment } from '../../actions/commentLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
+  commentable: Commentable;
   comment: Comment;
   onSaved?: () => void;
 };
 
-export default memo(function LikeCommentButton({ comment, onSaved }: Props) {
+export default memo(function LikeCommentButton({
+  commentable,
+  comment,
+  onSaved
+}: Props) {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
   const dictionary = useDictionary();
 
@@ -39,8 +44,8 @@ export default memo(function LikeCommentButton({ comment, onSaved }: Props) {
       startTransition(async () => {
         try {
           const result = next
-            ? await likeComment(comment.pin_id, comment.id)
-            : await unlikeComment(comment.pin_id, comment.id);
+            ? await likeComment(commentable, comment.id)
+            : await unlikeComment(commentable, comment.id);
 
           if (result.success) {
             const message = next ? 'liked!' : 'unliked';
@@ -61,7 +66,14 @@ export default memo(function LikeCommentButton({ comment, onSaved }: Props) {
         }
       });
     },
-    [authenticated, comment, setSignInRequired, dictionary, onSaved]
+    [
+      authenticated,
+      commentable,
+      comment,
+      setSignInRequired,
+      dictionary,
+      onSaved
+    ]
   );
 
   return (

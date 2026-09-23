@@ -3,7 +3,7 @@ import { Avatar } from '@mui/material';
 import { memo, useContext } from 'react';
 import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
-import ProfileBoundary from '../common/ProfileBoundary.tsx';
+import ProfileBoundary from './ProfileBoundary.tsx';
 
 function PosterAvatarContent({ profile }: { profile: Profile | null }) {
   const { authenticated } = useContext(AuthContext);

@@ -1,7 +1,8 @@
 'use server';
 
+import type { Commentable } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
-import { pinTag } from '../lib/cacheTags.ts';
+import { commentableTag, commentsPath } from '../lib/commentables.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
@@ -10,11 +11,11 @@ type ActionResult = {
 };
 
 export async function likeComment(
-  pinId: number,
+  commentable: Commentable,
   commentId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `/pins/${pinId}/comments/${commentId}/like`,
+    `${commentsPath(commentable)}/${commentId}/like`,
     {
       method: 'POST'
     }
@@ -24,17 +25,17 @@ export async function likeComment(
     return { success: false, error };
   }
 
-  revalidateTags([pinTag(pinId)]);
+  revalidateTags([commentableTag(commentable)]);
 
   return { success: true };
 }
 
 export async function unlikeComment(
-  pinId: number,
+  commentable: Commentable,
   commentId: number
 ): Promise<ActionResult> {
   const { error } = await apiFetch(
-    `/pins/${pinId}/comments/${commentId}/like`,
+    `${commentsPath(commentable)}/${commentId}/like`,
     {
       method: 'DELETE'
     }
@@ -44,7 +45,7 @@ export async function unlikeComment(
     return { success: false, error };
   }
 
-  revalidateTags([pinTag(pinId)]);
+  revalidateTags([commentableTag(commentable)]);
 
   return { success: true };
 }

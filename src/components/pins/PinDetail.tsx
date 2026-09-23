@@ -7,13 +7,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import CommentList from '../common/CommentList.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from './DeletePinDialog.tsx';
 import EditPinDialog from './EditPinDialog.tsx';
 import PinCardActions from './PinCardActions.tsx';
 import PinCardHeader from './PinCardHeader.tsx';
-import PinComments from './PinComments.tsx';
 import PinImageList from './PinImageList.tsx';
 import PinMenuButton from './PinMenuButton.tsx';
 
@@ -66,7 +66,8 @@ export default function PinDetail({ pin }: Props) {
 
         {pin.comments.length > 0 && (
           <CardContent>
-            <PinComments
+            <CommentList
+              commentable={{ type: 'pin', id: pin.id }}
               comments={pin.comments}
               onDeleted={router.refresh}
               onLiked={router.refresh}

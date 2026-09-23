@@ -1,120 +1,22 @@
-import { Box, Button, CardActions, Stack, TextField } from '@mui/material';
-import { enqueueSnackbar } from 'notistack';
-import { memo, useCallback, useContext, useState, useTransition } from 'react';
+import { CardActions } from '@mui/material';
+import { memo } from 'react';
 import type { Pin } from '../../../types/index.ts';
-import { createComment } from '../../actions/comments.ts';
-import AuthContext from '../../context/AuthContext.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
+import CommentForm from '../common/CommentForm.tsx';
 import LikePinButton from './LikePinButton.tsx';
-import PosterAvatar from './PosterAvatar.tsx';
 
 type Props = {
   pin: Pin;
   onCommentAdded: () => void;
 };
 
-const PinCardActions = ({ pin, onCommentAdded }: Props) => {
-  const { authenticated, setSignInRequired } = useContext(AuthContext);
-
-  const [commentFormActive, setCommentFormActive] = useState(false);
-  const [comment, setComment] = useState(undefined);
-  const [isPending, startTransition] = useTransition();
-
-  const dictionary = useDictionary();
-
-  const handleSendClick = useCallback(() => {
-    if (!authenticated) {
-      setSignInRequired(true);
-      return;
-    }
-
-    startTransition(async () => {
-      try {
-        const result = await createComment(pin.id, comment);
-
-        if (result.success) {
-          enqueueSnackbar(dictionary['added comment'], { variant: 'success' });
-
-          onCommentAdded();
-        } else {
-          enqueueSnackbar(result.error, { variant: 'error' });
-        }
-      } catch (_error) {
-        enqueueSnackbar(dictionary['comment failed'], { variant: 'error' });
-      } finally {
-        setCommentFormActive(false);
-        setComment(undefined);
-      }
-    });
-  }, [
-    authenticated,
-    pin,
-    comment,
-    onCommentAdded,
-    setSignInRequired,
-    dictionary
-  ]);
-
-  return (
-    <CardActions sx={{ p: 2 }}>
-      <Stack width="100%" spacing={1}>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          width="100%"
-          gap={commentFormActive ? 0 : 1}
-        >
-          <Box display="flex" alignItems="center" width="100%" gap={2}>
-            <PosterAvatar />
-
-            <TextField
-              fullWidth
-              placeholder={dictionary['add comment']}
-              onFocus={() => setCommentFormActive(true)}
-              autoFocus={commentFormActive}
-              multiline={commentFormActive}
-              onChange={(e) => setComment(e.target.value)}
-              slotProps={{
-                input: {
-                  disableUnderline: true
-                }
-              }}
-            />
-          </Box>
-
-          <Box display="flex" alignItems="center">
-            {!commentFormActive && <LikePinButton pin={pin} />}
-          </Box>
-        </Box>
-
-        {commentFormActive && (
-          <Box display="flex" justifyContent="flex-end" width="100%" gap={1}>
-            <Button
-              onClick={() => {
-                setCommentFormActive(false);
-                setComment(undefined);
-              }}
-              disabled={isPending}
-              color="inherit"
-            >
-              {dictionary.cancel}
-            </Button>
-
-            <Button
-              onClick={handleSendClick}
-              color="secondary"
-              disabled={!comment}
-              loading={isPending}
-              variant="contained"
-            >
-              {dictionary.post}
-            </Button>
-          </Box>
-        )}
-      </Stack>
-    </CardActions>
-  );
-};
+const PinCardActions = ({ pin, onCommentAdded }: Props) => (
+  <CardActions sx={{ p: 2 }}>
+    <CommentForm
+      commentable={{ type: 'pin', id: pin.id }}
+      onCommentAdded={onCommentAdded}
+      collapsedAction={<LikePinButton pin={pin} />}
+    />
+  </CardActions>
+);
 
 export default memo(PinCardActions);
