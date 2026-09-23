@@ -46,15 +46,14 @@ const CommentForm = ({
         if (result.success) {
           enqueueSnackbar(dictionary['added comment'], { variant: 'success' });
 
+          setActive(false);
+          setComment('');
           onCommentAdded();
         } else {
           enqueueSnackbar(result.error, { variant: 'error' });
         }
       } catch (_error) {
         enqueueSnackbar(dictionary['comment failed'], { variant: 'error' });
-      } finally {
-        setActive(false);
-        setComment('');
       }
     });
   }, [
