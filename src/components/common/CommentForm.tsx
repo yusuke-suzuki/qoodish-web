@@ -8,23 +8,19 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Commentable } from '../../../types/index.ts';
+import type { ContentRef } from '../../../types/index.ts';
 import { createComment } from '../../actions/comments.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import PosterAvatar from './PosterAvatar.tsx';
 
 type Props = {
-  commentable: Commentable;
+  subject: ContentRef;
   onCommentAdded: () => void;
   collapsedAction?: ReactNode;
 };
 
-const CommentForm = ({
-  commentable,
-  onCommentAdded,
-  collapsedAction
-}: Props) => {
+const CommentForm = ({ subject, onCommentAdded, collapsedAction }: Props) => {
   const { authenticated, setSignInRequired } = useContext(AuthContext);
 
   const [active, setActive] = useState(false);
@@ -41,7 +37,7 @@ const CommentForm = ({
 
     startTransition(async () => {
       try {
-        const result = await createComment(commentable, comment);
+        const result = await createComment(subject, comment);
 
         if (result.success) {
           enqueueSnackbar(dictionary['added comment'], { variant: 'success' });
@@ -58,7 +54,7 @@ const CommentForm = ({
     });
   }, [
     authenticated,
-    commentable,
+    subject,
     comment,
     onCommentAdded,
     setSignInRequired,

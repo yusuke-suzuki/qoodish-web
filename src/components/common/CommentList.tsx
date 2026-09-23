@@ -13,7 +13,7 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, useState } from 'react';
-import type { Comment, Commentable } from '../../../types/index.ts';
+import type { Comment, ContentRef } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import AuthorAvatar from './AuthorAvatar.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
@@ -23,13 +23,13 @@ import ProfileBoundary from './ProfileBoundary.tsx';
 import ReportDialog from './ReportDialog.tsx';
 
 type Props = {
-  commentable: Commentable;
+  subject: ContentRef;
   comments: Comment[];
   onDeleted: () => void;
   onLiked: () => void;
 };
 
-const CommentList = ({ commentable, comments, onDeleted, onLiked }: Props) => {
+const CommentList = ({ subject, comments, onDeleted, onLiked }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
@@ -87,7 +87,7 @@ const CommentList = ({ commentable, comments, onDeleted, onLiked }: Props) => {
                   {comment.body}
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <LikeCommentButton
-                      commentable={commentable}
+                      subject={subject}
                       comment={comment}
                       onSaved={onLiked}
                     />
@@ -114,7 +114,7 @@ const CommentList = ({ commentable, comments, onDeleted, onLiked }: Props) => {
       </List>
 
       <DeleteCommentDialog
-        commentable={commentable}
+        subject={subject}
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         comment={currentComment}

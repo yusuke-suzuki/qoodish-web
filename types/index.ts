@@ -50,7 +50,7 @@ export type Comment = {
   created_at: string;
 };
 
-export type Commentable = {
+export type ContentRef = {
   type: 'pin' | 'chapter';
   id: number;
 };

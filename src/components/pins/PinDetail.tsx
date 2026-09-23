@@ -5,7 +5,7 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import type { Commentable, Pin } from '../../../types/index.ts';
+import type { ContentRef, Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CommentList from '../common/CommentList.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -31,7 +31,7 @@ export default function PinDetail({ pin }: Props) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const commentable = useMemo<Commentable>(
+  const subject = useMemo<ContentRef>(
     () => ({ type: 'pin', id: pin.id }),
     [pin.id]
   );
@@ -72,7 +72,7 @@ export default function PinDetail({ pin }: Props) {
         {pin.comments.length > 0 && (
           <CardContent>
             <CommentList
-              commentable={commentable}
+              subject={subject}
               comments={pin.comments}
               onDeleted={router.refresh}
               onLiked={router.refresh}
