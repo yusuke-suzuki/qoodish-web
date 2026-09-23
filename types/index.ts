@@ -44,7 +44,6 @@ export type Comment = {
   pin_id: number;
   author: Author;
   body: string;
-  editable: boolean;
   liked: boolean;
   likes_count: number;
   created_at: string;

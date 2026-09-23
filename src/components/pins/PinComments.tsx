@@ -20,13 +20,15 @@ import IssueDialog from '../common/IssueDialog.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
 import DeleteCommentDialog from './DeleteCommentDialog.tsx';
+import LikeCommentButton from './LikeCommentButton.tsx';
 
 type Props = {
   comments: Comment[];
   onDeleted: () => void;
+  onLiked: () => void;
 };
 
-const PinComments = ({ comments, onDeleted }: Props) => {
+const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
@@ -79,7 +81,16 @@ const PinComments = ({ comments, onDeleted }: Props) => {
                   </Typography>
                 </Box>
               }
-              secondary={comment.body}
+              secondary={
+                <>
+                  {comment.body}
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <LikeCommentButton comment={comment} onSaved={onLiked} />
+                    {comment.likes_count > 0 && comment.likes_count}
+                  </Box>
+                </>
+              }
+              slotProps={{ secondary: { component: 'div' } }}
             />
             <ListItemSecondaryAction>
               <ProfileBoundary>

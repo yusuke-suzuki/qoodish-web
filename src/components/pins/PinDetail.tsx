@@ -66,7 +66,11 @@ export default function PinDetail({ pin }: Props) {
 
         {pin.comments.length > 0 && (
           <CardContent>
-            <PinComments comments={pin.comments} onDeleted={router.refresh} />
+            <PinComments
+              comments={pin.comments}
+              onDeleted={router.refresh}
+              onLiked={router.refresh}
+            />
           </CardContent>
         )}
         <div />
