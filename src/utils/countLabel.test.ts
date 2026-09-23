@@ -15,8 +15,8 @@ describe('countLabel', () => {
   });
 
   it('uses the single Japanese form for any number', () => {
-    assert.equal(countLabel('ja', ja, 'comment count', 1), '1件のコメント');
-    assert.equal(countLabel('ja', ja, 'comment count', 2), '2件のコメント');
+    assert.equal(countLabel('ja', ja, 'comment count', 1), '1 件のコメント');
+    assert.equal(countLabel('ja', ja, 'comment count', 2), '2 件のコメント');
   });
 
   it('falls back to the plural form for a category the locale omits', () => {
@@ -38,6 +38,6 @@ describe('countLabel', () => {
   it('labels chapters as well as comments', () => {
     assert.equal(countLabel('en', en, 'chapters count', 1), '1 chapter');
     assert.equal(countLabel('en', en, 'chapters count', 4), '4 chapters');
-    assert.equal(countLabel('ja', ja, 'chapters count', 4), '4件のチャプター');
+    assert.equal(countLabel('ja', ja, 'chapters count', 4), '4 件のチャプター');
   });
 });
