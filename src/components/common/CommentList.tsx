@@ -13,22 +13,23 @@ import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo, useState } from 'react';
-import type { Comment } from '../../../types/index.ts';
+import type { Comment, Commentable } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
-import AuthorAvatar from '../common/AuthorAvatar.tsx';
-import ProfileBoundary from '../common/ProfileBoundary.tsx';
-import ReportDialog from '../common/ReportDialog.tsx';
+import AuthorAvatar from './AuthorAvatar.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
 import DeleteCommentDialog from './DeleteCommentDialog.tsx';
 import LikeCommentButton from './LikeCommentButton.tsx';
+import ProfileBoundary from './ProfileBoundary.tsx';
+import ReportDialog from './ReportDialog.tsx';
 
 type Props = {
+  commentable: Commentable;
   comments: Comment[];
   onDeleted: () => void;
   onLiked: () => void;
 };
 
-const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
+const CommentList = ({ commentable, comments, onDeleted, onLiked }: Props) => {
   const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
 
@@ -85,7 +86,11 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
                 <>
                   {comment.body}
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <LikeCommentButton comment={comment} onSaved={onLiked} />
+                    <LikeCommentButton
+                      commentable={commentable}
+                      comment={comment}
+                      onSaved={onLiked}
+                    />
                     {comment.likes_count > 0 && comment.likes_count}
                   </Box>
                 </>
@@ -109,6 +114,7 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
       </List>
 
       <DeleteCommentDialog
+        commentable={commentable}
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         comment={currentComment}
@@ -125,4 +131,4 @@ const PinComments = ({ comments, onDeleted, onLiked }: Props) => {
   );
 };
 
-export default memo(PinComments);
+export default memo(CommentList);

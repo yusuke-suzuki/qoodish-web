@@ -1,18 +1,25 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Comment } from '../../../types/index.ts';
+import type { Comment, Commentable } from '../../../types/index.ts';
 import { deleteComment } from '../../actions/comments.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import ConfirmDialog from '../common/ConfirmDialog.tsx';
+import ConfirmDialog from './ConfirmDialog.tsx';
 
 type Props = {
+  commentable: Commentable;
   comment: Comment | null;
   open: boolean;
   onClose: () => void;
   onDeleted: () => void;
 };
 
-const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
+const DeleteCommentDialog = ({
+  commentable,
+  comment,
+  open,
+  onClose,
+  onDeleted
+}: Props) => {
   const dictionary = useDictionary();
 
   const handleConfirm = useCallback(async () => {
@@ -22,7 +29,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
     }
 
     try {
-      const result = await deleteComment(comment.pin_id, comment.id);
+      const result = await deleteComment(commentable, comment.id);
 
       if (result.success) {
         enqueueSnackbar(dictionary['delete comment success'], {
@@ -40,7 +47,7 @@ const DeleteCommentDialog = ({ comment, open, onClose, onDeleted }: Props) => {
     } catch (_error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [comment, dictionary, onClose, onDeleted]);
+  }, [commentable, comment, dictionary, onClose, onDeleted]);
 
   return (
     <ConfirmDialog

@@ -41,12 +41,16 @@ export type Author = {
 
 export type Comment = {
   id: number;
-  pin_id: number;
   author: Author;
   body: string;
   liked: boolean;
   likes_count: number;
   created_at: string;
+};
+
+export type Commentable = {
+  type: 'pin' | 'chapter';
+  id: number;
 };
 
 export type Image = ImageVariants & {
