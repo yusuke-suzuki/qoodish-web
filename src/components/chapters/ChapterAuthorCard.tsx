@@ -4,7 +4,7 @@ import { Box, Divider, Link as MuiLink, Typography } from '@mui/material';
 import Link from 'next/link';
 import { memo } from 'react';
 import type { Author, Journal } from '../../../types/index.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
+import useCountLabel from '../../hooks/useCountLabel.ts';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import JournalBookmarkButton from '../profiles/JournalBookmarkButton.tsx';
 
@@ -16,7 +16,7 @@ type Props = {
 };
 
 function ChapterAuthorCard({ author, journal, locale, pageCount }: Props) {
-  const dictionary = useDictionary();
+  const countLabel = useCountLabel();
 
   return (
     <Box sx={{ mt: 6 }}>
@@ -44,7 +44,7 @@ function ChapterAuthorCard({ author, journal, locale, pageCount }: Props) {
               color="text.secondary"
               sx={{ display: 'block' }}
             >
-              {pageCount} {dictionary['chapters count']}
+              {countLabel('chapters count', pageCount)}
             </Typography>
           )}
 

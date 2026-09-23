@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { memo } from 'react';
 import type { Journal } from '../../../types/index.ts';
+import useCountLabel from '../../hooks/useCountLabel.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import DiscoverButton from '../common/DiscoverButton.tsx';
 import NoContents from '../common/NoContents.tsx';
@@ -23,6 +24,7 @@ type Props = {
 
 function BookmarkedJournalList({ journals }: Props) {
   const dictionary = useDictionary();
+  const countLabel = useCountLabel();
   const { lang } = useParams<{ lang: string }>();
 
   if (journals.length < 1) {
@@ -52,7 +54,7 @@ function BookmarkedJournalList({ journals }: Props) {
             </ListItemAvatar>
             <ListItemText
               primary={journal.title}
-              secondary={`${journal.author.name} · ${journal.chapters_count} ${dictionary['chapters count']}`}
+              secondary={`${journal.author.name} · ${countLabel('chapters count', journal.chapters_count)}`}
             />
           </ListItemButton>
         ))}
