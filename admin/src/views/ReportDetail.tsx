@@ -2,7 +2,6 @@ import type { Child } from 'hono/jsx';
 import { dictionaryFor, type Locale } from '../i18n/index.ts';
 import {
   allowedOutcomes,
-  httpUrl,
   type ModerationOutcome,
   publicPath,
   type ReportDetail as ReportDetailData
@@ -51,7 +50,6 @@ export function ReportDetail({
   const title = dict.report(report.id);
   const targetPath = report.target_available ? publicPath(report) : null;
   const targetUrl = targetPath ? new URL(targetPath, webEndpoint).href : null;
-  const evidenceUrl = httpUrl(report.evidence_url);
   const format = (value: string) => formatDateTime(value, locale, timeZone);
 
   return (
@@ -95,19 +93,6 @@ export function ReportDetail({
           </Field>
           <Field label={dict.details}>
             <p class="prewrap">{report.details || dict.none}</p>
-          </Field>
-          <Field label={dict.evidenceUrl}>
-            {evidenceUrl ? (
-              <a
-                href={evidenceUrl}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-              >
-                {evidenceUrl}
-              </a>
-            ) : (
-              dict.none
-            )}
           </Field>
           <Field label={dict.snapshot}>
             <p class="prewrap">{report.content_snapshot || dict.none}</p>

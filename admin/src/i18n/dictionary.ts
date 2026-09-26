@@ -27,7 +27,6 @@ export type Dictionary = {
   reporterLanguage: string;
   languages: Record<string, string>;
   details: string;
-  evidenceUrl: string;
   snapshot: string;
   none: string;
   otherPendingReports: string;
