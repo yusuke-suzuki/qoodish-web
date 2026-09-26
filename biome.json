@@ -36,6 +36,16 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["admin/**"],
+      "linter": {
+        "domains": {
+          "next": "none"
+        }
+      }
+    }
+  ],
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,

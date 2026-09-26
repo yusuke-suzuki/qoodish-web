@@ -1,0 +1,51 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "prod-qoodish-admin",
+  "account_id": "9671c836ad132f87d892b12ccd1809e0",
+  "main": "src/index.tsx",
+  "compatibility_date": "2026-07-01",
+  "routes": [{ "pattern": "admin.qoodish.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true,
+      "destinations": ["grafana-traces"]
+    },
+    "logs": {
+      "enabled": true,
+      "destinations": ["grafana-logs"]
+    }
+  },
+  "vars": {
+    "API_ENDPOINT": "https://api.qoodish.com",
+    "WEB_ENDPOINT": "https://qoodish.com",
+    "TIME_ZONE": "Asia/Tokyo",
+    "CF_ACCESS_TEAM_DOMAIN": "yusuke-suzuki-0707.cloudflareaccess.com",
+    "CF_ACCESS_AUD": "252ee6aa24f3b11f170ed50fd16a11d569890edc4f228ca76c36d46bd74c0f3b"
+  },
+  "env": {
+    "dev": {
+      "name": "dev-qoodish-admin",
+      "routes": [{ "pattern": "admin-dev.qoodish.com", "custom_domain": true }],
+      "preview_urls": true,
+      "vars": {
+        "API_ENDPOINT": "https://api-dev.qoodish.com",
+        "WEB_ENDPOINT": "https://dev.qoodish.com",
+        "TIME_ZONE": "Asia/Tokyo",
+        "CF_ACCESS_TEAM_DOMAIN": "yusuke-suzuki-0707.cloudflareaccess.com",
+        "CF_ACCESS_AUD": "3ee39327262eb73242846c4cfc838367252dd82641f8370f089d6c6979147cb6"
+      },
+      "previews": {
+        "vars": {
+          "API_ENDPOINT": "https://api-dev.qoodish.com",
+          "WEB_ENDPOINT": "https://dev.qoodish.com",
+          "TIME_ZONE": "Asia/Tokyo",
+          "CF_ACCESS_TEAM_DOMAIN": "yusuke-suzuki-0707.cloudflareaccess.com",
+          "CF_ACCESS_AUD": "3ee39327262eb73242846c4cfc838367252dd82641f8370f089d6c6979147cb6"
+        }
+      }
+    }
+  }
+}
