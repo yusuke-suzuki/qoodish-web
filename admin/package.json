@@ -1,0 +1,21 @@
+{
+  "name": "qoodish-web-admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --env dev",
+    "cf:deploy": "wrangler deploy",
+    "cf:deploy:dev": "wrangler deploy --env dev",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test": "node --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "hono": "^4.13.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260901.1",
+    "@types/node": "^22.20.1",
+    "typescript": "^5.2.2",
+    "wrangler": "^4.114.0"
+  }
+}

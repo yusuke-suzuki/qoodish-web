@@ -101,7 +101,7 @@ importers:
         version: 2.5.10
       '@opennextjs/cloudflare':
         specifier: ^1.20.2
-        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)
+        version: 1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.62.1
@@ -134,7 +134,26 @@ importers:
         version: 5.9.2
       wrangler:
         specifier: ^4.114.0
-        version: 4.118.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
+
+  admin:
+    dependencies:
+      hono:
+        specifier: ^4.13.8
+        version: 4.13.8
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20260901.1
+        version: 5.20260901.1
+      '@types/node':
+        specifier: ^22.20.1
+        version: 22.20.1
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.2
+      wrangler:
+        specifier: ^4.114.0
+        version: 4.118.0(@cloudflare/workers-types@5.20260901.1)
 
   synthetics:
     dependencies:
@@ -2801,6 +2820,10 @@ packages:
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
+  hono@4.13.8:
+    resolution: {integrity: sha512-/Gng7NfoykZl2pjukW5Z6+8Yxm3BPRf86GTbQnt0SbySkvax4fyL4H3HhY1cCpBGmiW9XDRFzRV+CXK2W8QudQ==}
+    engines: {node: '>=16.9.0'}
 
   html-tokenize@2.0.1:
     resolution: {integrity: sha512-QY6S+hZ0f5m1WT8WffYN+Hg+xm/w5I8XeUcAq/ZYP5wVC8xbKi4Whhru3FtrAebD5EhBW8rmFzkDI6eCAuFe2w==}
@@ -5765,7 +5788,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0)':
+  '@opennextjs/cloudflare@1.20.2(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1))':
     dependencies:
       '@ast-grep/napi': 0.40.5
       '@dotenvx/dotenvx': 1.31.0
@@ -5777,7 +5800,7 @@ snapshots:
       glob: 12.0.0
       next: 16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       ts-tqdm: 0.8.6
-      wrangler: 4.118.0
+      wrangler: 4.118.0(@cloudflare/workers-types@5.20260901.1)
       yargs: 18.1.0
     transitivePeerDependencies:
       - encoding
@@ -6743,6 +6766,8 @@ snapshots:
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
+
+  hono@4.13.8: {}
 
   html-tokenize@2.0.1:
     dependencies:
@@ -7830,22 +7855,6 @@ snapshots:
       '@cloudflare/workerd-linux-64': 1.20260730.1
       '@cloudflare/workerd-linux-arm64': 1.20260730.1
       '@cloudflare/workerd-windows-64': 1.20260730.1
-
-  wrangler@4.118.0:
-    dependencies:
-      '@cloudflare/kv-asset-handler': 0.5.0
-      '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260730.1)
-      blake3-wasm: 2.1.5
-      esbuild: 0.28.1
-      miniflare: 5.20260730.0-alpha
-      path-to-regexp: 6.3.0
-      unenv: 2.0.0-rc.24
-      workerd: 1.20260730.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   wrangler@4.118.0(@cloudflare/workers-types@5.20260901.1):
     dependencies:
