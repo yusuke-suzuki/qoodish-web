@@ -47,7 +47,11 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--border);
 }
 
+.site-header { flex-wrap: wrap; }
+
 .brand { font-weight: 700; color: inherit; text-decoration: none; }
+
+.site-nav { display: flex; flex-wrap: wrap; gap: 16px; }
 
 main { max-width: 760px; margin: 0 auto; padding: 16px; }
 
@@ -112,6 +116,62 @@ fieldset { border: 0; margin: 0 0 12px; padding: 0; }
 legend { padding: 0; }
 .choice { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
 .stacked { display: block; font-weight: 600; margin-bottom: 4px; }
+
+.staff-list { list-style: none; margin: 0; padding: 0; }
+.staff-list > li { padding: 12px 0; }
+.staff-list > li + li { border-top: 1px solid var(--border); }
+.staff-list p { margin: 0 0 8px; }
+.staff-email { font-weight: 600; overflow-wrap: anywhere; }
+
+.role-chips {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.role-chips li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.role-chips form { margin: 0; }
+
+.link-button {
+  padding: 4px 8px;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+
+.danger-button {
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  font-size: 0.875rem;
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  font: inherit;
+  padding: 8px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: inherit;
+}
+
+form h2 { margin-bottom: 12px; }
+form select + button { margin-top: 12px; }
 
 textarea {
   width: 100%;
