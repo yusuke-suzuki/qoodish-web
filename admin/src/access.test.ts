@@ -215,7 +215,7 @@ describe('fetchAccessKeys', () => {
     assert.equal(fetchMock.mock.callCount(), 1);
   });
 
-  it('waits before retrying a failed fetch', async (t) => {
+  it('retries a failed fetch after thirty seconds', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: 0 });
     const fetchMock = t.mock.method(
       globalThis,
@@ -225,13 +225,101 @@ describe('fetchAccessKeys', () => {
     const teamDomain = 'outage.cloudflareaccess.com';
 
     await assert.rejects(fetchAccessKeys(teamDomain, false));
+    t.mock.timers.tick(29 * 1000);
     assert.deepEqual(await fetchAccessKeys(teamDomain, false), []);
     assert.equal(fetchMock.mock.callCount(), 1);
 
-    t.mock.timers.tick(5 * MINUTE);
+    t.mock.timers.tick(1000);
     await assert.rejects(fetchAccessKeys(teamDomain, false));
 
     assert.equal(fetchMock.mock.callCount(), 2);
+  });
+
+  it('keeps the cached keys when a refetch fails', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now: 0 });
+    const fetchMock = t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response(JSON.stringify({ keys: [{ kid: 'key-1' }] }))
+    );
+    const teamDomain = 'flaky.cloudflareaccess.com';
+
+    await fetchAccessKeys(teamDomain, false);
+    fetchMock.mock.mockImplementation(
+      async () => new Response(null, { status: 503 })
+    );
+    t.mock.timers.tick(60 * MINUTE);
+
+    assert.deepEqual(await fetchAccessKeys(teamDomain, false), [
+      { kid: 'key-1' }
+    ]);
+    assert.equal(fetchMock.mock.callCount(), 2);
+  });
+
+  it('stops using the cached keys a day after the last successful fetch', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now: 0 });
+    const fetchMock = t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response(JSON.stringify({ keys: [{ kid: 'key-1' }] }))
+    );
+    const teamDomain = 'long-outage.cloudflareaccess.com';
+
+    await fetchAccessKeys(teamDomain, false);
+    fetchMock.mock.mockImplementation(
+      async () => new Response(null, { status: 503 })
+    );
+
+    t.mock.timers.tick(23 * 60 * MINUTE);
+    assert.deepEqual(await fetchAccessKeys(teamDomain, false), [
+      { kid: 'key-1' }
+    ]);
+
+    t.mock.timers.tick(60 * MINUTE);
+    await assert.rejects(fetchAccessKeys(teamDomain, false));
+  });
+
+  it('does not serve keys past a day while waiting to retry a failed fetch', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now: 0 });
+    const fetchMock = t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response(JSON.stringify({ keys: [{ kid: 'key-1' }] }))
+    );
+    const teamDomain = 'day-boundary.cloudflareaccess.com';
+
+    await fetchAccessKeys(teamDomain, false);
+    fetchMock.mock.mockImplementation(
+      async () => new Response(null, { status: 503 })
+    );
+
+    t.mock.timers.tick(24 * 60 * MINUTE - 10 * 1000);
+    assert.deepEqual(await fetchAccessKeys(teamDomain, false), [
+      { kid: 'key-1' }
+    ]);
+
+    t.mock.timers.tick(20 * 1000);
+    assert.deepEqual(await fetchAccessKeys(teamDomain, false), []);
+    assert.equal(fetchMock.mock.callCount(), 2);
+  });
+
+  it('rejects the cached keys when a failing fetch outlasts the day', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now: 0 });
+    const fetchMock = t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response(JSON.stringify({ keys: [{ kid: 'key-1' }] }))
+    );
+    const teamDomain = 'slow-failure.cloudflareaccess.com';
+
+    await fetchAccessKeys(teamDomain, false);
+    fetchMock.mock.mockImplementation(async () => {
+      t.mock.timers.tick(20 * 1000);
+      return new Response(null, { status: 503 });
+    });
+
+    t.mock.timers.tick(24 * 60 * MINUTE - 10 * 1000);
+    await assert.rejects(fetchAccessKeys(teamDomain, false));
   });
 });
 
