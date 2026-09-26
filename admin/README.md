@@ -1,6 +1,6 @@
 # qoodish-web-admin
 
-A Cloudflare Worker that serves the moderation dashboard on `admin.qoodish.com` (`admin-dev.qoodish.com` for dev). It lists pending reports, shows each report with its snapshot and decision history, and records decisions through the admin API of the Rails backend.
+A Cloudflare Worker that serves the moderation dashboard on `admin.qoodish.com` (`admin-dev.qoodish.com` for dev). It lists pending reports, shows each report with its snapshot and decision history, and records decisions through the admin API of the Rails backend. Staff members holding the `manage_staff` permission also grant and remove roles and revoke access on the staff page.
 
 The pages are rendered on the server with Hono's JSX and use plain HTML forms, so the dashboard runs no client-side JavaScript. Every page is available in English and Japanese under `/en` and `/ja`; `/` redirects by the browser's language.
 
