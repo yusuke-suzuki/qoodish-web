@@ -1,6 +1,7 @@
 import { ACCESS_JWT_HEADER } from './access.ts';
 import type { Locale } from './i18n/index.ts';
 import type { DecisionInput, Report, ReportDetail } from './reports.ts';
+import type { GrantInput, Role, StaffMember } from './staff.ts';
 
 const API_TIMEOUT_MS = 15000;
 
@@ -74,5 +75,48 @@ export function decideReport(
     context,
     `/admin/reports/${encodeURIComponent(reportId)}/decision`,
     { method: 'POST', body: JSON.stringify(decision) }
+  );
+}
+
+export function listStaffMembers(
+  context: ApiContext
+): Promise<ApiResponse<StaffMember[]>> {
+  return request(context, '/admin/staff_members');
+}
+
+export function listRoles(context: ApiContext): Promise<ApiResponse<Role[]>> {
+  return request(context, '/admin/roles');
+}
+
+export function grantRole(
+  context: ApiContext,
+  grant: GrantInput
+): Promise<ApiResponse<StaffMember>> {
+  return request(context, '/admin/staff_members', {
+    method: 'POST',
+    body: JSON.stringify(grant)
+  });
+}
+
+export function unassignRole(
+  context: ApiContext,
+  staffMemberId: string,
+  roleId: string
+): Promise<ApiResponse<StaffMember>> {
+  return request(
+    context,
+    `/admin/staff_members/${encodeURIComponent(staffMemberId)}/roles/${encodeURIComponent(roleId)}`,
+    { method: 'DELETE' }
+  );
+}
+
+export function revokeStaffMember(
+  context: ApiContext,
+  staffMemberId: string
+): Promise<ApiResponse<StaffMember>> {
+  return request(
+    context,
+    `/admin/staff_members/${encodeURIComponent(staffMemberId)}/revocation`,
+    { method: 'POST' }
   );
 }

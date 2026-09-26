@@ -68,5 +68,30 @@ export const ja: Dictionary = {
   invalidDecision: '判断を選び、理由を入力してください。',
   notFound: 'ページが見つかりません。',
   forbidden: 'この操作を行う権限がありません。',
-  apiUnavailable: 'API に接続できませんでした。時間をおいて再度お試しください。'
+  apiUnavailable:
+    'API に接続できませんでした。時間をおいて再度お試しください。',
+  navReports: '報告',
+  navStaff: '担当者',
+  staffMembers: '担当者',
+  noStaffMembers: '担当者はまだいません。',
+  grantRole: 'ロールを付与',
+  grantRoleHelp:
+    'Cloudflare Access のログインに使うメールアドレスを入力してください。未登録のアドレスは新しい担当者として登録されます。',
+  email: 'メールアドレス',
+  role: 'ロール',
+  chooseRole: '選択してください',
+  grant: '付与する',
+  invalidGrant: 'メールアドレスを入力し、ロールを選んでください。',
+  roles: 'ロール',
+  noRoles: 'ロールなし',
+  permissions: {
+    read_reports: '報告の閲覧',
+    decide_reports: '報告の判断',
+    manage_staff: '担当者の管理'
+  },
+  remove: '外す',
+  removeRole: (role) => `${role} を外す`,
+  revoke: 'アクセスを取り消す',
+  revoked: '取り消し済み',
+  staffUpdated: (email) => `${email} を更新しました。`
 };
