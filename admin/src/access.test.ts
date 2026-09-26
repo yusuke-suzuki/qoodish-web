@@ -196,6 +196,25 @@ describe('fetchAccessKeys', () => {
     assert.equal(fetchMock.mock.callCount(), 2);
   });
 
+  it('gives concurrent callers the keys of one shared fetch', async (t) => {
+    let resolve: (value: Response) => void = () => {};
+    const response = new Promise<Response>((settle) => {
+      resolve = settle;
+    });
+    const fetchMock = t.mock.method(globalThis, 'fetch', () => response);
+    const teamDomain = 'concurrent.cloudflareaccess.com';
+
+    const first = fetchAccessKeys(teamDomain, false);
+    const second = fetchAccessKeys(teamDomain, false);
+    const refreshing = fetchAccessKeys(teamDomain, true);
+    resolve(new Response(JSON.stringify({ keys: [{ kid: 'key-1' }] })));
+
+    for (const keys of await Promise.all([first, second, refreshing])) {
+      assert.deepEqual(keys, [{ kid: 'key-1' }]);
+    }
+    assert.equal(fetchMock.mock.callCount(), 1);
+  });
+
   it('waits before retrying a failed fetch', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: 0 });
     const fetchMock = t.mock.method(

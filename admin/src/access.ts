@@ -36,6 +36,10 @@ let cachedKeys: {
   attemptedAt: number;
 } = { teamDomain: '', keys: [], attemptedAt: 0 };
 
+let pendingFetch:
+  | { teamDomain: string; promise: Promise<AccessKey[]> }
+  | undefined;
+
 function issuerOf(teamDomain: string): string {
   return `https://${teamDomain}`;
 }
@@ -62,22 +66,41 @@ export async function fetchAccessKeys(
     return cachedKeys.keys;
   }
 
-  const previousKeys =
-    cachedKeys.teamDomain === teamDomain ? cachedKeys.keys : [];
-  cachedKeys = { teamDomain, keys: previousKeys, attemptedAt: Date.now() };
-
-  const res = await fetch(`${issuerOf(teamDomain)}/cdn-cgi/access/certs`, {
-    signal: AbortSignal.timeout(KEYS_FETCH_TIMEOUT_MS)
-  });
-
-  if (!res.ok) {
-    throw new Error(`Access certs request failed with status ${res.status}`);
+  if (pendingFetch?.teamDomain === teamDomain) {
+    return pendingFetch.promise;
   }
 
-  const { keys } = (await res.json()) as { keys: AccessKey[] };
-  cachedKeys = { teamDomain, keys, attemptedAt: Date.now() };
+  const promise = requestAccessKeys(teamDomain).finally(() => {
+    if (pendingFetch?.promise === promise) {
+      pendingFetch = undefined;
+    }
+  });
+  pendingFetch = { teamDomain, promise };
 
-  return keys;
+  return promise;
+}
+
+async function requestAccessKeys(teamDomain: string): Promise<AccessKey[]> {
+  const previousKeys =
+    cachedKeys.teamDomain === teamDomain ? cachedKeys.keys : [];
+
+  try {
+    const res = await fetch(`${issuerOf(teamDomain)}/cdn-cgi/access/certs`, {
+      signal: AbortSignal.timeout(KEYS_FETCH_TIMEOUT_MS)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Access certs request failed with status ${res.status}`);
+    }
+
+    const { keys } = (await res.json()) as { keys: AccessKey[] };
+    cachedKeys = { teamDomain, keys, attemptedAt: Date.now() };
+
+    return keys;
+  } catch (error) {
+    cachedKeys = { teamDomain, keys: previousKeys, attemptedAt: Date.now() };
+    throw error;
+  }
 }
 
 function decodeBase64Url(segment: string): Uint8Array<ArrayBuffer> {
