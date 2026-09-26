@@ -50,7 +50,6 @@ export const en: Dictionary = {
   reporterLanguage: "Reporter's language",
   languages: { en: 'English', ja: 'Japanese' },
   details: 'Details',
-  evidenceUrl: 'Reference URL',
   snapshot: 'Content at the time of the report',
   none: 'None',
   otherPendingReports: 'Other pending reports on this content',
@@ -68,5 +67,29 @@ export const en: Dictionary = {
   invalidDecision: 'Choose a decision and enter a reason.',
   notFound: 'Not found.',
   forbidden: 'You do not have permission to do this.',
-  apiUnavailable: 'The API could not be reached. Try again later.'
+  apiUnavailable: 'The API could not be reached. Try again later.',
+  navReports: 'Reports',
+  navStaff: 'Staff',
+  staffMembers: 'Staff members',
+  noStaffMembers: 'No staff members yet.',
+  grantRole: 'Grant a role',
+  grantRoleHelp:
+    'Enter the email the person signs in to Cloudflare Access with. An email not listed yet becomes a new staff member.',
+  email: 'Email',
+  role: 'Role',
+  chooseRole: 'Choose a role',
+  grant: 'Grant',
+  invalidGrant: 'Enter an email and choose a role.',
+  roles: 'Roles',
+  noRoles: 'No roles',
+  permissions: {
+    read_reports: 'Read reports',
+    decide_reports: 'Decide reports',
+    manage_staff: 'Manage staff'
+  },
+  remove: 'Remove',
+  removeRole: (role) => `Remove ${role}`,
+  revoke: 'Revoke access',
+  revoked: 'Revoked',
+  staffUpdated: (email) => `Updated ${email}.`
 };

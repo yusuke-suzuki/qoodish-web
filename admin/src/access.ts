@@ -2,6 +2,7 @@ export const ACCESS_JWT_HEADER = 'cf-access-jwt-assertion';
 
 const KEYS_TTL_MS = 60 * 60 * 1000;
 const KEYS_MIN_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+const KEYS_RETRY_AFTER_FAILURE_MS = 30 * 1000;
 const KEYS_FETCH_TIMEOUT_MS = 5000;
 
 const SIGNATURE_ALGORITHM = {
@@ -34,7 +35,8 @@ let cachedKeys: {
   teamDomain: string;
   keys: AccessKey[];
   attemptedAt: number;
-} = { teamDomain: '', keys: [], attemptedAt: 0 };
+  failed: boolean;
+} = { teamDomain: '', keys: [], attemptedAt: 0, failed: false };
 
 let pendingFetch:
   | { teamDomain: string; promise: Promise<AccessKey[]> }
@@ -50,6 +52,10 @@ function keysAreUsable(teamDomain: string, refresh: boolean): boolean {
   }
 
   const age = Date.now() - cachedKeys.attemptedAt;
+
+  if (cachedKeys.failed) {
+    return age < KEYS_RETRY_AFTER_FAILURE_MS;
+  }
 
   if (refresh || cachedKeys.keys.length === 0) {
     return age < KEYS_MIN_REFRESH_INTERVAL_MS;
@@ -94,12 +100,25 @@ async function requestAccessKeys(teamDomain: string): Promise<AccessKey[]> {
     }
 
     const { keys } = (await res.json()) as { keys: AccessKey[] };
-    cachedKeys = { teamDomain, keys, attemptedAt: Date.now() };
+    cachedKeys = { teamDomain, keys, attemptedAt: Date.now(), failed: false };
 
     return keys;
   } catch (error) {
-    cachedKeys = { teamDomain, keys: previousKeys, attemptedAt: Date.now() };
-    throw error;
+    cachedKeys = {
+      teamDomain,
+      keys: previousKeys,
+      attemptedAt: Date.now(),
+      failed: true
+    };
+
+    if (previousKeys.length === 0) {
+      throw error;
+    }
+
+    console.warn(
+      `Access certs fetch failed; keeping the cached keys: ${String(error)}`
+    );
+    return previousKeys;
   }
 }
 

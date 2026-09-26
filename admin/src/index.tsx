@@ -8,7 +8,12 @@ import {
   ApiUnavailableError,
   decideReport,
   getReport,
-  listPendingReports
+  grantRole,
+  listPendingReports,
+  listRoles,
+  listStaffMembers,
+  revokeStaffMember,
+  unassignRole
 } from './api.ts';
 import {
   dictionaryFor,
@@ -17,10 +22,12 @@ import {
   preferredLocale
 } from './i18n/index.ts';
 import { parseDecision } from './reports.ts';
+import { parseGrant } from './staff.ts';
 import { STYLES } from './styles.ts';
 import { Message } from './views/Message.tsx';
 import { type DecisionFormState, ReportDetail } from './views/ReportDetail.tsx';
 import { ReportList } from './views/ReportList.tsx';
+import { type GrantFormState, StaffList } from './views/StaffList.tsx';
 
 type Env = {
   API_ENDPOINT: string;
@@ -130,6 +137,59 @@ async function renderReport(
   );
 }
 
+async function renderStaff(
+  c: Context<AppEnv>,
+  locale: Locale,
+  { error = null, form }: { error?: string | null; form?: GrantFormState } = {}
+) {
+  const context = apiContext(c, locale);
+  const [staffMembers, roles] = await Promise.all([
+    listStaffMembers(context),
+    listRoles(context)
+  ]);
+
+  if (!staffMembers.ok) {
+    return refused(c, locale, staffMembers.status);
+  }
+
+  if (!roles.ok) {
+    return refused(c, locale, roles.status);
+  }
+
+  return c.html(
+    <StaffList
+      locale={locale}
+      staffMembers={staffMembers.data}
+      roles={roles.data}
+      updatedEmail={error ? null : (c.req.query('updated') ?? null)}
+      error={error}
+      form={form}
+    />,
+    error ? 422 : 200
+  );
+}
+
+async function afterStaffChange(
+  c: Context<AppEnv>,
+  locale: Locale,
+  result: Awaited<ReturnType<typeof revokeStaffMember>>
+) {
+  if (!result.ok && result.status === 403) {
+    return forbidden(c, locale);
+  }
+
+  if (!result.ok) {
+    return renderStaff(c, locale, {
+      error: result.detail ?? dictionaryFor(locale).notFound
+    });
+  }
+
+  return c.redirect(
+    `/${locale}/staff?updated=${encodeURIComponent(result.data.email)}`,
+    303
+  );
+}
+
 app.get('/styles.css', (c) => {
   c.header('Content-Type', 'text/css; charset=utf-8');
   return c.body(STYLES);
@@ -219,6 +279,60 @@ app.post('/:lang/reports/:id{[0-9]+}/decision', async (c) => {
   }
 
   return c.redirect(`/${locale}/reports?decided=${reportId}`, 303);
+});
+
+app.get('/:lang/staff', (c) => renderStaff(c, localeOf(c)));
+
+app.post('/:lang/staff', async (c) => {
+  const locale = localeOf(c);
+  const body = await c.req.parseBody();
+  const form = {
+    email: typeof body.email === 'string' ? body.email : '',
+    roleId: typeof body.role_id === 'string' ? body.role_id : ''
+  };
+  const grant = parseGrant(body.email, body.role_id);
+
+  if (!grant) {
+    return renderStaff(c, locale, {
+      error: dictionaryFor(locale).invalidGrant,
+      form
+    });
+  }
+
+  const result = await grantRole(apiContext(c, locale), grant);
+
+  if (!result.ok && result.status !== 403) {
+    return renderStaff(c, locale, {
+      error: result.detail ?? dictionaryFor(locale).invalidGrant,
+      form
+    });
+  }
+
+  return afterStaffChange(c, locale, result);
+});
+
+app.post(
+  '/:lang/staff/:id{[0-9]+}/roles/:roleId{[0-9]+}/removal',
+  async (c) => {
+    const locale = localeOf(c);
+    const result = await unassignRole(
+      apiContext(c, locale),
+      c.req.param('id'),
+      c.req.param('roleId')
+    );
+
+    return afterStaffChange(c, locale, result);
+  }
+);
+
+app.post('/:lang/staff/:id{[0-9]+}/revocation', async (c) => {
+  const locale = localeOf(c);
+  const result = await revokeStaffMember(
+    apiContext(c, locale),
+    c.req.param('id')
+  );
+
+  return afterStaffChange(c, locale, result);
 });
 
 app.notFound((c) => notFound(c, localeOf(c)));
