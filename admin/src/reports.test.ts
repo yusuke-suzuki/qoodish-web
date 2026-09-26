@@ -1,11 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import {
-  allowedOutcomes,
-  httpUrl,
-  parseDecision,
-  publicPath
-} from './reports.ts';
+import { allowedOutcomes, parseDecision, publicPath } from './reports.ts';
 
 describe('allowedOutcomes', () => {
   it('offers keeping or removing content that is still there', () => {
@@ -83,24 +78,5 @@ describe('publicPath', () => {
       }),
       null
     );
-  });
-});
-
-describe('httpUrl', () => {
-  it('keeps an http or https link', () => {
-    assert.equal(
-      httpUrl('https://example.com/a?b=1'),
-      'https://example.com/a?b=1'
-    );
-  });
-
-  it('drops any other scheme', () => {
-    assert.equal(httpUrl('javascript:alert(1)'), null);
-    assert.equal(httpUrl('data:text/html,hi'), null);
-  });
-
-  it('drops a value that is not a URL', () => {
-    assert.equal(httpUrl('not a url'), null);
-    assert.equal(httpUrl(null), null);
   });
 });

@@ -62,7 +62,6 @@ function ReportDialog({
   const categoryLabelId = `${formId}-category-label`;
   const categoryFieldName = `${formId}-category`;
   const detailsFieldName = `${formId}-details`;
-  const evidenceFieldName = `${formId}-evidence`;
 
   const [category, setCategory] = useState<ReportCategory | null>(null);
   const [details, setDetails] = useState('');
@@ -86,9 +85,7 @@ function ReportDialog({
           moderatable_id: moderatableId,
           category: submittedCategory,
           details:
-            formData.get(detailsFieldName)?.toString().trim() || undefined,
-          evidence_url:
-            formData.get(evidenceFieldName)?.toString().trim() || undefined
+            formData.get(detailsFieldName)?.toString().trim() || undefined
         });
 
         if (result.success) {
@@ -226,16 +223,6 @@ function ReportDialog({
           fullWidth
           disabled={isPending}
           slotProps={{ htmlInput: { maxLength: MAX_DETAILS_LENGTH } }}
-        />
-
-        <TextField
-          name={evidenceFieldName}
-          label={dictionary['report evidence url']}
-          type="url"
-          helperText={dictionary['report evidence url help']}
-          fullWidth
-          disabled={isPending}
-          slotProps={{ htmlInput: { inputMode: 'url' } }}
         />
 
         {termsLink}

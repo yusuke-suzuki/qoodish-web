@@ -52,7 +52,6 @@ export type ReportDetail = Report & {
   status: ReportStatus;
   locale: string;
   details: string | null;
-  evidence_url: string | null;
   content_snapshot: string | null;
   target_available: boolean;
   moderatable_parent: { type: 'Pin' | 'Chapter' | 'User'; id: number } | null;
@@ -123,20 +122,5 @@ export function publicPath(
             moderatable_parent: null
           })
         : null;
-  }
-}
-
-export function httpUrl(value: string | null): string | null {
-  if (!value) {
-    return null;
-  }
-
-  try {
-    const url = new URL(value);
-    return url.protocol === 'https:' || url.protocol === 'http:'
-      ? url.href
-      : null;
-  } catch {
-    return null;
   }
 }

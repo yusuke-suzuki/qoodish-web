@@ -50,7 +50,6 @@ export const ja: Dictionary = {
   reporterLanguage: '報告者の言語',
   languages: { en: '英語', ja: '日本語' },
   details: '詳しい内容',
-  evidenceUrl: '参考 URL',
   snapshot: '報告時点の内容',
   none: 'なし',
   otherPendingReports: '同じ対象への判断待ちの報告',

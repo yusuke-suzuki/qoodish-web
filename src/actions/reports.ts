@@ -13,7 +13,6 @@ export async function createReport(params: {
   moderatable_id: number;
   category: ReportCategory;
   details?: string;
-  evidence_url?: string;
 }): Promise<ActionResult> {
   const { error } = await apiFetch('/reports', {
     method: 'POST',

@@ -50,7 +50,6 @@ export const en: Dictionary = {
   reporterLanguage: "Reporter's language",
   languages: { en: 'English', ja: 'Japanese' },
   details: 'Details',
-  evidenceUrl: 'Reference URL',
   snapshot: 'Content at the time of the report',
   none: 'None',
   otherPendingReports: 'Other pending reports on this content',
