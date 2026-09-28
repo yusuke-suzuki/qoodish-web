@@ -1,5 +1,4 @@
-import debounce from 'lodash.debounce';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const DEBOUNCE_MS = 300;
 
@@ -20,73 +19,46 @@ export function useDebouncedSearch<R>(
   const [isLoading, setIsLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  const run = useMemo(
-    () =>
-      debounce(
-        async (
-          query: string,
-          isCurrent: () => boolean,
-          signal: AbortSignal
-        ) => {
-          try {
-            const next = await search(query, signal);
-
-            if (isCurrent()) {
-              setResults(next);
-              setFailed(false);
-            }
-          } catch {
-            if (isCurrent()) {
-              setResults(NO_RESULTS);
-              setFailed(true);
-            }
-          } finally {
-            if (isCurrent()) {
-              setIsLoading(false);
-            }
-          }
-        },
-        DEBOUNCE_MS
-      ),
-    [search]
-  );
-
   useEffect(() => {
-    // A request already in flight can resolve during the debounce wait of the
-    // one replacing it, so what counts as current is settled when the input
-    // changes rather than after the wait.
-    let current = true;
-    const isCurrent = () => current;
-
-    const abandon = () => {
-      current = false;
-      run.cancel();
-    };
-
     if (!input) {
-      run.cancel();
-
       setResults(NO_RESULTS);
       setIsLoading(false);
       setFailed(false);
 
-      return abandon;
+      return;
     }
 
-    // The debounce wait is part of the request. Raising this inside the
-    // debounced body instead leaves a window with no results and no loading
-    // flag, which is what an Autocomplete renders "not found" for.
     setIsLoading(true);
 
+    let current = true;
     const controller = new AbortController();
 
-    run(input, isCurrent, controller.signal);
+    const timer = setTimeout(async () => {
+      try {
+        const next = await search(input, controller.signal);
+
+        if (current) {
+          setResults(next);
+          setFailed(false);
+        }
+      } catch {
+        if (current) {
+          setResults(NO_RESULTS);
+          setFailed(true);
+        }
+      } finally {
+        if (current) {
+          setIsLoading(false);
+        }
+      }
+    }, DEBOUNCE_MS);
 
     return () => {
-      abandon();
+      current = false;
+      clearTimeout(timer);
       controller.abort();
     };
-  }, [input, run]);
+  }, [input, search]);
 
   return { results, isLoading, failed };
 }
