@@ -1,9 +1,9 @@
 import { Alert, Button, Stack } from '@mui/material';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { type FormEvent, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 import EmailField from '../common/EmailField.tsx';
 
 function SignInWithEmailLinkButton() {
@@ -65,8 +65,7 @@ function SignInWithEmailLinkButton() {
         window.localStorage.setItem('emailForSignIn', email);
         setSent(true);
 
-        const analytics = getAnalytics();
-        logEvent(analytics, 'email_link_sent');
+        trackEvent({ name: 'email_link_sent' });
       } catch (err) {
         console.error(err);
         const errorMessage = getErrorMessage((err as { code: string }).code);

@@ -13,6 +13,7 @@ import type { Comment, ContentRef } from '../../../types/index.ts';
 import { likeComment, unlikeComment } from '../../actions/commentLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 
 type Props = {
   subject: ContentRef;
@@ -50,6 +51,13 @@ export default memo(function LikeCommentButton({
           if (result.success) {
             const message = next ? 'liked!' : 'unliked';
             enqueueSnackbar(dictionary[message], { variant: 'info' });
+
+            if (next) {
+              trackEvent({
+                name: 'like',
+                params: { content_type: 'comment', item_id: comment.id }
+              });
+            }
 
             if (onSaved) {
               onSaved();

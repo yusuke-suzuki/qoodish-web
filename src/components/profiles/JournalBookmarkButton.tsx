@@ -11,6 +11,7 @@ import {
 } from '../../actions/journalBookmarks.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 
 type Props = {
   journal: Journal;
@@ -41,6 +42,10 @@ function JournalBookmarkButton({ journal, fullWidth, onSaved }: Props) {
           : await removeJournalBookmark(journal.id);
 
         if (result.success) {
+          if (next) {
+            trackEvent({ name: 'follow', params: { content_type: 'journal' } });
+          }
+
           onSaved?.();
         } else {
           setBookmarking(!next);

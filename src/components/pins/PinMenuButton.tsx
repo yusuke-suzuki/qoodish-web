@@ -19,6 +19,7 @@ import { enqueueSnackbar } from 'notistack';
 import { memo, useRef, useState } from 'react';
 import type { Pin, Profile } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
 
@@ -62,6 +63,13 @@ export default memo(function PinMenuButton({
     await navigator.clipboard.writeText(url);
 
     enqueueSnackbar(dictionary.copied);
+
+    if (pin) {
+      trackEvent({
+        name: 'share',
+        params: { method: 'copy_link', content_type: 'pin', item_id: pin.id }
+      });
+    }
   };
 
   const handleReportClick = () => {

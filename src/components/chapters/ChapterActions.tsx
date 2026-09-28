@@ -15,6 +15,7 @@ import type { Chapter } from '../../../types/index.ts';
 import { likeChapter, unlikeChapter } from '../../actions/chapterLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 
 type Props = {
   chapter: Chapter;
@@ -47,6 +48,13 @@ function ChapterActions({ chapter }: Props) {
             enqueueSnackbar(dictionary[next ? 'liked!' : 'unliked'], {
               variant: 'info'
             });
+
+            if (next) {
+              trackEvent({
+                name: 'like',
+                params: { content_type: 'chapter', item_id: chapter.id }
+              });
+            }
           } else {
             setLiked(!next);
             enqueueSnackbar(result.error, { variant: 'error' });
@@ -66,10 +74,18 @@ function ChapterActions({ chapter }: Props) {
     try {
       await navigator.clipboard.writeText(window.location.href);
       enqueueSnackbar(dictionary['link copied'], { variant: 'info' });
+      trackEvent({
+        name: 'share',
+        params: {
+          method: 'copy_link',
+          content_type: 'chapter',
+          item_id: chapter.id
+        }
+      });
     } catch (_error) {
       enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
     }
-  }, [dictionary]);
+  }, [chapter.id, dictionary]);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

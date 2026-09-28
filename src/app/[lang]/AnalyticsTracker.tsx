@@ -1,9 +1,8 @@
 'use client';
 
-import { getAnalytics, logEvent } from 'firebase/analytics';
-import { getApps } from 'firebase/app';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
+import { trackEvent } from '../../utils/analytics.ts';
 
 function Tracker() {
   const pathname = usePathname();
@@ -11,10 +10,7 @@ function Tracker() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: searchParams is intentionally included to track page_view on query param changes
   useEffect(() => {
-    if (!getApps().length) return;
-
-    const analytics = getAnalytics();
-    logEvent(analytics, 'page_view', { page_path: pathname });
+    trackEvent({ name: 'page_view', params: { page_path: pathname } });
   }, [pathname, searchParams]);
 
   return null;

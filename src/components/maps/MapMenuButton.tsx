@@ -19,6 +19,7 @@ import { enqueueSnackbar } from 'notistack';
 import { memo, useRef, useState } from 'react';
 import type { AppMap, Profile } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
 import CoauthorInviteDialog from './CoauthorInviteDialog.tsx';
@@ -60,6 +61,13 @@ export default memo(function MapMenuButton({
     await navigator.clipboard.writeText(url);
 
     enqueueSnackbar(dictionary.copied);
+
+    if (map) {
+      trackEvent({
+        name: 'share',
+        params: { method: 'copy_link', content_type: 'map', item_id: map.id }
+      });
+    }
   };
 
   const handleReportClick = () => {
