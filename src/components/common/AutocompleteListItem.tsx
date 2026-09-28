@@ -5,10 +5,9 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
 import { memo, type ReactNode } from 'react';
 import type { AutocompleteOption } from '../../../types/index.ts';
+import { highlightMatches } from '../../utils/highlightMatches.ts';
 
 type Props = {
   option: AutocompleteOption;
@@ -23,8 +22,7 @@ export default memo(function AutocompleteListItem({
   onClick,
   avatar
 }: Props) {
-  const matches = match(option.label, inputValue);
-  const parts = matches ? parse(option.label, matches) : [];
+  const parts = highlightMatches(option.label, inputValue);
 
   return (
     <ListItem key={option.value} disableGutters dense>
@@ -32,10 +30,9 @@ export default memo(function AutocompleteListItem({
         <ListItemAvatar>{avatar}</ListItemAvatar>
         <ListItemText
           disableTypography
-          primary={parts.map((part, index) => (
+          primary={parts.map((part) => (
             <Typography
-              // biome-ignore lint/suspicious/noArrayIndexKey: parse() splits one label into segments that repeat the same text, so the index is what tells them apart
-              key={`${part.text}-${index}`}
+              key={part.start}
               variant="subtitle1"
               component="span"
               sx={{

@@ -39,7 +39,6 @@
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^9.3.0",
     "@serwist/window": "^9.2.1",
-    "autosuggest-highlight": "^3.1.1",
     "firebase": "^12.4.0",
     "lexical": "^0.46.0",
     "lodash.debounce": "^4.0.8",
