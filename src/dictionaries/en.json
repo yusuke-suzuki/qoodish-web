@@ -49,7 +49,7 @@
   "cancel": "Cancel",
   "close": "Close",
   "sure to delete account": "Are you sure you want to DELETE your account?",
-  "delete account detail": "When you delete the account, it also deletes ALL of the content that you have created. This cannot be undone.",
+  "delete account detail": "Deleting your account also deletes the maps, pins, journeys, chapters and comments you have created. This cannot be undone.",
   "delete": "Delete",
   "sure to delete map": "Are you sure you want to DELETE this map?",
   "delete map detail": "When you delete a map, it also deletes all of the content that has been registered in the map. This cannot be undone.",
