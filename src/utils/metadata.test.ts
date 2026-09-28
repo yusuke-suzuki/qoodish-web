@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { buildAlternates, defaultOgImage, ogImages } from './metadata.ts';
 
@@ -16,23 +17,28 @@ describe('ogImages', () => {
 });
 
 describe('defaultOgImage', () => {
-  const EN_CARD = '8ca738eb-0789-4633-35b5-0b361b3aff00';
-  const JA_CARD = '494350c9-9840-4e72-c1b9-c6cc597f4000';
-
   it('returns the English card for en', () => {
-    assert.match(defaultOgImage('en'), new RegExp(EN_CARD));
+    assert.match(
+      defaultOgImage('en'),
+      /^https:\/\/qoodish\.com\/og\/en-\w+\.jpg$/
+    );
   });
 
   it('returns the Japanese card for any other language', () => {
-    assert.match(defaultOgImage('ja'), new RegExp(JA_CARD));
-    assert.match(defaultOgImage('fr'), new RegExp(JA_CARD));
+    assert.match(
+      defaultOgImage('ja'),
+      /^https:\/\/qoodish\.com\/og\/ja-\w+\.jpg$/
+    );
+    assert.equal(defaultOgImage('fr'), defaultOgImage('ja'));
   });
 
-  // ogImages states 1200x630 for whatever URL it is handed, and the host
-  // serves that size from this variant alone.
-  it('asks the host for the variant the pages claim the size of', () => {
-    for (const lang of ['en', 'ja', 'fr']) {
-      assert.equal(defaultOgImage(lang).endsWith('/ogp'), true);
+  it('points at a card that ships in the static assets', () => {
+    for (const lang of ['en', 'ja']) {
+      const path = new URL(defaultOgImage(lang)).pathname;
+      assert.equal(
+        existsSync(new URL(`../../public${path}`, import.meta.url)),
+        true
+      );
     }
   });
 });

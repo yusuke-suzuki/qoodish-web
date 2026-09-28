@@ -1,21 +1,19 @@
 import type { Metadata } from 'next';
 import { DEFAULT_LOCALE, localePath } from './locales.ts';
-import { imageUrl } from './photos.ts';
 
 export const SITE_ORIGIN = 'https://qoodish.com';
 
-// The cards live on the image host, which assigns an id at upload, so a
-// regenerated card is a new id here rather than a new file name. A crawler
-// caches a card by its URL, and the id is what makes that URL new.
-const OG_IMAGE_IDS = {
-  en: '8ca738eb-0789-4633-35b5-0b361b3aff00',
-  ja: '494350c9-9840-4e72-c1b9-c6cc597f4000'
+// A crawler caches a card by its URL, so each file name carries a hash of
+// its content: a regenerated card has to be saved under a new name.
+const OG_IMAGE_PATHS = {
+  en: '/og/en-01ebddd5.jpg',
+  ja: '/og/ja-7e65411a.jpg'
 } as const;
 
 // Anything that is not English shares the Japanese card, which is the rule
 // the pages have always followed.
 export function defaultOgImage(lang: string): string {
-  return imageUrl(lang === 'en' ? OG_IMAGE_IDS.en : OG_IMAGE_IDS.ja, 'ogp');
+  return `${SITE_ORIGIN}${lang === 'en' ? OG_IMAGE_PATHS.en : OG_IMAGE_PATHS.ja}`;
 }
 
 // Every image a page shares is the host's "ogp" variant, which is rendered at
