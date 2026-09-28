@@ -1,8 +1,8 @@
 # Terms of Service
 
-Last updated: September 23, 2026
+Last updated: September 28, 2026
 
-Effective: October 7, 2026
+Effective: October 12, 2026
 
 These Terms of Service (these "Terms") set out the conditions for using "Qoodish" (the "Service"), as established by its operator ("we," "us," or "our"). Users shall use the Service in accordance with these Terms after agreeing to them.
 
@@ -27,6 +27,7 @@ The terms used in these Terms are defined as follows.
    - Where the applicant has provided false information in the application
    - Where the application is from a person who has previously violated these Terms
    - Where we otherwise determine that the registration is not appropriate
+3. A user who is a minor shall use the Service with the consent of a parent or other legal representative. A minor who uses the Service by falsely stating that they have that consent, or that they are of age, may not rescind the juridical acts relating to that use.
 
 ## Article 4 (Management of Accounts)
 
@@ -138,5 +139,6 @@ For inquiries regarding these Terms, and for reports and objections under Articl
 
 ## Revision history
 
+- Revised September 28, 2026 (effective October 12, 2026): added Article 3.3, which requires a minor to have the consent of a legal representative to use the Service.
 - Revised September 23, 2026 (effective October 7, 2026): added Article 9 on the procedure for reporting and removing Posted Content, renumbering the articles that follow, and added reporting with false content to the prohibited acts.
 - Revised August 24, 2026
