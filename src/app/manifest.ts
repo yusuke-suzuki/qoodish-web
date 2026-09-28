@@ -8,24 +8,16 @@ const START_URL = '/?utm_source=homescreen';
 
 const ICON_SIZES = ['48', '72', '96', '128', '192', '384', '512'] as const;
 
-const icons: MetadataRoute.Manifest['icons'] = ICON_SIZES.flatMap((size) => {
-  const sizes = `${size}x${size}`;
+const ICON_PURPOSES = ['any', 'maskable'] as const;
 
-  return [
-    {
-      src: `/icons/icon_x${size}.png`,
-      sizes,
-      type: 'image/png',
-      purpose: 'any'
-    },
-    {
-      src: `/icons/maskable_icon_x${size}.png`,
-      sizes,
-      type: 'image/png',
-      purpose: 'maskable'
-    }
-  ];
-});
+const icons: MetadataRoute.Manifest['icons'] = ICON_SIZES.flatMap((size) =>
+  ICON_PURPOSES.map((purpose) => ({
+    src: `/icons/icon_x${size}.png`,
+    sizes: `${size}x${size}`,
+    type: 'image/png',
+    purpose
+  }))
+);
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const headersList = await headers();
