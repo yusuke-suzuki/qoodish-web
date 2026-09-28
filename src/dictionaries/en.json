@@ -1,6 +1,8 @@
 {
   "meta headline": "Qoodish - Every Story Begins With a Map",
   "meta description": "Every map on Qoodish began as someone's journey. Carry one with you, and weave a story of your own.",
+  "screenshot home": "The Qoodish home page, where every journey begins with a map",
+  "screenshot map": "A map with the places pinned on it",
   "authentication error": "An authentication error has occurred",
   "internal server error": "An internal server error has occurred",
   "create map together": "Put your journey on the map.",

@@ -61,6 +61,7 @@ public/*
 !public/_headers
 !public/icons/
 !public/og/
+!public/screenshots/
 !public/apple-touch-icon.png
 !public/favicon.ico
 !public/manifest.json

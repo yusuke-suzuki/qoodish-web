@@ -6,6 +6,7 @@ import {
   LOCALE_COOKIE,
   rememberedOrPreferredLocale
 } from '../utils/locales.ts';
+import { manifestScreenshots } from '../utils/manifestScreenshots.ts';
 
 const START_URL = '/?utm_source=homescreen';
 
@@ -43,6 +44,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     background_color: '#ffffff',
     categories: ['travel', 'navigation', 'social'],
     icons,
+    screenshots: manifestScreenshots(lang),
     shortcuts: [
       { name: dict.discover, url: '/discover' },
       { name: dict['journey log'], url: '/journeys' },
