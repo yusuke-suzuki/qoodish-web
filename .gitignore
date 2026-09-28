@@ -59,6 +59,7 @@ typings/
 
 public/*
 !public/_headers
+!public/icons/
 !public/apple-touch-icon.png
 !public/favicon.ico
 !public/manifest.json
