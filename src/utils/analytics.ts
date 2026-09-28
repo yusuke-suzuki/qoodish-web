@@ -1,4 +1,5 @@
-import { getApps } from 'firebase/app';
+import type { Analytics } from 'firebase/analytics';
+import { getApp, getApps } from 'firebase/app';
 import { hasAnalyticsCookie } from './analyticsRegion.ts';
 
 export type AuthMethod = 'google.com' | 'emailLink';
@@ -36,34 +37,52 @@ export type AnalyticsEvent =
       };
     };
 
-type FirebaseAnalytics = typeof import('firebase/analytics');
+type LoadedAnalytics = {
+  sdk: typeof import('firebase/analytics');
+  instance: Analytics;
+};
 
-let sdk: Promise<FirebaseAnalytics | null> | undefined;
+let loaded: Promise<LoadedAnalytics | null> | undefined;
 
-async function loadSupportedSdk() {
-  const analytics = await import('firebase/analytics');
-  return (await analytics.isSupported()) ? analytics : null;
+async function loadSupportedAnalytics(): Promise<LoadedAnalytics | null> {
+  const sdk = await import('firebase/analytics');
+  if (!(await sdk.isSupported())) return null;
+
+  const instance = sdk.initializeAnalytics(getApp(), {
+    config: { send_page_view: false }
+  });
+  return { sdk, instance };
 }
 
 async function send(event: AnalyticsEvent) {
-  sdk ??= loadSupportedSdk();
-  const analytics = await sdk;
+  loaded ??= loadSupportedAnalytics();
+  const analytics = await loaded;
 
   if (!analytics) return;
 
+  const { sdk, instance } = analytics;
+  sdk.setAnalyticsCollectionEnabled(instance, true);
+
   const name: string = event.name;
-  analytics.logEvent(
-    analytics.getAnalytics(),
-    name,
-    'params' in event ? event.params : undefined
-  );
+  sdk.logEvent(instance, name, 'params' in event ? event.params : undefined);
+}
+
+async function disableCollection() {
+  const analytics = await loaded;
+  analytics?.sdk.setAnalyticsCollectionEnabled(analytics.instance, false);
+}
+
+function logFailure(error: unknown) {
+  console.error('Failed to log analytics event:', error);
 }
 
 export function trackEvent(event: AnalyticsEvent) {
   if (typeof window === 'undefined' || !getApps().length) return;
-  if (!hasAnalyticsCookie(document.cookie)) return;
 
-  send(event).catch((error) => {
-    console.error('Failed to log analytics event:', error);
-  });
+  if (!hasAnalyticsCookie(document.cookie)) {
+    if (loaded) disableCollection().catch(logFailure);
+    return;
+  }
+
+  send(event).catch(logFailure);
 }
