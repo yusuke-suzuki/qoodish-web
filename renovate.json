@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":timezone(Asia/Tokyo)",
+    "schedule:weekly"
+  ],
+  "minimumReleaseAge": "3 days",
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "groupName": "non-major dependencies"
+    },
+    {
+      "matchPackageNames": ["lexical", "@lexical/**"],
+      "groupName": "Lexical"
+    },
+    {
+      "matchPackageNames": ["@mui/**"],
+      "groupName": "MUI"
+    },
+    {
+      "matchPackageNames": [
+        "@opennextjs/cloudflare",
+        "wrangler",
+        "@cloudflare/**"
+      ],
+      "groupName": "Cloudflare tooling"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    }
+  ]
+}
