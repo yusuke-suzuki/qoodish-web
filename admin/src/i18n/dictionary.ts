@@ -1,3 +1,4 @@
+import type { IconPurpose } from '../assets.ts';
 import type {
   ModeratableType,
   ModerationOutcome,
@@ -63,4 +64,15 @@ export type Dictionary = {
   revoke: string;
   revoked: string;
   staffUpdated: (email: string) => string;
+  navAssets: string;
+  assets: string;
+  appIcons: string;
+  appIconsHelp: string;
+  iconPurposes: Record<IconPurpose, string>;
+  ogImages: string;
+  ogImagesHelp: string;
+  ogTagline: string;
+  size: string;
+  download: string;
+  renderFailed: string;
 };

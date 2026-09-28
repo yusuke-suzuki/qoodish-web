@@ -15,6 +15,7 @@ import {
   revokeStaffMember,
   unassignRole
 } from './api.ts';
+import { type Asset, assetViewport, parseAssetFileName } from './assets.ts';
 import {
   dictionaryFor,
   isLocale,
@@ -24,6 +25,8 @@ import {
 import { parseDecision } from './reports.ts';
 import { parseGrant } from './staff.ts';
 import { STYLES } from './styles.ts';
+import { AssetDocument, READY_SELECTOR } from './views/AssetDocument.tsx';
+import { AssetList } from './views/AssetList.tsx';
 import { Message } from './views/Message.tsx';
 import { type DecisionFormState, ReportDetail } from './views/ReportDetail.tsx';
 import { ReportList } from './views/ReportList.tsx';
@@ -35,9 +38,14 @@ type Env = {
   TIME_ZONE: string;
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
+  BROWSER: BrowserRun;
 };
 
 type AppEnv = { Bindings: Env; Variables: { assertion: string } };
+
+const RENDER_CACHE_TTL_SECONDS = 86400;
+
+const RENDER_TIMEOUT_MS = 20000;
 
 const app = new Hono<AppEnv>();
 
@@ -47,6 +55,7 @@ app.use(
     contentSecurityPolicy: {
       defaultSrc: ["'none'"],
       styleSrc: ["'self'"],
+      imgSrc: ["'self'"],
       formAction: ["'self'"],
       frameAncestors: ["'none'"],
       baseUri: ["'none'"]
@@ -190,9 +199,62 @@ async function afterStaffChange(
   );
 }
 
+async function renderAsset(
+  browser: BrowserRun,
+  asset: Asset
+): Promise<ArrayBuffer | null> {
+  const html = await (<AssetDocument asset={asset} />).toString();
+
+  try {
+    const rendered = await browser.quickAction('screenshot', {
+      html,
+      viewport: assetViewport(asset),
+      gotoOptions: { waitUntil: 'networkidle0' },
+      waitForSelector: {
+        selector: READY_SELECTOR,
+        timeout: RENDER_TIMEOUT_MS
+      },
+      screenshotOptions: { type: 'png', omitBackground: true },
+      cacheTTL: RENDER_CACHE_TTL_SECONDS
+    });
+
+    if (!rendered.ok) {
+      console.error(
+        `Asset render failed [${rendered.status}]: ${await rendered.text()}`
+      );
+      return null;
+    }
+
+    return await rendered.arrayBuffer();
+  } catch (error) {
+    console.error(`Asset render failed: ${error}`);
+    return null;
+  }
+}
+
 app.get('/styles.css', (c) => {
   c.header('Content-Type', 'text/css; charset=utf-8');
   return c.body(STYLES);
+});
+
+app.get('/assets/:file', async (c) => {
+  const locale = localeOf(c);
+  const asset = parseAssetFileName(c.req.param('file'));
+
+  if (!asset) {
+    return notFound(c, locale);
+  }
+
+  const png = await renderAsset(c.env.BROWSER, asset);
+
+  if (!png) {
+    return c.html(
+      <Message locale={locale} message={dictionaryFor(locale).renderFailed} />,
+      502
+    );
+  }
+
+  return c.body(png, 200, { 'Content-Type': 'image/png' });
 });
 
 app.get('/', (c) =>
@@ -282,6 +344,8 @@ app.post('/:lang/reports/:id{[0-9]+}/decision', async (c) => {
 });
 
 app.get('/:lang/staff', (c) => renderStaff(c, localeOf(c)));
+
+app.get('/:lang/assets', (c) => c.html(<AssetList locale={localeOf(c)} />));
 
 app.post('/:lang/staff', async (c) => {
   const locale = localeOf(c);

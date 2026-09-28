@@ -93,5 +93,21 @@ export const ja: Dictionary = {
   removeRole: (role) => `${role} を外す`,
   revoke: 'アクセスを取り消す',
   revoked: '取り消し済み',
-  staffUpdated: (email) => `${email} を更新しました。`
+  staffUpdated: (email) => `${email} を更新しました。`,
+  navAssets: 'アセット',
+  assets: 'アセット',
+  appIcons: 'アプリアイコン',
+  appIconsHelp:
+    'マスカブルアイコンは端まで塗りつぶされており、端末が独自の形に切り抜きます。標準アイコンは角丸を含んでいます。',
+  iconPurposes: {
+    any: '標準',
+    maskable: 'マスカブル'
+  },
+  ogImages: '共有画像',
+  ogImagesHelp:
+    'Qoodish へのリンクが共有されたときに表示される画像です。言語ごとに 1 枚あります。',
+  ogTagline: 'あなたの旅路を地図に残そう。',
+  size: 'サイズ',
+  download: 'ダウンロード',
+  renderFailed: '画像を生成できませんでした。時間をおいて再度お試しください。'
 };

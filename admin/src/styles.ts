@@ -157,6 +157,31 @@ legend { padding: 0; }
   font-size: 0.875rem;
 }
 
+.asset-previews {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.asset-previews li { display: grid; gap: 4px; justify-items: start; }
+.asset-previews img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.asset-table { width: 100%; border-collapse: collapse; }
+.asset-table th,
+.asset-table td {
+  padding: 6px 4px;
+  text-align: left;
+  border-top: 1px solid var(--border);
+}
+.asset-table thead th { border-top: 0; }
+
 input,
 select {
   display: block;

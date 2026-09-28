@@ -32,6 +32,7 @@ export function Layout({ locale, title, path, children }: Props) {
             <nav class="site-nav">
               <a href={`/${locale}/reports`}>{dict.navReports}</a>
               <a href={`/${locale}/staff`}>{dict.navStaff}</a>
+              <a href={`/${locale}/assets`}>{dict.navAssets}</a>
               <a href={`/${other}${path}`} hreflang={other} lang={other}>
                 {dict.switchLanguage}
               </a>
