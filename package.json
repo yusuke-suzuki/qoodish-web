@@ -42,7 +42,6 @@
     "autosuggest-highlight": "^3.1.1",
     "date-fns": "^2.17.0",
     "firebase": "^12.4.0",
-    "html2canvas": "^1.4.1",
     "lexical": "^0.46.0",
     "lodash.debounce": "^4.0.8",
     "next": "^16.3.3",
