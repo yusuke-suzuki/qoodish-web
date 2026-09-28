@@ -66,10 +66,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         { url: '/icons/icon_x16.png', sizes: '16x16', type: 'image/png' }
       ],
       apple: [
-        { url: '/icons/maskable_icon_x180.png' },
-        { url: '/icons/maskable_icon_x152.png', sizes: '152x152' },
-        { url: '/icons/maskable_icon_x180.png', sizes: '180x180' },
-        { url: '/icons/maskable_icon_x167.png', sizes: '167x167' }
+        { url: '/icons/icon_x180.png' },
+        { url: '/icons/icon_x152.png', sizes: '152x152' },
+        { url: '/icons/icon_x180.png', sizes: '180x180' },
+        { url: '/icons/icon_x167.png', sizes: '167x167' }
       ]
     },
     appleWebApp: {
