@@ -8,13 +8,11 @@ import {
   Link as MuiLink,
   Typography
 } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
-import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { memo, useState } from 'react';
 import type { Comment, ContentRef } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import AuthorAvatar from './AuthorAvatar.tsx';
 import CommentMenuButton from './CommentMenuButton.tsx';
 import DeleteCommentDialog from './DeleteCommentDialog.tsx';
@@ -30,8 +28,8 @@ type Props = {
 };
 
 const CommentList = ({ subject, comments, onDeleted, onLiked }: Props) => {
-  const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
+  const formatRelativeTime = useRelativeTime();
 
   const [currentComment, setCurrentComment] = useState<Comment | null>(null);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
@@ -75,10 +73,7 @@ const CommentList = ({ subject, comments, onDeleted, onLiked }: Props) => {
                   </MuiLink>
 
                   <Typography variant="body2" color="text.secondary">
-                    {formatDistanceToNow(new Date(comment.created_at), {
-                      addSuffix: true,
-                      locale: lang === 'ja' ? ja : enUS
-                    })}
+                    {formatRelativeTime(comment.created_at)}
                   </Typography>
                 </Box>
               }

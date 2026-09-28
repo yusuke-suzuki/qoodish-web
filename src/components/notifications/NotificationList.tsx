@@ -9,16 +9,13 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
-import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { memo, useContext, useEffect, useRef, useState } from 'react';
+import { memo, useContext, useEffect, useRef } from 'react';
 import type { Notification } from '../../../types/index.ts';
 import { markNotificationAsRead } from '../../actions/notifications.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import { LOCAL_DATE_TIME_PLACEHOLDER } from '../../hooks/useLocalDateTime.ts';
+import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import { notificationMessageKey } from '../../utils/notificationMessage.ts';
 import sleep from '../../utils/sleep.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
@@ -35,18 +32,10 @@ const NotificationList = ({
   onReadNotifications,
   onNotificationClick
 }: Props) => {
-  const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
+  const formatRelativeTime = useRelativeTime();
 
   const { authenticated } = useContext(AuthContext);
-
-  // Server rendering resolves "now" and the time zone differently from the
-  // browser, so the elapsed time is only rendered once mounted.
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.read
@@ -114,12 +103,7 @@ const NotificationList = ({
             }
             secondary={
               <Typography variant="subtitle1" color="text.secondary">
-                {mounted
-                  ? formatDistanceToNow(new Date(notification.created_at), {
-                      addSuffix: true,
-                      locale: lang === 'ja' ? ja : enUS
-                    })
-                  : LOCAL_DATE_TIME_PLACEHOLDER}
+                {formatRelativeTime(notification.created_at)}
               </Typography>
             }
             disableTypography

@@ -5,13 +5,11 @@ import {
   type SxProps,
   Typography
 } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
-import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { memo, type ReactNode } from 'react';
 import type { Pin } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 
 type Props = {
@@ -22,8 +20,8 @@ type Props = {
 };
 
 function PinCardHeader({ pin, action, hideMapLink, sx }: Props) {
-  const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
+  const formatRelativeTime = useRelativeTime();
 
   return (
     <CardHeader
@@ -50,11 +48,7 @@ function PinCardHeader({ pin, action, hideMapLink, sx }: Props) {
 
           {hideMapLink ? null : (
             <Typography variant="body2" color="text.secondary">
-              {pin &&
-                formatDistanceToNow(new Date(pin.created_at), {
-                  addSuffix: true,
-                  locale: lang === 'ja' ? ja : enUS
-                })}
+              {pin && formatRelativeTime(pin.created_at)}
             </Typography>
           )}
         </Box>
@@ -62,11 +56,7 @@ function PinCardHeader({ pin, action, hideMapLink, sx }: Props) {
       subheader={
         hideMapLink ? (
           <Typography variant="body2" color="text.secondary">
-            {pin &&
-              formatDistanceToNow(new Date(pin.created_at), {
-                addSuffix: true,
-                locale: lang === 'ja' ? ja : enUS
-              })}
+            {pin && formatRelativeTime(pin.created_at)}
           </Typography>
         ) : (
           <MuiLink
