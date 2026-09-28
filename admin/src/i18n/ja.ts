@@ -23,7 +23,7 @@ export const ja: Dictionary = {
   types: {
     Pin: 'ピン',
     Comment: 'コメント',
-    Map: 'マップ',
+    Map: '地図',
     Chapter: 'チャプター',
     Journal: '手帳',
     User: 'アカウント'
