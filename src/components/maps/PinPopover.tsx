@@ -2,7 +2,6 @@ import { Comment } from '@mui/icons-material';
 import {
   CardActions,
   CardContent,
-  CardMedia,
   IconButton,
   Popover,
   Typography
@@ -10,12 +9,6 @@ import {
 import Link from 'next/link';
 import { memo, useState } from 'react';
 import type { Pin } from '../../../types/index.ts';
-import PinCardHeader from '../pins/PinCardHeader.tsx';
-import PinMenuButton from '../pins/PinMenuButton.tsx';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -23,6 +16,9 @@ import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from '../pins/DeletePinDialog.tsx';
 import EditPinDialog from '../pins/EditPinDialog.tsx';
 import LikePinButton from '../pins/LikePinButton.tsx';
+import PinCardHeader from '../pins/PinCardHeader.tsx';
+import PinImageCarousel from '../pins/PinImageCarousel.tsx';
+import PinMenuButton from '../pins/PinMenuButton.tsx';
 
 type Props = {
   currentPin: Pin | null;
@@ -89,23 +85,7 @@ function PinPopover({
             </ProfileBoundary>
           }
         />
-        <Swiper pagination={true} modules={[Pagination]}>
-          {pin?.images.map((image) => (
-            <SwiperSlide key={image.id}>
-              <CardMedia
-                component="img"
-                alt={pin.name}
-                image={image.card}
-                width={1200}
-                height={630}
-                sx={{
-                  height: 168,
-                  cursor: 'grab'
-                }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {pin && <PinImageCarousel key={pin.id} pin={pin} />}
         <CardContent sx={{ pt: pin?.images.length > 0 ? 2 : 0, pb: 0 }}>
           <Typography variant="h6" gutterBottom>
             {pin?.name}
