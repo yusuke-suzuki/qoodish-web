@@ -62,33 +62,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: process.env.APP_ENV !== 'production' ? 'noindex' : undefined,
     icons: {
       icon: [
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x32.webp',
-          sizes: '32x32',
-          type: 'image/webp'
-        },
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/favicon_x16.webp',
-          sizes: '16x16',
-          type: 'image/webp'
-        }
+        { url: '/icons/icon_x32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/icons/icon_x16.png', sizes: '16x16', type: 'image/png' }
       ],
       apple: [
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone.png'
-        },
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad.png',
-          sizes: '152x152'
-        },
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-iphone-retina.png',
-          sizes: '180x180'
-        },
-        {
-          url: 'https://storage.googleapis.com/qoodish.appspot.com/assets/touch-icon-ipad-retina.png',
-          sizes: '167x167'
-        }
+        { url: '/icons/maskable_icon_x180.png' },
+        { url: '/icons/maskable_icon_x152.png', sizes: '152x152' },
+        { url: '/icons/maskable_icon_x180.png', sizes: '180x180' },
+        { url: '/icons/maskable_icon_x167.png', sizes: '167x167' }
       ]
     },
     appleWebApp: {
