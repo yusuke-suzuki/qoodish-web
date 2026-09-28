@@ -96,11 +96,7 @@ export const en: Dictionary = {
   assets: 'Assets',
   appIcons: 'App icons',
   appIconsHelp:
-    'Maskable icons fill the square so the device can crop them to its own shape. The other icons carry their own rounded corners.',
-  iconPurposes: {
-    any: 'Standard',
-    maskable: 'Maskable'
-  },
+    'Each icon fills its square. The platform crops it to its own shape, and the mark stays inside the maskable safe zone.',
   ogImages: 'Share images',
   ogImagesHelp:
     'The image a link to Qoodish shows when it is shared, one for each language.',

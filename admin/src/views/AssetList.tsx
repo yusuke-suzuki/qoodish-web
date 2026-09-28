@@ -2,7 +2,6 @@ import {
   type Asset,
   assetFileName,
   assetViewport,
-  ICON_PURPOSES,
   ICON_SIZES
 } from '../assets.ts';
 import { dictionaryFor, LOCALES, type Locale } from '../i18n/index.ts';
@@ -36,47 +35,34 @@ export function AssetList({ locale }: { locale: Locale }) {
         <p class="muted">{dict.appIconsHelp}</p>
 
         <ul class="asset-previews">
-          {ICON_PURPOSES.map((purpose) => {
-            const asset: Asset = { kind: 'icon', purpose, size: 512 };
-
-            return (
-              <li key={purpose}>
-                <img
-                  src={assetPath(asset)}
-                  alt={dict.iconPurposes[purpose]}
-                  width={PREVIEW_ICON_SIZE}
-                  height={PREVIEW_ICON_SIZE}
-                  loading="lazy"
-                />
-                <span>{dict.iconPurposes[purpose]}</span>
-              </li>
-            );
-          })}
+          <li>
+            <img
+              src={assetPath({ kind: 'icon', size: 512 })}
+              alt={dict.appIcons}
+              width={PREVIEW_ICON_SIZE}
+              height={PREVIEW_ICON_SIZE}
+              loading="lazy"
+            />
+          </li>
         </ul>
 
         <table class="asset-table">
           <thead>
             <tr>
               <th scope="col">{dict.size}</th>
-              {ICON_PURPOSES.map((purpose) => (
-                <th key={purpose} scope="col">
-                  {dict.iconPurposes[purpose]}
-                </th>
-              ))}
+              <th scope="col">{dict.download}</th>
             </tr>
           </thead>
           <tbody>
             {ICON_SIZES.map((size) => (
               <tr key={size}>
                 <th scope="row">{`${size}×${size}`}</th>
-                {ICON_PURPOSES.map((purpose) => (
-                  <td key={purpose}>
-                    <DownloadLink
-                      asset={{ kind: 'icon', purpose, size }}
-                      label={dict.download}
-                    />
-                  </td>
-                ))}
+                <td>
+                  <DownloadLink
+                    asset={{ kind: 'icon', size }}
+                    label={assetFileName({ kind: 'icon', size })}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
