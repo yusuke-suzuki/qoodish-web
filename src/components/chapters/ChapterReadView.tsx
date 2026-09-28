@@ -15,7 +15,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useContext, useMemo, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -24,13 +24,19 @@ import type {
   Journal
 } from '../../../types/index.ts';
 import { deleteChapter } from '../../actions/chapters.ts';
+import AuthContext from '../../context/AuthContext.ts';
+import useBlock from '../../hooks/useBlock.ts';
 import useCountLabel from '../../hooks/useCountLabel.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
+import useMute from '../../hooks/useMute.ts';
 import { featureSpots } from '../../utils/mapFeatures.ts';
+import BlockMenuItem from '../common/BlockMenuItem.tsx';
+import BlockUserDialog from '../common/BlockUserDialog.tsx';
 import CommentForm from '../common/CommentForm.tsx';
 import CommentList from '../common/CommentList.tsx';
 import ConfirmDeleteDialog from '../common/ConfirmDeleteDialog.tsx';
+import MuteMenuItem from '../common/MuteMenuItem.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import ChapterActions from './ChapterActions.tsx';
 import ChapterAuthorCard from './ChapterAuthorCard.tsx';
@@ -68,10 +74,14 @@ export default function ChapterReadView({
   const { lang } = useParams<{ lang: string }>();
   const formatDateTime = useLocalDateTime();
   const router = useRouter();
+  const { authenticated } = useContext(AuthContext);
+  const { pending: blockPending, block, unblock } = useBlock();
+  const { pending: mutePending, mute, unmute } = useMute();
 
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
 
   const markerSpots = featureSpots(chapter.map_features);
 
@@ -92,6 +102,36 @@ export default function ChapterReadView({
   const handleReportClick = () => {
     setMenuAnchor(null);
     setReportDialogOpen(true);
+  };
+
+  const handleMuteClick = () => {
+    setMenuAnchor(null);
+
+    if (chapter.author.muting) {
+      unmute(chapter.author.id);
+    } else {
+      mute(chapter.author.id);
+    }
+  };
+
+  const handleBlockClick = () => {
+    setMenuAnchor(null);
+
+    if (chapter.author.blocking) {
+      unblock(chapter.author.id);
+    } else {
+      setBlockDialogOpen(true);
+    }
+  };
+
+  const handleBlockConfirm = async () => {
+    const blocked = await block(chapter.author.id);
+
+    if (!blocked) {
+      return;
+    }
+
+    setBlockDialogOpen(false);
   };
 
   const handleDeleteConfirm = async () => {
@@ -138,6 +178,7 @@ export default function ChapterReadView({
               size="small"
               title={dictionary.more}
               aria-label={dictionary.more}
+              disabled={blockPending || mutePending}
               onClick={(event) => setMenuAnchor(event.currentTarget)}
             >
               <MoreVert fontSize="small" />
@@ -207,35 +248,56 @@ export default function ChapterReadView({
         open={Boolean(menuAnchor)}
         onClose={() => setMenuAnchor(null)}
       >
-        {chapter.editable ? (
-          [
-            <MenuItem
-              key="edit"
-              component={Link}
-              href={`/${lang}/chapters/${chapter.id}/edit`}
-              onClick={() => setMenuAnchor(null)}
-            >
-              <ListItemIcon>
-                <Edit fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.edit} />
-            </MenuItem>,
-            <MenuItem key="delete" onClick={handleDeleteClick}>
-              <ListItemIcon>
-                <Delete fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary={dictionary.delete} />
-            </MenuItem>
-          ]
-        ) : (
-          <MenuItem onClick={handleReportClick}>
-            <ListItemIcon>
-              <ReportProblem fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary={dictionary['report content']} />
-          </MenuItem>
-        )}
+        {chapter.editable
+          ? [
+              <MenuItem
+                key="edit"
+                component={Link}
+                href={`/${lang}/chapters/${chapter.id}/edit`}
+                onClick={() => setMenuAnchor(null)}
+              >
+                <ListItemIcon>
+                  <Edit fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={dictionary.edit} />
+              </MenuItem>,
+              <MenuItem key="delete" onClick={handleDeleteClick}>
+                <ListItemIcon>
+                  <Delete fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={dictionary.delete} />
+              </MenuItem>
+            ]
+          : [
+              authenticated && (
+                <MuteMenuItem
+                  key="mute"
+                  muting={Boolean(chapter.author.muting)}
+                  onClick={handleMuteClick}
+                />
+              ),
+              authenticated && (
+                <BlockMenuItem
+                  key="block"
+                  blocking={Boolean(chapter.author.blocking)}
+                  onClick={handleBlockClick}
+                />
+              ),
+              <MenuItem key="report" onClick={handleReportClick}>
+                <ListItemIcon>
+                  <ReportProblem fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={dictionary['report content']} />
+              </MenuItem>
+            ]}
       </Menu>
+
+      <BlockUserDialog
+        open={blockDialogOpen}
+        loading={blockPending}
+        onClose={() => setBlockDialogOpen(false)}
+        onConfirm={handleBlockConfirm}
+      />
 
       <ReportDialog
         open={reportDialogOpen}

@@ -30,6 +30,9 @@ export type Profile = {
   bookmarked_maps_count: number;
   pins_count: number;
   push_notification: PushNotification;
+  blocking?: boolean;
+  blocked_by?: boolean;
+  muting?: boolean;
 };
 
 export type Author = {
@@ -37,6 +40,16 @@ export type Author = {
   name: string;
   biography: string;
   image: ImageVariants | null;
+  blocking?: boolean;
+  muting?: boolean;
+};
+
+export type BlockedAccount = Author & {
+  cursor: number;
+};
+
+export type MutedAccount = Author & {
+  cursor: number;
 };
 
 // A guest payload leaves the reader's own state out, so a signed-out page

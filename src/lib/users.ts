@@ -1,6 +1,8 @@
 import type {
   AppMap,
+  BlockedAccount,
   Journal,
+  MutedAccount,
   Notification,
   Pin,
   Profile
@@ -146,6 +148,30 @@ export function getMyPins(
     ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
     : '';
   return apiFetchList<Pin>(`/me/pins${query}`, {
+    lang,
+    next: { revalidate: 0 }
+  });
+}
+
+export function getBlockedAccounts(
+  lang?: string,
+  nextId?: number
+): Promise<BlockedAccount[]> {
+  const query = nextId ? `?next_id=${nextId}` : '';
+
+  return apiFetchList<BlockedAccount>(`/me/blocks${query}`, {
+    lang,
+    next: { revalidate: 0 }
+  });
+}
+
+export function getMutedAccounts(
+  lang?: string,
+  nextId?: number
+): Promise<MutedAccount[]> {
+  const query = nextId ? `?next_id=${nextId}` : '';
+
+  return apiFetchList<MutedAccount>(`/me/mutes${query}`, {
     lang,
     next: { revalidate: 0 }
   });

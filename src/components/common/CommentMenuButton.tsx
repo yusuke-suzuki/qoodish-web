@@ -8,7 +8,12 @@ import {
 } from '@mui/material';
 import { memo, useRef, useState } from 'react';
 import type { Comment, Profile } from '../../../types/index.ts';
+import useBlock from '../../hooks/useBlock.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useMute from '../../hooks/useMute.ts';
+import BlockMenuItem from './BlockMenuItem.tsx';
+import BlockUserDialog from './BlockUserDialog.tsx';
+import MuteMenuItem from './MuteMenuItem.tsx';
 
 type Props = {
   comment: Comment;
@@ -26,8 +31,11 @@ export default memo(function CommentMenuButton({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
 
   const dictionary = useDictionary();
+  const { pending: blockPending, block, unblock } = useBlock();
+  const { pending: mutePending, mute, unmute } = useMute();
 
   const isAuthor = currentProfile?.id === comment.author.id;
 
@@ -43,11 +51,42 @@ export default memo(function CommentMenuButton({
     onDeleteClick?.(comment);
   };
 
+  const handleMuteClick = () => {
+    setAnchorEl(null);
+
+    if (comment.author.muting) {
+      unmute(comment.author.id);
+    } else {
+      mute(comment.author.id);
+    }
+  };
+
+  const handleBlockClick = () => {
+    setAnchorEl(null);
+
+    if (comment.author.blocking) {
+      unblock(comment.author.id);
+    } else {
+      setBlockDialogOpen(true);
+    }
+  };
+
+  const handleBlockConfirm = async () => {
+    const blocked = await block(comment.author.id);
+
+    if (!blocked) {
+      return;
+    }
+
+    setBlockDialogOpen(false);
+  };
+
   return (
     <>
       <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
+        disabled={blockPending || mutePending}
         title={dictionary.more}
         aria-label={dictionary.more}
       >
@@ -58,6 +97,18 @@ export default memo(function CommentMenuButton({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
+        {currentProfile && !isAuthor && (
+          <MuteMenuItem
+            muting={Boolean(comment.author.muting)}
+            onClick={handleMuteClick}
+          />
+        )}
+        {currentProfile && !isAuthor && (
+          <BlockMenuItem
+            blocking={Boolean(comment.author.blocking)}
+            onClick={handleBlockClick}
+          />
+        )}
         {!isAuthor && (
           <MenuItem onClick={handleReportClick}>
             <ListItemIcon>
@@ -82,6 +133,13 @@ export default memo(function CommentMenuButton({
           </MenuItem>
         )}
       </Menu>
+
+      <BlockUserDialog
+        open={blockDialogOpen}
+        loading={blockPending}
+        onClose={() => setBlockDialogOpen(false)}
+        onConfirm={handleBlockConfirm}
+      />
     </>
   );
 });

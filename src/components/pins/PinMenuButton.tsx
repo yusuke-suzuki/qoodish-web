@@ -18,9 +18,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useRef, useState } from 'react';
 import type { Pin, Profile } from '../../../types/index.ts';
+import useBlock from '../../hooks/useBlock.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useMute from '../../hooks/useMute.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
+import BlockMenuItem from '../common/BlockMenuItem.tsx';
+import BlockUserDialog from '../common/BlockUserDialog.tsx';
+import MuteMenuItem from '../common/MuteMenuItem.tsx';
 
 type Props = {
   pin: Pin | null;
@@ -28,6 +33,8 @@ type Props = {
   onEditClick?: (pin: Pin) => void;
   onDeleteClick?: (pin: Pin) => void;
   onReportClick: (pin: Pin) => void;
+  onMuted?: (authorId: number) => void;
+  onBlocked?: (authorId: number) => void;
   hideDetail?: boolean;
 };
 
@@ -37,15 +44,20 @@ export default memo(function PinMenuButton({
   onEditClick,
   onDeleteClick,
   onReportClick,
+  onMuted,
+  onBlocked,
   hideDetail
 }: Props) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
 
   const { push } = useRouter();
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
+  const { pending: blockPending, block, unblock } = useBlock();
+  const { pending: mutePending, mute, unmute } = useMute();
 
   const isAuthor = currentProfile?.id === pin?.author.id;
 
@@ -94,11 +106,62 @@ export default memo(function PinMenuButton({
     push(localePath(lang, pinPath));
   };
 
+  const handleMuteClick = async () => {
+    setAnchorEl(null);
+
+    if (!pin) {
+      return;
+    }
+
+    if (pin.author.muting) {
+      unmute(pin.author.id);
+      return;
+    }
+
+    const muted = await mute(pin.author.id);
+
+    if (!muted) {
+      return;
+    }
+
+    onMuted?.(pin.author.id);
+  };
+
+  const handleBlockClick = () => {
+    setAnchorEl(null);
+
+    if (!pin) {
+      return;
+    }
+
+    if (pin.author.blocking) {
+      unblock(pin.author.id);
+    } else {
+      setBlockDialogOpen(true);
+    }
+  };
+
+  const handleBlockConfirm = async () => {
+    if (!pin) {
+      return;
+    }
+
+    const blocked = await block(pin.author.id);
+
+    if (!blocked) {
+      return;
+    }
+
+    setBlockDialogOpen(false);
+    onBlocked?.(pin.author.id);
+  };
+
   return (
     <>
       <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
+        disabled={blockPending || mutePending}
         title={dictionary.more}
         aria-label={dictionary.more}
       >
@@ -122,6 +185,18 @@ export default memo(function PinMenuButton({
             </ListItemIcon>
             <ListItemText primary={dictionary.detail} />
           </MenuItem>
+        )}
+        {currentProfile && pin && !isAuthor && (
+          <MuteMenuItem
+            muting={Boolean(pin.author.muting)}
+            onClick={handleMuteClick}
+          />
+        )}
+        {currentProfile && pin && !isAuthor && (
+          <BlockMenuItem
+            blocking={Boolean(pin.author.blocking)}
+            onClick={handleBlockClick}
+          />
         )}
         {!isAuthor && (
           <MenuItem onClick={handleReportClick}>
@@ -156,6 +231,13 @@ export default memo(function PinMenuButton({
           </MenuItem>
         )}
       </Menu>
+
+      <BlockUserDialog
+        open={blockDialogOpen}
+        loading={blockPending}
+        onClose={() => setBlockDialogOpen(false)}
+        onConfirm={handleBlockConfirm}
+      />
     </>
   );
 });
