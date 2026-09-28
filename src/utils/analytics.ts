@@ -61,28 +61,20 @@ async function send(event: AnalyticsEvent) {
   if (!analytics) return;
 
   const { sdk, instance } = analytics;
-  sdk.setAnalyticsCollectionEnabled(instance, true);
+  const allowed = hasAnalyticsCookie(document.cookie);
+  sdk.setAnalyticsCollectionEnabled(instance, allowed);
+
+  if (!allowed) return;
 
   const name: string = event.name;
   sdk.logEvent(instance, name, 'params' in event ? event.params : undefined);
 }
 
-async function disableCollection() {
-  const analytics = await loaded;
-  analytics?.sdk.setAnalyticsCollectionEnabled(analytics.instance, false);
-}
-
-function logFailure(error: unknown) {
-  console.error('Failed to log analytics event:', error);
-}
-
 export function trackEvent(event: AnalyticsEvent) {
   if (typeof window === 'undefined' || !getApps().length) return;
+  if (!loaded && !hasAnalyticsCookie(document.cookie)) return;
 
-  if (!hasAnalyticsCookie(document.cookie)) {
-    if (loaded) disableCollection().catch(logFailure);
-    return;
-  }
-
-  send(event).catch(logFailure);
+  send(event).catch((error) => {
+    console.error('Failed to log analytics event:', error);
+  });
 }
