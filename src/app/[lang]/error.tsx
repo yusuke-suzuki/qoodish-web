@@ -8,10 +8,10 @@ import reportClientError from '../../utils/reportClientError.ts';
 
 type Props = {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 };
 
-export default function ErrorPage({ error, reset }: Props) {
+export default function ErrorPage({ error, retry }: Props) {
   const dictionary = useDictionary();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function ErrorPage({ error, reset }: Props) {
           <Button
             color="primary"
             startIcon={<Refresh />}
-            onClick={() => reset()}
+            onClick={() => retry()}
           >
             {dictionary.retry}
           </Button>

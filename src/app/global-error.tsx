@@ -6,7 +6,7 @@ import reportClientError from '../utils/reportClientError.ts';
 
 type Props = {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 };
 
 const subscribe = () => () => {};
@@ -32,7 +32,7 @@ const messages = {
 
 // Replaces the root layout when it crashes, so everything here has to be
 // self-contained: no theme provider, no dictionary hook, inline styles only.
-export default function GlobalError({ error, reset }: Props) {
+export default function GlobalError({ error, retry }: Props) {
   useEffect(() => {
     reportClientError(error, 'global-error');
   }, [error]);
@@ -69,7 +69,7 @@ export default function GlobalError({ error, reset }: Props) {
           </p>
           <button
             type="button"
-            onClick={() => reset()}
+            onClick={() => retry()}
             style={{
               display: 'inline-block',
               padding: '0.75rem 1.5rem',
