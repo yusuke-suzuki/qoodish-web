@@ -1,6 +1,12 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { BRAND_COLOR, BRAND_COLOR_CONTRAST } from '../utils/brand.ts';
+import {
+  isLocale,
+  LOCALE_COOKIE,
+  PAGE_LOCALE_HEADER,
+  rememberedOrPreferredLocale
+} from '../utils/locales.ts';
 
 export const metadata: Metadata = {
   title: '404 - Page Not Found',
@@ -24,9 +30,14 @@ const messages = {
 } as const;
 
 export default async function GlobalNotFound() {
-  const headersList = await headers();
-  const acceptLanguage = headersList.get('accept-language') ?? '';
-  const lang = acceptLanguage.startsWith('ja') ? 'ja' : 'en';
+  const [headersList, cookieStore] = await Promise.all([headers(), cookies()]);
+  const pageLocale = headersList.get(PAGE_LOCALE_HEADER);
+  const lang = isLocale(pageLocale)
+    ? pageLocale
+    : rememberedOrPreferredLocale(
+        cookieStore.get(LOCALE_COOKIE)?.value,
+        headersList.get('accept-language')
+      );
   const m = messages[lang];
 
   return (

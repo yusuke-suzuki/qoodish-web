@@ -65,6 +65,7 @@ export default memo(function LocaleMenuButton({ variant, onNavigate }: Props) {
             selected={link.current}
             component={Link}
             href={link.href}
+            prefetch={false}
             hrefLang={link.locale}
             lang={link.locale}
             onClick={handleSelect}

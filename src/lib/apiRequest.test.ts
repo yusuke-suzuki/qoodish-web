@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildApiHeaders, parseAcceptLanguage } from './apiRequest.ts';
+import {
+  buildApiHeaders,
+  parseAcceptLanguage,
+  resolveApiLanguage
+} from './apiRequest.ts';
 
 describe('parseAcceptLanguage', () => {
   it('keeps the first language of a weighted list', () => {
@@ -27,6 +31,44 @@ describe('parseAcceptLanguage', () => {
   it('falls back to English without a usable header', () => {
     assert.equal(parseAcceptLanguage(null), 'en');
     assert.equal(parseAcceptLanguage(''), 'en');
+  });
+});
+
+describe('resolveApiLanguage', () => {
+  it('prefers the locale of the page the reader is on', () => {
+    assert.equal(
+      resolveApiLanguage({
+        pageLocale: 'ja',
+        rememberedLocale: 'en',
+        acceptLanguage: 'en-US'
+      }),
+      'ja'
+    );
+  });
+
+  it('falls back to the remembered locale off a localized page', () => {
+    assert.equal(
+      resolveApiLanguage({ rememberedLocale: 'ja', acceptLanguage: 'en-US' }),
+      'ja'
+    );
+  });
+
+  it('falls back to the browser language without either', () => {
+    assert.equal(
+      resolveApiLanguage({ pageLocale: null, acceptLanguage: 'en-US' }),
+      'en-US'
+    );
+  });
+
+  it('ignores values that are not supported locales', () => {
+    assert.equal(
+      resolveApiLanguage({
+        pageLocale: 'fr',
+        rememberedLocale: 'de',
+        acceptLanguage: 'ja'
+      }),
+      'ja'
+    );
   });
 });
 
