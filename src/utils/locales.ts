@@ -35,6 +35,26 @@ export function preferredLocale(acceptLanguage: string | null): Locale {
   return best;
 }
 
+export const LOCALE_COOKIE = 'NEXT_LOCALE';
+
+export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+export const PAGE_LOCALE_HEADER = 'x-page-locale';
+
+export function pathLocale(pathname: string): Locale | null {
+  const segment = pathname.split('/')[1];
+  return isLocale(segment) ? segment : null;
+}
+
+export function rememberedOrPreferredLocale(
+  rememberedLocale: string | undefined | null,
+  acceptLanguage: string | null
+): Locale {
+  return isLocale(rememberedLocale)
+    ? rememberedLocale
+    : preferredLocale(acceptLanguage);
+}
+
 export function localePath(locale: string, path = ''): string {
   const normalized = path === '/' ? '' : path;
   return `/${toLocale(locale)}${normalized}`;

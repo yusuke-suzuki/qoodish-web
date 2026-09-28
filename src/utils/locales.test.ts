@@ -4,7 +4,9 @@ import {
   DEFAULT_LOCALE,
   isLocale,
   localePath,
+  pathLocale,
   preferredLocale,
+  rememberedOrPreferredLocale,
   toLocale
 } from './locales.ts';
 
@@ -58,6 +60,40 @@ describe('preferredLocale', () => {
     assert.equal(preferredLocale('fr,de'), DEFAULT_LOCALE);
     assert.equal(preferredLocale(''), DEFAULT_LOCALE);
     assert.equal(preferredLocale(null), DEFAULT_LOCALE);
+  });
+});
+
+describe('pathLocale', () => {
+  it('reads the locale from the first path segment', () => {
+    assert.equal(pathLocale('/ja'), 'ja');
+    assert.equal(pathLocale('/ja/maps/1'), 'ja');
+    assert.equal(pathLocale('/en/'), 'en');
+  });
+
+  it('finds none in an unprefixed path', () => {
+    assert.equal(pathLocale('/'), null);
+    assert.equal(pathLocale('/discover'), null);
+    assert.equal(pathLocale('/jam'), null);
+    assert.equal(pathLocale('/fr/maps/1'), null);
+    assert.equal(pathLocale('/maps/ja'), null);
+  });
+});
+
+describe('rememberedOrPreferredLocale', () => {
+  it('prefers the remembered locale over the browser language', () => {
+    assert.equal(rememberedOrPreferredLocale('ja', 'en-US,en;q=0.9'), 'ja');
+    assert.equal(rememberedOrPreferredLocale('en', 'ja'), 'en');
+  });
+
+  it('falls back to the browser language without a remembered locale', () => {
+    assert.equal(rememberedOrPreferredLocale(undefined, 'ja,en;q=0.5'), 'ja');
+    assert.equal(rememberedOrPreferredLocale(null, null), DEFAULT_LOCALE);
+  });
+
+  it('ignores a remembered value that is not a supported locale', () => {
+    assert.equal(rememberedOrPreferredLocale('fr', 'ja'), 'ja');
+    assert.equal(rememberedOrPreferredLocale('', 'ja'), 'ja');
+    assert.equal(rememberedOrPreferredLocale('JA', 'en'), 'en');
   });
 });
 

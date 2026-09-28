@@ -5,7 +5,14 @@ import {
 } from 'next/server';
 import { isTimeoutError } from './lib/apiRequest.ts';
 import describeError from './utils/describeError.ts';
-import { LOCALES, preferredLocale } from './utils/locales.ts';
+import {
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+  type Locale,
+  PAGE_LOCALE_HEADER,
+  pathLocale,
+  rememberedOrPreferredLocale
+} from './utils/locales.ts';
 
 const WARMUP_INTERVAL_MS = 60000;
 
@@ -29,30 +36,57 @@ async function warmUpApi(): Promise<void> {
   }
 }
 
-export function middleware(request: NextRequest, event: NextFetchEvent) {
-  const { pathname } = request.nextUrl;
+function servePage(request: NextRequest, locale: Locale): NextResponse {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(PAGE_LOCALE_HEADER, locale);
 
-  const pathnameHasLocale = LOCALES.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
 
-  if (pathnameHasLocale) {
-    if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
-      lastWarmupAt = Date.now();
-      event.waitUntil(warmUpApi());
-    }
-
-    return NextResponse.next();
+  if (request.cookies.get(LOCALE_COOKIE)?.value !== locale) {
+    response.cookies.set(LOCALE_COOKIE, locale, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: LOCALE_COOKIE_MAX_AGE
+    });
   }
 
-  const locale = preferredLocale(request.headers.get('accept-language'));
+  return response;
+}
+
+function redirectToLocale(request: NextRequest): NextResponse {
+  const { pathname } = request.nextUrl;
+  const locale = rememberedOrPreferredLocale(
+    request.cookies.get(LOCALE_COOKIE)?.value,
+    request.headers.get('accept-language')
+  );
   const newUrl = request.nextUrl.clone();
   // '/' must not become '/en/', which Next would 308 again to '/en'.
   newUrl.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
 
   // Redirect instead of rewriting so every page is reachable under exactly one
   // URL; serving locale-less paths with a 200 duplicates every localized page.
-  return NextResponse.redirect(newUrl, 308);
+  const response = NextResponse.redirect(newUrl, 307);
+  response.headers.set('Cache-Control', 'private, no-store');
+  response.headers.set('Vary', 'Accept-Language, Cookie');
+
+  return response;
+}
+
+export function middleware(request: NextRequest, event: NextFetchEvent) {
+  const locale = pathLocale(request.nextUrl.pathname);
+
+  if (!locale) {
+    return redirectToLocale(request);
+  }
+
+  if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
+    lastWarmupAt = Date.now();
+    event.waitUntil(warmUpApi());
+  }
+
+  return servePage(request, locale);
 }
 
 export const config = {

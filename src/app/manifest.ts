@@ -1,8 +1,11 @@
 import type { MetadataRoute } from 'next';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { BRAND_COLOR } from '../utils/brand.ts';
 import { getDictionary } from '../utils/getDictionary.ts';
-import { preferredLocale } from '../utils/locales.ts';
+import {
+  LOCALE_COOKIE,
+  rememberedOrPreferredLocale
+} from '../utils/locales.ts';
 
 const START_URL = '/?utm_source=homescreen';
 
@@ -20,8 +23,11 @@ const icons: MetadataRoute.Manifest['icons'] = ICON_SIZES.flatMap((size) =>
 );
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const headersList = await headers();
-  const lang = preferredLocale(headersList.get('accept-language'));
+  const [headersList, cookieStore] = await Promise.all([headers(), cookies()]);
+  const lang = rememberedOrPreferredLocale(
+    cookieStore.get(LOCALE_COOKIE)?.value,
+    headersList.get('accept-language')
+  );
   const dict = getDictionary(lang);
 
   return {

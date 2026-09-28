@@ -1,3 +1,9 @@
+import {
+  isLocale,
+  LOCALE_COOKIE,
+  PAGE_LOCALE_HEADER
+} from '../utils/locales.ts';
+
 export const DEFAULT_TIMEOUT_MS = 15000;
 
 type ApiHeaderOptions = {
@@ -53,14 +59,41 @@ export function parseAcceptLanguage(header: string | null): string {
   return best || 'en';
 }
 
+type ApiLanguageSources = {
+  pageLocale?: string | null;
+  rememberedLocale?: string | null;
+  acceptLanguage: string | null;
+};
+
+export function resolveApiLanguage({
+  pageLocale,
+  rememberedLocale,
+  acceptLanguage
+}: ApiLanguageSources): string {
+  if (isLocale(pageLocale)) {
+    return pageLocale;
+  }
+
+  if (isLocale(rememberedLocale)) {
+    return rememberedLocale;
+  }
+
+  return parseAcceptLanguage(acceptLanguage);
+}
+
 export async function getAcceptLanguage(lang?: string): Promise<string> {
   if (lang) {
     return lang;
   }
 
-  const { headers } = await import('next/headers');
-  const headerStore = await headers();
-  return parseAcceptLanguage(headerStore.get('accept-language'));
+  const { cookies, headers } = await import('next/headers');
+  const [headerStore, cookieStore] = await Promise.all([headers(), cookies()]);
+
+  return resolveApiLanguage({
+    pageLocale: headerStore.get(PAGE_LOCALE_HEADER),
+    rememberedLocale: cookieStore.get(LOCALE_COOKIE)?.value,
+    acceptLanguage: headerStore.get('accept-language')
+  });
 }
 
 export function buildApiHeaders({

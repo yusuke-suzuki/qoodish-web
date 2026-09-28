@@ -6,10 +6,11 @@ import {
   DEFAULT_TIMEOUT_MS,
   getAuthToken,
   isTimeoutError,
-  parseAcceptLanguage
+  resolveApiLanguage
 } from '../../../../lib/apiRequest.ts';
 import { getServerAuthState } from '../../../../lib/auth.ts';
 import describeError from '../../../../utils/describeError.ts';
+import { LOCALE_COOKIE } from '../../../../utils/locales.ts';
 
 type Params = {
   params: Promise<{ path: string[] }>;
@@ -91,9 +92,10 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
     method: request.method,
     headers: buildApiHeaders({
       token,
-      acceptLanguage: parseAcceptLanguage(
-        request.headers.get('accept-language')
-      )
+      acceptLanguage: resolveApiLanguage({
+        rememberedLocale: request.cookies.get(LOCALE_COOKIE)?.value,
+        acceptLanguage: request.headers.get('accept-language')
+      })
     }),
     signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
   };
