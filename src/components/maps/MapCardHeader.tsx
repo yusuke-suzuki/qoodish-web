@@ -4,13 +4,11 @@ import {
   Skeleton,
   Typography
 } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
-import { enUS, ja } from 'date-fns/locale';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { memo, type ReactNode } from 'react';
 import type { AppMap } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import AuthorAvatar from '../common/AuthorAvatar.tsx';
 
 type Props = {
@@ -19,8 +17,8 @@ type Props = {
 };
 
 function MapCardHeader({ map, action }: Props) {
-  const { lang } = useParams<{ lang: string }>();
   const localePath = useLocalePath();
+  const formatRelativeTime = useRelativeTime();
 
   return (
     <CardHeader
@@ -50,10 +48,7 @@ function MapCardHeader({ map, action }: Props) {
       subheader={
         map ? (
           <Typography variant="body2" color="text.secondary">
-            {formatDistanceToNow(new Date(map.created_at), {
-              addSuffix: true,
-              locale: lang === 'ja' ? ja : enUS
-            })}
+            {formatRelativeTime(map.created_at)}
           </Typography>
         ) : (
           <Skeleton height={20} width="50%" />
