@@ -7,6 +7,7 @@
   "routes": [{ "pattern": "admin.qoodish.com", "custom_domain": true }],
   "workers_dev": false,
   "preview_urls": false,
+  "browser": { "binding": "BROWSER" },
   "observability": {
     "enabled": true,
     "traces": {
@@ -30,6 +31,7 @@
       "name": "dev-qoodish-admin",
       "routes": [{ "pattern": "admin-dev.qoodish.com", "custom_domain": true }],
       "preview_urls": true,
+      "browser": { "binding": "BROWSER", "remote": true },
       "vars": {
         "API_ENDPOINT": "https://api-dev.qoodish.com",
         "WEB_ENDPOINT": "https://dev.qoodish.com",
@@ -38,6 +40,7 @@
         "CF_ACCESS_AUD": "3ee39327262eb73242846c4cfc838367252dd82641f8370f089d6c6979147cb6"
       },
       "previews": {
+        "browser": { "binding": "BROWSER" },
         "vars": {
           "API_ENDPOINT": "https://api-dev.qoodish.com",
           "WEB_ENDPOINT": "https://dev.qoodish.com",

@@ -91,5 +91,21 @@ export const en: Dictionary = {
   removeRole: (role) => `Remove ${role}`,
   revoke: 'Revoke access',
   revoked: 'Revoked',
-  staffUpdated: (email) => `Updated ${email}.`
+  staffUpdated: (email) => `Updated ${email}.`,
+  navAssets: 'Assets',
+  assets: 'Assets',
+  appIcons: 'App icons',
+  appIconsHelp:
+    'Maskable icons fill the square so the device can crop them to its own shape. The other icons carry their own rounded corners.',
+  iconPurposes: {
+    any: 'Standard',
+    maskable: 'Maskable'
+  },
+  ogImages: 'Share images',
+  ogImagesHelp:
+    'The image a link to Qoodish shows when it is shared, one for each language.',
+  ogTagline: 'Put your journey on the map.',
+  size: 'Size',
+  download: 'Download',
+  renderFailed: 'The image could not be rendered. Try again later.'
 };
