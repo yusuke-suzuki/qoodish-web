@@ -5,7 +5,7 @@ import {
 } from 'next/server';
 import { isTimeoutError } from './lib/apiRequest.ts';
 import describeError from './utils/describeError.ts';
-import { DEFAULT_LOCALE, LOCALES, type Locale } from './utils/locales.ts';
+import { LOCALES, preferredLocale } from './utils/locales.ts';
 
 const WARMUP_INTERVAL_MS = 60000;
 
@@ -29,20 +29,6 @@ async function warmUpApi(): Promise<void> {
   }
 }
 
-function getPreferredLocale(request: NextRequest): Locale {
-  const acceptLanguage = request.headers.get('accept-language') ?? '';
-  const preferred = acceptLanguage
-    .split(',')
-    .map((part) => part.split(';')[0].trim().slice(0, 2).toLowerCase());
-
-  for (const lang of preferred) {
-    if (LOCALES.includes(lang as Locale)) {
-      return lang as Locale;
-    }
-  }
-  return DEFAULT_LOCALE;
-}
-
 export function middleware(request: NextRequest, event: NextFetchEvent) {
   const { pathname } = request.nextUrl;
 
@@ -59,7 +45,7 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
     return NextResponse.next();
   }
 
-  const locale = getPreferredLocale(request);
+  const locale = preferredLocale(request.headers.get('accept-language'));
   const newUrl = request.nextUrl.clone();
   // '/' must not become '/en/', which Next would 308 again to '/en'.
   newUrl.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
