@@ -1,8 +1,10 @@
 import type { PrecacheEntry, RuntimeCaching } from 'serwist';
-import { Serwist, StaleWhileRevalidate } from 'serwist';
+import { NetworkOnly, Serwist, StaleWhileRevalidate } from 'serwist';
 import en from '../dictionaries/en.json';
 import ja from '../dictionaries/ja.json';
+import { LOCALES } from '../utils/locales.ts';
 import { notificationMessageKey } from '../utils/notificationMessage.ts';
+import { offlinePath, offlinePathFor } from '../utils/offline.ts';
 
 declare const self: ServiceWorkerGlobalScope & {
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
@@ -31,7 +33,6 @@ const I18n = {
   }
 };
 
-// Push notification handlers
 interface NotificationData {
   key: string;
   notifiable_type: string;
@@ -47,7 +48,14 @@ interface PushEventPayload {
   data: NotificationData;
 }
 
+const isDocumentRequest = (request: Request) =>
+  request.destination === 'document';
+
 const runtimeCaching: RuntimeCaching[] = [
+  {
+    matcher: ({ request }) => isDocumentRequest(request),
+    handler: new NetworkOnly()
+  },
   {
     matcher: /^https:\/\/fonts\.googleapis\.com\/.*/,
     handler: new StaleWhileRevalidate({
@@ -56,7 +64,6 @@ const runtimeCaching: RuntimeCaching[] = [
   }
 ];
 
-// Push notification event handlers and helper functions
 const eventToPayload = (e: PushEvent): PushEventPayload | null => {
   if (e?.data) {
     return e.data.json();
@@ -116,10 +123,17 @@ self.addEventListener('notificationclick', (e: NotificationEvent) => {
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
-  skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching
+  runtimeCaching,
+  fallbacks: {
+    entries: LOCALES.map((locale) => ({
+      url: offlinePath(locale),
+      matcher: ({ request }) =>
+        isDocumentRequest(request) &&
+        offlinePathFor(request.url) === offlinePath(locale)
+    }))
+  }
 });
 
 serwist.addEventListeners();
