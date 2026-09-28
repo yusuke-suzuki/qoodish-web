@@ -49,7 +49,9 @@ function BottomNavContent({ profile }: ContentProps) {
   }, [pathname]);
 
   if (!authenticated) return null;
-  if (pathname.includes('/chapters/')) return null;
+  if (pathname.includes('/chapters/') || pathname.includes('/maps/')) {
+    return null;
+  }
 
   return (
     <Box sx={{ display: { xs: 'block', md: 'none' } }}>
