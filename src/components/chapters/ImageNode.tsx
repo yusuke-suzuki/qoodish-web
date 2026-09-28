@@ -1,6 +1,5 @@
 'use client';
 
-import { Box } from '@mui/material';
 import { DecoratorNode, type NodeKey } from 'lexical';
 import { type JSX, memo, useRef } from 'react';
 import {
@@ -9,6 +8,7 @@ import {
   IMAGE_NODE_TYPE,
   type SerializedImageNode
 } from '../../utils/chapterContent.ts';
+import ChapterContentImage from './ChapterContentImage.tsx';
 import useBlockSelection from './useBlockSelection.ts';
 
 type ImageViewProps = {
@@ -24,22 +24,7 @@ const ImageNodeView = memo(function ImageNodeView({
   const { selected } = useBlockSelection(nodeKey, imageRef);
 
   return (
-    <Box sx={{ my: 2 }}>
-      <Box
-        component="img"
-        ref={imageRef}
-        src={image.hero}
-        alt=""
-        sx={{
-          display: 'block',
-          width: '100%',
-          borderRadius: 1,
-          outline: selected ? '2px solid' : 'none',
-          outlineColor: 'primary.main',
-          outlineOffset: '2px'
-        }}
-      />
-    </Box>
+    <ChapterContentImage ref={imageRef} src={image.hero} selected={selected} />
   );
 });
 

@@ -15,7 +15,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -35,7 +35,6 @@ import ReportDialog from '../common/ReportDialog.tsx';
 import ChapterActions from './ChapterActions.tsx';
 import ChapterAuthorCard from './ChapterAuthorCard.tsx';
 import ChapterAuthorHeader from './ChapterAuthorHeader.tsx';
-import ChapterContentReader from './ChapterContentReader.tsx';
 import ChapterCover from './ChapterCover.tsx';
 import ChapterMapCard from './ChapterMapCard.tsx';
 import MapLinkChip from './MapLinkChip.tsx';
@@ -48,6 +47,7 @@ const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 
 type Props = {
   chapter: Chapter;
+  body: ReactNode;
   // Deleting a map nullifies the chapters on it, so the chapter outlives it.
   map: AppMap | null;
   authorJournal: Journal | null;
@@ -57,6 +57,7 @@ type Props = {
 
 export default function ChapterReadView({
   chapter,
+  body,
   map,
   authorJournal,
   authorPageCount,
@@ -163,7 +164,7 @@ export default function ChapterReadView({
 
           <Divider sx={{ mb: 4 }} />
 
-          <ChapterContentReader content={chapter.content} />
+          {body}
 
           <ChapterMapCard
             map={map}

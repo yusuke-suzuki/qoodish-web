@@ -32,18 +32,15 @@ class Boundary extends Component<BoundaryProps, BoundaryState> {
 
 type Props = {
   children: ReactNode;
-  message?: string;
 };
 
-export default function SectionErrorBoundary({ children, message }: Props) {
+export default function SectionErrorBoundary({ children }: Props) {
   const dictionary = useDictionary();
 
   return (
     <Boundary
       fallback={
-        <Alert severity="error">
-          {message ?? dictionary['section load failed']}
-        </Alert>
+        <Alert severity="error">{dictionary['section load failed']}</Alert>
       }
     >
       {children}

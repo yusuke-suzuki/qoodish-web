@@ -19,16 +19,15 @@ import type {
   SerializedEditorState
 } from 'lexical';
 import { memo, type RefObject } from 'react';
+import { validateUrl } from '../../utils/chapterContent.ts';
 import ChapterFloatingToolbar from './ChapterFloatingToolbar.tsx';
 import ChapterSlashMenu from './ChapterSlashMenu.tsx';
 import ChapterToolbar from './ChapterToolbar.tsx';
+import { chapterContentStyles, chapterTheme } from './chapterContentTheme.ts';
 import {
   chapterAutoLinkMatchers,
-  chapterContentStyles,
   chapterMarkdownTransformers,
-  chapterNodes,
-  chapterTheme,
-  validateUrl
+  chapterNodes
 } from './chapterEditorConfig.ts';
 import EmptyBlockPlaceholderPlugin from './EmptyBlockPlaceholderPlugin.tsx';
 

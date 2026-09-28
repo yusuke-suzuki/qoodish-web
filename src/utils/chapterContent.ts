@@ -10,6 +10,12 @@ import type { Image, Journey } from '../../types/index.ts';
 
 export const IMAGE_NODE_TYPE = 'image';
 
+const SAFE_URL_PROTOCOL = /^(https?:\/\/|mailto:)/i;
+
+export function validateUrl(url: string): boolean {
+  return SAFE_URL_PROTOCOL.test(url);
+}
+
 export type ChapterImage = {
   image_id: number;
   url: string;
