@@ -1,4 +1,3 @@
-import type { IconPurpose } from '../assets.ts';
 import type {
   ModeratableType,
   ModerationOutcome,
@@ -68,7 +67,6 @@ export type Dictionary = {
   assets: string;
   appIcons: string;
   appIconsHelp: string;
-  iconPurposes: Record<IconPurpose, string>;
   ogImages: string;
   ogImagesHelp: string;
   ogTagline: string;

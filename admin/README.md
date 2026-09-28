@@ -2,7 +2,7 @@
 
 A Cloudflare Worker that serves the moderation dashboard on `admin.qoodish.com` (`admin-dev.qoodish.com` for dev). It lists pending reports, shows each report with its snapshot and decision history, and records decisions through the admin API of the Rails backend. Staff members holding the `manage_staff` permission also grant and remove roles and revoke access on the staff page.
 
-The assets page renders the app icons (standard and maskable, in every size the web app and the manifest reference) and the share image for each language. Each file is drawn by [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) through the `BROWSER` binding and served as a PNG, which a maintainer downloads and uploads to where the web app loads it from. A render is cached by Browser Rendering for a day, and a render whose fonts or photograph fail to load answers `502` instead of an incomplete image.
+The assets page renders the app icon as a full-bleed square, which each platform crops to its own shape, in every size the web app and the manifest reference, and the share image for each language. Each file is drawn by [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) through the `BROWSER` binding and served as a PNG, which a maintainer downloads and uploads to where the web app loads it from. A render is cached by Browser Rendering for a day, and a render whose fonts or photograph fail to load answers `502` instead of an incomplete image.
 
 The pages are rendered on the server with Hono's JSX and use plain HTML forms, so the dashboard runs no client-side JavaScript. Every page is available in English and Japanese under `/en` and `/ja`; `/` redirects by the browser's language.
 

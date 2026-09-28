@@ -6,22 +6,13 @@ export const ICON_SIZES = [
 
 export type IconSize = (typeof ICON_SIZES)[number];
 
-export type IconPurpose = 'any' | 'maskable';
-
-export const ICON_PURPOSES: readonly IconPurpose[] = ['any', 'maskable'];
-
 export const OG_IMAGE_WIDTH = 1200;
 
 export const OG_IMAGE_HEIGHT = 630;
 
 export type Asset =
-  | { kind: 'icon'; purpose: IconPurpose; size: IconSize }
+  | { kind: 'icon'; size: IconSize }
   | { kind: 'ogImage'; locale: Locale };
-
-const ICON_PREFIXES: Record<IconPurpose, string> = {
-  any: 'icon',
-  maskable: 'maskable_icon'
-};
 
 function isIconSize(value: number): value is IconSize {
   return ICON_SIZES.includes(value as IconSize);
@@ -29,18 +20,17 @@ function isIconSize(value: number): value is IconSize {
 
 export function assetFileName(asset: Asset): string {
   return asset.kind === 'icon'
-    ? `${ICON_PREFIXES[asset.purpose]}_x${asset.size}.png`
+    ? `icon_x${asset.size}.png`
     : `ogp-image-${asset.locale}.png`;
 }
 
 export function parseAssetFileName(name: string): Asset | null {
-  const icon = /^(icon|maskable_icon)_x(\d+)\.png$/.exec(name);
+  const icon = /^icon_x(\d+)\.png$/.exec(name);
 
   if (icon) {
-    const size = Number(icon[2]);
-    const purpose = icon[1] === 'icon' ? 'any' : 'maskable';
+    const size = Number(icon[1]);
 
-    return isIconSize(size) ? { kind: 'icon', purpose, size } : null;
+    return isIconSize(size) ? { kind: 'icon', size } : null;
   }
 
   const ogImage = /^ogp-image-([a-z]+)\.png$/.exec(name);

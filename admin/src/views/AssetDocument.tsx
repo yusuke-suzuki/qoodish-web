@@ -16,8 +16,6 @@ const HERO_SCRIM =
 
 const GLYPH_RATIO = 0.625;
 
-const ANY_ICON_CORNER_RATIO = 0.225;
-
 const TAGLINE_FONTS: Record<Locale, string> = {
   en: 'Cinzel',
   ja: '"Shippori Mincho"'
@@ -74,9 +72,6 @@ function Document({
 }
 
 function Icon({ asset }: { asset: Extract<Asset, { kind: 'icon' }> }) {
-  const radius =
-    asset.purpose === 'any' ? asset.size * ANY_ICON_CORNER_RATIO : 0;
-
   return (
     <div
       style={{
@@ -84,7 +79,6 @@ function Icon({ asset }: { asset: Extract<Asset, { kind: 'icon' }> }) {
         'place-items': 'center',
         width: `${asset.size}px`,
         height: `${asset.size}px`,
-        'border-radius': `${radius}px`,
         background: BRAND_COLOR,
         color: '#ffffff',
         'font-family': 'Lobster, cursive',
