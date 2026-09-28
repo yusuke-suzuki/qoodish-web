@@ -4,18 +4,16 @@ import { css } from '@emotion/react';
 import {
   Button,
   CssBaseline,
-  createTheme,
   GlobalStyles,
   ThemeProvider
 } from '@mui/material';
-import { amber, lightBlue } from '@mui/material/colors';
-import { enUS, jaJP } from '@mui/material/locale';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { closeSnackbar, SnackbarProvider } from 'notistack';
+import type { Serwist } from '@serwist/window';
+import { closeSnackbar, enqueueSnackbar, SnackbarProvider } from 'notistack';
 import {
   type ReactNode,
-  useCallback,
   useEffect,
+  useEffectEvent,
   useMemo,
   useState
 } from 'react';
@@ -25,6 +23,7 @@ import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
+import { createAppTheme } from '../../utils/theme.ts';
 import AccountProviders from './AccountProviders.tsx';
 import AnalyticsTracker from './AnalyticsTracker.tsx';
 
@@ -35,6 +34,19 @@ const globalStyles = css`
 `;
 
 const inputGlobalStyles = <GlobalStyles styles={globalStyles} />;
+
+function activateWaitingWorker(
+  serwist: Serwist,
+  waitingWorker?: ServiceWorker
+) {
+  if (waitingWorker?.state !== 'installed') {
+    window.location.reload();
+    return;
+  }
+
+  serwist.addEventListener('controlling', () => window.location.reload());
+  serwist.messageSkipWaiting();
+}
 
 type Props = {
   children: ReactNode;
@@ -64,117 +76,57 @@ export default function Providers({
 
   const serviceWorkerValue = useMemo(() => ({ registration }), [registration]);
 
-  const theme = useMemo(() => {
-    const locale = lang === 'ja' ? jaJP : enUS;
+  const theme = useMemo(() => createAppTheme(lang), [lang]);
 
-    return createTheme(
-      {
-        palette: {
-          // Only main is named, so that light, dark and contrastText are
-          // derived from it: this amber reads 1.79:1 against white, and MUI
-          // answers with dark text on it at 11.70:1. Naming white here instead
-          // would put 1.79:1 type on every button.
-          primary: {
-            main: amber[600]
-          },
-          // 800 rather than 500, which carried a white label at only 2.63:1;
-          // this takes one at 4.80:1.
-          secondary: {
-            main: lightBlue[800]
-          }
-        },
-        shape: {
-          borderRadius: 12
-        },
-        typography: {
-          fontFamily:
-            'var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif',
-          h1: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          h2: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          h3: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          h4: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          h5: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          h6: {
-            fontFamily: 'var(--font-cinzel), var(--font-shippori-mincho), serif'
-          },
-          body1: {
-            lineHeight: 1.9,
-            letterSpacing: '0.01em'
-          },
-          body2: {
-            lineHeight: 1.8,
-            letterSpacing: '0.01em'
-          }
-        },
-        components: {
-          MuiCard: {
-            // The page and the card share one surface, so a card needs an edge
-            // rather than a shadow to be told from it.
-            defaultProps: {
-              variant: 'outlined'
-            }
-          },
-          MuiDialog: {
-            defaultProps: {
-              fullWidth: true
-            }
-          },
-          MuiDrawer: {
-            styleOverrides: {
-              paperAnchorBottom: {
-                borderTopLeftRadius: 16,
-                borderTopRightRadius: 16
-              }
-            }
-          }
-        }
-      },
-      locale
-    );
-  }, [lang]);
+  const offerUpdate = useEffectEvent((activateUpdate: () => void) => {
+    enqueueSnackbar(dictionary['new version available'], {
+      persist: true,
+      action: (snackbarId) => (
+        <>
+          <Button
+            onClick={() => {
+              closeSnackbar(snackbarId);
+              activateUpdate();
+            }}
+          >
+            {dictionary.reload}
+          </Button>
+          <Button onClick={() => closeSnackbar(snackbarId)}>
+            {dictionary.close}
+          </Button>
+        </>
+      )
+    });
+  });
 
-  const initServiceWorker = useCallback(async () => {
-    try {
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) {
+      return;
+    }
+
+    const initServiceWorker = async () => {
       const { Serwist } = await import('@serwist/window');
       const serwist = new Serwist('/sw.js', { scope: '/', type: 'classic' });
 
-      serwist.addEventListener('installed', () => {
-        console.log('ServiceWorker installed');
+      serwist.addEventListener('waiting', ({ sw }) => {
+        offerUpdate(() => activateWaitingWorker(serwist, sw));
       });
 
       const reg = await serwist.register();
-      console.log(
-        'ServiceWorker registration successful with scope: ',
-        reg?.scope
-      );
 
-      if (!reg) {
+      if (!reg || !('PushManager' in window)) {
         return;
       }
 
       // register() resolves while the worker is still installing, and the push
       // API rejects a subscription until one is active; ready holds until then.
       setRegistration(await navigator.serviceWorker.ready);
-    } catch (error) {
-      console.log('ServiceWorker registration failed: ', error);
-    }
-  }, []);
+    };
 
-  useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      initServiceWorker();
-    }
-  }, [initServiceWorker]);
+    initServiceWorker().catch((error) => {
+      console.log('ServiceWorker registration failed: ', error);
+    });
+  }, []);
 
   return (
     <AppRouterCacheProvider>

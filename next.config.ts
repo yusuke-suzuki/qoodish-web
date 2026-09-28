@@ -1,14 +1,32 @@
+import { randomUUID } from 'node:crypto';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 import withSerwistInit from '@serwist/next';
 import type { NextConfig } from 'next';
+import { LOCALES } from './src/utils/locales.ts';
+import { offlinePath } from './src/utils/offline.ts';
 
 initOpenNextCloudflareForDev();
+
+const offlinePageRevision = randomUUID();
 
 const withSerwist = withSerwistInit({
   swSrc: 'src/worker/index.ts',
   swDest: 'public/sw.js',
-  reloadOnOnline: true,
+  register: false,
+  reloadOnOnline: false,
   disable: process.env.NODE_ENV === 'development',
+  manifestTransforms: [
+    (entries) => ({
+      manifest: [
+        ...entries,
+        ...LOCALES.map((locale) => ({
+          url: offlinePath(locale),
+          revision: offlinePageRevision,
+          size: 0
+        }))
+      ]
+    })
+  ],
   // _headers configures the Cloudflare asset host and is not served as an
   // asset, so precaching it leaves the install waiting on a redirect that
   // never resolves into a response the worker can store.

@@ -90,5 +90,5 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|.*\\..*).*)', '/(en|ja)/:path*']
+  matcher: ['/((?!_next|api|offline/|.*\\..*).*)', '/(en|ja)/:path*']
 };
