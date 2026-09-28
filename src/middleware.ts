@@ -1,9 +1,11 @@
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import {
   type NextFetchEvent,
   type NextRequest,
   NextResponse
 } from 'next/server';
 import { isTimeoutError } from './lib/apiRequest.ts';
+import { ANALYTICS_COOKIE, analyticsAllowed } from './utils/analyticsRegion.ts';
 import describeError from './utils/describeError.ts';
 import {
   LOCALE_COOKIE,
@@ -36,6 +38,33 @@ async function warmUpApi(): Promise<void> {
   }
 }
 
+function visitorCountry(): string | undefined {
+  try {
+    return getCloudflareContext().cf?.country;
+  } catch {
+    return undefined;
+  }
+}
+
+function withAnalyticsFlag(request: NextRequest, response: NextResponse) {
+  const allowed = analyticsAllowed(
+    visitorCountry(),
+    process.env.NODE_ENV === 'development'
+  );
+
+  if (allowed) {
+    response.cookies.set(ANALYTICS_COOKIE, '1', {
+      path: '/',
+      sameSite: 'lax',
+      secure: request.nextUrl.protocol === 'https:'
+    });
+  } else if (request.cookies.has(ANALYTICS_COOKIE)) {
+    response.cookies.delete(ANALYTICS_COOKIE);
+  }
+
+  return response;
+}
+
 function servePage(request: NextRequest, locale: Locale): NextResponse {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(PAGE_LOCALE_HEADER, locale);
@@ -52,7 +81,7 @@ function servePage(request: NextRequest, locale: Locale): NextResponse {
     });
   }
 
-  return response;
+  return withAnalyticsFlag(request, response);
 }
 
 function redirectToLocale(request: NextRequest): NextResponse {

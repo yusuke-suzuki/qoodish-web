@@ -1,5 +1,5 @@
-import { getAnalytics, isSupported, logEvent } from 'firebase/analytics';
 import { getApps } from 'firebase/app';
+import { hasAnalyticsCookie } from './analyticsRegion.ts';
 
 export type AuthMethod = 'google.com' | 'emailLink';
 
@@ -36,19 +36,32 @@ export type AnalyticsEvent =
       };
     };
 
-let supported: Promise<boolean> | undefined;
+type FirebaseAnalytics = typeof import('firebase/analytics');
+
+let sdk: Promise<FirebaseAnalytics | null> | undefined;
+
+async function loadSupportedSdk() {
+  const analytics = await import('firebase/analytics');
+  return (await analytics.isSupported()) ? analytics : null;
+}
 
 async function send(event: AnalyticsEvent) {
-  supported ??= isSupported();
+  sdk ??= loadSupportedSdk();
+  const analytics = await sdk;
 
-  if (!(await supported)) return;
+  if (!analytics) return;
 
   const name: string = event.name;
-  logEvent(getAnalytics(), name, 'params' in event ? event.params : undefined);
+  analytics.logEvent(
+    analytics.getAnalytics(),
+    name,
+    'params' in event ? event.params : undefined
+  );
 }
 
 export function trackEvent(event: AnalyticsEvent) {
   if (typeof window === 'undefined' || !getApps().length) return;
+  if (!hasAnalyticsCookie(document.cookie)) return;
 
   send(event).catch((error) => {
     console.error('Failed to log analytics event:', error);

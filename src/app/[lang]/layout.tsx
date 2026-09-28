@@ -117,10 +117,6 @@ export default async function RootLayout({ children, params }: Props) {
       <head>
         <link href="https://www.googleapis.com" rel="preconnect dns-prefetch" />
         <link
-          href="https://www.google-analytics.com"
-          rel="preconnect dns-prefetch"
-        />
-        <link
           href="https://storage.cloud.google.com"
           rel="preconnect dns-prefetch"
         />
