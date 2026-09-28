@@ -18,9 +18,14 @@ import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, useRef, useState } from 'react';
 import type { AppMap, Profile } from '../../../types/index.ts';
+import useBlock from '../../hooks/useBlock.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useMute from '../../hooks/useMute.ts';
 import { localePath } from '../../utils/locales.ts';
 import { SITE_ORIGIN } from '../../utils/metadata.ts';
+import BlockMenuItem from '../common/BlockMenuItem.tsx';
+import BlockUserDialog from '../common/BlockUserDialog.tsx';
+import MuteMenuItem from '../common/MuteMenuItem.tsx';
 import CoauthorInviteDialog from './CoauthorInviteDialog.tsx';
 
 type Props = {
@@ -42,9 +47,12 @@ export default memo(function MapMenuButton({
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
 
   const { lang } = useParams<{ lang: string }>();
   const dictionary = useDictionary();
+  const { pending: blockPending, block, unblock } = useBlock();
+  const { pending: mutePending, mute, unmute } = useMute();
 
   const isAuthor = currentProfile?.id === map?.author.id;
 
@@ -86,11 +94,54 @@ export default memo(function MapMenuButton({
     setInviteDialogOpen(true);
   };
 
+  const handleMuteClick = () => {
+    setAnchorEl(null);
+
+    if (!map) {
+      return;
+    }
+
+    if (map.author.muting) {
+      unmute(map.author.id);
+    } else {
+      mute(map.author.id);
+    }
+  };
+
+  const handleBlockClick = () => {
+    setAnchorEl(null);
+
+    if (!map) {
+      return;
+    }
+
+    if (map.author.blocking) {
+      unblock(map.author.id);
+    } else {
+      setBlockDialogOpen(true);
+    }
+  };
+
+  const handleBlockConfirm = async () => {
+    if (!map) {
+      return;
+    }
+
+    const blocked = await block(map.author.id);
+
+    if (!blocked) {
+      return;
+    }
+
+    setBlockDialogOpen(false);
+  };
+
   return (
     <>
       <IconButton
         ref={buttonRef}
         onClick={() => setAnchorEl(buttonRef.current)}
+        disabled={blockPending || mutePending}
         title={dictionary.more}
         aria-label={dictionary.more}
       >
@@ -107,6 +158,20 @@ export default memo(function MapMenuButton({
           </ListItemIcon>
           <ListItemText primary={dictionary['copy link']} />
         </MenuItem>
+
+        {currentProfile && map && !isAuthor && (
+          <MuteMenuItem
+            muting={Boolean(map.author.muting)}
+            onClick={handleMuteClick}
+          />
+        )}
+
+        {currentProfile && map && !isAuthor && (
+          <BlockMenuItem
+            blocking={Boolean(map.author.blocking)}
+            onClick={handleBlockClick}
+          />
+        )}
 
         {!isAuthor && (
           <MenuItem onClick={handleReportClick}>
@@ -158,6 +223,13 @@ export default memo(function MapMenuButton({
         open={inviteDialogOpen}
         onClose={() => setInviteDialogOpen(false)}
         map={map}
+      />
+
+      <BlockUserDialog
+        open={blockDialogOpen}
+        loading={blockPending}
+        onClose={() => setBlockDialogOpen(false)}
+        onConfirm={handleBlockConfirm}
       />
     </>
   );

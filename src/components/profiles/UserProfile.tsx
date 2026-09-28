@@ -1,14 +1,13 @@
 'use client';
 
-import { ReportProblem } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
   Divider,
-  IconButton,
   Stack,
   Tab,
   Typography
@@ -29,13 +28,17 @@ import type {
   Profile
 } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
+import useBlock from '../../hooks/useBlock.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useMute from '../../hooks/useMute.ts';
+import BlockUserDialog from '../common/BlockUserDialog.tsx';
 import ProfileAvatar from '../common/ProfileAvatar.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import EditProfileDialog from './EditProfileDialog.tsx';
 import JournalBookmarkButton from './JournalBookmarkButton.tsx';
 import UserChapters from './UserChapters.tsx';
 import UserMaps from './UserMaps.tsx';
+import UserMenuButton from './UserMenuButton.tsx';
 import UserPins from './UserPins.tsx';
 
 type Props = {
@@ -47,16 +50,34 @@ type Props = {
 };
 
 function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
-  const { uid } = useContext(AuthContext);
+  const { uid, authenticated } = useContext(AuthContext);
   const router = useRouter();
 
   const [tabValue, setTabValue] = useState('1');
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [blockDialogOpen, setBlockDialogOpen] = useState(false);
+  const [blockedPostsShown, setBlockedPostsShown] = useState(false);
 
   const dictionary = useDictionary();
+  const { pending: blockPending, block, unblock } = useBlock();
+  const { pending: mutePending, mute, unmute } = useMute();
 
   const isOwnProfile = uid === profile.uid;
+  const postsBlocked =
+    Boolean(profile.blocked_by) ||
+    (Boolean(profile.blocking) && !blockedPostsShown);
+
+  const handleBlockConfirm = async () => {
+    const blocked = await block(profile.id);
+
+    if (!blocked) {
+      return;
+    }
+
+    setBlockDialogOpen(false);
+    setBlockedPostsShown(false);
+  };
 
   const handleTabChange = (
     _event: SyntheticEvent<Element, Event>,
@@ -146,42 +167,95 @@ function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
                     alignSelf: { sm: 'flex-start' }
                   }}
                 >
-                  {journal && (
+                  {journal && !profile.blocking && !profile.blocked_by && (
                     <JournalBookmarkButton journal={journal} fullWidth />
                   )}
 
-                  <IconButton
-                    title={dictionary['report content']}
-                    aria-label={dictionary['report content']}
-                    onClick={handleReportClick}
-                  >
-                    <ReportProblem />
-                  </IconButton>
+                  <UserMenuButton
+                    profile={profile}
+                    authenticated={authenticated}
+                    disabled={blockPending || mutePending}
+                    onReportClick={handleReportClick}
+                    onBlockClick={() => setBlockDialogOpen(true)}
+                    onUnblockClick={() => unblock(profile.id)}
+                    onMuteClick={() => mute(profile.id)}
+                    onUnmuteClick={() => unmute(profile.id)}
+                  />
                 </Stack>
+              )}
+
+              {profile.blocked_by && (
+                <Alert severity="warning">
+                  {dictionary['blocked by notice']}
+                </Alert>
+              )}
+
+              {profile.blocking && (
+                <Alert
+                  severity="info"
+                  action={
+                    !blockedPostsShown && (
+                      <Button
+                        color="inherit"
+                        size="small"
+                        onClick={() => setBlockedPostsShown(true)}
+                      >
+                        {dictionary['show posts']}
+                      </Button>
+                    )
+                  }
+                >
+                  {dictionary['blocking notice']}
+                </Alert>
+              )}
+
+              {profile.muting && (
+                <Alert
+                  severity="info"
+                  action={
+                    <Button
+                      color="inherit"
+                      size="small"
+                      loading={mutePending}
+                      disabled={blockPending}
+                      onClick={() => unmute(profile.id)}
+                    >
+                      {dictionary.unmute}
+                    </Button>
+                  }
+                >
+                  {dictionary['muting notice']}
+                </Alert>
               )}
             </Stack>
           </CardContent>
 
-          <TabList onChange={handleTabChange}>
-            <Tab label={dictionary.pins} value="1" />
-            <Tab label={dictionary.maps} value="2" />
-            <Tab label={dictionary.chapters} value="3" />
-          </TabList>
+          {!postsBlocked && (
+            <TabList onChange={handleTabChange}>
+              <Tab label={dictionary.pins} value="1" />
+              <Tab label={dictionary.maps} value="2" />
+              <Tab label={dictionary.chapters} value="3" />
+            </TabList>
+          )}
         </Card>
 
-        <TabPanel value="1" sx={{ px: 0 }}>
-          <UserPins
-            userId={profile.id}
-            initialPins={initialPins}
-            isOwnProfile={isOwnProfile}
-          />
-        </TabPanel>
-        <TabPanel value="2" sx={{ px: 0 }}>
-          <UserMaps maps={maps} isOwnProfile={isOwnProfile} />
-        </TabPanel>
-        <TabPanel value="3" sx={{ px: 0 }}>
-          <UserChapters chapters={chapters} />
-        </TabPanel>
+        {!postsBlocked && (
+          <>
+            <TabPanel value="1" sx={{ px: 0 }}>
+              <UserPins
+                userId={profile.id}
+                initialPins={initialPins}
+                isOwnProfile={isOwnProfile}
+              />
+            </TabPanel>
+            <TabPanel value="2" sx={{ px: 0 }}>
+              <UserMaps maps={maps} isOwnProfile={isOwnProfile} />
+            </TabPanel>
+            <TabPanel value="3" sx={{ px: 0 }}>
+              <UserChapters chapters={chapters} />
+            </TabPanel>
+          </>
+        )}
       </TabContext>
 
       <EditProfileDialog
@@ -197,6 +271,13 @@ function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
         onClose={() => setReportDialogOpen(false)}
         moderatableType="User"
         moderatableId={profile.id}
+      />
+
+      <BlockUserDialog
+        open={blockDialogOpen}
+        loading={blockPending}
+        onClose={() => setBlockDialogOpen(false)}
+        onConfirm={handleBlockConfirm}
       />
     </>
   );

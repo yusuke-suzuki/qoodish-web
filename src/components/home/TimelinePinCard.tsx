@@ -22,9 +22,16 @@ import PinMenuButton from '../pins/PinMenuButton.tsx';
 type Props = {
   pin: Pin;
   onReportClick: (pin: Pin) => void;
+  onMuted: (authorId: number) => void;
+  onBlocked: (authorId: number) => void;
 };
 
-export default memo(function TimelinePinCard({ pin, onReportClick }: Props) {
+export default memo(function TimelinePinCard({
+  pin,
+  onReportClick,
+  onMuted,
+  onBlocked
+}: Props) {
   const dictionary = useDictionary();
   const localePath = useLocalePath();
 
@@ -39,6 +46,8 @@ export default memo(function TimelinePinCard({ pin, onReportClick }: Props) {
                 pin={pin}
                 currentProfile={profile}
                 onReportClick={onReportClick}
+                onMuted={onMuted}
+                onBlocked={onBlocked}
               />
             )}
           </ProfileBoundary>

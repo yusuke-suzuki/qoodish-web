@@ -65,6 +65,10 @@ export default memo(function Timeline({ initialPins }: Props) {
     });
   };
 
+  const removePinsByAuthor = (authorId: number) => {
+    setPins((prev) => prev.filter((pin) => pin.author.id !== authorId));
+  };
+
   const handleReportDialogClose = () => {
     setReportTarget({
       pinId: null,
@@ -95,6 +99,8 @@ export default memo(function Timeline({ initialPins }: Props) {
             key={pin.id}
             pin={pin}
             onReportClick={handleReportClick}
+            onMuted={removePinsByAuthor}
+            onBlocked={removePinsByAuthor}
           />
         ))}
 
