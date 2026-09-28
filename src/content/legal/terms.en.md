@@ -27,7 +27,7 @@ The terms used in these Terms are defined as follows.
    - Where the applicant has provided false information in the application
    - Where the application is from a person who has previously violated these Terms
    - Where we otherwise determine that the registration is not appropriate
-3. A user who is a minor shall use the Service with the consent of a parent or other legal representative. A minor who uses the Service by falsely stating that they have that consent, or that they are of age, may not rescind the juridical acts relating to that use.
+3. A user who is a minor shall use the Service with the consent of a parent or other legal representative. A minor who uses the Service by employing fraudulent means to make others believe that they have legal capacity, including by falsely stating that they have that consent or that they are of age, may not rescind the juridical acts relating to that use.
 
 ## Article 4 (Management of Accounts)
 
