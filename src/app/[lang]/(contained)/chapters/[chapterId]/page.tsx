@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import ChapterContent from '../../../../../components/chapters/ChapterContent.tsx';
 import ChapterReadView from '../../../../../components/chapters/ChapterReadView.tsx';
 import JsonLd from '../../../../../components/common/JsonLd.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
@@ -86,6 +87,7 @@ export default async function ChapterPage({ params }: Props) {
       <JsonLd data={chapterStructuredData(chapter, lang)} />
       <ChapterReadView
         chapter={chapter}
+        body={<ChapterContent content={chapter.content} />}
         map={map}
         authorJournal={authorJournal}
         authorPageCount={authorChapters.length}

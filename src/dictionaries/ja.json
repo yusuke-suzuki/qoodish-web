@@ -205,7 +205,6 @@
   "photos": "写真",
   "photo position": "{count} 枚中 {index} 枚目",
   "show photo": "{index} 枚目の写真を表示",
-  "chapter content unreadable": "このチャプターの本文を表示できませんでした。",
   "create map success": "地図を作成しました！",
   "edit map success": "地図を更新しました！",
   "edit profile success": "プロフィールを更新しました！",
