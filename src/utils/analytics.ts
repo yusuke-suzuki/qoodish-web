@@ -47,6 +47,7 @@ let loaded: Promise<LoadedAnalytics | null> | undefined;
 async function loadSupportedAnalytics(): Promise<LoadedAnalytics | null> {
   const sdk = await import('firebase/analytics');
   if (!(await sdk.isSupported())) return null;
+  if (!hasAnalyticsCookie(document.cookie)) return null;
 
   const instance = sdk.initializeAnalytics(getApp(), {
     config: { send_page_view: false }
@@ -58,7 +59,10 @@ async function send(event: AnalyticsEvent) {
   loaded ??= loadSupportedAnalytics();
   const analytics = await loaded;
 
-  if (!analytics) return;
+  if (!analytics) {
+    if (!hasAnalyticsCookie(document.cookie)) loaded = undefined;
+    return;
+  }
 
   const { sdk, instance } = analytics;
   const allowed = hasAnalyticsCookie(document.cookie);
