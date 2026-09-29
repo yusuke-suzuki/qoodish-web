@@ -3,7 +3,6 @@ import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 import { useParams } from 'next/navigation';
 import { type FormEvent, memo, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 import EmailField from '../common/EmailField.tsx';
 
 function SignInWithEmailLinkButton() {
@@ -64,8 +63,6 @@ function SignInWithEmailLinkButton() {
         await sendSignInLinkToEmail(auth, email, actionCodeSettings);
         window.localStorage.setItem('emailForSignIn', email);
         setSent(true);
-
-        trackEvent({ name: 'email_link_sent' });
       } catch (err) {
         console.error(err);
         const errorMessage = getErrorMessage((err as { code: string }).code);

@@ -1,6 +1,7 @@
 'use server';
 
 import { apiFetch } from '../lib/api.ts';
+import { recordEvent } from '../lib/events.ts';
 
 type ActionResult = {
   success: boolean;
@@ -17,6 +18,11 @@ export async function bookmarkJournal(
   if (error) {
     return { success: false, error };
   }
+
+  recordEvent({
+    name: 'follow',
+    params: { content_type: 'journal', item_id: journalId }
+  });
 
   return { success: true };
 }

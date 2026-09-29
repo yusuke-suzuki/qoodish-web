@@ -1,6 +1,7 @@
 'use server';
 
 import { apiFetch } from '../lib/api.ts';
+import { recordEvent } from '../lib/events.ts';
 
 type ActionResult = {
   success: boolean;
@@ -15,6 +16,11 @@ export async function bookmarkMap(mapId: number): Promise<ActionResult> {
   if (error) {
     return { success: false, error };
   }
+
+  recordEvent({
+    name: 'follow',
+    params: { content_type: 'map', item_id: mapId }
+  });
 
   return { success: true };
 }

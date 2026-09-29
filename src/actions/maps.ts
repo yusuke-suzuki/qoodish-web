@@ -3,6 +3,7 @@
 import type { AppMap } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { MAPS_TAG, mapTag, userTag } from '../lib/cacheTags.ts';
+import { recordEvent } from '../lib/events.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type CreateMapParams = {
@@ -35,6 +36,10 @@ export async function createMap(
   }
 
   revalidateTags([MAPS_TAG, data && userTag(data.author.id)]);
+
+  if (data) {
+    recordEvent({ name: 'create_map', params: { map_id: data.id } });
+  }
 
   return { success: true, data };
 }

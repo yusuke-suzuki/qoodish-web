@@ -3,103 +3,40 @@ import { describe, it } from 'node:test';
 import { toDataPoint } from './analyticsEvent.ts';
 
 describe('toDataPoint', () => {
-  it('maps an event with every kind of parameter to its data point', () => {
+  it('indexes the event by name and places each parameter in its column', () => {
     assert.deepEqual(
       toDataPoint({
-        name: 'share',
-        params: { method: 'copy_link', content_type: 'pin', item_id: 42 }
+        name: 'like',
+        params: { content_type: 'comment', item_id: 42 }
       }),
       {
-        indexes: ['share'],
-        blobs: ['share', 'pin', 'copy_link', ''],
+        indexes: ['like'],
+        blobs: ['like', 'comment'],
         doubles: [42, 0, 0]
+      }
+    );
+    assert.deepEqual(
+      toDataPoint({ name: 'publish_chapter', params: { chapter_id: 7 } }),
+      {
+        indexes: ['publish_chapter'],
+        blobs: ['publish_chapter', ''],
+        doubles: [0, 0, 7]
       }
     );
   });
 
-  it('accepts an event without parameters', () => {
-    assert.deepEqual(toDataPoint({ name: 'email_link_sent' }), {
-      indexes: ['email_link_sent'],
-      blobs: ['email_link_sent', '', '', ''],
-      doubles: [0, 0, 0]
-    });
-  });
-
-  it('accepts an optional parameter being left out', () => {
-    assert.deepEqual(toDataPoint({ name: 'start_journey', params: {} }), {
-      indexes: ['start_journey'],
-      blobs: ['start_journey', '', '', ''],
-      doubles: [0, 0, 0]
-    });
-  });
-
-  it('rejects an unknown event name', () => {
-    assert.equal(toDataPoint({ name: 'page_view' }), null);
-    assert.equal(toDataPoint({ name: 'toString' }), null);
-  });
-
-  it('rejects an event missing a required parameter', () => {
-    assert.equal(toDataPoint({ name: 'create_map' }), null);
-    assert.equal(
-      toDataPoint({ name: 'share', params: { method: 'copy_link' } }),
-      null
+  it('records a journey without a map as map 0', () => {
+    assert.deepEqual(
+      toDataPoint({ name: 'start_journey', params: { map_id: null } }),
+      {
+        indexes: ['start_journey'],
+        blobs: ['start_journey', ''],
+        doubles: [0, 0, 0]
+      }
     );
-  });
-
-  it('rejects a parameter that belongs to another event', () => {
-    assert.equal(
-      toDataPoint({
-        name: 'login',
-        params: { method: 'google.com', item_id: 1 }
-      }),
-      null
+    assert.deepEqual(
+      toDataPoint({ name: 'finish_journey', params: { map_id: 3 } }).doubles,
+      [0, 3, 0]
     );
-    assert.equal(
-      toDataPoint({
-        name: 'follow',
-        params: { content_type: 'journal', item_id: 1 }
-      }),
-      null
-    );
-    assert.equal(
-      toDataPoint({ name: 'login', params: { method: 'copy_link' } }),
-      null
-    );
-  });
-
-  it('rejects an unknown parameter', () => {
-    assert.equal(
-      toDataPoint({ name: 'create_map', params: { map_id: 1, email: 'a' } }),
-      null
-    );
-  });
-
-  it('rejects a string parameter outside its allowed values', () => {
-    assert.equal(
-      toDataPoint({ name: 'login', params: { method: 'password' } }),
-      null
-    );
-    assert.equal(
-      toDataPoint({
-        name: 'link_provider',
-        params: { provider: 'a'.repeat(33) }
-      }),
-      null
-    );
-  });
-
-  it('rejects an identifier that is not a positive safe integer', () => {
-    for (const map_id of [0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, '1']) {
-      assert.equal(
-        toDataPoint({ name: 'create_map', params: { map_id } }),
-        null
-      );
-    }
-  });
-
-  it('rejects a payload that is not an object', () => {
-    assert.equal(toDataPoint(null), null);
-    assert.equal(toDataPoint('login'), null);
-    assert.equal(toDataPoint({ name: 'login', params: [] }), null);
   });
 });

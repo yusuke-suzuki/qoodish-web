@@ -98,7 +98,7 @@ The Service may transmit information about users from users' devices to external
   - Our purpose of use: providing features relating to maps, routes, and location information
   - The recipient's purpose of use: as set out in the privacy policy established by Google LLC
 
-In addition, to analyze how the Service is used and to improve its quality, the Service sends the fact that an action such as creating a map, posting a comment, or signing in took place, together with the type of action and the identification number of the map, post, or other item concerned, to the Service's own servers, where it is aggregated. This information contains no identifier of the user, no cookies, and no IP address.
+In addition, to analyze how the Service is used and to improve its quality, the Service's servers record the fact that an action such as creating a map or posting a comment took place, together with the type of action and the identification number of the map, post, or other item concerned, and aggregate it. This information contains no identifier of the user, no cookies, and no IP address.
 
 The Service uses cookies to maintain the authentication state and otherwise to provide the Service. Users may refuse to accept cookies through their browser settings, but in that case some features of the Service may not be available.
 

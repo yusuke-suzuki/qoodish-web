@@ -3,6 +3,7 @@
 import type { ContentRef } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { cacheTagFor, commentsPath } from '../lib/contentRefs.ts';
+import { recordEvent } from '../lib/events.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
@@ -24,6 +25,10 @@ export async function createComment(
   }
 
   revalidateTags([cacheTagFor(subject)]);
+  recordEvent({
+    name: 'add_comment',
+    params: { content_type: subject.type, item_id: subject.id }
+  });
 
   return { success: true };
 }

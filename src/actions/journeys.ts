@@ -2,6 +2,7 @@
 
 import type { Journey, JourneyCheckin, Milestone } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { recordEvent } from '../lib/events.ts';
 
 type ActionResult<T = null> = {
   success: boolean;
@@ -37,6 +38,10 @@ export async function startJourney(
     return { success: false, error };
   }
 
+  if (data) {
+    recordEvent({ name: 'start_journey', params: { map_id: data.map_id } });
+  }
+
   return { success: true, data };
 }
 
@@ -54,6 +59,10 @@ export async function finishJourney(
 
   if (error) {
     return { success: false, error };
+  }
+
+  if (data) {
+    recordEvent({ name: 'finish_journey', params: { map_id: data.map_id } });
   }
 
   return { success: true, data };
