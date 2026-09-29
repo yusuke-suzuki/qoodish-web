@@ -73,6 +73,12 @@
       "simple": { "limit": 30, "period": 60 }
     }
   ],
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS_EVENTS",
+      "dataset": "prod_qoodish_web_events"
+    }
+  ],
   "vars": {
     "APP_ENV": "production",
     "API_ENDPOINT": "https://api.qoodish.com"
@@ -120,6 +126,12 @@
           "name": "IMAGE_UPLOAD_LIMIT",
           "namespace_id": "2002",
           "simple": { "limit": 30, "period": 60 }
+        }
+      ],
+      "analytics_engine_datasets": [
+        {
+          "binding": "ANALYTICS_EVENTS",
+          "dataset": "dev_qoodish_web_events"
         }
       ],
       "vars": {

@@ -25,7 +25,6 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
 import { createAppTheme } from '../../utils/theme.ts';
 import AccountProviders from './AccountProviders.tsx';
-import AnalyticsTracker from './AnalyticsTracker.tsx';
 
 const globalStyles = css`
   .pac-container {
@@ -153,7 +152,6 @@ export default function Providers({
               notificationsPromise={notificationsPromise}
             >
               <ServiceWorkerContext.Provider value={serviceWorkerValue}>
-                <AnalyticsTracker />
                 {children}
               </ServiceWorkerContext.Provider>
             </AccountProviders>

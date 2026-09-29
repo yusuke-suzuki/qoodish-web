@@ -13,6 +13,7 @@ import type { Pin } from '../../../types/index.ts';
 import { likePin, unlikePin } from '../../actions/pinLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 
 type Props = {
   pin: Pin;
@@ -43,6 +44,13 @@ export default memo(function LikePinButton({ pin, onSaved }: Props) {
           if (result.success) {
             const message = next ? 'liked!' : 'unliked';
             enqueueSnackbar(dictionary[message], { variant: 'info' });
+
+            if (next) {
+              trackEvent({
+                name: 'like',
+                params: { content_type: 'pin', item_id: pin.id }
+              });
+            }
 
             if (onSaved) {
               onSaved();

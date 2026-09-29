@@ -12,6 +12,7 @@ import type { ContentRef } from '../../../types/index.ts';
 import { createComment } from '../../actions/comments.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 import PosterAvatar from './PosterAvatar.tsx';
 
 type Props = {
@@ -41,6 +42,10 @@ const CommentForm = ({ subject, onCommentAdded, collapsedAction }: Props) => {
 
         if (result.success) {
           enqueueSnackbar(dictionary['added comment'], { variant: 'success' });
+          trackEvent({
+            name: 'add_comment',
+            params: { content_type: subject.type, item_id: subject.id }
+          });
 
           setActive(false);
           setComment('');

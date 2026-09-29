@@ -12,7 +12,6 @@ import {
   ListItemText,
   Typography
 } from '@mui/material';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
   type AuthError,
   EmailAuthProvider,
@@ -35,6 +34,7 @@ import {
 } from 'react';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
 import LinkEmailDialog from './LinkEmailDialog.tsx';
 import UnlinkProviderDialog from './UnlinkProviderDialog.tsx';
 
@@ -92,9 +92,9 @@ function ProvidersCard() {
         variant: 'success'
       });
 
-      const analytics = getAnalytics();
-      logEvent(analytics, 'link_provider', {
-        provider: GoogleAuthProvider.PROVIDER_ID
+      trackEvent({
+        name: 'link_provider',
+        params: { provider: GoogleAuthProvider.PROVIDER_ID }
       });
     } catch (error) {
       console.error(error);
@@ -137,9 +137,9 @@ function ProvidersCard() {
         variant: 'success'
       });
 
-      const analytics = getAnalytics();
-      logEvent(analytics, 'unlink_provider', {
-        provider: unlinkTargetProviderId
+      trackEvent({
+        name: 'unlink_provider',
+        params: { provider: unlinkTargetProviderId }
       });
     } catch (error) {
       console.error(error);
