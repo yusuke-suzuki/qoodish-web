@@ -20,9 +20,10 @@ import {
 import type { Notification, Profile } from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
 import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx';
+import DictionaryContext from '../../context/DictionaryContext.ts';
 import ServiceWorkerContext from '../../context/ServiceWorkerContext.ts';
-import useDictionary from '../../hooks/useDictionary.ts';
 import { usePushManager } from '../../hooks/usePushManager.ts';
+import type { Dictionary } from '../../utils/getDictionary.ts';
 import { createAppTheme } from '../../utils/theme.ts';
 import AccountProviders from './AccountProviders.tsx';
 
@@ -50,6 +51,7 @@ function activateWaitingWorker(
 type Props = {
   children: ReactNode;
   lang: string;
+  dictionary: Dictionary;
   serverAuthenticated: boolean;
   serverPending: boolean;
   serverUid?: string;
@@ -60,14 +62,13 @@ type Props = {
 export default function Providers({
   children,
   lang,
+  dictionary,
   serverAuthenticated,
   serverPending,
   serverUid,
   profilePromise,
   notificationsPromise
 }: Props) {
-  const dictionary = useDictionary();
-
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration>(null);
 
@@ -132,31 +133,33 @@ export default function Providers({
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {inputGlobalStyles}
-        <SnackbarProvider
-          preventDuplicate
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          action={(snackbarId) => (
-            <Button onClick={() => closeSnackbar(snackbarId)}>
-              {dictionary.close}
-            </Button>
-          )}
-        >
-          <ClientErrorReporter />
-          <AuthProvider
-            serverAuthenticated={serverAuthenticated}
-            serverPending={serverPending}
-            serverUid={serverUid ?? null}
+        <DictionaryContext.Provider value={dictionary}>
+          <SnackbarProvider
+            preventDuplicate
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            action={(snackbarId) => (
+              <Button onClick={() => closeSnackbar(snackbarId)}>
+                {dictionary.close}
+              </Button>
+            )}
           >
-            <AccountProviders
-              profilePromise={profilePromise}
-              notificationsPromise={notificationsPromise}
+            <ClientErrorReporter />
+            <AuthProvider
+              serverAuthenticated={serverAuthenticated}
+              serverPending={serverPending}
+              serverUid={serverUid ?? null}
             >
-              <ServiceWorkerContext.Provider value={serviceWorkerValue}>
-                {children}
-              </ServiceWorkerContext.Provider>
-            </AccountProviders>
-          </AuthProvider>
-        </SnackbarProvider>
+              <AccountProviders
+                profilePromise={profilePromise}
+                notificationsPromise={notificationsPromise}
+              >
+                <ServiceWorkerContext.Provider value={serviceWorkerValue}>
+                  {children}
+                </ServiceWorkerContext.Provider>
+              </AccountProviders>
+            </AuthProvider>
+          </SnackbarProvider>
+        </DictionaryContext.Provider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );

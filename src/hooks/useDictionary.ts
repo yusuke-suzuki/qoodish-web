@@ -1,17 +1,7 @@
-import { useParams } from 'next/navigation';
-
-type Dictionary = { [key: string]: string };
-
-const en = require('../dictionaries/en.json');
-const ja = require('../dictionaries/ja.json');
-
-const dictionaries: { [locale: string]: Dictionary } = {
-  en,
-  ja
-};
+import { useContext } from 'react';
+import DictionaryContext from '../context/DictionaryContext.ts';
+import type { Dictionary } from '../utils/getDictionary.ts';
 
 export default function useDictionary(): Dictionary {
-  const params = useParams<{ lang: string }>();
-
-  return dictionaries[params?.lang] ?? dictionaries.en;
+  return useContext(DictionaryContext);
 }
