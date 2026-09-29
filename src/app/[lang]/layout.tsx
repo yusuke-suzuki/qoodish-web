@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import type { ReactNode } from 'react';
 import type { Notification, Profile } from '../../../types/index.ts';
 import JsonLd from '../../components/common/JsonLd.tsx';
@@ -12,6 +13,8 @@ import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import { siteStructuredData } from '../../utils/structuredData.ts';
 import { fontVariables } from '../fonts.ts';
 import Providers from './Providers.tsx';
+
+const WEB_ANALYTICS_TOKEN = process.env.NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN;
 
 type Props = {
   children: ReactNode;
@@ -92,10 +95,6 @@ export default async function RootLayout({ children, params }: Props) {
       <head>
         <link href="https://www.googleapis.com" rel="preconnect dns-prefetch" />
         <link
-          href="https://www.google-analytics.com"
-          rel="preconnect dns-prefetch"
-        />
-        <link
           href="https://storage.cloud.google.com"
           rel="preconnect dns-prefetch"
         />
@@ -124,6 +123,13 @@ export default async function RootLayout({ children, params }: Props) {
             <Shell>{children}</Shell>
           </ShellProvider>
         </Providers>
+        {WEB_ANALYTICS_TOKEN && (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: WEB_ANALYTICS_TOKEN })}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

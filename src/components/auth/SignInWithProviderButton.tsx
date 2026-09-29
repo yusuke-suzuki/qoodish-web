@@ -1,8 +1,8 @@
 import { Button, type SxProps } from '@mui/material';
-import { getAnalytics, logEvent } from 'firebase/analytics';
 import {
   type AuthError,
-  type GoogleAuthProvider,
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
   getAuth,
   signInWithPopup
 } from 'firebase/auth';
@@ -10,6 +10,8 @@ import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { memo, type ReactNode, useCallback, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
+import { trackEvent } from '../../utils/analytics.ts';
+import { authEvent } from '../../utils/authEvent.ts';
 
 type Props = {
   provider: GoogleAuthProvider;
@@ -38,7 +40,7 @@ function SignInWithProviderButton({
     auth.languageCode = lang;
 
     try {
-      await signInWithPopup(auth, provider);
+      const credential = await signInWithPopup(auth, provider);
 
       enqueueSnackbar(dictionary['sign in success'], {
         variant: 'success'
@@ -46,10 +48,12 @@ function SignInWithProviderButton({
 
       onSignInSuccess();
 
-      const analytics = getAnalytics();
-      logEvent(analytics, 'login', {
-        provider: provider.providerId
-      });
+      trackEvent(
+        authEvent(
+          getAdditionalUserInfo(credential)?.isNewUser ?? false,
+          GoogleAuthProvider.PROVIDER_ID
+        )
+      );
     } catch (error) {
       console.error(error);
 

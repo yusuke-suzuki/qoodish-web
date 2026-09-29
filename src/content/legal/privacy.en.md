@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: September 23, 2026
+Last updated: September 29, 2026
 
 The operator of "Qoodish" (the "Service") ("we," "us," or "our") establishes this Privacy Policy (this "Policy") regarding the handling of users' personal information in the Service.
 
@@ -73,8 +73,8 @@ We will not provide personal data to any third party without obtaining the prior
 
 We may entrust all or part of the handling of personal data to external service providers within the scope necessary to achieve the purposes of use. In such cases, we exercise necessary and appropriate supervision over those providers. The principal external providers used by the Service are as follows.
 
-- Google LLC (provision of Google Cloud Identity Platform, Firebase Cloud Messaging, Google Analytics for Firebase, and Google Maps Platform)
-- Cloudflare, Inc. (hosting of the Service, the storage and delivery of images, and the sending of email)
+- Google LLC (provision of Google Cloud Identity Platform, Firebase Cloud Messaging, and Google Maps Platform)
+- Cloudflare, Inc. (hosting of the Service, the storage and delivery of images, the sending of email, and access analysis)
 
 ## Article 8 (Provision to Third Parties in Foreign Countries)
 
@@ -89,16 +89,18 @@ Among the external providers set out in the preceding Article, Google LLC and Cl
 
 The Service may transmit information about users from users' devices to external providers. The content of the information transmitted, the recipients, and the purposes of use are as follows.
 
-- Google Analytics for Firebase (recipient: Google LLC)
-  - Information transmitted: pages viewed, information about the device and browser, identifiers relating to usage, and the like
+- Cloudflare Web Analytics (recipient: Cloudflare, Inc.)
+  - Information transmitted: the URL of pages viewed, the referrer, information about the device and browser, information about page load performance, and the like. No cookies or other identifiers of the user are used.
   - Our purpose of use: analyzing how the Service is used and improving its quality
-  - The recipient's purpose of use: as set out in the privacy policy established by Google LLC
+  - The recipient's purpose of use: as set out in the privacy policy established by Cloudflare, Inc.
 - Google Maps Platform (recipient: Google LLC)
   - Information transmitted: communication information necessary to display maps and use location features, information relating to location, and the like
   - Our purpose of use: providing features relating to maps, routes, and location information
   - The recipient's purpose of use: as set out in the privacy policy established by Google LLC
 
-The Service uses cookies to maintain the authentication state and otherwise to provide the Service. Users may refuse to accept cookies through their browser settings, but in that case some features of the Service may not be available. To disable the collection of information by Google Analytics, please use the opt-out function provided by Google.
+In addition, to analyze how the Service is used and to improve its quality, the Service sends the fact that an action such as creating a map, posting a comment, or signing in took place, together with the type of action and the identification number of the map, post, or other item concerned, to the Service's own servers, where it is aggregated. This information contains no identifier of the user, no cookies, and no IP address.
+
+The Service uses cookies to maintain the authentication state and otherwise to provide the Service. Users may refuse to accept cookies through their browser settings, but in that case some features of the Service may not be available.
 
 ## Article 10 (Requests for Disclosure and the Like Regarding Retained Personal Data)
 
@@ -137,5 +139,6 @@ For inquiries regarding this Policy, please contact the following.
 
 ## Revision history
 
+- Revised September 29, 2026: replaced Google Analytics for Firebase with Cloudflare Web Analytics and the Service's own aggregation for access analysis, and revised Articles 7 and 9 accordingly.
 - Revised September 23, 2026: added the information handled for reports of Posted Content and the purposes of its use, and added the sending of email to what is entrusted to Cloudflare, Inc.
 - Revised August 24, 2026
