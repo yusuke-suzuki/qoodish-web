@@ -13,6 +13,7 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useRef } from 'react';
+import { emailLinkFlow } from '../utils/emailLinkFlow.ts';
 import useDictionary from './useDictionary.ts';
 
 type Dictionary = { [key: string]: string };
@@ -124,20 +125,22 @@ export default function useEmailLinkHandler({ isLoading }: Args) {
     if (!isSignInWithEmailLink(auth, currentUrl)) return;
 
     const firebaseUser = auth.currentUser;
+    const flow = emailLinkFlow(window.localStorage, Boolean(firebaseUser));
 
-    if (window.localStorage.getItem('reauthForEmailChange') === 'true') {
-      if (firebaseUser) {
-        handledRef.current = true;
+    if (!flow) return;
+
+    handledRef.current = true;
+
+    switch (flow) {
+      case 'changeEmail':
         reauthAndChangeEmail(firebaseUser, currentUrl, basePath, dictionary);
-      }
-    } else if (window.localStorage.getItem('linkProvider') === 'true') {
-      if (firebaseUser) {
-        handledRef.current = true;
+        break;
+      case 'linkProvider':
         linkEmailProvider(firebaseUser, currentUrl, dictionary);
-      }
-    } else {
-      handledRef.current = true;
-      completeEmailSignIn(auth, currentUrl, dictionary);
+        break;
+      case 'signIn':
+        completeEmailSignIn(auth, currentUrl, dictionary);
+        break;
     }
   }, [isLoading, basePath, dictionary]);
 }

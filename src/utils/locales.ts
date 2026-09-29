@@ -55,6 +55,17 @@ export function rememberedOrPreferredLocale(
     : preferredLocale(acceptLanguage);
 }
 
+export function splitLocalePath(pathname: string): {
+  locale: Locale | null;
+  path: string;
+} {
+  const segments = pathname.split('/').filter(Boolean);
+  const locale = isLocale(segments[0]) ? segments[0] : null;
+  const rest = locale ? segments.slice(1) : segments;
+
+  return { locale, path: rest.length > 0 ? `/${rest.join('/')}` : '' };
+}
+
 export function localePath(locale: string, path = ''): string {
   const normalized = path === '/' ? '' : path;
   return `/${toLocale(locale)}${normalized}`;

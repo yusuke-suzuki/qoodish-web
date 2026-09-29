@@ -7,6 +7,7 @@ import {
   pathLocale,
   preferredLocale,
   rememberedOrPreferredLocale,
+  splitLocalePath,
   toLocale
 } from './locales.ts';
 
@@ -109,5 +110,47 @@ describe('localePath', () => {
 
   it('normalizes unsupported locales to the default', () => {
     assert.equal(localePath('fr', '/maps/1'), '/en/maps/1');
+  });
+});
+
+describe('splitLocalePath', () => {
+  it('separates the locale from the rest of the path', () => {
+    assert.deepEqual(splitLocalePath('/ja/maps/1'), {
+      locale: 'ja',
+      path: '/maps/1'
+    });
+  });
+
+  it('answers an empty path for a locale root', () => {
+    assert.deepEqual(splitLocalePath('/en'), { locale: 'en', path: '' });
+    assert.deepEqual(splitLocalePath('/en/'), { locale: 'en', path: '' });
+  });
+
+  it('keeps an unprefixed path whole', () => {
+    assert.deepEqual(splitLocalePath('/discover'), {
+      locale: null,
+      path: '/discover'
+    });
+    assert.deepEqual(splitLocalePath('/'), { locale: null, path: '' });
+  });
+
+  it('drops empty segments so a switch never yields a double slash', () => {
+    assert.deepEqual(splitLocalePath('/ja//maps/'), {
+      locale: 'ja',
+      path: '/maps'
+    });
+  });
+
+  it('leaves a locale-like segment deeper in the path alone', () => {
+    assert.deepEqual(splitLocalePath('/users/ja'), {
+      locale: null,
+      path: '/users/ja'
+    });
+  });
+
+  it('round-trips through localePath into the other locale', () => {
+    const { path } = splitLocalePath('/ja/maps/1');
+
+    assert.equal(localePath('en', path), '/en/maps/1');
   });
 });
