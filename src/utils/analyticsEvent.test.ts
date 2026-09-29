@@ -25,8 +25,46 @@ describe('toDataPoint', () => {
     });
   });
 
+  it('accepts an optional parameter being left out', () => {
+    assert.deepEqual(toDataPoint({ name: 'start_journey', params: {} }), {
+      indexes: ['start_journey'],
+      blobs: ['start_journey', '', '', ''],
+      doubles: [0, 0, 0]
+    });
+  });
+
   it('rejects an unknown event name', () => {
     assert.equal(toDataPoint({ name: 'page_view' }), null);
+    assert.equal(toDataPoint({ name: 'toString' }), null);
+  });
+
+  it('rejects an event missing a required parameter', () => {
+    assert.equal(toDataPoint({ name: 'create_map' }), null);
+    assert.equal(
+      toDataPoint({ name: 'share', params: { method: 'copy_link' } }),
+      null
+    );
+  });
+
+  it('rejects a parameter that belongs to another event', () => {
+    assert.equal(
+      toDataPoint({
+        name: 'login',
+        params: { method: 'google.com', item_id: 1 }
+      }),
+      null
+    );
+    assert.equal(
+      toDataPoint({
+        name: 'follow',
+        params: { content_type: 'journal', item_id: 1 }
+      }),
+      null
+    );
+    assert.equal(
+      toDataPoint({ name: 'login', params: { method: 'copy_link' } }),
+      null
+    );
   });
 
   it('rejects an unknown parameter', () => {
