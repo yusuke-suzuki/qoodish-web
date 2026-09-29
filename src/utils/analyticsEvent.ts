@@ -38,69 +38,84 @@ export type AnalyticsDataPoint = {
   doubles: [number, number, number];
 };
 
-const EVENT_NAMES = new Set<string>([
-  'sign_up',
-  'login',
-  'email_link_sent',
-  'link_provider',
-  'unlink_provider',
-  'create_map',
-  'create_pin',
-  'start_journey',
-  'finish_journey',
-  'create_chapter',
-  'publish_chapter',
-  'add_comment',
-  'like',
-  'follow',
-  'share'
-]);
+type Check = (value: unknown) => boolean;
+type ParamShape = Record<string, Check>;
 
-const STRING_PARAMS: Record<string, (value: string) => boolean> = {
-  content_type: (value) =>
-    ['map', 'pin', 'chapter', 'comment', 'journal'].includes(value),
-  method: (value) => ['google.com', 'emailLink', 'copy_link'].includes(value),
-  provider: (value) => /^[\w.]{1,32}$/.test(value)
+const oneOf =
+  (...allowed: string[]): Check =>
+  (value) =>
+    typeof value === 'string' && allowed.includes(value);
+
+const id: Check = (value) =>
+  typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
+
+const providerId: Check = (value) =>
+  typeof value === 'string' && /^[\w.]{1,32}$/.test(value);
+
+const authMethod = oneOf('google.com', 'emailLink');
+
+const EVENT_SHAPES: Record<AnalyticsEvent['name'], ParamShape[]> = {
+  sign_up: [{ method: authMethod }],
+  login: [{ method: authMethod }],
+  email_link_sent: [{}],
+  link_provider: [{ provider: providerId }],
+  unlink_provider: [{ provider: providerId }],
+  create_map: [{ map_id: id }],
+  create_pin: [{ map_id: id }],
+  start_journey: [{ map_id: id }, {}],
+  finish_journey: [{ map_id: id }, {}],
+  create_chapter: [{ map_id: id }],
+  publish_chapter: [{ chapter_id: id }],
+  add_comment: [{ content_type: oneOf('pin', 'chapter'), item_id: id }],
+  like: [{ content_type: oneOf('pin', 'chapter', 'comment'), item_id: id }],
+  follow: [
+    { content_type: oneOf('map'), item_id: id },
+    { content_type: oneOf('journal') }
+  ],
+  share: [
+    {
+      method: oneOf('copy_link'),
+      content_type: oneOf('map', 'pin', 'chapter'),
+      item_id: id
+    }
+  ]
 };
 
-const NUMBER_PARAMS = ['item_id', 'map_id', 'chapter_id'] as const;
-
-function isId(value: unknown): value is number {
-  return typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function isValidParams(params: unknown): params is Record<string, unknown> {
-  if (typeof params !== 'object' || params === null || Array.isArray(params)) {
-    return false;
-  }
+function matchesShape(params: Record<string, unknown>, shape: ParamShape) {
+  const keys = Object.keys(params);
 
-  return Object.entries(params).every(([key, value]) => {
-    if (key in STRING_PARAMS) {
-      return typeof value === 'string' && STRING_PARAMS[key](value);
-    }
-    if ((NUMBER_PARAMS as readonly string[]).includes(key)) {
-      return isId(value);
-    }
-    return false;
-  });
+  return (
+    keys.length === Object.keys(shape).length &&
+    keys.every((key) => Object.hasOwn(shape, key) && shape[key](params[key]))
+  );
 }
 
 export function toDataPoint(payload: unknown): AnalyticsDataPoint | null {
-  if (typeof payload !== 'object' || payload === null) return null;
+  if (!isPlainObject(payload)) return null;
 
-  const { name, params = {} } = payload as { name?: unknown; params?: unknown };
+  const { name, params = {} } = payload;
 
-  if (typeof name !== 'string' || !EVENT_NAMES.has(name)) return null;
-  if (!isValidParams(params)) return null;
+  if (typeof name !== 'string' || !Object.hasOwn(EVENT_SHAPES, name)) {
+    return null;
+  }
+  if (!isPlainObject(params)) return null;
+
+  const shapes = EVENT_SHAPES[name as AnalyticsEvent['name']];
+
+  if (!shapes.some((shape) => matchesShape(params, shape))) return null;
 
   const text = (key: string) =>
     typeof params[key] === 'string' ? params[key] : '';
-  const id = (key: (typeof NUMBER_PARAMS)[number]) =>
-    isId(params[key]) ? params[key] : 0;
+  const number = (key: string) =>
+    typeof params[key] === 'number' ? params[key] : 0;
 
   return {
     indexes: [name],
     blobs: [name, text('content_type'), text('method'), text('provider')],
-    doubles: [id('item_id'), id('map_id'), id('chapter_id')]
+    doubles: [number('item_id'), number('map_id'), number('chapter_id')]
   };
 }
