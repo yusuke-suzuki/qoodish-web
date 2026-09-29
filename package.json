@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "biome ci ./src ./e2e ./synthetics/src ./admin/src playwright.config.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"src/**/*.test.ts\"",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-test-module-mocks --test \"src/**/*.test.ts\"",
     "e2e": "playwright test",
     "preview": "opennextjs-cloudflare preview --env dev",
     "cf:build": "opennextjs-cloudflare build",
