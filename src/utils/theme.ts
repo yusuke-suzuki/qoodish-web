@@ -1,24 +1,43 @@
 import { createTheme } from '@mui/material';
 import { amber, lightBlue } from '@mui/material/colors';
 import { enUS, jaJP } from '@mui/material/locale';
+import { DARK_BACKGROUND } from './brand.ts';
 
 export function createAppTheme(lang: string) {
   const locale = lang === 'ja' ? jaJP : enUS;
 
   return createTheme(
     {
-      palette: {
-        // Only main is named, so that light, dark and contrastText are
-        // derived from it: this amber reads 1.79:1 against white, and MUI
-        // answers with dark text on it at 11.70:1. Naming white here instead
-        // would put 1.79:1 type on every button.
-        primary: {
-          main: amber[600]
+      cssVariables: true,
+      colorSchemes: {
+        light: {
+          palette: {
+            // Only main is named, so that light, dark and contrastText are
+            // derived from it: this amber reads 1.79:1 against white, and MUI
+            // answers with dark text on it at 11.70:1. Naming white here
+            // instead would put 1.79:1 type on every button.
+            primary: {
+              main: amber[600]
+            },
+            // 800 rather than 500, which carried a white label at only 2.63:1;
+            // this takes one at 4.80:1.
+            secondary: {
+              main: lightBlue[800]
+            }
+          }
         },
-        // 800 rather than 500, which carried a white label at only 2.63:1;
-        // this takes one at 4.80:1.
-        secondary: {
-          main: lightBlue[800]
+        dark: {
+          palette: {
+            primary: {
+              main: amber[600]
+            },
+            secondary: {
+              main: lightBlue[300]
+            },
+            background: {
+              default: DARK_BACKGROUND
+            }
+          }
         }
       },
       shape: {

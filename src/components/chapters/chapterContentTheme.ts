@@ -33,69 +33,73 @@ export const chapterTheme = {
   }
 } satisfies EditorThemeClasses;
 
-export const chapterContentStyles = (theme: Theme) => ({
-  '& .journal-paragraph': {
-    margin: 0,
-    marginBottom: theme.spacing(2),
-    whiteSpace: 'pre-wrap'
-  },
-  '& .journal-h2': {
-    ...theme.typography.h5,
-    margin: 0,
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(1.5)
-  },
-  '& .journal-h3': {
-    ...theme.typography.h6,
-    margin: 0,
-    marginTop: theme.spacing(2.5),
-    marginBottom: theme.spacing(1)
-  },
-  '& .journal-quote': {
-    margin: 0,
-    marginBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    borderLeft: `4px solid ${theme.palette.divider}`,
-    color: theme.palette.text.secondary,
-    fontStyle: 'italic'
-  },
-  '& .journal-ul, & .journal-ol': {
-    margin: 0,
-    marginBottom: theme.spacing(2),
-    paddingLeft: theme.spacing(3)
-  },
-  '& .journal-li': {
-    marginBottom: theme.spacing(0.5)
-  },
-  '& .journal-nested-li': {
-    listStyleType: 'none'
-  },
-  '& .journal-hr': {
-    border: 'none',
-    borderTop: `1px solid ${theme.palette.divider}`,
-    margin: theme.spacing(3, 0)
-  },
-  '& .journal-block-placeholder': {
-    position: 'relative'
-  },
-  '& .journal-block-placeholder::before': {
-    content: 'attr(data-placeholder)',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    color: theme.palette.text.disabled,
-    pointerEvents: 'none'
-  },
-  '& .journal-link': {
-    color: theme.palette.primary.main,
-    textDecoration: 'underline',
-    cursor: 'pointer'
-  },
-  '& .journal-bold': { fontWeight: 700 },
-  '& .journal-italic': { fontStyle: 'italic' },
-  '& .journal-underline': { textDecoration: 'underline' },
-  '& .journal-strikethrough': { textDecoration: 'line-through' },
-  '& .journal-underline-strikethrough': {
-    textDecoration: 'underline line-through'
-  }
-});
+export const chapterContentStyles = (theme: Theme) => {
+  const { palette } = theme.vars ?? theme;
+
+  return {
+    '& .journal-paragraph': {
+      margin: 0,
+      marginBottom: theme.spacing(2),
+      whiteSpace: 'pre-wrap'
+    },
+    '& .journal-h2': {
+      ...theme.typography.h5,
+      margin: 0,
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(1.5)
+    },
+    '& .journal-h3': {
+      ...theme.typography.h6,
+      margin: 0,
+      marginTop: theme.spacing(2.5),
+      marginBottom: theme.spacing(1)
+    },
+    '& .journal-quote': {
+      margin: 0,
+      marginBottom: theme.spacing(2),
+      paddingLeft: theme.spacing(2),
+      borderLeft: `4px solid ${palette.divider}`,
+      color: palette.text.secondary,
+      fontStyle: 'italic'
+    },
+    '& .journal-ul, & .journal-ol': {
+      margin: 0,
+      marginBottom: theme.spacing(2),
+      paddingLeft: theme.spacing(3)
+    },
+    '& .journal-li': {
+      marginBottom: theme.spacing(0.5)
+    },
+    '& .journal-nested-li': {
+      listStyleType: 'none'
+    },
+    '& .journal-hr': {
+      border: 'none',
+      borderTop: `1px solid ${palette.divider}`,
+      margin: theme.spacing(3, 0)
+    },
+    '& .journal-block-placeholder': {
+      position: 'relative'
+    },
+    '& .journal-block-placeholder::before': {
+      content: 'attr(data-placeholder)',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      color: palette.text.disabled,
+      pointerEvents: 'none'
+    },
+    '& .journal-link': {
+      color: palette.primary.main,
+      textDecoration: 'underline',
+      cursor: 'pointer'
+    },
+    '& .journal-bold': { fontWeight: 700 },
+    '& .journal-italic': { fontStyle: 'italic' },
+    '& .journal-underline': { textDecoration: 'underline' },
+    '& .journal-strikethrough': { textDecoration: 'line-through' },
+    '& .journal-underline-strikethrough': {
+      textDecoration: 'underline line-through'
+    }
+  };
+};

@@ -6,7 +6,7 @@ import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
-import { BRAND_COLOR } from '../../utils/brand.ts';
+import { THEME_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import { siteStructuredData } from '../../utils/structuredData.ts';
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export const viewport: Viewport = {
-  themeColor: BRAND_COLOR,
+  themeColor: THEME_COLOR,
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',

@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
-import { BRAND_COLOR, BRAND_COLOR_CONTRAST } from '../utils/brand.ts';
+import {
+  BRAND_COLOR,
+  BRAND_COLOR_CONTRAST,
+  DARK_BACKGROUND
+} from '../utils/brand.ts';
 import {
   isLocale,
   LOCALE_COOKIE,
@@ -43,7 +47,16 @@ export default async function GlobalNotFound() {
   return (
     <html lang={lang}>
       <head>
-        <meta name="theme-color" content={BRAND_COLOR} />
+        <meta
+          name="theme-color"
+          media="(prefers-color-scheme: light)"
+          content={BRAND_COLOR}
+        />
+        <meta
+          name="theme-color"
+          media="(prefers-color-scheme: dark)"
+          content={DARK_BACKGROUND}
+        />
       </head>
       <body
         style={{
@@ -54,8 +67,9 @@ export default async function GlobalNotFound() {
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '100vh',
-          backgroundColor: '#fafafa',
-          color: '#333'
+          colorScheme: 'light dark',
+          backgroundColor: `light-dark(#fafafa, ${DARK_BACKGROUND})`,
+          color: 'light-dark(#333, #e0e0e0)'
         }}
       >
         <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -63,7 +77,11 @@ export default async function GlobalNotFound() {
             {m.title}
           </h1>
           <p
-            style={{ fontSize: '1rem', color: '#666', marginBottom: '1.5rem' }}
+            style={{
+              fontSize: '1rem',
+              color: 'light-dark(#666, #aaa)',
+              marginBottom: '1.5rem'
+            }}
           >
             {m.description}
           </p>

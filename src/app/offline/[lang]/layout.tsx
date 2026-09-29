@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import OfflineProviders from '../../../components/offline/OfflineProviders.tsx';
-import { BRAND_COLOR } from '../../../utils/brand.ts';
+import { THEME_COLOR } from '../../../utils/brand.ts';
 import { getDictionary } from '../../../utils/getDictionary.ts';
 import { LOCALES } from '../../../utils/locales.ts';
 import { fontVariables } from '../../fonts.ts';
@@ -18,7 +18,7 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: BRAND_COLOR,
+  themeColor: THEME_COLOR,
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover'

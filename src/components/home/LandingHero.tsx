@@ -63,7 +63,7 @@ export default memo(function LandingHero() {
                     px: 4,
                     py: 1.25,
                     bgcolor: 'common.white',
-                    color: 'text.primary',
+                    color: 'grey.900',
                     '&:hover': { bgcolor: 'grey.200' }
                   }}
                 >
