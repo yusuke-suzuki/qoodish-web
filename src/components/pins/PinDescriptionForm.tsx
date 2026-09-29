@@ -5,7 +5,7 @@ import useDictionary from '../../hooks/useDictionary.ts';
 const MAX_LENGTH = 500;
 
 type Props = {
-  onChange: (comment: string | null) => void;
+  onChange: (comment: string) => void;
   defaultValue?: string | null;
 };
 
@@ -24,7 +24,7 @@ function PinDescriptionForm({ onChange, defaultValue }: Props) {
       if (input.length > MAX_LENGTH) {
         setError(dictionary['max characters 500']);
       } else {
-        setError(null);
+        setError(undefined);
       }
     } else {
       setError(dictionary['comment is required']);

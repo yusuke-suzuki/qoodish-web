@@ -31,8 +31,7 @@ function RailItem({ destination }: { destination: NavDestination }) {
     <ListItemButton
       selected={destination.selected}
       disabled={destination.disabled}
-      LinkComponent={destination.href ? Link : 'button'}
-      href={destination.href}
+      {...(destination.href && { LinkComponent: Link, href: destination.href })}
       title={destination.label}
       sx={{
         flexDirection: 'column',

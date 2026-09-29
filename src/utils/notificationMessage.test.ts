@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import en from '../dictionaries/en.json' with { type: 'json' };
-import ja from '../dictionaries/ja.json' with { type: 'json' };
+import enMessages from '../dictionaries/en.json' with { type: 'json' };
+import jaMessages from '../dictionaries/ja.json' with { type: 'json' };
 import { notificationMessageKey } from './notificationMessage.ts';
+
+const en: Record<string, string> = enMessages;
+const ja: Record<string, string> = jaMessages;
 
 const NOTIFIED_SUBJECTS: [key: string, notifiableType: string][] = [
   ['coauthor_invited', 'map'],

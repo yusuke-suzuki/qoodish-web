@@ -28,10 +28,14 @@ function RemoveBookmarkButton({ map, currentProfile, onSaved }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const isAuthor = useMemo(() => {
-    return currentProfile?.id === map.author.id;
+    return currentProfile?.id === map?.author.id;
   }, [map, currentProfile]);
 
   const handleClick = useCallback(() => {
+    if (!map) {
+      return;
+    }
+
     if (!authenticated) {
       setSignInRequired(true);
       return;
@@ -41,7 +45,7 @@ function RemoveBookmarkButton({ map, currentProfile, onSaved }: Props) {
 
     startTransition(async () => {
       try {
-        const result = await removeBookmark(map?.id);
+        const result = await removeBookmark(map.id);
 
         if (result.success) {
           onSaved();

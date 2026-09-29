@@ -4,12 +4,16 @@ import { registerDevice, unregisterDevice } from '../actions/devices.ts';
 import AuthContext from '../context/AuthContext.ts';
 
 export function usePushManager(registration: ServiceWorkerRegistration | null) {
-  const [subscription, setSubscription] = useState<PushSubscription>(null);
+  const [subscription, setSubscription] = useState<PushSubscription | null>(
+    null
+  );
 
   const { authenticated, isLoading, addSignOutCleanup } =
     useContext(AuthContext);
 
-  const [registrationToken, setRegistrationToken] = useState(null);
+  const [registrationToken, setRegistrationToken] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     if (!registrationToken) {
@@ -26,6 +30,10 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   }, [registrationToken, addSignOutCleanup]);
 
   const subscribe = async () => {
+    if (!registration) {
+      throw new Error('Service worker is not registered');
+    }
+
     const sub = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: process.env.NEXT_PUBLIC_VAPID_KEY
@@ -117,7 +125,7 @@ export function usePushManager(registration: ServiceWorkerRegistration | null) {
   }, [registrationToken, authenticated]);
 
   useEffect(() => {
-    if (!subscription || !authenticated) {
+    if (!subscription || !registration || !authenticated) {
       return;
     }
 

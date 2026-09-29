@@ -24,7 +24,7 @@ let loader: Loader | null = null;
 function getLoader(language: string): Loader {
   if (!loader) {
     loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
       version: 'beta',
       language
     });
@@ -34,11 +34,11 @@ function getLoader(language: string): Loader {
 }
 
 type Props = {
-  mapId: string;
+  mapId: string | undefined;
   children?: ReactNode;
   sx: SxProps;
   mapOptions?: Partial<google.maps.MapOptions>;
-  center?: google.maps.LatLngLiteral;
+  center?: google.maps.LatLngLiteral | null;
   zoom?: number;
 };
 

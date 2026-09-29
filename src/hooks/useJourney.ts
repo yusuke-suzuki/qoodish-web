@@ -95,7 +95,7 @@ type Args = {
   onPosition: (position: GeolocationPosition) => void;
   onLocationError: () => void;
   onPaused: (reason: PauseReason) => void;
-  onError: (message: string | null) => void;
+  onError: (message?: string | null) => void;
 };
 
 type FinishedJourney = {

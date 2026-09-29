@@ -86,7 +86,7 @@ function PinPopover({
           }
         />
         {pin && <PinImageCarousel key={pin.id} pin={pin} />}
-        <CardContent sx={{ pt: pin?.images.length > 0 ? 2 : 0, pb: 0 }}>
+        <CardContent sx={{ pt: (pin?.images.length ?? 0) > 0 ? 2 : 0, pb: 0 }}>
           <Typography variant="h6" gutterBottom>
             {pin?.name}
           </Typography>

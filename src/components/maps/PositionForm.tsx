@@ -8,7 +8,7 @@ import StaticMap from './StaticMap.tsx';
 
 type Props = {
   onChange: (position: google.maps.LatLngLiteral) => void;
-  defaultValue?: google.maps.LatLngLiteral;
+  defaultValue: google.maps.LatLngLiteral | null;
 };
 
 function PositionForm({ onChange, defaultValue }: Props) {
@@ -20,7 +20,9 @@ function PositionForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
   const handleSave = () => {
-    onChange(position);
+    if (position) {
+      onChange(position);
+    }
 
     setEditPosition(false);
   };

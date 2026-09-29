@@ -10,7 +10,7 @@ import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult<T = null> = {
   success: boolean;
-  data?: T;
+  data?: T | null;
   error?: string;
 };
 

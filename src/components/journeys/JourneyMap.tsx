@@ -27,6 +27,10 @@ const JourneySpotMarker = memo(function JourneySpotMarker({
   const [position, setPosition] = useState<google.maps.LatLng | null>(null);
 
   useEffect(() => {
+    if (!loader) {
+      return;
+    }
+
     let disposed = false;
 
     (async () => {

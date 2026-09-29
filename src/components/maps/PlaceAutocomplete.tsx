@@ -13,8 +13,8 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import {
-  type MutableRefObject,
   memo,
+  type RefObject,
   type SyntheticEvent,
   useRef,
   useState
@@ -25,7 +25,7 @@ import { formatDistanceMeters } from '../../utils/geo.ts';
 import { toLocale } from '../../utils/locales.ts';
 
 type Props = {
-  ref: MutableRefObject<HTMLInputElement>;
+  ref: RefObject<HTMLInputElement | null>;
   onChange: (place: google.maps.places.Place) => void;
   label: string;
   autoFocus?: boolean;

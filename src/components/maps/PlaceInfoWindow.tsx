@@ -39,7 +39,7 @@ function PlaceInfoWindow({
 
   return (
     <InfoWindow
-      position={place ? place.location : null}
+      position={place?.location ?? null}
       open={infoWindowOpen}
       onClose={handleClose}
     >

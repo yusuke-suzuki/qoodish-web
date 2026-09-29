@@ -45,7 +45,7 @@ type UpdatePinParams = CreatePinParams;
 
 type ActionResult<T = null> = {
   success: boolean;
-  data?: T;
+  data?: T | null;
   error?: string;
 };
 

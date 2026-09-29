@@ -56,7 +56,9 @@ export default function useChapter(initialChapter: Chapter) {
       return inFlight.request;
     }
 
-    const request = (async () => {
+    let request: Promise<boolean> | undefined;
+
+    request = (async () => {
       try {
         if (inFlight) {
           // A failed earlier save must not block this newer draft, so only

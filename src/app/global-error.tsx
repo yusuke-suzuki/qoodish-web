@@ -15,10 +15,12 @@ type Props = {
 
 const subscribe = () => () => {};
 
-const getBrowserLang = () =>
+type Lang = 'en' | 'ja';
+
+const getBrowserLang = (): Lang =>
   navigator.language.startsWith('ja') ? 'ja' : 'en';
 
-const getServerLang = () => 'en';
+const getServerLang = (): Lang => 'en';
 
 const messages = {
   en: {

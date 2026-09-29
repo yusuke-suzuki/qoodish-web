@@ -68,8 +68,10 @@ function AccountMenuButtonContent({ profile }: ContentProps) {
         onClose={() => setAnchorEl(null)}
       >
         <ListItemButton
-          LinkComponent={profile ? Link : 'button'}
-          href={profile ? localePath(`/users/${profile.id}`) : undefined}
+          {...(profile && {
+            LinkComponent: Link,
+            href: localePath(`/users/${profile.id}`)
+          })}
           disabled={!profile}
           onClick={handleLinkClick}
         >

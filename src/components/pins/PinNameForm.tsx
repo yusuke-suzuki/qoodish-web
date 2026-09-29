@@ -5,8 +5,8 @@ import useDictionary from '../../hooks/useDictionary.ts';
 const MAX_LENGTH = 30;
 
 type Props = {
-  onChange: (name: string | null) => void;
-  defaultValue?: string;
+  onChange: (name: string) => void;
+  defaultValue?: string | null;
 };
 
 function PinNameForm({ onChange, defaultValue }: Props) {
@@ -24,7 +24,7 @@ function PinNameForm({ onChange, defaultValue }: Props) {
       if (input.length > MAX_LENGTH) {
         setError(dictionary['max characters 30']);
       } else {
-        setError(null);
+        setError(undefined);
       }
     } else {
       setError(dictionary['name is required']);

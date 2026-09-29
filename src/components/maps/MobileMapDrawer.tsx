@@ -5,6 +5,7 @@ import {
   Divider,
   Skeleton,
   SwipeableDrawer,
+  type Theme,
   Typography
 } from '@mui/material';
 import { memo, useContext, useEffect, useState } from 'react';
@@ -98,7 +99,7 @@ function MobileMapDrawer({
       }}
       SwipeAreaProps={{
         sx: {
-          zIndex: (theme) => theme.zIndex.appBar - 2,
+          zIndex: (theme: Theme) => theme.zIndex.appBar - 2,
           display: { xs: 'block', md: 'none' }
         }
       }}

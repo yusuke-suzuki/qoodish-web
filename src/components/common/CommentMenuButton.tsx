@@ -40,7 +40,7 @@ export default memo(function CommentMenuButton({
   const handleDeleteClick = () => {
     setAnchorEl(null);
 
-    onDeleteClick(comment);
+    onDeleteClick?.(comment);
   };
 
   return (

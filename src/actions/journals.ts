@@ -5,7 +5,7 @@ import { apiFetch } from '../lib/api.ts';
 
 type ActionResult<T = null> = {
   success: boolean;
-  data?: T;
+  data?: T | null;
   error?: string;
 };
 

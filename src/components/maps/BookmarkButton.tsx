@@ -20,6 +20,10 @@ function BookmarkButton({ map, onSaved }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const handleClick = useCallback(() => {
+    if (!map) {
+      return;
+    }
+
     if (!authenticated) {
       setSignInRequired(true);
       return;
@@ -29,7 +33,7 @@ function BookmarkButton({ map, onSaved }: Props) {
 
     startTransition(async () => {
       try {
-        const result = await bookmarkMap(map?.id);
+        const result = await bookmarkMap(map.id);
 
         if (result.success) {
           onSaved();

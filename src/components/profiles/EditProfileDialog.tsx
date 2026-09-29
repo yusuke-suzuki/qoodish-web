@@ -85,7 +85,7 @@ export default memo(function EditProfileDialog({
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (!currentProfile) {
+      if (!currentProfile || !name) {
         enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });
         return;
       }

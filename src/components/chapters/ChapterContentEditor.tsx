@@ -82,7 +82,7 @@ function ChapterContentEditor({
             <ContentEditable
               className="journal-editor-input"
               aria-placeholder={placeholder}
-              placeholder={null}
+              placeholder={() => null}
             />
           }
           ErrorBoundary={LexicalErrorBoundary}
