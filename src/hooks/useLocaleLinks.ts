@@ -2,10 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import {
-  isLocale,
   LOCALES,
   type Locale,
-  localePath
+  localePath,
+  splitLocalePath
 } from '../utils/locales.ts';
 import useDictionary from './useDictionary.ts';
 
@@ -27,10 +27,7 @@ export default function useLocaleLinks(): LocaleLink[] {
   const pathname = usePathname();
   const dictionary = useDictionary();
 
-  const segments = pathname.split('/').filter(Boolean);
-  const current = isLocale(segments[0]) ? segments[0] : null;
-  const rest = current ? segments.slice(1) : segments;
-  const path = rest.length > 0 ? `/${rest.join('/')}` : '';
+  const { locale: current, path } = splitLocalePath(pathname);
 
   return LOCALES.map((locale) => ({
     locale,
