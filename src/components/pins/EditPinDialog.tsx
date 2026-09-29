@@ -101,8 +101,8 @@ export default memo(function EditPinDialog({
   );
 
   const handleExited = useCallback(() => {
-    setName(undefined);
-    setComment(undefined);
+    setName('');
+    setComment('');
     reset();
     setPosition(null);
   }, [reset]);

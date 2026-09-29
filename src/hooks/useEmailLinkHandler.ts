@@ -131,16 +131,17 @@ export default function useEmailLinkHandler({ isLoading }: Args) {
 
     handledRef.current = true;
 
-    switch (flow) {
-      case 'changeEmail':
-        reauthAndChangeEmail(firebaseUser, currentUrl, basePath, dictionary);
-        break;
-      case 'linkProvider':
-        linkEmailProvider(firebaseUser, currentUrl, dictionary);
-        break;
-      case 'signIn':
-        completeEmailSignIn(auth, currentUrl, dictionary);
-        break;
+    if (flow === 'signIn') {
+      completeEmailSignIn(auth, currentUrl, dictionary);
+      return;
+    }
+
+    if (!firebaseUser) return;
+
+    if (flow === 'changeEmail') {
+      reauthAndChangeEmail(firebaseUser, currentUrl, basePath, dictionary);
+    } else {
+      linkEmailProvider(firebaseUser, currentUrl, dictionary);
     }
   }, [isLoading, basePath, dictionary]);
 }

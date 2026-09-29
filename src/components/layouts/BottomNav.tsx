@@ -111,8 +111,10 @@ function BottomNavContent({ profile }: ContentProps) {
                   <ProfileAvatar profile={profile} size={22} />
                 </Box>
               }
-              LinkComponent={profile ? Link : 'button'}
-              href={profile ? localePath(`/users/${profile.id}`) : undefined}
+              {...(profile && {
+                LinkComponent: Link,
+                href: localePath(`/users/${profile.id}`)
+              })}
               disabled={!profile}
             />
           </BottomNavigation>

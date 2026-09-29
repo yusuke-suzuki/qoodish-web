@@ -7,13 +7,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import {
-  type MutableRefObject,
-  memo,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { memo, type RefObject, useEffect, useRef, useState } from 'react';
 import type { Pin } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
@@ -22,7 +16,7 @@ import MarkerView from './MarkerView.tsx';
 type Props = {
   pin: Pin;
   milestone?: 'planned' | 'visited';
-  onClick: (pin: Pin, ref: MutableRefObject<HTMLButtonElement>) => void;
+  onClick: (pin: Pin, ref: RefObject<HTMLButtonElement | null>) => void;
 };
 
 function PinMarker({ pin, milestone, onClick }: Props) {

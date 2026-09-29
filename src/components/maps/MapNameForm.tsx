@@ -5,7 +5,7 @@ import useDictionary from '../../hooks/useDictionary.ts';
 const MAX_LENGTH = 30;
 
 type Props = {
-  onChange: (description: string | undefined) => void;
+  onChange: (name: string) => void;
   defaultValue?: string | null;
 };
 
@@ -24,7 +24,7 @@ export default memo(function MapNameForm({ onChange, defaultValue }: Props) {
       if (input.length > MAX_LENGTH) {
         setError(dictionary['max characters 30']);
       } else {
-        setError(null);
+        setError(undefined);
       }
     } else {
       setError(dictionary['map name is required']);

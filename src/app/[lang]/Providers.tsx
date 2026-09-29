@@ -70,7 +70,7 @@ export default function Providers({
   notificationsPromise
 }: Props) {
   const [registration, setRegistration] =
-    useState<ServiceWorkerRegistration>(null);
+    useState<ServiceWorkerRegistration | null>(null);
 
   usePushManager(registration);
 

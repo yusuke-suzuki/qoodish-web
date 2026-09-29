@@ -1,7 +1,7 @@
 import type { PrecacheEntry, RuntimeCaching } from 'serwist';
 import { NetworkOnly, Serwist, StaleWhileRevalidate } from 'serwist';
-import en from '../dictionaries/en.json';
-import ja from '../dictionaries/ja.json';
+import enMessages from '../dictionaries/en.json';
+import jaMessages from '../dictionaries/ja.json';
 import { LOCALES } from '../utils/locales.ts';
 import { notificationMessageKey } from '../utils/notificationMessage.ts';
 import { offlinePath, offlinePathFor } from '../utils/offline.ts';
@@ -9,6 +9,9 @@ import { offlinePath, offlinePathFor } from '../utils/offline.ts';
 declare const self: ServiceWorkerGlobalScope & {
   __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
 };
+
+const en: Record<string, string> = enMessages;
+const ja: Record<string, string> = jaMessages;
 
 const I18n = {
   _locale: 'en',

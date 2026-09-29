@@ -94,9 +94,7 @@ function CheckinNoteField({ checkin, onSave }: Props) {
       slotProps={{
         input: {
           disableUnderline: true,
-          sx: (theme) => ({
-            ...theme.typography.body2
-          })
+          sx: { typography: 'body2' }
         },
         htmlInput: {
           'aria-label': dictionary['checkin note placeholder'],

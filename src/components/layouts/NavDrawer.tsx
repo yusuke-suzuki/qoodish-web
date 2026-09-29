@@ -117,8 +117,10 @@ function NavDrawerContent({
             selected={destination.selected}
             disabled={destination.disabled}
             onClick={onClose}
-            LinkComponent={destination.href ? Link : 'button'}
-            href={destination.href}
+            {...(destination.href && {
+              LinkComponent: Link,
+              href: destination.href
+            })}
             title={destination.label}
           >
             <ListItemIcon>

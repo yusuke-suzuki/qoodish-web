@@ -19,7 +19,7 @@ type UpdateMapParams = CreateMapParams;
 
 type ActionResult<T = null> = {
   success: boolean;
-  data?: T;
+  data?: T | null;
   error?: string;
 };
 

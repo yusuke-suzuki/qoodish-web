@@ -5,7 +5,7 @@ import useDictionary from '../../hooks/useDictionary.ts';
 const MAX_LENGTH = 200;
 
 type Props = {
-  onChange: (description: string | undefined) => void;
+  onChange: (description: string) => void;
   defaultValue?: string | undefined;
 };
 
@@ -27,7 +27,7 @@ export default memo(function MapDescriptionForm({
       if (input.length > MAX_LENGTH) {
         setError(dictionary['max characters 200']);
       } else {
-        setError(null);
+        setError(undefined);
       }
     } else {
       setError(dictionary['description is required']);

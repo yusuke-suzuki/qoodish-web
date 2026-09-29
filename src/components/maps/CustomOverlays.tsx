@@ -1,12 +1,6 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  type MutableRefObject,
-  memo,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { memo, type RefObject, useEffect, useRef, useState } from 'react';
 import type { AppMap, Pin } from '../../../types/index.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -90,7 +84,7 @@ function CustomOverlays({
 
   const handlePinClick = (
     pin: Pin,
-    ref: MutableRefObject<HTMLButtonElement>
+    ref: RefObject<HTMLButtonElement | null>
   ) => {
     setCurrentPin(pin);
     onPinClick(pin);
@@ -178,7 +172,7 @@ function CustomOverlays({
   const lastSyncedPlaceRef = useRef<google.maps.places.Place | null>(null);
 
   useEffect(() => {
-    if (!googleMap || !map || !currentPlace) return;
+    if (!googleMap || !map || !currentPlace?.location) return;
     if (lastSyncedPlaceRef.current === currentPlace) return;
 
     lastSyncedPlaceRef.current = currentPlace;

@@ -40,7 +40,9 @@ export function isInactive(
   lastPositionAt: number | null,
   now: number
 ): boolean {
-  return Boolean(lastPositionAt) && now - lastPositionAt >= INACTIVITY_PAUSE_MS;
+  if (!lastPositionAt) return false;
+
+  return now - lastPositionAt >= INACTIVITY_PAUSE_MS;
 }
 
 export function isEmptyPlan(journey: Journey): boolean {

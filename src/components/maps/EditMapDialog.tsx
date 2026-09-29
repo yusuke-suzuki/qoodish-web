@@ -29,7 +29,7 @@ import PositionForm from './PositionForm.tsx';
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSaved: (map: AppMap) => void;
+  onSaved: () => void;
   currentMap: AppMap | null;
 };
 
@@ -116,7 +116,7 @@ export default memo(function EditMapDialog({
             });
 
             onClose();
-            onSaved(result.data);
+            onSaved();
             return;
           }
 
@@ -144,8 +144,8 @@ export default memo(function EditMapDialog({
   );
 
   const handleExited = useCallback(() => {
-    setName(undefined);
-    setDescription(undefined);
+    setName('');
+    setDescription('');
     reset();
     setPosition(null);
     setIsPrivate(false);

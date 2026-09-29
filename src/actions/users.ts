@@ -28,7 +28,7 @@ type UpdatePreferencesParams = {
 
 type ActionResult<T = null> = {
   success: boolean;
-  data?: T;
+  data?: T | null;
   error?: string;
 };
 

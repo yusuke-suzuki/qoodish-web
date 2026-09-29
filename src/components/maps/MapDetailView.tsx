@@ -77,7 +77,7 @@ export default function MapDetailView({
     );
   };
 
-  const handleJourneyError = (message: string | null) => {
+  const handleJourneyError = (message?: string | null) => {
     enqueueSnackbar(message ?? dictionary['an error occurred'], {
       variant: 'error'
     });

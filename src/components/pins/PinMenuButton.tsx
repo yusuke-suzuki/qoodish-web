@@ -67,19 +67,25 @@ export default memo(function PinMenuButton({
   const handleReportClick = () => {
     setAnchorEl(null);
 
-    onReportClick(pin);
+    if (pin) {
+      onReportClick(pin);
+    }
   };
 
   const handleEditClick = () => {
     setAnchorEl(null);
 
-    onEditClick(pin);
+    if (pin) {
+      onEditClick?.(pin);
+    }
   };
 
   const handleDeleteClick = () => {
     setAnchorEl(null);
 
-    onDeleteClick(pin);
+    if (pin) {
+      onDeleteClick?.(pin);
+    }
   };
 
   const handleDetailClick = () => {

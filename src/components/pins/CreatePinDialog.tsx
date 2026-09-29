@@ -100,8 +100,8 @@ export default memo(function CreatePinDialog({
   );
 
   const handleExited = useCallback(() => {
-    setName(undefined);
-    setComment(undefined);
+    setName('');
+    setComment('');
     reset();
     setPosition(null);
 
@@ -124,7 +124,7 @@ export default memo(function CreatePinDialog({
   );
 
   const defaultPositionFromPlace = useMemo(() => {
-    if (!place) {
+    if (!place?.location) {
       return null;
     }
 

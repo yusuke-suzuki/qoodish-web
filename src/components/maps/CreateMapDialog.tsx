@@ -113,7 +113,9 @@ export default memo(function CreateMapDialog({
             });
 
             onClose();
-            onSaved(result.data);
+            if (result.data) {
+              onSaved(result.data);
+            }
             return;
           }
 
@@ -140,8 +142,8 @@ export default memo(function CreateMapDialog({
   );
 
   const handleExited = useCallback(() => {
-    setName(undefined);
-    setDescription(undefined);
+    setName('');
+    setDescription('');
     reset();
     setPosition(null);
     setIsPrivate(false);
