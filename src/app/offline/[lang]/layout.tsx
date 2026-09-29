@@ -39,7 +39,9 @@ export default async function OfflineLayout({ children, params }: Props) {
   return (
     <html lang={lang} className={fontVariables}>
       <body>
-        <OfflineProviders lang={lang}>{children}</OfflineProviders>
+        <OfflineProviders lang={lang} dictionary={getDictionary(lang)}>
+          {children}
+        </OfflineProviders>
       </body>
     </html>
   );

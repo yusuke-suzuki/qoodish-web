@@ -110,6 +110,7 @@ export default async function RootLayout({ children, params }: Props) {
       <body>
         <Providers
           lang={lang}
+          dictionary={dict}
           serverAuthenticated={authenticated}
           serverPending={pending}
           serverUid={uid}
