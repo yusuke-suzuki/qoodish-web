@@ -131,7 +131,8 @@ const serwist = new Serwist({
       url: offlinePath(locale),
       matcher: ({ request }) =>
         isDocumentRequest(request) &&
-        offlinePathFor(request.url) === offlinePath(locale)
+        offlinePathFor(request.url, self.navigator.languages) ===
+          offlinePath(locale)
     }))
   }
 });
