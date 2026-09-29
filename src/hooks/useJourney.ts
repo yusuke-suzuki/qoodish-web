@@ -36,6 +36,17 @@ import {
   savePaused
 } from '../utils/journeyPauseStorage.ts';
 import {
+  imageIdsWith,
+  imageIdsWithout,
+  isEmptyPlan,
+  isInactive,
+  isRecording,
+  type RemainingSpots,
+  remainingSpots,
+  withoutCheckin,
+  withReplacedCheckin
+} from '../utils/journeyState.ts';
+import {
   MOVING_SAMPLE_MIN_INTERVAL_MS,
   nextHighAccuracy,
   type PreviousFix,
@@ -52,7 +63,6 @@ import { encodePath } from '../utils/polyline.ts';
 
 const CHECKIN_VIBRATION_MS = 30;
 
-const INACTIVITY_PAUSE_MS = 8 * 60 * 60 * 1000;
 const INACTIVITY_CHECK_INTERVAL_MS = 10 * 60 * 1000;
 const INITIAL_POSITION_TIMEOUT_MS = 15000;
 
@@ -75,33 +85,6 @@ const SAMPLE_TIMEOUT_MS = 30000;
 const TRAIL_SAVE_INTERVAL_MS = 15000;
 
 export type PauseReason = 'permission' | 'inactivity';
-
-type RemainingSpots = {
-  pins: Pin[];
-  checkins: JourneyCheckin[];
-  spots: Pin[];
-};
-
-// A fix arrives at roughly 1 Hz, while the two inputs change only on a
-// check-in or a router refresh, so the derived list outlives the fix that
-// asked for it.
-function remainingSpots(
-  previous: RemainingSpots | null,
-  pins: Pin[],
-  checkins: JourneyCheckin[]
-): RemainingSpots {
-  if (previous && previous.pins === pins && previous.checkins === checkins) {
-    return previous;
-  }
-
-  const visitedIds = new Set(checkins.map((checkin) => checkin.pin_id));
-
-  return {
-    pins,
-    checkins,
-    spots: pins.filter((pin) => !visitedIds.has(pin.id))
-  };
-}
 
 type Args = {
   map: AppMap;
@@ -283,12 +266,7 @@ export default function useJourney({
         return;
       }
 
-      commitJourney({
-        ...latest,
-        checkins: latest.checkins.map((checkin) =>
-          checkin.id === next.id ? next : checkin
-        )
-      });
+      commitJourney(withReplacedCheckin(latest, next));
     },
     [commitJourney]
   );
@@ -333,7 +311,7 @@ export default function useJourney({
     const latest = findLatestCheckin(checkin);
 
     await mutateCheckin(checkin, {
-      image_ids: [...latest.images.map((existing) => existing.id), image.id]
+      image_ids: imageIdsWith(latest.images, image.id)
     });
   };
 
@@ -344,9 +322,7 @@ export default function useJourney({
     const latest = findLatestCheckin(checkin);
 
     return mutateCheckin(checkin, {
-      image_ids: latest.images
-        .filter((existing) => existing.id !== imageId)
-        .map((existing) => existing.id)
+      image_ids: imageIdsWithout(latest.images, imageId)
     });
   };
 
@@ -479,9 +455,7 @@ export default function useJourney({
     [commitPaused, onPaused]
   );
 
-  const recording = Boolean(
-    canRecord && journey?.started_at && !journey.finished_at && !paused
-  );
+  const recording = isRecording(canRecord, journey, paused);
 
   const watching = recording && visible;
 
@@ -503,12 +477,7 @@ export default function useJourney({
     }
 
     const check = () => {
-      const lastPositionAt = lastPositionAtRef.current;
-
-      if (
-        lastPositionAt &&
-        Date.now() - lastPositionAt >= INACTIVITY_PAUSE_MS
-      ) {
+      if (isInactive(lastPositionAtRef.current, Date.now())) {
         commitPaused(true);
         onPaused('inactivity');
       }
@@ -724,15 +693,14 @@ export default function useJourney({
       return;
     }
 
-    const milestones = latest.milestones.filter(
-      (existing) => existing.id !== milestone.id
-    );
+    const next = {
+      ...latest,
+      milestones: latest.milestones.filter(
+        (existing) => existing.id !== milestone.id
+      )
+    };
 
-    if (
-      !latest.started_at &&
-      milestones.length < 1 &&
-      latest.checkins.length < 1
-    ) {
+    if (isEmptyPlan(next)) {
       const { success: deleted, error: deleteError } = await deleteJourney(
         latest.id
       );
@@ -747,7 +715,7 @@ export default function useJourney({
       onError(deleteError);
     }
 
-    commitJourney({ ...latest, milestones });
+    commitJourney(next);
   };
 
   const removeCheckin = async (target: JourneyCheckin) => {
@@ -770,10 +738,7 @@ export default function useJourney({
       return;
     }
 
-    commitJourney({
-      ...latest,
-      checkins: latest.checkins.filter((checkin) => checkin.id !== target.id)
-    });
+    commitJourney(withoutCheckin(latest, target.id));
   };
 
   const end = async (): Promise<FinishedJourney | null> => {
