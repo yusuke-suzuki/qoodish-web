@@ -4,11 +4,12 @@ import { BRAND_COLOR } from '../utils/brand.ts';
 import { getDictionary } from '../utils/getDictionary.ts';
 import {
   LOCALE_COOKIE,
+  localePath,
   rememberedOrPreferredLocale
 } from '../utils/locales.ts';
 import { manifestScreenshots } from '../utils/manifestScreenshots.ts';
 
-const START_URL = '/?utm_source=homescreen';
+const APP_ID = '/?utm_source=homescreen';
 
 const ICON_SIZES = ['48', '72', '96', '128', '192', '384', '512'] as const;
 
@@ -32,12 +33,12 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const dict = getDictionary(lang);
 
   return {
-    id: START_URL,
+    id: APP_ID,
     name: 'Qoodish',
     short_name: 'Qoodish',
     description: dict['meta description'],
     lang,
-    start_url: START_URL,
+    start_url: `${localePath(lang)}?utm_source=homescreen`,
     scope: '/',
     display: 'standalone',
     theme_color: BRAND_COLOR,
@@ -46,10 +47,10 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     icons,
     screenshots: manifestScreenshots(lang),
     shortcuts: [
-      { name: dict.discover, url: '/discover' },
-      { name: dict['journey log'], url: '/journeys' },
-      { name: dict.bookmarks, url: '/bookmarks' },
-      { name: dict.notifications, url: '/notifications' }
+      { name: dict.discover, url: localePath(lang, '/discover') },
+      { name: dict['journey log'], url: localePath(lang, '/journeys') },
+      { name: dict.bookmarks, url: localePath(lang, '/bookmarks') },
+      { name: dict.notifications, url: localePath(lang, '/notifications') }
     ]
   };
 }

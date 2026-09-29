@@ -11,22 +11,41 @@ describe('offlinePath', () => {
 describe('offlinePathFor', () => {
   it('follows the locale of the requested page', () => {
     assert.equal(
-      offlinePathFor('https://qoodish.com/ja/maps/1'),
+      offlinePathFor('https://qoodish.com/ja/maps/1', ['en-US']),
       '/offline/ja'
     );
-    assert.equal(offlinePathFor('https://qoodish.com/en'), '/offline/en');
+    assert.equal(
+      offlinePathFor('https://qoodish.com/en', ['ja-JP']),
+      '/offline/en'
+    );
   });
 
   it('ignores the query and the fragment', () => {
     assert.equal(
-      offlinePathFor('https://qoodish.com/ja?tab=pins#top'),
+      offlinePathFor('https://qoodish.com/ja?tab=pins#top', ['en-US']),
       '/offline/ja'
     );
   });
 
-  it('falls back to the default locale without a locale segment', () => {
-    assert.equal(offlinePathFor('https://qoodish.com/'), '/offline/en');
-    assert.equal(offlinePathFor('https://qoodish.com/fr/maps'), '/offline/en');
-    assert.equal(offlinePathFor('https://qoodish.com/japan'), '/offline/en');
+  it('follows the browser languages without a locale segment', () => {
+    assert.equal(
+      offlinePathFor('https://qoodish.com/?utm_source=homescreen', [
+        'ja-JP',
+        'en-US'
+      ]),
+      '/offline/ja'
+    );
+    assert.equal(
+      offlinePathFor('https://qoodish.com/japan', ['fr-FR', 'ja']),
+      '/offline/ja'
+    );
+  });
+
+  it('falls back to the default locale when no language matches', () => {
+    assert.equal(
+      offlinePathFor('https://qoodish.com/fr/maps', ['fr-FR']),
+      '/offline/en'
+    );
+    assert.equal(offlinePathFor('https://qoodish.com/', []), '/offline/en');
   });
 });
