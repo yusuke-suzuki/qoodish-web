@@ -23,7 +23,7 @@ export default function OfflineProviders({
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline enableColorScheme />
         <DictionaryContext.Provider value={dictionary}>
           {children}
         </DictionaryContext.Provider>

@@ -131,7 +131,7 @@ export default function Providers({
   return (
     <AppRouterCacheProvider>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline enableColorScheme />
         {inputGlobalStyles}
         <DictionaryContext.Provider value={dictionary}>
           <SnackbarProvider
