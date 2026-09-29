@@ -2,6 +2,7 @@
 
 import { apiFetch } from '../lib/api.ts';
 import { chapterTag } from '../lib/cacheTags.ts';
+import { recordEvent } from '../lib/events.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult = {
@@ -19,6 +20,10 @@ export async function likeChapter(chapterId: number): Promise<ActionResult> {
   }
 
   revalidateTags([chapterTag(chapterId)]);
+  recordEvent({
+    name: 'like',
+    params: { content_type: 'chapter', item_id: chapterId }
+  });
 
   return { success: true };
 }

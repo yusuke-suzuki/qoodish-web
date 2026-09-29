@@ -5,6 +5,7 @@ import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { CHAPTERS_TAG, chapterTag, mapTag, userTag } from '../lib/cacheTags.ts';
 import { getChapterFeed } from '../lib/chapters.ts';
+import { recordEvent } from '../lib/events.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 
 type ActionResult<T = null> = {
@@ -54,6 +55,7 @@ export async function createChapter(
     mapTag(mapId),
     data && userTag(data.author.id)
   ]);
+  recordEvent({ name: 'create_chapter', params: { map_id: mapId } });
 
   return { success: true, data };
 }
@@ -77,6 +79,10 @@ export async function updateChapter(
     data?.map_id && mapTag(data.map_id),
     data && userTag(data.author.id)
   ]);
+
+  if (params.status === 'published') {
+    recordEvent({ name: 'publish_chapter', params: { chapter_id: chapterId } });
+  }
 
   return { success: true, data };
 }

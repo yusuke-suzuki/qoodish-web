@@ -40,7 +40,6 @@ import type {
 import useChapter from '../../hooks/useChapter.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime from '../../hooks/useLocalDateTime.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 import { isContentEmpty } from '../../utils/chapterContent.ts';
 import {
   createMapFeatures,
@@ -175,7 +174,6 @@ export default function ChapterEditor({
     enqueueSnackbar(dictionary['publish chapter success'], {
       variant: 'success'
     });
-    trackEvent({ name: 'publish_chapter', params: { chapter_id: chapter.id } });
     router.push(readPath);
   };
 

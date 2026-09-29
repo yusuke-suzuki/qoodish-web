@@ -34,7 +34,6 @@ import {
 } from 'react';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 import LinkEmailDialog from './LinkEmailDialog.tsx';
 import UnlinkProviderDialog from './UnlinkProviderDialog.tsx';
 
@@ -91,11 +90,6 @@ function ProvidersCard() {
       enqueueSnackbar(dictionary['link provider success'], {
         variant: 'success'
       });
-
-      trackEvent({
-        name: 'link_provider',
-        params: { provider: GoogleAuthProvider.PROVIDER_ID }
-      });
     } catch (error) {
       console.error(error);
 
@@ -135,11 +129,6 @@ function ProvidersCard() {
 
       enqueueSnackbar(dictionary['unlink provider success'], {
         variant: 'success'
-      });
-
-      trackEvent({
-        name: 'unlink_provider',
-        params: { provider: unlinkTargetProviderId }
       });
     } catch (error) {
       console.error(error);

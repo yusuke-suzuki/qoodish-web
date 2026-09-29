@@ -3,6 +3,7 @@
 import type { Pin } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { mapTag, PINS_TAG, pinTag, userTag } from '../lib/cacheTags.ts';
+import { recordEvent } from '../lib/events.ts';
 import { getPinFeed, getTimelinePins } from '../lib/pins.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
 import { getMyPins, getUserPins } from '../lib/users.ts';
@@ -62,6 +63,7 @@ export async function createPin(
   }
 
   revalidateTags([mapTag(mapId), PINS_TAG, data && userTag(data.author.id)]);
+  recordEvent({ name: 'create_pin', params: { map_id: mapId } });
 
   return { success: true, data };
 }

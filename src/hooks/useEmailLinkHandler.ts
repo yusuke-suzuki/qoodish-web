@@ -2,7 +2,6 @@ import { getApps } from 'firebase/app';
 import {
   type Auth,
   EmailAuthProvider,
-  getAdditionalUserInfo,
   getAuth,
   isSignInWithEmailLink,
   linkWithCredential,
@@ -14,8 +13,6 @@ import {
 import { useParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useRef } from 'react';
-import { trackEvent } from '../utils/analytics.ts';
-import { authEvent } from '../utils/authEvent.ts';
 import useDictionary from './useDictionary.ts';
 
 type Dictionary = { [key: string]: string };
@@ -44,11 +41,6 @@ async function linkEmailProvider(
     window.localStorage.removeItem('linkProvider');
     enqueueSnackbar(dictionary['link provider success'], {
       variant: 'success'
-    });
-
-    trackEvent({
-      name: 'link_provider',
-      params: { provider: EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD }
     });
   } catch (err) {
     console.error(err);
@@ -104,16 +96,9 @@ async function completeEmailSignIn(
   if (!email) return;
 
   try {
-    const credential = await signInWithEmailLink(auth, email, currentUrl);
+    await signInWithEmailLink(auth, email, currentUrl);
     window.localStorage.removeItem('emailForSignIn');
     enqueueSnackbar(dictionary['sign in success'], { variant: 'success' });
-
-    trackEvent(
-      authEvent(
-        getAdditionalUserInfo(credential)?.isNewUser ?? false,
-        EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-      )
-    );
   } catch (err) {
     console.error(err);
     enqueueSnackbar(dictionary['an error occurred'], { variant: 'error' });

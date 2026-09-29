@@ -12,7 +12,6 @@ import type { AppMap } from '../../../types/index.ts';
 import { createPin } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
@@ -81,7 +80,6 @@ export default memo(function CreatePinDialog({
             enqueueSnackbar(dictionary['create pin success'], {
               variant: 'success'
             });
-            trackEvent({ name: 'create_pin', params: { map_id: map.id } });
 
             onClose();
             onSaved();

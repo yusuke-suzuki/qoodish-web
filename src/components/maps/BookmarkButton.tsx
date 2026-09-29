@@ -6,7 +6,6 @@ import type { AppMap } from '../../../types/index.ts';
 import { bookmarkMap } from '../../actions/mapBookmarks.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 
 type Props = {
   map: AppMap | null;
@@ -33,13 +32,6 @@ function BookmarkButton({ map, onSaved }: Props) {
         const result = await bookmarkMap(map?.id);
 
         if (result.success) {
-          if (map) {
-            trackEvent({
-              name: 'follow',
-              params: { content_type: 'map', item_id: map.id }
-            });
-          }
-
           onSaved();
 
           enqueueSnackbar(dictionary['follow map success'], {

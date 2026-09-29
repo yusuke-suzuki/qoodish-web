@@ -71,11 +71,6 @@
       "name": "IMAGE_UPLOAD_LIMIT",
       "namespace_id": "1002",
       "simple": { "limit": 30, "period": 60 }
-    },
-    {
-      "name": "ANALYTICS_EVENTS_LIMIT",
-      "namespace_id": "1003",
-      "simple": { "limit": 60, "period": 60 }
     }
   ],
   "analytics_engine_datasets": [
@@ -131,11 +126,6 @@
           "name": "IMAGE_UPLOAD_LIMIT",
           "namespace_id": "2002",
           "simple": { "limit": 30, "period": 60 }
-        },
-        {
-          "name": "ANALYTICS_EVENTS_LIMIT",
-          "namespace_id": "2003",
-          "simple": { "limit": 60, "period": 60 }
         }
       ],
       "analytics_engine_datasets": [

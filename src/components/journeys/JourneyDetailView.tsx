@@ -69,7 +69,6 @@ import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalDateTime, {
   LOCAL_DATE_TIME_PLACEHOLDER
 } from '../../hooks/useLocalDateTime.ts';
-import { trackEvent } from '../../utils/analytics.ts';
 import { createChapterContent } from '../../utils/chapterContent.ts';
 import { trailDistanceMeters } from '../../utils/geo.ts';
 import { deletePaused } from '../../utils/journeyPauseStorage.ts';
@@ -369,11 +368,6 @@ export default function JourneyDetailView({
       return;
     }
 
-    trackEvent({
-      name: 'finish_journey',
-      params: { map_id: journey.map_id ?? undefined }
-    });
-
     if (uid) {
       deleteTrail(uid, journey.id);
       deletePaused(uid, journey.id);
@@ -382,7 +376,7 @@ export default function JourneyDetailView({
     setEnded(true);
     setEndOpen(false);
     router.refresh();
-  }, [journey.id, journey.map_id, uid, dictionary, router]);
+  }, [journey.id, uid, dictionary, router]);
 
   const handleRecord = useCallback(async () => {
     if (!map) {
@@ -406,7 +400,6 @@ export default function JourneyDetailView({
       return;
     }
 
-    trackEvent({ name: 'create_chapter', params: { map_id: map.id } });
     router.push(`/${lang}/chapters/${data.id}/edit`);
   }, [map, journey, checkins, router, lang, dictionary]);
 

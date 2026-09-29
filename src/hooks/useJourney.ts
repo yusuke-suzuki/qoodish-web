@@ -30,7 +30,6 @@ import {
   updateCheckin
 } from '../actions/journeys.ts';
 import AuthContext from '../context/AuthContext.ts';
-import { trackEvent } from '../utils/analytics.ts';
 import {
   deletePaused,
   loadPaused,
@@ -692,10 +691,6 @@ export default function useJourney({
     const { success, data, error } = await startJourney(current.id);
 
     if (success && data) {
-      trackEvent({
-        name: 'start_journey',
-        params: { map_id: data.map_id ?? undefined }
-      });
       commitJourney(data);
       commitPaused(false);
       processPosition(position);
@@ -798,11 +793,6 @@ export default function useJourney({
       onError(error);
       return null;
     }
-
-    trackEvent({
-      name: 'finish_journey',
-      params: { map_id: data.map_id ?? undefined }
-    });
 
     // A pending write would put the finished trail straight back.
     discardTrailSave();
