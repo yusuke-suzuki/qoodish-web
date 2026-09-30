@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  smoke:
+  e2e:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -58,7 +58,7 @@ jobs:
           workload_identity_provider: ${{ vars.E2E_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.E2E_SERVICE_ACCOUNT }}
 
-      - name: Smoke test the built worker
+      - name: Run the E2E tests against the built worker
         run: |
           pnpm e2e
         env:
