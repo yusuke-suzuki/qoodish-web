@@ -43,7 +43,7 @@ function RailItem({ destination }: { destination: NavDestination }) {
         py: 1.5
       }}
     >
-      <Icon fontSize="small" />
+      <Icon fontSize="small" color="action" />
 
       <Typography
         variant="caption"
