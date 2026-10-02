@@ -57,8 +57,12 @@ async function openPage(
   }
 }
 
+function newPage(browser: Browser): Promise<Page> {
+  return browser.newPage({ serviceWorkers: 'block' });
+}
+
 async function checkTopPage(browser: Browser, env: Env): Promise<void> {
-  const page = await browser.newPage();
+  const page = await newPage(browser);
 
   try {
     await openPage(page, `${env.TARGET_ORIGIN}/ja`, async (openedPage) => {
@@ -92,7 +96,7 @@ async function checkMapDetailPage(browser: Browser, env: Env): Promise<void> {
     throw new Error('the API returned no public map to check');
   }
 
-  const page = await browser.newPage();
+  const page = await newPage(browser);
 
   try {
     await openPage(

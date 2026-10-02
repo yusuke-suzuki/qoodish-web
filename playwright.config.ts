@@ -16,6 +16,7 @@ export default defineConfig({
   expect: { timeout: 15000 },
   use: {
     baseURL,
+    serviceWorkers: 'block',
     // Nothing collects these from a CI run: it reports through its log. They
     // must not become artifacts either — a trace records every request the
     // page made, Maps API key included, and this repository is public.
