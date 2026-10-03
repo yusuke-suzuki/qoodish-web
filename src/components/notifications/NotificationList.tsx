@@ -3,6 +3,7 @@
 import { Notifications } from '@mui/icons-material';
 import {
   Avatar,
+  AvatarGroup,
   IconButton,
   ListItemAvatar,
   ListItemButton,
@@ -14,6 +15,7 @@ import { memo, useContext, useEffect, useRef } from 'react';
 import type { Notification } from '../../../types/index.ts';
 import { markNotificationAsRead } from '../../actions/notifications.ts';
 import AuthContext from '../../context/AuthContext.ts';
+import useCountLabel from '../../hooks/useCountLabel.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import { notificationMessageKey } from '../../utils/notificationMessage.ts';
@@ -33,7 +35,20 @@ const NotificationList = ({
   onNotificationClick
 }: Props) => {
   const dictionary = useDictionary();
+  const countLabel = useCountLabel();
   const formatRelativeTime = useRelativeTime();
+
+  const message = (notification: Notification) => {
+    const messageKey = notificationMessageKey(
+      notification.key,
+      notification.notifiable.type
+    );
+    const othersCount = notification.notifiers_count - 1;
+
+    return othersCount > 0
+      ? countLabel(`${messageKey} others`, othersCount)
+      : dictionary[messageKey];
+  };
 
   const { authenticated } = useContext(AuthContext);
 
@@ -85,20 +100,30 @@ const NotificationList = ({
           dense
         >
           <ListItemAvatar>
-            <AuthorAvatar author={notification.notifier} />
+            {notification.notifiers.length > 1 ? (
+              <AvatarGroup spacing="small">
+                {notification.notifiers.map((notifier) => (
+                  <Avatar
+                    key={notifier.id}
+                    src={notifier.image?.avatar}
+                    alt={notifier.name}
+                    slotProps={{
+                      img: {
+                        loading: 'lazy'
+                      }
+                    }}
+                  />
+                ))}
+              </AvatarGroup>
+            ) : (
+              <AuthorAvatar author={notification.notifier} />
+            )}
           </ListItemAvatar>
           <ListItemText
             primary={
               <Typography variant="subtitle1">
                 <strong>{notification.notifier.name}</strong>
-                {` ${
-                  dictionary[
-                    notificationMessageKey(
-                      notification.key,
-                      notification.notifiable.type
-                    )
-                  ]
-                }`}
+                {` ${message(notification)}`}
               </Typography>
             }
             secondary={
