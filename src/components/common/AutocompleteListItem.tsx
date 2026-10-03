@@ -14,13 +14,15 @@ type Props = {
   inputValue: string;
   onClick: () => void;
   avatar: ReactNode;
+  secondary?: string | null;
 };
 
 export default memo(function AutocompleteListItem({
   option,
   inputValue,
   onClick,
-  avatar
+  avatar,
+  secondary
 }: Props) {
   const parts = highlightMatches(option.label, inputValue);
 
@@ -30,6 +32,13 @@ export default memo(function AutocompleteListItem({
         <ListItemAvatar>{avatar}</ListItemAvatar>
         <ListItemText
           disableTypography
+          secondary={
+            secondary && (
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {secondary}
+              </Typography>
+            )
+          }
           primary={parts.map((part) => (
             <Typography
               key={part.start}
