@@ -40,11 +40,8 @@ export function getPrivacyPolicy(lang: string): string {
   return privacy[toLocale(lang)];
 }
 
-export function getTerms(lang: string) {
-  return {
-    content: latestTerms.content[toLocale(lang)],
-    previous: previousTerms.map(({ effectiveOn }) => effectiveOn)
-  };
+export function getTerms(lang: string): string {
+  return latestTerms.content[toLocale(lang)];
 }
 
 export function getPreviousTerms(
