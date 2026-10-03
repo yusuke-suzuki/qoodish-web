@@ -53,6 +53,10 @@ export function useDebouncedSearch<R>(
   }, [input, search]);
 
   if (!input) {
+    if (answer) {
+      setAnswer(null);
+    }
+
     return { results: NO_RESULTS, isLoading: false, failed: false };
   }
 
