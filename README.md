@@ -52,7 +52,7 @@ pnpm preview
 pnpm lint        # Biome
 pnpm typecheck   # TypeScript
 pnpm test        # unit tests (node:test)
-pnpm e2e         # Playwright smoke tests
+pnpm e2e         # Playwright smoke and signed-in tests
 ```
 
 `pnpm e2e` serves the worker with `pnpm preview` unless `E2E_BASE_URL`
@@ -60,6 +60,17 @@ points at a running app, so build it with `pnpm cf:build:dev` first. The
 tests find content through the API at `E2E_API_URL`, which defaults to the
 dev API. Pull requests run all of these in CI, and every push to `master`
 runs the smoke tests against production once it serves that commit.
+
+The signed-in test runs only against the local build, with the dev Firebase
+project and the dev API. It signs in a fresh account through an email link
+that the Identity Toolkit API returns instead of mailing, edits the
+profile, and deletes the account again. It needs an OAuth access token that
+may manage the dev project's users in `E2E_FIREBASE_ACCESS_TOKEN`, and the
+dev project ID in `NEXT_PUBLIC_FIREBASE_PROJECT_ID`; without them it is
+skipped. CI gets the token through Workload Identity Federation from the
+`E2E_WORKLOAD_IDENTITY_PROVIDER` and `E2E_SERVICE_ACCOUNT` repository
+variables. Locally, `gcloud auth print-access-token` gives one for an
+account with that role.
 
 ## Deployment
 
