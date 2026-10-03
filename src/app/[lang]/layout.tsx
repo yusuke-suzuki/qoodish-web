@@ -4,10 +4,12 @@ import type { Notification, Profile } from '../../../types/index.ts';
 import JsonLd from '../../components/common/JsonLd.tsx';
 import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
+import TermsRevisionNotice from '../../components/legal/TermsRevisionNotice.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
 import { THEME_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
+import { pendingTermsRevision } from '../../utils/getLegalDocument.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import { siteStructuredData } from '../../utils/structuredData.ts';
 import { fontVariables } from '../fonts.ts';
@@ -117,6 +119,7 @@ export default async function RootLayout({ children, params }: Props) {
           profilePromise={profilePromise}
           notificationsPromise={notificationsPromise}
         >
+          <TermsRevisionNotice effectiveOn={pendingTermsRevision()} />
           <ShellProvider>
             <Shell>{children}</Shell>
           </ShellProvider>
