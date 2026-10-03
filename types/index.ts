@@ -314,6 +314,8 @@ export type Notification = {
   click_action: string;
   notifiable: Notifiable;
   notifier: Author;
+  notifiers: Author[];
+  notifiers_count: number;
   read: boolean;
   created_at: string;
   updated_at: string;

@@ -28,6 +28,20 @@ describe('notification messages', () => {
       assert.ok(en[message], `en.json is missing "${message}"`);
       assert.ok(ja[message], `ja.json is missing "${message}"`);
     });
+
+    it(`reads ${key} on a ${notifiableType} by several notifiers in both languages`, () => {
+      const message = `${notificationMessageKey(key, notifiableType)} others`;
+
+      assert.ok(en[`${message} one`], `en.json is missing "${message} one"`);
+      assert.ok(
+        en[`${message} other`],
+        `en.json is missing "${message} other"`
+      );
+      assert.ok(
+        ja[`${message} other`],
+        `ja.json is missing "${message} other"`
+      );
+    });
   }
 });
 
