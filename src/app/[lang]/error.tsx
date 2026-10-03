@@ -2,7 +2,7 @@
 
 import { Refresh } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, Container, Grid } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useTransition } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import reportClientError from '../../utils/reportClientError.ts';
 
@@ -13,6 +13,7 @@ type Props = {
 
 export default function ErrorPage({ error, retry }: Props) {
   const dictionary = useDictionary();
+  const [retrying, startRetry] = useTransition();
 
   useEffect(() => {
     reportClientError(error, 'error-boundary');
@@ -29,7 +30,9 @@ export default function ErrorPage({ error, retry }: Props) {
           <Button
             color="primary"
             startIcon={<Refresh />}
-            onClick={() => retry()}
+            loading={retrying}
+            loadingPosition="start"
+            onClick={() => startRetry(retry)}
           >
             {dictionary.retry}
           </Button>
