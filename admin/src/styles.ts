@@ -182,7 +182,7 @@ legend { padding: 0; }
 }
 .asset-table thead th { border-top: 0; }
 
-input,
+input:not([type="radio"], [type="checkbox"]),
 select {
   display: block;
   width: 100%;
