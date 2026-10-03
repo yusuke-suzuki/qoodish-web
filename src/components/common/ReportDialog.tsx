@@ -212,11 +212,7 @@ function ReportDialog({
           label={dictionary['report details']}
           value={details}
           onChange={(event) => setDetails(event.target.value)}
-          helperText={
-            detailsRequired
-              ? dictionary['report details help']
-              : dictionary.optional
-          }
+          helperText={detailsRequired && dictionary['report details help']}
           required={detailsRequired}
           multiline
           minRows={3}
