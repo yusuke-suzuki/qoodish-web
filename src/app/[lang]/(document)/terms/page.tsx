@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
 import MarkdownContent from '../../../../components/common/MarkdownContent.tsx';
+import PreviousTermsList from '../../../../components/legal/PreviousTermsList.tsx';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
-import { getLegalDocument } from '../../../../utils/getLegalDocument.ts';
+import { getTerms } from '../../../../utils/getLegalDocument.ts';
 import { localePath } from '../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
 } from '../../../../utils/metadata.ts';
+import { formatEffectiveDate } from '../../../../utils/termsRevisions.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -43,7 +45,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TermsPage({ params }: Props) {
   const { lang } = await params;
-  const content = getLegalDocument('terms', lang);
+  const { content, previous } = getTerms(lang);
 
-  return <MarkdownContent content={content} />;
+  return (
+    <>
+      <MarkdownContent content={content} />
+
+      <PreviousTermsList
+        revisions={previous.map((effectiveOn) => ({
+          effectiveOn,
+          date: formatEffectiveDate(lang, effectiveOn)
+        }))}
+      />
+    </>
+  );
 }

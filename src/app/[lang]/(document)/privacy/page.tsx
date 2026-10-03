@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import MarkdownContent from '../../../../components/common/MarkdownContent.tsx';
 import { getDictionary } from '../../../../utils/getDictionary.ts';
-import { getLegalDocument } from '../../../../utils/getLegalDocument.ts';
+import { getPrivacyPolicy } from '../../../../utils/getLegalDocument.ts';
 import { localePath } from '../../../../utils/locales.ts';
 import {
   buildAlternates,
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PrivacyPage({ params }: Props) {
   const { lang } = await params;
-  const content = getLegalDocument('privacy', lang);
+  const content = getPrivacyPolicy(lang);
 
   return <MarkdownContent content={content} />;
 }
