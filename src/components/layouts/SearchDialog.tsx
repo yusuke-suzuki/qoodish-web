@@ -1,4 +1,4 @@
-import { Close, Search, SearchOff } from '@mui/icons-material';
+import { ArrowBack, Close, Search, SearchOff } from '@mui/icons-material';
 import {
   AppBar,
   Avatar,
@@ -15,7 +15,7 @@ import {
   useTheme
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { memo, useDeferredValue, useState } from 'react';
+import { memo, useDeferredValue, useRef, useState } from 'react';
 import type { SearchResult } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useSiteSearch } from '../../hooks/useSiteSearch.ts';
@@ -38,6 +38,7 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const { push } = useRouter();
 
   const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const deferredInputValue = useDeferredValue(inputValue);
 
   const { results, includesUsers, active, isLoading, failed } =
@@ -51,6 +52,11 @@ const SearchDialog = ({ open, onClose }: Props) => {
   const handleResultClick = (result: SearchResult) => {
     onClose();
     push(result.href);
+  };
+
+  const handleClear = () => {
+    setInputValue('');
+    inputRef.current?.focus();
   };
 
   const handleExited = () => {
@@ -72,6 +78,14 @@ const SearchDialog = ({ open, onClose }: Props) => {
     >
       <AppBar color="transparent" position="relative" elevation={0}>
         <Toolbar>
+          <IconButton
+            edge="start"
+            onClick={onClose}
+            aria-label={dictionary.close}
+          >
+            <ArrowBack />
+          </IconButton>
+
           <TextField
             placeholder={
               includesUsers
@@ -79,9 +93,9 @@ const SearchDialog = ({ open, onClose }: Props) => {
                 : dictionary['search keyword as guest']
             }
             variant="standard"
-            type="search"
             fullWidth
             autoFocus
+            inputRef={inputRef}
             onChange={(e) => {
               setInputValue(e.target.value);
             }}
@@ -90,22 +104,23 @@ const SearchDialog = ({ open, onClose }: Props) => {
               input: {
                 margin: 'none',
                 disableUnderline: true,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search color="primary" />
+                endAdornment: inputValue && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      onClick={handleClear}
+                      aria-label={dictionary['clear search']}
+                    >
+                      <Close />
+                    </IconButton>
                   </InputAdornment>
                 )
+              },
+              htmlInput: {
+                enterKeyHint: 'search'
               }
             }}
           />
-
-          <IconButton
-            edge="end"
-            onClick={onClose}
-            aria-label={dictionary.close}
-          >
-            <Close />
-          </IconButton>
         </Toolbar>
       </AppBar>
       <DialogContent dividers>
