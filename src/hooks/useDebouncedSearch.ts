@@ -6,6 +6,12 @@ const DEBOUNCE_MS = 300;
 // hand the consumer a new array to re-render for.
 const NO_RESULTS: never[] = [];
 
+type Answer<R> = {
+  input: string;
+  results: R[];
+  failed: boolean;
+};
+
 /**
  * Runs a search over a debounced input and reports only the answer to the
  * most recent one. `search` has to keep a stable identity — wrap it in
@@ -15,20 +21,12 @@ export function useDebouncedSearch<R>(
   input: string | null | undefined,
   search: (query: string, signal: AbortSignal) => Promise<R[]>
 ) {
-  const [results, setResults] = useState<R[]>(NO_RESULTS);
-  const [isLoading, setIsLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [answer, setAnswer] = useState<Answer<R> | null>(null);
 
   useEffect(() => {
     if (!input) {
-      setResults(NO_RESULTS);
-      setIsLoading(false);
-      setFailed(false);
-
       return;
     }
-
-    setIsLoading(true);
 
     let current = true;
     const controller = new AbortController();
@@ -38,17 +36,11 @@ export function useDebouncedSearch<R>(
         const next = await search(input, controller.signal);
 
         if (current) {
-          setResults(next);
-          setFailed(false);
+          setAnswer({ input, results: next, failed: false });
         }
       } catch {
         if (current) {
-          setResults(NO_RESULTS);
-          setFailed(true);
-        }
-      } finally {
-        if (current) {
-          setIsLoading(false);
+          setAnswer({ input, results: NO_RESULTS, failed: true });
         }
       }
     }, DEBOUNCE_MS);
@@ -60,5 +52,15 @@ export function useDebouncedSearch<R>(
     };
   }, [input, search]);
 
-  return { results, isLoading, failed };
+  if (!input) {
+    return { results: NO_RESULTS, isLoading: false, failed: false };
+  }
+
+  const answered = answer?.input === input;
+
+  return {
+    results: answer?.results ?? NO_RESULTS,
+    isLoading: !answered,
+    failed: answered && answer.failed
+  };
 }

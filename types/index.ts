@@ -127,6 +127,37 @@ export type UserSearchResult = {
   image_url: string;
 };
 
+export type PinSearchResult = {
+  id: number;
+  name: string;
+  images: Image[];
+  map: {
+    id: number;
+    name: string;
+  };
+};
+
+export type ChapterSearchResult = {
+  id: number;
+  title: string;
+  image: ImageVariants | null;
+  map: {
+    id: number;
+    name: string;
+  };
+};
+
+export type SearchResultType = 'map' | 'chapter' | 'pin' | 'user';
+
+export type SearchResult = {
+  type: SearchResultType;
+  id: number;
+  name: string;
+  detail: string | null;
+  avatar: string | undefined;
+  href: string;
+};
+
 export type Like = {
   id: number;
   voter: Author;

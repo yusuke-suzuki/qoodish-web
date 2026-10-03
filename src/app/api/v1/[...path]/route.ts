@@ -18,8 +18,12 @@ type Params = {
 
 const ALLOWED_GUEST_GET_PATTERNS = [
   /^guest\/maps$/,
+  /^guest\/chapters$/,
+  /^guest\/pins$/,
   /^guest\/users\/\d+\/maps$/
 ];
+
+const ALLOWED_AUTH_GET_PATTERNS = [/^users$/];
 
 const ALLOWED_AUTH_POST_PATTERNS = [/^users$/, /^images$/];
 
@@ -33,6 +37,12 @@ function classifyPath(joinedPath: string, method: string): PathClass {
     ALLOWED_GUEST_GET_PATTERNS.some((pattern) => pattern.test(joinedPath))
   ) {
     return 'guest';
+  }
+  if (
+    method === 'GET' &&
+    ALLOWED_AUTH_GET_PATTERNS.some((pattern) => pattern.test(joinedPath))
+  ) {
+    return 'auth';
   }
   if (
     method === 'POST' &&
