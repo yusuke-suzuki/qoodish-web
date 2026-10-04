@@ -115,8 +115,12 @@ export default function MapDetailView({
   const [progressOpen, setProgressOpen] = useState(false);
   const [startDialogOpen, setStartDialogOpen] = useState(false);
   const [endDialogOpen, setEndDialogOpen] = useState(false);
-  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
+  const [selectedPin, setSelectedPin] = useState<Pin | null>(null);
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false);
+
+  const currentPin = selectedPin
+    ? (pins.find((pin) => pin.id === selectedPin.id) ?? selectedPin)
+    : null;
 
   const journeyActive = Boolean(journey?.started_at && !journey?.finished_at);
 
@@ -197,7 +201,7 @@ export default function MapDetailView({
   };
 
   const handlePinClick = (pin: Pin) => {
-    setCurrentPin(pin);
+    setSelectedPin(pin);
     setPinDrawerOpen(true);
   };
 
@@ -237,7 +241,7 @@ export default function MapDetailView({
         open={pinDrawerOpen}
         onOpen={() => setPinDrawerOpen(true)}
         onClose={() => setPinDrawerOpen(false)}
-        onExited={() => setCurrentPin(null)}
+        onExited={() => setSelectedPin(null)}
         milestoneAction={
           currentPin
             ? {
