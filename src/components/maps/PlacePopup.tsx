@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
-import InfoWindow from './InfoWindow.tsx';
+import MapPopup from './MapPopup.tsx';
 
 type Props = {
   disableCreatePin: boolean;
@@ -11,7 +11,7 @@ type Props = {
   onClose: () => void;
 };
 
-function PlaceInfoWindow({
+function PlacePopup({
   disableCreatePin,
   place,
   onCreatePinClick,
@@ -19,28 +19,29 @@ function PlaceInfoWindow({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleCreatePinClick = () => {
-    setInfoWindowOpen(false);
+    setPopupOpen(false);
     onCreatePinClick();
   };
 
   const handleClose = () => {
-    setInfoWindowOpen(false);
+    setPopupOpen(false);
     onClose();
   };
 
   useEffect(() => {
     if (place) {
-      setInfoWindowOpen(true);
+      setPopupOpen(true);
     }
   }, [place]);
 
   return (
-    <InfoWindow
+    <MapPopup
+      label={place?.displayName ?? ''}
       position={place?.location ?? null}
-      open={infoWindowOpen}
+      open={popupOpen}
       onClose={handleClose}
     >
       <Box
@@ -70,8 +71,8 @@ function PlaceInfoWindow({
           {dictionary['add to map']}
         </Button>
       </Box>
-    </InfoWindow>
+    </MapPopup>
   );
 }
 
-export default memo(PlaceInfoWindow);
+export default memo(PlacePopup);

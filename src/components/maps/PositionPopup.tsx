@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
-import InfoWindow from './InfoWindow.tsx';
+import MapPopup from './MapPopup.tsx';
 
 type Props = {
   disableCreatePin: boolean;
@@ -18,7 +18,7 @@ type Props = {
   onClose: () => void;
 };
 
-function PositionInfoWindow({
+function PositionPopup({
   disableCreatePin,
   position,
   onCreatePinClick,
@@ -26,21 +26,21 @@ function PositionInfoWindow({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handleCreatePinClick = () => {
-    setInfoWindowOpen(false);
+    setPopupOpen(false);
     onCreatePinClick();
   };
 
   const handleClose = () => {
-    setInfoWindowOpen(false);
+    setPopupOpen(false);
     onClose();
   };
 
   useEffect(() => {
     if (position) {
-      setInfoWindowOpen(true);
+      setPopupOpen(true);
     }
   }, [position]);
 
@@ -48,8 +48,15 @@ function PositionInfoWindow({
     return null;
   }
 
+  const coordinates = `${position.lat()}, ${position.lng()}`;
+
   return (
-    <InfoWindow position={position} open={infoWindowOpen} onClose={handleClose}>
+    <MapPopup
+      label={coordinates}
+      position={position}
+      open={popupOpen}
+      onClose={handleClose}
+    >
       <Box
         sx={{
           width: {
@@ -63,7 +70,7 @@ function PositionInfoWindow({
             <ListItemIcon>
               <MyLocation />
             </ListItemIcon>
-            <ListItemText secondary={`${position.lat()}, ${position.lng()}`} />
+            <ListItemText secondary={coordinates} />
           </ListItem>
         </List>
 
@@ -79,8 +86,8 @@ function PositionInfoWindow({
           {dictionary['add to map']}
         </Button>
       </Box>
-    </InfoWindow>
+    </MapPopup>
   );
 }
 
-export default memo(PositionInfoWindow);
+export default memo(PositionPopup);

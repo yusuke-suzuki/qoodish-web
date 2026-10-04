@@ -61,9 +61,10 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
     }
 
     const { Map: GoogleMap } = await loader.importLibrary('maps');
-    const { ControlPosition } = await loader.importLibrary('core');
+    const { ColorScheme, ControlPosition } = await loader.importLibrary('core');
 
     const map = new GoogleMap(mapRef.current as HTMLElement, {
+      colorScheme: ColorScheme.FOLLOW_SYSTEM,
       zoom: 17,
       zoomControl: !!mdUp,
       zoomControlOptions: {
