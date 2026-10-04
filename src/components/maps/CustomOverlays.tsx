@@ -9,8 +9,8 @@ import CurrentPositionMarker from './CurrentPositionMarker.tsx';
 import CustomMapControls from './CustomMapControls.tsx';
 import PinMarker from './PinMarker.tsx';
 import PinPopover from './PinPopover.tsx';
-import PlaceInfoWindow from './PlaceInfoWindow.tsx';
-import PositionInfoWindow from './PositionInfoWindow.tsx';
+import PlacePopup from './PlacePopup.tsx';
+import PositionPopup from './PositionPopup.tsx';
 
 type Props = {
   map: AppMap | null;
@@ -226,14 +226,14 @@ function CustomOverlays({
         />
       )}
 
-      <PlaceInfoWindow
+      <PlacePopup
         place={currentPlace}
         disableCreatePin={!map?.editable}
         onCreatePinClick={handleCreatePinOpen}
         onClose={handlePlaceClose}
       />
 
-      <PositionInfoWindow
+      <PositionPopup
         position={pinnedPosition}
         disableCreatePin={!map?.editable}
         onCreatePinClick={handleCreatePinOpen}
