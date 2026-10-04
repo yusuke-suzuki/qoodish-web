@@ -1,4 +1,10 @@
-import type { AppMap, Chapter, Coauthor, Pin } from '../../types/index.ts';
+import type {
+  AppMap,
+  Chapter,
+  Coauthor,
+  Pin,
+  PinProperty
+} from '../../types/index.ts';
 import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
 import { CHAPTERS_TAG, CONTENT_TAG, MAPS_TAG, mapTag } from './cacheTags.ts';
 
@@ -68,6 +74,19 @@ export function getMapChapters(
       revalidate: guest ? 300 : 0,
       tags: [mapTag(mapId), CHAPTERS_TAG, CONTENT_TAG]
     }
+  });
+}
+
+export function getMapPinProperties(
+  mapId: string,
+  lang: string,
+  token?: string
+): Promise<PinProperty[]> {
+  const guest = !token;
+  return apiFetchList<PinProperty>(`/maps/${mapId}/pin_properties`, {
+    lang,
+    guest,
+    next: { revalidate: guest ? 300 : 0, tags: [mapTag(mapId), CONTENT_TAG] }
   });
 }
 

@@ -10,6 +10,7 @@ import type {
   Coauthor,
   Journey,
   Pin,
+  PinProperty,
   Profile
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -28,12 +29,14 @@ import GoogleMaps from './GoogleMaps.tsx';
 import MapSummaryCard from './MapSummaryCard.tsx';
 import MobileMapDrawer from './MobileMapDrawer.tsx';
 import PinDrawer from './PinDrawer.tsx';
+import PinPropertiesDialog from './PinPropertiesDialog.tsx';
 
 const summaryCardHeight = 360;
 
 type Props = {
   map: AppMap;
   pins: Pin[];
+  pinProperties: PinProperty[];
   coauthors: Coauthor[];
   chapters: Chapter[];
   currentProfile: Profile | null;
@@ -43,6 +46,7 @@ type Props = {
 export default function MapDetailView({
   map,
   pins,
+  pinProperties,
   coauthors,
   chapters,
   currentProfile,
@@ -195,6 +199,7 @@ export default function MapDetailView({
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pinPropertiesDialogOpen, setPinPropertiesDialogOpen] = useState(false);
 
   const handlePinSaved = () => {
     router.refresh();
@@ -231,6 +236,7 @@ export default function MapDetailView({
         onEditClick={() => setEditDialogOpen(true)}
         onDeleteClick={() => setDeleteDialogOpen(true)}
         onReportClick={() => setReportDialogOpen(true)}
+        onPinPropertiesClick={() => setPinPropertiesDialogOpen(true)}
         onSaved={router.refresh}
         onPinClick={handlePinClick}
         pinDrawerOpen={pinDrawerOpen}
@@ -272,6 +278,7 @@ export default function MapDetailView({
             onEditClick={() => setEditDialogOpen(true)}
             onDeleteClick={() => setDeleteDialogOpen(true)}
             onReportClick={() => setReportDialogOpen(true)}
+            onPinPropertiesClick={() => setPinPropertiesDialogOpen(true)}
             onSaved={router.refresh}
           />
         </Box>
@@ -346,6 +353,15 @@ export default function MapDetailView({
         map={map}
         onDeleted={router.refresh}
       />
+
+      {map.editable && (
+        <PinPropertiesDialog
+          open={pinPropertiesDialogOpen}
+          onClose={() => setPinPropertiesDialogOpen(false)}
+          map={map}
+          pinProperties={pinProperties}
+        />
+      )}
 
       <ReportDialog
         open={reportDialogOpen}
