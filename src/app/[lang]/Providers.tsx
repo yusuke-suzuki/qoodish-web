@@ -17,7 +17,7 @@ import {
   useMemo,
   useState
 } from 'react';
-import type { Notification, Profile } from '../../../types/index.ts';
+import type { NotificationsPage, Profile } from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
 import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx';
 import DictionaryContext from '../../context/DictionaryContext.ts';
@@ -56,7 +56,7 @@ type Props = {
   serverPending: boolean;
   serverUid?: string;
   profilePromise: Promise<Profile | null>;
-  notificationsPromise: Promise<Notification[]>;
+  unreadNotificationsPromise: Promise<NotificationsPage>;
 };
 
 export default function Providers({
@@ -67,7 +67,7 @@ export default function Providers({
   serverPending,
   serverUid,
   profilePromise,
-  notificationsPromise
+  unreadNotificationsPromise
 }: Props) {
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration | null>(null);
@@ -153,7 +153,7 @@ export default function Providers({
             >
               <AccountProviders
                 profilePromise={profilePromise}
-                notificationsPromise={notificationsPromise}
+                unreadNotificationsPromise={unreadNotificationsPromise}
               >
                 <ServiceWorkerContext.Provider value={serviceWorkerValue}>
                   {children}

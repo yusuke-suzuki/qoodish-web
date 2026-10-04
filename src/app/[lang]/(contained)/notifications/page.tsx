@@ -27,7 +27,9 @@ export default async function NotificationsPage({ params }: Props) {
     return <SignInRequired title={getDictionary(lang).notifications} />;
   }
 
-  const notifications = await getNotifications(lang);
+  const { notifications, nextCursor } = await getNotifications(lang);
 
-  return <NotificationsFeed notifications={notifications} />;
+  return (
+    <NotificationsFeed notifications={notifications} nextCursor={nextCursor} />
+  );
 }

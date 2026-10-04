@@ -334,3 +334,8 @@ export type Notification = {
   created_at: string;
   updated_at: string;
 };
+
+export type NotificationsPage = {
+  notifications: Notification[];
+  nextCursor: string | null;
+};

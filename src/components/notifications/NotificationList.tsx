@@ -56,21 +56,23 @@ const NotificationList = ({
     (notification) => !notification.read
   );
 
-  const didMarkRef = useRef(false);
+  const markedIdsRef = useRef(new Set<number>());
 
   useEffect(() => {
-    if (
-      !authenticated ||
-      unreadNotifications.length < 1 ||
-      didMarkRef.current
-    ) {
+    const unmarked = unreadNotifications.filter(
+      (notification) => !markedIdsRef.current.has(notification.id)
+    );
+
+    if (!authenticated || unmarked.length < 1) {
       return;
     }
 
-    didMarkRef.current = true;
+    for (const notification of unmarked) {
+      markedIdsRef.current.add(notification.id);
+    }
 
     (async () => {
-      for (const notification of unreadNotifications) {
+      for (const notification of unmarked) {
         await markNotificationAsRead(notification.id);
         await sleep(3000);
       }

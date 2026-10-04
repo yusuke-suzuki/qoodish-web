@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import type { Notification, Profile } from '../../../types/index.ts';
+import type { NotificationsPage, Profile } from '../../../types/index.ts';
 import JsonLd from '../../components/common/JsonLd.tsx';
 import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
@@ -85,9 +85,13 @@ export default async function RootLayout({ children, params }: Props) {
     : Promise.resolve<Profile | null>(null);
   // The bell is chrome, drawn above every error boundary: an outage there
   // must cost the unread count, not the page.
-  const notificationsPromise = authenticated
-    ? getNotifications(lang).catch(() => [])
-    : Promise.resolve<Notification[]>([]);
+  const noNotifications: NotificationsPage = {
+    notifications: [],
+    nextCursor: null
+  };
+  const unreadNotificationsPromise = authenticated
+    ? getNotifications(lang, { read: false }).catch(() => noNotifications)
+    : Promise.resolve(noNotifications);
 
   return (
     <html lang={lang} className={fontVariables}>
@@ -117,7 +121,7 @@ export default async function RootLayout({ children, params }: Props) {
           serverPending={pending}
           serverUid={uid}
           profilePromise={profilePromise}
-          notificationsPromise={notificationsPromise}
+          unreadNotificationsPromise={unreadNotificationsPromise}
         >
           <TermsRevisionNotice effectiveOn={pendingTermsRevision()} />
           <ShellProvider>
