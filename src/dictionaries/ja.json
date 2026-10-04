@@ -455,5 +455,22 @@
   "no blocked accounts": "ブロックしているアカウントはありません。",
   "muted accounts": "ミュート中のアカウント",
   "muted accounts detail": "ミュートしたアカウントの投稿と通知は表示されません。ミュートしたことは相手に通知されません。",
-  "no muted accounts": "ミュートしているアカウントはありません。"
+  "no muted accounts": "ミュートしているアカウントはありません。",
+  "pin properties": "ピンのプロパティを編集",
+  "pin properties description": "この地図のピンに任意のプロパティを付与できます。",
+  "add pin property": "プロパティを追加",
+  "rename": "名前を変更",
+  "pin property name": "プロパティ名",
+  "allow several options": "複数のオプションを選べるようにする",
+  "several options cannot change later": "あとから変更できません。",
+  "multi select": "マルチセレクト",
+  "single select": "セレクト",
+  "sure to delete pin property": "このプロパティを削除しますか？",
+  "delete pin property detail": "この地図のすべてのピンから、このプロパティが削除されます。",
+  "pin property options": "オプション",
+  "add options with enter": "Enter でオプションを追加",
+  "add pin property option": "オプションを追加",
+  "pin property option name": "オプション名",
+  "sure to delete pin property option": "このオプションを削除しますか？",
+  "delete pin property option detail": "このオプションは、設定されているすべてのピンから削除されます。"
 }

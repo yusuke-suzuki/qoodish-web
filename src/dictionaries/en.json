@@ -465,5 +465,22 @@
   "no blocked accounts": "You have not blocked anyone.",
   "muted accounts": "Muted accounts",
   "muted accounts detail": "Posts and notifications from muted accounts are hidden from you. They are not told that you muted them.",
-  "no muted accounts": "You have not muted anyone."
+  "no muted accounts": "You have not muted anyone.",
+  "pin properties": "Edit pin properties",
+  "pin properties description": "You can give the pins on this map any properties you like.",
+  "add pin property": "Add property",
+  "rename": "Rename",
+  "pin property name": "Property name",
+  "allow several options": "Allow selecting several options",
+  "several options cannot change later": "This cannot be changed later.",
+  "multi select": "Multi-select",
+  "single select": "Select",
+  "sure to delete pin property": "Delete this property?",
+  "delete pin property detail": "It will be removed from every pin on this map.",
+  "pin property options": "Options",
+  "add options with enter": "Press Enter to add an option",
+  "add pin property option": "Add option",
+  "pin property option name": "Option name",
+  "sure to delete pin property option": "Delete this option?",
+  "delete pin property option detail": "It will be removed from every pin it is set on."
 }

@@ -37,6 +37,7 @@ type Props = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onReportClick: () => void;
+  onPinPropertiesClick: () => void;
   onSaved: () => void;
   onPinClick: (pin: Pin) => void;
   pinDrawerOpen: boolean;
@@ -51,6 +52,7 @@ function MobileMapDrawer({
   onEditClick,
   onDeleteClick,
   onReportClick,
+  onPinPropertiesClick,
   onSaved,
   onPinClick,
   pinDrawerOpen
@@ -152,6 +154,7 @@ function MobileMapDrawer({
               onReportClick={onReportClick}
               onEditClick={onEditClick}
               onDeleteClick={onDeleteClick}
+              onPinPropertiesClick={onPinPropertiesClick}
             />
           }
         />

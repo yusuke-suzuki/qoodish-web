@@ -98,6 +98,20 @@ export type Coauthor = {
   updated_at: string;
 };
 
+export type PinPropertyOption = {
+  id: number;
+  name: string;
+  position: number;
+};
+
+export type PinProperty = {
+  id: number;
+  name: string;
+  multiple: boolean;
+  position: number;
+  options: PinPropertyOption[];
+};
+
 export type CoauthorshipInvitation = {
   id: number;
   status: string;
