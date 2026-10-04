@@ -59,6 +59,7 @@ typings/
 
 public/*
 !public/_headers
+!public/.well-known/
 !public/icons/
 !public/og/
 !public/screenshots/

@@ -7,10 +7,11 @@ https://qoodish.com
 The web app is a Next.js app deployed to Cloudflare Workers through
 [OpenNext](https://opennext.js.org/cloudflare). The API it talks to is
 [qoodish](https://github.com/yusuke-suzuki/qoodish). This repository also
-holds two more workers, each with its own README:
+holds two more workers and the Android app, each with its own README:
 
 - [`admin`](admin/README.md): the moderation dashboard
 - [`synthetics`](synthetics/README.md): scheduled checks against production
+- [`android`](android/README.md): the Google Play app wrapping the web app
 
 ## Installation
 

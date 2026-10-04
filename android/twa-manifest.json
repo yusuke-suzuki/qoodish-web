@@ -1,0 +1,51 @@
+{
+  "packageId": "com.qoodish.twa",
+  "host": "qoodish.com",
+  "name": "Qoodish",
+  "launcherName": "Qoodish",
+  "display": "standalone",
+  "themeColor": "#FFB300",
+  "themeColorDark": "#121212",
+  "navigationColor": "#FFFFFF",
+  "navigationColorDark": "#121212",
+  "navigationDividerColor": "#FFFFFF",
+  "navigationDividerColorDark": "#121212",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": true,
+  "startUrl": "/?utm_source=trusted-web-activity",
+  "iconUrl": "https://qoodish.com/icons/icon_x512.png",
+  "maskableIconUrl": "https://qoodish.com/icons/icon_x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://qoodish.com/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://qoodish.com/",
+  "minSdkVersion": 21,
+  "orientation": "default",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "1.0.0"
+}
