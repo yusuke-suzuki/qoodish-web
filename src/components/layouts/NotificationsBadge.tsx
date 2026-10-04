@@ -1,17 +1,14 @@
 import { Notifications } from '@mui/icons-material';
 import { Badge } from '@mui/material';
 import { memo, Suspense } from 'react';
-import useNotifications from '../../hooks/useNotifications.ts';
+import useUnreadNotifications from '../../hooks/useUnreadNotifications.ts';
 
 function UnreadBadge() {
-  const notifications = useNotifications();
-
-  const unreadCount = notifications.filter(
-    (notification) => notification.read === false
-  ).length;
+  const { notifications, nextCursor } = useUnreadNotifications();
+  const count = notifications.length;
 
   return (
-    <Badge badgeContent={unreadCount} color="secondary">
+    <Badge badgeContent={nextCursor ? `${count}+` : count} color="secondary">
       <Notifications />
     </Badge>
   );

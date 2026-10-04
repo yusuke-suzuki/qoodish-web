@@ -1,6 +1,8 @@
 'use server';
 
+import type { NotificationsPage } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
+import { getNotifications } from '../lib/users.ts';
 
 type ActionResult = {
   success: boolean;
@@ -20,4 +22,11 @@ export async function markNotificationAsRead(
   }
 
   return { success: true };
+}
+
+export async function fetchMoreNotifications(
+  lang: string,
+  cursor: string
+): Promise<NotificationsPage> {
+  return getNotifications(lang, { cursor });
 }

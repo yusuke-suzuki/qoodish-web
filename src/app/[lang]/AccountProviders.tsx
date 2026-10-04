@@ -1,26 +1,26 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import type { Notification, Profile } from '../../../types/index.ts';
-import NotificationsContext from '../../context/NotificationsContext.ts';
+import type { NotificationsPage, Profile } from '../../../types/index.ts';
 import ProfileContext from '../../context/ProfileContext.ts';
+import UnreadNotificationsContext from '../../context/UnreadNotificationsContext.ts';
 
 type Props = {
   profilePromise: Promise<Profile | null>;
-  notificationsPromise: Promise<Notification[]>;
+  unreadNotificationsPromise: Promise<NotificationsPage>;
   children: ReactNode;
 };
 
 export default function AccountProviders({
   profilePromise,
-  notificationsPromise,
+  unreadNotificationsPromise,
   children
 }: Props) {
   return (
     <ProfileContext.Provider value={profilePromise}>
-      <NotificationsContext.Provider value={notificationsPromise}>
+      <UnreadNotificationsContext.Provider value={unreadNotificationsPromise}>
         {children}
-      </NotificationsContext.Provider>
+      </UnreadNotificationsContext.Provider>
     </ProfileContext.Provider>
   );
 }
