@@ -18,10 +18,6 @@ function loadAcknowledged(): string | null {
   }
 }
 
-function snackbarKey(effectiveOn: string): string {
-  return `terms-revision-${effectiveOn}`;
-}
-
 function saveAcknowledged(effectiveOn: string) {
   try {
     window.localStorage.setItem(STORAGE_KEY, effectiveOn);
@@ -37,40 +33,43 @@ export default function TermsRevisionNotice({ effectiveOn }: Props) {
   const localePath = useLocalePath();
   const { authenticated } = useContext(AuthContext);
 
-  const announce = useEffectEvent((pendingEffectiveOn: string) => {
-    if (loadAcknowledged() === pendingEffectiveOn) return;
+  const announce = useEffectEvent(
+    (pendingEffectiveOn: string): SnackbarKey | undefined => {
+      if (loadAcknowledged() === pendingEffectiveOn) return;
 
-    const acknowledge = (snackbarId: SnackbarKey) => {
-      saveAcknowledged(pendingEffectiveOn);
-      closeSnackbar(snackbarId);
-    };
+      const acknowledge = (snackbarId: SnackbarKey) => {
+        saveAcknowledged(pendingEffectiveOn);
+        closeSnackbar(snackbarId);
+      };
 
-    enqueueSnackbar(dictionary['terms revised'], {
-      key: snackbarKey(pendingEffectiveOn),
-      persist: true,
-      action: (snackbarId) => (
-        <>
-          <Button
-            component={Link}
-            href={localePath('/terms')}
-            onClick={() => acknowledge(snackbarId)}
-          >
-            {dictionary.review}
-          </Button>
-          <Button onClick={() => acknowledge(snackbarId)}>
-            {dictionary.close}
-          </Button>
-        </>
-      )
-    });
-  });
+      return enqueueSnackbar(dictionary['terms revised'], {
+        preventDuplicate: false,
+        persist: true,
+        action: (snackbarId) => (
+          <>
+            <Button
+              component={Link}
+              href={localePath('/terms')}
+              onClick={() => acknowledge(snackbarId)}
+            >
+              {dictionary.review}
+            </Button>
+            <Button onClick={() => acknowledge(snackbarId)}>
+              {dictionary.close}
+            </Button>
+          </>
+        )
+      });
+    }
+  );
 
   useEffect(() => {
     if (!authenticated || !effectiveOn) return;
 
-    announce(effectiveOn);
+    const snackbarId = announce(effectiveOn);
+    if (snackbarId === undefined) return;
 
-    return () => closeSnackbar(snackbarKey(effectiveOn));
+    return () => closeSnackbar(snackbarId);
   }, [authenticated, effectiveOn]);
 
   return null;
