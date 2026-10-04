@@ -1,7 +1,7 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
 import { memo, type RefObject, useEffect, useRef, useState } from 'react';
-import type { AppMap, Pin } from '../../../types/index.ts';
+import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import CreatePinDialog from '../pins/CreatePinDialog.tsx';
@@ -15,6 +15,7 @@ import PositionPopup from './PositionPopup.tsx';
 type Props = {
   map: AppMap | null;
   pins: Pin[];
+  pinProperties: PinProperty[];
   milestoneOrders: Map<number, number>;
   checkedInPinIds: Set<number>;
   onPinSaved: () => void;
@@ -43,6 +44,7 @@ function positionInBounds(
 function CustomOverlays({
   map,
   pins,
+  pinProperties,
   milestoneOrders,
   checkedInPinIds,
   onPinSaved,
@@ -221,6 +223,8 @@ function CustomOverlays({
       {mdUp && (
         <PinPopover
           currentPin={currentPin}
+          map={map}
+          pinProperties={pinProperties}
           anchorEl={popoverAnchorEl}
           popoverId={pinPopoverId}
           popoverOpen={popoverOpen}
@@ -250,6 +254,7 @@ function CustomOverlays({
         open={createPinDialogOpen}
         onClose={handleCreatePinClose}
         map={map}
+        pinProperties={pinProperties}
         place={currentPlace}
         currentPosition={currentPosition}
         pinnedPosition={pinnedPosition}

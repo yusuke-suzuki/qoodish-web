@@ -39,6 +39,7 @@ type CreatePinParams = {
   latitude: number;
   longitude: number;
   image_ids: number[];
+  property_option_ids: number[];
 };
 
 type UpdatePinParams = CreatePinParams;

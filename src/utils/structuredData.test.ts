@@ -38,6 +38,7 @@ const pin = {
   comment: 'Gold on a still pond.',
   comments: [],
   images: [],
+  property_option_ids: [],
   latitude: 35.03,
   longitude: 135.72,
   map: appMap,

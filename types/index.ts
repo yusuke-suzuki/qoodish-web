@@ -184,6 +184,7 @@ export type Pin = {
   comment: string;
   comments: Comment[];
   images: Image[];
+  property_option_ids: number[];
   latitude: number;
   longitude: number;
   map: AppMap;

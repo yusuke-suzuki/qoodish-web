@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useState } from 'react';
-import type { Pin } from '../../../types/index.ts';
+import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -22,6 +22,8 @@ import PinMenuButton from '../pins/PinMenuButton.tsx';
 
 type Props = {
   currentPin: Pin | null;
+  map: AppMap | null;
+  pinProperties: PinProperty[];
   anchorEl: HTMLButtonElement | null;
   popoverId: string | undefined;
   popoverOpen: boolean;
@@ -32,6 +34,8 @@ type Props = {
 
 function PinPopover({
   currentPin,
+  map,
+  pinProperties,
   anchorEl,
   popoverId,
   popoverOpen,
@@ -113,6 +117,8 @@ function PinPopover({
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentPin={pin}
+        map={map}
+        pinProperties={pinProperties}
         onSaved={onSaved}
       />
 

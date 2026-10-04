@@ -8,10 +8,11 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { AppMap } from '../../../types/index.ts';
+import type { AppMap, PinProperty } from '../../../types/index.ts';
 import { createPin } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import usePhotoUploads from '../../hooks/usePhotoUploads.ts';
+import { offeredOptionIds } from '../../utils/pinPropertyOptions.ts';
 import { uploadFailureMessage } from '../../utils/uploadImage.ts';
 import AddPhotoButton from '../common/AddPhotoButton.tsx';
 import AppDialog from '../common/AppDialog.tsx';
@@ -19,6 +20,7 @@ import PhotoPreviewList from '../common/PhotoPreviewList.tsx';
 import PositionForm from '../maps/PositionForm.tsx';
 import PinDescriptionForm from './PinDescriptionForm.tsx';
 import PinNameForm from './PinNameForm.tsx';
+import PinPropertyOptionsField from './PinPropertyOptionsField.tsx';
 
 type Props = {
   open: boolean;
@@ -26,6 +28,7 @@ type Props = {
   onExited?: () => void;
   onSaved: () => void;
   map: AppMap | null;
+  pinProperties: PinProperty[];
   place?: google.maps.places.Place | null;
   currentPosition?: GeolocationPosition | null;
   pinnedPosition?: google.maps.LatLng | null;
@@ -37,6 +40,7 @@ export default memo(function CreatePinDialog({
   onExited,
   onSaved,
   map,
+  pinProperties,
   place,
   currentPosition,
   pinnedPosition
@@ -45,6 +49,7 @@ export default memo(function CreatePinDialog({
 
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
+  const [optionIds, setOptionIds] = useState<number[]>([]);
   const { items, isUploading, uploadedImages, upload, removeAt, reset } =
     usePhotoUploads();
   const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
@@ -73,7 +78,8 @@ export default memo(function CreatePinDialog({
             comment,
             latitude: position.lat,
             longitude: position.lng,
-            image_ids: uploadedImages.map((image) => image.id)
+            image_ids: uploadedImages.map((image) => image.id),
+            property_option_ids: offeredOptionIds(pinProperties, optionIds)
           });
 
           if (result.success) {
@@ -96,12 +102,24 @@ export default memo(function CreatePinDialog({
         }
       });
     },
-    [map, position, uploadedImages, name, comment, dictionary, onClose, onSaved]
+    [
+      map,
+      position,
+      uploadedImages,
+      name,
+      comment,
+      pinProperties,
+      optionIds,
+      dictionary,
+      onClose,
+      onSaved
+    ]
   );
 
   const handleExited = useCallback(() => {
     setName('');
     setComment('');
+    setOptionIds([]);
     reset();
     setPosition(null);
 
@@ -195,6 +213,14 @@ export default memo(function CreatePinDialog({
       <PinNameForm defaultValue={place?.displayName} onChange={setName} />
 
       <PinDescriptionForm onChange={setComment} />
+
+      <PinPropertyOptionsField
+        map={map}
+        pinProperties={pinProperties}
+        value={optionIds}
+        disabled={isPending}
+        onChange={setOptionIds}
+      />
 
       <PhotoPreviewList items={items} onDelete={removeAt} />
     </AppDialog>

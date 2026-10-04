@@ -41,20 +41,22 @@ type Props = {
   onClose: () => void;
   map: AppMap;
   pinProperties: PinProperty[];
+  defaultCreating?: boolean;
 };
 
 export default function PinPropertiesDialog({
   open,
   onClose,
   map,
-  pinProperties
+  pinProperties,
+  defaultCreating = false
 }: Props) {
   const dictionary = useDictionary();
   const router = useRouter();
 
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useState(defaultCreating);
 
   const openDelete = (target: DeleteTarget) => {
     setDeleteTarget(target);
