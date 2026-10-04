@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useCallback, useState } from 'react';
-import type { Pin } from '../../../types/index.ts';
+import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
@@ -34,6 +34,8 @@ type Props = {
   onClose: () => void;
   onExited: () => void;
   currentPin: Pin | null;
+  map: AppMap | null;
+  pinProperties: PinProperty[];
   milestoneAction?: MilestoneAction | null;
   onSaved: () => void;
   onDeleted: () => void;
@@ -45,6 +47,8 @@ function PinDrawer({
   onClose,
   onExited,
   currentPin,
+  map,
+  pinProperties,
   milestoneAction,
   onSaved,
   onDeleted
@@ -204,6 +208,8 @@ function PinDrawer({
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentPin={pin}
+        map={map}
+        pinProperties={pinProperties}
         onSaved={onSaved}
       />
       <DeletePinDialog

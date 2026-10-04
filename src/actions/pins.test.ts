@@ -39,7 +39,8 @@ const params = {
   comment: 'Great toast',
   latitude: 35.68,
   longitude: 139.76,
-  image_ids: [1, 2]
+  image_ids: [1, 2],
+  property_option_ids: [5]
 };
 
 const pin = { id: 3, map: { id: 2 }, author: { id: 9 } };

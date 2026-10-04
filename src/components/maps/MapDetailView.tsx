@@ -244,6 +244,8 @@ export default function MapDetailView({
 
       <PinDrawer
         currentPin={currentPin}
+        map={map}
+        pinProperties={pinProperties}
         open={pinDrawerOpen}
         onOpen={() => setPinDrawerOpen(true)}
         onClose={() => setPinDrawerOpen(false)}
@@ -300,6 +302,7 @@ export default function MapDetailView({
           <CustomOverlays
             map={map}
             pins={pins}
+            pinProperties={pinProperties}
             milestoneOrders={milestoneOrders}
             checkedInPinIds={checkedInPinIds}
             onPinSaved={handlePinSaved}

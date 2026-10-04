@@ -7,6 +7,7 @@ import PinDetail from '../../../../../components/pins/PinDetail.tsx';
 import PinGridSkeleton from '../../../../../components/pins/PinGridSkeleton.tsx';
 import RecommendedPins from '../../../../../components/pins/RecommendedPins.tsx';
 import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getMapPinProperties } from '../../../../../lib/maps.ts';
 import { getPin } from '../../../../../lib/pins.ts';
 import { getDictionary } from '../../../../../utils/getDictionary.ts';
 import { localePath } from '../../../../../utils/locales.ts';
@@ -67,12 +68,16 @@ export default async function PinPage({ params }: Props) {
     notFound();
   }
 
+  const pinProperties = pin.editable
+    ? await getMapPinProperties(String(pin.map.id), lang, token)
+    : [];
+
   return (
     <>
       <JsonLd data={pinStructuredData(pin, lang)} />
 
       <Suspense>
-        <PinDetail pin={pin} />
+        <PinDetail pin={pin} pinProperties={pinProperties} />
       </Suspense>
 
       <Suspense
