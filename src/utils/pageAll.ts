@@ -1,33 +1,25 @@
-export type Cursor = {
-  created_at: string;
-  id: number;
-};
+import type { CursorPage } from '../../types/index.ts';
 
 type Options = {
   maxRequests: number;
 };
 
-// The walk terminates on its own: a page that returns nothing, or that ends on
-// the row the cursor already named, stops it. `maxRequests` is a budget rather
-// than a guard — every page is a round trip the sitemap route waits on, so the
-// cost of the walk, not the number of URLs it yields, is what is capped.
-export default async function pageAll<T extends Cursor>(
-  fetchPage: (cursor?: Cursor) => Promise<T[]>,
+export default async function pageAll<T>(
+  fetchPage: (cursor?: string) => Promise<CursorPage<T>>,
   { maxRequests }: Options
 ): Promise<T[]> {
   const collected: T[] = [];
-  let cursor: Cursor | undefined;
+  let cursor: string | undefined;
 
   for (let request = 0; request < maxRequests; request++) {
-    const batch = await fetchPage(cursor);
-    const last = batch[batch.length - 1];
+    const { items, nextCursor } = await fetchPage(cursor);
+    collected.push(...items);
 
-    if (!last || last.id === cursor?.id) {
+    if (!nextCursor || nextCursor === cursor) {
       break;
     }
 
-    collected.push(...batch);
-    cursor = { created_at: last.created_at, id: last.id };
+    cursor = nextCursor;
   }
 
   return collected;

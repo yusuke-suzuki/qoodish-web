@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it, mock } from 'node:test';
-import type { MutedAccount } from '../../types/index.ts';
+import type { CursorPage, MutedAccount } from '../../types/index.ts';
 import {
   apiRequests,
   failWith,
@@ -9,7 +9,9 @@ import {
 } from '../test/serverActionMocks.ts';
 
 const getMutedAccounts =
-  mock.fn<(lang: string, nextId: number) => Promise<MutedAccount[]>>();
+  mock.fn<
+    (lang: string, cursor: string) => Promise<CursorPage<MutedAccount>>
+  >();
 
 mock.module(new URL('../lib/users.ts', import.meta.url).href, {
   namedExports: { getMutedAccounts }
@@ -25,13 +27,13 @@ beforeEach(() => {
 describe('fetchMoreMutedAccounts', () => {
   it('pages the muted accounts from the cursor', async () => {
     const { fetchMoreMutedAccounts } = await actions();
-    const page = [{ id: 3, cursor: 7 } as MutedAccount];
+    const page = { items: [{ id: 3 } as MutedAccount], nextCursor: '7' };
     getMutedAccounts.mock.mockImplementation(async () => page);
 
-    const result = await fetchMoreMutedAccounts('ja', 8);
+    const result = await fetchMoreMutedAccounts('ja', '8');
 
     assert.equal(result, page);
-    assert.deepEqual(getMutedAccounts.mock.calls[0].arguments, ['ja', 8]);
+    assert.deepEqual(getMutedAccounts.mock.calls[0].arguments, ['ja', '8']);
   });
 });
 

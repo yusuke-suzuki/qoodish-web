@@ -12,17 +12,19 @@ import BlockedAccountItem from './BlockedAccountItem.tsx';
 
 type Props = {
   accounts: BlockedAccount[];
+  nextCursor: string | null;
 };
 
-function BlockedAccountsCard({ accounts }: Props) {
+function BlockedAccountsCard({ accounts, nextCursor }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
 
   const [moreAccounts, setMoreAccounts] = useState<BlockedAccount[]>([]);
+  const [moreCursor, setMoreCursor] = useState<string | null>();
   const [unblockedIds, setUnblockedIds] = useState<number[]>([]);
-  const [noMoreResults, setNoMoreResults] = useState(accounts.length < 1);
   const [isPending, startTransition] = useTransition();
 
+  const cursor = moreCursor === undefined ? nextCursor : moreCursor;
   const loaded = [...accounts, ...moreAccounts];
   const shown = loaded.filter(
     (account, index) =>
@@ -35,17 +37,15 @@ function BlockedAccountsCard({ accounts }: Props) {
   };
 
   const loadMore = () => {
-    const last = loaded[loaded.length - 1];
-
-    if (noMoreResults || isPending || !last) {
+    if (!cursor || isPending) {
       return;
     }
 
     startTransition(async () => {
       try {
-        const next = await fetchMoreBlockedAccounts(lang, last.cursor);
-        setMoreAccounts((prev) => [...prev, ...next]);
-        setNoMoreResults(next.length < 1);
+        const page = await fetchMoreBlockedAccounts(lang, cursor);
+        setMoreAccounts((prev) => [...prev, ...page.items]);
+        setMoreCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
@@ -54,8 +54,8 @@ function BlockedAccountsCard({ accounts }: Props) {
 
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    !noMoreResults && !isPending,
-    loaded.length
+    !!cursor && !isPending,
+    cursor
   );
 
   return (
@@ -84,7 +84,7 @@ function BlockedAccountsCard({ accounts }: Props) {
           </Typography>
         )}
 
-        {!noMoreResults && (
+        {cursor && (
           <Button
             ref={loadMoreRef}
             onClick={loadMore}

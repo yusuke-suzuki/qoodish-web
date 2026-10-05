@@ -4,6 +4,7 @@ import {
   apiFetch,
   apiFetchList,
   apiFetchOrThrow,
+  apiFetchPage,
   assertApiAvailable,
   performApiFetch
 } from './api.ts';
@@ -287,6 +288,63 @@ describe('apiFetchList', () => {
     );
 
     await assert.rejects(apiFetchList('/maps', { guest: true, lang: 'en' }));
+  });
+});
+
+describe('apiFetchPage', () => {
+  it('reads the page and the cursor that continues it', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ data: [{ id: 1 }], next_cursor: 'abc' })
+    );
+
+    assert.deepEqual(
+      await apiFetchPage('/v2/pins', { guest: true, lang: 'en' }),
+      { items: [{ id: 1 }], nextCursor: 'abc' }
+    );
+
+    const [url] = fetchMock.mock.calls[0].arguments as FetchArgs;
+
+    assert.equal(url, 'https://api.example.com/guest/v2/pins');
+  });
+
+  it('asks for the page after the cursor it was given', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ data: [], next_cursor: null })
+    );
+
+    await apiFetchPage('/v2/pins', {
+      guest: true,
+      lang: 'en',
+      cursor: 'a+b/c='
+    });
+
+    const [url] = fetchMock.mock.calls[0].arguments as FetchArgs;
+
+    assert.equal(
+      url,
+      'https://api.example.com/guest/v2/pins?cursor=a%2Bb%2Fc%3D'
+    );
+  });
+
+  it('reads a 4xx as an empty last page', async (t) => {
+    t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ detail: 'Unauthorized' }, 401)
+    );
+
+    assert.deepEqual(
+      await apiFetchPage('/v2/pins', { guest: true, lang: 'en' }),
+      { items: [], nextCursor: null }
+    );
+  });
+
+  it('throws on a server error', async (t) => {
+    t.mock.method(
+      globalThis,
+      'fetch',
+      async () => new Response('oops', { status: 502 })
+    );
+
+    await assert.rejects(apiFetchPage('/v2/pins', { guest: true, lang: 'en' }));
   });
 });
 

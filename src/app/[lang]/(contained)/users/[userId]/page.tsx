@@ -70,7 +70,7 @@ export default async function UserPage({ params }: Props) {
 
   const isOwnProfile = Boolean(uid && profile.uid === uid);
 
-  const [initialPins, maps, journal, chapters] = await Promise.all([
+  const [pins, maps, journal, chapters] = await Promise.all([
     isOwnProfile ? getMyPins(lang) : getUserPins(userId, lang),
     isOwnProfile ? getMyMaps(lang, token) : getUserMaps(userId, lang, token),
     isOwnProfile
@@ -84,7 +84,8 @@ export default async function UserPage({ params }: Props) {
   return (
     <UserProfile
       profile={profile}
-      initialPins={initialPins}
+      initialPins={pins.items}
+      pinsCursor={pins.nextCursor}
       maps={maps}
       journal={journal}
       chapters={chapters}

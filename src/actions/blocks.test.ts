@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it, mock } from 'node:test';
-import type { BlockedAccount } from '../../types/index.ts';
+import type { BlockedAccount, CursorPage } from '../../types/index.ts';
 import {
   apiRequests,
   failWith,
@@ -9,7 +9,9 @@ import {
 } from '../test/serverActionMocks.ts';
 
 const getBlockedAccounts =
-  mock.fn<(lang: string, nextId: number) => Promise<BlockedAccount[]>>();
+  mock.fn<
+    (lang: string, cursor: string) => Promise<CursorPage<BlockedAccount>>
+  >();
 
 mock.module(new URL('../lib/users.ts', import.meta.url).href, {
   namedExports: { getBlockedAccounts }
@@ -25,13 +27,13 @@ beforeEach(() => {
 describe('fetchMoreBlockedAccounts', () => {
   it('pages the blocked accounts from the cursor', async () => {
     const { fetchMoreBlockedAccounts } = await actions();
-    const page = [{ id: 3, cursor: 7 } as BlockedAccount];
+    const page = { items: [{ id: 3 } as BlockedAccount], nextCursor: '7' };
     getBlockedAccounts.mock.mockImplementation(async () => page);
 
-    const result = await fetchMoreBlockedAccounts('ja', 8);
+    const result = await fetchMoreBlockedAccounts('ja', '8');
 
     assert.equal(result, page);
-    assert.deepEqual(getBlockedAccounts.mock.calls[0].arguments, ['ja', 8]);
+    assert.deepEqual(getBlockedAccounts.mock.calls[0].arguments, ['ja', '8']);
   });
 });
 

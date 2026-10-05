@@ -1,6 +1,7 @@
 import type {
   AppMap,
   BlockedAccount,
+  CursorPage,
   Journal,
   MutedAccount,
   Notification,
@@ -8,7 +9,12 @@ import type {
   Pin,
   Profile
 } from '../../types/index.ts';
-import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import {
+  apiFetch,
+  apiFetchList,
+  apiFetchPage,
+  assertApiAvailable
+} from './api.ts';
 import { MAPS_TAG, userTag } from './cacheTags.ts';
 
 export async function getProfile(
@@ -130,50 +136,44 @@ export function getBookmarkedJournals(
 export function getUserPins(
   userId: string,
   lang?: string,
-  nextTimestamp?: string
-): Promise<Pin[]> {
-  const query = nextTimestamp
-    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
-    : '';
-  return apiFetchList<Pin>(`/users/${userId}/pins${query}`, {
+  cursor?: string
+): Promise<CursorPage<Pin>> {
+  return apiFetchPage<Pin>(`/v2/users/${userId}/pins`, {
     lang,
+    cursor,
     next: { revalidate: 0 }
   });
 }
 
 export function getMyPins(
   lang?: string,
-  nextTimestamp?: string
-): Promise<Pin[]> {
-  const query = nextTimestamp
-    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
-    : '';
-  return apiFetchList<Pin>(`/me/pins${query}`, {
+  cursor?: string
+): Promise<CursorPage<Pin>> {
+  return apiFetchPage<Pin>('/v2/me/pins', {
     lang,
+    cursor,
     next: { revalidate: 0 }
   });
 }
 
 export function getBlockedAccounts(
   lang?: string,
-  nextId?: number
-): Promise<BlockedAccount[]> {
-  const query = nextId ? `?next_id=${nextId}` : '';
-
-  return apiFetchList<BlockedAccount>(`/me/blocks${query}`, {
+  cursor?: string
+): Promise<CursorPage<BlockedAccount>> {
+  return apiFetchPage<BlockedAccount>('/v2/me/blocks', {
     lang,
+    cursor,
     next: { revalidate: 0 }
   });
 }
 
 export function getMutedAccounts(
   lang?: string,
-  nextId?: number
-): Promise<MutedAccount[]> {
-  const query = nextId ? `?next_id=${nextId}` : '';
-
-  return apiFetchList<MutedAccount>(`/me/mutes${query}`, {
+  cursor?: string
+): Promise<CursorPage<MutedAccount>> {
+  return apiFetchPage<MutedAccount>('/v2/me/mutes', {
     lang,
+    cursor,
     next: { revalidate: 0 }
   });
 }

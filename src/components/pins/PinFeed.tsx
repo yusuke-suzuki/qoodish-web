@@ -15,43 +15,38 @@ import PinGridList from './PinGridList.tsx';
 
 type Props = {
   initialPins: Pin[];
+  nextCursor: string | null;
 };
 
-export default memo(function PinFeed({ initialPins }: Props) {
+export default memo(function PinFeed({ initialPins, nextCursor }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
 
   const [pins, setPins] = useState(initialPins);
-  const [noMoreResults, setNoMoreResults] = useState(initialPins.length < 1);
+  const [cursor, setCursor] = useState(nextCursor);
   const [isPending, startTransition] = useTransition();
 
   const loadMore = () => {
-    const lastPin = pins[pins.length - 1];
-
-    if (noMoreResults || isPending || !lastPin) {
+    if (!cursor || isPending) {
       return;
     }
 
     startTransition(async () => {
       try {
-        const morePins = await fetchMorePinFeed(
-          lang,
-          lastPin.created_at,
-          lastPin.id
-        );
-        setPins((prev) => [...prev, ...morePins]);
-        setNoMoreResults(morePins.length < 1);
+        const page = await fetchMorePinFeed(lang, cursor);
+        setPins((prev) => [...prev, ...page.items]);
+        setCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
     });
   };
 
-  const canLoadMore = !isPending && !noMoreResults && pins.length > 0;
+  const canLoadMore = !isPending && !!cursor && pins.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
     canLoadMore,
-    pins.length
+    cursor
   );
 
   if (pins.length < 1) {

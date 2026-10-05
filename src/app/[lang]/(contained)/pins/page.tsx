@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PinsPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const pins = await getPinFeed(lang);
+  const { items, nextCursor } = await getPinFeed(lang);
 
   return (
     <>
@@ -54,7 +54,7 @@ export default async function PinsPage({ params }: Props) {
         </Typography>
       </Box>
 
-      <PinFeed initialPins={pins} />
+      <PinFeed initialPins={items} nextCursor={nextCursor} />
     </>
   );
 }

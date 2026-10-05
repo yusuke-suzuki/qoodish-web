@@ -18,6 +18,7 @@ import TimelinePinCardSkeleton from './TimelinePinCardSkeleton.tsx';
 
 type Props = {
   initialPins: Pin[];
+  nextCursor: string | null;
 };
 
 type ReportTarget = {
@@ -27,11 +28,11 @@ type ReportTarget = {
 
 const skeletonKeys = ['skeleton-1', 'skeleton-2'];
 
-export default memo(function Timeline({ initialPins }: Props) {
+export default memo(function Timeline({ initialPins, nextCursor }: Props) {
   const dictionary = useDictionary();
 
   const [pins, setPins] = useState(initialPins);
-  const [noMoreResults, setNoMoreResults] = useState(initialPins.length < 1);
+  const [cursor, setCursor] = useState(nextCursor);
   const [isPending, startTransition] = useTransition();
 
   const [reportTarget, setReportTarget] = useState<ReportTarget>({
@@ -40,30 +41,24 @@ export default memo(function Timeline({ initialPins }: Props) {
   });
 
   const loadMore = () => {
-    if (noMoreResults || isPending) return;
-
-    const lastPin = pins[pins.length - 1];
-    if (!lastPin) {
-      setNoMoreResults(true);
-      return;
-    }
+    if (!cursor || isPending) return;
 
     startTransition(async () => {
       try {
-        const morePins = await fetchMoreTimelinePins(lastPin.created_at);
-        setPins((prev) => [...prev, ...morePins]);
-        setNoMoreResults(morePins.length < 1);
+        const page = await fetchMoreTimelinePins(cursor);
+        setPins((prev) => [...prev, ...page.items]);
+        setCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
     });
   };
 
-  const canLoadMore = !isPending && !noMoreResults && pins.length > 0;
+  const canLoadMore = !isPending && !!cursor && pins.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
     canLoadMore,
-    pins.length
+    cursor
   );
 
   const handleReportClick = (pin: Pin) => {

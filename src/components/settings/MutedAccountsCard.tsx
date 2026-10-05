@@ -12,17 +12,19 @@ import MutedAccountItem from './MutedAccountItem.tsx';
 
 type Props = {
   accounts: MutedAccount[];
+  nextCursor: string | null;
 };
 
-function MutedAccountsCard({ accounts }: Props) {
+function MutedAccountsCard({ accounts, nextCursor }: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
 
   const [moreAccounts, setMoreAccounts] = useState<MutedAccount[]>([]);
+  const [moreCursor, setMoreCursor] = useState<string | null>();
   const [unmutedIds, setUnmutedIds] = useState<number[]>([]);
-  const [noMoreResults, setNoMoreResults] = useState(accounts.length < 1);
   const [isPending, startTransition] = useTransition();
 
+  const cursor = moreCursor === undefined ? nextCursor : moreCursor;
   const loaded = [...accounts, ...moreAccounts];
   const shown = loaded.filter(
     (account, index) =>
@@ -35,17 +37,15 @@ function MutedAccountsCard({ accounts }: Props) {
   };
 
   const loadMore = () => {
-    const last = loaded[loaded.length - 1];
-
-    if (noMoreResults || isPending || !last) {
+    if (!cursor || isPending) {
       return;
     }
 
     startTransition(async () => {
       try {
-        const next = await fetchMoreMutedAccounts(lang, last.cursor);
-        setMoreAccounts((prev) => [...prev, ...next]);
-        setNoMoreResults(next.length < 1);
+        const page = await fetchMoreMutedAccounts(lang, cursor);
+        setMoreAccounts((prev) => [...prev, ...page.items]);
+        setMoreCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
@@ -54,8 +54,8 @@ function MutedAccountsCard({ accounts }: Props) {
 
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    !noMoreResults && !isPending,
-    loaded.length
+    !!cursor && !isPending,
+    cursor
   );
 
   return (
@@ -84,7 +84,7 @@ function MutedAccountsCard({ accounts }: Props) {
           </Typography>
         )}
 
-        {!noMoreResults && (
+        {cursor && (
           <Button
             ref={loadMoreRef}
             onClick={loadMore}

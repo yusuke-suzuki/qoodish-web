@@ -79,18 +79,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
       listOrEmpty(getPopularPins(DEFAULT_LOCALE)),
       listOrEmpty(
-        pageAll(
-          (cursor) =>
-            getPinFeed(DEFAULT_LOCALE, cursor?.created_at, cursor?.id),
-          PAGING
-        )
+        pageAll((cursor) => getPinFeed(DEFAULT_LOCALE, cursor), PAGING)
       ),
       listOrEmpty(
-        pageAll(
-          (cursor) =>
-            getChapterFeed(DEFAULT_LOCALE, cursor?.created_at, cursor?.id),
-          PAGING
-        )
+        pageAll((cursor) => getChapterFeed(DEFAULT_LOCALE, cursor), PAGING)
       )
     ]);
 

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it, mock } from 'node:test';
-import type { Pin } from '../../types/index.ts';
+import type { CursorPage, Pin } from '../../types/index.ts';
 import {
   apiRequests,
   failWith,
@@ -10,19 +10,22 @@ import {
   revalidatedTags
 } from '../test/serverActionMocks.ts';
 
-const page = [{ id: 3 }] as Pin[];
+const page: CursorPage<Pin> = {
+  items: [{ id: 3 }] as Pin[],
+  nextCursor: 'c2'
+};
 
-const getTimelinePins = mock.fn<(nextTimestamp: string) => Promise<Pin[]>>(
+const getTimelinePins = mock.fn<(cursor: string) => Promise<CursorPage<Pin>>>(
   async () => page
 );
 const getPinFeed = mock.fn<
-  (lang: string, nextTimestamp: string, nextId: number) => Promise<Pin[]>
+  (lang: string, cursor: string) => Promise<CursorPage<Pin>>
 >(async () => page);
 const getUserPins = mock.fn<
-  (userId: string, lang?: string, nextTimestamp?: string) => Promise<Pin[]>
+  (userId: string, lang?: string, cursor?: string) => Promise<CursorPage<Pin>>
 >(async () => page);
 const getMyPins = mock.fn<
-  (lang?: string, nextTimestamp?: string) => Promise<Pin[]>
+  (lang?: string, cursor?: string) => Promise<CursorPage<Pin>>
 >(async () => page);
 
 mock.module(new URL('../lib/pins.ts', import.meta.url).href, {
@@ -51,33 +54,33 @@ describe('pin pagination', () => {
   it('pages the timeline from the cursor', async () => {
     const { fetchMoreTimelinePins } = await actions();
 
-    assert.equal(await fetchMoreTimelinePins('t1'), page);
-    assert.deepEqual(getTimelinePins.mock.calls.at(-1)?.arguments, ['t1']);
+    assert.equal(await fetchMoreTimelinePins('c1'), page);
+    assert.deepEqual(getTimelinePins.mock.calls.at(-1)?.arguments, ['c1']);
   });
 
   it('pages the pin feed in the reader’s language', async () => {
     const { fetchMorePinFeed } = await actions();
 
-    assert.equal(await fetchMorePinFeed('ja', 't1', 4), page);
-    assert.deepEqual(getPinFeed.mock.calls.at(-1)?.arguments, ['ja', 't1', 4]);
+    assert.equal(await fetchMorePinFeed('ja', 'c1'), page);
+    assert.deepEqual(getPinFeed.mock.calls.at(-1)?.arguments, ['ja', 'c1']);
   });
 
   it('pages a user’s pins by their id', async () => {
     const { fetchMoreUserPins } = await actions();
 
-    assert.equal(await fetchMoreUserPins(9, 't1'), page);
+    assert.equal(await fetchMoreUserPins(9, 'c1'), page);
     assert.deepEqual(getUserPins.mock.calls.at(-1)?.arguments, [
       '9',
       undefined,
-      't1'
+      'c1'
     ]);
   });
 
   it('pages the signed-in user’s pins', async () => {
     const { fetchMoreMyPins } = await actions();
 
-    assert.equal(await fetchMoreMyPins('t1'), page);
-    assert.deepEqual(getMyPins.mock.calls.at(-1)?.arguments, [undefined, 't1']);
+    assert.equal(await fetchMoreMyPins('c1'), page);
+    assert.deepEqual(getMyPins.mock.calls.at(-1)?.arguments, [undefined, 'c1']);
   });
 });
 

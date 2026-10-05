@@ -1,5 +1,10 @@
-import type { Chapter, Comment } from '../../types/index.ts';
-import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import type { Chapter, Comment, CursorPage } from '../../types/index.ts';
+import {
+  apiFetch,
+  apiFetchList,
+  apiFetchPage,
+  assertApiAvailable
+} from './api.ts';
 import { CHAPTERS_TAG, CONTENT_TAG, chapterTag, userTag } from './cacheTags.ts';
 
 export async function getChapter(
@@ -46,21 +51,13 @@ export function getRecentChapters(lang: string): Promise<Chapter[]> {
 
 export function getChapterFeed(
   lang: string,
-  nextTimestamp?: string,
-  nextId?: number
-): Promise<Chapter[]> {
-  const params = new URLSearchParams();
-  if (nextTimestamp) {
-    params.set('next_timestamp', nextTimestamp);
-  }
-  if (nextId) {
-    params.set('next_id', String(nextId));
-  }
-  const query = params.size > 0 ? `?${params}` : '';
-  return apiFetchList<Chapter>(`/chapters${query}`, {
+  cursor?: string
+): Promise<CursorPage<Chapter>> {
+  return apiFetchPage<Chapter>('/v2/chapters', {
     lang,
     guest: true,
-    next: { revalidate: nextTimestamp ? 300 : 900, tags: [CHAPTERS_TAG] }
+    cursor,
+    next: { revalidate: cursor ? 300 : 900, tags: [CHAPTERS_TAG] }
   });
 }
 

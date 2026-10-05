@@ -1,5 +1,10 @@
-import type { Pin } from '../../types/index.ts';
-import { apiFetch, apiFetchList, assertApiAvailable } from './api.ts';
+import type { CursorPage, Pin } from '../../types/index.ts';
+import {
+  apiFetch,
+  apiFetchList,
+  apiFetchPage,
+  assertApiAvailable
+} from './api.ts';
 import { CONTENT_TAG, PINS_TAG, pinTag } from './cacheTags.ts';
 
 export async function getPin(
@@ -39,28 +44,19 @@ export function getRecentPins(lang: string): Promise<Pin[]> {
 
 export function getPinFeed(
   lang: string,
-  nextTimestamp?: string,
-  nextId?: number
-): Promise<Pin[]> {
-  const params = new URLSearchParams({ feed: 'true' });
-  if (nextTimestamp) {
-    params.set('next_timestamp', nextTimestamp);
-  }
-  if (nextId) {
-    params.set('next_id', String(nextId));
-  }
-  return apiFetchList<Pin>(`/pins?${params}`, {
+  cursor?: string
+): Promise<CursorPage<Pin>> {
+  return apiFetchPage<Pin>('/v2/pins', {
     lang,
     guest: true,
-    next: { revalidate: nextTimestamp ? 300 : 900, tags: [PINS_TAG] }
+    cursor,
+    next: { revalidate: cursor ? 300 : 900, tags: [PINS_TAG] }
   });
 }
 
-export function getTimelinePins(nextTimestamp?: string): Promise<Pin[]> {
-  const query = nextTimestamp
-    ? `?next_timestamp=${encodeURIComponent(nextTimestamp)}`
-    : '';
-  return apiFetchList<Pin>(`/pins${query}`, {
+export function getTimelinePins(cursor?: string): Promise<CursorPage<Pin>> {
+  return apiFetchPage<Pin>('/v2/pins', {
+    cursor,
     next: { revalidate: 0 }
   });
 }

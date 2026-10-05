@@ -54,12 +54,12 @@ export default async function HomePage({ params }: Props) {
   const { authenticated, pending } = await getServerAuthState();
 
   if (authenticated) {
-    const initialPins = await getTimelinePins();
+    const { items, nextCursor } = await getTimelinePins();
 
     return (
       <ContainedShell>
         <TimelineLayout lang={lang}>
-          <Timeline initialPins={initialPins} />
+          <Timeline initialPins={items} nextCursor={nextCursor} />
         </TimelineLayout>
       </ContainedShell>
     );

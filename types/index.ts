@@ -44,13 +44,9 @@ export type Author = {
   muting?: boolean;
 };
 
-export type BlockedAccount = Author & {
-  cursor: number;
-};
+export type BlockedAccount = Author;
 
-export type MutedAccount = Author & {
-  cursor: number;
-};
+export type MutedAccount = Author;
 
 // A guest payload leaves the reader's own state out, so a signed-out page
 // renders a comment without these.
@@ -334,6 +330,11 @@ export type Notification = {
   read: boolean;
   created_at: string;
   updated_at: string;
+};
+
+export type CursorPage<T> = {
+  items: T[];
+  nextCursor: string | null;
 };
 
 export type NotificationsPage = {

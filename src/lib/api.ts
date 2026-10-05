@@ -1,3 +1,4 @@
+import type { CursorPage } from '../../types/index.ts';
 import describeError from '../utils/describeError.ts';
 import { getDictionary } from '../utils/getDictionary.ts';
 import {
@@ -133,4 +134,21 @@ export async function apiFetchList<T>(
   const { data, status } = await apiFetch<T[]>(path, options);
   assertApiAvailable(status, path);
   return data ?? [];
+}
+
+export async function apiFetchPage<T>(
+  path: string,
+  { cursor, ...options }: ApiFetchOptions & { cursor?: string } = {}
+): Promise<CursorPage<T>> {
+  const pagePath = cursor ? `${path}?${new URLSearchParams({ cursor })}` : path;
+  const { data, status } = await apiFetch<{
+    data: T[];
+    next_cursor: string | null;
+  }>(pagePath, options);
+  assertApiAvailable(status, pagePath);
+
+  return {
+    items: data?.data ?? [],
+    nextCursor: data?.next_cursor ?? null
+  };
 }

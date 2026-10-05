@@ -27,9 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SettingsPage({ params }: Props) {
   const { lang } = await params;
   const { token } = await getServerAuthState();
+  const noAccounts = { items: [], nextCursor: null };
   const [mutedAccounts, blockedAccounts] = token
     ? await Promise.all([getMutedAccounts(lang), getBlockedAccounts(lang)])
-    : [[], []];
+    : [noAccounts, noAccounts];
 
   return (
     <Stack spacing={3}>
@@ -37,8 +38,14 @@ export default async function SettingsPage({ params }: Props) {
       <PushNotificationsCard />
       {token && (
         <>
-          <MutedAccountsCard accounts={mutedAccounts} />
-          <BlockedAccountsCard accounts={blockedAccounts} />
+          <MutedAccountsCard
+            accounts={mutedAccounts.items}
+            nextCursor={mutedAccounts.nextCursor}
+          />
+          <BlockedAccountsCard
+            accounts={blockedAccounts.items}
+            nextCursor={blockedAccounts.nextCursor}
+          />
         </>
       )}
       <ProvidersCard />
