@@ -11,12 +11,10 @@
   "observability": {
     "enabled": true,
     "traces": {
-      "enabled": true,
-      "destinations": ["grafana-traces"]
+      "enabled": true
     },
     "logs": {
-      "enabled": true,
-      "destinations": ["grafana-logs"]
+      "enabled": true
     }
   },
   "vars": {
