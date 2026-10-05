@@ -63,6 +63,7 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
     const { Map: GoogleMap } = await loader.importLibrary('maps');
     const { ColorScheme, ControlPosition } = await loader.importLibrary('core');
 
+    // ColorScheme.FOLLOW_SYSTEM paints the first frames light before switching.
     const prefersDark = window.matchMedia(
       '(prefers-color-scheme: dark)'
     ).matches;
