@@ -15,6 +15,7 @@ import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import BottomSheet from '../common/BottomSheet.tsx';
+import PinPropertyValues from '../common/PinPropertyValues.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from '../pins/DeletePinDialog.tsx';
@@ -123,6 +124,9 @@ function PinDrawer({
             <Typography variant="body2" component="p">
               {pin?.comment}
             </Typography>
+            {pin && (
+              <PinPropertyValues pin={pin} pinProperties={pinProperties} />
+            )}
           </CardContent>
 
           <CardContent

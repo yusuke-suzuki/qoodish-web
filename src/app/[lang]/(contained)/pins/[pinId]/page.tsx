@@ -68,9 +68,11 @@ export default async function PinPage({ params }: Props) {
     notFound();
   }
 
-  const pinProperties = pin.editable
-    ? await getMapPinProperties(String(pin.map.id), lang, token)
-    : [];
+  const pinProperties = await getMapPinProperties(
+    String(pin.map.id),
+    lang,
+    token
+  );
 
   return (
     <>
