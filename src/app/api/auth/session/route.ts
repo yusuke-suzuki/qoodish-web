@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   let idToken: unknown;
 
   try {
-    ({ idToken } = await request.json());
+    ({ idToken } = await request.json<{ idToken?: unknown }>());
   } catch {
     return NextResponse.json(
       { error: 'Invalid request body' },

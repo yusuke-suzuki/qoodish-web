@@ -76,10 +76,8 @@ firebase-debug.log
 
 .next
 
-.open-next
 .wrangler
 .dev.vars
-cloudflare-env.d.ts
 
 .env
 .env.*
@@ -99,3 +97,6 @@ spec
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/dist/
+.vinext/
+.cloudflare/

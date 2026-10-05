@@ -48,21 +48,6 @@ function expand({
   }));
 }
 
-// The build prerenders this route with no API to ask, so there a failed
-// list is an empty one. At revalidation the failure is rethrown instead:
-// ISR then keeps serving the last good sitemap rather than a truncated one.
-async function listOrEmpty<T>(list: Promise<T[]>): Promise<T[]> {
-  try {
-    return await list;
-  } catch (error) {
-    if (process.env.NEXT_PHASE === 'phase-production-build') {
-      return [];
-    }
-
-    throw error;
-  }
-}
-
 // The route waits on every page in turn, so what is worth capping is the round
 // trips it spends, not the URLs they yield. Each source is walked this far and
 // no further; what that covers is the budget times whatever the feed serves per
@@ -74,16 +59,12 @@ const PAGING = { maxRequests: 25 };
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [activeMaps, popularMaps, recentMaps, popularPins, pins, chapters] =
     await Promise.all([
-      listOrEmpty(getActiveMaps(DEFAULT_LOCALE)),
-      listOrEmpty(getPopularMaps(DEFAULT_LOCALE)),
-      listOrEmpty(getRecentMaps(DEFAULT_LOCALE)),
-      listOrEmpty(getPopularPins(DEFAULT_LOCALE)),
-      listOrEmpty(
-        pageAll((cursor) => getPinFeed(DEFAULT_LOCALE, cursor), PAGING)
-      ),
-      listOrEmpty(
-        pageAll((cursor) => getChapterFeed(DEFAULT_LOCALE, cursor), PAGING)
-      )
+      getActiveMaps(DEFAULT_LOCALE),
+      getPopularMaps(DEFAULT_LOCALE),
+      getRecentMaps(DEFAULT_LOCALE),
+      getPopularPins(DEFAULT_LOCALE),
+      pageAll((cursor) => getPinFeed(DEFAULT_LOCALE, cursor), PAGING),
+      pageAll((cursor) => getChapterFeed(DEFAULT_LOCALE, cursor), PAGING)
     ]);
 
   const mapEntries = new Map<number, Entry>();

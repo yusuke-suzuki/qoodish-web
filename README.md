@@ -4,8 +4,9 @@
 
 https://qoodish.com
 
-The web app is a Next.js app deployed to Cloudflare Workers through
-[OpenNext](https://opennext.js.org/cloudflare). The API it talks to is
+The web app is a Next.js App Router app built with
+[vinext](https://vinext.dev) on Vite and deployed to Cloudflare Workers with
+the [cf CLI](https://www.npmjs.com/package/cf). The API it talks to is
 [qoodish](https://github.com/yusuke-suzuki/qoodish). This repository also
 holds two more workers, each with its own README:
 
@@ -29,8 +30,9 @@ gcloud secrets versions access latest --secret=QOODISH_WEB_DOTENV --project=$PRO
 
 `.env` files are ignored by git, so never commit one.
 
-A deployed worker takes `APP_ENV` and `API_ENDPOINT` from the `vars` of
-its environment in `wrangler.jsonc` instead.
+A deployed worker takes `APP_ENV` and `API_ENDPOINT` from the bindings of
+its environment in `cloudflare.config.ts` instead. The `production` mode
+selects qoodish.com; any other mode selects the dev environment.
 
 ## Running app
 

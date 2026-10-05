@@ -7,19 +7,16 @@
   "license": "UNLICENSED",
   "packageManager": "pnpm@11.0.9",
   "scripts": {
-    "dev": "next dev --webpack -p 5000",
-    "build": "next build --webpack",
-    "start": "next start",
-    "lint": "biome ci ./src ./e2e ./synthetics/src ./admin/src playwright.config.ts",
-    "typecheck": "tsc --noEmit",
+    "dev": "vite dev --port 5000",
+    "preview": "vite preview --port 8787",
+    "lint": "biome ci ./src ./e2e ./synthetics/src ./admin/src ./vite playwright.config.ts vite.config.ts cloudflare.config.ts",
+    "typecheck": "cf workers types && tsc --noEmit",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-test-module-mocks --test \"src/**/*.test.ts\"",
     "e2e": "playwright test",
-    "preview": "opennextjs-cloudflare preview --env dev",
-    "cf:build": "opennextjs-cloudflare build",
-    "cf:build:dev": "opennextjs-cloudflare build --env dev",
-    "cf:deploy": "opennextjs-cloudflare deploy",
-    "cf:deploy:dev": "opennextjs-cloudflare deploy --env dev",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf:build": "vite build",
+    "cf:build:dev": "vite build --mode dev",
+    "cf:deploy": "vinext-cloudflare deploy",
+    "cf:deploy:dev": "vinext-cloudflare deploy --env dev"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -39,26 +36,33 @@
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^9.3.0",
     "@serwist/window": "^9.2.1",
+    "@vinext/cloudflare": "^1.0.1",
     "firebase": "^12.4.0",
     "lexical": "^0.46.0",
     "next": "^16.3.3",
     "notistack": "^3.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "react-server-dom-webpack": "^19.3.0",
+    "vinext": "^1.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.10",
-    "@opennextjs/cloudflare": "^1.20.2",
+    "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@playwright/test": "^1.62.1",
-    "@serwist/next": "^9.2.1",
+    "@serwist/build": "^9.5.13",
     "@types/google.maps": "^3.54.6",
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "babel-plugin-react-compiler": "^1.0.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-rsc": "^0.5.35",
+    "cf": "1.0.0-beta.12",
+    "oxc-transform-react": "^0.152.0",
     "serwist": "^9.2.1",
     "typescript": "^5.2.2",
-    "wrangler": "^4.114.0"
-  }
+    "vite": "8.3.0"
+  },
+  "type": "module"
 }

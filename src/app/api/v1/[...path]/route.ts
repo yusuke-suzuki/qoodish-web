@@ -1,4 +1,4 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { env } from 'cloudflare:workers';
 import { type NextRequest, NextResponse } from 'next/server';
 import {
   apiUrl,
@@ -62,11 +62,11 @@ async function imageUploadAllowed(): Promise<boolean> {
     return false;
   }
 
-  const { IMAGE_UPLOAD_BURST_LIMIT, IMAGE_UPLOAD_LIMIT } =
-    getCloudflareContext().env;
-
-  for (const limiter of [IMAGE_UPLOAD_BURST_LIMIT, IMAGE_UPLOAD_LIMIT]) {
-    if (limiter && !(await limiter.limit({ key: uid })).success) {
+  for (const limiter of [
+    env.IMAGE_UPLOAD_BURST_LIMIT,
+    env.IMAGE_UPLOAD_LIMIT
+  ]) {
+    if (!(await limiter.limit({ key: uid })).success) {
       return false;
     }
   }

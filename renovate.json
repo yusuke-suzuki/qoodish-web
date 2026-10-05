@@ -26,7 +26,9 @@
     },
     {
       "matchPackageNames": [
-        "@opennextjs/cloudflare",
+        "vinext",
+        "@vinext/**",
+        "cf",
         "wrangler",
         "@cloudflare/**"
       ],

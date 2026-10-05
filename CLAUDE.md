@@ -10,7 +10,8 @@ This document provides essential context for Claude Code to understand the Qoodi
 
 ## 2. Technology Stack
 
-- **Framework:** Next.js (v15) with App Router
+- **Framework:** Next.js App Router APIs, built and served by vinext on Vite. Next.js build features that depend on webpack or Turbopack (`webpack` config, loaders) are unavailable; use Vite plugins and import suffixes such as `?raw` instead.
+- **Hosting:** Cloudflare Workers. Worker settings and bindings live in `cloudflare.config.ts` (cf CLI); read bindings with `import { env } from 'cloudflare:workers'`.
 - **Language:** TypeScript
 - **UI Components:** Material-UI (MUI) v7 and Emotion for styling.
 - **Data Fetching:** An internal BFF (`src/lib/api.ts`) wraps the Rails API. Server Components and Server Actions call per-domain fetchers in `src/lib/`; client components reach the same backend through internal route handlers under `src/app/api/`. SWR is no longer used.

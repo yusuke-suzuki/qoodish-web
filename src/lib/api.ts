@@ -61,7 +61,7 @@ export async function performApiFetch<T>(
     });
 
     if (!res.ok) {
-      const body = await res.json().catch(() => null);
+      const body = await res.json<{ detail?: string }>().catch(() => null);
       const detail =
         body?.detail ?? messages(acceptLanguage)['an error occurred'];
       return { data: null, error: detail, status: res.status };
@@ -71,7 +71,7 @@ export async function performApiFetch<T>(
       return { data: null, error: null, status: res.status };
     }
 
-    const data = await res.json();
+    const data = await res.json<T>();
     return { data, error: null, status: res.status };
   } catch (error) {
     const timedOut = isTimeoutError(error);

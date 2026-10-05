@@ -33,7 +33,7 @@ jobs:
         run: |
           pnpm exec playwright install --with-deps chromium
 
-      # Next resolves every NEXT_PUBLIC_ name while it builds, so a page cannot
+      # vinext resolves every NEXT_PUBLIC_ name while it builds, so a page cannot
       # be given its configuration after the bundle is written.
       - name: Build the worker
         run: |

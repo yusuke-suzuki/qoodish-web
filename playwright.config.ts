@@ -26,7 +26,7 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: 'pnpm exec opennextjs-cloudflare preview --env dev',
+        command: 'pnpm preview',
         url: baseURL,
         timeout: 180000,
         reuseExistingServer: !process.env.CI

@@ -1,11 +1,11 @@
-import privacyEn from '../content/legal/privacy.en.md';
-import privacyJa from '../content/legal/privacy.ja.md';
-import terms20260824En from '../content/legal/terms/2026-08-24.en.md';
-import terms20260824Ja from '../content/legal/terms/2026-08-24.ja.md';
-import terms20261007En from '../content/legal/terms/2026-10-07.en.md';
-import terms20261007Ja from '../content/legal/terms/2026-10-07.ja.md';
-import terms20261012En from '../content/legal/terms/2026-10-12.en.md';
-import terms20261012Ja from '../content/legal/terms/2026-10-12.ja.md';
+import privacyEn from '../content/legal/privacy.en.md?raw';
+import privacyJa from '../content/legal/privacy.ja.md?raw';
+import terms20260824En from '../content/legal/terms/2026-08-24.en.md?raw';
+import terms20260824Ja from '../content/legal/terms/2026-08-24.ja.md?raw';
+import terms20261007En from '../content/legal/terms/2026-10-07.en.md?raw';
+import terms20261007Ja from '../content/legal/terms/2026-10-07.ja.md?raw';
+import terms20261012En from '../content/legal/terms/2026-10-12.en.md?raw';
+import terms20261012Ja from '../content/legal/terms/2026-10-12.ja.md?raw';
 import { type Locale, toLocale } from './locales.ts';
 import { isBeforeEffectiveDate } from './termsRevisions.ts';
 
