@@ -7,6 +7,7 @@ import { memo, useState, useTransition } from 'react';
 import type { BlockedAccount } from '../../../types/index.ts';
 import { fetchMoreBlockedAccounts } from '../../actions/blocks.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useLoadMoreOnVisible from '../../hooks/useLoadMoreOnVisible.ts';
 import BlockedAccountItem from './BlockedAccountItem.tsx';
 
 type Props = {
@@ -51,6 +52,11 @@ function BlockedAccountsCard({ accounts }: Props) {
     });
   };
 
+  const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
+    loadMore,
+    !noMoreResults && !isPending
+  );
+
   return (
     <Card>
       <CardContent>
@@ -79,6 +85,7 @@ function BlockedAccountsCard({ accounts }: Props) {
 
         {!noMoreResults && (
           <Button
+            ref={loadMoreRef}
             onClick={loadMore}
             color="secondary"
             loading={isPending}

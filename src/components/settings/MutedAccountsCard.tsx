@@ -7,6 +7,7 @@ import { memo, useState, useTransition } from 'react';
 import type { MutedAccount } from '../../../types/index.ts';
 import { fetchMoreMutedAccounts } from '../../actions/mutes.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useLoadMoreOnVisible from '../../hooks/useLoadMoreOnVisible.ts';
 import MutedAccountItem from './MutedAccountItem.tsx';
 
 type Props = {
@@ -51,6 +52,11 @@ function MutedAccountsCard({ accounts }: Props) {
     });
   };
 
+  const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
+    loadMore,
+    !noMoreResults && !isPending
+  );
+
   return (
     <Card>
       <CardContent>
@@ -79,6 +85,7 @@ function MutedAccountsCard({ accounts }: Props) {
 
         {!noMoreResults && (
           <Button
+            ref={loadMoreRef}
             onClick={loadMore}
             color="secondary"
             loading={isPending}

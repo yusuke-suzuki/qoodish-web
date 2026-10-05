@@ -8,6 +8,7 @@ import { memo, useState, useTransition } from 'react';
 import type { Chapter } from '../../../types/index.ts';
 import { fetchMoreChapterFeed } from '../../actions/chapters.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useLoadMoreOnVisible from '../../hooks/useLoadMoreOnVisible.ts';
 import LoadingStatus from '../common/LoadingStatus.tsx';
 import NoContents from '../common/NoContents.tsx';
 import ChapterList from './ChapterList.tsx';
@@ -48,6 +49,12 @@ export default memo(function ChapterFeed({ initialChapters }: Props) {
     });
   };
 
+  const canLoadMore = !isPending && !noMoreResults && chapters.length > 0;
+  const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
+    loadMore,
+    canLoadMore
+  );
+
   if (chapters.length < 1) {
     return (
       <NoContents icon={HistoryEdu} message={dictionary['no chapters yet']} />
@@ -61,8 +68,8 @@ export default memo(function ChapterFeed({ initialChapters }: Props) {
       <ChapterList chapters={chapters} />
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
-        {!isPending && !noMoreResults && (
-          <Button onClick={loadMore} color="secondary" loading={isPending}>
+        {canLoadMore && (
+          <Button ref={loadMoreRef} onClick={loadMore} color="secondary">
             {dictionary['load more']}
           </Button>
         )}
