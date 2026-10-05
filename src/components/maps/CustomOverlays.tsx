@@ -58,7 +58,7 @@ function CustomOverlays({
 
   const [currentBounds, setCurrentBounds] =
     useState<google.maps.LatLngBounds | null>(null);
-  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
+  const [selectedPin, setSelectedPin] = useState<Pin | null>(null);
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
   const [createPinDialogOpen, setCreatePinDialogOpen] = useState(false);
@@ -76,8 +76,12 @@ function CustomOverlays({
       )
     : [];
 
+  const currentPin = selectedPin
+    ? (pins.find((pin) => pin.id === selectedPin.id) ?? selectedPin)
+    : null;
+
   const handlePinDeleted = () => {
-    setCurrentPin(null);
+    setSelectedPin(null);
     setPopoverAnchorEl(null);
     onPinSaved();
   };
@@ -86,7 +90,7 @@ function CustomOverlays({
     pin: Pin,
     ref: RefObject<HTMLButtonElement | null>
   ) => {
-    setCurrentPin(pin);
+    setSelectedPin(pin);
     onPinClick(pin);
 
     setPopoverAnchorEl(ref.current);

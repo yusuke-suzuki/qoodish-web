@@ -128,16 +128,19 @@ export default memo(function EditPinDialog({
     reset(currentPin.images);
   }, [currentPin, reset]);
 
+  const defaultLatitude = currentPin?.latitude;
+  const defaultLongitude = currentPin?.longitude;
+
   const defaultPosition = useMemo(() => {
-    if (!currentPin) {
+    if (defaultLatitude === undefined || defaultLongitude === undefined) {
       return null;
     }
 
     return {
-      lat: currentPin.latitude,
-      lng: currentPin.longitude
+      lat: defaultLatitude,
+      lng: defaultLongitude
     };
-  }, [currentPin]);
+  }, [defaultLatitude, defaultLongitude]);
 
   return (
     <AppDialog

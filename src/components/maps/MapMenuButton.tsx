@@ -4,7 +4,8 @@ import {
   Link,
   MoreVert,
   PersonAdd,
-  ReportProblem
+  ReportProblem,
+  Sell
 } from '@mui/icons-material';
 import {
   Divider,
@@ -34,6 +35,7 @@ type Props = {
   onEditClick: () => void;
   onDeleteClick: () => void;
   onReportClick: () => void;
+  onPinPropertiesClick: () => void;
 };
 
 export default memo(function MapMenuButton({
@@ -41,7 +43,8 @@ export default memo(function MapMenuButton({
   currentProfile,
   onEditClick,
   onDeleteClick,
-  onReportClick
+  onReportClick,
+  onPinPropertiesClick
 }: Props) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -86,6 +89,12 @@ export default memo(function MapMenuButton({
     setAnchorEl(null);
 
     onDeleteClick();
+  };
+
+  const handlePinPropertiesClick = () => {
+    setAnchorEl(null);
+
+    onPinPropertiesClick();
   };
 
   const handleInviteClick = () => {
@@ -182,7 +191,16 @@ export default memo(function MapMenuButton({
           </MenuItem>
         )}
 
-        {isAuthor && <Divider />}
+        {map?.editable && <Divider />}
+
+        {map?.editable && (
+          <MenuItem onClick={handlePinPropertiesClick}>
+            <ListItemIcon>
+              <Sell fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary={dictionary['pin properties']} />
+          </MenuItem>
+        )}
 
         {isAuthor && (
           <MenuItem onClick={handleInviteClick}>
