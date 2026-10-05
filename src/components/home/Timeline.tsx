@@ -62,7 +62,8 @@ export default memo(function Timeline({ initialPins }: Props) {
   const canLoadMore = !isPending && !noMoreResults && pins.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    canLoadMore
+    canLoadMore,
+    pins.length
   );
 
   const handleReportClick = (pin: Pin) => {

@@ -73,7 +73,8 @@ export default function NotificationsFeed({
 
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    !!cursor && !isPending
+    !!cursor && !isPending,
+    cursor
   );
 
   return (

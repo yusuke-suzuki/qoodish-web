@@ -54,7 +54,8 @@ function MutedAccountsCard({ accounts }: Props) {
 
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    !noMoreResults && !isPending
+    !noMoreResults && !isPending,
+    loaded.length
   );
 
   return (

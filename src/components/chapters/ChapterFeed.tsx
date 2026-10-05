@@ -52,7 +52,8 @@ export default memo(function ChapterFeed({ initialChapters }: Props) {
   const canLoadMore = !isPending && !noMoreResults && chapters.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
-    canLoadMore
+    canLoadMore,
+    chapters.length
   );
 
   if (chapters.length < 1) {
