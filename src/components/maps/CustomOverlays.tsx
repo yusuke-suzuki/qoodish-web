@@ -1,6 +1,13 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, type RefObject, useEffect, useRef, useState } from 'react';
+import {
+  memo,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
@@ -18,6 +25,7 @@ type Props = {
   pinProperties: PinProperty[];
   milestoneOrders: Map<number, number>;
   checkedInPinIds: Set<number>;
+  filter?: ReactNode;
   onPinSaved: () => void;
   onPinClick: (pin: Pin) => void;
 };
@@ -47,6 +55,7 @@ function CustomOverlays({
   pinProperties,
   milestoneOrders,
   checkedInPinIds,
+  filter,
   onPinSaved,
   onPinClick
 }: Props) {
@@ -248,7 +257,7 @@ function CustomOverlays({
         onClose={handlePinnedPositionClose}
       />
 
-      <CustomMapControls onPlaceChange={setCurrentPlace} />
+      <CustomMapControls filter={filter} onPlaceChange={setCurrentPlace} />
 
       <CreatePinDialog
         open={createPinDialogOpen}

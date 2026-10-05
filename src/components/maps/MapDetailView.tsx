@@ -15,6 +15,7 @@ import type {
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useJourney, { type PauseReason } from '../../hooks/useJourney.ts';
+import { matchesOptions } from '../../utils/pinPropertyOptions.ts';
 import ReportDialog from '../common/ReportDialog.tsx';
 import EndJourneyDialog from '../journeys/EndJourneyDialog.tsx';
 import JourneyFab from '../journeys/JourneyFab.tsx';
@@ -30,6 +31,7 @@ import MapSummaryCard from './MapSummaryCard.tsx';
 import MobileMapDrawer from './MobileMapDrawer.tsx';
 import PinDrawer from './PinDrawer.tsx';
 import PinPropertiesDialog from './PinPropertiesDialog.tsx';
+import PinPropertyFilter from './PinPropertyFilter.tsx';
 
 const summaryCardHeight = 360;
 
@@ -121,6 +123,11 @@ export default function MapDetailView({
   const [endDialogOpen, setEndDialogOpen] = useState(false);
   const [selectedPin, setSelectedPin] = useState<Pin | null>(null);
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false);
+  const [filterOptionIds, setFilterOptionIds] = useState<number[]>([]);
+
+  const visiblePins = pins.filter((pin) =>
+    matchesOptions(pin.property_option_ids, pinProperties, filterOptionIds)
+  );
 
   const currentPin = selectedPin
     ? (pins.find((pin) => pin.id === selectedPin.id) ?? selectedPin)
@@ -229,7 +236,7 @@ export default function MapDetailView({
     <>
       <MobileMapDrawer
         map={map}
-        pins={pins}
+        pins={visiblePins}
         coauthors={coauthors}
         chapters={chapters}
         currentProfile={currentProfile}
@@ -273,7 +280,7 @@ export default function MapDetailView({
         >
           <MapSummaryCard
             map={map}
-            pins={pins}
+            pins={visiblePins}
             coauthors={coauthors}
             chapters={chapters}
             currentProfile={currentProfile}
@@ -301,10 +308,17 @@ export default function MapDetailView({
         >
           <CustomOverlays
             map={map}
-            pins={pins}
+            pins={visiblePins}
             pinProperties={pinProperties}
             milestoneOrders={milestoneOrders}
             checkedInPinIds={checkedInPinIds}
+            filter={
+              <PinPropertyFilter
+                pinProperties={pinProperties}
+                value={filterOptionIds}
+                onChange={setFilterOptionIds}
+              />
+            }
             onPinSaved={handlePinSaved}
             onPinClick={handlePinClick}
           />

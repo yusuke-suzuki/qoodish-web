@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, useMediaQuery, useTheme } from '@mui/material';
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, type ReactNode, useEffect, useRef, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import CurrentPositionButton from './CurrentPositionButton.tsx';
@@ -7,10 +7,11 @@ import MapControl from './MapControl.tsx';
 import PlaceAutocomplete from './PlaceAutocomplete.tsx';
 
 type Props = {
+  filter?: ReactNode;
   onPlaceChange: (place: google.maps.places.Place) => void;
 };
 
-function CustomMapControls({ onPlaceChange }: Props) {
+function CustomMapControls({ filter, onPlaceChange }: Props) {
   const { googleMap, loader } = useGoogleMap();
 
   const dictionary = useDictionary();
@@ -85,6 +86,7 @@ function CustomMapControls({ onPlaceChange }: Props) {
               label={dictionary['search places to add']}
             />
           </Paper>
+          {filter && <Box sx={{ mt: 1 }}>{filter}</Box>}
         </Box>
       </MapControl>
 

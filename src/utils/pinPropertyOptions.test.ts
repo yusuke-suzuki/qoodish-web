@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type { PinProperty } from '../../types/index.ts';
-import { chooseOptions, offeredOptionIds } from './pinPropertyOptions.ts';
+import {
+  chooseOptions,
+  matchesOptions,
+  offeredOptionIds
+} from './pinPropertyOptions.ts';
 
 const payment: PinProperty = {
   id: 1,
@@ -37,6 +41,24 @@ describe('chooseOptions', () => {
 
   it('ignores options of another property', () => {
     assert.deepEqual(chooseOptions([], genre, [11, 22]), [22]);
+  });
+});
+
+describe('matchesOptions', () => {
+  const properties = [payment, genre];
+
+  it('matches every pin when nothing is chosen', () => {
+    assert.equal(matchesOptions([], properties, []), true);
+  });
+
+  it('matches a pin with any chosen option of a property', () => {
+    assert.equal(matchesOptions([12], properties, [11, 12]), true);
+    assert.equal(matchesOptions([21], properties, [11, 12]), false);
+  });
+
+  it('requires a match for every property with a chosen option', () => {
+    assert.equal(matchesOptions([11, 22], properties, [11, 22]), true);
+    assert.equal(matchesOptions([11, 21], properties, [11, 22]), false);
   });
 });
 
