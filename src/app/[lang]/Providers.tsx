@@ -108,7 +108,9 @@ export default function Providers({
       const { Serwist } = await import('@serwist/window');
       const serwist = new Serwist('/sw.js', { scope: '/', type: 'classic' });
 
-      serwist.addEventListener('waiting', ({ sw }) => {
+      serwist.addEventListener('waiting', ({ sw, isExternal }) => {
+        if (!isExternal) return;
+
         offerUpdate(() => activateWaitingWorker(serwist, sw));
       });
 
