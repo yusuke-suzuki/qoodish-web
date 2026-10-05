@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import type { ContentRef, Pin, PinProperty } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CommentList from '../common/CommentList.tsx';
+import PinPropertyValues from '../common/PinPropertyValues.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from './DeletePinDialog.tsx';
@@ -65,6 +66,8 @@ export default function PinDetail({ pin, pinProperties }: Props) {
           <Typography component="p" gutterBottom>
             {pin.comment}
           </Typography>
+
+          <PinPropertyValues pin={pin} pinProperties={pinProperties} />
 
           {pin.images.length > 0 && <PinImageList pin={pin} />}
         </CardContent>

@@ -11,6 +11,7 @@ import { memo, useState } from 'react';
 import type { AppMap, Pin, PinProperty } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import PinPropertyValues from '../common/PinPropertyValues.tsx';
 import ProfileBoundary from '../common/ProfileBoundary.tsx';
 import ReportDialog from '../common/ReportDialog.tsx';
 import DeletePinDialog from '../pins/DeletePinDialog.tsx';
@@ -97,6 +98,7 @@ function PinPopover({
           <Typography variant="body2" component="p">
             {pin?.comment}
           </Typography>
+          {pin && <PinPropertyValues pin={pin} pinProperties={pinProperties} />}
         </CardContent>
         <CardActions>
           {pin && <LikePinButton pin={pin} onSaved={onSaved} />}
