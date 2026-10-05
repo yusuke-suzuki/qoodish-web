@@ -2,16 +2,11 @@
 import { Button, List } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import {
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState,
-  useTransition
-} from 'react';
+import { useState, useTransition } from 'react';
 import type { Notification } from '../../../types/index.ts';
 import { fetchMoreNotifications } from '../../actions/notifications.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useLoadMoreOnVisible from '../../hooks/useLoadMoreOnVisible.ts';
 import { notificationGroupKey } from '../../utils/notificationGroupKey.ts';
 import NotificationList from './NotificationList.tsx';
 
@@ -44,7 +39,6 @@ export default function NotificationsFeed({
   );
   const [moreCursor, setMoreCursor] = useState<string | null>();
   const [isPending, startTransition] = useTransition();
-  const loadMoreRef = useRef<HTMLButtonElement>(null);
 
   if (notifications !== firstPage) {
     setFirstPage(notifications);
@@ -77,25 +71,10 @@ export default function NotificationsFeed({
     });
   };
 
-  const onLoadMoreVisible = useEffectEvent(loadMore);
-
-  useEffect(() => {
-    const target = loadMoreRef.current;
-
-    if (!target || !cursor || isPending) {
-      return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        onLoadMoreVisible();
-      }
-    });
-
-    observer.observe(target);
-
-    return () => observer.disconnect();
-  }, [cursor, isPending]);
+  const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
+    loadMore,
+    !!cursor && !isPending
+  );
 
   return (
     <List>

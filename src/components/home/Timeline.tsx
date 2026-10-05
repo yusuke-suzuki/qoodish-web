@@ -7,6 +7,7 @@ import { memo, useState, useTransition } from 'react';
 import type { Pin } from '../../../types/index.ts';
 import { fetchMoreTimelinePins } from '../../actions/pins.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
+import useLoadMoreOnVisible from '../../hooks/useLoadMoreOnVisible.ts';
 import CreateMapButton from '../common/CreateMapButton.tsx';
 import DiscoverButton from '../common/DiscoverButton.tsx';
 import LoadingStatus from '../common/LoadingStatus.tsx';
@@ -57,6 +58,12 @@ export default memo(function Timeline({ initialPins }: Props) {
       }
     });
   };
+
+  const canLoadMore = !isPending && !noMoreResults && pins.length > 0;
+  const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
+    loadMore,
+    canLoadMore
+  );
 
   const handleReportClick = (pin: Pin) => {
     setReportTarget({
@@ -109,8 +116,8 @@ export default memo(function Timeline({ initialPins }: Props) {
       </Box>
 
       <Stack alignItems="center" sx={{ mt: 2 }}>
-        {!isPending && !noMoreResults && pins.length > 0 && (
-          <Button onClick={loadMore} color="secondary">
+        {canLoadMore && (
+          <Button ref={loadMoreRef} onClick={loadMore} color="secondary">
             {dictionary['load more']}
           </Button>
         )}
