@@ -10,11 +10,9 @@ const ja: Record<string, string> = jaMessages;
 const NOTIFIED_SUBJECTS: [key: string, notifiableType: string][] = [
   ['coauthor_invited', 'map'],
   ['liked', 'map'],
-  ['liked', 'review'],
   ['liked', 'pin'],
   ['liked', 'comment'],
   ['liked', 'chapter'],
-  ['comment', 'review'],
   ['comment', 'pin'],
   ['comment', 'chapter'],
   ['published', 'chapter']
@@ -43,18 +41,4 @@ describe('notification messages', () => {
       );
     });
   }
-});
-
-describe('notificationMessageKey', () => {
-  it('resolves a pin addressed by its former name', () => {
-    assert.equal(notificationMessageKey('liked', 'review'), 'liked pin');
-  });
-
-  it('resolves a pin addressed by its current name', () => {
-    assert.equal(notificationMessageKey('comment', 'pin'), 'comment pin');
-  });
-
-  it('leaves every other subject as it is', () => {
-    assert.equal(notificationMessageKey('liked', 'chapter'), 'liked chapter');
-  });
 });
