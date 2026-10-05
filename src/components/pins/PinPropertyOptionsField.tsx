@@ -16,7 +16,7 @@ import type {
 } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { chooseOptions } from '../../utils/pinPropertyOptions.ts';
-import PinPropertiesDialog from '../maps/PinPropertiesDialog.tsx';
+import NewPinPropertyDialog from '../maps/NewPinPropertyDialog.tsx';
 
 type FieldProps = {
   property: PinProperty;
@@ -100,8 +100,7 @@ export default function PinPropertyOptionsField({
   const dictionary = useDictionary();
   const headingId = useId();
 
-  const [managerOpen, setManagerOpen] = useState(false);
-  const [managerKey, setManagerKey] = useState(0);
+  const [creating, setCreating] = useState(false);
 
   const offeredProperties = pinProperties.filter(
     (property) => property.options.length > 0
@@ -110,11 +109,6 @@ export default function PinPropertyOptionsField({
   if (!map?.editable && offeredProperties.length < 1) {
     return null;
   }
-
-  const openManager = () => {
-    setManagerKey(managerKey + 1);
-    setManagerOpen(true);
-  };
 
   return (
     <Box component="section" aria-labelledby={headingId} sx={{ mt: 2 }}>
@@ -133,7 +127,7 @@ export default function PinPropertyOptionsField({
             color="secondary"
             startIcon={<Add />}
             aria-label={dictionary['add pin property']}
-            onClick={openManager}
+            onClick={() => setCreating(true)}
             disabled={disabled}
           >
             {dictionary.add}
@@ -152,13 +146,10 @@ export default function PinPropertyOptionsField({
       ))}
 
       {map?.editable && (
-        <PinPropertiesDialog
-          key={managerKey}
-          open={managerOpen}
-          onClose={() => setManagerOpen(false)}
-          map={map}
-          pinProperties={pinProperties}
-          defaultCreating
+        <NewPinPropertyDialog
+          open={creating}
+          onClose={() => setCreating(false)}
+          mapId={map.id}
         />
       )}
     </Box>

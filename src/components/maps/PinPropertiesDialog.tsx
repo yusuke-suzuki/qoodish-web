@@ -17,7 +17,6 @@ import type {
   PinPropertyOption
 } from '../../../types/index.ts';
 import {
-  createPinProperty,
   createPinPropertyOption,
   deletePinProperty,
   deletePinPropertyOption,
@@ -27,9 +26,7 @@ import {
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from '../common/AppDialog.tsx';
 import ConfirmDialog from '../common/ConfirmDialog.tsx';
-import NewPinPropertyForm, {
-  type NewPinProperty
-} from './NewPinPropertyForm.tsx';
+import NewPinPropertyDialog from './NewPinPropertyDialog.tsx';
 import PinPropertyListItem from './PinPropertyListItem.tsx';
 
 type DeleteTarget =
@@ -41,22 +38,20 @@ type Props = {
   onClose: () => void;
   map: AppMap;
   pinProperties: PinProperty[];
-  defaultCreating?: boolean;
 };
 
 export default function PinPropertiesDialog({
   open,
   onClose,
   map,
-  pinProperties,
-  defaultCreating = false
+  pinProperties
 }: Props) {
   const dictionary = useDictionary();
   const router = useRouter();
 
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [creating, setCreating] = useState(defaultCreating);
+  const [creating, setCreating] = useState(false);
 
   const openDelete = (target: DeleteTarget) => {
     setDeleteTarget(target);
@@ -76,9 +71,6 @@ export default function PinPropertiesDialog({
 
     return result.success;
   };
-
-  const handleCreate = async (property: NewPinProperty) =>
-    finish(await createPinProperty(map.id, property));
 
   const handleDelete = async () => {
     if (!deleteTarget) {
@@ -141,21 +133,20 @@ export default function PinPropertiesDialog({
               }
             />
           ))}
-          {creating ? (
-            <NewPinPropertyForm
-              onCreate={handleCreate}
-              onClose={() => setCreating(false)}
-            />
-          ) : (
-            <ListItemButton onClick={() => setCreating(true)} sx={{ px: 0 }}>
-              <ListItemIcon>
-                <Add />
-              </ListItemIcon>
-              <ListItemText primary={dictionary['add pin property']} />
-            </ListItemButton>
-          )}
+          <ListItemButton onClick={() => setCreating(true)} sx={{ px: 0 }}>
+            <ListItemIcon>
+              <Add />
+            </ListItemIcon>
+            <ListItemText primary={dictionary['add pin property']} />
+          </ListItemButton>
         </List>
       </AppDialog>
+
+      <NewPinPropertyDialog
+        open={creating}
+        onClose={() => setCreating(false)}
+        mapId={map.id}
+      />
 
       <ConfirmDialog
         open={deleteOpen}
