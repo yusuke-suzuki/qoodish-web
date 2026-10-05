@@ -63,8 +63,12 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
     const { Map: GoogleMap } = await loader.importLibrary('maps');
     const { ColorScheme, ControlPosition } = await loader.importLibrary('core');
 
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches;
+
     const map = new GoogleMap(mapRef.current as HTMLElement, {
-      colorScheme: ColorScheme.FOLLOW_SYSTEM,
+      colorScheme: prefersDark ? ColorScheme.DARK : ColorScheme.LIGHT,
       zoom: 17,
       zoomControl: !!mdUp,
       zoomControlOptions: {
