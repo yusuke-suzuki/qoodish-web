@@ -13,47 +13,43 @@ import PinGridList from '../pins/PinGridList.tsx';
 type Props = {
   userId: number;
   initialPins: Pin[];
+  nextCursor: string | null;
   isOwnProfile: boolean;
 };
 
 export default memo(function UserPins({
   userId,
   initialPins,
+  nextCursor,
   isOwnProfile
 }: Props) {
   const dictionary = useDictionary();
 
   const [pins, setPins] = useState(initialPins);
-  const [noMoreResults, setNoMoreResults] = useState(initialPins.length < 1);
+  const [cursor, setCursor] = useState(nextCursor);
   const [isPending, startTransition] = useTransition();
 
   const loadMore = () => {
-    if (noMoreResults || isPending) return;
-
-    const lastPin = pins[pins.length - 1];
-    if (!lastPin) {
-      setNoMoreResults(true);
-      return;
-    }
+    if (!cursor || isPending) return;
 
     startTransition(async () => {
       try {
-        const morePins = isOwnProfile
-          ? await fetchMoreMyPins(lastPin.created_at)
-          : await fetchMoreUserPins(userId, lastPin.created_at);
-        setPins((prev) => [...prev, ...morePins]);
-        setNoMoreResults(morePins.length < 1);
+        const page = isOwnProfile
+          ? await fetchMoreMyPins(cursor)
+          : await fetchMoreUserPins(userId, cursor);
+        setPins((prev) => [...prev, ...page.items]);
+        setCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
     });
   };
 
-  const canLoadMore = !isPending && !noMoreResults && pins.length > 0;
+  const canLoadMore = !isPending && !!cursor && pins.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
     canLoadMore,
-    pins.length
+    cursor
   );
 
   return (

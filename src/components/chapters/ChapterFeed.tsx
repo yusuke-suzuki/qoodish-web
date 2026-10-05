@@ -15,45 +15,41 @@ import ChapterList from './ChapterList.tsx';
 
 type Props = {
   initialChapters: Chapter[];
+  nextCursor: string | null;
 };
 
-export default memo(function ChapterFeed({ initialChapters }: Props) {
+export default memo(function ChapterFeed({
+  initialChapters,
+  nextCursor
+}: Props) {
   const dictionary = useDictionary();
   const { lang } = useParams<{ lang: string }>();
 
   const [chapters, setChapters] = useState(initialChapters);
-  const [noMoreResults, setNoMoreResults] = useState(
-    initialChapters.length < 1
-  );
+  const [cursor, setCursor] = useState(nextCursor);
   const [isPending, startTransition] = useTransition();
 
   const loadMore = () => {
-    const lastChapter = chapters[chapters.length - 1];
-
-    if (noMoreResults || isPending || !lastChapter) {
+    if (!cursor || isPending) {
       return;
     }
 
     startTransition(async () => {
       try {
-        const moreChapters = await fetchMoreChapterFeed(
-          lang,
-          lastChapter.created_at,
-          lastChapter.id
-        );
-        setChapters((prev) => [...prev, ...moreChapters]);
-        setNoMoreResults(moreChapters.length < 1);
+        const page = await fetchMoreChapterFeed(lang, cursor);
+        setChapters((prev) => [...prev, ...page.items]);
+        setCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });
       }
     });
   };
 
-  const canLoadMore = !isPending && !noMoreResults && chapters.length > 0;
+  const canLoadMore = !isPending && !!cursor && chapters.length > 0;
   const loadMoreRef = useLoadMoreOnVisible<HTMLButtonElement>(
     loadMore,
     canLoadMore,
-    chapters.length
+    cursor
   );
 
   if (chapters.length < 1) {

@@ -1,7 +1,11 @@
 'use server';
 
 import type { SerializedEditorState } from 'lexical';
-import type { Chapter, MapFeatureCollection } from '../../types/index.ts';
+import type {
+  Chapter,
+  CursorPage,
+  MapFeatureCollection
+} from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { CHAPTERS_TAG, chapterTag, mapTag, userTag } from '../lib/cacheTags.ts';
 import { getChapterFeed } from '../lib/chapters.ts';
@@ -31,10 +35,9 @@ type UpdateChapterParams = {
 
 export async function fetchMoreChapterFeed(
   lang: string,
-  nextTimestamp: string,
-  nextId: number
-): Promise<Chapter[]> {
-  return getChapterFeed(lang, nextTimestamp, nextId);
+  cursor: string
+): Promise<CursorPage<Chapter>> {
+  return getChapterFeed(lang, cursor);
 }
 
 export async function createChapter(

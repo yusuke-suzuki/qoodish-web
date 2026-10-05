@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it, mock } from 'node:test';
 import type { SerializedEditorState } from 'lexical';
-import type { Chapter } from '../../types/index.ts';
+import type { Chapter, CursorPage } from '../../types/index.ts';
 import {
   apiRequests,
   failWith,
@@ -12,9 +12,7 @@ import {
 } from '../test/serverActionMocks.ts';
 
 const getChapterFeed =
-  mock.fn<
-    (lang: string, nextTimestamp: string, nextId: number) => Promise<Chapter[]>
-  >();
+  mock.fn<(lang: string, cursor: string) => Promise<CursorPage<Chapter>>>();
 
 mock.module(new URL('../lib/chapters.ts', import.meta.url).href, {
   namedExports: { getChapterFeed }
@@ -41,17 +39,13 @@ beforeEach(() => {
 describe('fetchMoreChapterFeed', () => {
   it('pages the chapter feed from the cursor', async () => {
     const { fetchMoreChapterFeed } = await actions();
-    const page = [chapter()];
+    const page = { items: [chapter()], nextCursor: 'c2' };
     getChapterFeed.mock.mockImplementation(async () => page);
 
-    const result = await fetchMoreChapterFeed('ja', '2026-01-01T00:00:00Z', 4);
+    const result = await fetchMoreChapterFeed('ja', 'c1');
 
     assert.equal(result, page);
-    assert.deepEqual(getChapterFeed.mock.calls[0].arguments, [
-      'ja',
-      '2026-01-01T00:00:00Z',
-      4
-    ]);
+    assert.deepEqual(getChapterFeed.mock.calls[0].arguments, ['ja', 'c1']);
   });
 });
 

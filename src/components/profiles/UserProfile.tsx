@@ -44,12 +44,20 @@ import UserPins from './UserPins.tsx';
 type Props = {
   profile: Profile;
   initialPins: Pin[];
+  pinsCursor: string | null;
   maps: AppMap[];
   journal: Journal | null;
   chapters: Chapter[];
 };
 
-function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
+function UserProfile({
+  profile,
+  initialPins,
+  pinsCursor,
+  maps,
+  journal,
+  chapters
+}: Props) {
   const { uid, authenticated } = useContext(AuthContext);
   const router = useRouter();
 
@@ -245,6 +253,7 @@ function UserProfile({ profile, initialPins, maps, journal, chapters }: Props) {
               <UserPins
                 userId={profile.id}
                 initialPins={initialPins}
+                nextCursor={pinsCursor}
                 isOwnProfile={isOwnProfile}
               />
             </TabPanel>

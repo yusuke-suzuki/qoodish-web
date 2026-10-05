@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ChaptersPage({ params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
-  const chapters = await getChapterFeed(lang);
+  const { items, nextCursor } = await getChapterFeed(lang);
 
   return (
     <>
@@ -54,7 +54,7 @@ export default async function ChaptersPage({ params }: Props) {
         </Typography>
       </Box>
 
-      <ChapterFeed initialChapters={chapters} />
+      <ChapterFeed initialChapters={items} nextCursor={nextCursor} />
     </>
   );
 }

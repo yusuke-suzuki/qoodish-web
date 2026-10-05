@@ -1,6 +1,6 @@
 'use server';
 
-import type { MutedAccount } from '../../types/index.ts';
+import type { CursorPage, MutedAccount } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { userTag } from '../lib/cacheTags.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
@@ -41,7 +41,7 @@ export async function unmuteUser(userId: number): Promise<ActionResult> {
 
 export async function fetchMoreMutedAccounts(
   lang: string,
-  nextId: number
-): Promise<MutedAccount[]> {
-  return getMutedAccounts(lang, nextId);
+  cursor: string
+): Promise<CursorPage<MutedAccount>> {
+  return getMutedAccounts(lang, cursor);
 }

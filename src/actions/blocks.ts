@@ -1,6 +1,6 @@
 'use server';
 
-import type { BlockedAccount } from '../../types/index.ts';
+import type { BlockedAccount, CursorPage } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { userTag } from '../lib/cacheTags.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
@@ -41,7 +41,7 @@ export async function unblockUser(userId: number): Promise<ActionResult> {
 
 export async function fetchMoreBlockedAccounts(
   lang: string,
-  nextId: number
-): Promise<BlockedAccount[]> {
-  return getBlockedAccounts(lang, nextId);
+  cursor: string
+): Promise<CursorPage<BlockedAccount>> {
+  return getBlockedAccounts(lang, cursor);
 }

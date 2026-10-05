@@ -1,20 +1,25 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import pageAll, { type Cursor } from './pageAll.ts';
+import type { CursorPage } from '../../types/index.ts';
+import pageAll from './pageAll.ts';
 
-type Row = Cursor;
+type Row = { id: number };
 
-function row(id: number): Row {
-  return { id, created_at: `2026-01-01T00:00:0${id % 10}Z` };
+function rows(length: number): Row[] {
+  return Array.from({ length }, (_, index) => ({ id: index + 1 }));
 }
 
-function pagedSource(rows: Row[], size: number) {
-  const calls: (Cursor | undefined)[] = [];
+function pagedSource(source: Row[], size: number) {
+  const calls: (string | undefined)[] = [];
 
-  const fetchPage = async (cursor?: Cursor) => {
+  const fetchPage = async (cursor?: string): Promise<CursorPage<Row>> => {
     calls.push(cursor);
-    const from = cursor ? rows.findIndex((r) => r.id === cursor.id) + 1 : 0;
-    return rows.slice(from, from + size);
+    const from = cursor ? Number(cursor) : 0;
+    const to = from + size;
+    return {
+      items: source.slice(from, to),
+      nextCursor: to < source.length ? String(to) : null
+    };
   };
 
   return { calls, fetchPage };
@@ -23,17 +28,12 @@ function pagedSource(rows: Row[], size: number) {
 const LIMITS = { maxRequests: 10 };
 
 describe('pageAll', () => {
-  it('walks every page until the source runs out', async () => {
-    const rows = Array.from({ length: 7 }, (_, index) => row(index + 1));
-    const { calls, fetchPage } = pagedSource(rows, 3);
+  it('follows the cursor until the source hands out none', async () => {
+    const source = rows(7);
+    const { calls, fetchPage } = pagedSource(source, 3);
 
-    assert.deepEqual(await pageAll(fetchPage, LIMITS), rows);
-    assert.deepEqual(calls, [
-      undefined,
-      { id: 3, created_at: rows[2].created_at },
-      { id: 6, created_at: rows[5].created_at },
-      { id: 7, created_at: rows[6].created_at }
-    ]);
+    assert.deepEqual(await pageAll(fetchPage, LIMITS), source);
+    assert.deepEqual(calls, [undefined, '3', '6']);
   });
 
   it('returns an empty list when the first page is empty', async () => {
@@ -42,23 +42,20 @@ describe('pageAll', () => {
     assert.deepEqual(await pageAll(fetchPage, LIMITS), []);
   });
 
-  it('gives up on a source that ignores the cursor', async () => {
+  it('gives up on a source that hands back the cursor it was given', async () => {
     let requests = 0;
 
     const collected = await pageAll(async () => {
       requests++;
-      return [row(1), row(2)];
+      return { items: rows(2), nextCursor: 'same' };
     }, LIMITS);
 
     assert.equal(requests, 2);
-    assert.deepEqual(collected, [row(1), row(2)]);
+    assert.deepEqual(collected, [...rows(2), ...rows(2)]);
   });
 
-  // The budget is the only ceiling, so what it yields is however many rows
-  // those requests carried, not a round number of entries.
   it('spends no more requests than its budget', async () => {
-    const rows = Array.from({ length: 100 }, (_, index) => row(index + 1));
-    const { calls, fetchPage } = pagedSource(rows, 12);
+    const { calls, fetchPage } = pagedSource(rows(100), 12);
 
     const collected = await pageAll(fetchPage, { maxRequests: 3 });
 

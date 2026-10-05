@@ -1,6 +1,6 @@
 'use server';
 
-import type { Pin } from '../../types/index.ts';
+import type { CursorPage, Pin } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { mapTag, PINS_TAG, pinTag, userTag } from '../lib/cacheTags.ts';
 import { recordEvent } from '../lib/events.ts';
@@ -9,28 +9,29 @@ import { revalidateTags } from '../lib/revalidate.ts';
 import { getMyPins, getUserPins } from '../lib/users.ts';
 
 export async function fetchMoreTimelinePins(
-  nextTimestamp: string
-): Promise<Pin[]> {
-  return getTimelinePins(nextTimestamp);
+  cursor: string
+): Promise<CursorPage<Pin>> {
+  return getTimelinePins(cursor);
 }
 
 export async function fetchMorePinFeed(
   lang: string,
-  nextTimestamp: string,
-  nextId: number
-): Promise<Pin[]> {
-  return getPinFeed(lang, nextTimestamp, nextId);
+  cursor: string
+): Promise<CursorPage<Pin>> {
+  return getPinFeed(lang, cursor);
 }
 
 export async function fetchMoreUserPins(
   userId: number,
-  nextTimestamp: string
-): Promise<Pin[]> {
-  return getUserPins(String(userId), undefined, nextTimestamp);
+  cursor: string
+): Promise<CursorPage<Pin>> {
+  return getUserPins(String(userId), undefined, cursor);
 }
 
-export async function fetchMoreMyPins(nextTimestamp: string): Promise<Pin[]> {
-  return getMyPins(undefined, nextTimestamp);
+export async function fetchMoreMyPins(
+  cursor: string
+): Promise<CursorPage<Pin>> {
+  return getMyPins(undefined, cursor);
 }
 
 type CreatePinParams = {
