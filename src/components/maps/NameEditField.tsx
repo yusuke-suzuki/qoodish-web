@@ -8,19 +8,11 @@ const MAX_LENGTH = 30;
 
 type Props = {
   label: string;
-  defaultValue?: string;
-  clearOnSave?: boolean;
+  defaultValue: string;
   onSave: (name: string) => Promise<boolean>;
-  onDone: () => void;
 };
 
-export default function NameEditField({
-  label,
-  defaultValue = '',
-  clearOnSave = false,
-  onSave,
-  onDone
-}: Props) {
+export default function NameEditField({ label, defaultValue, onSave }: Props) {
   const dictionary = useDictionary();
 
   const [name, setName] = useState(defaultValue);
@@ -31,13 +23,13 @@ export default function NameEditField({
   const trimmed = name.trim();
   const tooLong = trimmed.length > MAX_LENGTH;
 
-  const commit = async ({ closeAfterSave }: { closeAfterSave: boolean }) => {
+  const commit = async () => {
     if (savingRef.current || cancelledRef.current) {
       return;
     }
 
     if (!trimmed || trimmed === defaultValue) {
-      onDone();
+      setName(defaultValue);
       return;
     }
 
@@ -48,38 +40,31 @@ export default function NameEditField({
     savingRef.current = true;
     setSaving(true);
 
-    const saved = await onSave(trimmed);
+    await onSave(trimmed);
 
     savingRef.current = false;
     setSaving(false);
-
-    if (!saved) {
-      return;
-    }
-
-    if (closeAfterSave) {
-      onDone();
-    } else {
-      setName('');
-    }
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    commit({ closeAfterSave: !clearOnSave });
+    commit();
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ flex: 1, minWidth: 0 }}>
       <TextField
         value={name}
-        onChange={(event) => setName(event.target.value)}
-        onBlur={() => commit({ closeAfterSave: true })}
+        onChange={(event) => {
+          cancelledRef.current = false;
+          setName(event.target.value);
+        }}
+        onBlur={commit}
         onKeyDown={(event) => {
           if (event.key === 'Escape') {
             event.stopPropagation();
             cancelledRef.current = true;
-            onDone();
+            setName(defaultValue);
           }
         }}
         label={label}
@@ -88,7 +73,6 @@ export default function NameEditField({
         disabled={saving}
         size="small"
         fullWidth
-        autoFocus
       />
     </form>
   );
