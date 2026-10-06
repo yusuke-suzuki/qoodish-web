@@ -40,15 +40,29 @@ type Props = {
   mapOptions?: Partial<google.maps.MapOptions>;
   center?: google.maps.LatLngLiteral | null;
   zoom?: number;
+  position?: GeolocationPosition | null;
 };
 
-function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
+function GoogleMaps({
+  mapId,
+  children,
+  sx,
+  mapOptions,
+  center,
+  zoom,
+  position
+}: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const { lang } = useParams<{ lang: string }>();
 
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
-  const [currentPosition, setCurrentPosition] =
+  const [locatedPosition, setLocatedPosition] =
     useState<GeolocationPosition | null>(null);
+  const currentPosition =
+    position &&
+    (!locatedPosition || position.timestamp >= locatedPosition.timestamp)
+      ? position
+      : locatedPosition;
 
   const loader = getLoader(toLocale(lang));
 
@@ -121,7 +135,7 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (!cancelled) {
-            setCurrentPosition(position);
+            setLocatedPosition(position);
           }
         },
         () => {},
@@ -157,7 +171,7 @@ function GoogleMaps({ mapId, children, sx, mapOptions, center, zoom }: Props) {
       googleMap,
       loader,
       currentPosition,
-      setCurrentPosition
+      setCurrentPosition: setLocatedPosition
     }),
     [googleMap, loader, currentPosition]
   );

@@ -1,6 +1,7 @@
-import { memo, type ReactNode, useEffect, useState } from 'react';
+import { memo, type ReactNode, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import useHydrated from '../../hooks/useHydrated.ts';
 
 type Props = {
   children: ReactNode;
@@ -14,8 +15,18 @@ export default memo(function MapControl({
   fullWidth
 }: Props) {
   const { googleMap } = useGoogleMap();
+  const hydrated = useHydrated();
 
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const container = useMemo(() => {
+    if (!hydrated) {
+      return null;
+    }
+
+    const div = document.createElement('div');
+    div.style.width = fullWidth ? '100%' : 'auto';
+
+    return div;
+  }, [hydrated, fullWidth]);
 
   useEffect(() => {
     if (googleMap && controlPosition && container) {
@@ -28,20 +39,6 @@ export default memo(function MapControl({
       }
     };
   }, [googleMap, controlPosition, container]);
-
-  useEffect(() => {
-    if (!container) {
-      const div = document.createElement('div');
-
-      setContainer(div);
-    }
-  }, [container]);
-
-  useEffect(() => {
-    if (container) {
-      container.style.width = fullWidth ? '100%' : 'auto';
-    }
-  }, [container, fullWidth]);
 
   return container && createPortal(children, container);
 });

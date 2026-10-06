@@ -1,6 +1,6 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import MapPopup from './MapPopup.tsx';
 
@@ -19,23 +19,20 @@ function PlacePopup({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [popupOpen, setPopupOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<google.maps.places.Place | null>(
+    null
+  );
+  const popupOpen = place !== null && place !== dismissed;
 
   const handleCreatePinClick = () => {
-    setPopupOpen(false);
+    setDismissed(place);
     onCreatePinClick();
   };
 
   const handleClose = () => {
-    setPopupOpen(false);
+    setDismissed(place);
     onClose();
   };
-
-  useEffect(() => {
-    if (place) {
-      setPopupOpen(true);
-    }
-  }, [place]);
 
   return (
     <MapPopup

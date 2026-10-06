@@ -2,7 +2,7 @@
 
 import { AddLocationAlt, HistoryEdu, MyLocation } from '@mui/icons-material';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from '../common/AppDialog.tsx';
 
@@ -21,7 +21,7 @@ export default memo(function StartJourneyDialog({
 
   const [loading, setLoading] = useState(false);
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     setLoading(true);
 
     try {
@@ -29,9 +29,7 @@ export default memo(function StartJourneyDialog({
     } finally {
       setLoading(false);
     }
-  }, [onConfirm]);
-
-  const handleExited = useCallback(() => setLoading(false), []);
+  };
 
   return (
     <AppDialog
@@ -41,7 +39,7 @@ export default memo(function StartJourneyDialog({
       maxWidth="xs"
       dividers
       disableClose={loading}
-      onExited={handleExited}
+      onExited={() => setLoading(false)}
       confirmAction={{
         label: dictionary['start journey'],
         loading,

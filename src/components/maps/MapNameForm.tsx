@@ -12,7 +12,7 @@ type Props = {
 export default memo(function MapNameForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState(defaultValue ?? '');
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleNameChange = (
@@ -36,12 +36,6 @@ export default memo(function MapNameForm({ onChange, defaultValue }: Props) {
   useEffect(() => {
     onChange(name);
   }, [name, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setName(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <TextField

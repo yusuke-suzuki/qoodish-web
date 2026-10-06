@@ -33,15 +33,6 @@ function ChangeEmailDialog({ open, onClose }: Props) {
   const [reauthStep, setReauthStep] = useState<ReauthStep>('idle');
   const [error, setError] = useState<string | null>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: authenticated triggers re-read of getAuth().currentUser
-  const hasGoogleProvider = useMemo(
-    () =>
-      (getAuth().currentUser?.providerData ?? []).some(
-        (p) => p.providerId === GoogleAuthProvider.PROVIDER_ID
-      ),
-    [authenticated]
-  );
-
   const handleEmailChange = useCallback((value: string, isValid: boolean) => {
     setEmail(value);
     setEmailValid(isValid);
@@ -93,6 +84,9 @@ function ChangeEmailDialog({ open, onClose }: Props) {
       console.error(err);
       const errorCode = (err as AuthError).code;
       if (errorCode === 'auth/requires-recent-login') {
+        const hasGoogleProvider = (
+          getAuth().currentUser?.providerData ?? []
+        ).some((p) => p.providerId === GoogleAuthProvider.PROVIDER_ID);
         setReauthStep(hasGoogleProvider ? 'google' : 'emailLink');
       } else {
         setError(getErrorMessage(errorCode));
@@ -100,7 +94,7 @@ function ChangeEmailDialog({ open, onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [attemptEmailUpdate, getErrorMessage, hasGoogleProvider]);
+  }, [attemptEmailUpdate, getErrorMessage]);
 
   const handleReauth = useCallback(async () => {
     const firebaseUser = getAuth().currentUser;

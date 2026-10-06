@@ -3,7 +3,7 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -200,8 +200,11 @@ export default function MapDetailView({
   const lng = searchParams.get('lng');
   const zoom = searchParams.get('zoom');
 
-  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
-  const [currentZoom, setCurrentZoom] = useState(17);
+  const center = useMemo(
+    () => (lat && lng ? { lat: Number(lat), lng: Number(lng) } : null),
+    [lat, lng]
+  );
+  const currentZoom = zoom ? Number(zoom) : undefined;
 
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -216,21 +219,6 @@ export default function MapDetailView({
     setSelectedPin(pin);
     setPinDrawerOpen(true);
   };
-
-  useEffect(() => {
-    if (lat && lng) {
-      setCenter({
-        lat: Number(lat),
-        lng: Number(lng)
-      });
-    }
-  }, [lat, lng]);
-
-  useEffect(() => {
-    if (zoom) {
-      setCurrentZoom(Number(zoom));
-    }
-  }, [zoom]);
 
   return (
     <>
@@ -305,6 +293,7 @@ export default function MapDetailView({
           }}
           center={center}
           zoom={currentZoom}
+          position={journeyPosition}
         >
           <CustomOverlays
             map={map}

@@ -12,7 +12,7 @@ type Props = {
 function JournalTitleForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(defaultValue ?? '');
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +36,6 @@ function JournalTitleForm({ onChange, defaultValue }: Props) {
   useEffect(() => {
     onChange(!title || title.length > MAX_LENGTH ? undefined : title);
   }, [title, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setTitle(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <TextField

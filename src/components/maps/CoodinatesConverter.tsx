@@ -18,10 +18,22 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
 
   const pacRef = useRef<HTMLInputElement | null>(null);
 
-  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(null);
+  const [center, setCenter] = useState<google.maps.LatLngLiteral | null>(
+    defaultValue ?? null
+  );
   const [defaultPosition, setDefaultPosition] = useState<
     google.maps.LatLngLiteral | google.maps.LatLng | null
-  >(null);
+  >(defaultValue ?? null);
+  const [prevDefaultValue, setPrevDefaultValue] = useState(defaultValue);
+
+  if (defaultValue !== prevDefaultValue) {
+    setPrevDefaultValue(defaultValue);
+
+    if (defaultValue) {
+      setDefaultPosition(defaultValue);
+      setCenter(defaultValue);
+    }
+  }
   const [pacPosition, setPacPosition] =
     useState<google.maps.ControlPosition | null>(null);
 
@@ -68,13 +80,6 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
       onChange(center);
     }
   }, [center, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setDefaultPosition(defaultValue);
-      setCenter(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <>

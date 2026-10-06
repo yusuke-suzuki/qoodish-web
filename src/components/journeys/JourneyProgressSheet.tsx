@@ -289,7 +289,7 @@ function JourneyProgressSheet({
 
   const [resuming, setResuming] = useState(false);
 
-  const handleRecordingToggle = useCallback(async () => {
+  const handleRecordingToggle = async () => {
     if (!paused) {
       onPauseClick();
       return;
@@ -302,7 +302,7 @@ function JourneyProgressSheet({
     } finally {
       setResuming(false);
     }
-  }, [paused, onPauseClick, onResumeClick]);
+  };
 
   const handleRemoveItem = useCallback(
     (item: TimelineItem) => {

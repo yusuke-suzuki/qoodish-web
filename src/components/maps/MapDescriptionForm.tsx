@@ -15,7 +15,7 @@ export default memo(function MapDescriptionForm({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(defaultValue ?? '');
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleDescriptionChange = (
@@ -38,12 +38,6 @@ export default memo(function MapDescriptionForm({
   useEffect(() => {
     onChange(description);
   }, [description, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setDescription(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <TextField

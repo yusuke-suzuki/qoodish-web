@@ -1,8 +1,7 @@
 'use client';
 
 import { type ButtonProps, DialogContentText } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
-import useDictionary from '../../hooks/useDictionary.ts';
+import { memo, useState } from 'react';
 import AppDialog from './AppDialog.tsx';
 
 type Props = {
@@ -24,11 +23,9 @@ function ConfirmDialog({
   onClose,
   onConfirm
 }: Props) {
-  const _dictionary = useDictionary();
-
   const [loading, setLoading] = useState(false);
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     setLoading(true);
 
     try {
@@ -36,9 +33,7 @@ function ConfirmDialog({
     } finally {
       setLoading(false);
     }
-  }, [onConfirm]);
-
-  const handleExited = useCallback(() => setLoading(false), []);
+  };
 
   return (
     <AppDialog
@@ -46,7 +41,7 @@ function ConfirmDialog({
       onClose={onClose}
       title={title}
       disableClose={loading}
-      onExited={handleExited}
+      onExited={() => setLoading(false)}
       confirmAction={{
         label: confirmLabel,
         color: confirmColor,

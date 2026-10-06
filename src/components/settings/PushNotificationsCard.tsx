@@ -19,7 +19,6 @@ import {
   memo,
   useCallback,
   useContext,
-  useEffect,
   useState
 } from 'react';
 import type { Profile } from '../../../types/index.ts';
@@ -42,10 +41,17 @@ function PushNotificationsCardContent({
   const { isSubscribed, subscribe, unsubscribe } = usePushManager(registration);
 
   const [loading, setLoading] = useState(false);
-  const [likedEnabled, setLikedEnabled] = useState(false);
-  const [coauthorInvitedEnabled, setCoauthorInvitedEnabled] = useState(false);
-  const [commentEnabled, setCommentEnabled] = useState(false);
-  const [publishedEnabled, setPublishedEnabled] = useState(false);
+  const preferences = profile?.push_notification;
+  const [likedEnabled, setLikedEnabled] = useState(preferences?.liked ?? false);
+  const [coauthorInvitedEnabled, setCoauthorInvitedEnabled] = useState(
+    preferences?.coauthor_invited ?? false
+  );
+  const [commentEnabled, setCommentEnabled] = useState(
+    preferences?.comment ?? false
+  );
+  const [publishedEnabled, setPublishedEnabled] = useState(
+    preferences?.published ?? false
+  );
 
   const handleSubscriptionChange = useCallback(
     async (_event: ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -111,15 +117,6 @@ function PushNotificationsCardContent({
     dictionary,
     router
   ]);
-
-  useEffect(() => {
-    if (profile?.push_notification) {
-      setLikedEnabled(profile.push_notification.liked);
-      setCoauthorInvitedEnabled(profile.push_notification.coauthor_invited);
-      setCommentEnabled(profile.push_notification.comment);
-      setPublishedEnabled(profile.push_notification.published);
-    }
-  }, [profile]);
 
   return (
     <Card>
