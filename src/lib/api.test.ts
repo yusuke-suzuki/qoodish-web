@@ -326,6 +326,25 @@ describe('apiFetchPage', () => {
     );
   });
 
+  it('adds the cursor to the query the path already carries', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ data: [], next_cursor: null })
+    );
+
+    await apiFetchPage('/v2/me/notifications?read=false', {
+      guest: true,
+      lang: 'en',
+      cursor: 'c1'
+    });
+
+    const [url] = fetchMock.mock.calls[0].arguments as FetchArgs;
+
+    assert.equal(
+      url,
+      'https://api.example.com/guest/v2/me/notifications?read=false&cursor=c1'
+    );
+  });
+
   it('reads a 4xx as an empty last page', async (t) => {
     t.mock.method(globalThis, 'fetch', async () =>
       jsonResponse({ detail: 'Unauthorized' }, 401)

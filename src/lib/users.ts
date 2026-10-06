@@ -182,28 +182,16 @@ export async function getNotifications(
   lang: string,
   { cursor, read }: { cursor?: string; read?: boolean } = {}
 ): Promise<NotificationsPage> {
-  const params = new URLSearchParams();
+  const query =
+    read === undefined ? '' : `?${new URLSearchParams({ read: String(read) })}`;
+  const { items, nextCursor } = await apiFetchPage<Notification>(
+    `/v2/me/notifications${query}`,
+    {
+      lang,
+      cursor,
+      next: { revalidate: 0 }
+    }
+  );
 
-  if (cursor) {
-    params.set('cursor', cursor);
-  }
-  if (read !== undefined) {
-    params.set('read', String(read));
-  }
-
-  const query = params.size > 0 ? `?${params}` : '';
-  const path = `/v2/me/notifications${query}`;
-  const { data, status } = await apiFetch<{
-    data: Notification[];
-    next_cursor: string | null;
-  }>(path, {
-    lang,
-    next: { revalidate: 0 }
-  });
-  assertApiAvailable(status, path);
-
-  return {
-    notifications: data?.data ?? [],
-    nextCursor: data?.next_cursor ?? null
-  };
+  return { notifications: items, nextCursor };
 }
