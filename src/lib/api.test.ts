@@ -326,14 +326,15 @@ describe('apiFetchPage', () => {
     );
   });
 
-  it('adds the cursor to the query the path already carries', async (t) => {
+  it('sends the cursor alongside the query it was given', async (t) => {
     const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
       jsonResponse({ data: [], next_cursor: null })
     );
 
-    await apiFetchPage('/v2/me/notifications?read=false', {
+    await apiFetchPage('/v2/me/notifications', {
       guest: true,
       lang: 'en',
+      query: { read: 'false' },
       cursor: 'c1'
     });
 

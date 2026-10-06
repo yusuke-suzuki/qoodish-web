@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it, mock } from 'node:test';
-import type { NotificationsPage } from '../../types/index.ts';
+import type { CursorPage, Notification } from '../../types/index.ts';
 import {
   apiRequests,
   failWith,
@@ -9,7 +9,10 @@ import {
 
 const getNotifications =
   mock.fn<
-    (lang: string, options: { cursor: string }) => Promise<NotificationsPage>
+    (
+      lang: string,
+      options: { cursor: string }
+    ) => Promise<CursorPage<Notification>>
   >();
 
 mock.module(new URL('../lib/users.ts', import.meta.url).href, {
@@ -49,7 +52,7 @@ describe('markNotificationAsRead', () => {
 describe('fetchMoreNotifications', () => {
   it('pages the notifications from the cursor', async () => {
     const { fetchMoreNotifications } = await actions();
-    const page = { notifications: [], nextCursor: '3' };
+    const page = { items: [], nextCursor: '3' };
     getNotifications.mock.mockImplementation(async () => page);
 
     const result = await fetchMoreNotifications('ja', '8');

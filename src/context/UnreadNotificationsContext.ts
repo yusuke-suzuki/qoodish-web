@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import type { NotificationsPage } from '../../types/index.ts';
+import type { CursorPage, Notification } from '../../types/index.ts';
 
-const UnreadNotificationsContext = createContext<Promise<NotificationsPage>>(
-  Promise.resolve({ notifications: [], nextCursor: null })
-);
+const UnreadNotificationsContext = createContext<
+  Promise<CursorPage<Notification>>
+>(Promise.resolve({ items: [], nextCursor: null }));
 
 export default UnreadNotificationsContext;
