@@ -17,6 +17,9 @@
     "logs": {
       "enabled": true,
       "destinations": ["grafana-logs"]
+    },
+    "issues": {
+      "enabled": true
     }
   },
   "vars": {
