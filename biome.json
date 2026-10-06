@@ -32,7 +32,7 @@
         "noBannedTypes": "warn"
       },
       "nursery": {
-        "useReactCompiler": "info"
+        "useReactCompiler": "error"
       }
     }
   },

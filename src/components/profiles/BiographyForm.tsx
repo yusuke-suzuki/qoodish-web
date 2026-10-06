@@ -12,7 +12,7 @@ type Props = {
 function BiographyForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
-  const [biography, setBiography] = useState('');
+  const [biography, setBiography] = useState(defaultValue ?? '');
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleChange = (
@@ -36,12 +36,6 @@ function BiographyForm({ onChange, defaultValue }: Props) {
   useEffect(() => {
     onChange(biography);
   }, [biography, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setBiography(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <TextField

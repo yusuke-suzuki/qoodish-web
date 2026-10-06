@@ -88,7 +88,7 @@ function ChapterCover({ image, editable, onChange, onSavingChange }: Props) {
     [onChange, dictionary]
   );
 
-  const handleRemove = useCallback(async () => {
+  const handleRemove = async () => {
     setSaving(true);
 
     try {
@@ -96,7 +96,7 @@ function ChapterCover({ image, editable, onChange, onSavingChange }: Props) {
     } finally {
       setSaving(false);
     }
-  }, [onChange]);
+  };
 
   if (image) {
     return (

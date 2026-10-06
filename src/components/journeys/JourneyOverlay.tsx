@@ -9,13 +9,7 @@ type Props = {
 };
 
 function JourneyOverlay({ position, path }: Props) {
-  const { googleMap, loader, setCurrentPosition } = useGoogleMap();
-
-  useEffect(() => {
-    if (position) {
-      setCurrentPosition(position);
-    }
-  }, [position, setCurrentPosition]);
+  const { googleMap, loader } = useGoogleMap();
 
   const pannedRef = useRef(false);
 

@@ -1,6 +1,6 @@
 import { Check, HistoryEdu, LocationOff } from '@mui/icons-material';
 import { List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from '../common/AppDialog.tsx';
 
@@ -15,7 +15,7 @@ export default memo(function EndJourneyDialog({ open, onClose, onEnd }: Props) {
 
   const [loading, setLoading] = useState(false);
 
-  const handleEnd = useCallback(async () => {
+  const handleEnd = async () => {
     setLoading(true);
 
     try {
@@ -23,9 +23,7 @@ export default memo(function EndJourneyDialog({ open, onClose, onEnd }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [onEnd]);
-
-  const handleExited = useCallback(() => setLoading(false), []);
+  };
 
   return (
     <AppDialog
@@ -35,7 +33,7 @@ export default memo(function EndJourneyDialog({ open, onClose, onEnd }: Props) {
       maxWidth="xs"
       dividers
       disableClose={loading}
-      onExited={handleExited}
+      onExited={() => setLoading(false)}
       confirmAction={{
         label: dictionary['end journey'],
         color: 'success',

@@ -21,13 +21,7 @@ type Props = {
 function MapOptions({ currentMap, onChange }: Props) {
   const dictionary = useDictionary();
 
-  const [isPrivate, setIsPrivate] = useState(false);
-
-  useEffect(() => {
-    if (currentMap) {
-      setIsPrivate(currentMap.private);
-    }
-  }, [currentMap]);
+  const [isPrivate, setIsPrivate] = useState(currentMap?.private ?? false);
 
   useEffect(() => {
     onChange({ isPrivate });

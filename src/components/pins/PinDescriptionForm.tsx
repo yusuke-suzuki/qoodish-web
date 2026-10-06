@@ -12,7 +12,7 @@ type Props = {
 function PinDescriptionForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState(defaultValue ?? '');
   const [error, setError] = useState<string | undefined>(undefined);
 
   const handleCommentChange = (
@@ -36,12 +36,6 @@ function PinDescriptionForm({ onChange, defaultValue }: Props) {
   useEffect(() => {
     onChange(comment);
   }, [comment, onChange]);
-
-  useEffect(() => {
-    if (defaultValue) {
-      setComment(defaultValue);
-    }
-  }, [defaultValue]);
 
   return (
     <TextField

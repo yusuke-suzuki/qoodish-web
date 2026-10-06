@@ -74,6 +74,7 @@ function MobileMapDrawer({
   // this drawer is visually closed even when `open` is still true. Keep the
   // AppBar visible in that case.
   useEffect(() => {
+    // biome-ignore lint/nursery/useReactCompiler: the AppBar is owned by ShellProvider above this tree, and pinDrawerOpen changes outside this component's handlers.
     setAppBarHidden(open && !pinDrawerOpen);
   }, [open, pinDrawerOpen, setAppBarHidden]);
 

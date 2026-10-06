@@ -5,12 +5,13 @@ import {
   memo,
   type ReactNode,
   useEffect,
-  useRef,
-  useState
+  useMemo,
+  useRef
 } from 'react';
 import { createPortal } from 'react-dom';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
+import useHydrated from '../../hooks/useHydrated.ts';
 
 const ARROW_SIZE = 16;
 
@@ -26,12 +27,12 @@ function MapPopup({ children, label, position, open, onClose }: Props) {
   const dictionary = useDictionary();
   const { googleMap, loader } = useGoogleMap();
 
-  const [content, setContent] = useState<HTMLDivElement | null>(null);
+  const hydrated = useHydrated();
+  const content = useMemo(
+    () => (hydrated ? document.createElement('div') : null),
+    [hydrated]
+  );
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setContent(document.createElement('div'));
-  }, []);
 
   useEffect(() => {
     if (!loader || !content) {

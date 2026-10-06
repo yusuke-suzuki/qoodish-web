@@ -1,7 +1,7 @@
 'use client';
 
 import { Checkbox, DialogContentText, FormControlLabel } from '@mui/material';
-import { memo, useCallback, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from './AppDialog.tsx';
 
@@ -27,7 +27,7 @@ function ConfirmDeleteDialog({
   const [check, setCheck] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     setLoading(true);
 
     try {
@@ -35,12 +35,12 @@ function ConfirmDeleteDialog({
     } finally {
       setLoading(false);
     }
-  }, [onConfirm]);
+  };
 
-  const handleExited = useCallback(() => {
+  const handleExited = () => {
     setCheck(false);
     setLoading(false);
-  }, []);
+  };
 
   return (
     <AppDialog

@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
@@ -13,13 +13,6 @@ function EmailField({ value, onChange, disabled }: Props) {
   const [touched, setTouched] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!value) {
-      setTouched(false);
-      setEmailError(null);
-    }
-  }, [value]);
-
   const validate = (
     inputValue: string,
     validity: ValidityState
@@ -30,7 +23,10 @@ function EmailField({ value, onChange, disabled }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valid = !e.target.value || e.target.validity.valid;
-    if (touched) {
+    if (!e.target.value) {
+      setTouched(false);
+      setEmailError(null);
+    } else if (touched) {
       setEmailError(validate(e.target.value, e.target.validity));
     }
     onChange(e.target.value, valid);

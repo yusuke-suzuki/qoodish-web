@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { memo, Suspense, useContext, useEffect, useState } from 'react';
+import { memo, Suspense, useContext } from 'react';
 import type { Profile } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import ShellContext from '../../context/ShellContext.tsx';
@@ -22,31 +22,35 @@ type ContentProps = {
   profile: Profile | null;
 };
 
+function selectedTab(pathname: string): number | undefined {
+  if (/^\/[a-z]+\/?$/.test(pathname)) {
+    return 0;
+  }
+
+  if (pathname.endsWith('/discover')) {
+    return 1;
+  }
+
+  if (pathname.endsWith('/journeys')) {
+    return 3;
+  }
+
+  if (pathname.includes('/users/')) {
+    return 4;
+  }
+
+  return undefined;
+}
+
 function BottomNavContent({ profile }: ContentProps) {
   const { authenticated } = useContext(AuthContext);
   const { openCreateMap } = useContext(ShellContext);
-
-  const [bottomNavValue, setBottomNavValue] = useState<number | undefined>(
-    undefined
-  );
 
   const dictionary = useDictionary();
   const localePath = useLocalePath();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (/^\/[a-z]+\/?$/.test(pathname)) {
-      setBottomNavValue(0);
-    } else if (pathname.endsWith('/discover')) {
-      setBottomNavValue(1);
-    } else if (pathname.endsWith('/journeys')) {
-      setBottomNavValue(3);
-    } else if (pathname.includes('/users/')) {
-      setBottomNavValue(4);
-    } else {
-      setBottomNavValue(undefined);
-    }
-  }, [pathname]);
+  const bottomNavValue = selectedTab(pathname);
 
   if (!authenticated) return null;
   if (pathname.includes('/chapters/') || pathname.includes('/maps/')) {

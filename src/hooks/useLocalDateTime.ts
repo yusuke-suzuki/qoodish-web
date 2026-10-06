@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import useHydrated from './useHydrated.ts';
 
 // Rendered on the server before hydration, where the viewer's time zone is
 // unknown. A non-breaking space keeps the line height so the text appears
@@ -19,11 +19,7 @@ export const LOCAL_DATE_TIME_PLACEHOLDER = '\u00A0';
 export default function useLocalDateTime() {
   const { lang } = useParams<{ lang: string }>();
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   return (value: string, options: Intl.DateTimeFormatOptions) =>
     mounted

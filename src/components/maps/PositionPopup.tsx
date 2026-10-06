@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import useDictionary from '../../hooks/useDictionary.ts';
 import MapPopup from './MapPopup.tsx';
 
@@ -26,23 +26,18 @@ function PositionPopup({
 }: Props) {
   const dictionary = useDictionary();
 
-  const [popupOpen, setPopupOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<google.maps.LatLng | null>(null);
+  const popupOpen = position !== null && position !== dismissed;
 
   const handleCreatePinClick = () => {
-    setPopupOpen(false);
+    setDismissed(position);
     onCreatePinClick();
   };
 
   const handleClose = () => {
-    setPopupOpen(false);
+    setDismissed(position);
     onClose();
   };
-
-  useEffect(() => {
-    if (position) {
-      setPopupOpen(true);
-    }
-  }, [position]);
 
   if (!position) {
     return null;

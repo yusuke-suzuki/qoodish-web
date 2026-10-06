@@ -1,18 +1,14 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { relativeTime } from '../utils/relativeTime.ts';
+import useHydrated from './useHydrated.ts';
 import { LOCAL_DATE_TIME_PLACEHOLDER } from './useLocalDateTime.ts';
 
 export default function useRelativeTime() {
   const { lang } = useParams<{ lang: string }>();
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   return (value: string) =>
     mounted
