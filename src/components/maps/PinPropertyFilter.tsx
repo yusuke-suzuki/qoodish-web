@@ -62,6 +62,7 @@ function PropertyFilterChip({ property, value, onChange }: ChipProps) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
+        slotProps={{ list: { 'aria-label': property.name } }}
       >
         {property.options.map((option) => (
           <MenuItem key={option.id} dense onClick={() => toggle(option.id)}>
