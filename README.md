@@ -73,3 +73,13 @@ is logged in to Cloudflare:
 pnpm cf:deploy        # qoodish.com
 pnpm cf:deploy:dev    # the dev environment
 ```
+
+Every other branch deploys as a
+[Worker Preview](https://developers.cloudflare.com/workers/previews/) of the
+dev worker, with the dev settings and its own Durable Objects, and Workers
+Builds comments its URL on the pull request. To deploy the checked-out
+branch as a Preview:
+
+```bash
+pnpm cf:preview
+```
