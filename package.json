@@ -17,7 +17,7 @@
     "cf:build:dev": "vite build --mode dev",
     "cf:deploy": "vinext-cloudflare deploy",
     "cf:deploy:dev": "vinext-cloudflare deploy --env dev",
-    "cf:preview": "cf previews deploy"
+    "cf:preview": "CLOUDFLARE_PREVIEW_BUILD=true vite build --mode dev && cf previews deploy --prebuilt --mode dev"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
