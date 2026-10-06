@@ -24,6 +24,10 @@ function PlacePopup({
   );
   const popupOpen = place !== null && place !== dismissed;
 
+  if (!place && dismissed) {
+    setDismissed(null);
+  }
+
   const handleCreatePinClick = () => {
     setDismissed(place);
     onCreatePinClick();

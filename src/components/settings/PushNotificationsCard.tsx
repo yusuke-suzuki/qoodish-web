@@ -52,6 +52,18 @@ function PushNotificationsCardContent({
   const [publishedEnabled, setPublishedEnabled] = useState(
     preferences?.published ?? false
   );
+  const [prevPreferences, setPrevPreferences] = useState(preferences);
+
+  if (preferences !== prevPreferences) {
+    setPrevPreferences(preferences);
+
+    if (preferences) {
+      setLikedEnabled(preferences.liked);
+      setCoauthorInvitedEnabled(preferences.coauthor_invited);
+      setCommentEnabled(preferences.comment);
+      setPublishedEnabled(preferences.published);
+    }
+  }
 
   const handleSubscriptionChange = useCallback(
     async (_event: ChangeEvent<HTMLInputElement>, checked: boolean) => {

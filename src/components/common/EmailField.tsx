@@ -12,6 +12,16 @@ function EmailField({ value, onChange, disabled }: Props) {
   const dictionary = useDictionary();
   const [touched, setTouched] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [prevValue, setPrevValue] = useState(value);
+
+  if (value !== prevValue) {
+    setPrevValue(value);
+
+    if (!value) {
+      setTouched(false);
+      setEmailError(null);
+    }
+  }
 
   const validate = (
     inputValue: string,
@@ -23,10 +33,7 @@ function EmailField({ value, onChange, disabled }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valid = !e.target.value || e.target.validity.valid;
-    if (!e.target.value) {
-      setTouched(false);
-      setEmailError(null);
-    } else if (touched) {
+    if (touched) {
       setEmailError(validate(e.target.value, e.target.validity));
     }
     onChange(e.target.value, valid);

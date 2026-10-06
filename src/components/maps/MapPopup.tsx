@@ -5,8 +5,8 @@ import {
   memo,
   type ReactNode,
   useEffect,
-  useMemo,
-  useRef
+  useRef,
+  useState
 } from 'react';
 import { createPortal } from 'react-dom';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -23,19 +23,15 @@ type Props = {
   onClose: () => void;
 };
 
-function MapPopup({ children, label, position, open, onClose }: Props) {
+function MountedMapPopup({ children, label, position, open, onClose }: Props) {
   const dictionary = useDictionary();
   const { googleMap, loader } = useGoogleMap();
 
-  const hydrated = useHydrated();
-  const content = useMemo(
-    () => (hydrated ? document.createElement('div') : null),
-    [hydrated]
-  );
+  const [content] = useState(() => document.createElement('div'));
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!loader || !content) {
+    if (!loader) {
       return;
     }
 
@@ -59,7 +55,7 @@ function MapPopup({ children, label, position, open, onClose }: Props) {
   }, [loader, content]);
 
   useEffect(() => {
-    if (!googleMap || !loader || !content || !position || !open) {
+    if (!googleMap || !loader || !position || !open) {
       return;
     }
 
@@ -116,10 +112,6 @@ function MapPopup({ children, label, position, open, onClose }: Props) {
     }
   };
 
-  if (!content) {
-    return null;
-  }
-
   return createPortal(
     <Box sx={{ pb: `${ARROW_SIZE / Math.SQRT2}px` }}>
       <Paper
@@ -156,6 +148,10 @@ function MapPopup({ children, label, position, open, onClose }: Props) {
     </Box>,
     content
   );
+}
+
+function MapPopup(props: Props) {
+  return useHydrated() ? <MountedMapPopup {...props} /> : null;
 }
 
 export default memo(MapPopup);
