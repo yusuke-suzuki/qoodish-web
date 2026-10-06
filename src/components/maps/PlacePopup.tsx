@@ -7,7 +7,10 @@ import MapPopup from './MapPopup.tsx';
 type Props = {
   disableCreatePin: boolean;
   place: google.maps.places.Place | null;
-  onCreatePinClick: () => void;
+  onCreatePinClick: (
+    position: google.maps.LatLngLiteral,
+    name: string | null
+  ) => void;
   onClose: () => void;
 };
 
@@ -30,7 +33,10 @@ function PlacePopup({
 
   const handleCreatePinClick = () => {
     setDismissed(place);
-    onCreatePinClick();
+
+    if (place?.location) {
+      onCreatePinClick(place.location.toJSON(), place.displayName ?? null);
+    }
   };
 
   const handleClose = () => {

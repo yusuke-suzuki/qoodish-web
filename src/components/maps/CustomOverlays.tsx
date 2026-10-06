@@ -59,7 +59,7 @@ function CustomOverlays({
   onPinSaved,
   onPinClick
 }: Props) {
-  const { googleMap, currentPosition } = useGoogleMap();
+  const { googleMap } = useGoogleMap();
 
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -74,9 +74,10 @@ function CustomOverlays({
     useState<HTMLButtonElement | null>(null);
   const [createPinDialogOpen, setCreatePinDialogOpen] = useState(false);
   const [createPinDefaults, setCreatePinDefaults] = useState<{
-    position: google.maps.LatLngLiteral | null;
-    name?: string;
-  }>({ position: null });
+    key: number;
+    position: google.maps.LatLngLiteral;
+    name: string | null;
+  } | null>(null);
   const [currentPlace, setCurrentPlace] =
     useState<google.maps.places.Place | null>(null);
   const [pinnedPosition, setPinnedPosition] =
@@ -112,33 +113,15 @@ function CustomOverlays({
   };
 
   const openCreatePin = (
-    position: google.maps.LatLngLiteral | null,
-    name?: string
+    position: google.maps.LatLngLiteral,
+    name: string | null = null
   ) => {
-    setCreatePinDefaults({ position, name });
+    setCreatePinDefaults((prev) => ({
+      key: (prev?.key ?? 0) + 1,
+      position,
+      name
+    }));
     setCreatePinDialogOpen(true);
-  };
-
-  const handleCurrentPositionCreatePin = () => {
-    openCreatePin(
-      currentPosition
-        ? {
-            lat: currentPosition.coords.latitude,
-            lng: currentPosition.coords.longitude
-          }
-        : null
-    );
-  };
-
-  const handlePlaceCreatePin = () => {
-    openCreatePin(
-      currentPlace?.location?.toJSON() ?? null,
-      currentPlace?.displayName ?? undefined
-    );
-  };
-
-  const handlePinnedPositionCreatePin = () => {
-    openCreatePin(pinnedPosition?.toJSON() ?? null);
   };
 
   const handleCreatePinClose = () => {
@@ -239,7 +222,7 @@ function CustomOverlays({
           <CurrentPositionMarker
             profile={profile}
             disableCreatePin={!map?.editable}
-            onCreatePinClick={handleCurrentPositionCreatePin}
+            onCreatePinClick={openCreatePin}
           />
         )}
       </ProfileBoundary>
@@ -276,26 +259,27 @@ function CustomOverlays({
       <PlacePopup
         place={currentPlace}
         disableCreatePin={!map?.editable}
-        onCreatePinClick={handlePlaceCreatePin}
+        onCreatePinClick={openCreatePin}
         onClose={handlePlaceClose}
       />
 
       <PositionPopup
         position={pinnedPosition}
         disableCreatePin={!map?.editable}
-        onCreatePinClick={handlePinnedPositionCreatePin}
+        onCreatePinClick={openCreatePin}
         onClose={handlePinnedPositionClose}
       />
 
       <CustomMapControls filter={filter} onPlaceChange={setCurrentPlace} />
 
       <CreatePinDialog
+        key={createPinDefaults?.key}
         open={createPinDialogOpen}
         onClose={handleCreatePinClose}
         map={map}
         pinProperties={pinProperties}
-        defaultPosition={createPinDefaults.position}
-        defaultName={createPinDefaults.name}
+        defaultPosition={createPinDefaults?.position ?? null}
+        defaultName={createPinDefaults?.name ?? null}
         onSaved={onPinSaved}
       />
     </>

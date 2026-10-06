@@ -13,25 +13,27 @@ type Props = {
 
 function PositionForm({ onChange, defaultValue }: Props) {
   const [editPosition, setEditPosition] = useState<boolean>(false);
-  const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(
-    null
-  );
+  const [draft, setDraft] = useState<google.maps.LatLngLiteral | null>(null);
+  const [saved, setSaved] = useState<google.maps.LatLngLiteral | null>(null);
+
+  const position = saved ?? defaultValue;
 
   const dictionary = useDictionary();
 
   const handleSave = () => {
-    if (position) {
-      onChange(position);
+    if (draft) {
+      setSaved(draft);
+      onChange(draft);
     }
 
     setEditPosition(false);
   };
 
   useEffect(() => {
-    if (defaultValue) {
+    if (!saved && defaultValue) {
       onChange(defaultValue);
     }
-  }, [defaultValue, onChange]);
+  }, [saved, defaultValue, onChange]);
 
   return editPosition ? (
     <Stack spacing={1}>
@@ -47,13 +49,10 @@ function PositionForm({ onChange, defaultValue }: Props) {
           scaleControl: false,
           mapTypeControl: false
         }}
-        center={defaultValue}
+        center={position}
         zoom={15}
       >
-        <CoodinatesConverter
-          onChange={setPosition}
-          defaultValue={defaultValue}
-        />
+        <CoodinatesConverter onChange={setDraft} defaultValue={position} />
       </GoogleMaps>
 
       <Stack direction="row" spacing={1}>
@@ -74,7 +73,7 @@ function PositionForm({ onChange, defaultValue }: Props) {
           fullWidth
           variant="contained"
           color="success"
-          disabled={!position}
+          disabled={!draft}
           size="small"
         >
           {dictionary.save}
@@ -83,7 +82,7 @@ function PositionForm({ onChange, defaultValue }: Props) {
     </Stack>
   ) : (
     <Box sx={{ position: 'relative' }}>
-      <StaticMap position={position || defaultValue} width={552} height={280} />
+      <StaticMap position={position} width={552} height={280} />
 
       <Box
         sx={{

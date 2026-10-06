@@ -14,7 +14,7 @@ import MapPopup from './MapPopup.tsx';
 type Props = {
   disableCreatePin: boolean;
   position: google.maps.LatLng | null;
-  onCreatePinClick: () => void;
+  onCreatePinClick: (position: google.maps.LatLngLiteral) => void;
   onClose: () => void;
 };
 
@@ -35,7 +35,10 @@ function PositionPopup({
 
   const handleCreatePinClick = () => {
     setDismissed(position);
-    onCreatePinClick();
+
+    if (position) {
+      onCreatePinClick(position.toJSON());
+    }
   };
 
   const handleClose = () => {
