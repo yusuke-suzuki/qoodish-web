@@ -16,9 +16,10 @@ export default function useLoadMoreOnVisible<T extends Element>(
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver((entries, self) => {
       if (entries.some((entry) => entry.isIntersecting)) {
         triedAt.current = { progress };
+        self.disconnect();
         onVisible();
       }
     });
