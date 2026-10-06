@@ -38,7 +38,7 @@
   },
   "overrides": [
     {
-      "includes": ["admin/**"],
+      "includes": ["apps/admin/**"],
       "linter": {
         "domains": {
           "next": "none"

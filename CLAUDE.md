@@ -20,7 +20,7 @@ This document provides essential context for Claude Code to understand the Qoodi
 
 ## 3. Architectural Patterns & Conventions
 
-- **Directory Structure:**
+- **Directory Structure:** The repository is a pnpm workspace. `apps/web` is the web app, and every `src/` path in this document is relative to it. `apps/admin` (moderation dashboard) and `apps/synthetics` (scheduled production checks) are separate Workers with their own READMEs.
     - `src/app`: App Router routes, locale-prefixed under `[lang]`. Internal API route handlers live under `src/app/api/`.
     - `src/actions`: Server Actions (`'use server'`) for all mutations.
     - `src/lib`: Internal BFF — `api.ts` wraps the Rails API with auth and `Accept-Language` headers; per-domain fetchers (`maps.ts`, `reviews.ts`, `users.ts`, `auth.ts`) call it from Server Components and Server Actions.
@@ -52,4 +52,4 @@ This document provides essential context for Claude Code to understand the Qoodi
 - For user-facing text, always use the i18n dictionaries and the `useDictionary` hook. Do not hardcode strings in English or Japanese.
 - **Responsive Layout:** Design mobile-first. Every layout must function on small screens — buttons must not overflow their containers, and text must not be truncated in a way that makes it ambiguous or unintelligible. Use MUI's responsive utilities (`sx` breakpoints, `useMediaQuery`) to adapt layouts across screen sizes.
 - **Web Standards:** Prefer web standards (HTML/CSS/JavaScript built-ins and Web APIs documented on MDN) over third-party library equivalents. Question whether a dependency is needed before reaching for one; browser-native solutions (Intersection Observer, ResizeObserver, CSS animations, etc.) are preferred when they fully cover the use case.
-- **IMPORTANT:** Before pushing code, run both `pnpm biome ci ./src` (lint/format) and `pnpm exec tsc --noEmit` (type check). All checks must pass.
+- **IMPORTANT:** Before pushing code, run both `pnpm lint` (lint/format) and `pnpm typecheck` (type check) from the repository root. All checks must pass.

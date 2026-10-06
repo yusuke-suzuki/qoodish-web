@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v7
         with:

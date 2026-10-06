@@ -57,15 +57,15 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-public/*
-!public/_headers
-!public/icons/
-!public/og/
-!public/screenshots/
-!public/apple-touch-icon.png
-!public/favicon.ico
-!public/manifest.json
-!public/app.webmanifest
+apps/web/public/*
+!apps/web/public/_headers
+!apps/web/public/icons/
+!apps/web/public/og/
+!apps/web/public/screenshots/
+!apps/web/public/apple-touch-icon.png
+!apps/web/public/favicon.ico
+!apps/web/public/manifest.json
+!apps/web/public/app.webmanifest
 
 .vscode
 
@@ -95,7 +95,7 @@ credentials.*.json
 spec
 
 # playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+/apps/web/test-results/
+/apps/web/playwright-report/
+/apps/web/blob-report/
+/apps/web/playwright/.cache/

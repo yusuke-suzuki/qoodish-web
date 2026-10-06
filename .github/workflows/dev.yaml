@@ -28,15 +28,6 @@ jobs:
       - name: Type check
         run: |
           pnpm typecheck
-      - name: Type check the synthetics worker
-        run: |
-          pnpm --filter qoodish-web-synthetics typecheck
-      - name: Type check the admin worker
-        run: |
-          pnpm --filter qoodish-web-admin typecheck
-      - name: Test the admin worker
-        run: |
-          pnpm --filter qoodish-web-admin test
       - name: Test
         run: |
           pnpm test
