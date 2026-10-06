@@ -140,7 +140,12 @@ export async function apiFetchPage<T>(
   path: string,
   { cursor, ...options }: ApiFetchOptions & { cursor?: string } = {}
 ): Promise<CursorPage<T>> {
-  const pagePath = cursor ? `${path}?${new URLSearchParams({ cursor })}` : path;
+  const [base, query] = path.split('?');
+  const params = new URLSearchParams(query);
+  if (cursor) {
+    params.set('cursor', cursor);
+  }
+  const pagePath = params.size > 0 ? `${base}?${params}` : base;
   const { data, status } = await apiFetch<{
     data: T[];
     next_cursor: string | null;
