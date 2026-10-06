@@ -54,7 +54,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 type Props = {
   profile: Profile | null;
-  onCreatePinClick: () => void;
+  onCreatePinClick: (position: google.maps.LatLngLiteral) => void;
   disableCreatePin: boolean;
 };
 
@@ -94,7 +94,9 @@ function CurrentPositionMarker({
   const handleCreatePinClick = () => {
     setPopoverAnchorEl(null);
 
-    onCreatePinClick();
+    if (position) {
+      onCreatePinClick(position.toJSON());
+    }
   };
 
   const popoverOpen = Boolean(popoverAnchorEl);

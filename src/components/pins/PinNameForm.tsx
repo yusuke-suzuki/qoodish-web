@@ -13,7 +13,9 @@ function PinNameForm({ onChange, defaultValue }: Props) {
   const dictionary = useDictionary();
 
   const [name, setName] = useState(defaultValue ?? '');
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(
+    name.length > MAX_LENGTH ? dictionary['max characters 30'] : undefined
+  );
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,7 +36,7 @@ function PinNameForm({ onChange, defaultValue }: Props) {
   };
 
   useEffect(() => {
-    onChange(name);
+    onChange(name.length > MAX_LENGTH ? '' : name);
   }, [name, onChange]);
 
   return (

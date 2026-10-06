@@ -30,7 +30,7 @@ type Props = {
   map: AppMap | null;
   pinProperties: PinProperty[];
   defaultPosition: google.maps.LatLngLiteral | null;
-  defaultName?: string;
+  defaultName: string | null;
 };
 
 export default memo(function CreatePinDialog({
