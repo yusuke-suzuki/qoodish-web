@@ -29,9 +29,8 @@ type Props = {
   onSaved: () => void;
   map: AppMap | null;
   pinProperties: PinProperty[];
-  place?: google.maps.places.Place | null;
-  currentPosition?: GeolocationPosition | null;
-  pinnedPosition?: google.maps.LatLng | null;
+  defaultPosition: google.maps.LatLngLiteral | null;
+  defaultName?: string;
 };
 
 export default memo(function CreatePinDialog({
@@ -41,9 +40,8 @@ export default memo(function CreatePinDialog({
   onSaved,
   map,
   pinProperties,
-  place,
-  currentPosition,
-  pinnedPosition
+  defaultPosition,
+  defaultName
 }: Props) {
   const dictionary = useDictionary();
 
@@ -141,39 +139,6 @@ export default memo(function CreatePinDialog({
     [upload, dictionary]
   );
 
-  const defaultPositionFromPlace = useMemo(() => {
-    if (!place?.location) {
-      return null;
-    }
-
-    return {
-      lat: place.location.lat(),
-      lng: place.location.lng()
-    };
-  }, [place]);
-
-  const defaultPositionFromGeolocation = useMemo(() => {
-    if (!currentPosition) {
-      return null;
-    }
-
-    return {
-      lat: currentPosition.coords.latitude,
-      lng: currentPosition.coords.longitude
-    };
-  }, [currentPosition]);
-
-  const defaultPositionFromPinnedPosition = useMemo(() => {
-    if (!pinnedPosition) {
-      return null;
-    }
-
-    return {
-      lat: pinnedPosition.lat(),
-      lng: pinnedPosition.lng()
-    };
-  }, [pinnedPosition]);
-
   return (
     <AppDialog
       open={open}
@@ -200,17 +165,10 @@ export default memo(function CreatePinDialog({
       }}
     >
       <Box sx={{ mb: 2 }}>
-        <PositionForm
-          defaultValue={
-            defaultPositionFromPlace ||
-            defaultPositionFromGeolocation ||
-            defaultPositionFromPinnedPosition
-          }
-          onChange={setPosition}
-        />
+        <PositionForm defaultValue={defaultPosition} onChange={setPosition} />
       </Box>
 
-      <PinNameForm defaultValue={place?.displayName} onChange={setName} />
+      <PinNameForm defaultValue={defaultName} onChange={setName} />
 
       <PinDescriptionForm onChange={setComment} />
 

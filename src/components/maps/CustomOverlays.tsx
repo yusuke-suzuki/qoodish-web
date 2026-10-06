@@ -73,6 +73,10 @@ function CustomOverlays({
   const [popoverAnchorEl, setPopoverAnchorEl] =
     useState<HTMLButtonElement | null>(null);
   const [createPinDialogOpen, setCreatePinDialogOpen] = useState(false);
+  const [createPinDefaults, setCreatePinDefaults] = useState<{
+    position: google.maps.LatLngLiteral | null;
+    name?: string;
+  }>({ position: null });
   const [currentPlace, setCurrentPlace] =
     useState<google.maps.places.Place | null>(null);
   const [pinnedPosition, setPinnedPosition] =
@@ -107,8 +111,34 @@ function CustomOverlays({
     setPopoverAnchorEl(ref.current);
   };
 
-  const handleCreatePinOpen = () => {
+  const openCreatePin = (
+    position: google.maps.LatLngLiteral | null,
+    name?: string
+  ) => {
+    setCreatePinDefaults({ position, name });
     setCreatePinDialogOpen(true);
+  };
+
+  const handleCurrentPositionCreatePin = () => {
+    openCreatePin(
+      currentPosition
+        ? {
+            lat: currentPosition.coords.latitude,
+            lng: currentPosition.coords.longitude
+          }
+        : null
+    );
+  };
+
+  const handlePlaceCreatePin = () => {
+    openCreatePin(
+      currentPlace?.location?.toJSON() ?? null,
+      currentPlace?.displayName ?? undefined
+    );
+  };
+
+  const handlePinnedPositionCreatePin = () => {
+    openCreatePin(pinnedPosition?.toJSON() ?? null);
   };
 
   const handleCreatePinClose = () => {
@@ -209,7 +239,7 @@ function CustomOverlays({
           <CurrentPositionMarker
             profile={profile}
             disableCreatePin={!map?.editable}
-            onCreatePinClick={handleCreatePinOpen}
+            onCreatePinClick={handleCurrentPositionCreatePin}
           />
         )}
       </ProfileBoundary>
@@ -246,14 +276,14 @@ function CustomOverlays({
       <PlacePopup
         place={currentPlace}
         disableCreatePin={!map?.editable}
-        onCreatePinClick={handleCreatePinOpen}
+        onCreatePinClick={handlePlaceCreatePin}
         onClose={handlePlaceClose}
       />
 
       <PositionPopup
         position={pinnedPosition}
         disableCreatePin={!map?.editable}
-        onCreatePinClick={handleCreatePinOpen}
+        onCreatePinClick={handlePinnedPositionCreatePin}
         onClose={handlePinnedPositionClose}
       />
 
@@ -264,9 +294,8 @@ function CustomOverlays({
         onClose={handleCreatePinClose}
         map={map}
         pinProperties={pinProperties}
-        place={currentPlace}
-        currentPosition={currentPosition}
-        pinnedPosition={pinnedPosition}
+        defaultPosition={createPinDefaults.position}
+        defaultName={createPinDefaults.name}
         onSaved={onPinSaved}
       />
     </>
