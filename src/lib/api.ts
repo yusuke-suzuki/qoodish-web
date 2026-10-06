@@ -138,14 +138,17 @@ export async function apiFetchList<T>(
 
 export async function apiFetchPage<T>(
   path: string,
-  { cursor, ...options }: ApiFetchOptions & { cursor?: string } = {}
+  {
+    cursor,
+    query,
+    ...options
+  }: ApiFetchOptions & { cursor?: string; query?: Record<string, string> } = {}
 ): Promise<CursorPage<T>> {
-  const [base, query] = path.split('?');
   const params = new URLSearchParams(query);
   if (cursor) {
     params.set('cursor', cursor);
   }
-  const pagePath = params.size > 0 ? `${base}?${params}` : base;
+  const pagePath = params.size > 0 ? `${path}?${params}` : path;
   const { data, status } = await apiFetch<{
     data: T[];
     next_cursor: string | null;

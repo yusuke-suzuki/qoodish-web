@@ -4,8 +4,8 @@ import { memo, Suspense } from 'react';
 import useUnreadNotifications from '../../hooks/useUnreadNotifications.ts';
 
 function UnreadBadge() {
-  const { notifications, nextCursor } = useUnreadNotifications();
-  const count = notifications.length;
+  const { items, nextCursor } = useUnreadNotifications();
+  const count = items.length;
 
   return (
     <Badge badgeContent={nextCursor ? `${count}+` : count} color="secondary">

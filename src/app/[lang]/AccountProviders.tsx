@@ -1,13 +1,17 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import type { NotificationsPage, Profile } from '../../../types/index.ts';
+import type {
+  CursorPage,
+  Notification,
+  Profile
+} from '../../../types/index.ts';
 import ProfileContext from '../../context/ProfileContext.ts';
 import UnreadNotificationsContext from '../../context/UnreadNotificationsContext.ts';
 
 type Props = {
   profilePromise: Promise<Profile | null>;
-  unreadNotificationsPromise: Promise<NotificationsPage>;
+  unreadNotificationsPromise: Promise<CursorPage<Notification>>;
   children: ReactNode;
 };
 

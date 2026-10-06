@@ -336,8 +336,3 @@ export type CursorPage<T> = {
   items: T[];
   nextCursor: string | null;
 };
-
-export type NotificationsPage = {
-  notifications: Notification[];
-  nextCursor: string | null;
-};

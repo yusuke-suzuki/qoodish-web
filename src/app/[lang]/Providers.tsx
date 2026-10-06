@@ -17,7 +17,11 @@ import {
   useMemo,
   useState
 } from 'react';
-import type { NotificationsPage, Profile } from '../../../types/index.ts';
+import type {
+  CursorPage,
+  Notification,
+  Profile
+} from '../../../types/index.ts';
 import AuthProvider from '../../components/auth/AuthProvider.tsx';
 import ClientErrorReporter from '../../components/common/ClientErrorReporter.tsx';
 import DictionaryContext from '../../context/DictionaryContext.ts';
@@ -56,7 +60,7 @@ type Props = {
   serverPending: boolean;
   serverUid?: string;
   profilePromise: Promise<Profile | null>;
-  unreadNotificationsPromise: Promise<NotificationsPage>;
+  unreadNotificationsPromise: Promise<CursorPage<Notification>>;
 };
 
 export default function Providers({

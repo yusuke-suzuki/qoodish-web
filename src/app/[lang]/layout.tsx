@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import type { NotificationsPage, Profile } from '../../../types/index.ts';
+import type {
+  CursorPage,
+  Notification,
+  Profile
+} from '../../../types/index.ts';
 import JsonLd from '../../components/common/JsonLd.tsx';
 import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
@@ -85,8 +89,8 @@ export default async function RootLayout({ children, params }: Props) {
     : Promise.resolve<Profile | null>(null);
   // The bell is chrome, drawn above every error boundary: an outage there
   // must cost the unread count, not the page.
-  const noNotifications: NotificationsPage = {
-    notifications: [],
+  const noNotifications: CursorPage<Notification> = {
+    items: [],
     nextCursor: null
   };
   const unreadNotificationsPromise = authenticated

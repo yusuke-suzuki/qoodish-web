@@ -1,6 +1,6 @@
 'use server';
 
-import type { NotificationsPage } from '../../types/index.ts';
+import type { CursorPage, Notification } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { getNotifications } from '../lib/users.ts';
 
@@ -27,6 +27,6 @@ export async function markNotificationAsRead(
 export async function fetchMoreNotifications(
   lang: string,
   cursor: string
-): Promise<NotificationsPage> {
+): Promise<CursorPage<Notification>> {
   return getNotifications(lang, { cursor });
 }

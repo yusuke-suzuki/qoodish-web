@@ -63,7 +63,7 @@ export default function NotificationsFeed({
     startTransition(async () => {
       try {
         const page = await fetchMoreNotifications(lang, cursor);
-        setMoreNotifications((prev) => [...prev, ...page.notifications]);
+        setMoreNotifications((prev) => [...prev, ...page.items]);
         setMoreCursor(page.nextCursor);
       } catch {
         enqueueSnackbar(dictionary['load more failed'], { variant: 'error' });

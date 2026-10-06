@@ -5,7 +5,6 @@ import type {
   Journal,
   MutedAccount,
   Notification,
-  NotificationsPage,
   Pin,
   Profile
 } from '../../types/index.ts';
@@ -178,20 +177,14 @@ export function getMutedAccounts(
   });
 }
 
-export async function getNotifications(
+export function getNotifications(
   lang: string,
   { cursor, read }: { cursor?: string; read?: boolean } = {}
-): Promise<NotificationsPage> {
-  const query =
-    read === undefined ? '' : `?${new URLSearchParams({ read: String(read) })}`;
-  const { items, nextCursor } = await apiFetchPage<Notification>(
-    `/v2/me/notifications${query}`,
-    {
-      lang,
-      cursor,
-      next: { revalidate: 0 }
-    }
-  );
-
-  return { notifications: items, nextCursor };
+): Promise<CursorPage<Notification>> {
+  return apiFetchPage<Notification>('/v2/me/notifications', {
+    lang,
+    cursor,
+    query: read === undefined ? undefined : { read: String(read) },
+    next: { revalidate: 0 }
+  });
 }
