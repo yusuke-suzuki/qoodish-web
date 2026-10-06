@@ -39,8 +39,6 @@
   ],
   "exclude": [
     "node_modules",
-    "public/sw.js",
-    "synthetics",
-    "admin"
+    "public/sw.js"
   ]
 }

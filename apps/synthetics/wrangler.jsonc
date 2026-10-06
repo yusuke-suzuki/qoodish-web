@@ -1,5 +1,5 @@
 {
-  "$schema": "../node_modules/wrangler/config-schema.json",
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "qoodish-web-synthetics",
   "account_id": "9671c836ad132f87d892b12ccd1809e0",
   "main": "src/index.ts",

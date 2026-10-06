@@ -4,19 +4,23 @@
 
 https://qoodish.com
 
-The web app is a Next.js app deployed to Cloudflare Workers through
-[OpenNext](https://opennext.js.org/cloudflare). The API it talks to is
-[qoodish](https://github.com/yusuke-suzuki/qoodish). This repository also
-holds two more workers, each with its own README:
+This repository is a pnpm workspace of three Cloudflare Workers under
+`apps/`:
 
-- [`admin`](admin/README.md): the moderation dashboard
-- [`synthetics`](synthetics/README.md): scheduled checks against production
+- [`web`](apps/web): the web app, a Next.js app deployed through
+  [OpenNext](https://opennext.js.org/cloudflare). The API it talks to is
+  [qoodish](https://github.com/yusuke-suzuki/qoodish)
+- [`admin`](apps/admin/README.md): the moderation dashboard
+- [`synthetics`](apps/synthetics/README.md): scheduled checks against
+  production
 
 ## Installation
 
 ```bash
 pnpm install
 ```
+
+Run the commands below from `apps/web` unless noted otherwise.
 
 ## Environment variables
 
@@ -48,10 +52,17 @@ pnpm preview
 
 ## Tests
 
+From the repository root, these cover every worker:
+
 ```bash
 pnpm lint        # Biome
 pnpm typecheck   # TypeScript
 pnpm test        # unit tests (node:test)
+```
+
+From `apps/web`:
+
+```bash
 pnpm e2e         # Playwright smoke tests
 ```
 

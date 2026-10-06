@@ -10,5 +10,5 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates gnu
 
 # Ensure volume mount directories exist with proper permissions
 RUN mkdir -p /home/node/.local/share/pnpm \
-    /workspaces/qoodish-web/node_modules /workspaces/qoodish-web/.next \
+    /workspaces/qoodish-web/node_modules /workspaces/qoodish-web/apps/web/.next \
     && chown -R node:node /home/node /workspaces
