@@ -29,6 +29,10 @@ function PositionPopup({
   const [dismissed, setDismissed] = useState<google.maps.LatLng | null>(null);
   const popupOpen = position !== null && position !== dismissed;
 
+  if (!position && dismissed) {
+    setDismissed(null);
+  }
+
   const handleCreatePinClick = () => {
     setDismissed(position);
     onCreatePinClick();

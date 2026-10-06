@@ -24,16 +24,6 @@ function CoodinatesConverter({ onChange, defaultValue }: Props) {
   const [defaultPosition, setDefaultPosition] = useState<
     google.maps.LatLngLiteral | google.maps.LatLng | null
   >(defaultValue ?? null);
-  const [prevDefaultValue, setPrevDefaultValue] = useState(defaultValue);
-
-  if (defaultValue !== prevDefaultValue) {
-    setPrevDefaultValue(defaultValue);
-
-    if (defaultValue) {
-      setDefaultPosition(defaultValue);
-      setCenter(defaultValue);
-    }
-  }
   const [pacPosition, setPacPosition] =
     useState<google.maps.ControlPosition | null>(null);
 

@@ -1,4 +1,4 @@
-import { memo, type ReactNode, useEffect, useMemo } from 'react';
+import { memo, type ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
 import useHydrated from '../../hooks/useHydrated.ts';
@@ -9,36 +9,31 @@ type Props = {
   fullWidth?: boolean;
 };
 
-export default memo(function MapControl({
-  children,
-  controlPosition,
-  fullWidth
-}: Props) {
+function MountedMapControl({ children, controlPosition, fullWidth }: Props) {
   const { googleMap } = useGoogleMap();
-  const hydrated = useHydrated();
 
-  const container = useMemo(() => {
-    if (!hydrated) {
-      return null;
-    }
-
-    const div = document.createElement('div');
-    div.style.width = fullWidth ? '100%' : 'auto';
-
-    return div;
-  }, [hydrated, fullWidth]);
+  const [container] = useState(() => document.createElement('div'));
 
   useEffect(() => {
-    if (googleMap && controlPosition && container) {
+    if (googleMap && controlPosition) {
       googleMap.controls[controlPosition].push(container);
     }
 
     return () => {
-      if (googleMap && controlPosition && container) {
+      if (googleMap && controlPosition) {
         googleMap.controls[controlPosition].clear();
       }
     };
   }, [googleMap, controlPosition, container]);
 
-  return container && createPortal(children, container);
+  useEffect(() => {
+    // biome-ignore lint/nursery/useReactCompiler: the container is a DOM node handed to the Maps API, whose control layout reads its width; React never reads it.
+    container.style.width = fullWidth ? '100%' : 'auto';
+  }, [container, fullWidth]);
+
+  return createPortal(children, container);
+}
+
+export default memo(function MapControl(props: Props) {
+  return useHydrated() ? <MountedMapControl {...props} /> : null;
 });

@@ -56,13 +56,17 @@ function GoogleMaps({
   const { lang } = useParams<{ lang: string }>();
 
   const [googleMap, setGoogleMap] = useState<google.maps.Map | null>(null);
-  const [locatedPosition, setLocatedPosition] =
-    useState<GeolocationPosition | null>(null);
-  const currentPosition =
-    position &&
-    (!locatedPosition || position.timestamp >= locatedPosition.timestamp)
-      ? position
-      : locatedPosition;
+  const [currentPosition, setCurrentPosition] =
+    useState<GeolocationPosition | null>(position ?? null);
+  const [prevPosition, setPrevPosition] = useState(position);
+
+  if (position !== prevPosition) {
+    setPrevPosition(position);
+
+    if (position) {
+      setCurrentPosition(position);
+    }
+  }
 
   const loader = getLoader(toLocale(lang));
 
@@ -135,7 +139,7 @@ function GoogleMaps({
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (!cancelled) {
-            setLocatedPosition(position);
+            setCurrentPosition(position);
           }
         },
         () => {},
@@ -171,7 +175,7 @@ function GoogleMaps({
       googleMap,
       loader,
       currentPosition,
-      setCurrentPosition: setLocatedPosition
+      setCurrentPosition
     }),
     [googleMap, loader, currentPosition]
   );

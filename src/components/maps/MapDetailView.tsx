@@ -3,7 +3,7 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
-import { useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -13,6 +13,7 @@ import type {
   PinProperty,
   Profile
 } from '../../../types/index.ts';
+import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useJourney, { type PauseReason } from '../../hooks/useJourney.ts';
 import { matchesOptions } from '../../utils/pinPropertyOptions.ts';
@@ -123,6 +124,24 @@ export default function MapDetailView({
   const [endDialogOpen, setEndDialogOpen] = useState(false);
   const [selectedPin, setSelectedPin] = useState<Pin | null>(null);
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false);
+  const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
+
+  const { setAppBarHidden } = useContext(ShellContext);
+
+  const changeMapDrawerOpen = (open: boolean) => {
+    setMapDrawerOpen(open);
+    setAppBarHidden(open && !pinDrawerOpen);
+  };
+
+  const changePinDrawerOpen = (open: boolean) => {
+    setPinDrawerOpen(open);
+    setAppBarHidden(mapDrawerOpen && !open);
+  };
+
+  useEffect(() => {
+    return () => setAppBarHidden(false);
+  }, [setAppBarHidden]);
+
   const [filterOptionIds, setFilterOptionIds] = useState<number[]>([]);
 
   const visiblePins = pins.filter((pin) =>
@@ -154,7 +173,7 @@ export default function MapDetailView({
         dictionary['added to milestones'].replace('{name}', pin.name),
         { variant: 'success' }
       );
-      setPinDrawerOpen(false);
+      changePinDrawerOpen(false);
     }
   };
 
@@ -217,7 +236,7 @@ export default function MapDetailView({
 
   const handlePinClick = (pin: Pin) => {
     setSelectedPin(pin);
-    setPinDrawerOpen(true);
+    changePinDrawerOpen(true);
   };
 
   return (
@@ -235,6 +254,8 @@ export default function MapDetailView({
         onSaved={router.refresh}
         onPinClick={handlePinClick}
         pinDrawerOpen={pinDrawerOpen}
+        open={mapDrawerOpen}
+        onOpenChange={changeMapDrawerOpen}
       />
 
       <PinDrawer
@@ -242,8 +263,8 @@ export default function MapDetailView({
         map={map}
         pinProperties={pinProperties}
         open={pinDrawerOpen}
-        onOpen={() => setPinDrawerOpen(true)}
-        onClose={() => setPinDrawerOpen(false)}
+        onOpen={() => changePinDrawerOpen(true)}
+        onClose={() => changePinDrawerOpen(false)}
         onExited={() => setSelectedPin(null)}
         milestoneAction={
           currentPin

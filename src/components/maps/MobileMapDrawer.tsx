@@ -8,7 +8,7 @@ import {
   type Theme,
   Typography
 } from '@mui/material';
-import { memo, useContext, useEffect, useState } from 'react';
+import { memo } from 'react';
 import type {
   AppMap,
   Chapter,
@@ -16,7 +16,6 @@ import type {
   Pin,
   Profile
 } from '../../../types/index.ts';
-import ShellContext from '../../context/ShellContext.tsx';
 import useDictionary from '../../hooks/useDictionary.ts';
 import BookmarkButton from './BookmarkButton.tsx';
 import Coauthors from './Coauthors.tsx';
@@ -41,6 +40,8 @@ type Props = {
   onSaved: () => void;
   onPinClick: (pin: Pin) => void;
   pinDrawerOpen: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 function MobileMapDrawer({
@@ -55,32 +56,11 @@ function MobileMapDrawer({
   onPinPropertiesClick,
   onSaved,
   onPinClick,
-  pinDrawerOpen
+  pinDrawerOpen,
+  open,
+  onOpenChange
 }: Props) {
-  const [open, setOpen] = useState(false);
-
-  const { setAppBarHidden } = useContext(ShellContext);
   const dictionary = useDictionary();
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  // The pin drawer overrides this drawer's open prop, so while it is open
-  // this drawer is visually closed even when `open` is still true. Keep the
-  // AppBar visible in that case.
-  useEffect(() => {
-    // biome-ignore lint/nursery/useReactCompiler: the AppBar is owned by ShellProvider above this tree, and pinDrawerOpen changes outside this component's handlers.
-    setAppBarHidden(open && !pinDrawerOpen);
-  }, [open, pinDrawerOpen, setAppBarHidden]);
-
-  useEffect(() => {
-    return () => setAppBarHidden(false);
-  }, [setAppBarHidden]);
 
   const handlePinClick = (pin: Pin) => {
     onPinClick(pin);
@@ -93,8 +73,8 @@ function MobileMapDrawer({
       hideBackdrop
       disableSwipeToOpen={false}
       open={pinDrawerOpen ? false : open}
-      onOpen={handleOpen}
-      onClose={handleClose}
+      onOpen={() => onOpenChange(true)}
+      onClose={() => onOpenChange(false)}
       swipeAreaWidth={drawerBleeding}
       sx={{
         zIndex: (theme) => theme.zIndex.appBar - 1,
