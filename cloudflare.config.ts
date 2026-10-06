@@ -29,7 +29,7 @@ const DEVELOPMENT: Environment = {
   rateLimitNamespacePrefix: '2'
 };
 
-async function defineWebWorker(environment: Environment) {
+async function defineWebWorker(environment: Environment, isPreview: boolean) {
   const name = `${environment.prefix}-qoodish-web`;
   const cache = await createWorkersResponseStoreSelfContainedConfig({
     worker: name,
@@ -46,7 +46,8 @@ async function defineWebWorker(environment: Environment) {
     observability: {
       enabled: true,
       traces: { enabled: true },
-      logs: { enabled: true }
+      logs: { enabled: true },
+      issues: { enabled: true }
     },
     env: {
       ...cache.env,
@@ -65,16 +66,25 @@ async function defineWebWorker(environment: Environment) {
         simple: { limit: 30, period: 60 }
       })
     },
-    exports: { ...OPENNEXT_DURABLE_OBJECTS, ...cache.exports }
+    exports: isPreview
+      ? cache.exports
+      : { ...OPENNEXT_DURABLE_OBJECTS, ...cache.exports }
   };
 }
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async ({ mode, isPreview }) => {
+  if (isPreview) {
+    return {
+      accountId: ACCOUNT_ID,
+      worker: await defineWebWorker(DEVELOPMENT, true)
+    };
+  }
+
   if (mode === 'production') {
     return {
       accountId: ACCOUNT_ID,
       worker: {
-        ...(await defineWebWorker(PRODUCTION)),
+        ...(await defineWebWorker(PRODUCTION, false)),
         workersDev: false,
         previewUrls: false,
         domains: ['qoodish.com']
@@ -85,7 +95,7 @@ export default defineConfig(async ({ mode }) => {
   return {
     accountId: ACCOUNT_ID,
     worker: {
-      ...(await defineWebWorker(DEVELOPMENT)),
+      ...(await defineWebWorker(DEVELOPMENT, false)),
       workersDev: true,
       previewUrls: true
     }
