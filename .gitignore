@@ -80,6 +80,7 @@ firebase-debug.log
 .wrangler
 .dev.vars
 cloudflare-env.d.ts
+.cloudflare/
 
 .env
 .env.*

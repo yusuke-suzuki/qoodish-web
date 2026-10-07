@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "packageManager": "pnpm@11.0.9",
   "scripts": {
-    "lint": "biome ci ./apps/web/src ./apps/web/e2e ./apps/web/playwright.config.ts ./apps/admin/src ./apps/synthetics/src",
+    "lint": "biome ci",
     "typecheck": "pnpm --recursive typecheck",
     "test": "pnpm --recursive test"
   },

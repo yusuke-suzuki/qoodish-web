@@ -10,7 +10,7 @@ The pages are rendered on the server with Hono's JSX and use plain HTML forms, s
 
 Cloudflare Access protects the whole host. The worker also verifies the `Cf-Access-Jwt-Assertion` header against the team's certs and answers `401` without a valid one, then forwards the same assertion to the API, which verifies it again and records the moderator's email.
 
-Verification fails closed: until `CF_ACCESS_TEAM_DOMAIN` (the team domain Zero Trust shows, for example `<team>.cloudflareaccess.com`) and `CF_ACCESS_AUD` (the Access application's AUD tag) are set in `wrangler.jsonc`, every request answers `401`.
+Verification fails closed: until `CF_ACCESS_TEAM_DOMAIN` (the team domain Zero Trust shows, for example `<team>.cloudflareaccess.com`) and `CF_ACCESS_AUD` (the Access application's AUD tag) are set in `cloudflare.config.ts`, every request answers `401`.
 
 ## Develop
 
@@ -23,9 +23,9 @@ pnpm typecheck
 
 ## Deploy
 
-Workers Builds deploys the worker from `master`, so a merge is the release. To deploy the checked-out revision from a machine that is logged in to Cloudflare:
+Workers Builds deploys the worker from `master`, so a merge is the release, and deploys every other branch of the dev worker as a Worker Preview. To deploy the checked-out revision from a machine that is logged in to Cloudflare:
 
 ```bash
-pnpm cf:deploy        # admin.qoodish.com
-pnpm cf:deploy:dev    # admin-dev.qoodish.com
+pnpm exec cf deploy               # admin.qoodish.com
+pnpm exec cf deploy --mode dev    # admin-dev.qoodish.com
 ```
