@@ -5,6 +5,8 @@ import { defineConfig, devices } from '@playwright/test';
 // answer to the commit under test.
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:8787';
 
+const SIGNED_IN_SPEC = /signedIn\.spec\.ts$/;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -34,11 +36,22 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: SIGNED_IN_SPEC,
       use: { ...devices['Desktop Chrome'] }
     },
     {
       name: 'mobile',
+      testIgnore: SIGNED_IN_SPEC,
       use: { ...devices['Pixel 7'] }
-    }
+    },
+    ...(process.env.E2E_BASE_URL
+      ? []
+      : [
+          {
+            name: 'signed-in',
+            testMatch: SIGNED_IN_SPEC,
+            use: { ...devices['Desktop Chrome'] }
+          }
+        ])
   ]
 });

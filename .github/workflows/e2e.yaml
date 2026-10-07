@@ -11,10 +11,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  smoke:
+  e2e:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -48,6 +49,18 @@ jobs:
           NEXT_PUBLIC_GOOGLE_MAP_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_MAP_ID }}
           NEXT_PUBLIC_VAPID_KEY: ${{ vars.NEXT_PUBLIC_VAPID_KEY }}
 
-      - name: Smoke test the built worker
+      - name: Authenticate to the dev Firebase project
+        id: firebase
+        if: vars.E2E_SERVICE_ACCOUNT != '' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: google-github-actions/auth@v2
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ vars.E2E_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.E2E_SERVICE_ACCOUNT }}
+
+      - name: Run the E2E tests against the built worker
         run: |
           pnpm e2e
+        env:
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          E2E_FIREBASE_ACCESS_TOKEN: ${{ steps.firebase.outputs.access_token }}
