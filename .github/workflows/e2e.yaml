@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -33,11 +36,11 @@ jobs:
         run: |
           pnpm exec playwright install --with-deps chromium
 
-      # Next resolves every NEXT_PUBLIC_ name while it builds, so a page cannot
+      # vinext resolves every NEXT_PUBLIC_ name while it builds, so a page cannot
       # be given its configuration after the bundle is written.
       - name: Build the worker
         run: |
-          pnpm run cf:build:dev
+          pnpm run build:dev
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}

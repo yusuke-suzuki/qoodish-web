@@ -20,7 +20,7 @@
   },
   "mounts": [
     "source=node_modules_cache,target=${containerWorkspaceFolder}/node_modules,type=volume",
-    "source=next_cache,target=${containerWorkspaceFolder}/.next,type=volume",
+    "source=next_cache,target=${containerWorkspaceFolder}/apps/web/.next,type=volume",
     "source=pnpm_cache,target=/home/node/.local/share/pnpm,type=volume"
   ],
   "remoteEnv": {

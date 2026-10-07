@@ -12,8 +12,8 @@
 
 # Testing
 
-<!-- How the changes were verified (e.g., `pnpm biome ci ./src` and
-`pnpm exec tsc --noEmit` results). If testing is not applicable, state why. -->
+<!-- How the changes were verified (e.g., `pnpm lint` and `pnpm typecheck`
+results). If testing is not applicable, state why. -->
 
 <!-- Add a "Release procedure" section when the release has ordering
 constraints with the qoodish backend -->

@@ -4,19 +4,23 @@
 
 https://qoodish.com
 
-The web app is a Next.js app deployed to Cloudflare Workers through
-[OpenNext](https://opennext.js.org/cloudflare). The API it talks to is
-[qoodish](https://github.com/yusuke-suzuki/qoodish). This repository also
-holds two more workers, each with its own README:
+This repository is a pnpm workspace of three Cloudflare Workers under
+`apps/`:
 
-- [`admin`](admin/README.md): the moderation dashboard
-- [`synthetics`](synthetics/README.md): scheduled checks against production
+- [`web`](apps/web): the web app, a Next.js app built with
+  [vinext](https://github.com/cloudflare/vinext). The API it talks to is
+  [qoodish](https://github.com/yusuke-suzuki/qoodish)
+- [`admin`](apps/admin/README.md): the moderation dashboard
+- [`synthetics`](apps/synthetics/README.md): scheduled checks against
+  production
 
 ## Installation
 
 ```bash
 pnpm install
 ```
+
+Run the commands below from `apps/web` unless noted otherwise.
 
 ## Environment variables
 
@@ -30,7 +34,7 @@ gcloud secrets versions access latest --secret=QOODISH_WEB_DOTENV --project=$PRO
 `.env` files are ignored by git, so never commit one.
 
 A deployed worker takes `APP_ENV` and `API_ENDPOINT` from the `vars` of
-its environment in `wrangler.jsonc` instead.
+its environment in `cloudflare.config.ts` instead.
 
 ## Running app
 
@@ -42,21 +46,28 @@ To run the worker as it is deployed, build it for the dev environment and
 serve it with the Workers runtime on http://localhost:8787:
 
 ```bash
-pnpm cf:build:dev
+pnpm build:dev
 pnpm preview
 ```
 
 ## Tests
 
+From the repository root, these cover every worker:
+
 ```bash
 pnpm lint        # Biome
 pnpm typecheck   # TypeScript
 pnpm test        # unit tests (node:test)
+```
+
+From `apps/web`:
+
+```bash
 pnpm e2e         # Playwright smoke tests
 ```
 
 `pnpm e2e` serves the worker with `pnpm preview` unless `E2E_BASE_URL`
-points at a running app, so build it with `pnpm cf:build:dev` first. The
+points at a running app, so build it with `pnpm build:dev` first. The
 tests find content through the API at `E2E_API_URL`, which defaults to the
 dev API. Pull requests run all of these in CI, and every push to `master`
 runs the smoke tests against production once it serves that commit.
@@ -64,10 +75,11 @@ runs the smoke tests against production once it serves that commit.
 ## Deployment
 
 Cloudflare Workers Builds deploys the app, so merging to `master` releases
-it to qoodish.com. To deploy the checked-out revision from a machine that
-is logged in to Cloudflare:
+it to qoodish.com, and deploys every other branch of the dev worker as a
+Worker Preview. To deploy the checked-out revision from a machine that is
+logged in to Cloudflare:
 
 ```bash
-pnpm cf:deploy        # qoodish.com
-pnpm cf:deploy:dev    # the dev environment
+pnpm exec cf deploy               # qoodish.com
+pnpm exec cf deploy --mode dev    # the dev environment
 ```

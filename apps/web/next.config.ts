@@ -1,0 +1,51 @@
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  // Workers Builds exposes the commit only while building, so the health
+  // endpoint has to capture it here or the deployed worker cannot say which
+  // commit it is running.
+  env: {
+    DEPLOYED_COMMIT_SHA:
+      process.env.WORKERS_CI_COMMIT_SHA ?? process.env.GITHUB_SHA ?? 'unknown'
+  },
+  // public/_headers only covers the Cloudflare asset host, so document
+  // responses rendered by the worker have to attach security headers here.
+  headers: async () => [
+    {
+      source: '/:path*',
+      headers: [
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=31536000; includeSubDomains'
+        },
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=(self), payment=()'
+        }
+      ]
+    }
+  ],
+  // Pins lived under /reports and inside their map's path before the URL
+  // followed the name; shared links and search results still carry those.
+  redirects: async () => [
+    {
+      source: '/:lang(ja|en)/reports',
+      destination: '/:lang/pins',
+      permanent: true
+    },
+    {
+      source: '/:lang(ja|en)/maps/:mapId/reports/:pinId',
+      destination: '/:lang/pins/:pinId',
+      permanent: true
+    }
+  ],
+  experimental: {
+    globalNotFound: true
+  }
+};
+
+export default nextConfig;

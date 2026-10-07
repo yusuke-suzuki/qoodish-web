@@ -1,4 +1,0 @@
-# Copy to .dev.vars for `pnpm preview` (wrangler local runtime).
-NEXTJS_ENV=development
-API_ENDPOINT=https://example.com/api
-APP_ENV=development
