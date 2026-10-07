@@ -28,6 +28,7 @@
       "matchPackageNames": [
         "@opennextjs/cloudflare",
         "wrangler",
+        "cf",
         "@cloudflare/**"
       ],
       "groupName": "Cloudflare tooling"

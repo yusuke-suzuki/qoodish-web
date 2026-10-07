@@ -1,17 +1,19 @@
 {
   "name": "qoodish-web-synthetics",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "wrangler dev --test-scheduled",
-    "cf:deploy": "wrangler deploy",
+    "dev": "cf dev",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@cloudflare/playwright": "^1.3.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@cloudflare/workers-types": "^5.20260901.1",
+    "cf": "1.0.0-beta.12",
     "typescript": "^5.2.2",
-    "wrangler": "^4.114.0"
+    "vite": "8.3.0"
   }
 }
