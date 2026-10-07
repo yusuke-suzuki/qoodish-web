@@ -116,12 +116,11 @@
           }
         ]
       },
-      "migrations": [
-        {
-          "tag": "v3",
-          "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache"]
-        }
-      ],
+      "migrations": [],
+      "exports": {
+        "DOQueueHandler": { "type": "durable-object", "storage": "sqlite" },
+        "DOShardedTagCache": { "type": "durable-object", "storage": "sqlite" }
+      },
       "ratelimits": [
         {
           "name": "IMAGE_UPLOAD_BURST_LIMIT",
