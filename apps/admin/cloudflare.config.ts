@@ -44,32 +44,29 @@ function defineAdminWorker(name: string, environment: Environment) {
   };
 }
 
-export default defineConfig(({ mode, isPreview }) => {
-  if (mode !== 'dev') {
+function selectWorker(mode: string | undefined, isPreview: boolean) {
+  if (isPreview) {
+    return defineAdminWorker('dev-qoodish-admin', DEVELOPMENT);
+  }
+
+  if (mode === 'production') {
     return {
-      accountId: ACCOUNT_ID,
-      worker: {
-        ...defineAdminWorker('prod-qoodish-admin', PRODUCTION),
-        workersDev: false,
-        previewUrls: false,
-        domains: ['admin.qoodish.com']
-      }
+      ...defineAdminWorker('prod-qoodish-admin', PRODUCTION),
+      workersDev: false,
+      previewUrls: false,
+      domains: ['admin.qoodish.com']
     };
   }
 
-  const worker = defineAdminWorker('dev-qoodish-admin', DEVELOPMENT);
-
-  if (isPreview) {
-    return { accountId: ACCOUNT_ID, worker };
-  }
-
   return {
-    accountId: ACCOUNT_ID,
-    worker: {
-      ...worker,
-      workersDev: false,
-      previewUrls: true,
-      domains: ['admin-dev.qoodish.com']
-    }
+    ...defineAdminWorker('dev-qoodish-admin', DEVELOPMENT),
+    workersDev: false,
+    previewUrls: true,
+    domains: ['admin-dev.qoodish.com']
   };
-});
+}
+
+export default defineConfig(({ mode, isPreview }) => ({
+  accountId: ACCOUNT_ID,
+  worker: selectWorker(mode, isPreview)
+}));
