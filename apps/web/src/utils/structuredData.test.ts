@@ -79,6 +79,7 @@ describe('siteStructuredData', () => {
       ['Organization', 'WebSite']
     );
     assert.equal(graph[0]['@id'], 'https://qoodish.com/#organization');
+    assert.equal(graph[0].logo, 'https://qoodish.com/icons/icon_x512.png');
     assert.equal(graph[0].email, 'support@qoodish.com');
     assert.deepEqual(graph[1].publisher, {
       '@id': 'https://qoodish.com/#organization'
