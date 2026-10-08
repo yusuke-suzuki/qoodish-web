@@ -54,11 +54,14 @@ function AuthProvider({
 
   useEmailLinkHandler({ isLoading: loading });
 
-  const syncSessionCookie = useCallback(async (idToken: string | null) => {
+  const syncSessionCookie = useCallback(async (user: User | null) => {
     await fetch('/api/auth/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken }),
+      body: JSON.stringify({
+        idToken: user ? await user.getIdToken() : null,
+        refreshToken: user?.refreshToken ?? null
+      }),
       signal: AbortSignal.timeout(10000)
     });
   }, []);
@@ -117,8 +120,7 @@ function AuthProvider({
               router.refresh();
             }
           } else {
-            const accessToken = await user.getIdToken();
-            await syncSessionCookie(accessToken);
+            await syncSessionCookie(user);
 
             setAuthenticated(true);
             setUid(user.uid);
