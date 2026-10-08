@@ -4,6 +4,15 @@ import {
   NextResponse
 } from 'next/server';
 import { isTimeoutError } from './lib/apiRequest.ts';
+import {
+  clearedSessionCookies,
+  needsRenewal,
+  REFRESH_TOKEN_COOKIE,
+  renewIdToken,
+  SESSION_COOKIE,
+  type SessionCookie,
+  sessionCookies
+} from './lib/session.ts';
 import describeError from './utils/describeError.ts';
 import {
   LOCALE_COOKIE,
@@ -74,7 +83,44 @@ function redirectToLocale(request: NextRequest): NextResponse {
   return response;
 }
 
-export function middleware(request: NextRequest, event: NextFetchEvent) {
+async function renewSession(request: NextRequest): Promise<SessionCookie[]> {
+  const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
+
+  if (
+    !refreshToken ||
+    !needsRenewal(request.cookies.get(SESSION_COOKIE)?.value)
+  ) {
+    return [];
+  }
+
+  const renewal = await renewIdToken(refreshToken);
+
+  if (renewal.status === 'renewed') {
+    const cookies = sessionCookies(renewal.idToken, renewal.refreshToken);
+
+    for (const { name, value } of cookies) {
+      request.cookies.set(name, value);
+    }
+
+    return cookies;
+  }
+
+  if (renewal.status === 'revoked') {
+    const cookies = clearedSessionCookies();
+
+    request.cookies.delete(cookies.map(({ name }) => name));
+
+    return cookies;
+  }
+
+  return [];
+}
+
+function route(request: NextRequest, event: NextFetchEvent): NextResponse {
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return NextResponse.next({ request: { headers: request.headers } });
+  }
+
   const locale = pathLocale(request.nextUrl.pathname);
 
   if (!locale) {
@@ -89,6 +135,21 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
   return servePage(request, locale);
 }
 
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+  const renewedCookies = await renewSession(request);
+  const response = route(request, event);
+
+  for (const { name, value, options } of renewedCookies) {
+    response.cookies.set(name, value, options);
+  }
+
+  return response;
+}
+
 export const config = {
-  matcher: ['/((?!_next|api|offline/|.*\\..*).*)', '/(en|ja)/:path*']
+  matcher: [
+    '/((?!_next|api|offline/|.*\\..*).*)',
+    '/(en|ja)/:path*',
+    '/api/v1/:path*'
+  ]
 };

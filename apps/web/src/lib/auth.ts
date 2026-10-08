@@ -6,6 +6,7 @@ import {
 import { getAuth } from 'firebase/auth';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
+import { REFRESH_TOKEN_COOKIE, SESSION_COOKIE } from './session.ts';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,14 +16,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-export const SIGNED_IN_COOKIE = 'signed_in';
-
 type ServerAuthState = {
   authenticated: boolean;
-  // The browser carries a session the server cannot read yet: the ID token has
-  // expired and the client has not exchanged its refresh token. Rendering
-  // anything addressed to a stranger would be wrong for the few hundred
-  // milliseconds until it does.
   pending: boolean;
   uid?: string;
   token?: string;
@@ -60,8 +55,8 @@ export async function verifyIdToken(idToken: string): Promise<boolean> {
 
 export const getServerAuthState = cache(async (): Promise<ServerAuthState> => {
   const cookieStore = await cookies();
-  const idToken = cookieStore.get('__session')?.value;
-  const pending = cookieStore.get(SIGNED_IN_COOKIE)?.value === '1';
+  const idToken = cookieStore.get(SESSION_COOKIE)?.value;
+  const pending = cookieStore.has(REFRESH_TOKEN_COOKIE);
 
   if (!idToken) {
     return { authenticated: false, pending };

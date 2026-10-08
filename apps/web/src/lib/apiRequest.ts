@@ -3,6 +3,7 @@ import {
   LOCALE_COOKIE,
   PAGE_LOCALE_HEADER
 } from '../utils/locales.ts';
+import { SESSION_COOKIE } from './session.ts';
 
 export const DEFAULT_TIMEOUT_MS = 15000;
 
@@ -17,7 +18,7 @@ type ApiHeaderOptions = {
 export async function getAuthToken(): Promise<string | null> {
   const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
-  return cookieStore.get('__session')?.value ?? null;
+  return cookieStore.get(SESSION_COOKIE)?.value ?? null;
 }
 
 function quality(params: string[]): number {
