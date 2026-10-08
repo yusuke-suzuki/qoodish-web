@@ -2,7 +2,7 @@
 
 A Cloudflare Worker that checks production every 30 minutes with a real browser through Browser Rendering. Each run verifies `/api/health`, the top page, and a public map detail page on the `TARGET_ORIGIN` configured in `cloudflare.config.ts`, and fails the scheduled invocation when any check does.
 
-A failed run surfaces as an exception in the worker's logs, which the telemetry export sends to the destinations named in `cloudflare.config.ts`, and as an issue in Workers Issues. Alerting on it lives in the telemetry destination, alongside an alert for the absence of successful runs.
+A failed run surfaces as an exception in the worker's Workers Logs and as an issue in Workers Issues, whose automations send the alert. The absence of successful runs is alerted on by a Workers Observability alert.
 
 ## Develop
 

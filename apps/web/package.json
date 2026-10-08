@@ -53,6 +53,6 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "serwist": "^9.2.1",
     "typescript": "^5.2.2",
-    "wrangler": "^4.114.0"
+    "wrangler": "^4.148.0"
   }
 }

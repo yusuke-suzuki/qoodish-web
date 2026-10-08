@@ -18,17 +18,16 @@
       "service": "prod-qoodish-web"
     }
   ],
-  // The destinations are registered in the dashboard under these names; the
-  // worker name tells the environments apart on the receiving side.
   "observability": {
     "enabled": true,
     "traces": {
-      "enabled": true,
-      "destinations": ["grafana-traces"]
+      "enabled": true
     },
     "logs": {
-      "enabled": true,
-      "destinations": ["grafana-logs"]
+      "enabled": true
+    },
+    "issues": {
+      "enabled": true
     }
   },
   "r2_buckets": [
@@ -142,6 +141,54 @@
       "vars": {
         "APP_ENV": "development",
         "API_ENDPOINT": "https://api-dev.qoodish.com"
+      },
+      "previews": {
+        "services": [
+          {
+            "binding": "WORKER_SELF_REFERENCE",
+            "service": "dev-qoodish-web"
+          }
+        ],
+        "r2_buckets": [
+          {
+            "binding": "NEXT_INC_CACHE_R2_BUCKET",
+            "bucket_name": "dev-qoodish-web-incremental-cache"
+          }
+        ],
+        "durable_objects": {
+          "bindings": [
+            {
+              "name": "NEXT_CACHE_DO_QUEUE",
+              "class_name": "DOQueueHandler"
+            },
+            {
+              "name": "NEXT_TAG_CACHE_DO_SHARDED",
+              "class_name": "DOShardedTagCache"
+            }
+          ]
+        },
+        "ratelimits": [
+          {
+            "name": "IMAGE_UPLOAD_BURST_LIMIT",
+            "namespace_id": "3001",
+            "simple": { "limit": 10, "period": 10 }
+          },
+          {
+            "name": "IMAGE_UPLOAD_LIMIT",
+            "namespace_id": "3002",
+            "simple": { "limit": 30, "period": 60 }
+          }
+        ],
+        "analytics_engine_datasets": [
+          {
+            "binding": "ANALYTICS_EVENTS",
+            "dataset": "dev_qoodish_web_events"
+          }
+        ],
+        "vars": {
+          "APP_ENV": "development",
+          "API_ENDPOINT": "https://api-dev.qoodish.com"
+        }
       }
     }
   }
