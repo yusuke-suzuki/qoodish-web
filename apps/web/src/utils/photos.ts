@@ -8,7 +8,7 @@ export type Photo = {
   srcSet: string;
 };
 
-export function imageUrl(id: string, variant: string): string {
+function imageUrl(id: string, variant: string): string {
   return `${HOST}/${id}/${variant}`;
 }
 
