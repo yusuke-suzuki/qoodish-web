@@ -27,8 +27,8 @@ function defineAdminWorker(name: string, environment: Environment) {
     compatibilityDate: '2026-07-01',
     observability: {
       enabled: true,
-      traces: { enabled: true, destinations: ['grafana-traces'] },
-      logs: { enabled: true, destinations: ['grafana-logs'] },
+      traces: { enabled: true },
+      logs: { enabled: true },
       issues: { enabled: true }
     },
     env: {

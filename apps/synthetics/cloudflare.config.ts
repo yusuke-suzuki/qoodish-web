@@ -10,8 +10,8 @@ export default defineConfig({
     workersDev: false,
     observability: {
       enabled: true,
-      traces: { enabled: true, destinations: ['grafana-traces'] },
-      logs: { enabled: true, destinations: ['grafana-logs'] },
+      traces: { enabled: true },
+      logs: { enabled: true },
       issues: { enabled: true }
     },
     triggers: [triggers.scheduled({ schedule: '*/30 * * * *' })],
