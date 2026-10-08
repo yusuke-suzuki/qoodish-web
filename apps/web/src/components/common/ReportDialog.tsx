@@ -26,6 +26,7 @@ import { createReport } from '../../actions/reports.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
+import { SUPPORT_EMAIL } from '../../utils/brand.ts';
 import {
   type ModeratableType,
   REPORT_CATEGORIES,
@@ -34,7 +35,6 @@ import {
 import AppDialog from './AppDialog.tsx';
 
 const MAX_DETAILS_LENGTH = 2000;
-const SUPPORT_EMAIL = 'support@qoodish.com';
 const DETAILS_REQUIRED_CATEGORIES = new Set<ReportCategory>([
   'copyright',
   'privacy',
