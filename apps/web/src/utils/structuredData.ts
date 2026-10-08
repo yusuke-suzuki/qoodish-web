@@ -1,4 +1,5 @@
 import type { AppMap, Author, Chapter, Pin } from '../../types/index.ts';
+import { SUPPORT_EMAIL } from './brand.ts';
 import { localePath } from './locales.ts';
 import { SITE_ORIGIN } from './metadata.ts';
 import { imageUrl } from './photos.ts';
@@ -73,7 +74,8 @@ export function siteStructuredData(
         '@id': ORGANIZATION_ID,
         name: 'Qoodish',
         url: SITE_ORIGIN,
-        logo: ORGANIZATION_LOGO
+        logo: ORGANIZATION_LOGO,
+        email: SUPPORT_EMAIL
       },
       {
         '@type': 'WebSite',
