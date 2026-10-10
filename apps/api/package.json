@@ -7,11 +7,14 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply dev-qoodish-api --local"
+    "db:migrate:local": "cf d1 migrations apply 80c87870-73f2-4f5e-b057-d9296600418a --local --persist-to .cloudflare/state",
+    "db:migrate:dev": "cf d1 migrations apply 80c87870-73f2-4f5e-b057-d9296600418a",
+    "db:migrate:prod": "cf d1 migrations apply 7d615fd7-7907-407b-b5fc-de93a6cb1d55"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",
     "hono": "^4.13.8",
+    "jose": "^6.2.12",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -22,7 +25,6 @@
     "drizzle-kit": "^0.31.11",
     "typescript": "^5.9.2",
     "vite": "8.3.0",
-    "vitest": "^4.1.11",
-    "wrangler": "^4.148.0"
+    "vitest": "^4.1.11"
   }
 }

@@ -242,7 +242,9 @@ function JourneyProgressSheet({
     const map = new Map<number | null, JourneyCheckin>();
 
     for (const checkin of journey?.checkins ?? []) {
-      map.set(checkin.pin_id, checkin);
+      if (checkin.pin_id !== null) {
+        map.set(checkin.pin_id, checkin);
+      }
     }
 
     return map;
@@ -258,7 +260,10 @@ function JourneyProgressSheet({
           longitude: milestone.longitude
         },
         image: imagesByPin.get(milestone.pin_id),
-        checkin: checkinsByPin.get(milestone.pin_id),
+        checkin:
+          milestone.pin_id === null
+            ? undefined
+            : checkinsByPin.get(milestone.pin_id),
         pinId: milestone.pin_id,
         milestone
       })),
@@ -269,7 +274,10 @@ function JourneyProgressSheet({
     const plannedPinIds = new Set(plannedItems.map((item) => item.pinId));
 
     return (journey?.checkins ?? [])
-      .filter((checkin) => !plannedPinIds.has(checkin.pin_id))
+      .filter(
+        (checkin) =>
+          checkin.pin_id === null || !plannedPinIds.has(checkin.pin_id)
+      )
       .map((checkin) => ({
         key: `checkin-${checkin.id}`,
         spot: checkin.spot,

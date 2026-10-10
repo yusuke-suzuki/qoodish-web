@@ -7,7 +7,7 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 ## Request handling
 
 - Every request resolves its locale from the leading language of `Accept-Language` (`en` or `ja`, default `en`), the same rule Rails applies, and validation messages come from `src/i18n`.
-- A `Bearer` Firebase ID token in `Authorization` is verified against Google's published signing keys (`src/auth/firebase.ts`). An invalid token is logged and the request continues as a guest, so each route decides whether to answer `401`.
+- A `Bearer` Firebase ID token in `Authorization` is verified with `jose` against Google's published signing keys (`src/auth/firebase.ts`). An invalid token is logged and the request continues as a guest, so each route decides whether to answer `401`.
 - Errors are thrown as `ApiError` (`src/errors.ts`) and rendered by the app-level handler; unexpected errors become a localized `500`.
 
 ## Database
@@ -15,7 +15,7 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 The schema lives in `src/db/schema.ts` and migrations in `migrations/`, generated with `pnpm db:generate`. Full-text search replaces MySQL's ngram indexes with FTS5 tables over the `*_search_documents` tables (`migrations/0001_fts.sql`).
 
 ```bash
-pnpm db:migrate:local   # apply migrations to the local D1
+pnpm db:migrate:local   # apply migrations to the local D1 that cf dev uses
 pnpm dev                # cf dev against the dev worker config
 ```
 
@@ -40,5 +40,6 @@ pnpm exec cf deploy --mode dev    # api-next-dev.qoodish.com
 Apply migrations to the remote database before the deploy, the same order the Rails release follows:
 
 ```bash
-pnpm exec wrangler d1 migrations apply prod-qoodish-api --remote
+pnpm db:migrate:dev    # dev-qoodish-api
+pnpm db:migrate:prod   # prod-qoodish-api
 ```

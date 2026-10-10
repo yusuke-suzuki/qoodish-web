@@ -48,6 +48,9 @@ importers:
       hono:
         specifier: ^4.13.8
         version: 4.13.8
+      jose:
+        specifier: ^6.2.12
+        version: 6.2.12
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -76,9 +79,6 @@ importers:
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@22.20.1)(vite@8.3.0(@types/node@22.20.1)(esbuild@0.28.2)(terser@5.16.9)(tsx@4.23.15)(yaml@2.9.0))
-      wrangler:
-        specifier: ^4.148.0
-        version: 4.148.0(@cloudflare/workers-types@5.20261009.1)(@types/node@22.20.1)
 
   apps/synthetics:
     dependencies:
@@ -3616,6 +3616,9 @@ packages:
   jackspeak@4.2.3:
     resolution: {integrity: sha512-ykkVRwrYvFm1nb2AJfKKYPr0emF6IiXDYUaFx4Zn9ZuIH7MrzEZ3sD5RlqGXNRpHtvUHJyOnCEFxOlNDtGo7wg==}
     engines: {node: 20 || >=22}
+
+  jose@6.2.12:
+    resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -8199,6 +8202,8 @@ snapshots:
   jackspeak@4.2.3:
     dependencies:
       '@isaacs/cliui': 9.0.0
+
+  jose@6.2.12: {}
 
   js-tokens@4.0.0: {}
 

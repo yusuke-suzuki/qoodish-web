@@ -9,7 +9,9 @@ deployment are described in the [repository README](../../README.md).
 The `MAINTENANCE` KV namespace holds one key, `maintenance`. While it is
 set, every page shows a maintenance notice to signed-in users and guests
 alike, and every write the app would send to the API answers `503` without
-reaching it. Reads keep working. The flag is read per environment, so the
+reaching it: Server Actions, the image upload allocation and the account
+registration that follows a sign-in. Reads keep working, and a visitor who
+already holds a session stays signed in. The flag is read per environment, so the
 dev worker and the production worker are toggled independently through
 `--env`.
 
