@@ -33,6 +33,7 @@
     "@mui/lab": "^7.0.1-beta.18",
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^9.3.0",
+    "@qoodish/api-contract": "workspace:*",
     "@serwist/window": "^9.2.1",
     "firebase": "^12.4.0",
     "lexical": "^0.46.0",

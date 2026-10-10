@@ -1,4 +1,4 @@
-import type { AppMap, Author, Chapter, Pin } from '../../types/index.ts';
+import type { AppMap, Chapter, Pin, UserSummary } from '../../types/index.ts';
 import { SUPPORT_EMAIL } from './brand.ts';
 import { localePath } from './locales.ts';
 import { SITE_ORIGIN } from './metadata.ts';
@@ -34,7 +34,7 @@ function present(data: StructuredData): StructuredData {
 
 // Only the name and the page, never the picture: profiles are not indexed,
 // and the name is already the byline the page renders.
-function person(author: Author, lang: string): StructuredData {
+function person(author: UserSummary, lang: string): StructuredData {
   return {
     '@type': 'Person',
     name: author.name,

@@ -8,6 +8,7 @@
     "test": "node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "@qoodish/api-contract": "workspace:*",
     "hono": "^4.13.8"
   },
   "devDependencies": {

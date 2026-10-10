@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import type {
-  AppMap,
-  ChapterSearchResult,
-  PinSearchResult,
-  UserSearchResult
+  GuestChapter,
+  GuestMap,
+  GuestPin,
+  UserSummary
 } from '../../types/index.ts';
 import {
   hasSearchableTerm,
@@ -76,12 +76,18 @@ describe('search requests', () => {
 
 describe('toSearchResults', () => {
   const localePath = (path: string) => `/ja${path}`;
+  const shoyu = {
+    id: 2,
+    name: 'Shoyu',
+    images: [{ id: 9, avatar: 'pin.png' }],
+    map: { id: 1, name: 'Ramen' }
+  } as GuestPin;
 
   it('lists maps, then chapters, then pins, then users with links to each', () => {
     const results = toSearchResults(
       {
         maps: [
-          { id: 1, name: 'Ramen', image: { avatar: 'map.png' } } as AppMap
+          { id: 1, name: 'Ramen', image: { avatar: 'map.png' } } as GuestMap
         ],
         chapters: [
           {
@@ -89,17 +95,10 @@ describe('toSearchResults', () => {
             title: 'Alley walk',
             image: { avatar: 'chapter.png' },
             map: { id: 1, name: 'Ramen' }
-          } as ChapterSearchResult
+          } as GuestChapter
         ],
-        pins: [
-          {
-            id: 2,
-            name: 'Shoyu',
-            images: [{ id: 9, avatar: 'pin.png' }],
-            map: { id: 1, name: 'Ramen' }
-          } as PinSearchResult
-        ],
-        users: [{ id: 3, name: 'okayu', image: null } as UserSearchResult]
+        pins: [shoyu],
+        users: [{ id: 3, name: 'okayu', image: null } as UserSummary]
       },
       localePath
     );
@@ -145,14 +144,7 @@ describe('toSearchResults', () => {
       {
         maps: [],
         chapters: [],
-        pins: [
-          {
-            id: 2,
-            name: 'Shoyu',
-            images: [],
-            map: { id: 1, name: 'Ramen' }
-          }
-        ],
+        pins: [{ ...shoyu, images: [] }],
         users: []
       },
       localePath

@@ -9,13 +9,13 @@ import {
   MenuItem
 } from '@mui/material';
 import { memo, useRef, useState } from 'react';
-import type { Profile } from '../../../types/index.ts';
+import type { UserProfile } from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import BlockMenuItem from '../common/BlockMenuItem.tsx';
 import MuteMenuItem from '../common/MuteMenuItem.tsx';
 
 type Props = {
-  profile: Profile;
+  profile: UserProfile;
   authenticated: boolean;
   disabled: boolean;
   onReportClick: () => void;
