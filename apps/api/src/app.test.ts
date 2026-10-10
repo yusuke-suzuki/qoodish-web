@@ -11,9 +11,7 @@ beforeAll(async () => {
 });
 
 function appWithProbe() {
-  const app = createApp({
-    fetchFirebaseKeys: (...args) => signer.fetchKeys(...args)
-  });
+  const app = createApp({ firebaseKeys: signer.keys });
 
   app.get('/probe', (c) =>
     c.json({ locale: c.get('locale'), uid: c.get('idToken')?.sub ?? null })

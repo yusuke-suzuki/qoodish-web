@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
+import type { JWTVerifyGetKey } from 'jose';
 import {
   bearerToken,
   type FirebaseIdToken,
   verifyFirebaseIdToken
 } from './auth/firebase.ts';
-import type { KeysFetcher } from './auth/jwt.ts';
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { type Locale, localeFromAcceptLanguage } from './i18n/index.ts';
@@ -18,7 +18,7 @@ export type Variables = {
 export type AppEnv = { Bindings: Env; Variables: Variables };
 
 export type AppOptions = {
-  fetchFirebaseKeys?: KeysFetcher;
+  firebaseKeys?: JWTVerifyGetKey;
 };
 
 export function createApp(options: AppOptions = {}) {
@@ -35,7 +35,7 @@ export function createApp(options: AppOptions = {}) {
       ? await verifyFirebaseIdToken(
           token,
           c.env.GOOGLE_PROJECT_ID,
-          options.fetchFirebaseKeys
+          options.firebaseKeys
         )
       : null;
 

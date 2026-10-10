@@ -16,11 +16,7 @@ describe('verifyFirebaseIdToken', () => {
   it('returns the payload of a token signed by a published key', async () => {
     const token = await signer.sign(firebaseClaims(PROJECT_ID));
 
-    const payload = await verifyFirebaseIdToken(
-      token,
-      PROJECT_ID,
-      signer.fetchKeys
-    );
+    const payload = await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys);
 
     expect(payload?.sub).toBe('firebase-uid');
     expect(payload?.email).toBe('alice@example.com');
@@ -30,7 +26,7 @@ describe('verifyFirebaseIdToken', () => {
     const token = await other.sign(firebaseClaims(PROJECT_ID));
 
     expect(
-      await verifyFirebaseIdToken(token, PROJECT_ID, signer.fetchKeys)
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 
@@ -38,7 +34,7 @@ describe('verifyFirebaseIdToken', () => {
     const token = await signer.sign(firebaseClaims('another-project'));
 
     expect(
-      await verifyFirebaseIdToken(token, PROJECT_ID, signer.fetchKeys)
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 
@@ -49,7 +45,7 @@ describe('verifyFirebaseIdToken', () => {
     );
 
     expect(
-      await verifyFirebaseIdToken(token, PROJECT_ID, signer.fetchKeys)
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 
@@ -57,27 +53,21 @@ describe('verifyFirebaseIdToken', () => {
     const token = await signer.sign(firebaseClaims(PROJECT_ID, { sub: '' }));
 
     expect(
-      await verifyFirebaseIdToken(token, PROJECT_ID, signer.fetchKeys)
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 
-  it('rejects an unsigned algorithm', async () => {
-    const token = await signer.sign(firebaseClaims(PROJECT_ID), {
-      alg: 'none'
-    });
+  it('rejects an unsigned token', async () => {
+    const token = signer.signUnsigned(firebaseClaims(PROJECT_ID));
 
     expect(
-      await verifyFirebaseIdToken(token, PROJECT_ID, signer.fetchKeys)
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 
   it('rejects a malformed token', async () => {
     expect(
-      await verifyFirebaseIdToken(
-        'not.a.jwt.at.all',
-        PROJECT_ID,
-        signer.fetchKeys
-      )
+      await verifyFirebaseIdToken('not.a.jwt.at.all', PROJECT_ID, signer.keys)
     ).toBeNull();
   });
 });

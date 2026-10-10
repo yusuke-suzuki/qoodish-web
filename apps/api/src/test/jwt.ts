@@ -1,63 +1,41 @@
-import type { KeysFetcher, SigningKey } from '../auth/jwt.ts';
-
-const ALGORITHM = {
-  name: 'RSASSA-PKCS1-v1_5',
-  modulusLength: 2048,
-  publicExponent: new Uint8Array([1, 0, 1]),
-  hash: 'SHA-256'
-} as const;
+import {
+  base64url,
+  createLocalJWKSet,
+  exportJWK,
+  generateKeyPair,
+  type JWTVerifyGetKey,
+  SignJWT
+} from 'jose';
 
 export type Signer = {
   kid: string;
-  publicJwk: SigningKey;
-  sign(
-    payload: object,
-    header?: { alg?: string; kid?: string }
-  ): Promise<string>;
-  fetchKeys: KeysFetcher;
+  keys: JWTVerifyGetKey;
+  sign(payload: Record<string, unknown>): Promise<string>;
+  signUnsigned(payload: Record<string, unknown>): string;
 };
 
-function encode(value: object | Uint8Array): string {
-  const bytes =
-    value instanceof Uint8Array
-      ? value
-      : new TextEncoder().encode(JSON.stringify(value));
-
-  return btoa(String.fromCharCode(...bytes))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-}
-
 export async function createSigner(kid = 'key-1'): Promise<Signer> {
-  const pair = (await crypto.subtle.generateKey(ALGORITHM, true, [
-    'sign',
-    'verify'
-  ])) as CryptoKeyPair;
-  const exported = (await crypto.subtle.exportKey(
-    'jwk',
-    pair.publicKey
-  )) as JsonWebKey;
-  const publicJwk: SigningKey = { ...exported, kid };
+  const { privateKey, publicKey } = await generateKeyPair('RS256');
+  const jwk = { ...(await exportJWK(publicKey)), kid, alg: 'RS256' };
+  const encode = (value: object) =>
+    base64url.encode(new TextEncoder().encode(JSON.stringify(value)));
 
   return {
     kid,
-    publicJwk,
-    async sign(payload, header = {}) {
-      const unsigned = `${encode({ alg: 'RS256', kid, ...header })}.${encode(payload)}`;
-      const signature = await crypto.subtle.sign(
-        ALGORITHM.name,
-        pair.privateKey,
-        new TextEncoder().encode(unsigned)
-      );
-
-      return `${unsigned}.${encode(new Uint8Array(signature))}`;
-    },
-    fetchKeys: async () => [publicJwk]
+    keys: createLocalJWKSet({ keys: [jwk] }),
+    sign: (payload) =>
+      new SignJWT(payload)
+        .setProtectedHeader({ alg: 'RS256', kid })
+        .sign(privateKey),
+    signUnsigned: (payload) =>
+      `${encode({ alg: 'none', kid })}.${encode(payload)}.`
   };
 }
 
-export function firebaseClaims(projectId: string, overrides: object = {}) {
+export function firebaseClaims(
+  projectId: string,
+  overrides: Record<string, unknown> = {}
+): Record<string, unknown> {
   const nowSeconds = Math.floor(Date.now() / 1000);
 
   return {
