@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "lib": ["es2022"],
+    "target": "es2024",
+    "lib": ["es2024"],
     "types": ["@cloudflare/workers-types", "@cloudflare/vitest-plugin/types"],
     "module": "esnext",
     "moduleResolution": "bundler",

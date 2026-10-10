@@ -23,7 +23,10 @@ export function commentsQuery(
       userId: sql<number>`${users.id}`.as('author_id'),
       userName: users.name,
       userImageUrl: images.url,
-      likesCount: sql<number>`(SELECT count(*) FROM ${votes} WHERE ${and(eq(votes.votableType, 'Comment'), eq(votes.votableId, comments.id))})`
+      likesCount: db.$count(
+        votes,
+        and(eq(votes.votableType, 'Comment'), eq(votes.votableId, comments.id))
+      )
     })
     .from(comments)
     .innerJoin(users, eq(users.id, comments.userId))

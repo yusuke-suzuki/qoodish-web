@@ -1,4 +1,5 @@
-import { or, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import { and, type Column, eq, lt, or, type SQL } from 'drizzle-orm';
+import { decodeBase64Url, encodeBase64Url } from 'hono/utils/encode';
 import { ApiError } from './errors.ts';
 
 export const FEED_PER_PAGE = 12;
@@ -11,17 +12,14 @@ export type FeedCursor = {
 const TIMESTAMP =
   /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?\s*(Z|[+-]\d{2}:?\d{2})?$/i;
 
-function decodeBase64Url(token: string): string {
-  if (!/^[A-Za-z0-9_-]*={0,2}$/.test(token)) {
+function decodeToken(token: string): string {
+  if (!/^[A-Za-z0-9+/_-]*={0,2}$/.test(token)) {
     throw new ApiError('BadRequest');
   }
 
-  const base64 = token.replaceAll('-', '+').replaceAll('_', '/');
-
   try {
-    const binary = atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '='));
     return new TextDecoder('utf-8', { fatal: true, ignoreBOM: false }).decode(
-      Uint8Array.from(binary, (char) => char.charCodeAt(0))
+      decodeBase64Url(token)
     );
   } catch {
     throw new ApiError('BadRequest');
@@ -69,7 +67,7 @@ export function normalizeTimestamp(text: string): string {
 }
 
 export function decodeCursor(token: string): FeedCursor {
-  const decoded = decodeBase64Url(token);
+  const decoded = decodeToken(token);
   const separator = decoded.indexOf(',');
   const timestamp = separator === -1 ? decoded : decoded.slice(0, separator);
   const id = separator === -1 ? undefined : decoded.slice(separator + 1);
@@ -82,10 +80,9 @@ export function decodeCursor(token: string): FeedCursor {
 }
 
 export function encodeCursor({ createdAt, id }: FeedCursor): string {
-  return btoa(`${createdAt},${id}`)
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-    .replace(/=+$/, '');
+  return encodeBase64Url(
+    new TextEncoder().encode(`${createdAt},${id}`).buffer
+  ).replace(/=+$/, '');
 }
 
 export function nextCursor(
@@ -97,13 +94,9 @@ export function nextCursor(
   return last && page.length === perPage ? encodeCursor(last) : null;
 }
 
-export function before(
-  cursor: FeedCursor,
-  createdAt: SQLWrapper,
-  id: SQLWrapper
-): SQL {
+export function before(cursor: FeedCursor, createdAt: Column, id: Column): SQL {
   return or(
-    sql`${createdAt} < ${cursor.createdAt}`,
-    sql`(${createdAt} = ${cursor.createdAt} AND ${id} < ${cursor.id})`
+    lt(createdAt, cursor.createdAt),
+    and(eq(createdAt, cursor.createdAt), lt(id, cursor.id))
   ) as SQL;
 }

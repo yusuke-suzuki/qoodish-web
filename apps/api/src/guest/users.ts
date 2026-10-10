@@ -3,7 +3,7 @@ import type {
   GuestUserProfile,
   UserSummary
 } from '@qoodish/api-contract';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { type Database, inIds } from '../db/client.ts';
 import {
   bookmarks,
@@ -72,10 +72,31 @@ export async function guestProfile(
   const [user] = await db
     .select({
       ...userColumns,
-      mapsCount: sql<number>`(SELECT count(*) FROM ${maps} WHERE ${and(eq(maps.userId, users.id), eq(maps.status, 'published'))})`,
-      bookmarkedMapsCount: sql<number>`(SELECT count(*) FROM ${bookmarks} INNER JOIN ${maps} ON ${eq(maps.id, bookmarks.mapId)} WHERE ${and(eq(bookmarks.userId, users.id), eq(maps.status, 'published'))})`,
-      pinsCount: sql<number>`(SELECT count(*) FROM ${pins} WHERE ${and(eq(pins.userId, users.id), eq(pins.status, 'published'))})`,
-      likesCount: sql<number>`(SELECT count(*) FROM ${votes} WHERE ${and(eq(votes.voterId, users.id), eq(votes.voterType, 'User'))})`
+      mapsCount: db.$count(
+        maps,
+        and(eq(maps.userId, users.id), eq(maps.status, 'published'))
+      ),
+      bookmarkedMapsCount: db.$count(
+        bookmarks,
+        and(
+          eq(bookmarks.userId, users.id),
+          inArray(
+            bookmarks.mapId,
+            db
+              .select({ id: maps.id })
+              .from(maps)
+              .where(eq(maps.status, 'published'))
+          )
+        )
+      ),
+      pinsCount: db.$count(
+        pins,
+        and(eq(pins.userId, users.id), eq(pins.status, 'published'))
+      ),
+      likesCount: db.$count(
+        votes,
+        and(eq(votes.voterId, users.id), eq(votes.voterType, 'User'))
+      )
     })
     .from(users)
     .leftJoin(images, eq(images.id, users.imageId))
