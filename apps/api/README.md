@@ -6,7 +6,7 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 
 ## Request handling
 
-- Every request resolves its locale from the leading language of `Accept-Language` (`en` or `ja`, default `en`), the same rule Rails applies, and validation messages come from `src/i18n`.
+- Every request resolves its locale from `Accept-Language` through Hono's `languageDetector` (`en` or `ja`, default `en`), and validation messages come from `src/i18n`.
 - A `Bearer` Firebase ID token in `Authorization` is verified with `jose` against Google's published signing keys (`src/auth/firebase.ts`). An invalid token is logged and the request continues as a guest, so each route decides whether to answer `401`.
 - Errors are thrown as `ApiError` (`src/errors.ts`) and rendered by the app-level handler; unexpected errors become a localized `500`.
 

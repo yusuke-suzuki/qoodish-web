@@ -14,7 +14,7 @@ function appWithProbe() {
   const app = createApp({ firebaseKeys: signer.keys });
 
   app.get('/probe', (c) =>
-    c.json({ locale: c.get('locale'), uid: c.get('idToken')?.sub ?? null })
+    c.json({ locale: c.get('language'), uid: c.get('idToken')?.sub ?? null })
   );
   app.get('/me/probe', (c) => c.json({ uid: currentIdToken(c.var).sub }));
   app.get('/boom', () => {
@@ -42,7 +42,7 @@ describe('locale', () => {
     expect(body).toMatchObject({ locale: 'en' });
   });
 
-  it('reads the leading language of Accept-Language', async () => {
+  it('picks the preferred supported language of Accept-Language', async () => {
     const res = await request('/probe', {
       headers: { 'accept-language': 'ja-JP,ja;q=0.9,en;q=0.8' }
     });

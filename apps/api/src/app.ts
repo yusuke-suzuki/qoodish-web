@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
+import { languageDetector } from 'hono/language';
 import type { JWTVerifyGetKey } from 'jose';
 import {
   bearerToken,
@@ -8,10 +9,10 @@ import {
 } from './auth/firebase.ts';
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
-import { type Locale, localeFromAcceptLanguage } from './i18n/index.ts';
+import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 
 export type Variables = {
-  locale: Locale;
+  language: Locale;
   idToken: FirebaseIdToken | null;
 };
 
@@ -24,10 +25,15 @@ export type AppOptions = {
 export function createApp(options: AppOptions = {}) {
   const app = new Hono<AppEnv>();
 
-  app.use('*', async (c, next) => {
-    c.set('locale', localeFromAcceptLanguage(c.req.header('accept-language')));
-    await next();
-  });
+  app.use(
+    '*',
+    languageDetector({
+      order: ['header'],
+      supportedLanguages: [...LOCALES],
+      fallbackLanguage: DEFAULT_LOCALE,
+      caches: false
+    })
+  );
 
   app.use('*', async (c, next) => {
     const token = bearerToken(c.req.header('authorization'));
@@ -52,11 +58,11 @@ export function createApp(options: AppOptions = {}) {
       `No route matches [${c.req.method}] '${c.req.path}'`
     );
 
-    return c.json(error.body(c.get('locale')), error.status);
+    return c.json(error.body(c.get('language')), error.status);
   });
 
   app.onError((error, c) => {
-    const locale = c.get('locale');
+    const locale = c.get('language');
 
     if (error instanceof ApiError) {
       if (error.status >= 500) {
