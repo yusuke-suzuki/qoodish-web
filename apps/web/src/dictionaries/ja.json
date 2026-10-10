@@ -20,7 +20,7 @@
   "agree to terms on sign in": "続行することで、{terms} および {privacy} に同意したものとみなされます。",
   "terms revised": "利用規約を改定しました。改定内容と効力発生日をご確認ください。",
   "previous terms notice": "この利用規約の効力発生日は {date} です。",
-  "maintenance in progress": "ただいまメンテナンス中です（{until} 終了予定）。メンテナンス中も閲覧はできますが、投稿や編集などの操作はご利用いただけません。",
+  "maintenance in progress": "ただいまメンテナンス中のため、投稿や編集などの操作は一時的にご利用いただけません。",
   "maintenance write blocked": "ただいまメンテナンス中です。しばらく時間をおいてから再度お試しください。",
   "view latest terms": "最新の利用規約を見る",
   "review": "確認する",

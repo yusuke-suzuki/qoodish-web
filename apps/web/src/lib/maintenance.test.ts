@@ -20,7 +20,7 @@ mock.module('@opennextjs/cloudflare', {
 
 const maintenance = () => import('./maintenance.ts');
 
-const flag = { until: '2026-10-20T15:00:00+09:00' };
+const flag = {};
 
 function bindStore(value: unknown): ReturnType<typeof mock.fn> {
   const get = mock.fn(async () => value);
@@ -72,11 +72,8 @@ describe('getMaintenance', () => {
       'soon',
       42,
       [],
-      {},
-      { until: 'tomorrow' },
-      { until: 1 },
-      { ...flag, message: 'down' },
-      { ...flag, message: { en: 1 } }
+      { message: 'down' },
+      { message: { en: 1 } }
     ]) {
       now += 60_000;
       t.mock.timers.enable({ apis: ['Date'], now });
@@ -141,24 +138,16 @@ describe('maintenanceMessage', () => {
     assert.equal(maintenanceMessage(null, 'en', getDictionary('en')), null);
   });
 
-  it('states the end of the maintenance in Tokyo time', async () => {
+  it('announces the maintenance in the viewer’s language', async () => {
     const { maintenanceMessage } = await maintenance();
 
     assert.equal(
-      maintenanceMessage(
-        { until: '2026-10-20T06:00:00Z' },
-        'en',
-        getDictionary('en')
-      ),
-      'Qoodish is under maintenance until Oct 20, 2026, 3:00 PM. Browsing works, but changes cannot be saved.'
+      maintenanceMessage(flag, 'en', getDictionary('en')),
+      'Qoodish is under maintenance. Posting and editing are temporarily unavailable.'
     );
     assert.equal(
-      maintenanceMessage(
-        { until: '2026-10-20T06:00:00Z' },
-        'ja',
-        getDictionary('ja')
-      ),
-      'ただいまメンテナンス中です（2026/10/20 15:00 終了予定）。メンテナンス中も閲覧はできますが、投稿や編集などの操作はご利用いただけません。'
+      maintenanceMessage(flag, 'ja', getDictionary('ja')),
+      'ただいまメンテナンス中のため、投稿や編集などの操作は一時的にご利用いただけません。'
     );
   });
 
@@ -182,13 +171,13 @@ describe('maintenanceMessage', () => {
   it('falls back to the dictionary when the locale has no custom message', async () => {
     const { maintenanceMessage } = await maintenance();
 
-    assert.match(
+    assert.equal(
       maintenanceMessage(
         { ...flag, message: { en: 'Back soon' } },
         'ja',
         getDictionary('ja')
-      ) ?? '',
-      /^ただいまメンテナンス中です（.* 終了予定）。/
+      ),
+      getDictionary('ja')['maintenance in progress']
     );
   });
 });

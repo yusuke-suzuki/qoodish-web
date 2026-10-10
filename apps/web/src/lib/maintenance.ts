@@ -4,7 +4,6 @@ import type { Dictionary } from '../utils/getDictionary.ts';
 type MaintenanceLocale = 'en' | 'ja';
 
 export type Maintenance = {
-  until: string;
   message?: Partial<Record<MaintenanceLocale, string>>;
 };
 
@@ -29,13 +28,9 @@ function isOptionalString(value: unknown): value is string | undefined {
 function parseMaintenance(value: unknown): Maintenance | null {
   if (!isRecord(value)) return null;
 
-  const { until, message } = value;
+  const { message } = value;
 
-  if (typeof until !== 'string' || Number.isNaN(Date.parse(until))) {
-    return null;
-  }
-
-  if (message === undefined) return { until };
+  if (message === undefined) return {};
 
   if (
     !isRecord(message) ||
@@ -45,7 +40,7 @@ function parseMaintenance(value: unknown): Maintenance | null {
     return null;
   }
 
-  return { until, message: { en: message.en, ja: message.ja } };
+  return { message: { en: message.en, ja: message.ja } };
 }
 
 async function readMaintenanceFlag(): Promise<unknown> {
@@ -85,14 +80,8 @@ export function maintenanceMessage(
 ): string | null {
   if (!maintenance) return null;
 
-  const custom = maintenance.message?.[toMaintenanceLocale(locale)];
-  if (custom) return custom;
-
-  const until = new Intl.DateTimeFormat(locale, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'Asia/Tokyo'
-  }).format(new Date(maintenance.until));
-
-  return dictionary['maintenance in progress'].replace('{until}', until);
+  return (
+    maintenance.message?.[toMaintenanceLocale(locale)] ||
+    dictionary['maintenance in progress']
+  );
 }
