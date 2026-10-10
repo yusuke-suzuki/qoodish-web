@@ -50,6 +50,26 @@ describe('verifyFirebaseIdToken', () => {
     ).toBeNull();
   });
 
+  it('rejects a token that never expires', async () => {
+    const { exp, ...claims } = firebaseClaims(PROJECT_ID);
+    const token = await signer.sign(claims);
+
+    expect(exp).toBeDefined();
+    expect(
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
+    ).toBeNull();
+  });
+
+  it('rejects a token without an issue time', async () => {
+    const { iat, ...claims } = firebaseClaims(PROJECT_ID);
+    const token = await signer.sign(claims);
+
+    expect(iat).toBeDefined();
+    expect(
+      await verifyFirebaseIdToken(token, PROJECT_ID, signer.keys)
+    ).toBeNull();
+  });
+
   it('rejects a token without a subject', async () => {
     const token = await signer.sign(firebaseClaims(PROJECT_ID, { sub: '' }));
 

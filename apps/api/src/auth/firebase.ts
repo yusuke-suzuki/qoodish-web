@@ -21,7 +21,8 @@ export async function verifyFirebaseIdToken(
     const { payload } = await jwtVerify(token, keys, {
       issuer: `https://securetoken.google.com/${projectId}`,
       audience: projectId,
-      algorithms: ['RS256']
+      algorithms: ['RS256'],
+      requiredClaims: ['exp', 'iat', 'sub']
     });
 
     if (typeof payload.sub !== 'string' || payload.sub.length === 0) {
