@@ -86,7 +86,7 @@ function AuthProvider({
           return true;
         }
 
-        if (res.status < 500) {
+        if (res.status < 500 || res.status === 503) {
           return false;
         }
       } catch (error) {

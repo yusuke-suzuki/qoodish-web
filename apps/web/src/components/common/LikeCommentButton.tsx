@@ -9,14 +9,14 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Comment, ContentRef } from '../../../types/index.ts';
+import type { CommentItem, ContentRef } from '../../../types/index.ts';
 import { likeComment, unlikeComment } from '../../actions/commentLikes.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 
 type Props = {
   subject: ContentRef;
-  comment: Comment;
+  comment: CommentItem;
   onSaved?: () => void;
 };
 

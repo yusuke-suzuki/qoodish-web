@@ -9,7 +9,10 @@ import {
   getAuthToken,
   isTimeoutError
 } from './apiRequest.ts';
-import { getMaintenance } from './maintenance.ts';
+import {
+  getMaintenance,
+  maintenanceWriteBlockedMessage
+} from './maintenance.ts';
 
 type ApiFetchOptions = RequestInit & {
   guest?: boolean;
@@ -56,7 +59,7 @@ export async function performApiFetch<T>(
   if (isWrite(fetchOptions.method) && (await getMaintenance())) {
     return {
       data: null,
-      error: messages(acceptLanguage)['maintenance write blocked'],
+      error: maintenanceWriteBlockedMessage(acceptLanguage),
       status: 503
     };
   }

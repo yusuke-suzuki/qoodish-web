@@ -1,5 +1,5 @@
 import describeError from '../utils/describeError.ts';
-import type { Dictionary } from '../utils/getDictionary.ts';
+import { type Dictionary, getDictionary } from '../utils/getDictionary.ts';
 
 type MaintenanceLocale = 'en' | 'ja';
 
@@ -84,4 +84,10 @@ export function maintenanceMessage(
     maintenance.message?.[toMaintenanceLocale(locale)] ||
     dictionary['maintenance in progress']
   );
+}
+
+export function maintenanceWriteBlockedMessage(acceptLanguage: string): string {
+  return getDictionary(acceptLanguage.split('-')[0])[
+    'maintenance write blocked'
+  ];
 }

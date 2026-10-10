@@ -19,7 +19,7 @@ import { type ReactNode, useContext, useMemo, useState } from 'react';
 import type {
   AppMap,
   Chapter,
-  Comment,
+  CommentItem,
   ContentRef,
   Journal
 } from '../../../types/index.ts';
@@ -58,7 +58,7 @@ type Props = {
   map: AppMap | null;
   authorJournal: Journal | null;
   authorPageCount: number;
-  comments: Comment[];
+  comments: CommentItem[];
 };
 
 export default function ChapterReadView({

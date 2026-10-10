@@ -1,13 +1,13 @@
 import { enqueueSnackbar } from 'notistack';
 import { memo, useCallback } from 'react';
-import type { Comment, ContentRef } from '../../../types/index.ts';
+import type { CommentItem, ContentRef } from '../../../types/index.ts';
 import { deleteComment } from '../../actions/comments.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import ConfirmDialog from './ConfirmDialog.tsx';
 
 type Props = {
   subject: ContentRef;
-  comment: Comment | null;
+  comment: CommentItem | null;
   open: boolean;
   onClose: () => void;
   onDeleted: () => void;

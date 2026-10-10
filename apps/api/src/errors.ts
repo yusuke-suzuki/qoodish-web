@@ -45,12 +45,12 @@ export class ApiError extends HTTPException {
     this.detail = detail;
   }
 
-  static fromStatus(status: number): ApiError {
+  static fromStatus(status: number): ApiError | undefined {
     const title = (Object.keys(STATUSES) as ErrorTitle[]).find(
       (candidate) => STATUSES[candidate] === status
     );
 
-    return new ApiError(title ?? 'InternalServerError');
+    return title ? new ApiError(title) : undefined;
   }
 
   body(locale: Locale): { title: ErrorTitle; detail: string } {

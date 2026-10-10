@@ -9,9 +9,11 @@ import {
   resolveApiLanguage
 } from '../../../../lib/apiRequest.ts';
 import { getServerAuthState } from '../../../../lib/auth.ts';
-import { getMaintenance } from '../../../../lib/maintenance.ts';
+import {
+  getMaintenance,
+  maintenanceWriteBlockedMessage
+} from '../../../../lib/maintenance.ts';
 import describeError from '../../../../utils/describeError.ts';
-import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { LOCALE_COOKIE } from '../../../../utils/locales.ts';
 
 type Params = {
@@ -98,11 +100,7 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
 
   if (request.method === 'POST' && (await getMaintenance())) {
     return NextResponse.json(
-      {
-        detail: getDictionary(acceptLanguage.split('-')[0])[
-          'maintenance write blocked'
-        ]
-      },
+      { detail: maintenanceWriteBlockedMessage(acceptLanguage) },
       { status: 503 }
     );
   }

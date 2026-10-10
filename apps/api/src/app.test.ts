@@ -1,28 +1,53 @@
 import { env } from 'cloudflare:test';
+import { HTTPException } from 'hono/http-exception';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from './app.ts';
 import { ApiError } from './errors.ts';
-import { createSigner, firebaseClaims, type Signer } from './test/jwt.ts';
+import {
+  accessClaims,
+  createSigner,
+  firebaseClaims,
+  type Signer
+} from './test/jwt.ts';
 
 let signer: Signer;
+let accessSigner: Signer;
 
 beforeAll(async () => {
   signer = await createSigner();
+  accessSigner = await createSigner('access-1');
 });
 
 function appWithProbes() {
-  const app = createApp({ firebaseKeys: signer.keys });
+  const app = createApp({
+    firebaseKeys: signer.keys,
+    accessKeys: accessSigner.keys
+  });
 
   app.get('/guest/probe', (c) => c.json({ locale: c.get('language') }));
   app.get('/me/probe', (c) => c.json({ uid: c.get('idToken').sub }));
+  app.get('/admin/probe', (c) =>
+    c.json({ email: c.get('accessClaims').email })
+  );
   app.get('/guest/boom', () => {
     throw new Error('unexpected');
   });
   app.get('/guest/conflict', () => {
     throw new ApiError('Conflict');
   });
+  app.get('/guest/too-large', () => {
+    throw new HTTPException(413, { message: 'Payload Too Large' });
+  });
 
   return app;
+}
+
+async function adminRequest(path: string, overrides?: Record<string, unknown>) {
+  const assertion = await accessSigner.sign(
+    accessClaims(env.CF_ACCESS_TEAM_DOMAIN, env.CF_ACCESS_AUD, overrides)
+  );
+
+  return request(path, { headers: { 'cf-access-jwt-assertion': assertion } });
 }
 
 function request(path: string, init: RequestInit = {}) {
@@ -105,6 +130,39 @@ describe('authentication', () => {
   });
 });
 
+describe('admin authentication', () => {
+  it('resolves the staff email from a valid Access assertion', async () => {
+    const res = await adminRequest('/admin/probe');
+
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ email: 'staff@example.com' });
+  });
+
+  it('answers 401 without an assertion', async () => {
+    const res = await request('/admin/probe', {
+      headers: { 'accept-language': 'ja' }
+    });
+
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({
+      title: 'Unauthorized',
+      detail: '認証エラーが発生しました。'
+    });
+  });
+
+  it('answers 401 for an assertion of another application', async () => {
+    const res = await adminRequest('/admin/probe', { aud: ['another-aud'] });
+
+    expect(res.status).toBe(401);
+  });
+
+  it('ignores a Firebase ID token on admin routes', async () => {
+    const res = await signedRequest('/admin/probe');
+
+    expect(res.status).toBe(401);
+  });
+});
+
 describe('errors', () => {
   it('answers 404 JSON for an unknown route', async () => {
     const res = await request('/guest/nowhere');
@@ -125,6 +183,16 @@ describe('errors', () => {
     expect(await res.json()).toEqual({
       title: 'Conflict',
       detail: 'リクエストの内容が競合しています。'
+    });
+  });
+
+  it('keeps the status of an HTTPException it has no title for', async () => {
+    const res = await request('/guest/too-large');
+
+    expect(res.status).toBe(413);
+    expect(await res.json()).toEqual({
+      title: 'HttpError',
+      detail: 'Payload Too Large'
     });
   });
 
