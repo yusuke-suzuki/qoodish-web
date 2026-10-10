@@ -439,18 +439,16 @@ guest.get('/chapters/:id', async (c) => {
       .from(chapters)
       .where(and(publicChapter(), eq(chapters.id, toId(c.req.param('id')))))
   );
-  const [[detail], [{ comments: commentsCount }]] = await Promise.all([
+  const [[detail], commentsCount] = await Promise.all([
     guestChapters(db, [chapter]),
-    db
-      .select({ comments: count() })
-      .from(comments)
-      .where(
-        and(
-          eq(comments.commentableType, 'Chapter'),
-          eq(comments.commentableId, chapter.id),
-          ne(comments.status, 'deleted')
-        )
+    db.$count(
+      comments,
+      and(
+        eq(comments.commentableType, 'Chapter'),
+        eq(comments.commentableId, chapter.id),
+        ne(comments.status, 'deleted')
       )
+    )
   ]);
 
   if (!detail) {
