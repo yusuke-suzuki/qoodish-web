@@ -239,7 +239,8 @@ describe('performApiFetch', () => {
     assert.equal(fetchMock.mock.callCount(), 0);
     assert.deepEqual(result, {
       data: null,
-      error: 'メンテナンス中のため、しばらくしてからやり直してください。',
+      error:
+        'ただいまメンテナンス中です。しばらく時間をおいてから再度お試しください。',
       status: 503
     });
   });
