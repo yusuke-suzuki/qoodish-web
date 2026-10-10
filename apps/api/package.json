@@ -4,14 +4,16 @@
   "type": "module",
   "scripts": {
     "dev": "cf dev --mode dev",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p scripts",
     "test": "vitest run",
+    "compare": "node scripts/compare.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "cf d1 migrations apply 80c87870-73f2-4f5e-b057-d9296600418a --local --persist-to .cloudflare/state",
     "db:migrate:dev": "cf d1 migrations apply 80c87870-73f2-4f5e-b057-d9296600418a",
     "db:migrate:prod": "cf d1 migrations apply 7d615fd7-7907-407b-b5fc-de93a6cb1d55"
   },
   "dependencies": {
+    "@qoodish/api-contract": "workspace:*",
     "drizzle-orm": "^0.45.4",
     "hono": "^4.13.8",
     "jose": "^6.2.12",
@@ -21,6 +23,7 @@
     "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@cloudflare/vitest-plugin": "^1.4.0",
     "@cloudflare/workers-types": "^5.20261009.1",
+    "@types/node": "^22.20.1",
     "cf": "1.0.0-beta.12",
     "drizzle-kit": "^0.31.11",
     "typescript": "^5.9.2",

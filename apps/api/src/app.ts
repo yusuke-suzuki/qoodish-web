@@ -15,6 +15,7 @@ import {
 } from './auth/firebase.ts';
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
+import { guest, guestV2 } from './guest/routes.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 
 export type Variables = {
@@ -33,7 +34,7 @@ export type AppOptions = {
 const ID_TOKEN_EXEMPT_PATHS = ['/', '/healthcheck', '/guest/*', '/admin/*'];
 
 export function createApp(options: AppOptions = {}) {
-  const app = new Hono<AppEnv>();
+  const app = new Hono<AppEnv>({ strict: false });
 
   app.use(
     '*',
@@ -89,6 +90,8 @@ export function createApp(options: AppOptions = {}) {
 
   app.get('/healthcheck', (c) => c.text('ok'));
   app.get('/', (c) => c.text('ok'));
+  app.route('/guest/v2', guestV2);
+  app.route('/guest', guest);
 
   app.notFound((c) => {
     const error = new ApiError(
