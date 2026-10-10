@@ -764,6 +764,7 @@ export const chapters = sqliteTable(
   {
     id: integer('id').primaryKey({ autoIncrement: true }),
     content: text('content').notNull(),
+    contentText: text('content_text'),
     createdAt: text('created_at').notNull(),
     currentRevisionId: integer('current_revision_id').references(
       (): AnySQLiteColumn => chapterRevisions.id,
@@ -1088,34 +1089,3 @@ export const moderationDecisions = sqliteTable(
     index('index_moderation_decisions_on_staff_member_id').on(t.staffMemberId)
   ]
 );
-
-export const mapsSearchDocuments = sqliteTable('maps_search_documents', {
-  mapId: integer('map_id')
-    .primaryKey()
-    .references(() => maps.id, { onDelete: 'cascade' }),
-  terms: text('terms').notNull()
-});
-
-export const pinsSearchDocuments = sqliteTable('pins_search_documents', {
-  pinId: integer('pin_id')
-    .primaryKey()
-    .references(() => pins.id, { onDelete: 'cascade' }),
-  terms: text('terms').notNull()
-});
-
-export const chaptersSearchDocuments = sqliteTable(
-  'chapters_search_documents',
-  {
-    chapterId: integer('chapter_id')
-      .primaryKey()
-      .references(() => chapters.id, { onDelete: 'cascade' }),
-    terms: text('terms').notNull()
-  }
-);
-
-export const usersSearchDocuments = sqliteTable('users_search_documents', {
-  userId: integer('user_id')
-    .primaryKey()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  terms: text('terms').notNull()
-});
