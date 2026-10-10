@@ -1,0 +1,14 @@
+{
+  "name": "@qoodish/api-contract",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

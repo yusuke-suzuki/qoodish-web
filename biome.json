@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/next-env.d.ts"]
+    "includes": ["**", "!**/next-env.d.ts", "!apps/api/migrations/meta"]
   },
   "assist": {
     "actions": {
@@ -46,7 +46,7 @@
   },
   "overrides": [
     {
-      "includes": ["apps/admin/**"],
+      "includes": ["apps/admin/**", "apps/api/**", "packages/**"],
       "linter": {
         "domains": {
           "next": "none"
