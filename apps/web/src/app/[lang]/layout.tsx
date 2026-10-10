@@ -85,12 +85,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
+  const maintenancePromise = getMaintenance();
   const { authenticated, pending, uid, token } = await getServerAuthState();
-  const maintenanceNotice = maintenanceMessage(
-    await getMaintenance(),
-    lang,
-    dict
-  );
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
     : Promise.resolve<Profile | null>(null);
@@ -103,6 +99,11 @@ export default async function RootLayout({ children, params }: Props) {
   const unreadNotificationsPromise = authenticated
     ? getNotifications(lang, { read: false }).catch(() => noNotifications)
     : Promise.resolve(noNotifications);
+  const maintenanceNotice = maintenanceMessage(
+    await maintenancePromise,
+    lang,
+    dict
+  );
 
   return (
     <html lang={lang} className={fontVariables}>

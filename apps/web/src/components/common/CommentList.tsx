@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { memo, useState } from 'react';
-import type { Comment, ContentRef } from '../../../types/index.ts';
+import type { CommentItem, ContentRef } from '../../../types/index.ts';
 import useLocalePath from '../../hooks/useLocalePath.ts';
 import useRelativeTime from '../../hooks/useRelativeTime.ts';
 import AuthorAvatar from './AuthorAvatar.tsx';
@@ -22,7 +22,7 @@ import ReportDialog from './ReportDialog.tsx';
 
 type Props = {
   subject: ContentRef;
-  comments: Comment[];
+  comments: CommentItem[];
   onDeleted: () => void;
   onLiked: () => void;
 };
@@ -31,16 +31,18 @@ const CommentList = ({ subject, comments, onDeleted, onLiked }: Props) => {
   const localePath = useLocalePath();
   const formatRelativeTime = useRelativeTime();
 
-  const [currentComment, setCurrentComment] = useState<Comment | null>(null);
+  const [currentComment, setCurrentComment] = useState<CommentItem | null>(
+    null
+  );
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleDeleteClick = (comment: Comment) => {
+  const handleDeleteClick = (comment: CommentItem) => {
     setCurrentComment(comment);
     setDeleteDialogOpen(true);
   };
 
-  const handleReportClick = (comment: Comment) => {
+  const handleReportClick = (comment: CommentItem) => {
     setCurrentComment(comment);
     setReportDialogOpen(true);
   };

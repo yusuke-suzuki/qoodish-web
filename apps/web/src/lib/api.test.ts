@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { before, beforeEach, describe, it, mock } from 'node:test';
-import type { Maintenance } from './maintenance.ts';
+import {
+  type Maintenance,
+  maintenanceWriteBlockedMessage
+} from './maintenance.ts';
 
 type Api = typeof import('./api.ts');
 
@@ -9,7 +12,7 @@ const getMaintenance = mock.fn<() => Promise<Maintenance | null>>(
 );
 
 mock.module(new URL('./maintenance.ts', import.meta.url).href, {
-  namedExports: { getMaintenance }
+  namedExports: { getMaintenance, maintenanceWriteBlockedMessage }
 });
 
 let apiFetch: Api['apiFetch'];

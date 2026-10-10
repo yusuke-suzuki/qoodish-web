@@ -168,6 +168,19 @@ describe('maintenanceMessage', () => {
     );
   });
 
+  it('words the refusal of a write in the language of the request', async () => {
+    const { maintenanceWriteBlockedMessage } = await maintenance();
+
+    assert.equal(
+      maintenanceWriteBlockedMessage('ja-JP'),
+      getDictionary('ja')['maintenance write blocked']
+    );
+    assert.equal(
+      maintenanceWriteBlockedMessage('en'),
+      getDictionary('en')['maintenance write blocked']
+    );
+  });
+
   it('falls back to the dictionary when the locale has no custom message', async () => {
     const { maintenanceMessage } = await maintenance();
 

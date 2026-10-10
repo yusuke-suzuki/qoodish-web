@@ -2,7 +2,9 @@ import type {
   Chapter as ApiChapter,
   ChapterDetail as ApiChapterDetail,
   GuestChapter as ApiGuestChapter,
-  GuestChapterDetail as ApiGuestChapterDetail
+  GuestChapterDetail as ApiGuestChapterDetail,
+  Comment,
+  GuestComment
 } from '@qoodish/api-contract';
 import type { SerializedEditorState } from 'lexical';
 
@@ -68,6 +70,8 @@ export type ChapterDetail = ApiChapterDetail<SerializedEditorState>;
 export type GuestChapter = ApiGuestChapter<SerializedEditorState>;
 
 export type GuestChapterDetail = ApiGuestChapterDetail<SerializedEditorState>;
+
+export type CommentItem = GuestComment & Partial<Pick<Comment, 'liked'>>;
 
 export type AutocompleteOption = {
   label: string;

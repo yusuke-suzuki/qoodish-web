@@ -32,6 +32,25 @@ export async function createSigner(kid = 'key-1'): Promise<Signer> {
   };
 }
 
+export function accessClaims(
+  teamDomain: string,
+  audience: string,
+  overrides: Record<string, unknown> = {}
+): Record<string, unknown> {
+  const nowSeconds = Math.floor(Date.now() / 1000);
+
+  return {
+    iss: `https://${teamDomain}`,
+    aud: [audience],
+    sub: 'access-subject',
+    email: 'staff@example.com',
+    iat: nowSeconds - 60,
+    nbf: nowSeconds - 60,
+    exp: nowSeconds + 3600,
+    ...overrides
+  };
+}
+
 export function firebaseClaims(
   projectId: string,
   overrides: Record<string, unknown> = {}

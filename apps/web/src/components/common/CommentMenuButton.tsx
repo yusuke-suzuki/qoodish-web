@@ -7,7 +7,7 @@ import {
   MenuItem
 } from '@mui/material';
 import { memo, useRef, useState } from 'react';
-import type { Comment, Profile } from '../../../types/index.ts';
+import type { CommentItem, Profile } from '../../../types/index.ts';
 import useBlock from '../../hooks/useBlock.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import useMute from '../../hooks/useMute.ts';
@@ -16,10 +16,10 @@ import BlockUserDialog from './BlockUserDialog.tsx';
 import MuteMenuItem from './MuteMenuItem.tsx';
 
 type Props = {
-  comment: Comment;
-  onReportClick: (comment: Comment) => void;
+  comment: CommentItem;
+  onReportClick: (comment: CommentItem) => void;
   currentProfile?: Profile | null;
-  onDeleteClick?: (comment: Comment) => void;
+  onDeleteClick?: (comment: CommentItem) => void;
 };
 
 export default memo(function CommentMenuButton({

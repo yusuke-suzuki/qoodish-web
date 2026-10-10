@@ -5,6 +5,11 @@ import { HTTPException } from 'hono/http-exception';
 import { languageDetector } from 'hono/language';
 import type { JWTVerifyGetKey } from 'jose';
 import {
+  ACCESS_JWT_HEADER,
+  type AccessClaims,
+  verifyAccessAssertion
+} from './auth/access.ts';
+import {
   type FirebaseIdToken,
   verifyFirebaseIdToken
 } from './auth/firebase.ts';
@@ -15,15 +20,17 @@ import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 export type Variables = {
   language: Locale;
   idToken: FirebaseIdToken;
+  accessClaims: AccessClaims;
 };
 
 export type AppEnv = { Bindings: Env; Variables: Variables };
 
 export type AppOptions = {
   firebaseKeys?: JWTVerifyGetKey;
+  accessKeys?: JWTVerifyGetKey;
 };
 
-const PUBLIC_PATHS = ['/', '/healthcheck', '/guest/*', '/admin/*'];
+const ID_TOKEN_EXEMPT_PATHS = ['/', '/healthcheck', '/guest/*', '/admin/*'];
 
 export function createApp(options: AppOptions = {}) {
   const app = new Hono<AppEnv>();
@@ -41,7 +48,7 @@ export function createApp(options: AppOptions = {}) {
   app.use(
     '*',
     except(
-      PUBLIC_PATHS,
+      ID_TOKEN_EXEMPT_PATHS,
       bearerAuth({
         verifyToken: async (token, c) => {
           const idToken = await verifyFirebaseIdToken(
@@ -60,6 +67,25 @@ export function createApp(options: AppOptions = {}) {
       })
     )
   );
+
+  app.use('/admin/*', async (c, next) => {
+    const assertion = c.req.header(ACCESS_JWT_HEADER);
+    const claims = assertion
+      ? await verifyAccessAssertion(
+          assertion,
+          c.env.CF_ACCESS_TEAM_DOMAIN,
+          c.env.CF_ACCESS_AUD,
+          options.accessKeys
+        )
+      : null;
+
+    if (!claims) {
+      throw new ApiError('Unauthorized');
+    }
+
+    c.set('accessClaims', claims);
+    await next();
+  });
 
   app.get('/healthcheck', (c) => c.text('ok'));
   app.get('/', (c) => c.text('ok'));
@@ -87,7 +113,14 @@ export function createApp(options: AppOptions = {}) {
     if (error instanceof HTTPException) {
       const apiError = ApiError.fromStatus(error.status);
 
-      return c.json(apiError.body(locale), apiError.status);
+      if (apiError) {
+        return c.json(apiError.body(locale), apiError.status);
+      }
+
+      return c.json(
+        { title: 'HttpError', detail: error.message || String(error.status) },
+        error.status
+      );
     }
 
     console.error(error);

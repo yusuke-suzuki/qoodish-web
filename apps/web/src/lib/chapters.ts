@@ -1,4 +1,4 @@
-import type { Chapter, Comment, CursorPage } from '../../types/index.ts';
+import type { Chapter, CommentItem, CursorPage } from '../../types/index.ts';
 import {
   apiFetch,
   apiFetchList,
@@ -29,9 +29,9 @@ export function getChapterComments(
   chapterId: string | number,
   lang: string,
   token?: string
-): Promise<Comment[]> {
+): Promise<CommentItem[]> {
   const guest = !token;
-  return apiFetchList<Comment>(`/chapters/${chapterId}/comments`, {
+  return apiFetchList<CommentItem>(`/chapters/${chapterId}/comments`, {
     lang,
     guest,
     next: {
