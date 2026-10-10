@@ -1,8 +1,9 @@
 import { beforeAll, describe, expect, it } from 'vitest';
+import { DEVELOPMENT } from '../../environments.ts';
 import { createSigner, firebaseClaims, type Signer } from '../test/jwt.ts';
 import { verifyFirebaseIdToken } from './firebase.ts';
 
-const PROJECT_ID = 'qoodish-test';
+const PROJECT_ID = DEVELOPMENT.googleProjectId;
 
 let signer: Signer;
 let other: Signer;
