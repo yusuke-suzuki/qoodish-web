@@ -14,7 +14,7 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { Journal, Profile } from '../../../types/index.ts';
+import type { Journal, PublicUser } from '../../../types/index.ts';
 import { updateJournal } from '../../actions/journals.ts';
 import { updateProfile } from '../../actions/users.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
@@ -27,7 +27,7 @@ import JournalTitleForm from './JournalTitleForm.tsx';
 import ProfileNameForm from './ProfileNameForm.tsx';
 
 type Props = {
-  currentProfile: Profile | null;
+  currentProfile: PublicUser | null;
   journal: Journal | null;
   open: boolean;
   onClose: () => void;
@@ -223,7 +223,7 @@ export default memo(function EditProfileDialog({
       <ProfileNameForm onChange={setName} defaultValue={currentProfile?.name} />
       <BiographyForm
         onChange={setBiography}
-        defaultValue={currentProfile?.biography}
+        defaultValue={currentProfile?.biography ?? undefined}
       />
       {journal && (
         <JournalTitleForm

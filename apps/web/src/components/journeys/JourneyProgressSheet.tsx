@@ -49,7 +49,7 @@ type TimelineItem = {
   spot: Spot;
   image: string | undefined;
   checkin: JourneyCheckin | undefined;
-  pinId: number;
+  pinId: number | null;
   milestone: Milestone | undefined;
 };
 
@@ -233,11 +233,13 @@ function JourneyProgressSheet({
   const formatLocal = useLocalDateTime();
 
   const imagesByPin = useMemo(() => {
-    return new Map(pins.map((pin) => [pin.id, pin.images[0]?.avatar]));
+    return new Map<number | null, string | undefined>(
+      pins.map((pin) => [pin.id, pin.images[0]?.avatar])
+    );
   }, [pins]);
 
   const checkinsByPin = useMemo(() => {
-    const map = new Map<number, JourneyCheckin>();
+    const map = new Map<number | null, JourneyCheckin>();
 
     for (const checkin of journey?.checkins ?? []) {
       map.set(checkin.pin_id, checkin);

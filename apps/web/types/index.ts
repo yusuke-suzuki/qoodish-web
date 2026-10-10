@@ -1,160 +1,82 @@
+import type {
+  Chapter as ApiChapter,
+  ChapterDetail as ApiChapterDetail,
+  GuestChapter as ApiGuestChapter,
+  GuestChapterDetail as ApiGuestChapterDetail
+} from '@qoodish/api-contract';
 import type { SerializedEditorState } from 'lexical';
+
+export type {
+  ApiCursorPage,
+  ApiError,
+  AppMap,
+  BlockedAccount,
+  ChapterAuthor,
+  ChapterComment,
+  ChapterStatus,
+  Coauthor,
+  CoauthorshipInvitation,
+  CoauthorshipInvitationStatus,
+  Comment,
+  GuestChapterAuthor,
+  GuestCoauthor,
+  GuestComment,
+  GuestMap,
+  GuestPin,
+  GuestPinComment,
+  GuestUserProfile,
+  Image,
+  ImageUpload,
+  ImageVariants,
+  Journal,
+  JournalRef,
+  Journey,
+  JourneyCheckin,
+  JourneySummary,
+  MapFeature,
+  MapFeatureCollection,
+  MapFeatureProperties,
+  MapRef,
+  Milestone,
+  ModeratableType,
+  MutedAccount,
+  Notifiable,
+  NotifiableType,
+  NotificationGroup as Notification,
+  NotificationKey,
+  Pin,
+  PinComment,
+  PinProperty,
+  PinPropertyOption,
+  PointGeometry,
+  PostAuthor,
+  PreferencesUpdate,
+  Profile,
+  PublicUser,
+  ReportCategory,
+  ReportReceipt,
+  Spot,
+  UserProfile,
+  UserSummary,
+  WebPushPreferences
+} from '@qoodish/api-contract';
+
+export type Chapter = ApiChapter<SerializedEditorState>;
+
+export type ChapterDetail = ApiChapterDetail<SerializedEditorState>;
+
+export type GuestChapter = ApiGuestChapter<SerializedEditorState>;
+
+export type GuestChapterDetail = ApiGuestChapterDetail<SerializedEditorState>;
 
 export type AutocompleteOption = {
   label: string;
   value: string;
 };
 
-export type PushNotification = {
-  coauthor_invited: boolean;
-  liked: boolean;
-  comment: boolean;
-  published: boolean;
-};
-
-export type ImageVariants = {
-  url: string;
-  avatar: string;
-  card: string;
-  hero: string;
-  ogp: string;
-};
-
-export type Profile = {
-  id: number;
-  uid: string;
-  name: string;
-  biography: string;
-  image: ImageVariants | null;
-  maps_count: number;
-  bookmarked_maps_count: number;
-  pins_count: number;
-  push_notification: PushNotification;
-  blocking?: boolean;
-  blocked_by?: boolean;
-  muting?: boolean;
-};
-
-export type Author = {
-  id: number;
-  name: string;
-  biography: string;
-  image: ImageVariants | null;
-  blocking?: boolean;
-  muting?: boolean;
-};
-
-export type BlockedAccount = Author;
-
-export type MutedAccount = Author;
-
-// A guest payload leaves the reader's own state out, so a signed-out page
-// renders a comment without these.
-export type Comment = {
-  id: number;
-  author: Author;
-  body: string;
-  liked?: boolean;
-  likes_count?: number;
-  created_at: string;
-};
-
 export type ContentRef = {
   type: 'pin' | 'chapter';
   id: number;
-};
-
-export type Image = ImageVariants & {
-  id: number;
-};
-
-export type AppMap = {
-  id: number;
-  author: Author;
-  name: string;
-  description: string;
-  private: boolean;
-  latitude: number;
-  longitude: number;
-  bookmarking: boolean;
-  bookmarkable: boolean;
-  editable: boolean;
-  image: ImageVariants | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Coauthor = {
-  id: number;
-  name: string;
-  image: ImageVariants | null;
-  author: boolean;
-  editable: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export type PinPropertyOption = {
-  id: number;
-  name: string;
-  position: number;
-};
-
-export type PinProperty = {
-  id: number;
-  name: string;
-  multiple: boolean;
-  position: number;
-  options: PinPropertyOption[];
-};
-
-export type CoauthorshipInvitation = {
-  id: number;
-  status: string;
-  map: {
-    id: number;
-    name: string;
-    description: string;
-    image: ImageVariants | null;
-  };
-  inviter: Author;
-  created_at: string;
-  updated_at: string;
-};
-
-export type PublicUser = {
-  id: number;
-  uid: string;
-  name: string;
-  biography: string;
-  image: ImageVariants | null;
-};
-
-export type UserSearchResult = {
-  id: number;
-  name: string;
-  image: ImageVariants | null;
-  image_url: string;
-};
-
-export type PinSearchResult = {
-  id: number;
-  name: string;
-  images: Image[];
-  map: {
-    id: number;
-    name: string;
-  };
-};
-
-export type ChapterSearchResult = {
-  id: number;
-  title: string;
-  image: ImageVariants | null;
-  map: {
-    id: number;
-    name: string;
-  };
 };
 
 export type SearchResultType = 'map' | 'chapter' | 'pin' | 'user';
@@ -168,168 +90,9 @@ export type SearchResult = {
   href: string;
 };
 
-export type Like = {
-  id: number;
-  voter: Author;
-};
-
-export type Pin = {
-  id: number;
-  author: Author;
-  name: string;
-  comment: string;
-  comments: Comment[];
-  images: Image[];
-  property_option_ids: number[];
-  latitude: number;
-  longitude: number;
-  map: AppMap;
-  editable: boolean;
-  liked: boolean;
-  likes_count: number;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Spot = {
-  name: string;
-  latitude: number;
-  longitude: number;
-};
-
-export type Milestone = Spot & {
-  id: number;
-  pin_id: number;
-};
-
-export type MapRef = {
-  id: number;
-  name: string;
-  private: boolean;
-};
-
-export type JournalRef = {
-  id: number;
-  title: string;
-};
-
-export type Journal = {
-  id: number;
-  title: string;
-  description: string;
-  author: {
-    id: number;
-    name: string;
-    image: ImageVariants | null;
-    image_url: string;
-  };
-  chapters_count: number;
-  editable: boolean;
-  bookmarking: boolean;
-  created_at: string;
-  updated_at: string;
-};
-
-export type PointGeometry = {
-  type: 'Point';
-  coordinates: [number, number];
-};
-
-// Property names follow the simplestyle spec, so a chapter's map opens with
-// its labels intact in other GeoJSON tools.
-export type MapFeatureProperties = {
-  title?: string;
-  description?: string;
-};
-
-export type MapFeature = {
-  type: 'Feature';
-  geometry: PointGeometry;
-  properties: MapFeatureProperties | null;
-};
-
-export type MapFeatureCollection = {
-  type: 'FeatureCollection';
-  features: MapFeature[];
-};
-
-export type Chapter = {
-  id: number;
-  map_id: number | null;
-  journey_id: number | null;
-  title: string;
-  status: 'draft' | 'published';
-  content: SerializedEditorState;
-  map_features: MapFeatureCollection;
-  image: ImageVariants | null;
-  editable: boolean;
-  author: Author;
-  map: MapRef | null;
-  journal: JournalRef | null;
-  liked: boolean;
-  likes_count: number;
-  created_at: string;
-  updated_at: string;
-};
-
-export type JourneyCheckin = {
-  id: number;
-  pin_id: number;
-  spot: Spot;
-  checked_in_at: string;
-  note: string | null;
-  images: Image[];
-};
-
 export type JourneyPathPoint = {
   latitude: number;
   longitude: number;
-};
-
-export type JourneySummary = {
-  id: number;
-  map_id: number | null;
-  started_at: string | null;
-  finished_at: string | null;
-  milestones_count: number;
-  checkins_count: number;
-  chapter_id: number | null;
-  map: MapRef | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Journey = {
-  id: number;
-  map_id: number | null;
-  started_at: string | null;
-  finished_at: string | null;
-  milestones: Milestone[];
-  checkins: JourneyCheckin[];
-  encoded_path: string | null;
-  chapter_id: number | null;
-  map: MapRef | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export type Notifiable = {
-  id: number;
-  type: string;
-  image: ImageVariants | null;
-};
-
-export type Notification = {
-  id: number;
-  key: string;
-  click_action: string;
-  notifiable: Notifiable;
-  notifier: Author;
-  notifiers: Author[];
-  notifiers_count: number;
-  read: boolean;
-  created_at: string;
-  updated_at: string;
 };
 
 export type CursorPage<T> = {

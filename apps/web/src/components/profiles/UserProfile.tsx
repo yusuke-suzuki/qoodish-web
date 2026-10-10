@@ -25,7 +25,7 @@ import type {
   Chapter,
   Journal,
   Pin,
-  Profile
+  UserProfile as UserProfileData
 } from '../../../types/index.ts';
 import AuthContext from '../../context/AuthContext.ts';
 import useBlock from '../../hooks/useBlock.ts';
@@ -42,7 +42,7 @@ import UserMenuButton from './UserMenuButton.tsx';
 import UserPins from './UserPins.tsx';
 
 type Props = {
-  profile: Profile;
+  profile: UserProfileData;
   initialPins: Pin[];
   pinsCursor: string | null;
   maps: AppMap[];

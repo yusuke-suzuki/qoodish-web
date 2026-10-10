@@ -1,6 +1,6 @@
 'use server';
 
-import type { UserSearchResult } from '../../types/index.ts';
+import type { UserSummary } from '../../types/index.ts';
 import { apiFetch } from '../lib/api.ts';
 import { mapTag } from '../lib/cacheTags.ts';
 import { revalidateTags } from '../lib/revalidate.ts';
@@ -10,14 +10,14 @@ type ActionResult = {
   error?: string;
 };
 
-export async function searchUsers(query: string): Promise<UserSearchResult[]> {
+export async function searchUsers(query: string): Promise<UserSummary[]> {
   const trimmed = query.trim();
 
   if (!trimmed) {
     return [];
   }
 
-  const { data } = await apiFetch<UserSearchResult[]>(
+  const { data } = await apiFetch<UserSummary[]>(
     `/users?q=${encodeURIComponent(trimmed)}`
   );
 

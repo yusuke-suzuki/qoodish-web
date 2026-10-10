@@ -23,8 +23,8 @@ type Props = {
   map: AppMap | null;
   pins: Pin[];
   pinProperties: PinProperty[];
-  milestoneOrders: Map<number, number>;
-  checkedInPinIds: Set<number>;
+  milestoneOrders: Map<number | null, number>;
+  checkedInPinIds: Set<number | null>;
   filter?: ReactNode;
   onPinSaved: () => void;
   onPinClick: (pin: Pin) => void;

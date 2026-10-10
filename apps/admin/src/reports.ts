@@ -1,3 +1,21 @@
+import type {
+  ModeratableType,
+  ModerationOutcome,
+  ReportCategory,
+  ReportDetail
+} from '@qoodish/api-contract';
+
+export type {
+  Decision,
+  ModeratableType,
+  ModerationOutcome,
+  Report,
+  ReportCategory,
+  ReportDetail,
+  ReportStatus,
+  ReviewedDecision
+} from '@qoodish/api-contract';
+
 export const REPORT_CATEGORIES = [
   'spam',
   'harassment',
@@ -9,9 +27,7 @@ export const REPORT_CATEGORIES = [
   'copyright',
   'impersonation',
   'other'
-] as const;
-
-export type ReportCategory = (typeof REPORT_CATEGORIES)[number];
+] as const satisfies readonly ReportCategory[];
 
 export const MODERATABLE_TYPES = [
   'Pin',
@@ -20,45 +36,13 @@ export const MODERATABLE_TYPES = [
   'Chapter',
   'Journal',
   'User'
-] as const;
+] as const satisfies readonly ModeratableType[];
 
-export type ModeratableType = (typeof MODERATABLE_TYPES)[number];
-
-export const MODERATION_OUTCOMES = ['kept', 'removed', 'unavailable'] as const;
-
-export type ModerationOutcome = (typeof MODERATION_OUTCOMES)[number];
-
-export type ReportStatus = ModerationOutcome | 'pending';
-
-export type Report = {
-  id: number;
-  category: ReportCategory;
-  moderatable_type: ModeratableType;
-  moderatable_id: number;
-  reporter: { id: number; name: string } | null;
-  created_at: string;
-};
-
-export type Decision = {
-  id: number;
-  outcome: ModerationOutcome;
-  reason: string;
-  moderator_email: string | null;
-  created_at: string;
-  reviewed_as_filed: boolean;
-};
-
-export type ReportDetail = Report & {
-  status: ReportStatus;
-  locale: string;
-  details: string | null;
-  content_snapshot: string | null;
-  target_available: boolean;
-  moderatable_parent: { type: 'Pin' | 'Chapter' | 'User'; id: number } | null;
-  edited_since_filed: boolean;
-  decisions: Decision[];
-  other_pending_reports: Report[];
-};
+export const MODERATION_OUTCOMES = [
+  'kept',
+  'removed',
+  'unavailable'
+] as const satisfies readonly ModerationOutcome[];
 
 export type DecisionInput = {
   outcome: ModerationOutcome;

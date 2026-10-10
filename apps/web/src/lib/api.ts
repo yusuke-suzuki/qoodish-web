@@ -1,4 +1,4 @@
-import type { CursorPage } from '../../types/index.ts';
+import type { ApiCursorPage, CursorPage } from '../../types/index.ts';
 import describeError from '../utils/describeError.ts';
 import { getDictionary } from '../utils/getDictionary.ts';
 import {
@@ -164,10 +164,7 @@ export async function apiFetchPage<T>(
     params.set('cursor', cursor);
   }
   const pagePath = params.size > 0 ? `${path}?${params}` : path;
-  const { data, status } = await apiFetch<{
-    data: T[];
-    next_cursor: string | null;
-  }>(pagePath, options);
+  const { data, status } = await apiFetch<ApiCursorPage<T>>(pagePath, options);
   assertApiAvailable(status, pagePath);
 
   return {

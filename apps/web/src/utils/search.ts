@@ -1,9 +1,9 @@
 import type {
-  AppMap,
-  ChapterSearchResult,
-  PinSearchResult,
+  GuestChapter,
+  GuestMap,
+  GuestPin,
   SearchResult,
-  UserSearchResult
+  UserSummary
 } from '../../types/index.ts';
 
 const MIN_TERM_LENGTH = 2;
@@ -24,10 +24,10 @@ export const SEARCH_RESULT_GROUPS = [
 ] as const;
 
 type SearchHits = {
-  maps: AppMap[];
-  chapters: ChapterSearchResult[];
-  pins: PinSearchResult[];
-  users: UserSearchResult[];
+  maps: GuestMap[];
+  chapters: GuestChapter[];
+  pins: GuestPin[];
+  users: UserSummary[];
 };
 
 export function toSearchResults(
@@ -81,28 +81,28 @@ async function fetchSearch<T>(path: string, signal: AbortSignal): Promise<T[]> {
 }
 
 export function searchMaps(query: string, signal: AbortSignal) {
-  return fetchSearch<AppMap>(
+  return fetchSearch<GuestMap>(
     `guest/maps?input=${encodeURIComponent(query)}`,
     signal
   );
 }
 
 export function searchChapters(query: string, signal: AbortSignal) {
-  return fetchSearch<ChapterSearchResult>(
+  return fetchSearch<GuestChapter>(
     `guest/chapters?input=${encodeURIComponent(query)}`,
     signal
   );
 }
 
 export function searchPins(query: string, signal: AbortSignal) {
-  return fetchSearch<PinSearchResult>(
+  return fetchSearch<GuestPin>(
     `guest/pins?input=${encodeURIComponent(query)}`,
     signal
   );
 }
 
 export function searchUsers(query: string, signal: AbortSignal) {
-  return fetchSearch<UserSearchResult>(
+  return fetchSearch<UserSummary>(
     `users?q=${encodeURIComponent(query)}`,
     signal
   );

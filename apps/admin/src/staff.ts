@@ -1,19 +1,4 @@
-export type StaffRole = {
-  id: number;
-  name: string;
-};
-
-export type StaffMember = {
-  id: number;
-  email: string;
-  revoked_at: string | null;
-  roles: StaffRole[];
-};
-
-export type Role = StaffRole & {
-  description: string | null;
-  permissions: string[];
-};
+export type { Role, StaffMember, StaffRole } from '@qoodish/api-contract';
 
 export type GrantInput = {
   email: string;

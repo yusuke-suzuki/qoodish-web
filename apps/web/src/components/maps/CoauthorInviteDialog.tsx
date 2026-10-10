@@ -17,7 +17,7 @@ import {
   useState,
   useTransition
 } from 'react';
-import type { AppMap, UserSearchResult } from '../../../types/index.ts';
+import type { AppMap, UserSummary } from '../../../types/index.ts';
 import { inviteCoauthor, searchUsers } from '../../actions/coauthors.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import AppDialog from '../common/AppDialog.tsx';
@@ -31,11 +31,9 @@ type Props = {
 function CoauthorInviteDialog({ open, onClose, map }: Props) {
   const dictionary = useDictionary();
 
-  const [options, setOptions] = useState<UserSearchResult[]>([]);
+  const [options, setOptions] = useState<UserSummary[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(
-    null
-  );
+  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 

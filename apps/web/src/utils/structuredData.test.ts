@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import type { AppMap, Author, Chapter, Pin } from '../../types/index.ts';
+import type { AppMap, Chapter, ChapterAuthor, Pin } from '../../types/index.ts';
 import {
   chapterStructuredData,
   mapStructuredData,
@@ -12,8 +12,11 @@ const author = {
   id: 7,
   name: 'Kei',
   biography: '',
-  image: null
-} satisfies Author;
+  image: null,
+  image_url: '',
+  blocking: false,
+  muting: false
+} satisfies ChapterAuthor;
 
 const appMap = {
   id: 5,
@@ -27,6 +30,7 @@ const appMap = {
   bookmarkable: true,
   editable: false,
   image: null,
+  image_url: '',
   created_at: '2026-01-01T00:00:00Z',
   updated_at: '2026-02-01T00:00:00Z'
 } satisfies AppMap;
@@ -58,6 +62,7 @@ const chapter = {
   content: {} as Chapter['content'],
   map_features: { type: 'FeatureCollection', features: [] },
   image: null,
+  image_url: '',
   editable: false,
   author,
   map: { id: 5, name: 'Kyoto', private: false },

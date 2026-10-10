@@ -6,7 +6,8 @@ import type {
   MutedAccount,
   Notification,
   Pin,
-  Profile
+  Profile,
+  UserProfile
 } from '../../types/index.ts';
 import {
   apiFetch,
@@ -20,9 +21,9 @@ export async function getProfile(
   userId: string,
   lang: string,
   token?: string
-): Promise<Profile | null> {
+): Promise<UserProfile | null> {
   const guest = !token;
-  const { data, status } = await apiFetch<Profile>(`/users/${userId}`, {
+  const { data, status } = await apiFetch<UserProfile>(`/users/${userId}`, {
     lang,
     guest,
     next: { revalidate: guest ? 300 : 0, tags: [userTag(userId)] }

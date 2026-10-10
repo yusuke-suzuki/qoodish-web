@@ -14,6 +14,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@qoodish/api-contract':
+        specifier: workspace:*
+        version: link:../../packages/api-contract
       hono:
         specifier: ^4.13.8
         version: 4.13.8
@@ -149,6 +152,9 @@ importers:
       '@mui/material-nextjs':
         specifier: ^9.3.0
         version: 9.3.0(@emotion/cache@11.14.0)(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.8))(@emotion/server@11.11.0)(@types/react@19.2.18)(next@16.3.3(@playwright/test@1.62.1)(@types/node@22.20.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
+      '@qoodish/api-contract':
+        specifier: workspace:*
+        version: link:../../packages/api-contract
       '@serwist/window':
         specifier: ^9.2.1
         version: 9.2.1(typescript@5.9.2)

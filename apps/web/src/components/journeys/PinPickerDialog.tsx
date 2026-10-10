@@ -18,7 +18,7 @@ type Props = {
   onClose: () => void;
   onSelect: (pin: Pin) => void;
   pins: Pin[];
-  usedPinIds: Set<number>;
+  usedPinIds: Set<number | null>;
 };
 
 export default memo(function PinPickerDialog({
