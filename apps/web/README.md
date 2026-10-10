@@ -15,19 +15,18 @@ already holds a session stays signed in. The flag is read per environment, so th
 dev worker and the production worker are toggled independently through
 `--env`.
 
-Turn it on by storing when the maintenance ends, as an ISO 8601 timestamp
-with an offset:
+Turn it on by storing an empty object:
 
 ```bash
-pnpm exec wrangler kv key put --binding MAINTENANCE maintenance '{"until":"2026-10-20T15:00:00+09:00"}' --remote
+pnpm exec wrangler kv key put --binding MAINTENANCE maintenance '{}' --remote
 ```
 
-The notice reads "under maintenance until <until>" in the viewer's
+The notice says that posting and editing are unavailable, in the viewer's
 language. To replace it, add a `message` with the text for either or both
 languages:
 
 ```bash
-pnpm exec wrangler kv key put --binding MAINTENANCE maintenance '{"until":"2026-10-20T15:00:00+09:00","message":{"en":"Qoodish is moving to a new database until 15:00 JST.","ja":"15:00 までデータベースを移行しています。"}}' --remote
+pnpm exec wrangler kv key put --binding MAINTENANCE maintenance '{"message":{"en":"Qoodish is moving to a new database until 15:00 JST.","ja":"15:00 までデータベースを移行しています。"}}' --remote
 ```
 
 Turn it off by deleting the key:

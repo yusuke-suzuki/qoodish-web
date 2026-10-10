@@ -38,9 +38,7 @@ beforeEach(() => {
 });
 
 function underMaintenance(): void {
-  getMaintenance.mock.mockImplementation(async () => ({
-    until: '2026-10-20T15:00:00+09:00'
-  }));
+  getMaintenance.mock.mockImplementation(async () => ({}));
 }
 
 type FetchArgs = [input: string | URL | Request, init?: RequestInit];
