@@ -104,6 +104,22 @@ describe('getMaintenance', () => {
     assert.equal(get.mock.callCount(), 2);
   });
 
+  it('retries right after a failed read instead of caching it', async (t) => {
+    t.mock.timers.enable({ apis: ['Date'], now });
+    t.mock.method(console, 'error', () => {});
+    contextAvailable = false;
+    const { getMaintenance } = await maintenance();
+
+    assert.equal(await getMaintenance(), null);
+
+    contextAvailable = true;
+    const get = bindStore(flag);
+    t.mock.timers.tick(1);
+
+    assert.deepEqual(await getMaintenance(), flag);
+    assert.equal(get.mock.callCount(), 1);
+  });
+
   it('picks up a cleared flag once the read expires', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now });
     bindStore(flag);

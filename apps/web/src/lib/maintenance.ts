@@ -59,6 +59,7 @@ async function loadMaintenance(): Promise<Maintenance | null> {
     return parseMaintenance(await readMaintenanceFlag());
   } catch (error) {
     console.error(`Maintenance flag unavailable: ${describeError(error)}`);
+    cache = undefined;
     return null;
   }
 }

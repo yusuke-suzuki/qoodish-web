@@ -96,7 +96,7 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
     acceptLanguage: request.headers.get('accept-language')
   });
 
-  if (joinedPath === IMAGE_UPLOAD_PATH && (await getMaintenance())) {
+  if (request.method === 'POST' && (await getMaintenance())) {
     return NextResponse.json(
       {
         detail: getDictionary(acceptLanguage.split('-')[0])[
