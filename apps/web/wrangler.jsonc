@@ -78,6 +78,12 @@
       "dataset": "prod_qoodish_web_events"
     }
   ],
+  "kv_namespaces": [
+    {
+      "binding": "MAINTENANCE",
+      "id": "6c78b3e0223e45889bce5d43c6a96844"
+    }
+  ],
   "vars": {
     "APP_ENV": "production",
     "API_ENDPOINT": "https://api.qoodish.com"
@@ -138,6 +144,12 @@
           "dataset": "dev_qoodish_web_events"
         }
       ],
+      "kv_namespaces": [
+        {
+          "binding": "MAINTENANCE",
+          "id": "8a56a701dfff4c26842908926149f651"
+        }
+      ],
       "vars": {
         "APP_ENV": "development",
         "API_ENDPOINT": "https://api-dev.qoodish.com"
@@ -183,6 +195,12 @@
           {
             "binding": "ANALYTICS_EVENTS",
             "dataset": "dev_qoodish_web_events"
+          }
+        ],
+        "kv_namespaces": [
+          {
+            "binding": "MAINTENANCE",
+            "id": "8a56a701dfff4c26842908926149f651"
           }
         ],
         "vars": {

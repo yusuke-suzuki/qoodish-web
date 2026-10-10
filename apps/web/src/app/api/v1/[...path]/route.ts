@@ -9,7 +9,9 @@ import {
   resolveApiLanguage
 } from '../../../../lib/apiRequest.ts';
 import { getServerAuthState } from '../../../../lib/auth.ts';
+import { getMaintenance } from '../../../../lib/maintenance.ts';
 import describeError from '../../../../utils/describeError.ts';
+import { getDictionary } from '../../../../utils/getDictionary.ts';
 import { LOCALE_COOKIE } from '../../../../utils/locales.ts';
 
 type Params = {
@@ -89,6 +91,22 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
     return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
   }
 
+  const acceptLanguage = resolveApiLanguage({
+    rememberedLocale: request.cookies.get(LOCALE_COOKIE)?.value,
+    acceptLanguage: request.headers.get('accept-language')
+  });
+
+  if (joinedPath === IMAGE_UPLOAD_PATH && (await getMaintenance())) {
+    return NextResponse.json(
+      {
+        detail: getDictionary(acceptLanguage.split('-')[0])[
+          'maintenance write blocked'
+        ]
+      },
+      { status: 503 }
+    );
+  }
+
   if (joinedPath === IMAGE_UPLOAD_PATH && !(await imageUploadAllowed())) {
     return NextResponse.json(
       { detail: 'Too many uploads' },
@@ -100,13 +118,7 @@ async function proxyRequest(request: NextRequest, { params }: Params) {
 
   const init: RequestInit = {
     method: request.method,
-    headers: buildApiHeaders({
-      token,
-      acceptLanguage: resolveApiLanguage({
-        rememberedLocale: request.cookies.get(LOCALE_COOKIE)?.value,
-        acceptLanguage: request.headers.get('accept-language')
-      })
-    }),
+    headers: buildApiHeaders({ token, acceptLanguage }),
     signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS)
   };
 

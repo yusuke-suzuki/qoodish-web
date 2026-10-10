@@ -6,10 +6,12 @@ import type {
   Profile
 } from '../../../types/index.ts';
 import JsonLd from '../../components/common/JsonLd.tsx';
+import MaintenanceNotice from '../../components/common/MaintenanceNotice.tsx';
 import Shell from '../../components/layouts/Shell.tsx';
 import ShellProvider from '../../components/layouts/ShellProvider.tsx';
 import TermsRevisionNotice from '../../components/legal/TermsRevisionNotice.tsx';
 import { getServerAuthState } from '../../lib/auth.ts';
+import { getMaintenance, maintenanceMessage } from '../../lib/maintenance.ts';
 import { getMyProfile, getNotifications } from '../../lib/users.ts';
 import { THEME_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
@@ -84,6 +86,11 @@ export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   const dict = getDictionary(lang);
   const { authenticated, pending, uid, token } = await getServerAuthState();
+  const maintenanceNotice = maintenanceMessage(
+    await getMaintenance(),
+    lang,
+    dict
+  );
   const profilePromise = authenticated
     ? getMyProfile(lang, token)
     : Promise.resolve<Profile | null>(null);
@@ -128,6 +135,7 @@ export default async function RootLayout({ children, params }: Props) {
           unreadNotificationsPromise={unreadNotificationsPromise}
         >
           <TermsRevisionNotice effectiveOn={pendingTermsRevision()} />
+          <MaintenanceNotice message={maintenanceNotice} />
           <ShellProvider>
             <Shell>{children}</Shell>
           </ShellProvider>

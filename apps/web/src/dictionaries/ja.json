@@ -20,6 +20,8 @@
   "agree to terms on sign in": "続行することで、{terms} および {privacy} に同意したものとみなされます。",
   "terms revised": "利用規約を改定しました。改定内容と効力発生日をご確認ください。",
   "previous terms notice": "この利用規約の効力発生日は {date} です。",
+  "maintenance in progress": "Qoodish は {until} までメンテナンス中です。閲覧はできますが、変更は保存できません。",
+  "maintenance write blocked": "メンテナンス中のため、しばらくしてからやり直してください。",
   "view latest terms": "最新の利用規約を見る",
   "review": "確認する",
   "load more": "さらに読み込む",
