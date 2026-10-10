@@ -10,11 +10,16 @@ type AnalyticsEngineDataset = {
   }): void;
 };
 
+type KvNamespace = {
+  get(key: string, type: 'json'): Promise<unknown>;
+};
+
 declare global {
   interface CloudflareEnv {
     IMAGE_UPLOAD_BURST_LIMIT?: RateLimiter;
     IMAGE_UPLOAD_LIMIT?: RateLimiter;
     ANALYTICS_EVENTS?: AnalyticsEngineDataset;
+    MAINTENANCE?: KvNamespace;
   }
 }
 

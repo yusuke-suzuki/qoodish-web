@@ -9,6 +9,7 @@ import {
   getAuthToken,
   isTimeoutError
 } from './apiRequest.ts';
+import { getMaintenance } from './maintenance.ts';
 
 type ApiFetchOptions = RequestInit & {
   guest?: boolean;
@@ -36,6 +37,12 @@ function messages(acceptLanguage: string): Record<string, string> {
   return getDictionary(acceptLanguage.split('-')[0]);
 }
 
+const READ_METHODS = ['GET', 'HEAD'];
+
+function isWrite(method: string | undefined): boolean {
+  return !READ_METHODS.includes((method ?? 'GET').toUpperCase());
+}
+
 // The transport half of apiFetch: everything below the request-context
 // lookups, so it stays callable outside a Next.js request scope.
 export async function performApiFetch<T>(
@@ -45,6 +52,14 @@ export async function performApiFetch<T>(
   const { token, acceptLanguage, timeoutMs, next, ...fetchOptions } = options;
 
   const apiPath = token ? path : `/guest${path}`;
+
+  if (isWrite(fetchOptions.method) && (await getMaintenance())) {
+    return {
+      data: null,
+      error: messages(acceptLanguage)['maintenance write blocked'],
+      status: 503
+    };
+  }
 
   try {
     const res = await fetch(apiUrl(apiPath), {

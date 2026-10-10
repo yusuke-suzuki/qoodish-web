@@ -1,15 +1,47 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
-import {
-  apiFetch,
-  apiFetchList,
-  apiFetchOrThrow,
-  apiFetchPage,
-  assertApiAvailable,
-  performApiFetch
-} from './api.ts';
+import { before, beforeEach, describe, it, mock } from 'node:test';
+import type { Maintenance } from './maintenance.ts';
+
+type Api = typeof import('./api.ts');
+
+const getMaintenance = mock.fn<() => Promise<Maintenance | null>>(
+  async () => null
+);
+
+mock.module(new URL('./maintenance.ts', import.meta.url).href, {
+  namedExports: { getMaintenance }
+});
+
+let apiFetch: Api['apiFetch'];
+let apiFetchList: Api['apiFetchList'];
+let apiFetchOrThrow: Api['apiFetchOrThrow'];
+let apiFetchPage: Api['apiFetchPage'];
+let assertApiAvailable: Api['assertApiAvailable'];
+let performApiFetch: Api['performApiFetch'];
+
+before(async () => {
+  ({
+    apiFetch,
+    apiFetchList,
+    apiFetchOrThrow,
+    apiFetchPage,
+    assertApiAvailable,
+    performApiFetch
+  } = await import('./api.ts'));
+});
 
 process.env.API_ENDPOINT = 'https://api.example.com';
+
+beforeEach(() => {
+  getMaintenance.mock.resetCalls();
+  getMaintenance.mock.mockImplementation(async () => null);
+});
+
+function underMaintenance(): void {
+  getMaintenance.mock.mockImplementation(async () => ({
+    until: '2026-10-20T15:00:00+09:00'
+  }));
+}
 
 type FetchArgs = [input: string | URL | Request, init?: RequestInit];
 
@@ -189,6 +221,73 @@ describe('performApiFetch', () => {
       error: 'Could not reach the server. Please try again later.',
       status: 0
     });
+  });
+
+  it('refuses a write during maintenance without reaching the API', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({})
+    );
+    underMaintenance();
+
+    const result = await performApiFetch('/maps', {
+      token: 'token-1',
+      acceptLanguage: 'ja',
+      method: 'post',
+      body: '{}'
+    });
+
+    assert.equal(fetchMock.mock.callCount(), 0);
+    assert.deepEqual(result, {
+      data: null,
+      error: 'メンテナンス中のため、しばらくしてからやり直してください。',
+      status: 503
+    });
+  });
+
+  it('refuses a delete during maintenance', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({})
+    );
+    underMaintenance();
+
+    const result = await performApiFetch('/maps/1', {
+      token: 'token-1',
+      acceptLanguage: 'en',
+      method: 'DELETE'
+    });
+
+    assert.equal(fetchMock.mock.callCount(), 0);
+    assert.equal(
+      result.error,
+      'Qoodish is under maintenance. Please try again later.'
+    );
+  });
+
+  it('still reads during maintenance', async (t) => {
+    const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+      jsonResponse({ id: 1 })
+    );
+    underMaintenance();
+
+    const result = await performApiFetch('/maps', {
+      token: null,
+      acceptLanguage: 'en'
+    });
+
+    assert.equal(fetchMock.mock.callCount(), 1);
+    assert.deepEqual(result, { data: { id: 1 }, error: null, status: 200 });
+  });
+
+  it('does not consult the flag for a read', async (t) => {
+    t.mock.method(globalThis, 'fetch', async () => jsonResponse({}));
+
+    await performApiFetch('/maps', {
+      token: null,
+      acceptLanguage: 'en',
+      method: 'HEAD'
+    });
+
+    assert.equal(getMaintenance.mock.callCount(), 0);
   });
 
   it('prefers a caller-provided abort signal', async (t) => {
