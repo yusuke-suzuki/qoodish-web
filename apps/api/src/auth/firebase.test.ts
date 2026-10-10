@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createSigner, firebaseClaims, type Signer } from '../test/jwt.ts';
-import { bearerToken, verifyFirebaseIdToken } from './firebase.ts';
+import { verifyFirebaseIdToken } from './firebase.ts';
 
 const PROJECT_ID = 'qoodish-test';
 
@@ -69,17 +69,5 @@ describe('verifyFirebaseIdToken', () => {
     expect(
       await verifyFirebaseIdToken('not.a.jwt.at.all', PROJECT_ID, signer.keys)
     ).toBeNull();
-  });
-});
-
-describe('bearerToken', () => {
-  it('takes the token after the scheme', () => {
-    expect(bearerToken('Bearer abc.def.ghi')).toBe('abc.def.ghi');
-  });
-
-  it('is undefined without a header or a token', () => {
-    expect(bearerToken(undefined)).toBeUndefined();
-    expect(bearerToken('Bearer')).toBeUndefined();
-    expect(bearerToken('Bearer ')).toBeUndefined();
   });
 });

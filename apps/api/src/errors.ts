@@ -1,3 +1,4 @@
+import { HTTPException } from 'hono/http-exception';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { type Locale, type MessageKey, translate } from './i18n/index.ts';
 
@@ -33,17 +34,23 @@ const STATUSES: Record<ErrorTitle, ContentfulStatusCode> = {
   InternalServerError: 500
 };
 
-export class ApiError extends Error {
+export class ApiError extends HTTPException {
   readonly title: ErrorTitle;
-  readonly status: ContentfulStatusCode;
   readonly detail?: string;
 
   constructor(title: ErrorTitle, detail?: string) {
-    super(detail ?? title);
+    super(STATUSES[title], { message: detail ?? title });
     this.name = 'ApiError';
     this.title = title;
-    this.status = STATUSES[title];
     this.detail = detail;
+  }
+
+  static fromStatus(status: number): ApiError {
+    const title = (Object.keys(STATUSES) as ErrorTitle[]).find(
+      (candidate) => STATUSES[candidate] === status
+    );
+
+    return new ApiError(title ?? 'InternalServerError');
   }
 
   body(locale: Locale): { title: ErrorTitle; detail: string } {

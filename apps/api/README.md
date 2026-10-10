@@ -7,8 +7,8 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 ## Request handling
 
 - Every request resolves its locale from `Accept-Language` through Hono's `languageDetector` (`en` or `ja`, default `en`), and validation messages come from `src/i18n`.
-- A `Bearer` Firebase ID token in `Authorization` is verified with `jose` against Google's published signing keys (`src/auth/firebase.ts`). An invalid token is logged and the request continues as a guest, so each route decides whether to answer `401`.
-- Errors are thrown as `ApiError` (`src/errors.ts`) and rendered by the app-level handler; unexpected errors become a localized `500`.
+- Every route outside `/guest/*`, `/admin/*` and the health checks requires a `Bearer` Firebase ID token in `Authorization`, enforced by Hono's `bearerAuth` and verified with `jose` against Google's published signing keys (`src/auth/firebase.ts`). A missing or invalid token answers the same localized `401` Rails gives, and the verified claims are available to the route as `c.get('idToken')`.
+- Errors are thrown as `ApiError` (`src/errors.ts`), a `HTTPException` that carries the Rails error title; the app-level handler renders it and any other `HTTPException` as `{ title, detail }`, and unexpected errors become a localized `500`.
 
 ## Database
 

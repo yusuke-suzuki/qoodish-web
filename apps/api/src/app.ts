@@ -1,9 +1,10 @@
 import { Hono } from 'hono';
+import { bearerAuth } from 'hono/bearer-auth';
+import { except } from 'hono/combine';
 import { HTTPException } from 'hono/http-exception';
 import { languageDetector } from 'hono/language';
 import type { JWTVerifyGetKey } from 'jose';
 import {
-  bearerToken,
   type FirebaseIdToken,
   verifyFirebaseIdToken
 } from './auth/firebase.ts';
@@ -13,7 +14,7 @@ import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 
 export type Variables = {
   language: Locale;
-  idToken: FirebaseIdToken | null;
+  idToken: FirebaseIdToken;
 };
 
 export type AppEnv = { Bindings: Env; Variables: Variables };
@@ -21,6 +22,8 @@ export type AppEnv = { Bindings: Env; Variables: Variables };
 export type AppOptions = {
   firebaseKeys?: JWTVerifyGetKey;
 };
+
+const PUBLIC_PATHS = ['/', '/healthcheck', '/guest/*', '/admin/*'];
 
 export function createApp(options: AppOptions = {}) {
   const app = new Hono<AppEnv>();
@@ -35,19 +38,28 @@ export function createApp(options: AppOptions = {}) {
     })
   );
 
-  app.use('*', async (c, next) => {
-    const token = bearerToken(c.req.header('authorization'));
-    const idToken = token
-      ? await verifyFirebaseIdToken(
-          token,
-          c.env.GOOGLE_PROJECT_ID,
-          options.firebaseKeys
-        )
-      : null;
+  app.use(
+    '*',
+    except(
+      PUBLIC_PATHS,
+      bearerAuth({
+        verifyToken: async (token, c) => {
+          const idToken = await verifyFirebaseIdToken(
+            token,
+            c.env.GOOGLE_PROJECT_ID,
+            options.firebaseKeys
+          );
 
-    c.set('idToken', idToken);
-    await next();
-  });
+          if (!idToken) {
+            return false;
+          }
+
+          c.set('idToken', idToken);
+          return true;
+        }
+      })
+    )
+  );
 
   app.get('/healthcheck', (c) => c.text('ok'));
   app.get('/', (c) => c.text('ok'));
@@ -73,10 +85,7 @@ export function createApp(options: AppOptions = {}) {
     }
 
     if (error instanceof HTTPException) {
-      const apiError =
-        error.status === 401
-          ? new ApiError('Unauthorized')
-          : new ApiError('BadRequest', error.message || undefined);
+      const apiError = ApiError.fromStatus(error.status);
 
       return c.json(apiError.body(locale), apiError.status);
     }
@@ -88,14 +97,4 @@ export function createApp(options: AppOptions = {}) {
   });
 
   return app;
-}
-
-export function currentIdToken(
-  variables: Pick<Variables, 'idToken'>
-): FirebaseIdToken {
-  if (!variables.idToken) {
-    throw new ApiError('Unauthorized');
-  }
-
-  return variables.idToken;
 }
