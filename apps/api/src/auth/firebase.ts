@@ -34,11 +34,3 @@ export async function verifyFirebaseIdToken(
     return null;
   }
 }
-
-export function bearerToken(
-  authorization: string | undefined
-): string | undefined {
-  const token = authorization?.split(' ', 2)[1];
-
-  return token || undefined;
-}

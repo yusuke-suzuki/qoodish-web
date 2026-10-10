@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:test';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { createApp, currentIdToken } from './app.ts';
+import { createApp } from './app.ts';
 import { ApiError } from './errors.ts';
 import { createSigner, firebaseClaims, type Signer } from './test/jwt.ts';
 
@@ -10,22 +10,31 @@ beforeAll(async () => {
   signer = await createSigner();
 });
 
-function appWithProbe() {
+function appWithProbes() {
   const app = createApp({ firebaseKeys: signer.keys });
 
-  app.get('/probe', (c) =>
-    c.json({ locale: c.get('language'), uid: c.get('idToken')?.sub ?? null })
-  );
-  app.get('/me/probe', (c) => c.json({ uid: currentIdToken(c.var).sub }));
-  app.get('/boom', () => {
+  app.get('/guest/probe', (c) => c.json({ locale: c.get('language') }));
+  app.get('/me/probe', (c) => c.json({ uid: c.get('idToken').sub }));
+  app.get('/guest/boom', () => {
     throw new Error('unexpected');
+  });
+  app.get('/guest/conflict', () => {
+    throw new ApiError('Conflict');
   });
 
   return app;
 }
 
 function request(path: string, init: RequestInit = {}) {
-  return appWithProbe().request(path, init, env);
+  return appWithProbes().request(path, init, env);
+}
+
+async function signedRequest(path: string, headers: HeadersInit = {}) {
+  const token = await signer.sign(firebaseClaims(env.GOOGLE_PROJECT_ID));
+
+  return request(path, {
+    headers: { authorization: `Bearer ${token}`, ...headers }
+  });
 }
 
 describe('healthcheck', () => {
@@ -37,47 +46,37 @@ describe('healthcheck', () => {
 
 describe('locale', () => {
   it('defaults to en', async () => {
-    const body = await (await request('/probe')).json();
-
-    expect(body).toMatchObject({ locale: 'en' });
+    expect(await (await request('/guest/probe')).json()).toEqual({
+      locale: 'en'
+    });
   });
 
   it('picks the preferred supported language of Accept-Language', async () => {
-    const res = await request('/probe', {
+    const res = await request('/guest/probe', {
       headers: { 'accept-language': 'ja-JP,ja;q=0.9,en;q=0.8' }
     });
 
-    expect(await res.json()).toMatchObject({ locale: 'ja' });
+    expect(await res.json()).toEqual({ locale: 'ja' });
   });
 
   it('falls back to en for an unsupported language', async () => {
-    const res = await request('/probe', {
+    const res = await request('/guest/probe', {
       headers: { 'accept-language': 'fr-FR' }
     });
 
-    expect(await res.json()).toMatchObject({ locale: 'en' });
+    expect(await res.json()).toEqual({ locale: 'en' });
   });
 });
 
 describe('authentication', () => {
   it('resolves the Firebase subject from a valid bearer token', async () => {
-    const token = await signer.sign(firebaseClaims(env.GOOGLE_PROJECT_ID));
-    const res = await request('/probe', {
-      headers: { authorization: `Bearer ${token}` }
-    });
+    const res = await signedRequest('/me/probe');
 
-    expect(await res.json()).toMatchObject({ uid: 'firebase-uid' });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ uid: 'firebase-uid' });
   });
 
-  it('treats an invalid token as a guest', async () => {
-    const res = await request('/probe', {
-      headers: { authorization: 'Bearer invalid' }
-    });
-
-    expect(await res.json()).toMatchObject({ uid: null });
-  });
-
-  it('answers 401 in the viewer locale when a token is required', async () => {
+  it('answers 401 in the viewer locale without a token', async () => {
     const res = await request('/me/probe', {
       headers: { 'accept-language': 'ja' }
     });
@@ -88,21 +87,49 @@ describe('authentication', () => {
       detail: '認証エラーが発生しました。'
     });
   });
+
+  it('answers 401 for an invalid token', async () => {
+    const res = await request('/me/probe', {
+      headers: { authorization: 'Bearer invalid' }
+    });
+
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({
+      title: 'Unauthorized',
+      detail: 'Authentication has failed.'
+    });
+  });
+
+  it('leaves guest routes open', async () => {
+    expect((await request('/guest/probe')).status).toBe(200);
+  });
 });
 
 describe('errors', () => {
   it('answers 404 JSON for an unknown route', async () => {
-    const res = await request('/nowhere');
+    const res = await request('/guest/nowhere');
 
     expect(res.status).toBe(404);
     expect(await res.json()).toEqual({
       title: 'NotFound',
-      detail: "No route matches [GET] '/nowhere'"
+      detail: "No route matches [GET] '/guest/nowhere'"
+    });
+  });
+
+  it('renders a thrown ApiError with its status and message', async () => {
+    const res = await request('/guest/conflict', {
+      headers: { 'accept-language': 'ja' }
+    });
+
+    expect(res.status).toBe(409);
+    expect(await res.json()).toEqual({
+      title: 'Conflict',
+      detail: 'リクエストの内容が競合しています。'
     });
   });
 
   it('hides unexpected errors behind a localized 500', async () => {
-    const res = await request('/boom', {
+    const res = await request('/guest/boom', {
       headers: { 'accept-language': 'ja' }
     });
 
