@@ -56,21 +56,3 @@ Tests run inside workerd through `@cloudflare/vitest-plugin` with a fresh local 
 pnpm test
 pnpm typecheck
 ```
-
-## Deploy
-
-The worker needs the `ENCRYPTION_PRIMARY_KEY` and `ENCRYPTION_KEY_DERIVATION_SALT` secrets, set once per worker:
-
-```bash
-pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_PRIMARY_KEY --name dev-qoodish-api
-pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_KEY_DERIVATION_SALT --name dev-qoodish-api
-pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_PRIMARY_KEY --name prod-qoodish-api
-pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_KEY_DERIVATION_SALT --name prod-qoodish-api
-```
-
-Apply the migrations to the remote database, then deploy from a machine that is logged in to Cloudflare:
-
-```bash
-pnpm db:migrate:dev && pnpm exec cf deploy --mode dev   # api-next-dev.qoodish.com
-pnpm db:migrate:prod && pnpm exec cf deploy             # api-next.qoodish.com
-```
