@@ -366,7 +366,6 @@ export async function seedWorld(binding: D1Database): Promise<void> {
     title,
     status,
     content: JSON.stringify(CHAPTER_CONTENT),
-    contentText: '["Noodles by the river"]',
     mapFeatures: JSON.stringify(MAP_FEATURES),
     createdAt: at(day),
     updatedAt: at(day, 5)

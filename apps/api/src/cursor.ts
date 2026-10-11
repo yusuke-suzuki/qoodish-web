@@ -12,6 +12,14 @@ export type FeedCursor = {
 const TIMESTAMP =
   /^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?\s*(Z|[+-]\d{2}:?\d{2})?$/i;
 
+const FIELD_RANGES: readonly (readonly [number, number])[] = [
+  [1, 12],
+  [1, 31],
+  [0, 24],
+  [0, 59],
+  [0, 60]
+];
+
 function decodeToken(token: string): string {
   if (!/^[A-Za-z0-9+/_-]*={0,2}$/.test(token)) {
     throw new ApiError('BadRequest');
@@ -45,25 +53,35 @@ export function normalizeTimestamp(text: string): string {
   }
 
   const [, year, month, day, hour, minute, second, fraction, zone] = match;
-  const utc =
-    Date.UTC(
-      Number(year),
-      Number(month) - 1,
-      Number(day),
-      Number(hour ?? 0),
-      Number(minute ?? 0),
-      Number(second ?? 0)
-    ) -
-    offsetMinutes(zone) * 60_000;
+  const fields = [month, day, hour, minute, second].map((part) =>
+    Number(part ?? 0)
+  );
 
-  if (Number.isNaN(utc)) {
+  if (
+    fields.some(
+      (value, index) =>
+        value < FIELD_RANGES[index][0] || value > FIELD_RANGES[index][1]
+    )
+  ) {
     throw new ApiError('BadRequest');
   }
 
-  const seconds = new Date(utc).toISOString().slice(0, 19);
+  const [monthNumber, dayNumber, hours, minutes, seconds] = fields;
+  const utc =
+    Date.UTC(
+      Number(year),
+      monthNumber - 1,
+      dayNumber,
+      hours,
+      minutes,
+      seconds
+    ) -
+    offsetMinutes(zone) * 60_000;
+
+  const wholeSeconds = new Date(utc).toISOString().slice(0, 19);
   const micros = (fraction ?? '').slice(0, 6).padEnd(6, '0');
 
-  return `${seconds}.${micros}Z`;
+  return `${wholeSeconds}.${micros}Z`;
 }
 
 export function decodeCursor(token: string): FeedCursor {

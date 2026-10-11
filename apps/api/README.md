@@ -15,22 +15,23 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 
 Every `/guest/*` and `/guest/v2/*` read Rails serves is served here (`src/guest/`), with the visibility rules of the Rails scopes: a map is public when it is published, not private and not removed by its latest moderation decision; pins and chapters are public when they are published, not removed and on a public map. Each list is read with one query for its rows and one D1 `batch` for everything the serializer needs (authors, images, likes, comments), with id lists bound as a single JSON array (`inIds`) so that no query runs into D1's 100-parameter limit.
 
-Two behaviours deliberately differ from Rails, and the comparison tool below accounts for both:
+Some behaviours deliberately differ from Rails:
 
-- Search results are ordered newest first. Rails ordered them by MySQL's relevance score first, which FTS5 cannot reproduce.
-- Rows that share a `created_at` are ordered by id, where MySQL returned them in whatever order the chosen index produced.
+- Search results are the 20 newest matches, newest first. Rails ranked matches by MySQL's relevance score before taking 20, which FTS5 cannot reproduce, so a term with more than 20 matches returns a different set, not only a different order. The comparison tool reports such searches as differences.
+- Rows that share a `created_at` are ordered by id, where MySQL returned them in whatever order the chosen index produced. The comparison tool accounts for this.
+- A user whose `name` is `NULL` is serialized with `""`, where Rails wrote `null`. `User` validates the presence of `name`, so only rows older than that validation could hold `NULL`, and the API contract types `name` as a string, which `apps/web` relies on.
 
 ## Database
 
 The schema lives in `src/db/schema.ts` and migrations in `migrations/`, generated with `pnpm db:generate`.
 
-Full-text search replaces MySQL's ngram FULLTEXT indexes with FTS5 tables that use the `trigram` tokenizer over the searchable columns themselves (`maps_fts`, `pins_fts`, `chapters_fts`, `users_fts`, kept in sync by triggers; `migrations/0002_search_trigram.sql`). `src/search.ts` splits the input the way Rails' `SearchQuery` does and requires every term to occur, case-insensitively, as a substring of one of the columns, which is what MySQL's ngram phrase search matched:
+Full-text search replaces MySQL's ngram FULLTEXT indexes with FTS5 tables that use the `trigram` tokenizer with `remove_diacritics 1`, kept in sync by triggers (`migrations/0002_search_trigram.sql`). `maps_fts`, `pins_fts` and `users_fts` index the searchable columns of their tables in place. `chapters_fts` stores its own `title` and `body`, where `body` is the `text` values of the Lexical document in `content`, collected with `json_tree` whenever a chapter is inserted or its content changes; it replaces MySQL's generated `content_text` column, which the Rails export leaves out.
 
-- terms of three or more characters are looked up through the index with an FTS5 phrase;
-- two-character terms, which a trigram index cannot look up, are matched with `LIKE` over the columns;
+`src/search.ts` splits the input the way Rails' `SearchQuery` does and requires every term to occur as a substring of one of the indexed columns, which is what MySQL's ngram phrase search matched:
+
+- terms of three or more characters are looked up through the index with an FTS5 phrase, ignoring case and diacritics as MySQL's `utf8mb4_general_ci` does;
+- two-character terms, which a trigram index cannot look up, are matched with `LIKE` over the indexed columns, which ignores the case of ASCII letters only and does not ignore diacritics;
 - one-character terms narrow the result with `LIKE`, and input made only of them finds nothing, as in Rails.
-
-`chapters.content_text` holds what MySQL's generated column of the same name holds: the `text` values of the Lexical document, as the JSON array `json_extract(content, '$**.text')` returns.
 
 ```bash
 pnpm db:migrate:local   # apply migrations to the local D1 that cf dev uses
@@ -39,7 +40,7 @@ pnpm dev                # cf dev against the dev worker config
 
 ## Importing the Rails data
 
-`lib/tasks/export_for_d1.rb` in the Rails repository writes the MySQL database as SQLite statements for D1: every table in foreign-key order, references that point at a table loaded later (`current_revision_id`, `users.image_id`) set by `UPDATE`s once both sides are in, values too long for one D1 statement assembled in a scratch table, and encrypted columns copied as Active Record Encryption ciphertext. It writes `part-NNNNN.sql` files of at most 32 MB and a `manifest.json` with the row count and maximum id of every table.
+`lib/tasks/export_for_d1.rb` in the Rails repository writes the MySQL database as SQLite statements for D1: every table in foreign-key order, references that point at a table loaded later (`current_revision_id`, `users.image_id`) set by `UPDATE`s once both sides are in, values too long for one D1 statement assembled in a scratch table, generated columns left out, and encrypted columns copied as Active Record Encryption ciphertext. It writes `part-NNNNN.sql` files of at most 32 MB and a `manifest.json` with the row count and maximum id of every table.
 
 1. Run the export on the `qoodish-runner` Job, which carries the database credentials, into a Cloud Storage bucket its service account can write to:
 

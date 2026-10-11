@@ -764,7 +764,6 @@ export const chapters = sqliteTable(
   {
     id: integer('id').primaryKey({ autoIncrement: true }),
     content: text('content').notNull(),
-    contentText: text('content_text'),
     createdAt: text('created_at').notNull(),
     currentRevisionId: integer('current_revision_id').references(
       (): AnySQLiteColumn => chapterRevisions.id,

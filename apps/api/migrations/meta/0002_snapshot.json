@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "63f4e150-2569-4c2d-9884-a9765f723f3d",
+  "id": "d451d5ad-8dcd-4f5b-85b6-3d827c1b1b97",
   "prevId": "933de168-f079-438d-b588-ba30e2426da3",
   "tables": {
     "blocks": {
@@ -423,13 +423,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "content_text": {
-          "name": "content_text",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "created_at": {

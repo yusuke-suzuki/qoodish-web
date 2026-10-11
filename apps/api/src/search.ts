@@ -6,7 +6,7 @@ const FULLTEXT_TERM_LENGTH = 2;
 export type SearchTarget = {
   index: string;
   id: SQLWrapper;
-  columns: SQLWrapper[];
+  columns: string[];
 };
 
 export function searchTerms(input: string): string[] {
@@ -29,7 +29,7 @@ function escapeLike(term: string): string {
 }
 
 function phrase(term: string): string {
-  return `"${term.replaceAll('"', '""')}"`;
+  return `"${term}"`;
 }
 
 export function searchCondition(
@@ -59,13 +59,14 @@ export function searchCondition(
 
   for (const term of scanned) {
     const pattern = `%${escapeLike(term)}%`;
+    const anyColumn = or(
+      ...target.columns.map(
+        (column) => sql`${sql.identifier(column)} LIKE ${pattern} ESCAPE '\\'`
+      )
+    );
 
     conditions.push(
-      or(
-        ...target.columns.map(
-          (column) => sql`${column} LIKE ${pattern} ESCAPE '\\'`
-        )
-      ) as SQL
+      sql`${target.id} IN (SELECT rowid FROM ${index} WHERE ${anyColumn})`
     );
   }
 
