@@ -20,7 +20,7 @@ This document provides essential context for Claude Code to understand the Qoodi
 
 ## 3. Architectural Patterns & Conventions
 
-- **Directory Structure:** The repository is a pnpm workspace. `apps/web` is the web app, and every `src/` path in this document is relative to it. `apps/admin` (moderation dashboard) and `apps/synthetics` (scheduled production checks) are separate Workers with their own READMEs.
+- **Directory Structure:** The repository is a pnpm workspace. `apps/web` is the web app, and every `src/` path in this document is relative to it. `apps/admin` (moderation dashboard) and `apps/synthetics` (scheduled production checks) are separate Workers with their own READMEs. `apps/api` is the API Worker, with its own README and `CLAUDE.md`. `packages/api-contract` declares the API's response types shared by the apps.
     - `src/app`: App Router routes, locale-prefixed under `[lang]`. Internal API route handlers live under `src/app/api/`.
     - `src/actions`: Server Actions (`'use server'`) for all mutations.
     - `src/lib`: Internal BFF — `api.ts` wraps the Rails API with auth and `Accept-Language` headers; per-domain fetchers (`maps.ts`, `reviews.ts`, `users.ts`, `auth.ts`) call it from Server Components and Server Actions.
@@ -53,3 +53,12 @@ This document provides essential context for Claude Code to understand the Qoodi
 - **Responsive Layout:** Design mobile-first. Every layout must function on small screens — buttons must not overflow their containers, and text must not be truncated in a way that makes it ambiguous or unintelligible. Use MUI's responsive utilities (`sx` breakpoints, `useMediaQuery`) to adapt layouts across screen sizes.
 - **Web Standards:** Prefer web standards (HTML/CSS/JavaScript built-ins and Web APIs documented on MDN) over third-party library equivalents. Question whether a dependency is needed before reaching for one; browser-native solutions (Intersection Observer, ResizeObserver, CSS animations, etc.) are preferred when they fully cover the use case.
 - **IMPORTANT:** Before pushing code, run both `pnpm lint` (lint/format) and `pnpm typecheck` (type check) from the repository root. All checks must pass.
+
+## 5. Commit Messages
+
+- Write all developer-facing text committed to the repository (commit messages, PR descriptions, issue bodies, code comments) in English. User-facing text is localized through the dictionaries instead.
+- Use the conventional commit format (e.g., `fix:`, `feat:`, `docs:`, `refactor:`), with the app as the scope when a change is confined to one (e.g., `feat(api):`).
+- Write the subject in the imperative mood and present tense ("add feature", not "added feature").
+- **CRITICAL: The subject line MUST be 50 characters or less. Count characters carefully before committing. If the subject exceeds 50 characters, rephrase it to be more concise.**
+- Separate the subject from the body with a blank line, keep each body line within 72 characters, and separate paragraphs with a blank line.
+- Use the body to explain what and why, not how. Reference pull requests when applicable.
