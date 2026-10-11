@@ -456,7 +456,8 @@ describe('GET /guest/v2', () => {
       '%%%',
       btoa('2026-01-01T00:00:00Z'),
       btoa('not a time,1'),
-      btoa('2026-01-01T00:00:00Z,0')
+      btoa('2026-01-01T00:00:00Z,0'),
+      btoa('2024-13-45T25:99:00Z,1')
     ]) {
       expect(
         (await get(`/guest/v2/pins?cursor=${encodeURIComponent(cursor)}`))

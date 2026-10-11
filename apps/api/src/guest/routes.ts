@@ -36,14 +36,13 @@ import {
   votes
 } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
-import { primaryImage } from '../images.ts';
 import { searchCondition } from '../search.ts';
 import { publicChapter, publicMap, publicPin } from '../visibility.ts';
 import { chapterSearchResults, guestChapters } from './chapters.ts';
 import { commentsQuery, guestComment } from './comments.ts';
 import { guestMaps } from './maps.ts';
 import { guestPins } from './pins.ts';
-import { guestProfile } from './users.ts';
+import { guestProfile, userColumns, userSummary } from './users.ts';
 
 const SEARCH_LIMIT = 20;
 const RECENT_MAPS_LIMIT = 12;
@@ -83,7 +82,7 @@ guest.get('/maps', async (c) => {
     const matched = searchCondition(input, {
       index: 'maps_fts',
       id: maps.id,
-      columns: [maps.name, maps.description]
+      columns: ['name', 'description']
     });
 
     if (!matched) {
@@ -208,21 +207,19 @@ guest.get('/maps/:mapId/coauthors', async (c) => {
     return c.json<GuestCoauthor[]>([]);
   }
 
-  const userColumns = {
-    id: users.id,
-    name: users.name,
-    imageUrl: images.url,
+  const columns = {
+    ...userColumns,
     createdAt: users.createdAt,
     updatedAt: users.updatedAt
   };
   const [owners, coauthors] = await db.batch([
     db
-      .select(userColumns)
+      .select(columns)
       .from(users)
       .leftJoin(images, eq(images.id, users.imageId))
       .where(eq(users.id, map.userId)),
     db
-      .select(userColumns)
+      .select(columns)
       .from(coauthorships)
       .innerJoin(users, eq(users.id, coauthorships.userId))
       .leftJoin(images, eq(images.id, users.imageId))
@@ -232,9 +229,7 @@ guest.get('/maps/:mapId/coauthors', async (c) => {
 
   return c.json<GuestCoauthor[]>(
     [...owners, ...coauthors].map((user) => ({
-      id: user.id,
-      name: user.name ?? '',
-      ...primaryImage(user.imageUrl ?? undefined),
+      ...userSummary(user),
       author: user.id === map.userId,
       created_at: user.createdAt,
       updated_at: user.updatedAt
@@ -322,7 +317,7 @@ guest.get('/pins', async (c) => {
     const matched = searchCondition(input, {
       index: 'pins_fts',
       id: pins.id,
-      columns: [pins.name, pins.comment]
+      columns: ['name', 'comment']
     });
 
     if (!matched) {
@@ -398,7 +393,7 @@ guest.get('/chapters', async (c) => {
     const matched = searchCondition(input, {
       index: 'chapters_fts',
       id: chapters.id,
-      columns: [chapters.title, chapters.contentText]
+      columns: ['title', 'body']
     });
 
     if (!matched) {
@@ -433,30 +428,25 @@ guest.get('/chapters', async (c) => {
 
 guest.get('/chapters/:id', async (c) => {
   const db = database(c.env.DB);
-  const chapter = first(
+  const { commentsCount, ...chapter } = first(
     await db
-      .select()
+      .select({
+        ...getTableColumns(chapters),
+        commentsCount: db.$count(
+          comments,
+          and(
+            eq(comments.commentableType, 'Chapter'),
+            eq(comments.commentableId, chapters.id),
+            ne(comments.status, 'deleted')
+          )
+        )
+      })
       .from(chapters)
       .where(and(publicChapter(), eq(chapters.id, toId(c.req.param('id')))))
   );
-  const [[detail], commentsCount] = await Promise.all([
-    guestChapters(db, [chapter]),
-    db.$count(
-      comments,
-      and(
-        eq(comments.commentableType, 'Chapter'),
-        eq(comments.commentableId, chapter.id),
-        ne(comments.status, 'deleted')
-      )
-    )
-  ]);
-
-  if (!detail) {
-    throw new ApiError('NotFound');
-  }
 
   return c.json<GuestChapterDetail>({
-    ...detail,
+    ...first(await guestChapters(db, [chapter])),
     comments_count: commentsCount
   });
 });

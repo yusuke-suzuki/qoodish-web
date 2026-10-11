@@ -23,7 +23,7 @@ export type UserRow = {
   imageUrl: string | null;
 };
 
-const userColumns = {
+export const userColumns = {
   id: users.id,
   name: users.name,
   biography: users.biography,
