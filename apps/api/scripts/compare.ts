@@ -183,7 +183,21 @@ async function discover(): Promise<string[]> {
   };
   const listings = [
     ...(idToken
-      ? ['/maps', '/maps?recommend=true', '/chapters', '/v2/pins']
+      ? [
+          '/maps',
+          '/maps?recommend=true',
+          '/chapters',
+          '/v2/pins',
+          '/me/maps',
+          '/me/chapters',
+          '/me/bookmarks/maps',
+          '/me/coauthorship_invitations',
+          '/v2/me/pins',
+          '/v2/me/notifications',
+          '/v2/me/notifications?read=false',
+          '/v2/me/blocks',
+          '/v2/me/mutes'
+        ]
       : []),
     '/guest/maps?recent=true',
     '/guest/maps?active=true',
@@ -202,7 +216,18 @@ async function discover(): Promise<string[]> {
     '/guest/pins',
     '/guest/maps/0',
     '/guest/v2/pins?cursor=invalid',
-    ...(idToken ? ['/maps/0', '/users', '/v2/pins?cursor=invalid'] : [])
+    ...(idToken
+      ? [
+          '/maps/0',
+          '/users',
+          '/v2/pins?cursor=invalid',
+          '/me/profile',
+          '/me/journal',
+          '/me/bookmarks/journals',
+          '/me/journeys',
+          '/me/journeys/0'
+        ]
+      : [])
   ];
 
   for (const path of listings) {
@@ -253,6 +278,16 @@ async function discover(): Promise<string[]> {
   if (idToken) {
     for (const id of take(found.pins)) paths.push(`/pins/${id}/likes`);
     for (const id of take(found.users)) paths.push(`/users/${id}/journal`);
+
+    for (const [listing, detail] of [
+      ['/me/chapters', '/me/chapters/'],
+      ['/me/journeys', '/me/journeys/']
+    ] as const) {
+      for (const record of records((await request(rails, listing)).body)) {
+        const id = idOf(record);
+        if (id !== undefined) paths.push(`${detail}${id}`);
+      }
+    }
   }
 
   for (const word of take(found.words)) {

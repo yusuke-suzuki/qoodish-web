@@ -25,7 +25,7 @@ function appWithProbes() {
   });
 
   app.get('/guest/probe', (c) => c.json({ locale: c.get('language') }));
-  app.get('/me/probe', (c) => c.json({ uid: c.get('idToken').sub }));
+  app.get('/probe', (c) => c.json({ uid: c.get('idToken').sub }));
   app.get('/admin/probe', (c) =>
     c.json({ email: c.get('accessClaims').email })
   );
@@ -95,14 +95,14 @@ describe('locale', () => {
 
 describe('authentication', () => {
   it('resolves the Firebase subject from a valid bearer token', async () => {
-    const res = await signedRequest('/me/probe');
+    const res = await signedRequest('/probe');
 
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ uid: 'firebase-uid' });
   });
 
   it('answers 401 in the viewer locale without a token', async () => {
-    const res = await request('/me/probe', {
+    const res = await request('/probe', {
       headers: { 'accept-language': 'ja' }
     });
 
@@ -114,7 +114,7 @@ describe('authentication', () => {
   });
 
   it('answers 401 for an invalid token', async () => {
-    const res = await request('/me/probe', {
+    const res = await request('/probe', {
       headers: { authorization: 'Bearer invalid' }
     });
 
