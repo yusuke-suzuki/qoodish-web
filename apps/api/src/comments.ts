@@ -1,9 +1,9 @@
-import type { GuestComment } from '@qoodish/api-contract';
+import type { Comment, GuestComment } from '@qoodish/api-contract';
 import { and, asc, eq, exists, ne, type SQL, sql } from 'drizzle-orm';
-import { type Database, inIds } from '../db/client.ts';
-import { comments, images, users, votes } from '../db/schema.ts';
-import { visible } from '../visibility.ts';
+import { type Database, inIds } from './db/client.ts';
+import { comments, images, users, votes } from './db/schema.ts';
 import { userSummary } from './users.ts';
+import { visible } from './visibility.ts';
 
 type CommentableType = 'Pin' | 'Chapter';
 
@@ -81,5 +81,17 @@ export function guestComment(row: CommentRow): GuestComment {
     likes_count: row.likesCount,
     created_at: row.createdAt,
     updated_at: row.updatedAt
+  };
+}
+
+export function viewerComment(row: CommentRow): Comment {
+  const { likes_count, created_at, updated_at, ...comment } = guestComment(row);
+
+  return {
+    ...comment,
+    liked: row.liked,
+    likes_count,
+    created_at,
+    updated_at
   };
 }

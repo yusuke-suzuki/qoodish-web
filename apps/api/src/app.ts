@@ -15,17 +15,23 @@ import {
 } from './auth/firebase.ts';
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
-import { guest, guestV2 } from './guest/routes.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
-import { meRoutes } from './viewer/me.ts';
-import {
-  chaptersRoutes,
-  journalsRoutes,
-  mapsRoutes,
-  pinsRoutes,
-  usersRoutes,
-  v2Routes
-} from './viewer/routes.ts';
+import chapters from './routes/chapters.ts';
+import guestChapters from './routes/guest/chapters.ts';
+import guestMaps from './routes/guest/maps.ts';
+import guestPins from './routes/guest/pins.ts';
+import guestUsers from './routes/guest/users.ts';
+import guestV2Chapters from './routes/guest/v2/chapters.ts';
+import guestV2Pins from './routes/guest/v2/pins.ts';
+import guestV2Users from './routes/guest/v2/users.ts';
+import journals from './routes/journals.ts';
+import maps from './routes/maps.ts';
+import me from './routes/me.ts';
+import pins from './routes/pins.ts';
+import users from './routes/users.ts';
+import v2Me from './routes/v2/me.ts';
+import v2Pins from './routes/v2/pins.ts';
+import v2Users from './routes/v2/users.ts';
 
 export type Variables = {
   language: Locale;
@@ -99,15 +105,22 @@ export function createApp(options: AppOptions = {}) {
 
   app.get('/healthcheck', (c) => c.text('ok'));
   app.get('/', (c) => c.text('ok'));
-  app.route('/guest/v2', guestV2);
-  app.route('/guest', guest);
-  app.route('/users', usersRoutes);
-  app.route('/maps', mapsRoutes);
-  app.route('/pins', pinsRoutes);
-  app.route('/chapters', chaptersRoutes);
-  app.route('/journals', journalsRoutes);
-  app.route('/v2', v2Routes);
-  app.route('/me', meRoutes);
+  app.route('/guest/maps', guestMaps);
+  app.route('/guest/pins', guestPins);
+  app.route('/guest/chapters', guestChapters);
+  app.route('/guest/users', guestUsers);
+  app.route('/guest/v2/pins', guestV2Pins);
+  app.route('/guest/v2/chapters', guestV2Chapters);
+  app.route('/guest/v2/users', guestV2Users);
+  app.route('/users', users);
+  app.route('/maps', maps);
+  app.route('/pins', pins);
+  app.route('/chapters', chapters);
+  app.route('/journals', journals);
+  app.route('/me', me);
+  app.route('/v2/pins', v2Pins);
+  app.route('/v2/users', v2Users);
+  app.route('/v2/me', v2Me);
 
   app.notFound((c) => {
     const error = new ApiError(

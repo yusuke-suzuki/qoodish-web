@@ -15,7 +15,7 @@ import {
   type SQLWrapper,
   sql
 } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from '../db/client.ts';
+import { type Database, inIds, uniqueIds } from './db/client.ts';
 import {
   chapterRevisionImages,
   chapters,
@@ -27,10 +27,10 @@ import {
   pinRevisionImages,
   pins,
   users
-} from '../db/schema.ts';
-import { userSummary, usersQuery } from '../guest/users.ts';
-import { primaryImage } from '../images.ts';
-import { shownTo, type Viewer } from '../visibility.ts';
+} from './db/schema.ts';
+import { primaryImage } from './images.ts';
+import { userSummary, usersQuery } from './users.ts';
+import { shownTo, type Viewer } from './visibility.ts';
 
 const KEYS: readonly NotificationKey[] = [
   'coauthor_invited',

@@ -1,9 +1,9 @@
 import { env } from 'cloudflare:test';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { createApp } from '../app.ts';
-import { database } from '../db/client.ts';
-import { coauthorships } from '../db/schema.ts';
-import { at, ids, seedWorld } from '../test/world.ts';
+import { createApp } from '../../app.ts';
+import { database } from '../../db/client.ts';
+import { coauthorships } from '../../db/schema.ts';
+import { at, ids, seedWorld } from '../../test/world.ts';
 
 const app = createApp();
 

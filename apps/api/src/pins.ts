@@ -2,26 +2,30 @@ import type {
   GuestPin,
   GuestPinComment,
   Image,
-  MapRef
+  MapRef,
+  Pin
 } from '@qoodish/api-contract';
 import { asc, eq } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from '../db/client.ts';
 import {
+  type CommentRow,
+  type CommentsOptions,
+  commentsQuery,
+  guestComment,
+  viewerComment
+} from './comments.ts';
+import { type Database, inIds, uniqueIds } from './db/client.ts';
+import {
+  comments,
   images,
   maps,
   pinRevisionImages,
   pinRevisionPropertyOptions,
   type pins
-} from '../db/schema.ts';
-import { image } from '../images.ts';
-import { type Likes, likesByVotable, likesQuery } from '../votes.ts';
-import {
-  type CommentRow,
-  type CommentsOptions,
-  commentsQuery,
-  guestComment
-} from './comments.ts';
-import { type UserRow, userSummary, usersQuery } from './users.ts';
+} from './db/schema.ts';
+import { image } from './images.ts';
+import { relation, type UserRow, userSummary, usersQuery } from './users.ts';
+import { shownTo, type Viewer } from './visibility.ts';
+import { type Likes, likesByVotable, likesQuery } from './votes.ts';
 
 export type PinRow = typeof pins.$inferSelect;
 
@@ -139,6 +143,39 @@ export async function guestPins(
     images: pin.images,
     property_option_ids: pin.propertyOptionIds,
     map,
+    likes_count: pin.likes.likes,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt
+  }));
+}
+
+export async function viewerPins(
+  db: Database,
+  viewer: Viewer,
+  rows: readonly PinRow[]
+): Promise<Pin[]> {
+  const parts = await loadPins(db, rows, {
+    visibleOnly: true,
+    condition: shownTo(viewer, comments.userId),
+    viewerId: viewer.id
+  });
+
+  return parts.map(({ row, author, map, ...pin }) => ({
+    id: row.id,
+    name: row.name,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    author: { ...userSummary(author), ...relation(viewer, author.id) },
+    comment: row.comment,
+    comments: pin.comments.map((comment) => ({
+      ...viewerComment(comment),
+      pin_id: row.id
+    })),
+    images: pin.images,
+    property_option_ids: pin.propertyOptionIds,
+    map,
+    editable: row.userId === viewer.id,
+    liked: pin.likes.liked,
     likes_count: pin.likes.likes,
     created_at: row.createdAt,
     updated_at: row.updatedAt
