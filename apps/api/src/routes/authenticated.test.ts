@@ -142,10 +142,6 @@ describe('authentication', () => {
       body: { title: 'Unauthorized', detail: expect.any(String) }
     });
   });
-
-  it('leaves POST /users to a token that has no user yet', async () => {
-    expect((await get('/users', 'stranger', 'POST')).status).toBe(404);
-  });
 });
 
 describe('GET /maps/:id', () => {

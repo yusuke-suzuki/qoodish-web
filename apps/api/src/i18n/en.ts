@@ -9,6 +9,11 @@ export const en = {
   error_500: 'The request has failed due to some unknown error.',
   error_separator: ' ',
 
+  user_name_required: 'Name is required.',
+  user_biography_exceed: 'Biography is too long. (Max: 160)',
+  image_not_owned: 'The image was not uploaded by you.',
+  web_push_invalid: 'Notification settings must be on or off.',
+
   duplicate_map_name: 'Map name is duplicated.',
   map_name_required: 'Map name is required.',
   map_name_exceed: 'Map name is too long. (Max: 30)',

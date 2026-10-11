@@ -25,6 +25,16 @@ The responses add what concerns the user: `editable`, `liked`, `bookmarking`, `b
 
 Lists are ordered by `created_at` and then by id. Each list is read with one query for its rows and one D1 `batch` for everything its records need (authors, images, likes, comments), with id lists bound as a single JSON array (`inIds`) so that no query runs into D1's 100-parameter limit.
 
+## Writes
+
+A write that spans several rows runs as one D1 `batch`, which D1 applies atomically. Rows it inserts are referenced by the later statements of the batch through their natural keys (`users.uid`, `journals.user_id`) or as the newest row of their table, so no statement waits for an id from another.
+
+- `POST /users` signs in the token's user. A new user is created with a revision, a private map named after them and a journal; an existing one only has their email and locale refreshed.
+- Edits to a user's name and biography, and to a journal's title and description, append a revision and point the record at it. An edit that changes nothing appends nothing.
+- Notification settings are never updated in place: each change appends a snapshot of every choice, and the newest snapshot is the user's settings.
+
+Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`.
+
 ## Search
 
 Search uses FTS5 tables with the `trigram` tokenizer and `remove_diacritics 1`, kept in sync by triggers (`migrations/0002_search_trigram.sql`). `maps_fts`, `pins_fts` and `users_fts` index the searchable columns of their tables in place. `chapters_fts` stores its own `title` and `body`, where `body` is the `text` values of the Lexical document in `content`, collected with `json_tree` whenever a chapter is inserted or its content changes.

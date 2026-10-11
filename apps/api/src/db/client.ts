@@ -12,6 +12,10 @@ export function inIds(column: SQLWrapper, ids: readonly number[]): SQL {
   return sql`${column} IN (SELECT value FROM json_each(${JSON.stringify(ids)}))`;
 }
 
+export function currentTimestamp(): string {
+  return new Date().toISOString().replace('Z', '000Z');
+}
+
 export function uniqueIds(ids: Iterable<number | null>): number[] {
   return [...new Set([...ids].filter((id): id is number => id !== null))];
 }

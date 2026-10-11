@@ -11,6 +11,11 @@ export const ja: Messages = {
   error_500: 'サーバー内部エラーが発生しました。',
   error_separator: '',
 
+  user_name_required: '名前を入力してください。',
+  user_biography_exceed: '自己紹介が長すぎます。(最大: 160 文字)',
+  image_not_owned: 'ご自身でアップロードした画像ではありません。',
+  web_push_invalid: '通知の設定はオンかオフで指定してください。',
+
   duplicate_map_name: '既に存在する地図の名前です。',
   map_name_required: '地図の名前を入力してください。',
   map_name_exceed: '地図の名前が長すぎます。(最大: 30 文字)',
