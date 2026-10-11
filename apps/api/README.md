@@ -39,7 +39,7 @@ A search answers the 20 newest matches, newest first.
 
 The schema lives in `src/db/schema.ts` and migrations in `migrations/`, generated with `pnpm db:generate`.
 
-`journeys.encoded_path` is stored encrypted in Active Record Encryption's format: AES-256-GCM under a key derived with PBKDF2-HMAC-SHA256 (65,536 iterations) from the `AR_ENCRYPTION_PRIMARY_KEY` and `AR_ENCRYPTION_KEY_DERIVATION_SALT` secrets, with the payload deflated when the `c` header is set. `src/encryption.ts` decrypts it.
+`journeys.encoded_path` is stored encrypted in Active Record Encryption's format: AES-256-GCM under a key derived with PBKDF2-HMAC-SHA256 (65,536 iterations) from the `ENCRYPTION_PRIMARY_KEY` and `ENCRYPTION_KEY_DERIVATION_SALT` secrets, with the payload deflated when the `c` header is set. `src/encryption.ts` decrypts it.
 
 ```bash
 pnpm db:migrate:local   # apply migrations to the local D1 that cf dev uses
@@ -57,11 +57,11 @@ pnpm typecheck
 
 ## Deploy
 
-The worker needs the `AR_ENCRYPTION_PRIMARY_KEY` and `AR_ENCRYPTION_KEY_DERIVATION_SALT` secrets, set once per worker:
+The worker needs the `ENCRYPTION_PRIMARY_KEY` and `ENCRYPTION_KEY_DERIVATION_SALT` secrets, set once per worker:
 
 ```bash
-pnpm --filter qoodish-web exec wrangler secret put AR_ENCRYPTION_PRIMARY_KEY --name dev-qoodish-api
-pnpm --filter qoodish-web exec wrangler secret put AR_ENCRYPTION_KEY_DERIVATION_SALT --name dev-qoodish-api
+pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_PRIMARY_KEY --name dev-qoodish-api
+pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_KEY_DERIVATION_SALT --name dev-qoodish-api
 ```
 
 Apply the migrations to the remote database, then deploy from a machine that is logged in to Cloudflare:

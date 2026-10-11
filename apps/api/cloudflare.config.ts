@@ -28,8 +28,8 @@ function defineApiWorker(name: string, environment: Environment) {
       GOOGLE_PROJECT_ID: bindings.text(environment.googleProjectId),
       CF_ACCESS_TEAM_DOMAIN: bindings.text(CF_ACCESS_TEAM_DOMAIN),
       CF_ACCESS_AUD: bindings.text(environment.accessAud),
-      AR_ENCRYPTION_PRIMARY_KEY: bindings.secret(),
-      AR_ENCRYPTION_KEY_DERIVATION_SALT: bindings.secret(),
+      ENCRYPTION_PRIMARY_KEY: bindings.secret(),
+      ENCRYPTION_KEY_DERIVATION_SALT: bindings.secret(),
       DB: bindings.d1({
         name: environment.databaseName,
         id: environment.databaseId
