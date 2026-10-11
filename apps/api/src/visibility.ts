@@ -1,5 +1,6 @@
-import { and, eq, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
-import { chapters, maps, pins } from './db/schema.ts';
+import { and, eq, ne, or, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import { bookmarks, chapters, coauthorships, maps, pins } from './db/schema.ts';
+import { notBlocking, shownTo, type Viewer } from './viewer/context.ts';
 
 export type ModeratableType = 'Map' | 'Pin' | 'Chapter' | 'Comment';
 
@@ -23,15 +24,15 @@ export function publicMap(): SQL {
   ) as SQL;
 }
 
-function onPublicMap(column: SQLWrapper): SQL {
-  return sql`${column} IN (SELECT ${maps.id} FROM ${maps} WHERE ${publicMap()})`;
+function onMap(column: SQLWrapper, condition: SQL): SQL {
+  return sql`${column} IN (SELECT ${maps.id} FROM ${maps} WHERE ${condition})`;
 }
 
 export function publicPin(): SQL {
   return and(
     eq(pins.status, 'published'),
     visible(pins.id, 'Pin'),
-    onPublicMap(pins.mapId)
+    onMap(pins.mapId, publicMap())
   ) as SQL;
 }
 
@@ -39,6 +40,91 @@ export function publicChapter(): SQL {
   return and(
     eq(chapters.status, 'published'),
     visible(chapters.id, 'Chapter'),
-    onPublicMap(chapters.mapId)
+    onMap(chapters.mapId, publicMap())
+  ) as SQL;
+}
+
+function coauthoredBy(viewer: Viewer): SQL {
+  return sql`${maps.id} IN (SELECT ${coauthorships.mapId} FROM ${coauthorships} WHERE ${coauthorships.userId} = ${viewer.id})`;
+}
+
+function bookmarkedBy(viewer: Viewer): SQL {
+  return sql`${maps.id} IN (SELECT ${bookmarks.mapId} FROM ${bookmarks} WHERE ${bookmarks.userId} = ${viewer.id})`;
+}
+
+export function referenceableMap(viewer: Viewer): SQL {
+  return and(
+    or(
+      eq(maps.private, false),
+      eq(maps.userId, viewer.id),
+      coauthoredBy(viewer)
+    ),
+    eq(maps.status, 'published'),
+    visible(maps.id, 'Map'),
+    notBlocking(viewer, maps.userId)
+  ) as SQL;
+}
+
+export function relatedMap(viewer: Viewer): SQL {
+  return and(
+    or(
+      eq(maps.userId, viewer.id),
+      coauthoredBy(viewer),
+      and(eq(maps.private, false), bookmarkedBy(viewer))
+    ),
+    eq(maps.status, 'published'),
+    visible(maps.id, 'Map')
+  ) as SQL;
+}
+
+export function recommendableMap(viewer: Viewer): SQL {
+  return and(
+    publicMap(),
+    sql`NOT (${bookmarkedBy(viewer)})`,
+    shownTo(viewer, maps.userId)
+  ) as SQL;
+}
+
+export function referenceablePin(viewer: Viewer): SQL {
+  return and(
+    eq(pins.status, 'published'),
+    visible(pins.id, 'Pin'),
+    onMap(pins.mapId, referenceableMap(viewer)),
+    notBlocking(viewer, pins.userId)
+  ) as SQL;
+}
+
+export function feedPin(viewer: Viewer): SQL {
+  return and(
+    eq(pins.status, 'published'),
+    visible(pins.id, 'Pin'),
+    onMap(pins.mapId, relatedMap(viewer)),
+    shownTo(viewer, pins.userId)
+  ) as SQL;
+}
+
+export function referenceableChapter(viewer: Viewer): SQL {
+  return and(
+    eq(chapters.status, 'published'),
+    visible(chapters.id, 'Chapter'),
+    onMap(chapters.mapId, referenceableMap(viewer)),
+    notBlocking(viewer, chapters.userId)
+  ) as SQL;
+}
+
+export function readableChapter(viewer: Viewer): SQL {
+  return and(
+    or(referenceableChapter(viewer), eq(chapters.userId, viewer.id)),
+    ne(chapters.status, 'deleted'),
+    visible(chapters.id, 'Chapter')
+  ) as SQL;
+}
+
+export function feedChapter(viewer: Viewer): SQL {
+  return and(
+    eq(chapters.status, 'published'),
+    visible(chapters.id, 'Chapter'),
+    onMap(chapters.mapId, relatedMap(viewer)),
+    shownTo(viewer, chapters.userId)
   ) as SQL;
 }

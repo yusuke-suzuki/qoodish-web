@@ -31,7 +31,7 @@ const { values } = parseArgs({
 
 if (!values.rails || !values.worker) {
   console.error(
-    'Usage: node scripts/compare.ts --rails https://api-dev.qoodish.com --worker https://api-next-dev.qoodish.com [--paths FILE] [--limit 30] [--pages 3]'
+    'Usage: [QOODISH_ID_TOKEN=...] node scripts/compare.ts --rails https://api-dev.qoodish.com --worker https://api-next-dev.qoodish.com [--paths FILE] [--limit 30] [--pages 3]'
   );
   process.exit(2);
 }
@@ -41,12 +41,20 @@ const worker = values.worker.replace(/\/$/, '');
 const limit = Number(values.limit);
 const pages = Number(values.pages);
 const concurrency = Number(values.concurrency);
+const idToken = process.env.QOODISH_ID_TOKEN?.trim() || undefined;
+
+function signedIn(path: string): boolean {
+  return !path.startsWith('/guest/');
+}
 
 async function request(base: string, path: string): Promise<Response> {
   const res = await fetch(`${base}${path}`, {
     headers: {
       Accept: 'application/json',
-      'Accept-Language': values.language ?? 'ja'
+      'Accept-Language': values.language ?? 'ja',
+      ...(idToken && signedIn(path)
+        ? { Authorization: `Bearer ${idToken}` }
+        : {})
     }
   });
   const text = await res.text();
@@ -103,7 +111,7 @@ type Kind = 'maps' | 'pins' | 'chapters' | 'users';
 function kindOf(path: string): Kind | undefined {
   const route = path.split('?')[0] ?? '';
 
-  if (/\/coauthors$/.test(route) || /^\/guest\/users\/\d+$/.test(route))
+  if (/\/coauthors$/.test(route) || /^(\/guest)?\/users\/\d+$/.test(route))
     return 'users';
   if (/\/pins(\/\d+)?$/.test(route)) return 'pins';
   if (/\/chapters(\/\d+)?$/.test(route)) return 'chapters';
@@ -183,21 +191,25 @@ async function discover(): Promise<string[]> {
     '/guest/pins?popular=true',
     '/guest/chapters',
     '/guest/v2/pins',
-    '/guest/v2/chapters'
+    '/guest/v2/chapters',
+    ...(idToken
+      ? ['/maps', '/maps?recommend=true', '/chapters', '/v2/pins']
+      : [])
   ];
   const paths = [
     ...listings,
     '/guest/maps',
     '/guest/pins',
     '/guest/maps/0',
-    '/guest/v2/pins?cursor=invalid'
+    '/guest/v2/pins?cursor=invalid',
+    ...(idToken ? ['/maps/0', '/users', '/v2/pins?cursor=invalid'] : [])
   ];
 
   for (const path of listings) {
     const response = await request(rails, path);
     collect(path, response.body, found);
 
-    if (path.startsWith('/guest/v2/')) {
+    if (/^(\/guest)?\/v2\//.test(path)) {
       const next = await followCursors(path, response);
       paths.push(...next);
 
@@ -207,31 +219,40 @@ async function discover(): Promise<string[]> {
     }
   }
 
-  for (const id of take(found.maps)) {
-    paths.push(
-      `/guest/maps/${id}`,
-      `/guest/maps/${id}/pins`,
-      `/guest/maps/${id}/coauthors`,
-      `/guest/maps/${id}/chapters`,
-      `/guest/maps/${id}/pin_properties`
-    );
+  const scopes = idToken ? ['/guest', ''] : ['/guest'];
+
+  for (const scope of scopes) {
+    for (const id of take(found.maps)) {
+      paths.push(
+        `${scope}/maps/${id}`,
+        `${scope}/maps/${id}/pins`,
+        `${scope}/maps/${id}/coauthors`,
+        `${scope}/maps/${id}/chapters`,
+        `${scope}/maps/${id}/pin_properties`
+      );
+    }
+
+    for (const id of take(found.pins)) paths.push(`${scope}/pins/${id}`);
+
+    for (const id of take(found.chapters)) {
+      paths.push(`${scope}/chapters/${id}`, `${scope}/chapters/${id}/comments`);
+    }
+
+    for (const id of take(found.users)) {
+      const feed = `${scope}/v2/users/${id}/pins`;
+      paths.push(
+        `${scope}/users/${id}`,
+        `${scope}/users/${id}/maps`,
+        `${scope}/users/${id}/chapters`,
+        feed
+      );
+      paths.push(...(await followCursors(feed, await request(rails, feed))));
+    }
   }
 
-  for (const id of take(found.pins)) paths.push(`/guest/pins/${id}`);
-
-  for (const id of take(found.chapters)) {
-    paths.push(`/guest/chapters/${id}`, `/guest/chapters/${id}/comments`);
-  }
-
-  for (const id of take(found.users)) {
-    const feed = `/guest/v2/users/${id}/pins`;
-    paths.push(
-      `/guest/users/${id}`,
-      `/guest/users/${id}/maps`,
-      `/guest/users/${id}/chapters`,
-      feed
-    );
-    paths.push(...(await followCursors(feed, await request(rails, feed))));
+  if (idToken) {
+    for (const id of take(found.pins)) paths.push(`/pins/${id}/likes`);
+    for (const id of take(found.users)) paths.push(`/users/${id}/journal`);
   }
 
   for (const word of take(found.words)) {
@@ -242,7 +263,8 @@ async function discover(): Promise<string[]> {
       paths.push(
         `/guest/maps?input=${input}`,
         `/guest/pins?input=${input}`,
-        `/guest/chapters?input=${input}`
+        `/guest/chapters?input=${input}`,
+        ...(idToken ? [`/users?q=${input}`] : [])
       );
     }
   }
@@ -259,7 +281,10 @@ const extra = values.paths
   ? readFileSync(values.paths, 'utf8')
       .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line.startsWith('/guest/'))
+      .filter(
+        (line) =>
+          line.startsWith('/') && (idToken !== undefined || !signedIn(line))
+      )
   : [];
 const paths = [...new Set([...(await discover()), ...extra])];
 

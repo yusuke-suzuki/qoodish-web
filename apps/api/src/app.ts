@@ -17,11 +17,21 @@ import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { guest, guestV2 } from './guest/routes.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
+import type { Viewer } from './viewer/context.ts';
+import {
+  chaptersRoutes,
+  journalsRoutes,
+  mapsRoutes,
+  pinsRoutes,
+  usersRoutes,
+  v2Routes
+} from './viewer/routes.ts';
 
 export type Variables = {
   language: Locale;
   idToken: FirebaseIdToken;
   accessClaims: AccessClaims;
+  viewer: Viewer;
 };
 
 export type AppEnv = { Bindings: Env; Variables: Variables };
@@ -92,6 +102,12 @@ export function createApp(options: AppOptions = {}) {
   app.get('/', (c) => c.text('ok'));
   app.route('/guest/v2', guestV2);
   app.route('/guest', guest);
+  app.route('/users', usersRoutes);
+  app.route('/maps', mapsRoutes);
+  app.route('/pins', pinsRoutes);
+  app.route('/chapters', chaptersRoutes);
+  app.route('/journals', journalsRoutes);
+  app.route('/v2', v2Routes);
 
   app.notFound((c) => {
     const error = new ApiError(

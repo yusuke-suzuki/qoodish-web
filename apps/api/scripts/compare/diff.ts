@@ -125,7 +125,7 @@ export function comparisonFor(path: string): Comparison {
     return 'status';
   }
 
-  if (query.has('input') || query.has('active') || query.has('popular')) {
+  if (['input', 'q', 'active', 'popular'].some((key) => query.has(key))) {
     return 'unordered';
   }
 

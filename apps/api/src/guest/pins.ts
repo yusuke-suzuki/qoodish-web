@@ -1,24 +1,45 @@
-import type { GuestPin, GuestPinComment } from '@qoodish/api-contract';
-import { and, asc, count, eq } from 'drizzle-orm';
+import type {
+  GuestPin,
+  GuestPinComment,
+  Image,
+  MapRef
+} from '@qoodish/api-contract';
+import { asc, eq } from 'drizzle-orm';
 import { type Database, inIds, uniqueIds } from '../db/client.ts';
 import {
   images,
   maps,
   pinRevisionImages,
   pinRevisionPropertyOptions,
-  type pins,
-  votes
+  type pins
 } from '../db/schema.ts';
 import { image } from '../images.ts';
-import { commentsQuery, guestComment } from './comments.ts';
+import { type Likes, likesByVotable, likesQuery } from '../votes.ts';
+import {
+  type CommentRow,
+  type CommentsOptions,
+  commentsQuery,
+  guestComment
+} from './comments.ts';
 import { type UserRow, userSummary, usersQuery } from './users.ts';
 
 export type PinRow = typeof pins.$inferSelect;
 
-export async function guestPins(
+export type PinParts = {
+  row: PinRow;
+  author: UserRow;
+  map: MapRef;
+  images: Image[];
+  propertyOptionIds: number[];
+  likes: Likes;
+  comments: CommentRow[];
+};
+
+export async function loadPins(
   db: Database,
-  rows: readonly PinRow[]
-): Promise<GuestPin[]> {
+  rows: readonly PinRow[],
+  options: CommentsOptions
+): Promise<PinParts[]> {
   if (rows.length === 0) {
     return [];
   }
@@ -51,14 +72,8 @@ export async function guestPins(
         .from(pinRevisionPropertyOptions)
         .where(inIds(pinRevisionPropertyOptions.pinRevisionId, revisionIds))
         .orderBy(asc(pinRevisionPropertyOptions.pinPropertyOptionId)),
-      db
-        .select({ pinId: votes.votableId, likes: count() })
-        .from(votes)
-        .where(
-          and(eq(votes.votableType, 'Pin'), inIds(votes.votableId, pinIds))
-        )
-        .groupBy(votes.votableId),
-      commentsQuery(db, 'Pin', pinIds, { visibleOnly: true })
+      likesQuery(db, 'Pin', pinIds, options.viewerId),
+      commentsQuery(db, 'Pin', pinIds, options)
     ]);
 
   const authorsById = new Map<number, UserRow>(
@@ -70,7 +85,7 @@ export async function guestPins(
     propertyOptions,
     (row) => row.revisionId
   );
-  const likesByPin = new Map(likes.map((row) => [row.pinId, row.likes]));
+  const likesOf = likesByVotable(likes);
   const commentsByPin = Map.groupBy(comments, (row) => row.commentableId);
 
   return rows.flatMap((row) => {
@@ -85,30 +100,47 @@ export async function guestPins(
 
     return [
       {
-        id: row.id,
-        name: row.name,
-        latitude: row.latitude,
-        longitude: row.longitude,
-        author: userSummary(author),
-        comment: row.comment,
-        comments: (commentsByPin.get(row.id) ?? []).map(
-          (comment): GuestPinComment => ({
-            ...guestComment(comment),
-            pin_id: row.id
-          })
-        ),
+        row,
+        author,
+        map: { id: map.id, name: map.name, private: map.private as boolean },
         images: (
           (revision === null ? undefined : imagesByRevision.get(revision)) ?? []
         ).map((revisionImage) => image(revisionImage.id, revisionImage.url)),
-        property_option_ids: (
+        propertyOptionIds: (
           (revision === null ? undefined : optionsByRevision.get(revision)) ??
           []
         ).map((option) => option.optionId),
-        map: { id: row.mapId, name: map.name, private: map.private as boolean },
-        likes_count: likesByPin.get(row.id) ?? 0,
-        created_at: row.createdAt,
-        updated_at: row.updatedAt
+        likes: likesOf(row.id),
+        comments: commentsByPin.get(row.id) ?? []
       }
     ];
   });
+}
+
+export async function guestPins(
+  db: Database,
+  rows: readonly PinRow[]
+): Promise<GuestPin[]> {
+  const parts = await loadPins(db, rows, { visibleOnly: true });
+
+  return parts.map(({ row, author, map, ...pin }) => ({
+    id: row.id,
+    name: row.name,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    author: userSummary(author),
+    comment: row.comment,
+    comments: pin.comments.map(
+      (comment): GuestPinComment => ({
+        ...guestComment(comment),
+        pin_id: row.id
+      })
+    ),
+    images: pin.images,
+    property_option_ids: pin.propertyOptionIds,
+    map,
+    likes_count: pin.likes.likes,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt
+  }));
 }

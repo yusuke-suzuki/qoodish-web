@@ -65,6 +65,32 @@ export function chapterAuthor(user: UserRow): GuestChapterAuthor {
   };
 }
 
+export function profileCounts(db: Database) {
+  return {
+    mapsCount: db.$count(
+      maps,
+      and(eq(maps.userId, users.id), eq(maps.status, 'published'))
+    ),
+    bookmarkedMapsCount: db.$count(
+      bookmarks,
+      and(
+        eq(bookmarks.userId, users.id),
+        inArray(
+          bookmarks.mapId,
+          db
+            .select({ id: maps.id })
+            .from(maps)
+            .where(eq(maps.status, 'published'))
+        )
+      )
+    ),
+    pinsCount: db.$count(
+      pins,
+      and(eq(pins.userId, users.id), eq(pins.status, 'published'))
+    )
+  };
+}
+
 export async function guestProfile(
   db: Database,
   id: number
@@ -72,27 +98,7 @@ export async function guestProfile(
   const [user] = await db
     .select({
       ...userColumns,
-      mapsCount: db.$count(
-        maps,
-        and(eq(maps.userId, users.id), eq(maps.status, 'published'))
-      ),
-      bookmarkedMapsCount: db.$count(
-        bookmarks,
-        and(
-          eq(bookmarks.userId, users.id),
-          inArray(
-            bookmarks.mapId,
-            db
-              .select({ id: maps.id })
-              .from(maps)
-              .where(eq(maps.status, 'published'))
-          )
-        )
-      ),
-      pinsCount: db.$count(
-        pins,
-        and(eq(pins.userId, users.id), eq(pins.status, 'published'))
-      ),
+      ...profileCounts(db),
       likesCount: db.$count(
         votes,
         and(eq(votes.voterId, users.id), eq(votes.voterType, 'User'))
