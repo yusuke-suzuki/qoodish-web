@@ -5,10 +5,10 @@ import {
   desc,
   eq,
   getTableColumns,
-  type SQL,
-  sql
+  max,
+  type SQL
 } from 'drizzle-orm';
-import { currentTimestamp, type Database } from './db/client.ts';
+import { currentTimestamp, type Database, scalar } from './db/client.ts';
 import {
   chapters,
   images,
@@ -19,7 +19,8 @@ import {
 } from './db/schema.ts';
 import { ApiError } from './errors.ts';
 import type { MessageKey } from './i18n/index.ts';
-import { characters, first, truncate } from './routing.ts';
+import { first } from './routing.ts';
+import { characters, truncate } from './text.ts';
 import { userColumns, userSummary } from './users.ts';
 import type { Viewer } from './visibility.ts';
 
@@ -69,7 +70,12 @@ function journalRevisionStatements(
     db
       .update(journals)
       .set({
-        currentRevisionId: sql`(SELECT max(${journalRevisions.id}) FROM ${journalRevisions} WHERE ${journalRevisions.journalId} = ${journalId})`
+        currentRevisionId: scalar(
+          db
+            .select({ id: max(journalRevisions.id) })
+            .from(journalRevisions)
+            .where(eq(journalRevisions.journalId, journalId))
+        )
       })
       .where(eq(journals.id, journalId))
   ] as const;
@@ -89,7 +95,12 @@ export function recordDefaultJournal(
       .insert(journals)
       .values({ ...content, userId, createdAt: now, updatedAt: now }),
     ...journalRevisionStatements(db, {
-      journalId: sql`(SELECT ${journals.id} FROM ${journals} WHERE ${journals.userId} = ${userId})`,
+      journalId: scalar(
+        db
+          .select({ id: journals.id })
+          .from(journals)
+          .where(eq(journals.userId, userId))
+      ),
       userId,
       content,
       now

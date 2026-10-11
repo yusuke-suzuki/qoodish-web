@@ -12,6 +12,10 @@ export function inIds(column: SQLWrapper, ids: readonly number[]): SQL {
   return sql`${column} IN (SELECT value FROM json_each(${JSON.stringify(ids)}))`;
 }
 
+export function scalar(query: SQLWrapper): SQL<number> {
+  return sql<number>`(${query})`;
+}
+
 export function currentTimestamp(): string {
   return new Date().toISOString().replace('Z', '000Z');
 }

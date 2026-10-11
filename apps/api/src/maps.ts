@@ -5,8 +5,8 @@ import type {
   GuestMap,
   PinProperty
 } from '@qoodish/api-contract';
-import { and, asc, eq, type SQL, sql } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from './db/client.ts';
+import { and, asc, eq, max, type SQL } from 'drizzle-orm';
+import { type Database, inIds, scalar, uniqueIds } from './db/client.ts';
 import {
   bookmarks,
   coauthorships,
@@ -19,7 +19,7 @@ import {
   users
 } from './db/schema.ts';
 import { primaryImage } from './images.ts';
-import { truncate } from './routing.ts';
+import { truncate } from './text.ts';
 import {
   relation,
   type UserRow,
@@ -54,7 +54,12 @@ export function recordDefaultMap(
     private: true,
     status: 'published'
   };
-  const mapId = sql`(SELECT max(${maps.id}) FROM ${maps} WHERE ${maps.userId} = ${userId})`;
+  const mapId = scalar(
+    db
+      .select({ id: max(maps.id) })
+      .from(maps)
+      .where(eq(maps.userId, userId))
+  );
 
   return [
     db
@@ -70,7 +75,12 @@ export function recordDefaultMap(
     db
       .update(maps)
       .set({
-        currentRevisionId: sql`(SELECT max(${mapRevisions.id}) FROM ${mapRevisions} WHERE ${mapRevisions.mapId} = ${mapId})`
+        currentRevisionId: scalar(
+          db
+            .select({ id: max(mapRevisions.id) })
+            .from(mapRevisions)
+            .where(eq(mapRevisions.mapId, mapId))
+        )
       })
       .where(eq(maps.id, mapId))
   ] as const;

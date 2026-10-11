@@ -44,7 +44,9 @@ export class ApiError extends HTTPException {
     detail?: string,
     messageKeys: readonly MessageKey[] = []
   ) {
-    super(STATUSES[title], { message: detail ?? messageKeys.join(' ') });
+    super(STATUSES[title], {
+      message: detail ?? [title, ...messageKeys].join(' ')
+    });
     this.name = 'ApiError';
     this.title = title;
     this.detail = detail;
