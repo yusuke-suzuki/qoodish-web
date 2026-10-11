@@ -23,8 +23,8 @@ export default defineConfig(async () => {
             GOOGLE_PROJECT_ID: DEVELOPMENT.googleProjectId,
             CF_ACCESS_TEAM_DOMAIN,
             CF_ACCESS_AUD: DEVELOPMENT.accessAud,
-            AR_ENCRYPTION_PRIMARY_KEY: 'test_ar_encryption_primary_key_0',
-            AR_ENCRYPTION_KEY_DERIVATION_SALT:
+            ENCRYPTION_PRIMARY_KEY: 'test_ar_encryption_primary_key_0',
+            ENCRYPTION_KEY_DERIVATION_SALT:
               'test_ar_encryption_key_derive_salt',
             TEST_MIGRATIONS: migrations
           }

@@ -142,8 +142,8 @@ meRoutes.get('/journeys/:id', async (c) => {
       eq(journeys.id, toId(c.req.param('id')))
     ) as SQL,
     {
-      primaryKey: c.env.AR_ENCRYPTION_PRIMARY_KEY,
-      keyDerivationSalt: c.env.AR_ENCRYPTION_KEY_DERIVATION_SALT
+      primaryKey: c.env.ENCRYPTION_PRIMARY_KEY,
+      keyDerivationSalt: c.env.ENCRYPTION_KEY_DERIVATION_SALT
     }
   );
 
