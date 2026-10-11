@@ -6,10 +6,11 @@ import type {
   WebPushPreferences
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
-import { type Database, uniqueIds } from './db/client.ts';
+import { currentTimestamp, type Database, uniqueIds } from './db/client.ts';
 import {
   blocks,
   coauthorshipInvitations,
+  devices,
   images,
   maps,
   mutes,
@@ -18,6 +19,7 @@ import {
   userPreferences,
   users
 } from './db/schema.ts';
+import { ApiError } from './errors.ts';
 import { primaryImage } from './images.ts';
 import { firstImageUrls, mapImagesQuery } from './maps.ts';
 import {
@@ -51,20 +53,83 @@ function effectiveWebPush(stored: string | undefined): WebPushPreferences {
   ) as WebPushPreferences;
 }
 
+function latestPreferenceQuery(db: Database, userId: number) {
+  return db
+    .select({ webPush: userPreferences.webPush })
+    .from(userPreferences)
+    .where(eq(userPreferences.userId, userId))
+    .orderBy(desc(userPreferences.id))
+    .limit(1);
+}
+
 export async function profile(db: Database, userId: number): Promise<Profile> {
   const [[user], [preference]] = await db.batch([
     profileQuery(db, userId),
-    db
-      .select({ webPush: userPreferences.webPush })
-      .from(userPreferences)
-      .where(eq(userPreferences.userId, userId))
-      .orderBy(desc(userPreferences.id))
-      .limit(1)
+    latestPreferenceQuery(db, userId)
   ]);
   return {
     ...profileAttributes(user),
     push_notification: effectiveWebPush(preference?.webPush)
   };
+}
+
+export async function updateWebPush(
+  db: Database,
+  userId: number,
+  changes: Record<string, unknown>
+): Promise<WebPushPreferences> {
+  const [preference] = await latestPreferenceQuery(db, userId);
+  const snapshot: Record<string, unknown> = {
+    ...effectiveWebPush(preference?.webPush),
+    ...Object.fromEntries(
+      Object.entries(changes).filter(([key]) => key in WEB_PUSH_DEFAULTS)
+    )
+  };
+
+  if (!Object.values(snapshot).every((value) => typeof value === 'boolean')) {
+    throw ApiError.invalid(['web_push_invalid']);
+  }
+
+  const now = currentTimestamp();
+
+  await db.insert(userPreferences).values({
+    userId,
+    webPush: JSON.stringify(snapshot),
+    createdAt: now,
+    updatedAt: now
+  });
+
+  return snapshot as WebPushPreferences;
+}
+
+export async function registerDevice(
+  db: Database,
+  userId: number,
+  registrationToken: string
+): Promise<void> {
+  const now = currentTimestamp();
+
+  await db
+    .insert(devices)
+    .values({ userId, registrationToken, createdAt: now, updatedAt: now })
+    .onConflictDoNothing({
+      target: [devices.userId, devices.registrationToken]
+    });
+}
+
+export async function unregisterDevice(
+  db: Database,
+  userId: number,
+  registrationToken: string
+): Promise<void> {
+  await db
+    .delete(devices)
+    .where(
+      and(
+        eq(devices.userId, userId),
+        eq(devices.registrationToken, registrationToken)
+      )
+    );
 }
 
 export async function pendingInvitations(

@@ -2,10 +2,12 @@ import type {
   AppMap,
   Chapter,
   Journal,
+  Profile,
   UserSummary
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, type SQL } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { profile } from '../accounts.ts';
 import { viewerChapters } from '../chapters.ts';
 import { database } from '../db/client.ts';
 import { chapters, images, journals, maps, users } from '../db/schema.ts';
@@ -18,7 +20,13 @@ import {
 } from '../middleware/authenticate-user.ts';
 import { first, present, toId } from '../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../search.ts';
-import { findUser, userColumns, userProfile, userSummary } from '../users.ts';
+import {
+  findUser,
+  signIn,
+  userColumns,
+  userProfile,
+  userSummary
+} from '../users.ts';
 import {
   notBlocking,
   referenceableChapter,
@@ -28,6 +36,19 @@ import {
 const app = new Hono<ViewerEnv>();
 
 app.get('*', authenticateUser);
+
+app.post('/', async (c) => {
+  const db = database(c.env.DB);
+  const { sub, name, email } = c.get('idToken');
+  const userId = await signIn(db, {
+    uid: sub,
+    name,
+    email,
+    locale: c.get('language')
+  });
+
+  return c.json<Profile>(await profile(db, userId));
+});
 
 app.get('/', async (c) => {
   const db = database(c.env.DB);

@@ -5,19 +5,21 @@ import type {
   GuestMap,
   PinProperty
 } from '@qoodish/api-contract';
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, type SQL, sql } from 'drizzle-orm';
 import { type Database, inIds, uniqueIds } from './db/client.ts';
 import {
   bookmarks,
   coauthorships,
   images,
   mapRevisionImages,
-  type maps,
+  mapRevisions,
+  maps,
   pinProperties,
   pinPropertyOptions,
   users
 } from './db/schema.ts';
 import { primaryImage } from './images.ts';
+import { truncate } from './routing.ts';
 import {
   relation,
   type UserRow,
@@ -28,6 +30,51 @@ import {
 import type { Viewer } from './visibility.ts';
 
 export type MapRow = typeof maps.$inferSelect;
+
+const MAP_NAME_LIMIT = 30;
+const MAP_DESCRIPTION_LIMIT = 200;
+
+export function recordDefaultMap(
+  db: Database,
+  { userId, ownerName, now }: { userId: SQL; ownerName: string; now: string }
+) {
+  const name = truncate(
+    `${ownerName}'s map`.replaceAll('\r', ''),
+    MAP_NAME_LIMIT
+  );
+  const description = truncate(
+    `${ownerName}'s map.`.replaceAll('\r', ''),
+    MAP_DESCRIPTION_LIMIT
+  );
+  const content = {
+    name,
+    description,
+    latitude: 0,
+    longitude: 0,
+    private: true,
+    status: 'published'
+  };
+  const mapId = sql`(SELECT max(${maps.id}) FROM ${maps} WHERE ${maps.userId} = ${userId})`;
+
+  return [
+    db
+      .insert(maps)
+      .values({ ...content, userId, createdAt: now, updatedAt: now }),
+    db.insert(mapRevisions).values({
+      ...content,
+      mapId,
+      userId,
+      createdAt: now,
+      updatedAt: now
+    }),
+    db
+      .update(maps)
+      .set({
+        currentRevisionId: sql`(SELECT max(${mapRevisions.id}) FROM ${mapRevisions} WHERE ${mapRevisions.mapId} = ${mapId})`
+      })
+      .where(eq(maps.id, mapId))
+  ] as const;
+}
 
 export function firstImageUrls(
   rows: readonly { revisionId: number; url: string }[]
