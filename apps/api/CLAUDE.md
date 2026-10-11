@@ -1,6 +1,6 @@
 # Claude Code Context for apps/api
 
-The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 through Drizzle ORM. `README.md` describes how it handles requests, who sees what, search and deployment. This file holds the rules for changing it.
+The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 through Drizzle ORM. `README.md` describes how it handles requests, who sees what and search. This file holds the rules for changing it.
 
 ## 1. Structure
 
@@ -38,7 +38,7 @@ The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 t
 - The schema lives in `src/db/schema.ts`. Generate migrations with `pnpm db:generate`. For what Drizzle cannot express, such as FTS5 tables and triggers, generate an empty migration with `pnpm db:generate --custom` and write its SQL.
 - Migrations contain schema changes only. Change existing data with a separate script, never inside a migration.
 - A migration may be edited while its PR is open, but never after it has been merged: D1 records applied migrations by name and never reruns one, so add a new migration instead.
-- Apply migrations to the remote database before deploying the worker that reads them (see `README.md`). The previous version keeps serving after a migration applies, so a migration must leave it working: add and backfill first, read the result in the same deploy or a later one, and never remove or rename what the running version still reads.
+- Apply migrations to the remote database before deploying the worker that reads them. The previous version keeps serving after a migration applies, so a migration must leave it working: add and backfill first, read the result in the same deploy or a later one, and never remove or rename what the running version still reads.
 - Removing a column or a table takes two deploys. First remove every reference to it (schema, queries, routes, scripts, fixtures and tests) and deploy. Only after that deploy is live, drop it with a migration in a separate PR.
 
 ## 6. Compatibility
