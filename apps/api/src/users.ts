@@ -111,6 +111,32 @@ export function profileCounts(db: Database) {
   };
 }
 
+export function profileQuery(db: Database, id: number) {
+  return db
+    .select({ ...userColumns, uid: users.uid, ...profileCounts(db) })
+    .from(users)
+    .leftJoin(images, eq(images.id, users.imageId))
+    .where(eq(users.id, id));
+}
+
+type ProfileRow = Awaited<ReturnType<typeof profileQuery>>[number];
+
+export function profileAttributes(user: ProfileRow) {
+  const { image, image_url } = primaryImage(user.imageUrl ?? undefined);
+
+  return {
+    id: user.id,
+    uid: user.uid,
+    name: user.name ?? '',
+    biography: user.biography,
+    image,
+    image_url,
+    maps_count: user.mapsCount,
+    bookmarked_maps_count: user.bookmarkedMapsCount,
+    pins_count: user.pinsCount
+  };
+}
+
 export async function guestProfile(
   db: Database,
   id: number
@@ -152,28 +178,14 @@ export async function userProfile(
   viewer: Viewer,
   id: number
 ): Promise<UserProfile | null> {
-  const [user] = await db
-    .select({ ...userColumns, uid: users.uid, ...profileCounts(db) })
-    .from(users)
-    .leftJoin(images, eq(images.id, users.imageId))
-    .where(eq(users.id, id));
+  const [user] = await profileQuery(db, id);
 
   if (!user) {
     return null;
   }
 
-  const { image, image_url } = primaryImage(user.imageUrl ?? undefined);
-
   return {
-    id: user.id,
-    uid: user.uid,
-    name: user.name ?? '',
-    biography: user.biography,
-    image,
-    image_url,
-    maps_count: user.mapsCount,
-    bookmarked_maps_count: user.bookmarkedMapsCount,
-    pins_count: user.pinsCount,
+    ...profileAttributes(user),
     blocking: viewer.blocking.has(user.id),
     blocked_by: viewer.blockedBy.has(user.id),
     muting: viewer.muting.has(user.id)

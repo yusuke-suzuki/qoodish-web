@@ -49,6 +49,7 @@ function keyFor(secrets: EncryptionSecrets): Promise<CryptoKey> {
 
   if (!key) {
     key = deriveKey(secrets);
+    key.catch(() => derivedKeys.delete(cacheKey));
     derivedKeys.set(cacheKey, key);
   }
 

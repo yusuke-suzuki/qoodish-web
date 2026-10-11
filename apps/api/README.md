@@ -64,6 +64,8 @@ The worker needs the `ENCRYPTION_PRIMARY_KEY` and `ENCRYPTION_KEY_DERIVATION_SAL
 ```bash
 pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_PRIMARY_KEY --name dev-qoodish-api
 pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_KEY_DERIVATION_SALT --name dev-qoodish-api
+pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_PRIMARY_KEY --name prod-qoodish-api
+pnpm --filter qoodish-web exec wrangler secret put ENCRYPTION_KEY_DERIVATION_SALT --name prod-qoodish-api
 ```
 
 Apply the migrations to the remote database, then deploy from a machine that is logged in to Cloudflare:
