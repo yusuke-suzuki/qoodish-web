@@ -40,13 +40,19 @@ pnpm dev                # cf dev against the dev worker config
 
 ## Importing the Rails data
 
-`lib/tasks/export_for_d1.rb` in the Rails repository writes the MySQL database as SQLite statements for D1: every table in foreign-key order, references that point at a table loaded later (`current_revision_id`, `users.image_id`) set by `UPDATE`s once both sides are in, values too long for one D1 statement assembled in a scratch table, generated columns left out, and encrypted columns copied as Active Record Encryption ciphertext. It writes `part-NNNNN.sql` files of at most 32 MB and a `manifest.json` with the row count and maximum id of every table.
+`lib/tasks/export_for_d1.rb` in the Rails repository writes the MySQL database as SQLite statements for D1: every table in foreign-key order, references that point at a table loaded later (`current_revision_id`, `users.image_id`) set by `UPDATE`s once both sides are in, values too long for one D1 statement assembled in a scratch table, generated columns left out, and encrypted columns copied as Active Record Encryption ciphertext. It writes `part-NNNNN.sql` files of at most 32 MB and a `manifest.json` with the row count and maximum id of every table it wrote, and refuses a destination that already holds objects.
 
-1. Run the export on the `qoodish-runner` Job, which carries the database credentials, into a Cloud Storage bucket its service account can write to:
+The export reads the tables one after another, so it needs a database nobody writes to while it runs, or a row created midway can reference one that was already read past and fail D1's foreign-key check. For a rehearsal, export from a clone of the production instance, which Cloud SQL copies at a single point in time; at the cutover, stop writes with the maintenance flag first.
+
+1. Clone the instance and run the export on the `qoodish-runner` Job, which carries the database credentials, pointed at the clone's private IP address, into a new prefix of a Cloud Storage bucket its service account can write to. The Job's default task timeout of 10 minutes is too short for the whole database:
 
    ```bash
-   gcloud run jobs execute qoodish-runner --wait \
-     --args=bin/rails,runner,lib/tasks/export_for_d1.rb,gs://BUCKET/d1/$(date +%Y%m%d%H%M)
+   gcloud sql instances clone INSTANCE d1-export-STAMP
+   gcloud sql instances describe d1-export-STAMP --format='value(ipAddresses)'
+   gcloud run jobs execute qoodish-runner --wait --task-timeout=6h \
+     --update-env-vars=DB_HOST=CLONE_PRIVATE_IP \
+     --args=bin/rails,runner,lib/tasks/export_for_d1.rb,gs://BUCKET/d1/STAMP
+   gcloud sql instances delete d1-export-STAMP
    ```
 
 2. Apply the migrations to an empty database and import the parts in order:
