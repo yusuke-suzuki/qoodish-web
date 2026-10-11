@@ -16,7 +16,8 @@ Every other route acts for the user whose `uid` is the token's `sub`, and answer
 
 - a map is referenceable when it is published and not removed, is public, the user's own or coauthored by the user, and its author does not block the user;
 - a pin or chapter is referenceable when it is published, not removed, on a referenceable map and its author does not block the user, and the user can also read their own chapters in any status but deleted;
-- the feeds and recommendations leave out the authors who block the user, whom the user blocks and whom the user mutes, and so do the comments under a pin or chapter.
+- the feeds and recommendations leave out the authors who block the user, whom the user blocks and whom the user mutes, and so do the comments under a pin or chapter and the notifications;
+- `/me` serves the user's own records whatever their visibility to others, except that own maps and pins removed by moderation are left out.
 
 The responses add what concerns the user: `editable`, `liked`, `bookmarking`, `bookmarkable`, and the author's `blocking` and `muting`. `GET /pins/:id/likes` and `GET /pins/:id/comments/:id/likes` answer `204` with no body once the pin and comment are found.
 
@@ -38,6 +39,8 @@ A search answers the 20 newest matches, newest first.
 
 The schema lives in `src/db/schema.ts` and migrations in `migrations/`, generated with `pnpm db:generate`.
 
+`journeys.encoded_path` is stored encrypted in Active Record Encryption's format: AES-256-GCM under a key derived with PBKDF2-HMAC-SHA256 (65,536 iterations) from the `AR_ENCRYPTION_PRIMARY_KEY` and `AR_ENCRYPTION_KEY_DERIVATION_SALT` secrets, with the payload deflated when the `c` header is set. `src/encryption.ts` decrypts it.
+
 ```bash
 pnpm db:migrate:local   # apply migrations to the local D1 that cf dev uses
 pnpm dev                # cf dev against the dev worker config
@@ -53,6 +56,13 @@ pnpm typecheck
 ```
 
 ## Deploy
+
+The worker needs the `AR_ENCRYPTION_PRIMARY_KEY` and `AR_ENCRYPTION_KEY_DERIVATION_SALT` secrets, set once per worker:
+
+```bash
+pnpm --filter qoodish-web exec wrangler secret put AR_ENCRYPTION_PRIMARY_KEY --name dev-qoodish-api
+pnpm --filter qoodish-web exec wrangler secret put AR_ENCRYPTION_KEY_DERIVATION_SALT --name dev-qoodish-api
+```
 
 Apply the migrations to the remote database, then deploy from a machine that is logged in to Cloudflare:
 

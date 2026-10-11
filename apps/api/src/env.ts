@@ -5,6 +5,8 @@ export interface Env {
   GOOGLE_PROJECT_ID: string;
   CF_ACCESS_TEAM_DOMAIN: string;
   CF_ACCESS_AUD: string;
+  AR_ENCRYPTION_PRIMARY_KEY: string;
+  AR_ENCRYPTION_KEY_DERIVATION_SALT: string;
   DB: D1Database;
 }
 

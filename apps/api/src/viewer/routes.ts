@@ -10,17 +10,7 @@ import type {
   PinProperty,
   UserSummary
 } from '@qoodish/api-contract';
-import {
-  and,
-  asc,
-  desc,
-  eq,
-  getTableColumns,
-  lt,
-  ne,
-  type SQL,
-  sql
-} from 'drizzle-orm';
+import { and, asc, desc, eq, lt, ne, type SQL, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import {
   before,
@@ -59,11 +49,12 @@ import {
   type Viewer,
   visible
 } from '../visibility.ts';
-import { viewerChapters } from './chapters.ts';
+import { viewerChapterDetails, viewerChapters } from './chapters.ts';
 import { viewerComment } from './comments.ts';
 import { authenticateUser, type ViewerEnv } from './context.ts';
 import { viewerJournals } from './journals.ts';
 import { viewerCoauthors, viewerMaps } from './maps.ts';
+import { meV2Routes } from './me.ts';
 import { viewerPins } from './pins.ts';
 import { userProfile } from './users.ts';
 
@@ -386,32 +377,20 @@ async function findReadableChapter(
 }
 
 chaptersRoutes.get('/:id', async (c) => {
-  const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const { commentsCount, ...chapter } = first(
-    await db
-      .select({
-        ...getTableColumns(chapters),
-        commentsCount: db.$count(
-          comments,
-          and(
-            eq(comments.commentableType, 'Chapter'),
-            eq(comments.commentableId, chapters.id),
-            ne(comments.status, 'deleted'),
-            shownTo(viewer, comments.userId)
-          )
-        )
-      })
-      .from(chapters)
-      .where(
-        and(readableChapter(viewer), eq(chapters.id, toId(c.req.param('id'))))
-      )
-  );
 
-  return c.json<ChapterDetail>({
-    ...first(await viewerChapters(db, viewer, [chapter])),
-    comments_count: commentsCount
-  });
+  return c.json<ChapterDetail>(
+    first(
+      await viewerChapterDetails(
+        database(c.env.DB),
+        viewer,
+        and(
+          readableChapter(viewer),
+          eq(chapters.id, toId(c.req.param('id')))
+        ) as SQL
+      )
+    )
+  );
 });
 
 chaptersRoutes.get('/:chapterId/comments', async (c) => {
@@ -456,7 +435,9 @@ journalsRoutes.get('/:id', async (c) => {
   );
 });
 
-export const v2Routes = new Hono<ViewerEnv>().use(authenticateUser);
+export const v2Routes = new Hono<ViewerEnv>()
+  .use(authenticateUser)
+  .route('/me', meV2Routes);
 
 v2Routes.get('/pins', async (c) => {
   const db = database(c.env.DB);

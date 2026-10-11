@@ -17,6 +17,7 @@ import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { guest, guestV2 } from './guest/routes.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
+import { meRoutes } from './viewer/me.ts';
 import {
   chaptersRoutes,
   journalsRoutes,
@@ -106,6 +107,7 @@ export function createApp(options: AppOptions = {}) {
   app.route('/chapters', chaptersRoutes);
   app.route('/journals', journalsRoutes);
   app.route('/v2', v2Routes);
+  app.route('/me', meRoutes);
 
   app.notFound((c) => {
     const error = new ApiError(
