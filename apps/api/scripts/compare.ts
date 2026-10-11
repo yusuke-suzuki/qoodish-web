@@ -182,6 +182,9 @@ async function discover(): Promise<string[]> {
     words: new Set()
   };
   const listings = [
+    ...(idToken
+      ? ['/maps', '/maps?recommend=true', '/chapters', '/v2/pins']
+      : []),
     '/guest/maps?recent=true',
     '/guest/maps?active=true',
     '/guest/maps?popular=true',
@@ -191,10 +194,7 @@ async function discover(): Promise<string[]> {
     '/guest/pins?popular=true',
     '/guest/chapters',
     '/guest/v2/pins',
-    '/guest/v2/chapters',
-    ...(idToken
-      ? ['/maps', '/maps?recommend=true', '/chapters', '/v2/pins']
-      : [])
+    '/guest/v2/chapters'
   ];
   const paths = [
     ...listings,

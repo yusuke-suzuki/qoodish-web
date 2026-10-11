@@ -18,19 +18,17 @@ import {
   getTableColumns,
   lt,
   ne,
-  not,
   type SQL,
   sql
 } from 'drizzle-orm';
 import { Hono } from 'hono';
-import type { AppEnv } from '../app.ts';
 import {
   before,
   FEED_PER_PAGE,
   nextCursor,
   normalizeTimestamp
 } from '../cursor.ts';
-import { type Database, database, inIds } from '../db/client.ts';
+import { type Database, database } from '../db/client.ts';
 import {
   chapters,
   comments,
@@ -49,23 +47,21 @@ import { searchCondition } from '../search.ts';
 import {
   feedChapter,
   feedPin,
+  notBlockedBy,
+  notBlocking,
   readableChapter,
   recommendableMap,
   referenceableChapter,
   referenceableMap,
   referenceablePin,
   relatedMap,
+  shownTo,
+  type Viewer,
   visible
 } from '../visibility.ts';
 import { viewerChapters } from './chapters.ts';
 import { viewerComment } from './comments.ts';
-import {
-  authenticateUser,
-  notBlockedBy,
-  notBlocking,
-  shownTo,
-  type Viewer
-} from './context.ts';
+import { authenticateUser, type ViewerEnv } from './context.ts';
 import { viewerJournals } from './journals.ts';
 import { viewerCoauthors, viewerMaps } from './maps.ts';
 import { viewerPins } from './pins.ts';
@@ -92,7 +88,7 @@ async function findMap(db: Database, condition: SQL) {
   );
 }
 
-export const usersRoutes = new Hono<AppEnv>().use(authenticateUser);
+export const usersRoutes = new Hono<ViewerEnv>().get('*', authenticateUser);
 
 usersRoutes.get('/', async (c) => {
   const db = database(c.env.DB);
@@ -114,7 +110,7 @@ usersRoutes.get('/', async (c) => {
     .select(userColumns)
     .from(users)
     .leftJoin(images, eq(images.id, users.imageId))
-    .where(and(matched, not(inIds(users.id, [...viewer.blockedBy]))))
+    .where(and(matched, notBlocking(viewer, users.id)))
     .orderBy(desc(users.createdAt), desc(users.id))
     .limit(USER_SEARCH_LIMIT);
 
@@ -180,7 +176,7 @@ usersRoutes.get('/:userId/journal', async (c) => {
   );
 });
 
-export const mapsRoutes = new Hono<AppEnv>().use(authenticateUser);
+export const mapsRoutes = new Hono<ViewerEnv>().use(authenticateUser);
 
 mapsRoutes.get('/', async (c) => {
   const db = database(c.env.DB);
@@ -276,7 +272,7 @@ mapsRoutes.get('/:mapId/pin_properties', async (c) => {
   return c.json<PinProperty[]>(await pinPropertiesOf(db, map.id));
 });
 
-export const pinsRoutes = new Hono<AppEnv>().use(authenticateUser);
+export const pinsRoutes = new Hono<ViewerEnv>().use(authenticateUser);
 
 async function findPin(db: Database, condition: SQL) {
   return first(await db.select().from(pins).where(condition));
@@ -336,7 +332,7 @@ pinsRoutes.get('/:pinId/comments/:commentId/likes', async (c) => {
   return c.body(null, 204);
 });
 
-export const chaptersRoutes = new Hono<AppEnv>().use(authenticateUser);
+export const chaptersRoutes = new Hono<ViewerEnv>().use(authenticateUser);
 
 function chapterFeedBefore(
   nextTimestamp: string,
@@ -348,10 +344,8 @@ function chapterFeedBefore(
     return lt(chapters.createdAt, createdAt);
   }
 
-  const id = Number.parseInt(nextId, 10);
-
   return before(
-    { createdAt, id: Number.isNaN(id) ? 0 : id },
+    { createdAt, id: toId(nextId) },
     chapters.createdAt,
     chapters.id
   );
@@ -442,7 +436,7 @@ chaptersRoutes.get('/:chapterId/comments', async (c) => {
   );
 });
 
-export const journalsRoutes = new Hono<AppEnv>().use(authenticateUser);
+export const journalsRoutes = new Hono<ViewerEnv>().use(authenticateUser);
 
 journalsRoutes.get('/:id', async (c) => {
   const db = database(c.env.DB);
@@ -462,7 +456,7 @@ journalsRoutes.get('/:id', async (c) => {
   );
 });
 
-export const v2Routes = new Hono<AppEnv>().use(authenticateUser);
+export const v2Routes = new Hono<ViewerEnv>().use(authenticateUser);
 
 v2Routes.get('/pins', async (c) => {
   const db = database(c.env.DB);

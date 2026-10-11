@@ -91,13 +91,13 @@ beforeAll(async () => {
     .values({ journalId: 1, userId: ids.bob, ...stamp });
 });
 
-async function get(path: string, uid: string) {
+async function get(path: string, uid: string, method = 'GET') {
   const token = await signer.sign(
     firebaseClaims(env.GOOGLE_PROJECT_ID, { sub: uid })
   );
   const res = await app.request(
     path,
-    { headers: { authorization: `Bearer ${token}` } },
+    { method, headers: { authorization: `Bearer ${token}` } },
     env
   );
 
@@ -141,6 +141,10 @@ describe('authentication', () => {
       status: 401,
       body: { title: 'Unauthorized', detail: expect.any(String) }
     });
+  });
+
+  it('leaves POST /users to a token that has no user yet', async () => {
+    expect((await get('/users', 'stranger', 'POST')).status).toBe(404);
   });
 });
 

@@ -10,7 +10,8 @@ import {
 } from '../guest/maps.ts';
 import { type UserRow, userSummary, usersQuery } from '../guest/users.ts';
 import { primaryImage } from '../images.ts';
-import { relation, type Viewer } from './context.ts';
+import type { Viewer } from '../visibility.ts';
+import { relation } from './context.ts';
 
 export async function viewerMaps(
   db: Database,

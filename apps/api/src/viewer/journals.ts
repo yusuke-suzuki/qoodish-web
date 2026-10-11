@@ -8,8 +8,8 @@ import {
   journals,
   users
 } from '../db/schema.ts';
-import { userSummary } from '../guest/users.ts';
-import type { Viewer } from './context.ts';
+import { userColumns, userSummary } from '../guest/users.ts';
+import type { Viewer } from '../visibility.ts';
 
 export async function viewerJournals(
   db: Database,
@@ -19,8 +19,7 @@ export async function viewerJournals(
   const rows = await db
     .select({
       ...getTableColumns(journals),
-      authorName: users.name,
-      authorImageUrl: images.url,
+      author: userColumns,
       chaptersCount: db.$count(
         chapters,
         and(
@@ -46,12 +45,7 @@ export async function viewerJournals(
     id: row.id,
     title: row.title,
     description: row.description,
-    author: userSummary({
-      id: row.userId,
-      name: row.authorName,
-      biography: null,
-      imageUrl: row.authorImageUrl
-    }),
+    author: userSummary(row.author),
     chapters_count: row.chaptersCount,
     editable: row.userId === viewer.id,
     bookmarking: row.bookmarks > 0,

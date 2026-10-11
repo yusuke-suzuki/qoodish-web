@@ -1,23 +1,15 @@
 import type { ViewerRelation } from '@qoodish/api-contract';
-import {
-  and,
-  eq,
-  not,
-  notExists,
-  type SQL,
-  type SQLWrapper
-} from 'drizzle-orm';
+import { and, eq, notExists } from 'drizzle-orm';
 import { createMiddleware } from 'hono/factory';
 import type { AppEnv } from '../app.ts';
-import { type Database, database, inIds } from '../db/client.ts';
+import { type Database, database } from '../db/client.ts';
 import { blocks, mutes, unblocks, unmutes, users } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
+import type { Viewer } from '../visibility.ts';
 
-export type Viewer = {
-  id: number;
-  blocking: ReadonlySet<number>;
-  blockedBy: ReadonlySet<number>;
-  muting: ReadonlySet<number>;
+export type ViewerEnv = {
+  Bindings: AppEnv['Bindings'];
+  Variables: AppEnv['Variables'] & { viewer: Viewer };
 };
 
 const activeBlock = (db: Database) =>
@@ -74,7 +66,7 @@ export async function loadViewer(
   };
 }
 
-export const authenticateUser = createMiddleware<AppEnv>(async (c, next) => {
+export const authenticateUser = createMiddleware<ViewerEnv>(async (c, next) => {
   const viewer = await loadViewer(database(c.env.DB), c.get('idToken').sub);
 
   if (!viewer) {
@@ -90,24 +82,4 @@ export function relation(viewer: Viewer, userId: number): ViewerRelation {
     blocking: viewer.blocking.has(userId),
     muting: viewer.muting.has(userId)
   };
-}
-
-export function notBlocking(viewer: Viewer, userId: SQLWrapper): SQL {
-  return not(inIds(userId, [...viewer.blockedBy]));
-}
-
-export function notBlockedBy(viewer: Viewer, userId: SQLWrapper): SQL {
-  return not(inIds(userId, [...viewer.blocking]));
-}
-
-export function notMutedBy(viewer: Viewer, userId: SQLWrapper): SQL {
-  return not(inIds(userId, [...viewer.muting]));
-}
-
-export function shownTo(viewer: Viewer, userId: SQLWrapper): SQL {
-  return and(
-    notBlocking(viewer, userId),
-    notBlockedBy(viewer, userId),
-    notMutedBy(viewer, userId)
-  ) as SQL;
 }

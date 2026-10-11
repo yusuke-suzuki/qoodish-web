@@ -17,7 +17,6 @@ import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { guest, guestV2 } from './guest/routes.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
-import type { Viewer } from './viewer/context.ts';
 import {
   chaptersRoutes,
   journalsRoutes,
@@ -31,7 +30,6 @@ export type Variables = {
   language: Locale;
   idToken: FirebaseIdToken;
   accessClaims: AccessClaims;
-  viewer: Viewer;
 };
 
 export type AppEnv = { Bindings: Env; Variables: Variables };

@@ -33,18 +33,21 @@ export function commentsQuery(
         votes,
         and(eq(votes.votableType, 'Comment'), eq(votes.votableId, comments.id))
       ),
-      liked: sql<boolean>`${exists(
-        db
-          .select({ id: votes.id })
-          .from(votes)
-          .where(
-            and(
-              eq(votes.votableType, 'Comment'),
-              eq(votes.votableId, comments.id),
-              eq(votes.voterId, viewerId ?? 0)
-            )
-          )
-      )}`
+      liked: (viewerId === undefined
+        ? sql<boolean>`0`
+        : sql<boolean>`${exists(
+            db
+              .select({ id: votes.id })
+              .from(votes)
+              .where(
+                and(
+                  eq(votes.votableType, 'Comment'),
+                  eq(votes.votableId, comments.id),
+                  eq(votes.voterId, viewerId)
+                )
+              )
+          )}`
+      )
         .mapWith(Boolean)
         .as('liked')
     })
