@@ -1,5 +1,4 @@
 import type {
-  ApiCursorPage,
   AppMap,
   Chapter,
   ChapterDetail,
@@ -7,14 +6,12 @@ import type {
   Journal,
   Journey,
   JourneySummary,
-  ModeratedAccount,
-  NotificationGroup,
-  Pin,
   Profile
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, ne, type SQL, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { FEED_PER_PAGE, nextCursor } from '../cursor.ts';
+import { pendingInvitations, profile } from '../accounts.ts';
+import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
 import { database } from '../db/client.ts';
 import {
   bookmarks,
@@ -22,39 +19,28 @@ import {
   journalBookmarks,
   journals,
   journeys,
-  maps,
-  pins
+  maps
 } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
-import { feedPage, first, present, toId } from '../routing.ts';
-import { publicMap, visible } from '../visibility.ts';
+import { viewerJournals } from '../journals.ts';
+import { journeyDetail, journeySummaries } from '../journeys.ts';
+import { viewerMaps } from '../maps.ts';
 import {
-  blockedAccounts,
-  mutedAccounts,
-  pendingInvitations,
-  profile
-} from './accounts.ts';
-import { viewerChapterDetails, viewerChapters } from './chapters.ts';
-import { authenticateUser, type ViewerEnv } from './context.ts';
-import { viewerJournals } from './journals.ts';
-import { journeyDetail, journeySummaries } from './journeys.ts';
-import { viewerMaps } from './maps.ts';
-import { notificationGroups } from './notifications.ts';
-import { viewerPins } from './pins.ts';
+  authenticateUser,
+  type ViewerEnv
+} from '../middleware/authenticate-user.ts';
+import { first, toId } from '../routing.ts';
+import { publicMap, visible } from '../visibility.ts';
 
-const FALSE_PARAMS = new Set(['0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF']);
+const app = new Hono<ViewerEnv>();
 
-function pageCursor(param: string | undefined): number | null {
-  return present(param) ? toId(param) : null;
-}
+app.use(authenticateUser);
 
-export const meRoutes = new Hono<ViewerEnv>().use(authenticateUser);
-
-meRoutes.get('/profile', async (c) =>
+app.get('/profile', async (c) =>
   c.json<Profile>(await profile(database(c.env.DB), c.get('viewer').id))
 );
 
-meRoutes.get('/journal', async (c) => {
+app.get('/journal', async (c) => {
   const viewer = c.get('viewer');
 
   return c.json<Journal>(
@@ -68,7 +54,7 @@ meRoutes.get('/journal', async (c) => {
   );
 });
 
-meRoutes.get('/maps', async (c) => {
+app.get('/maps', async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
   const rows = await db
@@ -93,7 +79,7 @@ function ownChapters(userId: number): SQL {
   ) as SQL;
 }
 
-meRoutes.get('/chapters', async (c) => {
+app.get('/chapters', async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
   const rows = await db
@@ -105,7 +91,7 @@ meRoutes.get('/chapters', async (c) => {
   return c.json<Chapter[]>(await viewerChapters(db, viewer, rows));
 });
 
-meRoutes.get('/chapters/:id', async (c) => {
+app.get('/chapters/:id', async (c) => {
   const viewer = c.get('viewer');
 
   return c.json<ChapterDetail>(
@@ -122,19 +108,19 @@ meRoutes.get('/chapters/:id', async (c) => {
   );
 });
 
-meRoutes.get('/coauthorship_invitations', async (c) =>
+app.get('/coauthorship_invitations', async (c) =>
   c.json<CoauthorshipInvitation[]>(
     await pendingInvitations(database(c.env.DB), c.get('viewer').id)
   )
 );
 
-meRoutes.get('/journeys', async (c) =>
+app.get('/journeys', async (c) =>
   c.json<JourneySummary[]>(
     await journeySummaries(database(c.env.DB), c.get('viewer').id)
   )
 );
 
-meRoutes.get('/journeys/:id', async (c) => {
+app.get('/journeys/:id', async (c) => {
   const journey = await journeyDetail(
     database(c.env.DB),
     and(
@@ -154,7 +140,7 @@ meRoutes.get('/journeys/:id', async (c) => {
   return c.json<Journey>(journey);
 });
 
-meRoutes.get('/bookmarks/maps', async (c) => {
+app.get('/bookmarks/maps', async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
   const rows = await db
@@ -171,7 +157,7 @@ meRoutes.get('/bookmarks/maps', async (c) => {
   return c.json<AppMap[]>(await viewerMaps(db, viewer, rows));
 });
 
-meRoutes.get('/bookmarks/journals', async (c) => {
+app.get('/bookmarks/journals', async (c) => {
   const viewer = c.get('viewer');
 
   return c.json<Journal[]>(
@@ -183,62 +169,4 @@ meRoutes.get('/bookmarks/journals', async (c) => {
   );
 });
 
-export const meV2Routes = new Hono<ViewerEnv>();
-
-meV2Routes.get('/notifications', async (c) => {
-  const read = c.req.query('read');
-
-  return c.json<ApiCursorPage<NotificationGroup>>(
-    await notificationGroups(database(c.env.DB), c.get('viewer'), {
-      cursor: pageCursor(c.req.query('cursor')),
-      unread: read !== undefined && FALSE_PARAMS.has(read)
-    })
-  );
-});
-
-meV2Routes.get('/pins', async (c) => {
-  const db = database(c.env.DB);
-  const viewer = c.get('viewer');
-  const rows = await db
-    .select()
-    .from(pins)
-    .where(
-      feedPage(
-        c.req.query('cursor'),
-        pins.createdAt,
-        pins.id,
-        and(
-          eq(pins.userId, viewer.id),
-          eq(pins.status, 'published'),
-          visible(pins.id, 'Pin')
-        ) as SQL
-      )
-    )
-    .orderBy(desc(pins.createdAt), desc(pins.id))
-    .limit(FEED_PER_PAGE);
-
-  return c.json<ApiCursorPage<Pin>>({
-    data: await viewerPins(db, viewer, rows),
-    next_cursor: nextCursor(rows)
-  });
-});
-
-meV2Routes.get('/blocks', async (c) =>
-  c.json<ApiCursorPage<ModeratedAccount>>(
-    await blockedAccounts(
-      database(c.env.DB),
-      c.get('viewer').id,
-      pageCursor(c.req.query('cursor'))
-    )
-  )
-);
-
-meV2Routes.get('/mutes', async (c) =>
-  c.json<ApiCursorPage<ModeratedAccount>>(
-    await mutedAccounts(
-      database(c.env.DB),
-      c.get('viewer').id,
-      pageCursor(c.req.query('cursor'))
-    )
-  )
-);
+export default app;

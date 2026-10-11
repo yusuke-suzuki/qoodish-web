@@ -3,6 +3,8 @@
 The Qoodish API: a Cloudflare Worker written with Hono that keeps its records in D1 through Drizzle ORM. It is served at `api-next.qoodish.com` (`api-next-dev.qoodish.com` for dev). The JSON shapes of its responses are declared in `packages/api-contract` and shared with `apps/web` and `apps/admin`.
 ## Request handling
 
+Each route file under `src/routes` is a Hono app whose path mirrors the URL it serves (`src/routes/guest/v2/pins.ts` serves `/guest/v2/pins`), mounted in `src/app.ts` with `app.route()`. The queries and response shapes they share live in one module per resource at the top of `src` (`maps.ts`, `pins.ts`, `chapters.ts`, ...).
+
 - Every request resolves its locale from `Accept-Language` through Hono's `languageDetector` (`en` or `ja`, default `en`), and error and validation messages come from `src/i18n`.
 - Every route outside `/guest/*`, `/admin/*` and the health checks requires a `Bearer` Firebase ID token in `Authorization`, verified with `jose` against Google's published signing keys (`src/auth/firebase.ts`). A missing or invalid token answers a localized `401`.
 - Every `/admin/*` route requires a Cloudflare Access assertion in `Cf-Access-Jwt-Assertion`, as the admin dashboard forwards it, verified against the team's published keys for the audience in `CF_ACCESS_AUD` (`src/auth/access.ts`).
@@ -12,7 +14,7 @@ The Qoodish API: a Cloudflare Worker written with Hono that keeps its records in
 
 `/guest/*` serves what anyone may see. A map is public when it is published, not private and not removed by its latest moderation decision; a pin or chapter is public when it is published, not removed and on a public map.
 
-Every other route acts for the user whose `uid` is the token's `sub`, and answers `401` when there is none; under `/users` only `GET` requires the user. The user's active blocks in both directions and active mutes are loaded with the user. On top of that, `src/visibility.ts` defines what a signed-in user sees:
+Every other route acts for the user whose `uid` is the token's `sub`, loaded by the `authenticateUser` middleware (`src/middleware/authenticate-user.ts`), and answers `401` when there is none; under `/users` only `GET` requires the user. The user's active blocks in both directions and active mutes are loaded with the user. On top of that, `src/visibility.ts` defines what a signed-in user sees:
 
 - a map is referenceable when it is published and not removed, is public, the user's own or coauthored by the user, and its author does not block the user;
 - a pin or chapter is referenceable when it is published, not removed, on a referenceable map and its author does not block the user, and the user can also read their own chapters in any status but deleted;

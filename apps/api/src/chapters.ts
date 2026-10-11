@@ -1,5 +1,7 @@
 import type {
+  Chapter,
   ChapterContent,
+  ChapterDetail,
   ChapterStatus,
   GuestChapter,
   ImageVariants,
@@ -7,23 +9,26 @@ import type {
   MapFeatureCollection,
   MapRef
 } from '@qoodish/api-contract';
-import { asc, eq } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from '../db/client.ts';
+import { and, asc, eq, getTableColumns, ne, type SQL } from 'drizzle-orm';
+import { type Database, inIds, uniqueIds } from './db/client.ts';
 import {
   chapterRevisionImages,
-  type chapters,
+  chapters,
+  comments,
   images,
   maps
-} from '../db/schema.ts';
-import { primaryImage } from '../images.ts';
-import { type Likes, likesByVotable, likesQuery } from '../votes.ts';
+} from './db/schema.ts';
+import { primaryImage } from './images.ts';
 import { firstImageUrls } from './maps.ts';
 import {
   chapterAuthor,
   journalsQuery,
+  relation,
   type UserRow,
   usersQuery
 } from './users.ts';
+import { shownTo, type Viewer } from './visibility.ts';
+import { type Likes, likesByVotable, likesQuery } from './votes.ts';
 
 export type ChapterRow = typeof chapters.$inferSelect;
 
@@ -201,4 +206,53 @@ export async function chapterSearchResults(
       }
     ];
   });
+}
+
+export async function viewerChapters(
+  db: Database,
+  viewer: Viewer,
+  rows: readonly ChapterRow[]
+): Promise<Chapter[]> {
+  const parts = await loadChapters(db, rows, viewer.id);
+
+  return parts.map(({ row, author, map, journal, imageUrl, likes }) => ({
+    ...chapterAttributes(row),
+    ...primaryImage(imageUrl),
+    author: { ...chapterAuthor(author), ...relation(viewer, author.id) },
+    map,
+    journal,
+    editable: row.userId === viewer.id,
+    liked: likes.liked,
+    likes_count: likes.likes,
+    created_at: row.createdAt,
+    updated_at: row.updatedAt
+  }));
+}
+
+export async function viewerChapterDetails(
+  db: Database,
+  viewer: Viewer,
+  condition: SQL
+): Promise<ChapterDetail[]> {
+  const rows = await db
+    .select({
+      ...getTableColumns(chapters),
+      commentsCount: db.$count(
+        comments,
+        and(
+          eq(comments.commentableType, 'Chapter'),
+          eq(comments.commentableId, chapters.id),
+          ne(comments.status, 'deleted'),
+          shownTo(viewer, comments.userId)
+        )
+      )
+    })
+    .from(chapters)
+    .where(condition);
+  const counts = new Map(rows.map((row) => [row.id, row.commentsCount]));
+
+  return (await viewerChapters(db, viewer, rows)).map((chapter) => ({
+    ...chapter,
+    comments_count: counts.get(chapter.id) ?? 0
+  }));
 }

@@ -1,10 +1,12 @@
 import type {
   GuestChapterAuthor,
   GuestUserProfile,
-  UserSummary
+  UserProfile,
+  UserSummary,
+  ViewerRelation
 } from '@qoodish/api-contract';
 import { and, eq, inArray } from 'drizzle-orm';
-import { type Database, inIds } from '../db/client.ts';
+import { type Database, inIds } from './db/client.ts';
 import {
   bookmarks,
   images,
@@ -13,8 +15,10 @@ import {
   pins,
   users,
   votes
-} from '../db/schema.ts';
-import { primaryImage } from '../images.ts';
+} from './db/schema.ts';
+import { primaryImage } from './images.ts';
+import { first, toId } from './routing.ts';
+import type { Viewer } from './visibility.ts';
 
 export type UserRow = {
   id: number;
@@ -43,6 +47,22 @@ export function journalsQuery(db: Database, userIds: readonly number[]) {
     .select({ id: journals.id, title: journals.title, userId: journals.userId })
     .from(journals)
     .where(inIds(journals.userId, userIds));
+}
+
+export function relation(viewer: Viewer, userId: number): ViewerRelation {
+  return {
+    blocking: viewer.blocking.has(userId),
+    muting: viewer.muting.has(userId)
+  };
+}
+
+export async function findUser(db: Database, param: string | undefined) {
+  return first(
+    await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, toId(param)))
+  );
 }
 
 export function userSummary(user: UserRow): UserSummary {
@@ -124,5 +144,38 @@ export async function guestProfile(
     bookmarked_maps_count: user.bookmarkedMapsCount,
     pins_count: user.pinsCount,
     likes_count: user.likesCount
+  };
+}
+
+export async function userProfile(
+  db: Database,
+  viewer: Viewer,
+  id: number
+): Promise<UserProfile | null> {
+  const [user] = await db
+    .select({ ...userColumns, uid: users.uid, ...profileCounts(db) })
+    .from(users)
+    .leftJoin(images, eq(images.id, users.imageId))
+    .where(eq(users.id, id));
+
+  if (!user) {
+    return null;
+  }
+
+  const { image, image_url } = primaryImage(user.imageUrl ?? undefined);
+
+  return {
+    id: user.id,
+    uid: user.uid,
+    name: user.name ?? '',
+    biography: user.biography,
+    image,
+    image_url,
+    maps_count: user.mapsCount,
+    bookmarked_maps_count: user.bookmarkedMapsCount,
+    pins_count: user.pinsCount,
+    blocking: viewer.blocking.has(user.id),
+    blocked_by: viewer.blockedBy.has(user.id),
+    muting: viewer.muting.has(user.id)
   };
 }

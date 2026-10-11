@@ -1,15 +1,15 @@
 import type { Journal } from '@qoodish/api-contract';
 import { and, asc, desc, eq, getTableColumns, type SQL } from 'drizzle-orm';
-import type { Database } from '../db/client.ts';
+import type { Database } from './db/client.ts';
 import {
   chapters,
   images,
   journalBookmarks,
   journals,
   users
-} from '../db/schema.ts';
-import { userColumns, userSummary } from '../guest/users.ts';
-import type { Viewer } from '../visibility.ts';
+} from './db/schema.ts';
+import { userColumns, userSummary } from './users.ts';
+import type { Viewer } from './visibility.ts';
 
 export async function viewerJournals(
   db: Database,

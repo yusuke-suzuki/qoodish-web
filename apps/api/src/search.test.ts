@@ -1,10 +1,10 @@
 import { env } from 'cloudflare:test';
 import { eq } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { createApp } from '../app.ts';
-import { database } from '../db/client.ts';
-import { chapters, maps } from '../db/schema.ts';
-import { ids, seedWorld } from '../test/world.ts';
+import { createApp } from './app.ts';
+import { database } from './db/client.ts';
+import { chapters, maps } from './db/schema.ts';
+import { ids, seedWorld } from './test/world.ts';
 
 const app = createApp();
 

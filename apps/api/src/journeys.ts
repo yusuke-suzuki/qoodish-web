@@ -5,7 +5,7 @@ import type {
   MapRef
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, ne, type SQL, sql } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from '../db/client.ts';
+import { type Database, inIds, uniqueIds } from './db/client.ts';
 import {
   chapters,
   images,
@@ -14,9 +14,9 @@ import {
   journeys,
   maps,
   milestones
-} from '../db/schema.ts';
-import { decryptAttribute, type EncryptionSecrets } from '../encryption.ts';
-import { image } from '../images.ts';
+} from './db/schema.ts';
+import { decryptAttribute, type EncryptionSecrets } from './encryption.ts';
+import { image } from './images.ts';
 
 const journeyColumns = {
   id: journeys.id,

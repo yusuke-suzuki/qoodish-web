@@ -7,7 +7,7 @@ import type {
   WebPushPreferences
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
-import { type Database, uniqueIds } from '../db/client.ts';
+import { type Database, uniqueIds } from './db/client.ts';
 import {
   blocks,
   coauthorshipInvitations,
@@ -18,15 +18,15 @@ import {
   unmutes,
   userPreferences,
   users
-} from '../db/schema.ts';
-import { firstImageUrls, mapImagesQuery } from '../guest/maps.ts';
+} from './db/schema.ts';
+import { primaryImage } from './images.ts';
+import { firstImageUrls, mapImagesQuery } from './maps.ts';
 import {
   profileCounts,
   userColumns,
   userSummary,
   usersQuery
-} from '../guest/users.ts';
-import { primaryImage } from '../images.ts';
+} from './users.ts';
 
 const ACCOUNTS_PER_PAGE = 50;
 

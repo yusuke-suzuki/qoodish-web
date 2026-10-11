@@ -3,6 +3,8 @@ import { and, or, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
 const INDEXED_TERM_LENGTH = 3;
 const FULLTEXT_TERM_LENGTH = 2;
 
+export const SEARCH_LIMIT = 20;
+
 export type SearchTarget = {
   index: string;
   id: SQLWrapper;

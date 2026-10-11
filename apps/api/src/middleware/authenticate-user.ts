@@ -1,4 +1,3 @@
-import type { ViewerRelation } from '@qoodish/api-contract';
 import { and, eq, notExists } from 'drizzle-orm';
 import { createMiddleware } from 'hono/factory';
 import type { AppEnv } from '../app.ts';
@@ -76,10 +75,3 @@ export const authenticateUser = createMiddleware<ViewerEnv>(async (c, next) => {
   c.set('viewer', viewer);
   await next();
 });
-
-export function relation(viewer: Viewer, userId: number): ViewerRelation {
-  return {
-    blocking: viewer.blocking.has(userId),
-    muting: viewer.muting.has(userId)
-  };
-}
