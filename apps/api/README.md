@@ -17,7 +17,7 @@ Every `/guest/*` and `/guest/v2/*` read Rails serves is served here (`src/guest/
 
 ## Signed-in endpoints
 
-The reads Rails serves to a signed-in user outside `/me` (`/users`, `/maps`, `/pins`, `/chapters`, `/journals` and `/v2`) are served from `src/viewer/`. `authenticateUser` resolves the verified token's `sub` to the user with that `uid`, loading the user's active blocks in both directions and active mutes in the same D1 `batch`, and answers `401` when no user has it, as Rails' `authenticate_user!` does. Under `/users` it runs for `GET` only, as in Rails, where `POST /users` signs up a token that has no user yet. The Rails scopes that depend on the viewer (`referenceable_by`, `related_to`, `readable_by`, `feed_for`, `not_blocking`, `not_blocked_by`, `not_muted_by`) are in `src/visibility.ts` under the same names, and the serializers add the viewer state Rails' partials write: `editable`, `liked`, `bookmarking`, `bookmarkable` and the author's `blocking` and `muting`.
+The routes outside `/guest` act for the user whose `uid` is the verified token's `sub`, and answer `401` when no user has it, as Rails' `authenticate_user!` does. Under `/users` only `GET` requires the user, as in Rails, where `POST /users` signs up a token that has none. The user's active blocks in both directions and active mutes are loaded with the user, in one D1 `batch`. The Rails scopes that depend on the viewer (`referenceable_by`, `related_to`, `readable_by`, `feed_for`, `not_blocking`, `not_blocked_by`, `not_muted_by`) are in `src/visibility.ts` under the same names, and the serializers add the viewer state Rails' partials write: `editable`, `liked`, `bookmarking`, `bookmarkable` and the author's `blocking` and `muting`.
 
 `GET /pins/:id/likes` and `GET /pins/:id/comments/:id/likes` have no Rails view, so Rails answers `204` once the pin and comment are found, and so does the worker.
 
@@ -34,7 +34,7 @@ Some behaviours deliberately differ from Rails:
 
 The schema lives in `src/db/schema.ts` and migrations in `migrations/`, generated with `pnpm db:generate`.
 
-Full-text search replaces MySQL's ngram FULLTEXT indexes with FTS5 tables that use the `trigram` tokenizer with `remove_diacritics 1`, kept in sync by triggers (`migrations/0002_search_trigram.sql`). `maps_fts`, `pins_fts` and `users_fts` index the searchable columns of their tables in place. `chapters_fts` stores its own `title` and `body`, where `body` is the `text` values of the Lexical document in `content`, collected with `json_tree` whenever a chapter is inserted or its content changes; it replaces MySQL's generated `content_text` column, which the Rails export leaves out.
+Full-text search replaces MySQL's ngram FULLTEXT indexes with FTS5 tables that use the `trigram` tokenizer with `remove_diacritics 1`, kept in sync by triggers (`migrations/0002_search_trigram.sql`). `maps_fts`, `pins_fts` and `users_fts` index the searchable columns of their tables in place. `chapters_fts` stores its own `title` and `body`, where `body` is the `text` values of the Lexical document in `content`, collected with `json_tree` whenever a chapter is inserted or its content changes.
 
 `src/search.ts` splits the input the way Rails' `SearchQuery` does and requires every term to occur as a substring of one of the indexed columns, which is what MySQL's ngram phrase search matched:
 
@@ -93,7 +93,7 @@ pnpm compare --rails https://api-dev.qoodish.com --worker https://api-next-dev.q
 unset QOODISH_ID_TOKEN
 ```
 
-Bodies are compared as parsed JSON. Searches and the `active` and `popular` rankings are compared as sets of records, `recommend` by status only, and everything else in order. `--paths` adds recorded `/guest/...` paths, one per line, and `--verbose` lists the paths that only differ in record or key order. The command exits non-zero when any path differs.
+Bodies are compared as parsed JSON. Searches and the `active` and `popular` rankings are compared as sets of records, `recommend` by status only, and everything else in order. `--paths` adds recorded paths, one per line, skipping signed-in ones when no token is given, and `--verbose` lists the paths that only differ in record or key order. The command exits non-zero when any path differs.
 
 ## Test
 
@@ -106,7 +106,7 @@ pnpm typecheck
 
 ## Deploy
 
-Workers Builds will deploy the worker from `master` once it is connected; until then, from a machine that is logged in to Cloudflare:
+Deploy from a machine that is logged in to Cloudflare:
 
 ```bash
 pnpm exec cf deploy               # api-next.qoodish.com
