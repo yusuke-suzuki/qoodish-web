@@ -1,8 +1,44 @@
-import { and, eq, ne, or, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  ne,
+  not,
+  or,
+  type SQL,
+  type SQLWrapper,
+  sql
+} from 'drizzle-orm';
+import { inIds } from './db/client.ts';
 import { bookmarks, chapters, coauthorships, maps, pins } from './db/schema.ts';
-import { notBlocking, shownTo, type Viewer } from './viewer/context.ts';
 
 export type ModeratableType = 'Map' | 'Pin' | 'Chapter' | 'Comment';
+
+export type Viewer = {
+  id: number;
+  blocking: ReadonlySet<number>;
+  blockedBy: ReadonlySet<number>;
+  muting: ReadonlySet<number>;
+};
+
+export function notBlocking(viewer: Viewer, userId: SQLWrapper): SQL {
+  return not(inIds(userId, [...viewer.blockedBy]));
+}
+
+export function notBlockedBy(viewer: Viewer, userId: SQLWrapper): SQL {
+  return not(inIds(userId, [...viewer.blocking]));
+}
+
+export function notMutedBy(viewer: Viewer, userId: SQLWrapper): SQL {
+  return not(inIds(userId, [...viewer.muting]));
+}
+
+export function shownTo(viewer: Viewer, userId: SQLWrapper): SQL {
+  return and(
+    notBlocking(viewer, userId),
+    notBlockedBy(viewer, userId),
+    notMutedBy(viewer, userId)
+  ) as SQL;
+}
 
 export function removedIds(type: ModeratableType): SQL {
   return sql`SELECT moderatable_id FROM (

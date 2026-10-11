@@ -14,7 +14,12 @@ export function likesQuery(
     .select({
       votableId: sql<number>`${votes.votableId}`,
       likes: count(),
-      liked: sql<number>`coalesce(sum(${votes.voterId} = ${voterId ?? null}), 0)`
+      liked:
+        voterId === undefined
+          ? sql<number>`0`.as('liked')
+          : sql<number>`coalesce(sum(${votes.voterId} = ${voterId}), 0)`.as(
+              'liked'
+            )
     })
     .from(votes)
     .where(and(eq(votes.votableType, type), inIds(votes.votableId, votableIds)))

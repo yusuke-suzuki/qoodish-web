@@ -4,7 +4,7 @@ import type { Database } from '../db/client.ts';
 import { images, users } from '../db/schema.ts';
 import { profileCounts, userColumns } from '../guest/users.ts';
 import { primaryImage } from '../images.ts';
-import type { Viewer } from './context.ts';
+import type { Viewer } from '../visibility.ts';
 
 export async function userProfile(
   db: Database,

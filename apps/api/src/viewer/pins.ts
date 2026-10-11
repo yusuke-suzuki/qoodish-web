@@ -3,8 +3,9 @@ import type { Database } from '../db/client.ts';
 import { comments } from '../db/schema.ts';
 import { loadPins, type PinRow } from '../guest/pins.ts';
 import { userSummary } from '../guest/users.ts';
+import { shownTo, type Viewer } from '../visibility.ts';
 import { viewerComment } from './comments.ts';
-import { relation, shownTo, type Viewer } from './context.ts';
+import { relation } from './context.ts';
 
 export async function viewerPins(
   db: Database,
