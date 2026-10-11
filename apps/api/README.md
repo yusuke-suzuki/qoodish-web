@@ -51,8 +51,8 @@ The export reads the tables one after another, so it needs a database nobody wri
    gcloud sql instances describe d1-export-STAMP --format='value(ipAddresses)'
    gcloud run jobs execute qoodish-runner --wait --task-timeout=6h \
      --update-env-vars=DB_HOST=CLONE_PRIVATE_IP \
-     --args=bin/rails,runner,lib/tasks/export_for_d1.rb,gs://BUCKET/d1/STAMP
-   gcloud sql instances delete d1-export-STAMP
+     --args=bin/rails,runner,lib/tasks/export_for_d1.rb,gs://BUCKET/d1/STAMP \
+     && gcloud sql instances delete d1-export-STAMP
    ```
 
 2. Apply the migrations to an empty database and import the parts in order:
