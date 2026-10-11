@@ -224,7 +224,7 @@ guest.get('/maps/:mapId/coauthors', async (c) => {
       .innerJoin(users, eq(users.id, coauthorships.userId))
       .leftJoin(images, eq(images.id, users.imageId))
       .where(eq(coauthorships.mapId, map.id))
-      .orderBy(asc(coauthorships.id))
+      .orderBy(asc(coauthorships.userId))
   ]);
 
   return c.json<GuestCoauthor[]>(
