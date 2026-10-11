@@ -1,9 +1,10 @@
+import { env } from 'cloudflare:test';
 import { describe, expect, it } from 'vitest';
 import { decryptAttribute } from './encryption.ts';
 
 const secrets = {
-  primaryKey: 'test_ar_encryption_primary_key_0',
-  keyDerivationSalt: 'test_ar_encryption_key_derive_salt'
+  primaryKey: env.ENCRYPTION_PRIMARY_KEY,
+  keyDerivationSalt: env.ENCRYPTION_KEY_DERIVATION_SALT
 };
 
 describe('decryptAttribute', () => {

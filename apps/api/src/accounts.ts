@@ -1,7 +1,6 @@
 import type {
   ApiCursorPage,
   CoauthorshipInvitation,
-  CoauthorshipInvitationStatus,
   ModeratedAccount,
   Profile,
   WebPushPreferences
@@ -22,7 +21,9 @@ import {
 import { primaryImage } from './images.ts';
 import { firstImageUrls, mapImagesQuery } from './maps.ts';
 import {
-  profileCounts,
+  chapterAuthor,
+  profileAttributes,
+  profileQuery,
   userColumns,
   userSummary,
   usersQuery
@@ -36,12 +37,6 @@ const WEB_PUSH_DEFAULTS: WebPushPreferences = {
   comment: true,
   published: true
 };
-
-const INVITATION_STATUSES: readonly CoauthorshipInvitationStatus[] = [
-  'pending',
-  'accepted',
-  'declined'
-];
 
 function effectiveWebPush(stored: string | undefined): WebPushPreferences {
   const choices = stored
@@ -58,11 +53,7 @@ function effectiveWebPush(stored: string | undefined): WebPushPreferences {
 
 export async function profile(db: Database, userId: number): Promise<Profile> {
   const [[user], [preference]] = await db.batch([
-    db
-      .select({ ...userColumns, uid: users.uid, ...profileCounts(db) })
-      .from(users)
-      .leftJoin(images, eq(images.id, users.imageId))
-      .where(eq(users.id, userId)),
+    profileQuery(db, userId),
     db
       .select({ webPush: userPreferences.webPush })
       .from(userPreferences)
@@ -70,18 +61,8 @@ export async function profile(db: Database, userId: number): Promise<Profile> {
       .orderBy(desc(userPreferences.id))
       .limit(1)
   ]);
-  const { image, image_url } = primaryImage(user.imageUrl ?? undefined);
-
   return {
-    id: user.id,
-    uid: user.uid,
-    name: user.name ?? '',
-    biography: user.biography,
-    image,
-    image_url,
-    maps_count: user.mapsCount,
-    bookmarked_maps_count: user.bookmarkedMapsCount,
-    pins_count: user.pinsCount,
+    ...profileAttributes(user),
     push_notification: effectiveWebPush(preference?.webPush)
   };
 }
@@ -94,7 +75,6 @@ export async function pendingInvitations(
     .select({
       id: coauthorshipInvitations.id,
       inviterId: coauthorshipInvitations.inviterId,
-      status: coauthorshipInvitations.status,
       createdAt: coauthorshipInvitations.createdAt,
       updatedAt: coauthorshipInvitations.updatedAt,
       mapId: maps.id,
@@ -147,7 +127,7 @@ export async function pendingInvitations(
           )
         },
         inviter: userSummary(inviter),
-        status: INVITATION_STATUSES[row.status] ?? 'pending',
+        status: 'pending',
         created_at: row.createdAt,
         updated_at: row.updatedAt
       }
@@ -167,39 +147,18 @@ async function accountsPage(
 ): Promise<ApiCursorPage<ModeratedAccount>> {
   const latestId = sql<number>`max(${query.recordId})`;
   const rows = await db
-    .select({ accountId: query.accountId, latestId })
+    .select({ ...userColumns, latestId })
     .from(query.table)
+    .innerJoin(users, eq(users.id, query.accountId))
+    .leftJoin(images, eq(images.id, users.imageId))
     .where(query.condition)
     .groupBy(query.accountId)
     .having(cursor === null ? undefined : sql`${latestId} < ${cursor}`)
     .orderBy(sql`${latestId} DESC`)
     .limit(ACCOUNTS_PER_PAGE);
-  const accounts = await usersQuery(
-    db,
-    rows.map((row) => row.accountId)
-  );
-  const accountsById = new Map(accounts.map((user) => [user.id, user]));
 
   return {
-    data: rows.flatMap((row) => {
-      const account = accountsById.get(row.accountId);
-
-      if (!account) {
-        return [];
-      }
-
-      const { image, image_url } = primaryImage(account.imageUrl ?? undefined);
-
-      return [
-        {
-          id: account.id,
-          name: account.name ?? '',
-          biography: account.biography,
-          image,
-          image_url
-        }
-      ];
-    }),
+    data: rows.map(chapterAuthor),
     next_cursor:
       rows.length === ACCOUNTS_PER_PAGE ? String(rows.at(-1)?.latestId) : null
   };
