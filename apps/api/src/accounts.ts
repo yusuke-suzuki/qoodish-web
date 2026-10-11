@@ -79,15 +79,25 @@ export async function updateWebPush(
   changes: Record<string, unknown>
 ): Promise<WebPushPreferences> {
   const [preference] = await latestPreferenceQuery(db, userId);
+  const current = effectiveWebPush(preference?.webPush);
   const snapshot: Record<string, unknown> = {
-    ...effectiveWebPush(preference?.webPush),
+    ...current,
     ...Object.fromEntries(
-      Object.entries(changes).filter(([key]) => key in WEB_PUSH_DEFAULTS)
+      Object.entries(changes).filter(([key]) =>
+        Object.hasOwn(WEB_PUSH_DEFAULTS, key)
+      )
     )
   };
 
   if (!Object.values(snapshot).every((value) => typeof value === 'boolean')) {
     throw ApiError.invalid(['web_push_invalid']);
+  }
+
+  if (
+    preference &&
+    Object.entries(current).every(([key, value]) => snapshot[key] === value)
+  ) {
+    return current;
   }
 
   const now = currentTimestamp();

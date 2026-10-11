@@ -5,8 +5,8 @@ import type {
   UserSummary,
   ViewerRelation
 } from '@qoodish/api-contract';
-import { and, eq, inArray, type SQL, sql } from 'drizzle-orm';
-import { currentTimestamp, type Database, inIds } from './db/client.ts';
+import { and, eq, inArray, max, type SQL } from 'drizzle-orm';
+import { currentTimestamp, type Database, inIds, scalar } from './db/client.ts';
 import {
   bookmarks,
   images,
@@ -22,7 +22,8 @@ import type { Locale, MessageKey } from './i18n/index.ts';
 import { primaryImage } from './images.ts';
 import { recordDefaultJournal } from './journals.ts';
 import { recordDefaultMap } from './maps.ts';
-import { characters, first, toId } from './routing.ts';
+import { first, toId } from './routing.ts';
+import { characters } from './text.ts';
 import type { Viewer } from './visibility.ts';
 
 const USER_BIOGRAPHY_LIMIT = 160;
@@ -75,7 +76,12 @@ function userRevisionStatements(
     db
       .update(users)
       .set({
-        currentRevisionId: sql`(SELECT max(${userRevisions.id}) FROM ${userRevisions} WHERE ${userRevisions.userId} = ${userId})`
+        currentRevisionId: scalar(
+          db
+            .select({ id: max(userRevisions.id) })
+            .from(userRevisions)
+            .where(eq(userRevisions.userId, userId))
+        )
       })
       .where(eq(users.id, userId))
   ] as const;
@@ -98,18 +104,17 @@ function uniqueViolation(error: unknown, column: string): boolean {
 async function createAccount(
   db: Database,
   { uid, name, email, locale }: SignInClaims
-): Promise<void> {
-  const content: UserContent = { name: name ?? null, biography: null };
-  const errors = userErrors(content);
-
-  if (errors.length > 0 || name === undefined) {
-    throw ApiError.invalid(errors);
+): Promise<number> {
+  if (name === undefined || blank(name)) {
+    throw ApiError.invalid(['user_name_required']);
   }
 
+  const content = { name, biography: null };
   const now = currentTimestamp();
-  const userId = sql`(SELECT ${users.id} FROM ${users} WHERE ${users.uid} = ${uid})`;
-
-  await db.batch([
+  const userId = scalar(
+    db.select({ id: users.id }).from(users).where(eq(users.uid, uid))
+  );
+  const results = await db.batch([
     db.insert(users).values({
       uid,
       ...content,
@@ -120,8 +125,11 @@ async function createAccount(
     }),
     ...userRevisionStatements(db, { userId, content, now }),
     ...recordDefaultMap(db, { userId, ownerName: name, now }),
-    ...recordDefaultJournal(db, { userId, ownerName: name, now })
+    ...recordDefaultJournal(db, { userId, ownerName: name, now }),
+    accountQuery(db, uid)
   ]);
+
+  return first(results[results.length - 1] as { id: number }[]).id;
 }
 
 async function refreshAccount(
@@ -163,7 +171,7 @@ export async function signIn(
   }
 
   try {
-    await createAccount(db, claims);
+    return await createAccount(db, claims);
   } catch (error) {
     if (!uniqueViolation(error, 'users.uid')) {
       throw error;
@@ -173,8 +181,6 @@ export async function signIn(
     await refreshAccount(db, user, claims);
     return user.id;
   }
-
-  return first(await accountQuery(db, claims.uid)).id;
 }
 
 export async function updateProfile(

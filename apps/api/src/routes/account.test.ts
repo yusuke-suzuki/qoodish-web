@@ -356,6 +356,32 @@ describe('PUT /me/preferences', () => {
     expect(rows).toHaveLength(2);
   });
 
+  it('appends nothing when the choices stay the same and ignores other keys', async () => {
+    const before = await db()
+      .select()
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, ids.bob));
+    const { status, body } = await send(
+      'PUT',
+      '/me/preferences',
+      { sub: 'bob' },
+      { body: { web_push: { liked: false, constructor: true } } }
+    );
+    const after = await db()
+      .select()
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, ids.bob));
+
+    expect(status).toBe(200);
+    expect(Object.keys(body.web_push)).toEqual([
+      'coauthor_invited',
+      'liked',
+      'comment',
+      'published'
+    ]);
+    expect(after).toHaveLength(before.length);
+  });
+
   it('answers 422 for a choice that is not a boolean and 400 without choices', async () => {
     const invalid = await send(
       'PUT',

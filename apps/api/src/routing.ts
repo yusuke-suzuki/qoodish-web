@@ -4,30 +4,25 @@ import type { z } from 'zod';
 import { before, decodeCursor, type FeedCursor } from './cursor.ts';
 import { ApiError } from './errors.ts';
 
-export function jsonInput<Schema extends z.ZodType>(schema: Schema) {
-  return validator('json', (value): z.output<Schema> => {
-    const parsed = schema.safeParse(value);
+function parse<Schema extends z.ZodType>(
+  schema: Schema,
+  value: unknown
+): z.output<Schema> {
+  const parsed = schema.safeParse(value);
 
-    if (!parsed.success) {
-      throw new ApiError('BadRequest');
-    }
-
-    return parsed.data;
-  });
-}
-
-export function characters(text: string): number {
-  return [...text].length;
-}
-
-export function truncate(text: string, length: number): string {
-  const omission = '...';
-
-  if (characters(text) <= length) {
-    return text;
+  if (!parsed.success) {
+    throw new ApiError('BadRequest');
   }
 
-  return `${[...text].slice(0, length - omission.length).join('')}${omission}`;
+  return parsed.data;
+}
+
+export function jsonInput<Schema extends z.ZodType>(schema: Schema) {
+  return validator('json', (value): z.output<Schema> => parse(schema, value));
+}
+
+export function paramInput<Schema extends z.ZodType>(schema: Schema) {
+  return validator('param', (value): z.output<Schema> => parse(schema, value));
 }
 
 export function toId(param: string | undefined): number {

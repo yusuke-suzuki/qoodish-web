@@ -37,13 +37,15 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
-import { first, jsonInput, toId } from '../routing.ts';
+import { first, jsonInput, paramInput, toId } from '../routing.ts';
 import { updateProfile } from '../users.ts';
 import { publicMap, type Viewer, visible } from '../visibility.ts';
 
 const app = new Hono<ViewerEnv>();
 
 app.use(authenticateUser);
+
+const REGISTRATION_TOKEN_LIMIT = 4096;
 
 const profileChanges = z.object({
   name: z.string().optional(),
@@ -60,6 +62,10 @@ const preferenceChanges = z.object({
   web_push: z
     .record(z.string(), z.unknown())
     .refine((changes) => Object.keys(changes).length > 0)
+});
+
+const deviceParams = z.object({
+  token: z.string().min(1).max(REGISTRATION_TOKEN_LIMIT)
 });
 
 async function ownJournal(db: Database, viewer: Viewer): Promise<Journal> {
@@ -113,21 +119,26 @@ app.on(
     })
 );
 
-app.on(['PUT', 'PATCH'], '/devices/:token', async (c) => {
-  await registerDevice(
-    database(c.env.DB),
-    c.get('viewer').id,
-    c.req.param('token')
-  );
+app.on(
+  ['PUT', 'PATCH'],
+  '/devices/:token',
+  paramInput(deviceParams),
+  async (c) => {
+    await registerDevice(
+      database(c.env.DB),
+      c.get('viewer').id,
+      c.req.valid('param').token
+    );
 
-  return c.body(null, 204);
-});
+    return c.body(null, 204);
+  }
+);
 
-app.delete('/devices/:token', async (c) => {
+app.delete('/devices/:token', paramInput(deviceParams), async (c) => {
   await unregisterDevice(
     database(c.env.DB),
     c.get('viewer').id,
-    c.req.param('token')
+    c.req.valid('param').token
   );
 
   return c.body(null, 204);
