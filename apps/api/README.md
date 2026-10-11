@@ -15,9 +15,17 @@ The HTTP contract is the one the Rails API serves today: the same paths, the sam
 
 Every `/guest/*` and `/guest/v2/*` read Rails serves is served here (`src/guest/`), with the visibility rules of the Rails scopes: a map is public when it is published, not private and not removed by its latest moderation decision; pins and chapters are public when they are published, not removed and on a public map. Each list is read with one query for its rows and one D1 `batch` for everything the serializer needs (authors, images, likes, comments), with id lists bound as a single JSON array (`inIds`) so that no query runs into D1's 100-parameter limit.
 
+## Signed-in endpoints
+
+The reads Rails serves to a signed-in user outside `/me` (`/users`, `/maps`, `/pins`, `/chapters`, `/journals` and `/v2`) are served from `src/viewer/`. `authenticateUser` resolves the verified token's `sub` to the user with that `uid`, loading the user's active blocks in both directions and active mutes in the same D1 `batch`, and answers `401` when no user has it, as Rails' `authenticate_user!` does. The Rails scopes that depend on the viewer (`referenceable_by`, `related_to`, `readable_by`, `feed_for`, `not_blocking`, `not_blocked_by`, `not_muted_by`) are in `src/visibility.ts` and `src/viewer/context.ts` under the same names, and the serializers add the viewer state Rails' partials write: `editable`, `liked`, `bookmarking`, `bookmarkable` and the author's `blocking` and `muting`.
+
+`GET /pins/:id/likes` and `GET /pins/:id/comments/:id/likes` have no Rails view, so Rails answers `204` once the pin and comment are found, and so does the worker.
+
+## Differences from Rails
+
 Some behaviours deliberately differ from Rails:
 
-- Search results are the 20 newest matches, newest first. Rails ranked matches by MySQL's relevance score before taking 20, which FTS5 cannot reproduce, so a term with more than 20 matches returns a different set, not only a different order. The comparison tool reports such searches as differences.
+- Search results, including `GET /users?q=`, are the 20 newest matches, newest first. Rails ranked matches by MySQL's relevance score before taking 20, which FTS5 cannot reproduce, so a term with more than 20 matches returns a different set, not only a different order. The comparison tool reports such searches as differences.
 - A search term that spans punctuation, such as `華味（ファーウェイ）` or `マン's`, finds the records that contain it. MySQL's ngram index found nothing for such a term, even for the exact name of a record, so the comparison tool reports these searches as differences.
 - Rows that share a `created_at` are ordered by id, where MySQL returned them in whatever order the chosen index produced. The comparison tool accounts for this.
 - A user whose `name` is `NULL` is serialized with `""`, where Rails wrote `null`. `User` validates the presence of `name`, so only rows older than that validation could hold `NULL`, and the API contract types `name` as a string, which `apps/web` relies on.
@@ -75,6 +83,14 @@ The export reads the tables one after another, so it needs a database nobody wri
 ```bash
 pnpm compare --rails https://api-dev.qoodish.com --worker https://api-next-dev.qoodish.com
 pnpm compare --rails ... --worker ... --paths recorded-paths.txt --verbose
+```
+
+With a Firebase ID token in `QOODISH_ID_TOKEN`, it also compares the signed-in reads as the user the token belongs to: the signed-in listings and feeds, the signed-in variant of every detail and nested list it crawled, `/users/:id/journal`, `/pins/:id/likes` and `/users?q=`. Both APIs accept the same token, since both verify it against the same Firebase project. On the web app the ID token is the value of the `__session` cookie, and it expires after an hour; read it without echoing it so it stays out of the shell history:
+
+```bash
+read -rs QOODISH_ID_TOKEN && export QOODISH_ID_TOKEN
+pnpm compare --rails https://api-dev.qoodish.com --worker https://api-next-dev.qoodish.com
+unset QOODISH_ID_TOKEN
 ```
 
 Bodies are compared as parsed JSON. Searches and the `active` and `popular` rankings are compared as sets of records, `recommend` by status only, and everything else in order. `--paths` adds recorded `/guest/...` paths, one per line, and `--verbose` lists the paths that only differ in record or key order. The command exits non-zero when any path differs.

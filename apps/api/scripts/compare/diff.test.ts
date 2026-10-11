@@ -52,6 +52,7 @@ describe('compare', () => {
   it('compares rankings and searches as sets of ids', () => {
     expect(comparisonFor('/guest/maps?popular=true')).toBe('unordered');
     expect(comparisonFor('/guest/pins?input=ramen')).toBe('unordered');
+    expect(comparisonFor('/users?q=alice')).toBe('unordered');
     expect(comparisonFor('/guest/maps?recommend=true')).toBe('status');
     expect(comparisonFor('/guest/maps/1')).toBe('exact');
 

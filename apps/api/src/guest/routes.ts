@@ -19,30 +19,26 @@ import {
 } from 'drizzle-orm';
 import { Hono } from 'hono';
 import type { AppEnv } from '../app.ts';
-import { before, decodeCursor, FEED_PER_PAGE, nextCursor } from '../cursor.ts';
-import { database, inIds } from '../db/client.ts';
+import { FEED_PER_PAGE, nextCursor } from '../cursor.ts';
+import { database } from '../db/client.ts';
 import {
   bookmarks,
   chapters,
-  coauthorships,
   comments,
   featuredMaps,
-  images,
   maps,
-  pinProperties,
-  pinPropertyOptions,
   pins,
-  users,
   votes
 } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
+import { feedPage, first, present, toId } from '../routing.ts';
 import { searchCondition } from '../search.ts';
 import { publicChapter, publicMap, publicPin } from '../visibility.ts';
 import { chapterSearchResults, guestChapters } from './chapters.ts';
 import { commentsQuery, guestComment } from './comments.ts';
-import { guestMaps } from './maps.ts';
+import { coauthorsOf, guestMaps, pinPropertiesOf } from './maps.ts';
 import { guestPins } from './pins.ts';
-import { guestProfile, userColumns, userSummary } from './users.ts';
+import { guestProfile } from './users.ts';
 
 const SEARCH_LIMIT = 20;
 const RECENT_MAPS_LIMIT = 12;
@@ -50,26 +46,6 @@ const ACTIVE_MAPS_LIMIT = 12;
 const POPULAR_LIMIT = 10;
 const RECOMMENDED_MAPS_LIMIT = 10;
 const RECENT_PINS_LIMIT = 8;
-
-function toId(param: string | undefined): number {
-  const id = Number.parseInt(param ?? '', 10);
-
-  return Number.isNaN(id) ? 0 : id;
-}
-
-function present(value: string | undefined): value is string {
-  return value !== undefined && value.trim().length > 0;
-}
-
-function first<Row>(rows: readonly Row[]): Row {
-  const [row] = rows;
-
-  if (row === undefined) {
-    throw new ApiError('NotFound');
-  }
-
-  return row;
-}
 
 export const guest = new Hono<AppEnv>();
 
@@ -203,38 +179,7 @@ guest.get('/maps/:mapId/coauthors', async (c) => {
     .from(maps)
     .where(and(publicMap(), eq(maps.id, toId(c.req.param('mapId')))));
 
-  if (!map) {
-    return c.json<GuestCoauthor[]>([]);
-  }
-
-  const columns = {
-    ...userColumns,
-    createdAt: users.createdAt,
-    updatedAt: users.updatedAt
-  };
-  const [owners, coauthors] = await db.batch([
-    db
-      .select(columns)
-      .from(users)
-      .leftJoin(images, eq(images.id, users.imageId))
-      .where(eq(users.id, map.userId)),
-    db
-      .select(columns)
-      .from(coauthorships)
-      .innerJoin(users, eq(users.id, coauthorships.userId))
-      .leftJoin(images, eq(images.id, users.imageId))
-      .where(eq(coauthorships.mapId, map.id))
-      .orderBy(asc(coauthorships.userId))
-  ]);
-
-  return c.json<GuestCoauthor[]>(
-    [...owners, ...coauthors].map((user) => ({
-      ...userSummary(user),
-      author: user.id === map.userId,
-      created_at: user.createdAt,
-      updated_at: user.updatedAt
-    }))
-  );
+  return c.json<GuestCoauthor[]>(map ? await coauthorsOf(db, map) : []);
 });
 
 guest.get('/maps/:mapId/chapters', async (c) => {
@@ -262,51 +207,8 @@ guest.get('/maps/:mapId/pin_properties', async (c) => {
       .from(maps)
       .where(and(publicMap(), eq(maps.id, toId(c.req.param('mapId')))))
   );
-  const properties = await db
-    .select()
-    .from(pinProperties)
-    .where(
-      and(
-        eq(pinProperties.mapId, map.id),
-        eq(pinProperties.status, 'published')
-      )
-    )
-    .orderBy(asc(pinProperties.position), asc(pinProperties.id));
-  const options =
-    properties.length === 0
-      ? []
-      : await db
-          .select()
-          .from(pinPropertyOptions)
-          .where(
-            and(
-              inIds(
-                pinPropertyOptions.pinPropertyId,
-                properties.map((property) => property.id)
-              ),
-              eq(pinPropertyOptions.status, 'published')
-            )
-          )
-          .orderBy(
-            asc(pinPropertyOptions.position),
-            asc(pinPropertyOptions.id)
-          );
 
-  return c.json<PinProperty[]>(
-    properties.map((property) => ({
-      id: property.id,
-      name: property.name,
-      multiple: property.multiple,
-      position: property.position,
-      options: options
-        .filter((option) => option.pinPropertyId === property.id)
-        .map((option) => ({
-          id: option.id,
-          name: option.name,
-          position: option.position
-        }))
-    }))
-  );
+  return c.json<PinProperty[]>(await pinPropertiesOf(db, map.id));
 });
 
 guest.get('/pins', async (c) => {
@@ -504,17 +406,6 @@ guest.get('/users/:userId/chapters', async (c) => {
 
   return c.json<GuestChapter[]>(await guestChapters(db, rows));
 });
-
-function feedPage(
-  cursorToken: string | undefined,
-  createdAt: typeof pins.createdAt | typeof chapters.createdAt,
-  id: typeof pins.id | typeof chapters.id,
-  condition: SQL
-): SQL {
-  return cursorToken
-    ? (and(condition, before(decodeCursor(cursorToken), createdAt, id)) as SQL)
-    : condition;
-}
 
 export const guestV2 = new Hono<AppEnv>();
 

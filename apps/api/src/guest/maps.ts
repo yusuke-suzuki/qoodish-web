@@ -1,9 +1,21 @@
-import type { GuestMap } from '@qoodish/api-contract';
-import { eq } from 'drizzle-orm';
+import type {
+  GuestCoauthor,
+  GuestMap,
+  PinProperty
+} from '@qoodish/api-contract';
+import { and, asc, eq } from 'drizzle-orm';
 import { type Database, inIds, uniqueIds } from '../db/client.ts';
-import { images, mapRevisionImages, type maps } from '../db/schema.ts';
+import {
+  coauthorships,
+  images,
+  mapRevisionImages,
+  type maps,
+  pinProperties,
+  pinPropertyOptions,
+  users
+} from '../db/schema.ts';
 import { primaryImage } from '../images.ts';
-import { type UserRow, userSummary, usersQuery } from './users.ts';
+import { type UserRow, userColumns, userSummary, usersQuery } from './users.ts';
 
 export type MapRow = typeof maps.$inferSelect;
 
@@ -28,6 +40,84 @@ export function mapImagesQuery(db: Database, revisionIds: readonly number[]) {
     .innerJoin(images, eq(images.id, mapRevisionImages.imageId))
     .where(inIds(mapRevisionImages.mapRevisionId, revisionIds))
     .orderBy(images.id);
+}
+
+export async function coauthorsOf(
+  db: Database,
+  map: { id: number; userId: number }
+): Promise<GuestCoauthor[]> {
+  const columns = {
+    ...userColumns,
+    createdAt: users.createdAt,
+    updatedAt: users.updatedAt
+  };
+  const [owners, coauthors] = await db.batch([
+    db
+      .select(columns)
+      .from(users)
+      .leftJoin(images, eq(images.id, users.imageId))
+      .where(eq(users.id, map.userId)),
+    db
+      .select(columns)
+      .from(coauthorships)
+      .innerJoin(users, eq(users.id, coauthorships.userId))
+      .leftJoin(images, eq(images.id, users.imageId))
+      .where(eq(coauthorships.mapId, map.id))
+      .orderBy(asc(coauthorships.userId))
+  ]);
+
+  return [...owners, ...coauthors].map((user) => ({
+    ...userSummary(user),
+    author: user.id === map.userId,
+    created_at: user.createdAt,
+    updated_at: user.updatedAt
+  }));
+}
+
+export async function pinPropertiesOf(
+  db: Database,
+  mapId: number
+): Promise<PinProperty[]> {
+  const properties = await db
+    .select()
+    .from(pinProperties)
+    .where(
+      and(eq(pinProperties.mapId, mapId), eq(pinProperties.status, 'published'))
+    )
+    .orderBy(asc(pinProperties.position), asc(pinProperties.id));
+  const options =
+    properties.length === 0
+      ? []
+      : await db
+          .select()
+          .from(pinPropertyOptions)
+          .where(
+            and(
+              inIds(
+                pinPropertyOptions.pinPropertyId,
+                properties.map((property) => property.id)
+              ),
+              eq(pinPropertyOptions.status, 'published')
+            )
+          )
+          .orderBy(
+            asc(pinPropertyOptions.position),
+            asc(pinPropertyOptions.id)
+          );
+
+  return properties.map((property) => ({
+    id: property.id,
+    name: property.name,
+    multiple: property.multiple,
+    position: property.position,
+    options: options
+      .filter((option) => option.pinPropertyId === property.id)
+      .map((option) => ({
+        id: option.id,
+        name: option.name,
+        position: option.position
+      }))
+  }));
 }
 
 export async function guestMaps(

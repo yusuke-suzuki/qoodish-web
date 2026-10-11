@@ -3,18 +3,20 @@ import type {
   ChapterStatus,
   GuestChapter,
   ImageVariants,
-  MapFeatureCollection
+  JournalRef,
+  MapFeatureCollection,
+  MapRef
 } from '@qoodish/api-contract';
-import { and, asc, count, eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { type Database, inIds, uniqueIds } from '../db/client.ts';
 import {
   chapterRevisionImages,
   type chapters,
   images,
-  maps,
-  votes
+  maps
 } from '../db/schema.ts';
 import { primaryImage } from '../images.ts';
+import { type Likes, likesByVotable, likesQuery } from '../votes.ts';
 import { firstImageUrls } from './maps.ts';
 import {
   chapterAuthor,
@@ -58,10 +60,20 @@ function revisionImageUrl(
   return revisionId === null ? undefined : urls.get(revisionId);
 }
 
-export async function guestChapters(
+export type ChapterParts = {
+  row: ChapterRow;
+  author: UserRow;
+  map: MapRef | null;
+  journal: JournalRef | null;
+  imageUrl: string | undefined;
+  likes: Likes;
+};
+
+export async function loadChapters(
   db: Database,
-  rows: readonly ChapterRow[]
-): Promise<GuestChapter[]> {
+  rows: readonly ChapterRow[],
+  viewerId?: number
+): Promise<ChapterParts[]> {
   if (rows.length === 0) {
     return [];
   }
@@ -76,19 +88,12 @@ export async function guestChapters(
         db,
         uniqueIds(rows.map((row) => row.currentRevisionId))
       ),
-      db
-        .select({ chapterId: votes.votableId, likes: count() })
-        .from(votes)
-        .where(
-          and(
-            eq(votes.votableType, 'Chapter'),
-            inIds(
-              votes.votableId,
-              rows.map((row) => row.id)
-            )
-          )
-        )
-        .groupBy(votes.votableId)
+      likesQuery(
+        db,
+        'Chapter',
+        rows.map((row) => row.id),
+        viewerId
+      )
     ]
   );
 
@@ -100,39 +105,68 @@ export async function guestChapters(
   );
   const mapsById = new Map(mapRefs.map((map) => [map.id, map]));
   const imageUrls = firstImageUrls(revisionImages);
-  const likesByChapter = new Map(
-    likes.map((row) => [row.chapterId, row.likes])
-  );
+  const likesOf = likesByVotable(likes);
 
   return rows.flatMap((row) => {
     const author = authorsById.get(row.userId);
-    const map = row.mapId === null ? undefined : mapsById.get(row.mapId);
 
-    if (!author || !map) {
+    if (!author) {
       return [];
     }
 
+    const map = row.mapId === null ? undefined : mapsById.get(row.mapId);
     const journal = journalsByUser.get(row.userId);
 
     return [
       {
-        id: row.id,
-        map_id: map.id,
-        journey_id: row.journeyId,
-        title: row.title,
-        status: row.status as ChapterStatus,
-        content: JSON.parse(row.content) as ChapterContent,
-        map_features: JSON.parse(row.mapFeatures) as MapFeatureCollection,
-        ...primaryImage(revisionImageUrl(imageUrls, row.currentRevisionId)),
-        author: chapterAuthor(author),
-        map: { id: map.id, name: map.name, private: map.private as boolean },
+        row,
+        author,
+        map: map
+          ? { id: map.id, name: map.name, private: map.private as boolean }
+          : null,
         journal: journal ? { id: journal.id, title: journal.title } : null,
-        likes_count: likesByChapter.get(row.id) ?? 0,
-        created_at: row.createdAt,
-        updated_at: row.updatedAt
+        imageUrl: revisionImageUrl(imageUrls, row.currentRevisionId),
+        likes: likesOf(row.id)
       }
     ];
   });
+}
+
+export function chapterAttributes(row: ChapterRow) {
+  return {
+    id: row.id,
+    map_id: row.mapId,
+    journey_id: row.journeyId,
+    title: row.title,
+    status: row.status as ChapterStatus,
+    content: JSON.parse(row.content) as ChapterContent,
+    map_features: JSON.parse(row.mapFeatures) as MapFeatureCollection
+  };
+}
+
+export async function guestChapters(
+  db: Database,
+  rows: readonly ChapterRow[]
+): Promise<GuestChapter[]> {
+  const parts = await loadChapters(db, rows);
+
+  return parts.flatMap(({ row, author, map, journal, imageUrl, likes }) =>
+    map
+      ? [
+          {
+            ...chapterAttributes(row),
+            map_id: map.id,
+            ...primaryImage(imageUrl),
+            author: chapterAuthor(author),
+            map,
+            journal,
+            likes_count: likes.likes,
+            created_at: row.createdAt,
+            updated_at: row.updatedAt
+          }
+        ]
+      : []
+  );
 }
 
 export async function chapterSearchResults(
