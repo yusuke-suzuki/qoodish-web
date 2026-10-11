@@ -18,6 +18,7 @@ Every `/guest/*` and `/guest/v2/*` read Rails serves is served here (`src/guest/
 Some behaviours deliberately differ from Rails:
 
 - Search results are the 20 newest matches, newest first. Rails ranked matches by MySQL's relevance score before taking 20, which FTS5 cannot reproduce, so a term with more than 20 matches returns a different set, not only a different order. The comparison tool reports such searches as differences.
+- A search term that spans punctuation, such as `華味（ファーウェイ）` or `マン's`, finds the records that contain it. MySQL's ngram index found nothing for such a term, even for the exact name of a record, so the comparison tool reports these searches as differences.
 - Rows that share a `created_at` are ordered by id, where MySQL returned them in whatever order the chosen index produced. The comparison tool accounts for this.
 - A user whose `name` is `NULL` is serialized with `""`, where Rails wrote `null`. `User` validates the presence of `name`, so only rows older than that validation could hold `NULL`, and the API contract types `name` as a string, which `apps/web` relies on.
 
