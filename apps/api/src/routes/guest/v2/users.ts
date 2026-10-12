@@ -7,12 +7,7 @@ import { FEED_PER_PAGE, nextCursor } from '../../../cursor.ts';
 import { pins } from '../../../db/schema.ts';
 import { guestPins } from '../../../pins.ts';
 import { feedPage } from '../../../routing.ts';
-import {
-  feedCursor,
-  id,
-  pathParams,
-  queryParams
-} from '../../../validation.ts';
+import { feedCursorQuery, id, pathParams } from '../../../validation.ts';
 import { publicPin } from '../../../visibility.ts';
 
 const app = new Hono<AppEnv>();
@@ -20,7 +15,7 @@ const app = new Hono<AppEnv>();
 app.get(
   '/:userId/pins',
   pathParams(z.object({ userId: id })),
-  queryParams(z.object({ cursor: feedCursor })),
+  feedCursorQuery,
   async (c) => {
     const db = c.get('db');
     const rows = await db

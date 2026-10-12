@@ -1,18 +1,17 @@
 import type { ApiCursorPage, GuestPin } from '@qoodish/api-contract';
 import { desc } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { z } from 'zod';
 import type { AppEnv } from '../../../app.ts';
 import { FEED_PER_PAGE, nextCursor } from '../../../cursor.ts';
 import { pins } from '../../../db/schema.ts';
 import { guestPins } from '../../../pins.ts';
 import { feedPage } from '../../../routing.ts';
-import { feedCursor, queryParams } from '../../../validation.ts';
+import { feedCursorQuery } from '../../../validation.ts';
 import { publicPin } from '../../../visibility.ts';
 
 const app = new Hono<AppEnv>();
 
-app.get('/', queryParams(z.object({ cursor: feedCursor })), async (c) => {
+app.get('/', feedCursorQuery, async (c) => {
   const db = c.get('db');
   const rows = await db
     .select()
