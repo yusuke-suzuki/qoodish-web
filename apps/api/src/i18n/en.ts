@@ -50,6 +50,8 @@ export const en = {
     'You cannot bookmark a map by an account you have blocked or that has blocked you.',
   invitation_invitee_already_author:
     'The author cannot be invited as a coauthor.',
+  invitation_blocked_interaction:
+    "You cannot invite an account as a coauthor when you or the map's author has blocked it or been blocked by it.",
   duplicate_pending_invitation:
     'A pending invitation already exists for this user.',
 
