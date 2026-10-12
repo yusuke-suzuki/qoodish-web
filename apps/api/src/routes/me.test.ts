@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:test';
-import { eq } from 'drizzle-orm';
+import { asc, eq, inArray } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../app.ts';
 import { database } from '../db/client.ts';
@@ -516,6 +516,116 @@ describe('GET /v2/me/notifications', () => {
     expect(await ids_of('/v2/me/notifications?read=true', 'alice')).toEqual([
       10, 6, 5, 4, 3
     ]);
+  });
+});
+
+describe('PUT /me/notifications/:id', () => {
+  async function read(method: string, id: number, uid: string) {
+    const token = await signer.sign(
+      firebaseClaims(env.GOOGLE_PROJECT_ID, { sub: uid })
+    );
+    const res = await app.request(
+      `/me/notifications/${id}`,
+      { method, headers: { authorization: `Bearer ${token}` } },
+      env
+    );
+
+    return {
+      status: res.status,
+      body: (await res.json()) as { updated_at: string }
+    };
+  }
+
+  async function unread(): Promise<number[]> {
+    const rows = await database(env.DB)
+      .select({ id: notifications.id })
+      .from(notifications)
+      .where(eq(notifications.read, false));
+
+    return rows.map((row) => row.id).sort((a, b) => a - b);
+  }
+
+  async function stateOf(ids: number[]) {
+    return database(env.DB)
+      .select({
+        id: notifications.id,
+        read: notifications.read,
+        updatedAt: notifications.updatedAt
+      })
+      .from(notifications)
+      .where(inArray(notifications.id, ids))
+      .orderBy(asc(notifications.id));
+  }
+
+  it('reads a notification with the earlier ones of its group, flagged or not', async () => {
+    await database(env.DB)
+      .update(notifications)
+      .set({ read: null })
+      .where(eq(notifications.id, 1));
+
+    const { status, body } = await read('PUT', 3, 'alice');
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: 3,
+      key: 'liked',
+      click_action: `/pins/${ids.shoyu}`,
+      notifiable: { id: ids.shoyu, type: 'pin' },
+      notifier: bob,
+      read: true,
+      created_at: at(10, 3)
+    });
+    expect(body.updated_at > at(10, 3)).toBe(true);
+    expect(await stateOf([1, 2, 3])).toEqual(
+      [1, 2, 3].map((id) => ({ id, read: true, updatedAt: body.updated_at }))
+    );
+    expect(await unread()).toEqual([5, 6, 7, 8, 9, 10]);
+  });
+
+  it('reads a like on a comment, linking to the post it was left on', async () => {
+    const { body } = await read('PUT', 5, 'alice');
+
+    expect(body).toMatchObject({
+      id: 5,
+      click_action: `/pins/${ids.shoyu}`,
+      notifiable: {
+        id: ids.pinComment,
+        type: 'comment',
+        image_url: `${IMAGE_BASE}/shoyu/public`
+      },
+      read: true
+    });
+  });
+
+  it('marks a notification read even when its flag was never set', async () => {
+    await database(env.DB)
+      .update(notifications)
+      .set({ read: null })
+      .where(eq(notifications.id, 6));
+
+    expect((await read('PUT', 6, 'alice')).body).toMatchObject({
+      id: 6,
+      read: true
+    });
+  });
+
+  it('leaves a notification that is already read as it was', async () => {
+    const { body } = await read('PATCH', 4, 'alice');
+
+    expect(body).toMatchObject({ id: 4, read: true, updated_at: at(10, 4) });
+  });
+
+  it('answers 404 for notifications the user is not shown', async () => {
+    const before = await unread();
+    const statuses = await Promise.all([
+      read('PUT', 7, 'alice'),
+      read('PUT', 8, 'alice'),
+      read('PUT', 9, 'alice'),
+      read('PUT', 10, 'bob')
+    ]);
+
+    expect(statuses.map(({ status }) => status)).toEqual([404, 404, 404, 404]);
+    expect(await unread()).toEqual(before);
   });
 });
 

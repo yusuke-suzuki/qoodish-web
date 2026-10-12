@@ -1,6 +1,7 @@
 import type {
   ApiCursorPage,
   NotifiableType,
+  Notification,
   NotificationGroup,
   NotificationKey,
   UserSummary
@@ -10,12 +11,19 @@ import {
   asc,
   eq,
   inArray,
+  isNull,
+  lte,
   or,
   type SQL,
   type SQLWrapper,
   sql
 } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from './db/client.ts';
+import {
+  currentTimestamp,
+  type Database,
+  inIds,
+  uniqueIds
+} from './db/client.ts';
 import {
   chapterRevisionImages,
   chapters,
@@ -28,8 +36,10 @@ import {
   pins,
   users
 } from './db/schema.ts';
+import { ApiError } from './errors.ts';
 import { primaryImage } from './images.ts';
-import { userSummary, usersQuery } from './users.ts';
+import { first } from './routing.ts';
+import { type UserRow, userSummary, usersQuery } from './users.ts';
 import { shownTo, type Viewer } from './visibility.ts';
 
 const KEYS: readonly NotificationKey[] = [
@@ -155,13 +165,68 @@ export async function notificationGroups(
         .slice(0, NOTIFIERS_LIMIT)
     ])
   );
-  const notifiableIds = (type: string) =>
-    uniqueIds(
-      summaries
-        .filter((summary) => summary.notifiableType === type)
-        .map((summary) => summary.notifiableId)
-    );
-  const commentIds = notifiableIds('Comment');
+  const [records, notifiers, ...notifiableRows] = await db.batch([
+    db
+      .select()
+      .from(notifications)
+      .where(inIds(notifications.id, [...latestIds.values()].flat())),
+    usersQuery(db, uniqueIds(latestByNotifier.map((row) => row.notifierId))),
+    ...notifiableQueries(
+      db,
+      summaries.map((summary) => ({
+        type: summary.notifiableType,
+        id: summary.notifiableId
+      }))
+    )
+  ]);
+
+  const recordsById = new Map(records.map((record) => [record.id, record]));
+  const notifiersById = new Map(notifiers.map((user) => [user.id, user]));
+  const notifiableOf = notifiableResolver(notifiableRows);
+
+  const data = summaries.flatMap((summary): NotificationGroup[] => {
+    const ids = latestIds.get(groupKey(summary)) ?? [];
+    const notification = recordsById.get(ids[0] ?? 0);
+    const notifier =
+      notification?.notifierId == null
+        ? undefined
+        : notifiersById.get(notification.notifierId);
+    const rendered =
+      notification && notifier
+        ? renderNotification(notification, notifier, notifiableOf)
+        : null;
+
+    if (!rendered) {
+      return [];
+    }
+
+    const notifierSummaries = ids.flatMap((notificationId): UserSummary[] => {
+      const notifierId = recordsById.get(notificationId)?.notifierId;
+      const user =
+        notifierId == null ? undefined : notifiersById.get(notifierId);
+
+      return user ? [userSummary(user)] : [];
+    });
+
+    return [
+      {
+        ...rendered,
+        read: summary.read === 1,
+        notifiers: notifierSummaries,
+        notifiers_count: notifiersByGroup.get(groupKey(summary))?.length ?? 0
+      }
+    ];
+  });
+
+  return { data, next_cursor: nextCursor };
+}
+
+type NotifiableRef = { type: string | null; id: number | null };
+
+function notifiableQueries(db: Database, refs: readonly NotifiableRef[]) {
+  const idsOf = (type: string) =>
+    uniqueIds(refs.filter((ref) => ref.type === type).map((ref) => ref.id));
+  const commentIds = idsOf('Comment');
   const commentable = (type: string, column: SQLWrapper) =>
     inArray(
       column,
@@ -176,91 +241,97 @@ export async function notificationGroups(
         )
     );
 
-  const [records, notifiers, pinRows, mapRows, chapterRows, commentRows] =
-    await db.batch([
-      db
-        .select()
-        .from(notifications)
-        .where(inIds(notifications.id, [...latestIds.values()].flat())),
-      usersQuery(db, uniqueIds(latestByNotifier.map((row) => row.notifierId))),
-      db
-        .select({
-          id: pins.id,
-          status: pins.status,
-          imageUrl: firstImageUrl(
-            db
-              .select({ url: images.url })
-              .from(pinRevisionImages)
-              .innerJoin(images, eq(images.id, pinRevisionImages.imageId))
-              .where(
-                eq(pinRevisionImages.pinRevisionId, pins.currentRevisionId)
+  return [
+    db
+      .select({
+        id: pins.id,
+        status: pins.status,
+        imageUrl: firstImageUrl(
+          db
+            .select({ url: images.url })
+            .from(pinRevisionImages)
+            .innerJoin(images, eq(images.id, pinRevisionImages.imageId))
+            .where(eq(pinRevisionImages.pinRevisionId, pins.currentRevisionId))
+            .orderBy(asc(images.id))
+            .limit(1)
+        )
+      })
+      .from(pins)
+      .where(or(inIds(pins.id, idsOf('Pin')), commentable('Pin', pins.id))),
+    db
+      .select({
+        id: maps.id,
+        status: maps.status,
+        imageUrl: firstImageUrl(
+          db
+            .select({ url: images.url })
+            .from(mapRevisionImages)
+            .innerJoin(images, eq(images.id, mapRevisionImages.imageId))
+            .where(eq(mapRevisionImages.mapRevisionId, maps.currentRevisionId))
+            .orderBy(asc(images.id))
+            .limit(1)
+        )
+      })
+      .from(maps)
+      .where(inIds(maps.id, idsOf('Map'))),
+    db
+      .select({
+        id: chapters.id,
+        status: chapters.status,
+        imageUrl: firstImageUrl(
+          db
+            .select({ url: images.url })
+            .from(chapterRevisionImages)
+            .innerJoin(images, eq(images.id, chapterRevisionImages.imageId))
+            .where(
+              eq(
+                chapterRevisionImages.chapterRevisionId,
+                chapters.currentRevisionId
               )
-              .orderBy(asc(images.id))
-              .limit(1)
-          )
-        })
-        .from(pins)
-        .where(
-          or(inIds(pins.id, notifiableIds('Pin')), commentable('Pin', pins.id))
-        ),
-      db
-        .select({
-          id: maps.id,
-          status: maps.status,
-          imageUrl: firstImageUrl(
-            db
-              .select({ url: images.url })
-              .from(mapRevisionImages)
-              .innerJoin(images, eq(images.id, mapRevisionImages.imageId))
-              .where(
-                eq(mapRevisionImages.mapRevisionId, maps.currentRevisionId)
-              )
-              .orderBy(asc(images.id))
-              .limit(1)
-          )
-        })
-        .from(maps)
-        .where(inIds(maps.id, notifiableIds('Map'))),
-      db
-        .select({
-          id: chapters.id,
-          status: chapters.status,
-          imageUrl: firstImageUrl(
-            db
-              .select({ url: images.url })
-              .from(chapterRevisionImages)
-              .innerJoin(images, eq(images.id, chapterRevisionImages.imageId))
-              .where(
-                eq(
-                  chapterRevisionImages.chapterRevisionId,
-                  chapters.currentRevisionId
-                )
-              )
-              .orderBy(asc(images.id))
-              .limit(1)
-          )
-        })
-        .from(chapters)
-        .where(
-          or(
-            inIds(chapters.id, notifiableIds('Chapter')),
-            commentable('Chapter', chapters.id)
-          )
-        ),
-      db
-        .select({
-          id: comments.id,
-          status: comments.status,
-          commentableType: comments.commentableType,
-          commentableId: comments.commentableId
-        })
-        .from(comments)
-        .where(inIds(comments.id, commentIds))
-        .orderBy(asc(comments.id))
-    ]);
+            )
+            .orderBy(asc(images.id))
+            .limit(1)
+        )
+      })
+      .from(chapters)
+      .where(
+        or(
+          inIds(chapters.id, idsOf('Chapter')),
+          commentable('Chapter', chapters.id)
+        )
+      ),
+    db
+      .select({
+        id: comments.id,
+        status: comments.status,
+        commentableType: comments.commentableType,
+        commentableId: comments.commentableId
+      })
+      .from(comments)
+      .where(inIds(comments.id, commentIds))
+      .orderBy(asc(comments.id))
+  ] as const;
+}
 
-  const recordsById = new Map(records.map((record) => [record.id, record]));
-  const notifiersById = new Map(notifiers.map((user) => [user.id, user]));
+type PostRow = Notifiable & { id: number };
+
+type CommentRef = {
+  id: number;
+  status: string;
+  commentableType: string;
+  commentableId: number;
+};
+
+type NotifiableRows = readonly [PostRow[], PostRow[], PostRow[], CommentRef[]];
+
+type Shown = { imageUrl: string | null; linked: { type: string; id: number } };
+
+function notifiableResolver([
+  pinRows,
+  mapRows,
+  chapterRows,
+  commentRows
+]: NotifiableRows) {
   const posts = new Map<string, Notifiable>([
     ...pinRows.map((row) => [`Pin:${row.id}`, row] as const),
     ...mapRows.map((row) => [`Map:${row.id}`, row] as const),
@@ -270,84 +341,125 @@ export async function notificationGroups(
   const present = (post: Notifiable | undefined): post is Notifiable =>
     post !== undefined && post.status !== 'deleted';
 
-  const data = summaries.flatMap((summary): NotificationGroup[] => {
-    const ids = latestIds.get(groupKey(summary)) ?? [];
-    const notification = recordsById.get(ids[0] ?? 0);
-    const notifier =
-      notification?.notifierId == null
-        ? undefined
-        : notifiersById.get(notification.notifierId);
+  return (type: string, id: number): Shown | null => {
+    if (type !== 'Comment') {
+      const post = posts.get(`${type}:${id}`);
 
-    if (
-      !notification ||
-      !notifier ||
-      notification.notifiableType === null ||
-      notification.notifiableId === null
-    ) {
-      return [];
+      return present(post)
+        ? { imageUrl: post.imageUrl, linked: { type, id } }
+        : null;
     }
 
-    const type = notification.notifiableType;
-    const id = notification.notifiableId;
-    let shown: Notifiable | undefined;
-    let linked = { type, id };
+    const comment = commentsById.get(id);
+    const parent = comment
+      ? posts.get(`${comment.commentableType}:${comment.commentableId}`)
+      : undefined;
 
-    if (type === 'Comment') {
-      const comment = commentsById.get(id);
-      const parent = comment
-        ? posts.get(`${comment.commentableType}:${comment.commentableId}`)
-        : undefined;
-
-      if (!comment || comment.status === 'deleted' || !present(parent)) {
-        return [];
-      }
-
-      shown = parent;
-      linked = {
-        type: comment.commentableType,
-        id: comment.commentableId
-      };
-    } else {
-      shown = posts.get(`${type}:${id}`);
-
-      if (!present(shown)) {
-        return [];
-      }
+    if (!comment || comment.status === 'deleted' || !present(parent)) {
+      return null;
     }
 
-    const key = notification.key as NotificationKey;
-    const notifierSummaries = ids.flatMap((notificationId): UserSummary[] => {
-      const notifierId = recordsById.get(notificationId)?.notifierId;
-      const user =
-        notifierId == null ? undefined : notifiersById.get(notifierId);
+    return {
+      imageUrl: parent.imageUrl,
+      linked: { type: comment.commentableType, id: comment.commentableId }
+    };
+  };
+}
 
-      return user ? [userSummary(user)] : [];
-    });
+function renderNotification(
+  notification: typeof notifications.$inferSelect,
+  notifier: UserRow,
+  notifiableOf: ReturnType<typeof notifiableResolver>
+): Notification | null {
+  const { notifiableType: type, notifiableId: id } = notification;
 
-    return [
-      {
-        id: notification.id,
-        key,
-        click_action:
-          key === 'coauthor_invited'
-            ? '/coauthorship_invitations'
-            : key === 'liked'
-              ? pathTo(linked.type, linked.id)
-              : pathTo(type, id),
-        notifiable: {
-          id,
-          type: type.toLowerCase() as NotifiableType,
-          ...primaryImage(shown.imageUrl ?? undefined)
-        },
-        notifier: userSummary(notifier),
-        read: summary.read === 1,
-        notifiers: notifierSummaries,
-        notifiers_count: notifiersByGroup.get(groupKey(summary))?.length ?? 0,
-        created_at: notification.createdAt,
-        updated_at: notification.updatedAt
-      }
-    ];
-  });
+  if (type === null || id === null) {
+    return null;
+  }
 
-  return { data, next_cursor: nextCursor };
+  const shown = notifiableOf(type, id);
+
+  if (!shown) {
+    return null;
+  }
+
+  const key = notification.key as NotificationKey;
+
+  return {
+    id: notification.id,
+    key,
+    click_action:
+      key === 'coauthor_invited'
+        ? '/coauthorship_invitations'
+        : key === 'liked'
+          ? pathTo(shown.linked.type, shown.linked.id)
+          : pathTo(type, id),
+    notifiable: {
+      id,
+      type: type.toLowerCase() as NotifiableType,
+      ...primaryImage(shown.imageUrl ?? undefined)
+    },
+    notifier: userSummary(notifier),
+    read: notification.read === true,
+    created_at: notification.createdAt,
+    updated_at: notification.updatedAt
+  };
+}
+
+export async function readNotification(
+  db: Database,
+  viewer: Viewer,
+  id: number
+): Promise<Notification> {
+  const notification = first(
+    await db
+      .select()
+      .from(notifications)
+      .where(and(received(db, viewer), eq(notifications.id, id)))
+  );
+  const [notifiers, ...notifiableRows] = await db.batch([
+    usersQuery(db, uniqueIds([notification.notifierId])),
+    ...notifiableQueries(db, [
+      { type: notification.notifiableType, id: notification.notifiableId }
+    ])
+  ]);
+  const [notifier] = notifiers;
+  const { notifiableType } = notification;
+
+  if (!notifier || notifiableType === null) {
+    throw new ApiError('NotFound');
+  }
+
+  const rendered = renderNotification(
+    notification,
+    notifier,
+    notifiableResolver(notifiableRows)
+  );
+
+  if (!rendered) {
+    throw new ApiError('NotFound');
+  }
+
+  const updated = await db
+    .update(notifications)
+    .set({ read: true, updatedAt: currentTimestamp() })
+    .where(
+      and(
+        eq(notifications.recipientType, 'User'),
+        eq(notifications.recipientId, viewer.id),
+        eq(notifications.key, rendered.key),
+        eq(notifications.notifiableType, notifiableType),
+        eq(notifications.notifiableId, rendered.notifiable.id),
+        lte(notifications.id, notification.id),
+        or(eq(notifications.read, false), isNull(notifications.read))
+      )
+    )
+    .returning({ id: notifications.id, updatedAt: notifications.updatedAt });
+  const read = updated.find((row) => row.id === notification.id);
+
+  return {
+    ...rendered,
+    read: true,
+    updated_at: read?.updatedAt ?? rendered.updated_at
+  };
 }

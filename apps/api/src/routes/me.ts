@@ -6,6 +6,7 @@ import type {
   Journal,
   Journey,
   JourneySummary,
+  Notification,
   Pin,
   Profile,
   WebPushPreferences
@@ -39,6 +40,7 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
+import { readNotification } from '../notifications.ts';
 import { discardPin, pinInput, revisePin, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { profileInput, updateProfile } from '../users.ts';
@@ -128,6 +130,16 @@ app.delete('/devices/:token', deviceParams, async (c) => {
 
   return c.body(null, 204);
 });
+
+app.on(['PUT', 'PATCH'], '/notifications/:id', idParams, async (c) =>
+  c.json<Notification>(
+    await readNotification(
+      database(c.env.DB),
+      c.get('viewer'),
+      c.req.valid('param').id
+    )
+  )
+);
 
 async function ownPin(db: Database, viewer: Viewer, pinId: number) {
   return first(
