@@ -1,6 +1,18 @@
-import { type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import {
+  and,
+  type Column,
+  eq,
+  getTableName,
+  type SQL,
+  type SQLWrapper,
+  sql
+} from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/d1';
+import type { AnySQLiteColumn, AnySQLiteTable } from 'drizzle-orm/sqlite-core';
+import { ApiError } from '../errors.ts';
 import * as schema from './schema.ts';
+
+const REVISION_ATTEMPTS = 3;
 
 export function database(binding: D1Database) {
   return drizzle(binding, { schema });
@@ -22,4 +34,62 @@ export function currentTimestamp(): string {
 
 export function uniqueIds(ids: Iterable<number | null>): number[] {
   return [...new Set([...ids].filter((id): id is number => id !== null))];
+}
+
+export function constraintViolated(
+  error: unknown,
+  constraint: 'UNIQUE' | 'NOT NULL',
+  column: Column
+): boolean {
+  const failure = `${constraint} constraint failed: ${getTableName(column.table)}.${column.name}`;
+
+  for (
+    let current: unknown = error;
+    current instanceof Error;
+    current = current.cause
+  ) {
+    if (current.message.includes(failure)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+export function unrevisedRecord(
+  db: Database,
+  table: AnySQLiteTable & {
+    id: AnySQLiteColumn;
+    currentRevisionId: AnySQLiteColumn;
+  },
+  record: { id: number; currentRevisionId: number | null }
+): SQL<number> {
+  return scalar(
+    db
+      .select({ id: table.id })
+      .from(table)
+      .where(
+        and(
+          eq(table.id, record.id),
+          sql`${table.currentRevisionId} IS ${record.currentRevisionId}`
+        )
+      )
+  );
+}
+
+export async function reviseUntilCurrent<T>(
+  revisionParent: Column,
+  revise: () => Promise<T>
+): Promise<T> {
+  for (let attempt = 1; attempt <= REVISION_ATTEMPTS; attempt++) {
+    try {
+      return await revise();
+    } catch (error) {
+      if (!constraintViolated(error, 'NOT NULL', revisionParent)) {
+        throw error;
+      }
+    }
+  }
+
+  throw new ApiError('Conflict');
 }

@@ -30,7 +30,7 @@ Lists are ordered by `created_at` and then by id. Each list is read with one que
 A write that spans several rows runs as one D1 `batch`, which D1 applies atomically. Rows it inserts are referenced by the later statements of the batch through their natural keys (`users.uid`, `journals.user_id`) or as the newest row of their table, so no statement waits for an id from another.
 
 - `POST /users` signs in the token's user. A new user is created with a revision, a private map named after them and a journal; an existing one only has their email and locale refreshed.
-- Edits to a user's name and biography, and to a journal's title and description, append a revision and point the record at it. An edit that changes nothing appends nothing.
+- Edits to a user's name and biography, and to a journal's title and description, append a revision and point the record at it. An edit that changes nothing appends nothing. A revision is written only while the record still points at the revision the edit was read from; when another edit got there first, the edit is applied again to the newer record, and after three such attempts it answers 409.
 - Notification settings are never updated in place: each change appends a snapshot of every choice, and the newest snapshot is the user's settings.
 
 Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`, and an id in the path that is not a positive integer answers `404`.
