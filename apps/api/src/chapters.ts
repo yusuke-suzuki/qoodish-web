@@ -232,7 +232,7 @@ export async function viewerChapters(
 export async function viewerChapterDetails(
   db: Database,
   viewer: Viewer,
-  condition: SQL
+  condition: SQL | undefined
 ): Promise<ChapterDetail[]> {
   const rows = await db
     .select({

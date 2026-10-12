@@ -6,6 +6,7 @@ import type {
 } from '@qoodish/api-contract';
 import { and, asc, count, desc, eq, getTableColumns, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
 import { guestChapters } from '../../chapters.ts';
 import { database } from '../../db/client.ts';
@@ -19,9 +20,12 @@ import {
 import { ApiError } from '../../errors.ts';
 import { coauthorsOf, guestMaps, pinPropertiesOf } from '../../maps.ts';
 import { guestPins } from '../../pins.ts';
-import { first, present, toId } from '../../routing.ts';
+import { first, present } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
+import { id, pathParams } from '../../validation.ts';
 import { publicChapter, publicMap, publicPin } from '../../visibility.ts';
+
+const mapParams = pathParams(z.object({ mapId: id }));
 
 const RECENT_MAPS_LIMIT = 12;
 const ACTIVE_MAPS_LIMIT = 12;
@@ -130,46 +134,46 @@ app.get('/featured', async (c) => {
   return c.json(first(await guestMaps(db, [map])));
 });
 
-app.get('/:id', async (c) => {
+app.get('/:id', pathParams(z.object({ id })), async (c) => {
   const db = database(c.env.DB);
   const map = first(
     await db
       .select()
       .from(maps)
-      .where(and(publicMap(), eq(maps.id, toId(c.req.param('id')))))
+      .where(and(publicMap(), eq(maps.id, c.req.valid('param').id)))
   );
 
   return c.json(first(await guestMaps(db, [map])));
 });
 
-app.get('/:mapId/pins', async (c) => {
+app.get('/:mapId/pins', mapParams, async (c) => {
   const db = database(c.env.DB);
   const rows = await db
     .select()
     .from(pins)
-    .where(and(publicPin(), eq(pins.mapId, toId(c.req.param('mapId')))))
+    .where(and(publicPin(), eq(pins.mapId, c.req.valid('param').mapId)))
     .orderBy(desc(pins.createdAt), asc(pins.id));
 
   return c.json<GuestPin[]>(await guestPins(db, rows));
 });
 
-app.get('/:mapId/coauthors', async (c) => {
+app.get('/:mapId/coauthors', mapParams, async (c) => {
   const db = database(c.env.DB);
   const [map] = await db
     .select({ id: maps.id, userId: maps.userId })
     .from(maps)
-    .where(and(publicMap(), eq(maps.id, toId(c.req.param('mapId')))));
+    .where(and(publicMap(), eq(maps.id, c.req.valid('param').mapId)));
 
   return c.json<GuestCoauthor[]>(map ? await coauthorsOf(db, map) : []);
 });
 
-app.get('/:mapId/chapters', async (c) => {
+app.get('/:mapId/chapters', mapParams, async (c) => {
   const db = database(c.env.DB);
   const map = first(
     await db
       .select({ id: maps.id })
       .from(maps)
-      .where(and(publicMap(), eq(maps.id, toId(c.req.param('mapId')))))
+      .where(and(publicMap(), eq(maps.id, c.req.valid('param').mapId)))
   );
   const rows = await db
     .select()
@@ -180,13 +184,13 @@ app.get('/:mapId/chapters', async (c) => {
   return c.json<GuestChapter[]>(await guestChapters(db, rows));
 });
 
-app.get('/:mapId/pin_properties', async (c) => {
+app.get('/:mapId/pin_properties', mapParams, async (c) => {
   const db = database(c.env.DB);
   const map = first(
     await db
       .select({ id: maps.id })
       .from(maps)
-      .where(and(publicMap(), eq(maps.id, toId(c.req.param('mapId')))))
+      .where(and(publicMap(), eq(maps.id, c.req.valid('param').mapId)))
   );
 
   return c.json<PinProperty[]>(await pinPropertiesOf(db, map.id));

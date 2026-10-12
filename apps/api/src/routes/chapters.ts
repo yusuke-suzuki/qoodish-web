@@ -5,33 +5,70 @@ import type {
 } from '@qoodish/api-contract';
 import { and, desc, eq, lt, type SQL } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
 import { commentsQuery, viewerComment } from '../comments.ts';
 import { before, FEED_PER_PAGE, normalizeTimestamp } from '../cursor.ts';
-import { database } from '../db/client.ts';
+import { type Database, database } from '../db/client.ts';
 import { chapters, comments } from '../db/schema.ts';
 import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
-import { first, present, toId } from '../routing.ts';
-import { feedChapter, readableChapter, shownTo } from '../visibility.ts';
+import { first } from '../routing.ts';
+import { id, optionalId, pathParams } from '../validation.ts';
+import {
+  feedChapter,
+  readableChapter,
+  shownTo,
+  type Viewer
+} from '../visibility.ts';
+
+const chapterParams = pathParams(z.object({ chapterId: id }));
 
 function chapterFeedBefore(
   nextTimestamp: string,
   nextId: string | undefined
-): SQL {
+): SQL | undefined {
   const createdAt = normalizeTimestamp(nextTimestamp);
+  const cursorId = optionalId(nextId);
 
-  if (!present(nextId)) {
+  if (cursorId === undefined) {
     return lt(chapters.createdAt, createdAt);
   }
 
-  return before(
-    { createdAt, id: toId(nextId) },
-    chapters.createdAt,
-    chapters.id
+  return before({ createdAt, id: cursorId }, chapters.createdAt, chapters.id);
+}
+
+async function chapterOf(
+  db: Database,
+  condition: SQL | undefined,
+  chapterId: number
+) {
+  return first(
+    await db
+      .select({ id: chapters.id, userId: chapters.userId })
+      .from(chapters)
+      .where(and(condition, eq(chapters.id, chapterId)))
   );
+}
+
+async function chapterComments(
+  db: Database,
+  viewer: Viewer,
+  chapterId: number,
+  condition: SQL | undefined
+): Promise<ChapterComment[]> {
+  const rows = await commentsQuery(db, 'Chapter', [chapterId], {
+    visibleOnly: false,
+    condition,
+    viewerId: viewer.id
+  });
+
+  return rows.map((row) => ({
+    ...viewerComment(row),
+    editable: row.userId === viewer.id
+  }));
 }
 
 const app = new Hono<ViewerEnv>();
@@ -59,7 +96,7 @@ app.get('/', async (c) => {
   return c.json<Chapter[]>(await viewerChapters(db, viewer, rows));
 });
 
-app.get('/:id', async (c) => {
+app.get('/:id', pathParams(z.object({ id })), async (c) => {
   const viewer = c.get('viewer');
 
   return c.json<ChapterDetail>(
@@ -67,40 +104,28 @@ app.get('/:id', async (c) => {
       await viewerChapterDetails(
         database(c.env.DB),
         viewer,
-        and(
-          readableChapter(viewer),
-          eq(chapters.id, toId(c.req.param('id')))
-        ) as SQL
+        and(readableChapter(viewer), eq(chapters.id, c.req.valid('param').id))
       )
     )
   );
 });
 
-app.get('/:chapterId/comments', async (c) => {
+app.get('/:chapterId/comments', chapterParams, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const chapter = first(
-    await db
-      .select({ id: chapters.id })
-      .from(chapters)
-      .where(
-        and(
-          readableChapter(viewer),
-          eq(chapters.id, toId(c.req.param('chapterId')))
-        )
-      )
+  const chapter = await chapterOf(
+    db,
+    readableChapter(viewer),
+    c.req.valid('param').chapterId
   );
-  const rows = await commentsQuery(db, 'Chapter', [chapter.id], {
-    visibleOnly: false,
-    condition: shownTo(viewer, comments.userId),
-    viewerId: viewer.id
-  });
 
   return c.json<ChapterComment[]>(
-    rows.map((row) => ({
-      ...viewerComment(row),
-      editable: row.userId === viewer.id
-    }))
+    await chapterComments(
+      db,
+      viewer,
+      chapter.id,
+      shownTo(viewer, comments.userId)
+    )
   );
 });
 

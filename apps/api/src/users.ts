@@ -6,6 +6,7 @@ import type {
   ViewerRelation
 } from '@qoodish/api-contract';
 import { and, eq, inArray, max, type SQL } from 'drizzle-orm';
+import { z } from 'zod';
 import { currentTimestamp, type Database, inIds, scalar } from './db/client.ts';
 import {
   bookmarks,
@@ -18,12 +19,12 @@ import {
   votes
 } from './db/schema.ts';
 import { ApiError } from './errors.ts';
-import type { Locale, MessageKey } from './i18n/index.ts';
+import type { Locale } from './i18n/index.ts';
 import { primaryImage } from './images.ts';
 import { recordDefaultJournal } from './journals.ts';
 import { recordDefaultMap } from './maps.ts';
-import { first, toId } from './routing.ts';
-import { characters } from './text.ts';
+import { first } from './routing.ts';
+import { id, optionalText, text } from './validation.ts';
 import type { Viewer } from './visibility.ts';
 
 const USER_BIOGRAPHY_LIMIT = 160;
@@ -37,28 +38,24 @@ export type SignInClaims = {
   locale: Locale;
 };
 
-export type ProfileChanges = {
-  name?: string;
-  biography?: string | null;
-  imageId?: number | null;
-};
+export const profileInput = z
+  .object({
+    name: text({ required: 'user_name_required' }).optional(),
+    biography: optionalText({
+      length: USER_BIOGRAPHY_LIMIT,
+      error: 'user_biography_exceed'
+    }).optional(),
+    image_ids: z.array(id).optional()
+  })
+  .transform(({ image_ids, ...changes }) => ({
+    ...changes,
+    imageId: image_ids === undefined ? undefined : (image_ids[0] ?? null)
+  }));
+
+type ProfileChanges = z.output<typeof profileInput>;
 
 function blank(text: string | null | undefined): boolean {
   return text === null || text === undefined || text.trim() === '';
-}
-
-function userErrors({ name, biography }: UserContent): MessageKey[] {
-  const errors: MessageKey[] = [];
-
-  if (blank(name)) {
-    errors.push('user_name_required');
-  }
-
-  if (biography && characters(biography) > USER_BIOGRAPHY_LIMIT) {
-    errors.push('user_biography_exceed');
-  }
-
-  return errors;
 }
 
 function userRevisionStatements(
@@ -205,7 +202,6 @@ export async function updateProfile(
   };
   const imageId =
     changes.imageId === undefined ? user.imageId : changes.imageId;
-  const errors = userErrors(content);
 
   if (imageId !== user.imageId && imageId !== null) {
     const [image] = await db
@@ -214,12 +210,8 @@ export async function updateProfile(
       .where(eq(images.id, imageId));
 
     if (image?.userId !== userId) {
-      errors.push('image_not_owned');
+      throw ApiError.invalid(['image_not_owned']);
     }
-  }
-
-  if (errors.length > 0) {
-    throw ApiError.invalid(errors);
   }
 
   const revised =
@@ -278,12 +270,9 @@ export function relation(viewer: Viewer, userId: number): ViewerRelation {
   };
 }
 
-export async function findUser(db: Database, param: string | undefined) {
+export async function findUser(db: Database, id: number) {
   return first(
-    await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.id, toId(param)))
+    await db.select({ id: users.id }).from(users).where(eq(users.id, id))
   );
 }
 

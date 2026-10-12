@@ -4,7 +4,7 @@ import type {
   NotificationGroup,
   Pin
 } from '@qoodish/api-contract';
-import { and, desc, eq, type SQL } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { blockedAccounts, mutedAccounts } from '../../accounts.ts';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
@@ -16,13 +16,14 @@ import {
 } from '../../middleware/authenticate-user.ts';
 import { notificationGroups } from '../../notifications.ts';
 import { viewerPins } from '../../pins.ts';
-import { feedPage, present, toId } from '../../routing.ts';
+import { feedPage, present } from '../../routing.ts';
+import { optionalId } from '../../validation.ts';
 import { visible } from '../../visibility.ts';
 
 const FALSE_PARAMS = new Set(['0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF']);
 
 function pageCursor(param: string | undefined): number | null {
-  return present(param) ? toId(param) : null;
+  return present(param) ? (optionalId(param) ?? 0) : null;
 }
 
 const app = new Hono<ViewerEnv>();
@@ -55,7 +56,7 @@ app.get('/pins', async (c) => {
           eq(pins.userId, viewer.id),
           eq(pins.status, 'published'),
           visible(pins.id, 'Pin')
-        ) as SQL
+        )
       )
     )
     .orderBy(desc(pins.createdAt), desc(pins.id))

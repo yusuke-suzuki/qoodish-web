@@ -8,6 +8,7 @@ import {
   max,
   type SQL
 } from 'drizzle-orm';
+import { z } from 'zod';
 import { currentTimestamp, type Database, scalar } from './db/client.ts';
 import {
   chapters,
@@ -17,33 +18,27 @@ import {
   journals,
   users
 } from './db/schema.ts';
-import { ApiError } from './errors.ts';
-import type { MessageKey } from './i18n/index.ts';
 import { first } from './routing.ts';
-import { characters, truncate } from './text.ts';
+import { truncate } from './text.ts';
 import { userColumns, userSummary } from './users.ts';
+import { optionalText, text } from './validation.ts';
 import type { Viewer } from './visibility.ts';
 
 const JOURNAL_TITLE_LIMIT = 50;
 const JOURNAL_DESCRIPTION_LIMIT = 200;
 
+export const journalInput = z.object({
+  title: text({
+    required: 'journal_title_required',
+    max: { length: JOURNAL_TITLE_LIMIT, error: 'journal_title_exceed' }
+  }).optional(),
+  description: optionalText({
+    length: JOURNAL_DESCRIPTION_LIMIT,
+    error: 'journal_description_exceed'
+  }).optional()
+});
+
 type JournalContent = { title: string; description: string | null };
-
-function journalErrors({ title, description }: JournalContent): MessageKey[] {
-  const errors: MessageKey[] = [];
-
-  if (title.trim() === '') {
-    errors.push('journal_title_required');
-  } else if (characters(title) > JOURNAL_TITLE_LIMIT) {
-    errors.push('journal_title_exceed');
-  }
-
-  if (description && characters(description) > JOURNAL_DESCRIPTION_LIMIT) {
-    errors.push('journal_description_exceed');
-  }
-
-  return errors;
-}
 
 function journalRevisionStatements(
   db: Database,
@@ -111,7 +106,7 @@ export function recordDefaultJournal(
 export async function reviseJournal(
   db: Database,
   userId: number,
-  changes: Partial<JournalContent>
+  changes: z.output<typeof journalInput>
 ): Promise<void> {
   const journal = first(
     await db
@@ -130,11 +125,6 @@ export async function reviseJournal(
         ? journal.description
         : changes.description
   };
-  const errors = journalErrors(content);
-
-  if (errors.length > 0) {
-    throw ApiError.invalid(errors);
-  }
 
   if (
     content.title === journal.title &&
@@ -162,7 +152,7 @@ export async function reviseJournal(
 export async function viewerJournals(
   db: Database,
   viewer: Viewer,
-  condition: SQL
+  condition: SQL | undefined
 ): Promise<Journal[]> {
   const rows = await db
     .select({

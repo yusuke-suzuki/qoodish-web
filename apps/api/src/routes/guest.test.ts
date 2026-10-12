@@ -400,6 +400,19 @@ describe('GET /guest/users', () => {
     });
   });
 
+  it('answers 404 for an id that is not a plain positive integer', async () => {
+    for (const path of [
+      `/guest/users/${ids.alice}abc`,
+      `/guest/users/0x${ids.alice.toString(16)}`,
+      `/guest/users/${ids.alice}e0`,
+      `/guest/users/%20${ids.alice}`,
+      '/guest/users/9007199254740993',
+      `/guest/users/${'9'.repeat(400)}`
+    ]) {
+      expect(await get(path)).toEqual({ status: 404, body: notFound });
+    }
+  });
+
   it("lists a user's public maps and chapters", async () => {
     expect(await ids_of(`/guest/users/${ids.alice}/maps`)).toEqual([ids.ramen]);
     expect(await ids_of(`/guest/users/${ids.alice}/chapters`)).toEqual([

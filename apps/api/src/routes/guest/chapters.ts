@@ -1,14 +1,16 @@
 import type { GuestChapter, GuestChapterDetail } from '@qoodish/api-contract';
 import { and, desc, eq, getTableColumns, ne } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
 import { chapterSearchResults, guestChapters } from '../../chapters.ts';
 import { commentsQuery, guestComment } from '../../comments.ts';
 import { FEED_PER_PAGE } from '../../cursor.ts';
 import { database } from '../../db/client.ts';
 import { chapters, comments } from '../../db/schema.ts';
-import { first, present, toId } from '../../routing.ts';
+import { first, present } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
+import { id, pathParams } from '../../validation.ts';
 import { publicChapter } from '../../visibility.ts';
 
 const app = new Hono<AppEnv>();
@@ -54,7 +56,7 @@ app.get('/', async (c) => {
   );
 });
 
-app.get('/:id', async (c) => {
+app.get('/:id', pathParams(z.object({ id })), async (c) => {
   const db = database(c.env.DB);
   const { commentsCount, ...chapter } = first(
     await db
@@ -70,7 +72,7 @@ app.get('/:id', async (c) => {
         )
       })
       .from(chapters)
-      .where(and(publicChapter(), eq(chapters.id, toId(c.req.param('id')))))
+      .where(and(publicChapter(), eq(chapters.id, c.req.valid('param').id)))
   );
 
   return c.json<GuestChapterDetail>({
@@ -79,21 +81,25 @@ app.get('/:id', async (c) => {
   });
 });
 
-app.get('/:chapterId/comments', async (c) => {
-  const db = database(c.env.DB);
-  const chapter = first(
-    await db
-      .select({ id: chapters.id })
-      .from(chapters)
-      .where(
-        and(publicChapter(), eq(chapters.id, toId(c.req.param('chapterId'))))
-      )
-  );
-  const rows = await commentsQuery(db, 'Chapter', [chapter.id], {
-    visibleOnly: false
-  });
+app.get(
+  '/:chapterId/comments',
+  pathParams(z.object({ chapterId: id })),
+  async (c) => {
+    const db = database(c.env.DB);
+    const chapter = first(
+      await db
+        .select({ id: chapters.id })
+        .from(chapters)
+        .where(
+          and(publicChapter(), eq(chapters.id, c.req.valid('param').chapterId))
+        )
+    );
+    const rows = await commentsQuery(db, 'Chapter', [chapter.id], {
+      visibleOnly: false
+    });
 
-  return c.json(rows.map(guestComment));
-});
+    return c.json(rows.map(guestComment));
+  }
+);
 
 export default app;

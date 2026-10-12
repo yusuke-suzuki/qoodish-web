@@ -112,9 +112,13 @@ export function nextCursor(
   return last && page.length === perPage ? encodeCursor(last) : null;
 }
 
-export function before(cursor: FeedCursor, createdAt: Column, id: Column): SQL {
+export function before(
+  cursor: FeedCursor,
+  createdAt: Column,
+  id: Column
+): SQL | undefined {
   return or(
     lt(createdAt, cursor.createdAt),
     and(eq(createdAt, cursor.createdAt), lt(id, cursor.id))
-  ) as SQL;
+  );
 }

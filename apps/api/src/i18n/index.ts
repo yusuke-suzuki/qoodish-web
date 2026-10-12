@@ -13,4 +13,8 @@ export function translate(locale: Locale, key: MessageKey): string {
   return MESSAGES[locale][key];
 }
 
+export function isMessageKey(value: string): value is MessageKey {
+  return Object.hasOwn(en, value);
+}
+
 export type { MessageKey, Messages };
