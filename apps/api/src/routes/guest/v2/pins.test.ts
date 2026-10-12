@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:test';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { encodeCursor } from '../../../cursor.ts';
-import { get } from '../../../test/client.ts';
+import { get, idsOf } from '../../../test/client.ts';
 import { at, ids, seedWorld } from '../../../test/world.ts';
 
 beforeAll(async () => {
@@ -43,6 +43,30 @@ describe('GET /guest/v2/pins', () => {
         (await get(`/guest/v2/pins?cursor=${encodeURIComponent(cursor)}`))
           .status
       ).toBe(400);
+    }
+  });
+
+  it('reads the first of repeated cursors', async () => {
+    const cursor = encodeCursor({ createdAt: at(25, 1), id: 101 });
+
+    expect(
+      await idsOf(`/guest/v2/pins?cursor=${cursor}&cursor=%25%25%25`)
+    ).toEqual([100, ids.latte, ids.shoyu]);
+    expect(
+      (await get(`/guest/v2/pins?cursor=%25%25%25&cursor=${cursor}`)).status
+    ).toBe(400);
+  });
+
+  it('treats an empty cursor as none and ignores unknown keys', async () => {
+    const firstPage = await get('/guest/v2/pins');
+
+    for (const query of [
+      '?cursor=',
+      '?cursor',
+      '?cursor=&cursor=%25%25%25',
+      '?other=%25%25%25'
+    ]) {
+      expect(await get(`/guest/v2/pins${query}`)).toEqual(firstPage);
     }
   });
 });

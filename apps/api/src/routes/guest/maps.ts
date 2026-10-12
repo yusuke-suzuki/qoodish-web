@@ -32,10 +32,25 @@ import { coauthorsOf, guestMaps, pinPropertiesOf } from '../../maps.ts';
 import { guestPins } from '../../pins.ts';
 import { first, present } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
-import { id, pathParams } from '../../validation.ts';
+import {
+  flag,
+  id,
+  pathParams,
+  queryParams,
+  searchInput
+} from '../../validation.ts';
 import { publicChapter, publicMap, publicPin } from '../../visibility.ts';
 
 const mapParams = pathParams(z.object({ mapId: id }));
+const listingQuery = queryParams(
+  z.object({
+    input: searchInput,
+    recent: z.string().optional().transform(present),
+    active: flag,
+    popular: flag,
+    recommend: flag
+  })
+);
 
 const RECENT_MAPS_LIMIT = 12;
 const ACTIVE_MAPS_LIMIT = 12;
@@ -44,12 +59,12 @@ const RECOMMENDED_MAPS_LIMIT = 10;
 
 const app = new Hono<AppEnv>();
 
-app.get('/', async (c) => {
+app.get('/', listingQuery, async (c) => {
   const db = database(c.env.DB);
-  const { input, recent, active, popular, recommend } = c.req.query();
+  const { input, recent, active, popular, recommend } = c.req.valid('query');
   const publicMaps = db.select(getTableColumns(maps)).from(maps);
 
-  if (present(input)) {
+  if (input !== undefined) {
     const matched = searchCondition(input, {
       index: 'maps_fts',
       id: maps.id,
@@ -71,7 +86,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (present(recent)) {
+  if (recent) {
     return c.json<GuestMap[]>(
       await guestMaps(
         db,
@@ -83,7 +98,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (active !== undefined) {
+  if (active) {
     return c.json<GuestMap[]>(
       await guestMaps(
         db,
@@ -100,7 +115,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (popular !== undefined) {
+  if (popular) {
     return c.json<GuestMap[]>(
       await guestMaps(
         db,
@@ -114,7 +129,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (recommend !== undefined) {
+  if (recommend) {
     return c.json<GuestMap[]>(
       await guestMaps(
         db,

@@ -112,6 +112,21 @@ describe('GET /maps', () => {
       [ids.ramen, ids.reinstatedMap, dave.map].sort()
     );
   });
+
+  it('recommends on any recommend value and ignores unknown keys', async () => {
+    for (const query of [
+      '?recommend=',
+      '?recommend',
+      '?recommend=&recommend'
+    ]) {
+      expect(await idsOf(`/maps${query}`, 'alice')).toEqual([ids.ramen]);
+    }
+    expect(await idsOf('/maps?other=true', 'alice')).toEqual([
+      ids.cafe,
+      ids.secret,
+      ids.ramen
+    ]);
+  });
 });
 
 describe('GET /maps/:mapId/coauthors', () => {

@@ -16,18 +16,18 @@ import { commentsQuery, guestComment } from '../../comments.ts';
 import { FEED_PER_PAGE } from '../../cursor.ts';
 import { database } from '../../db/client.ts';
 import { chapters, comments } from '../../db/schema.ts';
-import { first, present } from '../../routing.ts';
+import { first } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
-import { id, pathParams } from '../../validation.ts';
+import { id, pathParams, queryParams, searchInput } from '../../validation.ts';
 import { publicChapter } from '../../visibility.ts';
 
 const app = new Hono<AppEnv>();
 
-app.get('/', async (c) => {
+app.get('/', queryParams(z.object({ input: searchInput })), async (c) => {
   const db = database(c.env.DB);
-  const input = c.req.query('input');
+  const { input } = c.req.valid('query');
 
-  if (present(input)) {
+  if (input !== undefined) {
     const matched = searchCondition(input, {
       index: 'chapters_fts',
       id: chapters.id,

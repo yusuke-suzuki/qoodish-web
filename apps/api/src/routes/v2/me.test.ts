@@ -113,6 +113,61 @@ describe('GET /v2/me/notifications', () => {
       10, 6, 5, 4, 3
     ]);
   });
+
+  it('reads the first of repeated parameters and ignores unknown keys', async () => {
+    expect(
+      await idsOf('/v2/me/notifications?cursor=6&cursor=4', 'alice')
+    ).toEqual([5, 4, 3]);
+    expect(
+      await idsOf('/v2/me/notifications?read=false&read=true', 'alice')
+    ).toEqual([10, 6, 5, 3]);
+    expect(
+      await idsOf('/v2/me/notifications?read=true&read=false', 'alice')
+    ).toEqual([10, 6, 5, 4, 3]);
+    expect(await idsOf('/v2/me/notifications?other=6', 'alice')).toEqual([
+      10, 6, 5, 4, 3
+    ]);
+  });
+
+  it('reads only the false spellings as unread', async () => {
+    for (const read of ['0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF']) {
+      expect(await idsOf(`/v2/me/notifications?read=${read}`, 'alice')).toEqual(
+        [10, 6, 5, 3]
+      );
+    }
+    for (const read of ['', 'False', 'no', 'Off']) {
+      expect(await idsOf(`/v2/me/notifications?read=${read}`, 'alice')).toEqual(
+        [10, 6, 5, 4, 3]
+      );
+    }
+  });
+
+  it('pages from the start on a blank cursor and to nothing on an invalid one', async () => {
+    for (const cursor of ['', '%20']) {
+      expect(
+        await idsOf(`/v2/me/notifications?cursor=${cursor}`, 'alice')
+      ).toEqual([10, 6, 5, 4, 3]);
+    }
+    for (const cursor of ['abc', '0', '-1', '1.5']) {
+      expect(
+        await get(`/v2/me/notifications?cursor=${cursor}`, 'alice')
+      ).toEqual({ status: 200, body: { data: [], next_cursor: null } });
+    }
+  });
+});
+
+describe('GET /v2/me/pins', () => {
+  it('reads the first of repeated cursors and rejects a malformed one', async () => {
+    const first = await get('/v2/me/pins', 'alice');
+
+    expect(first.status).toBe(200);
+    for (const query of ['?cursor=', '?cursor=&cursor=%25', '?other=%25']) {
+      expect(await get(`/v2/me/pins${query}`, 'alice')).toEqual(first);
+    }
+    for (const query of ['?cursor=%25', '?cursor=%25&cursor=']) {
+      expect((await get(`/v2/me/pins${query}`, 'alice')).status).toBe(400);
+    }
+  });
 });
 
 describe('blocked and muted accounts', () => {
@@ -141,5 +196,20 @@ describe('blocked and muted accounts', () => {
     });
     expect(await idsOf('/v2/me/blocks?cursor=1', 'alice')).toEqual([]);
     expect(await idsOf('/v2/me/blocks?cursor=abc', 'alice')).toEqual([]);
+  });
+
+  it('reads the first of repeated cursors and starts over on a blank one', async () => {
+    expect(await idsOf('/v2/me/blocks?cursor=', 'alice')).toEqual([dave]);
+    expect(await idsOf('/v2/me/blocks?cursor=%20', 'alice')).toEqual([dave]);
+    expect(await idsOf('/v2/me/blocks?cursor=&cursor=1', 'alice')).toEqual([
+      dave
+    ]);
+    expect(await idsOf('/v2/me/blocks?cursor=abc&cursor=', 'alice')).toEqual(
+      []
+    );
+    expect(await idsOf('/v2/me/mutes?cursor=&cursor=1', 'carol')).toEqual([
+      ids.bob
+    ]);
+    expect(await idsOf('/v2/me/mutes?cursor=1&cursor=', 'carol')).toEqual([]);
   });
 });

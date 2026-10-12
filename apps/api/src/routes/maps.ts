@@ -49,7 +49,14 @@ import {
 import { createPin, newPinInput, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { findUser } from '../users.ts';
-import { id, jsonBody, optionalId, pathParams } from '../validation.ts';
+import {
+  flag,
+  id,
+  jsonBody,
+  optionalId,
+  pathParams,
+  queryParams
+} from '../validation.ts';
 import {
   editableMap,
   recommendableMap,
@@ -104,22 +111,21 @@ const app = new Hono<ViewerEnv>();
 
 app.use(authenticateUser);
 
-app.get('/', async (c) => {
+app.get('/', queryParams(z.object({ recommend: flag })), async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const rows =
-    c.req.query('recommend') === undefined
-      ? await db
-          .select()
-          .from(maps)
-          .where(relatedMap(viewer))
-          .orderBy(desc(maps.createdAt), asc(maps.id))
-      : await db
-          .select()
-          .from(maps)
-          .where(recommendableMap(viewer))
-          .orderBy(sql`random()`)
-          .limit(RECOMMENDED_MAPS_LIMIT);
+  const rows = c.req.valid('query').recommend
+    ? await db
+        .select()
+        .from(maps)
+        .where(recommendableMap(viewer))
+        .orderBy(sql`random()`)
+        .limit(RECOMMENDED_MAPS_LIMIT)
+    : await db
+        .select()
+        .from(maps)
+        .where(relatedMap(viewer))
+        .orderBy(desc(maps.createdAt), asc(maps.id));
 
   return c.json<AppMap[]>(await viewerMaps(db, viewer, rows));
 });

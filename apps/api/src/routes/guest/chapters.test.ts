@@ -62,6 +62,19 @@ describe('GET /guest/chapters', () => {
     ]);
   });
 
+  it('searches by the first input only when it is not blank', async () => {
+    const latest = await get('/guest/chapters');
+
+    for (const query of ['?input=', '?input=%20', '?input=&input=zzzz']) {
+      expect(await get(`/guest/chapters${query}`)).toEqual(latest);
+    }
+    expect(await get('/guest/chapters?other=zzzz')).toEqual(latest);
+    expect(await get('/guest/chapters?input=zzzz&input=')).toEqual({
+      status: 200,
+      body: []
+    });
+  });
+
   it('gives a chapter without a journal a null journal', async () => {
     const { body } = await get(`/guest/chapters/${ids.cafeStory}`);
 

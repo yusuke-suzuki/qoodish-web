@@ -79,4 +79,25 @@ describe('GET /guest/pins', () => {
   it('answers 400 without a listing parameter', async () => {
     expect((await get('/guest/pins')).status).toBe(400);
   });
+
+  it('answers 400 for a blank search and an unknown key alone', async () => {
+    for (const query of ['?input=', '?input=%20&input=x', '?other=1']) {
+      expect((await get(`/guest/pins${query}`)).status).toBe(400);
+    }
+  });
+
+  it('lists by the first value of each parameter, blank or not', async () => {
+    const recent = [112, 111, 110, 109, 108, 107, 106, 105];
+
+    expect(await idsOf('/guest/pins?recent=')).toEqual(recent);
+    expect(await idsOf('/guest/pins?popular&recent')).toEqual(recent);
+    expect(await idsOf('/guest/pins?input=&input=zzzz&recent=1')).toEqual(
+      recent
+    );
+    expect(await idsOf('/guest/pins?input=zzzz&input=&recent=1')).toEqual([]);
+    expect(await idsOf('/guest/pins?input=&popular=&popular=x')).toEqual([
+      ids.shoyu,
+      ids.latte
+    ]);
+  });
 });

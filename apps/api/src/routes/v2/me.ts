@@ -6,6 +6,7 @@ import type {
 } from '@qoodish/api-contract';
 import { and, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import { blockedAccounts, mutedAccounts } from '../../accounts.ts';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
 import { database } from '../../db/client.ts';
@@ -17,31 +18,46 @@ import {
 import { notificationGroups } from '../../notifications.ts';
 import { viewerPins } from '../../pins.ts';
 import { feedPage, present } from '../../routing.ts';
-import { optionalId } from '../../validation.ts';
+import { feedCursor, optionalId, queryParams } from '../../validation.ts';
 import { visible } from '../../visibility.ts';
 
 const FALSE_PARAMS = new Set(['0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF']);
 
-function pageCursor(param: string | undefined): number | null {
-  return present(param) ? (optionalId(param) ?? 0) : null;
-}
+const pageCursor = z
+  .string()
+  .optional()
+  .transform((param) => (present(param) ? (optionalId(param) ?? 0) : null));
+
+const pageQuery = queryParams(z.object({ cursor: pageCursor }));
 
 const app = new Hono<ViewerEnv>();
 
 app.use(authenticateUser);
 
-app.get('/notifications', async (c) => {
-  const read = c.req.query('read');
-
-  return c.json<ApiCursorPage<NotificationGroup>>(
-    await notificationGroups(database(c.env.DB), c.get('viewer'), {
-      cursor: pageCursor(c.req.query('cursor')),
-      unread: read !== undefined && FALSE_PARAMS.has(read)
+app.get(
+  '/notifications',
+  queryParams(
+    z.object({
+      cursor: pageCursor,
+      read: z
+        .string()
+        .optional()
+        .transform((read) => read !== undefined && FALSE_PARAMS.has(read))
     })
-  );
-});
+  ),
+  async (c) => {
+    const { cursor, read: unread } = c.req.valid('query');
 
-app.get('/pins', async (c) => {
+    return c.json<ApiCursorPage<NotificationGroup>>(
+      await notificationGroups(database(c.env.DB), c.get('viewer'), {
+        cursor,
+        unread
+      })
+    );
+  }
+);
+
+app.get('/pins', queryParams(z.object({ cursor: feedCursor })), async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
   const rows = await db
@@ -49,7 +65,7 @@ app.get('/pins', async (c) => {
     .from(pins)
     .where(
       feedPage(
-        c.req.query('cursor'),
+        c.req.valid('query').cursor,
         pins.createdAt,
         pins.id,
         and(
@@ -68,22 +84,22 @@ app.get('/pins', async (c) => {
   });
 });
 
-app.get('/blocks', async (c) =>
+app.get('/blocks', pageQuery, async (c) =>
   c.json<ApiCursorPage<ModeratedAccount>>(
     await blockedAccounts(
       database(c.env.DB),
       c.get('viewer').id,
-      pageCursor(c.req.query('cursor'))
+      c.req.valid('query').cursor
     )
   )
 );
 
-app.get('/mutes', async (c) =>
+app.get('/mutes', pageQuery, async (c) =>
   c.json<ApiCursorPage<ModeratedAccount>>(
     await mutedAccounts(
       database(c.env.DB),
       c.get('viewer').id,
-      pageCursor(c.req.query('cursor'))
+      c.req.valid('query').cursor
     )
   )
 );
