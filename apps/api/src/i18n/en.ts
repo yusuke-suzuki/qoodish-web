@@ -32,6 +32,8 @@ export const en = {
   like_blocked_interaction:
     'You cannot like a post by an account you have blocked or that has blocked you.',
 
+  comment_blocked_interaction:
+    'You cannot comment on a post by an account you have blocked or that has blocked you.',
   comment_required: 'Comment is required.',
   comment_exceeded: 'Comment is too long. (Max: 500)',
   invalid_uri: 'Invalid URI.',
