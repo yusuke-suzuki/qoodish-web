@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:test';
-import { asc, eq, inArray } from 'drizzle-orm';
+import { and, asc, eq, inArray } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { database } from '../db/client.ts';
 import {
@@ -8,18 +8,25 @@ import {
   devices,
   images,
   journalRevisions,
+  journeyCheckinRevisionImages,
+  journeyCheckinRevisions,
+  journeyCheckins,
+  journeys,
+  milestones,
   notifications,
   pins,
   userPreferences
 } from '../db/schema.ts';
+import { decryptAttribute, encryptionSecrets } from '../encryption.ts';
 import { get, idsOf, send } from '../test/client.ts';
 import { checkinImage, seedMe } from '../test/me.ts';
 import {
   accountOf,
   chapterRevisionsOf,
+  checkinRevisionsOf,
   pinRevisionsOf
 } from '../test/records.ts';
-import { alice, bob, variants } from '../test/serialized.ts';
+import { alice, bob, notFound, variants } from '../test/serialized.ts';
 import {
   at,
   CHAPTER_CONTENT,
@@ -998,5 +1005,561 @@ describe('DELETE /me/chapters/:id', () => {
         journey_id: 1
       })
     ).toMatchObject({ status: 200, body: { journey_id: 1 } });
+  });
+});
+
+describe('journey writes', () => {
+  const secrets = encryptionSecrets(env);
+  const feedPin = (index: number) => ids.feedPins + index;
+  const invalid = (detail: string) => ({
+    status: 422,
+    body: { title: 'UnprocessableContent', detail }
+  });
+
+  async function newJourney(uid: string, mapId: number): Promise<number> {
+    const { status, body } = await send('POST', `/maps/${mapId}/journeys`, uid);
+
+    expect(status).toBe(200);
+    return body.id;
+  }
+
+  async function journeyRow(journeyId: number) {
+    const [row] = await db()
+      .select()
+      .from(journeys)
+      .where(eq(journeys.id, journeyId));
+
+    return row;
+  }
+
+  async function checkinRow(checkinId: number) {
+    const [row] = await db()
+      .select()
+      .from(journeyCheckins)
+      .where(eq(journeyCheckins.id, checkinId));
+
+    return row;
+  }
+
+  async function milestonesOf(journeyId: number) {
+    return db()
+      .select({ pinId: milestones.pinId, position: milestones.position })
+      .from(milestones)
+      .where(eq(milestones.journeyId, journeyId))
+      .orderBy(asc(milestones.position));
+  }
+
+  let cafeJourney: number;
+  let ramenJourney: number;
+  let feedCheckin: number;
+  let retroactiveCheckin: number;
+  let bobImage: number;
+
+  it('starts an unfinished journey of the own once', async () => {
+    cafeJourney = await newJourney('alice', ids.cafe);
+    const path = `/me/journeys/${cafeJourney}/start`;
+
+    expect(await send('POST', path, 'bob')).toEqual({
+      status: 404,
+      body: notFound
+    });
+
+    const { status, body } = await send('POST', path, 'alice');
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: cafeJourney,
+      map_id: ids.cafe,
+      started_at: expect.any(String),
+      finished_at: null,
+      milestones: [],
+      checkins: [],
+      encoded_path: null
+    });
+    expect(body.updated_at).toBe(body.started_at);
+    expect(await send('POST', path, 'alice')).toEqual({
+      status: 409,
+      body: { title: 'Conflict', detail: 'The journey has already started.' }
+    });
+    expect((await send('POST', '/me/journeys/1/start', 'alice')).status).toBe(
+      404
+    );
+  });
+
+  it('finishes a started journey, encrypting its path as Active Record Encryption does', async () => {
+    ramenJourney = await newJourney('alice', ids.ramen);
+    const finish = `/me/journeys/${ramenJourney}/finish`;
+    const path = 'a~l~Fjk~uOwHJy@P';
+
+    expect(await send('POST', finish, 'alice', { encoded_path: path })).toEqual(
+      {
+        status: 409,
+        body: { title: 'Conflict', detail: 'The journey has not started yet.' }
+      }
+    );
+    await send('POST', `/me/journeys/${ramenJourney}/start`, 'alice');
+
+    const { status, body } = await send('POST', finish, 'alice', {
+      encoded_path: path
+    });
+    const stored = (await journeyRow(ramenJourney))?.encodedPath ?? '';
+    const message = JSON.parse(stored);
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      finished_at: expect.any(String),
+      encoded_path: path
+    });
+    expect(Object.keys(message)).toEqual(['p', 'h']);
+    expect(Object.keys(message.h)).toEqual(['iv', 'at']);
+    expect(await decryptAttribute(stored, secrets)).toBe(path);
+    expect(
+      (await get(`/me/journeys/${ramenJourney}`, 'alice')).body.encoded_path
+    ).toBe(path);
+    expect((await send('POST', finish, 'alice')).status).toBe(404);
+  });
+
+  it('finishes without a path, and compresses a long one', async () => {
+    const bobJourney = await newJourney('bob', ids.cafe);
+    const finish = `/me/journeys/${bobJourney}/finish`;
+    const path = '_p~iF~ps|U'.repeat(30);
+
+    await send('POST', `/me/journeys/${bobJourney}/start`, 'bob');
+
+    expect(
+      await send('POST', finish, 'bob', { encoded_path: 'a'.repeat(1_000_001) })
+    ).toEqual(invalid('The journey path is too large.'));
+    expect(
+      (await send('POST', finish, 'bob', { encoded_path: path })).body
+        .encoded_path
+    ).toBe(path);
+    expect(
+      JSON.parse((await journeyRow(bobJourney))?.encodedPath ?? '').h.c
+    ).toBe(true);
+
+    const finished = await send(
+      'POST',
+      `/me/journeys/${cafeJourney}/finish`,
+      'alice'
+    );
+
+    expect(finished).toMatchObject({
+      status: 200,
+      body: { finished_at: expect.any(String), encoded_path: null }
+    });
+    expect((await journeyRow(cafeJourney))?.encodedPath).toBeNull();
+  });
+
+  it('adds milestones to an unfinished journey in order', async () => {
+    cafeJourney = await newJourney('alice', ids.cafe);
+    const add = (pinId: unknown, uid = 'alice', journeyId = cafeJourney) =>
+      send('POST', `/me/journeys/${journeyId}/milestones`, uid, {
+        pin_id: pinId
+      });
+
+    const first = await add(feedPin(0));
+
+    expect(first).toEqual({
+      status: 200,
+      body: {
+        id: expect.any(Number),
+        pin_id: feedPin(0),
+        name: 'Feed 0',
+        latitude: 35.7,
+        longitude: 139.7
+      }
+    });
+    expect((await add(String(feedPin(1)))).status).toBe(200);
+    expect(
+      (
+        await send(
+          'DELETE',
+          `/me/journeys/${cafeJourney}/milestones/${first.body.id}`,
+          'alice'
+        )
+      ).status
+    ).toBe(204);
+    expect(
+      (
+        await send(
+          'DELETE',
+          `/me/journeys/${cafeJourney}/milestones/${first.body.id}`,
+          'alice'
+        )
+      ).status
+    ).toBe(404);
+    expect((await add(feedPin(2))).status).toBe(200);
+    expect(await milestonesOf(cafeJourney)).toEqual([
+      { pinId: feedPin(1), position: 2 },
+      { pinId: feedPin(2), position: 3 }
+    ]);
+    expect(
+      (await get(`/me/journeys/${cafeJourney}`, 'alice')).body.milestones.map(
+        (milestone: { pin_id: number }) => milestone.pin_id
+      )
+    ).toEqual([feedPin(1), feedPin(2)]);
+  });
+
+  it('rejects a milestone that is duplicated, off the map or out of reach', async () => {
+    const add = (body: unknown, uid = 'alice', journeyId = cafeJourney) =>
+      send('POST', `/me/journeys/${journeyId}/milestones`, uid, body);
+
+    expect(await add({ pin_id: feedPin(1) })).toEqual(
+      invalid('The pin is already added as a milestone.')
+    );
+    expect(await add({ pin_id: ids.secretPin })).toEqual(
+      invalid('The pin does not belong to the map of the journey.')
+    );
+    expect((await add({ pin_id: ids.deletedPin })).status).toBe(404);
+    expect((await add({})).status).toBe(404);
+    expect((await add({ pin_id: feedPin(3) }, 'bob')).status).toBe(404);
+    expect((await add({ pin_id: feedPin(3) }, 'alice', 1)).status).toBe(404);
+    expect(
+      (await send('DELETE', '/me/journeys/1/milestones/1', 'alice')).status
+    ).toBe(404);
+    expect(await milestonesOf(cafeJourney)).toHaveLength(2);
+  });
+
+  it('answers 422 to the loser of two concurrent milestones at one pin', async () => {
+    const responses = await Promise.all(
+      [0, 1].map(() =>
+        send('POST', `/me/journeys/${cafeJourney}/milestones`, 'alice', {
+          pin_id: feedPin(5)
+        })
+      )
+    );
+    const added = responses.find((response) => response.status === 200);
+
+    expect(responses.map((response) => response.status).sort()).toEqual([
+      200, 422
+    ]);
+    expect(responses.find((response) => response.status === 422)).toEqual(
+      invalid('The pin is already added as a milestone.')
+    );
+    expect(
+      (
+        await send(
+          'DELETE',
+          `/me/journeys/${cafeJourney}/milestones/${added?.body.id}`,
+          'alice'
+        )
+      ).status
+    ).toBe(204);
+  });
+
+  it('records a checkin with its first revision and images', async () => {
+    const checkIn = (body: unknown, uid = 'alice') =>
+      send('POST', `/me/journeys/${cafeJourney}/checkins`, uid, body);
+
+    expect(await checkIn({ pin_id: feedPin(0) })).toEqual(
+      invalid('The journey has not started yet.')
+    );
+    await send('POST', `/me/journeys/${cafeJourney}/start`, 'alice');
+
+    const { status, body } = await checkIn({
+      pin_id: feedPin(0),
+      note: 'First\r\nvisit',
+      image_ids: [checkinImage, checkinImage]
+    });
+
+    feedCheckin = body.id;
+    expect(status).toBe(200);
+    expect(body).toEqual({
+      id: expect.any(Number),
+      pin_id: feedPin(0),
+      spot: { name: 'Feed 0', latitude: 35.7, longitude: 139.7 },
+      note: 'First\nvisit',
+      images: [{ id: checkinImage, ...variants('spot') }],
+      checked_in_at: expect.any(String)
+    });
+
+    const revisions = await checkinRevisionsOf(feedCheckin);
+
+    expect(revisions).toMatchObject([
+      {
+        userId: ids.alice,
+        note: 'First\nvisit',
+        checkedInAt: body.checked_in_at,
+        status: 'recorded',
+        imageIds: [checkinImage]
+      }
+    ]);
+    expect((await checkinRow(feedCheckin))?.currentRevisionId).toBe(
+      revisions[0]?.id
+    );
+  });
+
+  it('rejects a checkin that breaks a rule of the previous API', async () => {
+    const checkIn = (body: unknown, uid = 'alice') =>
+      send('POST', `/me/journeys/${cafeJourney}/checkins`, uid, body);
+    const [inserted] = await db()
+      .insert(images)
+      .values({
+        userId: ids.bob,
+        url: `${IMAGE_BASE}/bob-spot/public`,
+        createdAt: at(1),
+        updatedAt: at(1)
+      })
+      .returning({ id: images.id });
+
+    bobImage = inserted?.id ?? 0;
+
+    expect(await checkIn({ pin_id: feedPin(0) })).toEqual(
+      invalid('The journey has already checked in at this pin.')
+    );
+    expect(await checkIn({ pin_id: ids.secretPin })).toEqual(
+      invalid('The pin does not belong to the map of the journey.')
+    );
+    expect(
+      await checkIn({ pin_id: feedPin(1), image_ids: [1, 2, 3, 4, 5] })
+    ).toEqual(invalid('The limit of images per checkin has been reached.'));
+    expect(
+      await checkIn({ pin_id: feedPin(1), image_ids: [bobImage] })
+    ).toEqual(invalid('The image was not uploaded by you.'));
+    expect(
+      await checkIn({ pin_id: feedPin(1), note: 'a'.repeat(501) })
+    ).toEqual(invalid('The note is too long. (Max: 500)'));
+    expect(
+      await checkIn({
+        pin_id: feedPin(1),
+        checked_in_at: '2026-01-01 00:00:00'
+      })
+    ).toEqual(invalid('The checkin time is outside the journey period.'));
+    expect((await checkIn({ pin_id: feedPin(1) }, 'bob')).status).toBe(404);
+    expect((await checkIn({})).status).toBe(404);
+  });
+
+  it('answers 422 to the loser of two concurrent checkins at one pin', async () => {
+    const responses = await Promise.all(
+      [0, 1].map(() =>
+        send('POST', `/me/journeys/${cafeJourney}/checkins`, 'alice', {
+          pin_id: feedPin(5)
+        })
+      )
+    );
+    const recorded = responses.find((response) => response.status === 200);
+
+    expect(responses.map((response) => response.status).sort()).toEqual([
+      200, 422
+    ]);
+    expect(responses.find((response) => response.status === 422)).toEqual(
+      invalid('The journey has already checked in at this pin.')
+    );
+    expect(
+      await db()
+        .select({ id: journeyCheckins.id })
+        .from(journeyCheckins)
+        .where(
+          and(
+            eq(journeyCheckins.journeyId, cafeJourney),
+            eq(journeyCheckins.pinId, feedPin(5))
+          )
+        )
+    ).toEqual([{ id: recorded?.body.id }]);
+    expect(await checkinRevisionsOf(recorded?.body.id)).toHaveLength(1);
+    expect(
+      (
+        await send(
+          'DELETE',
+          `/me/journeys/${cafeJourney}/checkins/${recorded?.body.id}`,
+          'alice'
+        )
+      ).status
+    ).toBe(204);
+  });
+
+  it('records a checkin on a finished journey only within its period', async () => {
+    const pin = await send('POST', `/maps/${ids.ramen}/pins`, 'alice', {
+      name: 'Miso Ramen',
+      comment: 'Rich',
+      latitude: 35.1,
+      longitude: 139.1
+    });
+    const checkIn = (body: Record<string, unknown>) =>
+      send('POST', '/me/journeys/1/checkins', 'alice', {
+        pin_id: pin.body.id,
+        ...body
+      });
+
+    expect(await checkIn({})).toEqual(
+      invalid('The checkin time is outside the journey period.')
+    );
+    expect(await checkIn({ checked_in_at: '2026-01-06T00:00:01Z' })).toEqual(
+      invalid('The checkin time is outside the journey period.')
+    );
+
+    const { status, body } = await checkIn({
+      checked_in_at: '2026-01-05 12:00:00'
+    });
+
+    retroactiveCheckin = body.id;
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      pin_id: pin.body.id,
+      spot: { name: 'Miso Ramen', latitude: 35.1, longitude: 139.1 },
+      note: null,
+      images: [],
+      checked_in_at: '2026-01-05T12:00:00.000000Z'
+    });
+  });
+
+  it('revises a checkin as a new revision, only when it changes', async () => {
+    const path = `/me/journeys/1/checkins/${retroactiveCheckin}`;
+    const revised = await send('PUT', path, 'alice', {
+      checked_in_at: '2026-01-05T21:30:00+09:00'
+    });
+
+    expect(revised).toMatchObject({
+      status: 200,
+      body: { checked_in_at: '2026-01-05T12:30:00.000000Z' }
+    });
+    expect(await checkinRevisionsOf(retroactiveCheckin)).toHaveLength(2);
+    expect(
+      (
+        await send('PATCH', path, 'alice', {
+          checked_in_at: '2026-01-05 12:30:00'
+        })
+      ).status
+    ).toBe(200);
+    expect(await checkinRevisionsOf(retroactiveCheckin)).toHaveLength(2);
+    expect(
+      await send('PUT', path, 'alice', { checked_in_at: '2026-01-06 00:00:01' })
+    ).toEqual(invalid('The checkin time is outside the journey period.'));
+    expect(await send('PUT', path, 'alice', { checked_in_at: null })).toEqual(
+      invalid('The checkin time is outside the journey period.')
+    );
+    expect(await checkinRevisionsOf(retroactiveCheckin)).toHaveLength(2);
+  });
+
+  it('replaces the images and note, leaving the earlier revision as it was', async () => {
+    const path = `/me/journeys/${cafeJourney}/checkins/${feedCheckin}`;
+    const { status, body } = await send('PUT', path, 'alice', {
+      note: 'Edited',
+      image_ids: [ids.shoyuImage]
+    });
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      note: 'Edited',
+      images: [{ id: ids.shoyuImage, ...variants('shoyu') }]
+    });
+    expect(await checkinRevisionsOf(feedCheckin)).toMatchObject([
+      { note: 'First\nvisit', imageIds: [checkinImage] },
+      { note: 'Edited', imageIds: [ids.shoyuImage] }
+    ]);
+    expect(
+      await send('PATCH', path, 'alice', { image_ids: [bobImage] })
+    ).toEqual(invalid('The image was not uploaded by you.'));
+    expect(
+      await send('PATCH', path, 'alice', { note: 'b'.repeat(501) })
+    ).toEqual(invalid('The note is too long. (Max: 500)'));
+    expect(await checkinRevisionsOf(feedCheckin)).toHaveLength(2);
+    expect((await send('PUT', path, 'bob', { note: 'Mine' })).status).toBe(404);
+    expect(
+      (
+        await send('PUT', `/me/journeys/1/checkins/${feedCheckin}`, 'alice', {
+          note: 'Moved'
+        })
+      ).status
+    ).toBe(404);
+    expect(
+      (
+        await send('PUT', '/me/journeys/1/checkins/2', 'alice', {
+          note: 'Back'
+        })
+      ).status
+    ).toBe(404);
+  });
+
+  it('discards a checkin as a revision and frees its pin', async () => {
+    const path = `/me/journeys/${cafeJourney}/checkins/${feedCheckin}`;
+
+    expect((await send('DELETE', path, 'bob')).status).toBe(404);
+    expect((await send('DELETE', path, 'alice')).status).toBe(204);
+    expect((await send('DELETE', path, 'alice')).status).toBe(404);
+    expect(await checkinRow(feedCheckin)).toMatchObject({
+      status: 'deleted',
+      pinId: null,
+      name: 'Feed 0',
+      note: 'Edited'
+    });
+    expect((await checkinRevisionsOf(feedCheckin)).at(-1)).toMatchObject({
+      status: 'deleted',
+      userId: ids.alice,
+      imageIds: [ids.shoyuImage]
+    });
+    expect(
+      (await get(`/me/journeys/${cafeJourney}`, 'alice')).body.checkins
+    ).toEqual([]);
+    expect(
+      (
+        await send('POST', `/me/journeys/${cafeJourney}/checkins`, 'alice', {
+          pin_id: feedPin(0)
+        })
+      ).status
+    ).toBe(200);
+  });
+
+  it('rejects a second unfinished journey on a map', async () => {
+    expect(await send('POST', `/maps/${ids.cafe}/journeys`, 'alice')).toEqual(
+      invalid('An unfinished journey already exists on this map.')
+    );
+  });
+
+  it('destroys a journey with its milestones and checkins, detaching its chapter', async () => {
+    const checkinIds = (
+      await db()
+        .select({ id: journeyCheckins.id })
+        .from(journeyCheckins)
+        .where(eq(journeyCheckins.journeyId, 1))
+    ).map((row) => row.id);
+    const revisionIds = (
+      await db()
+        .select({ id: journeyCheckinRevisions.id })
+        .from(journeyCheckinRevisions)
+        .where(inArray(journeyCheckinRevisions.journeyCheckinId, checkinIds))
+    ).map((row) => row.id);
+
+    expect(checkinIds).toHaveLength(4);
+    expect(revisionIds).toHaveLength(3);
+    expect((await send('DELETE', '/me/journeys/1', 'bob')).status).toBe(404);
+    expect((await send('DELETE', '/me/journeys/1', 'alice')).status).toBe(204);
+    expect((await send('DELETE', '/me/journeys/1', 'alice')).status).toBe(404);
+    expect((await get('/me/journeys/1', 'alice')).status).toBe(404);
+    expect(await journeyRow(1)).toBeUndefined();
+    expect(await milestonesOf(1)).toEqual([]);
+    expect(
+      await db()
+        .select()
+        .from(journeyCheckins)
+        .where(eq(journeyCheckins.journeyId, 1))
+    ).toEqual([]);
+    expect(
+      await db()
+        .select()
+        .from(journeyCheckinRevisions)
+        .where(inArray(journeyCheckinRevisions.journeyCheckinId, checkinIds))
+    ).toEqual([]);
+    expect(
+      await db()
+        .select()
+        .from(journeyCheckinRevisionImages)
+        .where(
+          inArray(
+            journeyCheckinRevisionImages.journeyCheckinRevisionId,
+            revisionIds
+          )
+        )
+    ).toEqual([]);
+    expect(
+      await db()
+        .select({ journeyId: chapters.journeyId })
+        .from(chapters)
+        .where(eq(chapters.id, ids.noodleStory))
+    ).toEqual([{ journeyId: null }]);
+    expect(
+      await db().select().from(images).where(eq(images.id, checkinImage))
+    ).toHaveLength(1);
+    expect(await milestonesOf(cafeJourney)).toHaveLength(2);
   });
 });

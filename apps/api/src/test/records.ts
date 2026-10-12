@@ -6,6 +6,8 @@ import {
   chapterRevisions,
   commentRevisions,
   journals,
+  journeyCheckinRevisionImages,
+  journeyCheckinRevisions,
   maps,
   notifications,
   pinRevisionImages,
@@ -86,6 +88,31 @@ export async function chapterRevisionsOf(chapterId: number) {
     ...revision,
     imageIds: revisionImages
       .filter((image) => image.chapterRevisionId === revision.id)
+      .map((image) => image.imageId)
+  }));
+}
+
+export async function checkinRevisionsOf(checkinId: number) {
+  const revisions = await db()
+    .select()
+    .from(journeyCheckinRevisions)
+    .where(eq(journeyCheckinRevisions.journeyCheckinId, checkinId))
+    .orderBy(asc(journeyCheckinRevisions.id));
+  const revisionImages = await db()
+    .select()
+    .from(journeyCheckinRevisionImages)
+    .where(
+      inIds(
+        journeyCheckinRevisionImages.journeyCheckinRevisionId,
+        revisions.map((revision) => revision.id)
+      )
+    )
+    .orderBy(asc(journeyCheckinRevisionImages.imageId));
+
+  return revisions.map((revision) => ({
+    ...revision,
+    imageIds: revisionImages
+      .filter((image) => image.journeyCheckinRevisionId === revision.id)
       .map((image) => image.imageId)
   }));
 }

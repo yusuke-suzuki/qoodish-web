@@ -4,6 +4,7 @@ import type {
   ChapterDetail,
   Coauthor,
   CoauthorshipInvitation,
+  Journey,
   Pin,
   PinProperty,
   PinPropertyOption
@@ -22,7 +23,9 @@ import {
 import { invitation, inviteCoauthor } from '../coauthorship-invitations.ts';
 import { type Database, inIds, scalar, uniqueIds } from '../db/client.ts';
 import { chapters, journeys, maps, pins } from '../db/schema.ts';
+import { encryptionSecrets } from '../encryption.ts';
 import { ApiError } from '../errors.ts';
+import { createJourney, journeyDetail } from '../journeys.ts';
 import {
   createMap,
   discardMap,
@@ -382,6 +385,27 @@ app.post('/:mapId/pins', mapParams, jsonBody(newPinInput), async (c) => {
   });
 
   return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
+});
+
+app.post('/:mapId/journeys', mapParams, async (c) => {
+  const db = c.get('db');
+  const viewer = c.get('viewer');
+  const map = await findMap(
+    db,
+    and(referenceableMap(viewer), eq(maps.id, c.req.valid('param').mapId))
+  );
+  const journeyId = await createJourney(db, {
+    userId: viewer.id,
+    mapId: map.id
+  });
+
+  return c.json<Journey>(
+    await journeyDetail(
+      db,
+      eq(journeys.id, journeyId),
+      encryptionSecrets(c.env)
+    )
+  );
 });
 
 app.post(
