@@ -7,7 +7,15 @@ import type {
 } from '@qoodish/api-contract';
 import { and, eq, inArray, max, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
-import { currentTimestamp, type Database, inIds, scalar } from './db/client.ts';
+import {
+  constraintViolated,
+  currentTimestamp,
+  type Database,
+  inIds,
+  reviseUntilCurrent,
+  scalar,
+  unrevisedRecord
+} from './db/client.ts';
 import {
   bookmarks,
   images,
@@ -84,20 +92,6 @@ function userRevisionStatements(
   ] as const;
 }
 
-function uniqueViolation(error: unknown, column: string): boolean {
-  for (
-    let current: unknown = error;
-    current instanceof Error;
-    current = current.cause
-  ) {
-    if (current.message.includes(`UNIQUE constraint failed: ${column}`)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 async function createAccount(
   db: Database,
   { uid, name, email, locale }: SignInClaims
@@ -170,7 +164,7 @@ export async function signIn(
   try {
     return await createAccount(db, claims);
   } catch (error) {
-    if (!uniqueViolation(error, 'users.uid')) {
+    if (!constraintViolated(error, 'UNIQUE', users.uid)) {
       throw error;
     }
 
@@ -180,7 +174,17 @@ export async function signIn(
   }
 }
 
-export async function updateProfile(
+export function updateProfile(
+  db: Database,
+  userId: number,
+  changes: ProfileChanges
+): Promise<void> {
+  return reviseUntilCurrent(userRevisions.userId, () =>
+    writeProfile(db, userId, changes)
+  );
+}
+
+async function writeProfile(
   db: Database,
   userId: number,
   changes: ProfileChanges
@@ -190,7 +194,8 @@ export async function updateProfile(
       .select({
         name: users.name,
         biography: users.biography,
-        imageId: users.imageId
+        imageId: users.imageId,
+        currentRevisionId: users.currentRevisionId
       })
       .from(users)
       .where(eq(users.id, userId))
@@ -216,20 +221,34 @@ export async function updateProfile(
 
   const revised =
     content.name !== user.name || content.biography !== user.biography;
+  const imageChanged = imageId !== user.imageId;
 
-  if (!revised && imageId === user.imageId) {
+  if (!revised && !imageChanged) {
     return;
   }
 
   const now = currentTimestamp();
   const update = db
     .update(users)
-    .set({ ...content, imageId, updatedAt: now })
+    .set({
+      ...(revised ? content : {}),
+      ...(imageChanged ? { imageId } : {}),
+      updatedAt: now
+    })
     .where(eq(users.id, userId));
-
   await db.batch(
     revised
-      ? [update, ...userRevisionStatements(db, { userId, content, now })]
+      ? [
+          update,
+          ...userRevisionStatements(db, {
+            userId: unrevisedRecord(db, users, {
+              id: userId,
+              currentRevisionId: user.currentRevisionId
+            }),
+            content,
+            now
+          })
+        ]
       : [update]
   );
 }

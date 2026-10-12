@@ -9,7 +9,13 @@ import {
   type SQL
 } from 'drizzle-orm';
 import { z } from 'zod';
-import { currentTimestamp, type Database, scalar } from './db/client.ts';
+import {
+  currentTimestamp,
+  type Database,
+  reviseUntilCurrent,
+  scalar,
+  unrevisedRecord
+} from './db/client.ts';
 import {
   chapters,
   images,
@@ -103,7 +109,17 @@ export function recordDefaultJournal(
   ] as const;
 }
 
-export async function reviseJournal(
+export function reviseJournal(
+  db: Database,
+  userId: number,
+  changes: z.output<typeof journalInput>
+): Promise<void> {
+  return reviseUntilCurrent(journalRevisions.journalId, () =>
+    writeJournal(db, userId, changes)
+  );
+}
+
+async function writeJournal(
   db: Database,
   userId: number,
   changes: z.output<typeof journalInput>
@@ -113,7 +129,8 @@ export async function reviseJournal(
       .select({
         id: journals.id,
         title: journals.title,
-        description: journals.description
+        description: journals.description,
+        currentRevisionId: journals.currentRevisionId
       })
       .from(journals)
       .where(eq(journals.userId, userId))
@@ -141,7 +158,7 @@ export async function reviseJournal(
       .set({ ...content, updatedAt: now })
       .where(eq(journals.id, journal.id)),
     ...journalRevisionStatements(db, {
-      journalId: journal.id,
+      journalId: unrevisedRecord(db, journals, journal),
       userId,
       content,
       now
