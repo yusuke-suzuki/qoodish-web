@@ -11,6 +11,9 @@ export interface Env {
   ENCRYPTION_KEY_DERIVATION_SALT: string;
   GOOGLE_CLIENT_EMAIL: string;
   GOOGLE_PRIVATE_KEY: string;
+  CLOUDFLARE_ACCOUNT_ID: string;
+  CLOUDFLARE_IMAGES_ACCOUNT_HASH: string;
+  CLOUDFLARE_IMAGES_API_TOKEN: string;
   DB: D1Database;
   WEB_PUSH_QUEUE: Queue<WebPushMessage>;
 }

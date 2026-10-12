@@ -28,6 +28,9 @@ export default defineConfig(async () => {
             ENCRYPTION_PRIMARY_KEY: 'test_ar_encryption_primary_key_0',
             ENCRYPTION_KEY_DERIVATION_SALT:
               'test_ar_encryption_key_derive_salt',
+            CLOUDFLARE_ACCOUNT_ID: 'test-account',
+            CLOUDFLARE_IMAGES_ACCOUNT_HASH: 'mockhash',
+            CLOUDFLARE_IMAGES_API_TOKEN: 'test-token',
             TEST_MIGRATIONS: migrations
           }
         }

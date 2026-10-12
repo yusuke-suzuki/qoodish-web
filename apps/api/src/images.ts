@@ -1,5 +1,5 @@
 import type { Image, ImageVariants } from '@qoodish/api-contract';
-import { type Database, inIds } from './db/client.ts';
+import { currentTimestamp, type Database, inIds } from './db/client.ts';
 import { images } from './db/schema.ts';
 import { ApiError } from './errors.ts';
 import type { MessageKey } from './i18n/index.ts';
@@ -50,6 +50,20 @@ export async function unownedImageErrors(
     imageIds,
     editorId
   );
+}
+
+export async function createImage(
+  db: Database,
+  { userId, url }: { userId: number; url: string }
+): Promise<number> {
+  const now = currentTimestamp();
+  const created = await db
+    .insert(images)
+    .values({ userId, url, createdAt: now, updatedAt: now })
+    .returning({ id: images.id })
+    .get();
+
+  return created.id;
 }
 
 export function variantUrl(url: string, variant: string): string {

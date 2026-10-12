@@ -23,6 +23,7 @@ import guestUsers from './routes/guest/users.ts';
 import guestV2Chapters from './routes/guest/v2/chapters.ts';
 import guestV2Pins from './routes/guest/v2/pins.ts';
 import guestV2Users from './routes/guest/v2/users.ts';
+import images from './routes/images.ts';
 import journals from './routes/journals.ts';
 import maps from './routes/maps.ts';
 import me from './routes/me.ts';
@@ -102,6 +103,7 @@ export function createApp(options: AppOptions = {}) {
   app.route('/pins', pins);
   app.route('/chapters', chapters);
   app.route('/journals', journals);
+  app.route('/images', images);
   app.route('/me', me);
   app.route('/v2/pins', v2Pins);
   app.route('/v2/users', v2Users);

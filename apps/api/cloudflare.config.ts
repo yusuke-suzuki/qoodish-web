@@ -7,6 +7,7 @@ import {
 } from './environments.ts';
 
 const ACCOUNT_ID = '9671c836ad132f87d892b12ccd1809e0';
+const IMAGES_ACCOUNT_HASH = 'ij3ygWRDWuATHKgheHKS5A';
 
 function defineApiWorker(name: string, environment: Environment) {
   return {
@@ -32,6 +33,9 @@ function defineApiWorker(name: string, environment: Environment) {
       ENCRYPTION_PRIMARY_KEY: bindings.secret(),
       ENCRYPTION_KEY_DERIVATION_SALT: bindings.secret(),
       GOOGLE_PRIVATE_KEY: bindings.secret(),
+      CLOUDFLARE_ACCOUNT_ID: bindings.text(ACCOUNT_ID),
+      CLOUDFLARE_IMAGES_ACCOUNT_HASH: bindings.text(IMAGES_ACCOUNT_HASH),
+      CLOUDFLARE_IMAGES_API_TOKEN: bindings.secret(),
       DB: bindings.d1({
         name: environment.databaseName,
         id: environment.databaseId
