@@ -20,6 +20,7 @@ export const en = {
   map_description_required: 'Please enter a description of the map.',
   map_description_exceed: 'Description of the map is too long. (Max: 200)',
   map_author_not_specified: 'Please specify the author of the map.',
+  map_images_exceed: 'Only one image can be attached to a map.',
 
   comment_required: 'Comment is required.',
   comment_exceeded: 'Comment is too long. (Max: 500)',

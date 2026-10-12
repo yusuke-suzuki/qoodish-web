@@ -22,6 +22,7 @@ export const ja: Messages = {
   map_description_required: '地図の説明を入力してください。',
   map_description_exceed: '地図の説明が長すぎます。(最大: 200 文字)',
   map_author_not_specified: '地図の著者を指定してください。',
+  map_images_exceed: '地図に添付できる画像は 1 枚までです。',
 
   comment_required: 'コメントを入力してください。',
   comment_exceeded: 'コメントが長すぎます。(最大: 500 文字)',

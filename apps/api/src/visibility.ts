@@ -134,6 +134,14 @@ export function referenceableMap(viewer: Viewer): SQL | undefined {
   );
 }
 
+export function editableMap(viewer: Viewer): SQL | undefined {
+  return and(
+    or(eq(maps.userId, viewer.id), inArray(maps.id, coauthoredBy(viewer))),
+    eq(maps.status, 'published'),
+    visible(maps.id, 'Map')
+  );
+}
+
 export function relatedMap(viewer: Viewer): SQL | undefined {
   return and(
     or(
