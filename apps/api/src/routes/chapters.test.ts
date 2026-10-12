@@ -80,6 +80,45 @@ describe('chapters', () => {
       ids.noodleStory
     ]);
   });
+
+  it('ignores an invalid next_id and a next_id without next_timestamp', async () => {
+    for (const nextId of ['abc', '0', '']) {
+      expect(
+        await idsOf(
+          `/chapters?next_timestamp=${at(13)}&next_id=${nextId}`,
+          'bob'
+        )
+      ).toEqual([ids.noodleStory]);
+    }
+    expect(await idsOf('/chapters?next_id=1&other=x', 'bob')).toEqual([
+      ids.cafeStory,
+      ids.noodleStory
+    ]);
+  });
+
+  it('reads the first of repeated feed parameters', async () => {
+    expect(
+      await idsOf(
+        `/chapters?next_timestamp=${at(13)}&next_timestamp=x&next_id=999&next_id=1`,
+        'bob'
+      )
+    ).toEqual([ids.cafeStory, ids.noodleStory]);
+    expect(
+      (await get(`/chapters?next_timestamp=x&next_timestamp=${at(13)}`, 'bob'))
+        .status
+    ).toBe(400);
+  });
+
+  it('answers 400 for a malformed next_timestamp', async () => {
+    for (const nextTimestamp of ['', 'x', '2024-13-45T25:99:00Z']) {
+      expect(
+        await get(`/chapters?next_timestamp=${nextTimestamp}`, 'bob', 'en')
+      ).toEqual({
+        status: 400,
+        body: { title: 'BadRequest', detail: 'Invalid parameter specified.' }
+      });
+    }
+  });
 });
 
 describe('POST/DELETE /chapters/:chapterId/like', () => {

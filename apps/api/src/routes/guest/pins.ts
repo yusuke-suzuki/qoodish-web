@@ -7,21 +7,31 @@ import { database } from '../../db/client.ts';
 import { pins, votes } from '../../db/schema.ts';
 import { ApiError } from '../../errors.ts';
 import { guestPins } from '../../pins.ts';
-import { first, present } from '../../routing.ts';
+import { first } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
-import { id, pathParams } from '../../validation.ts';
+import {
+  flag,
+  id,
+  pathParams,
+  queryParams,
+  searchInput
+} from '../../validation.ts';
 import { publicPin } from '../../visibility.ts';
 
 const RECENT_PINS_LIMIT = 8;
 const POPULAR_PINS_LIMIT = 10;
 
+const listingQuery = queryParams(
+  z.object({ input: searchInput, recent: flag, popular: flag })
+);
+
 const app = new Hono<AppEnv>();
 
-app.get('/', async (c) => {
+app.get('/', listingQuery, async (c) => {
   const db = database(c.env.DB);
-  const { input, recent, popular } = c.req.query();
+  const { input, recent, popular } = c.req.valid('query');
 
-  if (present(input)) {
+  if (input !== undefined) {
     const matched = searchCondition(input, {
       index: 'pins_fts',
       id: pins.id,
@@ -45,7 +55,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (recent !== undefined) {
+  if (recent) {
     return c.json<GuestPin[]>(
       await guestPins(
         db,
@@ -59,7 +69,7 @@ app.get('/', async (c) => {
     );
   }
 
-  if (popular !== undefined) {
+  if (popular) {
     return c.json<GuestPin[]>(
       await guestPins(
         db,

@@ -8,31 +8,41 @@ import { database } from '../../../db/client.ts';
 import { pins } from '../../../db/schema.ts';
 import { guestPins } from '../../../pins.ts';
 import { feedPage } from '../../../routing.ts';
-import { id, pathParams } from '../../../validation.ts';
+import {
+  feedCursor,
+  id,
+  pathParams,
+  queryParams
+} from '../../../validation.ts';
 import { publicPin } from '../../../visibility.ts';
 
 const app = new Hono<AppEnv>();
 
-app.get('/:userId/pins', pathParams(z.object({ userId: id })), async (c) => {
-  const db = database(c.env.DB);
-  const rows = await db
-    .select()
-    .from(pins)
-    .where(
-      feedPage(
-        c.req.query('cursor'),
-        pins.createdAt,
-        pins.id,
-        and(publicPin(), eq(pins.userId, c.req.valid('param').userId))
+app.get(
+  '/:userId/pins',
+  pathParams(z.object({ userId: id })),
+  queryParams(z.object({ cursor: feedCursor })),
+  async (c) => {
+    const db = database(c.env.DB);
+    const rows = await db
+      .select()
+      .from(pins)
+      .where(
+        feedPage(
+          c.req.valid('query').cursor,
+          pins.createdAt,
+          pins.id,
+          and(publicPin(), eq(pins.userId, c.req.valid('param').userId))
+        )
       )
-    )
-    .orderBy(desc(pins.createdAt), desc(pins.id))
-    .limit(FEED_PER_PAGE);
+      .orderBy(desc(pins.createdAt), desc(pins.id))
+      .limit(FEED_PER_PAGE);
 
-  return c.json<ApiCursorPage<GuestPin>>({
-    data: await guestPins(db, rows),
-    next_cursor: nextCursor(rows)
-  });
-});
+    return c.json<ApiCursorPage<GuestPin>>({
+      data: await guestPins(db, rows),
+      next_cursor: nextCursor(rows)
+    });
+  }
+);
 
 export default app;

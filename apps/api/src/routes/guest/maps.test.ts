@@ -98,6 +98,34 @@ describe('GET /guest/maps', () => {
       body: badRequest
     });
   });
+
+  it('answers 400 for a blank recent and an unknown key alone', async () => {
+    for (const query of ['?recent=', '?recent=&recent=1', '?other=1']) {
+      expect(await get(`/guest/maps${query}`, undefined, 'en')).toEqual({
+        status: 400,
+        body: badRequest
+      });
+    }
+  });
+
+  it('lists by the first value of each parameter, blank or not', async () => {
+    const recent = [ids.cafe, ids.ramen, ids.reinstatedMap];
+
+    expect(await idsOf('/guest/maps?recent=1&recent=')).toEqual(recent);
+    expect(await idsOf('/guest/maps?input=%20&recent=1')).toEqual(recent);
+    expect(await idsOf('/guest/maps?input=&input=zzzz&recent=1')).toEqual(
+      recent
+    );
+    expect(await idsOf('/guest/maps?input=zzzz&input=&recent=1')).toEqual([]);
+    expect(await idsOf('/guest/maps?recent=&active')).toEqual(recent);
+    expect(await idsOf('/guest/maps?recent=&popular=')).toEqual([
+      ids.cafe,
+      ids.ramen
+    ]);
+    expect((await idsOf('/guest/maps?recommend')).sort()).toEqual(
+      [...recent].sort()
+    );
+  });
 });
 
 describe('GET /guest/maps/:id/*', () => {

@@ -25,7 +25,14 @@ import {
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
 import { first } from '../routing.ts';
-import { id, jsonBody, optionalId, pathParams } from '../validation.ts';
+import {
+  decoded,
+  id,
+  jsonBody,
+  optionalId,
+  pathParams,
+  queryParams
+} from '../validation.ts';
 import {
   feedChapter,
   readableChapter,
@@ -39,13 +46,17 @@ const chapterParams = pathParams(z.object({ chapterId: id }));
 const ownCommentParams = pathParams(z.object({ chapterId: id, id }));
 const commentParams = pathParams(z.object({ chapterId: id, commentId: id }));
 
-function chapterFeedBefore(
-  nextTimestamp: string,
-  nextId: string | undefined
-): SQL | undefined {
-  const createdAt = normalizeTimestamp(nextTimestamp);
-  const cursorId = optionalId(nextId);
+const feedQuery = queryParams(
+  z.object({
+    next_timestamp: decoded(normalizeTimestamp).optional(),
+    next_id: z.string().optional().transform(optionalId)
+  })
+);
 
+function chapterFeedBefore(
+  createdAt: string,
+  cursorId: number | undefined
+): SQL | undefined {
   if (cursorId === undefined) {
     return lt(chapters.createdAt, createdAt);
   }
@@ -153,10 +164,11 @@ const app = new Hono<ViewerEnv>();
 
 app.use(authenticateUser);
 
-app.get('/', async (c) => {
+app.get('/', feedQuery, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const { next_timestamp: nextTimestamp, next_id: nextId } = c.req.query();
+  const { next_timestamp: nextTimestamp, next_id: nextId } =
+    c.req.valid('query');
   const rows = await db
     .select()
     .from(chapters)

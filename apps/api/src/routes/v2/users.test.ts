@@ -17,4 +17,22 @@ describe('GET /v2/users/:userId/pins', () => {
     ).toMatchObject({ data: [{ id: ids.shoyu }], next_cursor: null });
     expect((await get('/v2/users/999/pins', 'bob')).status).toBe(404);
   });
+
+  it('reads the first of repeated cursors and rejects a malformed one', async () => {
+    const path = `/v2/users/${ids.alice}/pins`;
+    const first = await get(path, 'bob');
+
+    for (const query of ['?cursor=', '?cursor=&cursor=%25', '?other=%25']) {
+      expect(await get(`${path}${query}`, 'bob')).toEqual(first);
+    }
+    for (const query of ['?cursor=%25', '?cursor=%25&cursor=']) {
+      expect((await get(`${path}${query}`, 'bob')).status).toBe(400);
+    }
+  });
+
+  it('answers 404 for an unknown user before reading the cursor', async () => {
+    expect((await get('/v2/users/999/pins?cursor=%25', 'bob')).status).toBe(
+      404
+    );
+  });
 });

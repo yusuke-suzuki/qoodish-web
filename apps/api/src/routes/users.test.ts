@@ -330,6 +330,16 @@ describe('users', () => {
     expect(await get('/users', 'alice')).toEqual({ status: 200, body: [] });
   });
 
+  it('searches users by the first non-blank q only', async () => {
+    expect(await idsOf('/users?q=Dave&q=zzzz', 'bob')).toEqual([dave.id]);
+    for (const query of ['?q=zzzz&q=Dave', '?q=', '?q=%20', '?other=Dave']) {
+      expect(await get(`/users${query}`, 'bob')).toEqual({
+        status: 200,
+        body: []
+      });
+    }
+  });
+
   it('lists the maps and chapters of a user the viewer may see', async () => {
     expect(await idsOf(`/users/${ids.alice}/maps`, 'bob')).toEqual([ids.ramen]);
     expect(await idsOf(`/users/${ids.alice}/maps`, 'alice')).toEqual([

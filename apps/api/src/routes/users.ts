@@ -22,7 +22,7 @@ import {
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
 import { muteUser, unmuteUser } from '../mutes.ts';
-import { first, present } from '../routing.ts';
+import { first } from '../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../search.ts';
 import {
   findUser,
@@ -31,7 +31,7 @@ import {
   userProfile,
   userSummary
 } from '../users.ts';
-import { id, pathParams } from '../validation.ts';
+import { id, pathParams, queryParams, searchInput } from '../validation.ts';
 import {
   notBlocking,
   referenceableChapter,
@@ -58,17 +58,18 @@ app.post('/', async (c) => {
   return c.json<Profile>(await profile(db, userId));
 });
 
-app.get('/', async (c) => {
+app.get('/', queryParams(z.object({ q: searchInput })), async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const q = c.req.query('q');
-  const matched = present(q)
-    ? searchCondition(q, {
-        index: 'users_fts',
-        id: users.id,
-        columns: ['name']
-      })
-    : null;
+  const { q } = c.req.valid('query');
+  const matched =
+    q !== undefined
+      ? searchCondition(q, {
+          index: 'users_fts',
+          id: users.id,
+          columns: ['name']
+        })
+      : null;
 
   if (!matched) {
     return c.json<UserSummary[]>([]);

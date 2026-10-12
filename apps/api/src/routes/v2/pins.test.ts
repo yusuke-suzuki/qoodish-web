@@ -45,4 +45,19 @@ describe('GET /v2/pins', () => {
     expect(restIds).toHaveLength(FEED_PIN_COUNT + 2 - 12);
     expect(restIds.at(-1)).toBe(ids.shoyu);
   });
+
+  it('reads the first of repeated cursors and rejects a malformed one', async () => {
+    const first = await get('/v2/pins', 'bob');
+    const cursor = (first.body as { next_cursor: string }).next_cursor;
+
+    expect(await get(`/v2/pins?cursor=${cursor}&cursor=%25`, 'bob')).toEqual(
+      await get(`/v2/pins?cursor=${cursor}`, 'bob')
+    );
+    for (const query of ['?cursor=', '?cursor=&cursor=%25', '?other=%25']) {
+      expect(await get(`/v2/pins${query}`, 'bob')).toEqual(first);
+    }
+    for (const query of ['?cursor=%25', `?cursor=%25&cursor=${cursor}`]) {
+      expect((await get(`/v2/pins${query}`, 'bob')).status).toBe(400);
+    }
+  });
 });

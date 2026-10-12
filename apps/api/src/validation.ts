@@ -1,8 +1,10 @@
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { decodeCursor } from './cursor.ts';
 import { uniqueIds } from './db/client.ts';
 import { ApiError, type ErrorTitle } from './errors.ts';
 import { isMessageKey, type MessageKey } from './i18n/index.ts';
+import { present } from './routing.ts';
 import { characters, withoutCarriageReturns } from './text.ts';
 
 function rejection(issues: readonly z.core.$ZodIssue[]): ApiError {
@@ -33,6 +35,54 @@ export function pathParams<Schema extends z.ZodType>(
     }
   });
 }
+
+function firstValues(query: Record<string, string | string[]>) {
+  return Object.fromEntries(
+    Object.entries(query).map(([key, value]) => [
+      key,
+      Array.isArray(value) ? value[0] : value
+    ])
+  );
+}
+
+export function queryParams<Schema extends z.ZodType>(schema: Schema) {
+  return zValidator('query', z.preprocess(firstValues, schema), (result) => {
+    if (!result.success) {
+      throw new ApiError('BadRequest');
+    }
+  });
+}
+
+export function decoded<Output>(decode: (text: string) => Output) {
+  return z.string().transform((text, ctx) => {
+    try {
+      return decode(text);
+    } catch (error) {
+      if (!(error instanceof ApiError)) {
+        throw error;
+      }
+
+      ctx.addIssue({ code: 'custom', input: text, message: error.title });
+      return z.NEVER;
+    }
+  });
+}
+
+export const feedCursor = z
+  .literal('')
+  .transform(() => undefined)
+  .or(decoded(decodeCursor))
+  .optional();
+
+export const flag = z
+  .string()
+  .optional()
+  .transform((value) => value !== undefined);
+
+export const searchInput = z
+  .string()
+  .optional()
+  .transform((value) => (present(value) ? value : undefined));
 
 export const id = z.union([
   z.int().positive(),
