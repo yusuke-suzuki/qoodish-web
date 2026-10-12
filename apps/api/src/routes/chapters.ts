@@ -7,7 +7,11 @@ import { and, desc, eq, lt, type SQL } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
-import { commentsQuery, viewerComment } from '../comments.ts';
+import {
+  commentsQuery,
+  interactableComment,
+  viewerComment
+} from '../comments.ts';
 import { before, FEED_PER_PAGE, normalizeTimestamp } from '../cursor.ts';
 import { type Database, database } from '../db/client.ts';
 import { chapters, comments } from '../db/schema.ts';
@@ -20,11 +24,14 @@ import { id, optionalId, pathParams } from '../validation.ts';
 import {
   feedChapter,
   readableChapter,
+  referenceableChapter,
   shownTo,
   type Viewer
 } from '../visibility.ts';
+import { like, unlike } from '../votes.ts';
 
 const chapterParams = pathParams(z.object({ chapterId: id }));
+const commentParams = pathParams(z.object({ chapterId: id, commentId: id }));
 
 function chapterFeedBefore(
   nextTimestamp: string,
@@ -69,6 +76,31 @@ async function chapterComments(
     ...viewerComment(row),
     editable: row.userId === viewer.id
   }));
+}
+
+async function chapterComment(
+  db: Database,
+  viewer: Viewer,
+  params: { chapterId: number; commentId: number }
+) {
+  const chapter = await chapterOf(
+    db,
+    readableChapter(viewer),
+    params.chapterId
+  );
+  const comment = await interactableComment(db, viewer, {
+    type: 'Chapter',
+    commentableId: chapter.id,
+    commentId: params.commentId
+  });
+
+  return { chapter, comment };
+}
+
+async function likedChapter(db: Database, viewer: Viewer, chapterId: number) {
+  return first(
+    await viewerChapterDetails(db, viewer, eq(chapters.id, chapterId))
+  );
 }
 
 const app = new Hono<ViewerEnv>();
@@ -125,6 +157,78 @@ app.get('/:chapterId/comments', chapterParams, async (c) => {
       viewer,
       chapter.id,
       shownTo(viewer, comments.userId)
+    )
+  );
+});
+
+app.post('/:chapterId/like', chapterParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const chapter = await chapterOf(
+    db,
+    referenceableChapter(viewer),
+    c.req.valid('param').chapterId
+  );
+
+  await like(db, viewer.id, {
+    type: 'Chapter',
+    id: chapter.id,
+    userId: chapter.userId
+  });
+
+  return c.json<ChapterDetail>(await likedChapter(db, viewer, chapter.id));
+});
+
+app.delete('/:chapterId/like', chapterParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const chapter = await chapterOf(
+    db,
+    referenceableChapter(viewer),
+    c.req.valid('param').chapterId
+  );
+
+  await unlike(db, viewer.id, { type: 'Chapter', id: chapter.id });
+
+  return c.json<ChapterDetail>(await likedChapter(db, viewer, chapter.id));
+});
+
+app.post('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const { chapter, comment } = await chapterComment(
+    db,
+    viewer,
+    c.req.valid('param')
+  );
+
+  await like(db, viewer.id, {
+    type: 'Comment',
+    id: comment.id,
+    userId: comment.userId
+  });
+
+  return c.json<ChapterComment>(
+    first(
+      await chapterComments(db, viewer, chapter.id, eq(comments.id, comment.id))
+    )
+  );
+});
+
+app.delete('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const { chapter, comment } = await chapterComment(
+    db,
+    viewer,
+    c.req.valid('param')
+  );
+
+  await unlike(db, viewer.id, { type: 'Comment', id: comment.id });
+
+  return c.json<ChapterComment>(
+    first(
+      await chapterComments(db, viewer, chapter.id, eq(comments.id, comment.id))
     )
   );
 });

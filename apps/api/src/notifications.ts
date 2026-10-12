@@ -13,6 +13,8 @@ import {
   inArray,
   isNull,
   lte,
+  ne,
+  notExists,
   or,
   type SQL,
   type SQLWrapper,
@@ -21,7 +23,9 @@ import {
 import {
   currentTimestamp,
   type Database,
+  generatedId,
   inIds,
+  selected,
   uniqueIds
 } from './db/client.ts';
 import {
@@ -40,7 +44,12 @@ import { ApiError } from './errors.ts';
 import { primaryImage } from './images.ts';
 import { first } from './routing.ts';
 import { type UserRow, userSummary, usersQuery } from './users.ts';
-import { shownTo, type Viewer } from './visibility.ts';
+import {
+  type ModeratableType,
+  noBlockBetween,
+  shownTo,
+  type Viewer
+} from './visibility.ts';
 
 const KEYS: readonly NotificationKey[] = [
   'coauthor_invited',
@@ -219,6 +228,79 @@ export async function notificationGroups(
   });
 
   return { data, next_cursor: nextCursor };
+}
+
+export function recordNotification(
+  db: Database,
+  {
+    key,
+    notifiable,
+    notifierId,
+    recipientId,
+    now,
+    condition
+  }: {
+    key: NotificationKey;
+    notifiable: { type: ModeratableType; id: number };
+    notifierId: number;
+    recipientId: number;
+    now: string;
+    condition?: SQL;
+  }
+) {
+  return db.insert(notifications).select(
+    db
+      .select({
+        id: generatedId(),
+        createdAt: selected(now, 'created_at'),
+        key: selected(key, 'key'),
+        notifiableId: selected(notifiable.id, 'notifiable_id'),
+        notifiableType: selected(notifiable.type, 'notifiable_type'),
+        notifierId: selected(notifierId, 'notifier_id'),
+        notifierType: selected('User', 'notifier_type'),
+        read: selected(false, 'read'),
+        recipientId: users.id,
+        recipientType: selected('User', 'recipient_type'),
+        updatedAt: selected(now, 'updated_at')
+      })
+      .from(users)
+      .where(
+        and(
+          eq(users.id, recipientId),
+          ne(users.id, notifierId),
+          noBlockBetween(db, users.id, notifierId),
+          condition
+        )
+      )
+  );
+}
+
+export function notNotifiedYet(
+  db: Database,
+  {
+    key,
+    notifiable,
+    notifierId
+  }: {
+    key: NotificationKey;
+    notifiable: { type: ModeratableType; id: number };
+    notifierId: number;
+  }
+): SQL {
+  return notExists(
+    db
+      .select({ id: notifications.id })
+      .from(notifications)
+      .where(
+        and(
+          eq(notifications.key, key),
+          eq(notifications.notifiableType, notifiable.type),
+          eq(notifications.notifiableId, notifiable.id),
+          eq(notifications.notifierType, 'User'),
+          eq(notifications.notifierId, notifierId)
+        )
+      )
+  );
 }
 
 type NotifiableRef = { type: string | null; id: number | null };
