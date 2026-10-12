@@ -231,7 +231,7 @@ app.post(
       readableChapter(viewer),
       c.req.valid('param').chapterId
     );
-    const commentId = await recordComment(db, viewer.id, {
+    const commentId = await recordComment(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
       type: 'Chapter',
       commentable: chapter,
       body: c.req.valid('json').comment
@@ -287,7 +287,7 @@ app.post('/:chapterId/like', chapterParams, async (c) => {
     c.req.valid('param').chapterId
   );
 
-  await like(db, viewer.id, {
+  await like(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
     type: 'Chapter',
     id: chapter.id,
     userId: chapter.userId
@@ -319,7 +319,7 @@ app.post('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
     c.req.valid('param')
   );
 
-  await like(db, viewer.id, {
+  await like(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
     type: 'Comment',
     id: comment.id,
     userId: comment.userId

@@ -98,6 +98,8 @@ function firstImageUrl(subquery: SQLWrapper) {
   return sql<string | null>`(${subquery})`.as('image_url');
 }
 
+type NotifiableLink = { type: string; id: number };
+
 function pathTo(type: string, id: number): string {
   switch (type) {
     case 'Pin':
@@ -108,6 +110,21 @@ function pathTo(type: string, id: number): string {
       return `/chapters/${id}`;
     default:
       return '';
+  }
+}
+
+export function clickAction(
+  key: string,
+  notifiable: NotifiableLink,
+  linked: NotifiableLink | null
+): string {
+  switch (key) {
+    case 'coauthor_invited':
+      return '/coauthorship_invitations';
+    case 'liked':
+      return linked ? pathTo(linked.type, linked.id) : '';
+    default:
+      return pathTo(notifiable.type, notifiable.id);
   }
 }
 
@@ -250,31 +267,34 @@ export function recordNotification(
     condition?: SQL;
   }
 ) {
-  return db.insert(notifications).select(
-    db
-      .select({
-        id: generatedId(),
-        createdAt: selected(now, 'created_at'),
-        key: selected(key, 'key'),
-        notifiableId: selected(notifiable.id, 'notifiable_id'),
-        notifiableType: selected(notifiable.type, 'notifiable_type'),
-        notifierId: selected(notifierId, 'notifier_id'),
-        notifierType: selected('User', 'notifier_type'),
-        read: selected(false, 'read'),
-        recipientId: users.id,
-        recipientType: selected('User', 'recipient_type'),
-        updatedAt: selected(now, 'updated_at')
-      })
-      .from(users)
-      .where(
-        and(
-          eq(users.id, recipientId),
-          ne(users.id, notifierId),
-          noBlockBetween(db, users.id, notifierId),
-          condition
+  return db
+    .insert(notifications)
+    .select(
+      db
+        .select({
+          id: generatedId(),
+          createdAt: selected(now, 'created_at'),
+          key: selected(key, 'key'),
+          notifiableId: selected(notifiable.id, 'notifiable_id'),
+          notifiableType: selected(notifiable.type, 'notifiable_type'),
+          notifierId: selected(notifierId, 'notifier_id'),
+          notifierType: selected('User', 'notifier_type'),
+          read: selected(false, 'read'),
+          recipientId: users.id,
+          recipientType: selected('User', 'recipient_type'),
+          updatedAt: selected(now, 'updated_at')
+        })
+        .from(users)
+        .where(
+          and(
+            eq(users.id, recipientId),
+            ne(users.id, notifierId),
+            noBlockBetween(db, users.id, notifierId),
+            condition
+          )
         )
-      )
-  );
+    )
+    .returning({ id: notifications.id });
 }
 
 export function notNotifiedYet(
@@ -408,7 +428,7 @@ type CommentRef = {
 
 type NotifiableRows = readonly [PostRow[], PostRow[], PostRow[], CommentRef[]];
 
-type Shown = { imageUrl: string | null; linked: { type: string; id: number } };
+type Shown = { imageUrl: string | null; linked: NotifiableLink };
 
 function notifiableResolver([
   pinRows,
@@ -472,12 +492,7 @@ function renderNotification(
   return {
     id: notification.id,
     key,
-    click_action:
-      key === 'coauthor_invited'
-        ? '/coauthorship_invitations'
-        : key === 'liked'
-          ? pathTo(shown.linked.type, shown.linked.id)
-          : pathTo(type, id),
+    click_action: clickAction(key, { type, id }, shown.linked),
     notifiable: {
       id,
       type: type.toLowerCase() as NotifiableType,

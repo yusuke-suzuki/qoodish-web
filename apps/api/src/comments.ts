@@ -30,6 +30,7 @@ import {
   type Viewer,
   visible
 } from './visibility.ts';
+import { enqueueWebPush, type WebPushMessage } from './web-push.ts';
 
 const COMMENT_LIMIT = 500;
 
@@ -127,6 +128,7 @@ function currentRevisionStatement(db: Database, commentId: number | SQL) {
 
 export async function recordComment(
   db: Database,
+  webPush: Queue<WebPushMessage>,
   viewerId: number,
   {
     type,
@@ -155,7 +157,7 @@ export async function recordComment(
         )
       )
   );
-  const [, , , , recorded] = await db.batch([
+  const [, , , notified, recorded] = await db.batch([
     db.insert(comments).select(
       db
         .select({
@@ -200,6 +202,8 @@ export async function recordComment(
       .where(eq(comments.id, commentId))
   ]);
   const [comment] = recorded;
+
+  await enqueueWebPush(webPush, notified);
 
   if (!comment) {
     throw ApiError.invalid(['comment_blocked_interaction']);

@@ -285,10 +285,15 @@ app.post(
     }
 
     const invitee = await findUser(db, inviteeId);
-    const invitationId = await inviteCoauthor(db, viewer, {
-      map,
-      inviteeId: invitee.id
-    });
+    const invitationId = await inviteCoauthor(
+      db,
+      c.env.WEB_PUSH_QUEUE,
+      viewer,
+      {
+        map,
+        inviteeId: invitee.id
+      }
+    );
 
     return c.json<CoauthorshipInvitation>(await invitation(db, invitationId));
   }

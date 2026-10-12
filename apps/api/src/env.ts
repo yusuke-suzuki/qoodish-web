@@ -1,3 +1,5 @@
+import type { WebPushMessage } from './web-push.ts';
+
 export interface Env {
   APP_ENV: string;
   WEB_ENDPOINT: string;
@@ -7,7 +9,10 @@ export interface Env {
   CF_ACCESS_AUD: string;
   ENCRYPTION_PRIMARY_KEY: string;
   ENCRYPTION_KEY_DERIVATION_SALT: string;
+  GOOGLE_CLIENT_EMAIL: string;
+  GOOGLE_PRIVATE_KEY: string;
   DB: D1Database;
+  WEB_PUSH_QUEUE: Queue<WebPushMessage>;
 }
 
 declare global {
