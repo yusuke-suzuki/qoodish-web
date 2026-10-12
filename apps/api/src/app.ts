@@ -9,10 +9,12 @@ import {
   type FirebaseIdToken,
   verifyFirebaseIdToken
 } from './auth/firebase.ts';
+import type { Database } from './db/client.ts';
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 import { authenticateStaff } from './middleware/authenticate-staff.ts';
+import { provideDatabase } from './middleware/provide-database.ts';
 import chapters from './routes/chapters.ts';
 import guestChapters from './routes/guest/chapters.ts';
 import guestMaps from './routes/guest/maps.ts';
@@ -31,6 +33,7 @@ import v2Pins from './routes/v2/pins.ts';
 import v2Users from './routes/v2/users.ts';
 
 export type Variables = {
+  db: Database;
   language: Locale;
   idToken: FirebaseIdToken;
   accessClaims: AccessClaims;
@@ -57,6 +60,8 @@ export function createApp(options: AppOptions = {}) {
       caches: false
     })
   );
+
+  app.use('*', provideDatabase);
 
   app.use(
     '*',

@@ -19,7 +19,6 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
 import { guestChapters } from '../../chapters.ts';
-import { database } from '../../db/client.ts';
 import {
   bookmarks,
   chapters,
@@ -60,7 +59,7 @@ const RECOMMENDED_MAPS_LIMIT = 10;
 const app = new Hono<AppEnv>();
 
 app.get('/', listingQuery, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { input, recent, active, popular, recommend } = c.req.valid('query');
   const publicMaps = db.select(getTableColumns(maps)).from(maps);
 
@@ -145,7 +144,7 @@ app.get('/', listingQuery, async (c) => {
 });
 
 app.get('/featured', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const map = first(
     await db
       .select(getTableColumns(maps))
@@ -160,7 +159,7 @@ app.get('/featured', async (c) => {
 });
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const map = first(
     await db
       .select()
@@ -172,7 +171,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
 });
 
 app.get('/:mapId/pins', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const rows = await db
     .select()
     .from(pins)
@@ -183,7 +182,7 @@ app.get('/:mapId/pins', mapParams, async (c) => {
 });
 
 app.get('/:mapId/coauthors', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const [map] = await db
     .select({ id: maps.id, userId: maps.userId })
     .from(maps)
@@ -193,7 +192,7 @@ app.get('/:mapId/coauthors', mapParams, async (c) => {
 });
 
 app.get('/:mapId/chapters', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const map = first(
     await db
       .select({ id: maps.id })
@@ -210,7 +209,7 @@ app.get('/:mapId/chapters', mapParams, async (c) => {
 });
 
 app.get('/:mapId/pin_properties', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const map = first(
     await db
       .select({ id: maps.id })

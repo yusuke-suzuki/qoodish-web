@@ -8,7 +8,6 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
 import { guestChapters } from '../../chapters.ts';
-import { database } from '../../db/client.ts';
 import { chapters, maps } from '../../db/schema.ts';
 import { ApiError } from '../../errors.ts';
 import { guestMaps } from '../../maps.ts';
@@ -21,10 +20,7 @@ const userParams = pathParams(z.object({ userId: id }));
 const app = new Hono<AppEnv>();
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const profile = await guestProfile(
-    database(c.env.DB),
-    c.req.valid('param').id
-  );
+  const profile = await guestProfile(c.get('db'), c.req.valid('param').id);
 
   if (!profile) {
     throw new ApiError('NotFound');
@@ -34,7 +30,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
 });
 
 app.get('/:userId/maps', userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const rows = await db
     .select()
     .from(maps)
@@ -45,7 +41,7 @@ app.get('/:userId/maps', userParams, async (c) => {
 });
 
 app.get('/:userId/chapters', userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const rows = await db
     .select()
     .from(chapters)

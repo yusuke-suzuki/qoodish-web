@@ -3,7 +3,6 @@ import { desc } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
-import { database } from '../../db/client.ts';
 import { pins } from '../../db/schema.ts';
 import {
   authenticateUser,
@@ -19,7 +18,7 @@ const app = new Hono<ViewerEnv>();
 app.use(authenticateUser);
 
 app.get('/', queryParams(z.object({ cursor: feedCursor })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()

@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { profile } from '../accounts.ts';
 import { blockUser, unblockUser } from '../blocks.ts';
 import { viewerChapters } from '../chapters.ts';
-import { type Database, database } from '../db/client.ts';
+import type { Database } from '../db/client.ts';
 import { chapters, images, journals, maps, users } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import { viewerJournals } from '../journals.ts';
@@ -46,7 +46,7 @@ const app = new Hono<ViewerEnv>();
 app.get('*', authenticateUser);
 
 app.post('/', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { sub, name, email } = c.get('idToken');
   const userId = await signIn(db, {
     uid: sub,
@@ -59,7 +59,7 @@ app.post('/', async (c) => {
 });
 
 app.get('/', queryParams(z.object({ q: searchInput })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { q } = c.req.valid('query');
   const matched =
@@ -88,11 +88,7 @@ app.get('/', queryParams(z.object({ q: searchInput })), async (c) => {
 
 app.get('/:id', pathParams(z.object({ id })), async (c) =>
   c.json<UserProfile>(
-    await relatedProfile(
-      database(c.env.DB),
-      c.get('viewer'),
-      c.req.valid('param').id
-    )
+    await relatedProfile(c.get('db'), c.get('viewer'), c.req.valid('param').id)
   )
 );
 
@@ -119,7 +115,7 @@ async function relatedProfile(
 }
 
 app.post('/:userId/block', authenticateUser, userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
 
@@ -135,7 +131,7 @@ app.post('/:userId/block', authenticateUser, userParams, async (c) => {
 });
 
 app.delete('/:userId/block', authenticateUser, userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
 
@@ -151,7 +147,7 @@ app.delete('/:userId/block', authenticateUser, userParams, async (c) => {
 });
 
 app.post('/:userId/mute', authenticateUser, userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
 
@@ -167,7 +163,7 @@ app.post('/:userId/mute', authenticateUser, userParams, async (c) => {
 });
 
 app.delete('/:userId/mute', authenticateUser, userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
 
@@ -183,7 +179,7 @@ app.delete('/:userId/mute', authenticateUser, userParams, async (c) => {
 });
 
 app.get('/:userId/maps', userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
   const rows = await db
@@ -196,7 +192,7 @@ app.get('/:userId/maps', userParams, async (c) => {
 });
 
 app.get('/:userId/chapters', userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
   const rows = await db
@@ -209,7 +205,7 @@ app.get('/:userId/chapters', userParams, async (c) => {
 });
 
 app.get('/:userId/journal', userParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const user = await findUser(db, c.req.valid('param').userId);
 
