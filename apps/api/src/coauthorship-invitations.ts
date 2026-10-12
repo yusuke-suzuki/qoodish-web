@@ -41,6 +41,7 @@ import { recordNotification } from './notifications.ts';
 import { first } from './routing.ts';
 import { userSummary, usersQuery } from './users.ts';
 import { editableMap, noBlockBetween, type Viewer } from './visibility.ts';
+import { enqueueWebPush, type WebPushMessage } from './web-push.ts';
 
 const STATUSES: readonly CoauthorshipInvitationStatus[] = [
   'pending',
@@ -172,6 +173,7 @@ export async function invitation(
 
 export async function inviteCoauthor(
   db: Database,
+  webPush: Queue<WebPushMessage>,
   viewer: Viewer,
   { map, inviteeId }: { map: MapRow; inviteeId: number }
 ): Promise<number> {
@@ -248,7 +250,7 @@ export async function inviteCoauthor(
         )
       )
   );
-  const [, created] = await db.batch([
+  const [notified, created] = await db.batch([
     recordNotification(db, {
       key: 'coauthor_invited',
       notifiable: { type: 'Map', id: map.id },
@@ -276,6 +278,8 @@ export async function inviteCoauthor(
       .returning({ id: coauthorshipInvitations.id })
   ]);
   const [invitation] = created;
+
+  await enqueueWebPush(webPush, notified);
 
   if (invitation) {
     return invitation.id;

@@ -10,6 +10,7 @@ import { users, votes } from './db/schema.ts';
 import { ApiError } from './errors.ts';
 import { notNotifiedYet, recordNotification } from './notifications.ts';
 import { noBlockBetween } from './visibility.ts';
+import { enqueueWebPush, type WebPushMessage } from './web-push.ts';
 
 export type VotableType = 'Pin' | 'Chapter' | 'Comment';
 
@@ -62,6 +63,7 @@ function ownVote(votable: Pick<Votable, 'type' | 'id'>, voterId: number) {
 
 export async function like(
   db: Database,
+  webPush: Queue<WebPushMessage>,
   voterId: number,
   votable: Votable
 ): Promise<void> {
@@ -71,7 +73,7 @@ export async function like(
     noBlockBetween(db, users.id, votable.userId)
   );
   const notifiable = { type: votable.type, id: votable.id };
-  const [, , unblocked] = await db.batch([
+  const [notified, , unblocked] = await db.batch([
     recordNotification(db, {
       key: 'liked',
       notifiable,
@@ -110,6 +112,8 @@ export async function like(
       .onConflictDoNothing(),
     db.select({ id: users.id }).from(users).where(voter)
   ]);
+
+  await enqueueWebPush(webPush, notified);
 
   if (unblocked.length === 0) {
     throw ApiError.invalid(['like_blocked_interaction']);

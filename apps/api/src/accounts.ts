@@ -4,9 +4,18 @@ import type {
   Profile,
   WebPushPreferences
 } from '@qoodish/api-contract';
-import { and, desc, eq, lt, max, notExists, type SQL } from 'drizzle-orm';
+import {
+  and,
+  desc,
+  eq,
+  inArray,
+  lt,
+  max,
+  notExists,
+  type SQL
+} from 'drizzle-orm';
 import { z } from 'zod';
-import { currentTimestamp, type Database } from './db/client.ts';
+import { currentTimestamp, type Database, inIds } from './db/client.ts';
 import {
   blocks,
   devices,
@@ -33,7 +42,9 @@ const WEB_PUSH_DEFAULTS: WebPushPreferences = {
   published: true
 };
 
-function effectiveWebPush(stored: string | undefined): WebPushPreferences {
+export function effectiveWebPush(
+  stored: string | undefined
+): WebPushPreferences {
   const choices = stored
     ? (JSON.parse(stored) as Partial<WebPushPreferences>)
     : {};
@@ -53,6 +64,28 @@ function latestPreferenceQuery(db: Database, userId: number) {
     .where(eq(userPreferences.userId, userId))
     .orderBy(desc(userPreferences.id))
     .limit(1);
+}
+
+export function latestPreferencesQuery(
+  db: Database,
+  userIds: readonly number[]
+) {
+  return db
+    .select({
+      userId: userPreferences.userId,
+      webPush: userPreferences.webPush
+    })
+    .from(userPreferences)
+    .where(
+      inArray(
+        userPreferences.id,
+        db
+          .select({ id: max(userPreferences.id).as('id') })
+          .from(userPreferences)
+          .where(inIds(userPreferences.userId, userIds))
+          .groupBy(userPreferences.userId)
+      )
+    );
 }
 
 export async function profile(db: Database, userId: number): Promise<Profile> {
@@ -140,6 +173,28 @@ export async function unregisterDevice(
         eq(devices.registrationToken, registrationToken)
       )
     );
+}
+
+export function devicesQuery(db: Database, userIds: readonly number[]) {
+  return db
+    .select({
+      id: devices.id,
+      userId: devices.userId,
+      registrationToken: devices.registrationToken
+    })
+    .from(devices)
+    .where(inIds(devices.userId, userIds));
+}
+
+export async function removeDevices(
+  db: Database,
+  deviceIds: readonly number[]
+): Promise<void> {
+  if (deviceIds.length === 0) {
+    return;
+  }
+
+  await db.delete(devices).where(inIds(devices.id, deviceIds));
 }
 
 async function accountsPage(

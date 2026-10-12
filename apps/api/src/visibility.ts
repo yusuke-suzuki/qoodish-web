@@ -45,7 +45,7 @@ export function activeBlock(db: Database): SQL {
 export function noBlockBetween(
   db: Database,
   userColumn: SQLiteColumn,
-  userId: number
+  userId: number | SQLiteColumn
 ): SQL {
   return notExists(
     db

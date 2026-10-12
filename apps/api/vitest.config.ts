@@ -16,11 +16,13 @@ export default defineConfig(async () => {
           compatibilityDate: '2026-07-01',
           compatibilityFlags: ['nodejs_compat'],
           d1Databases: { DB: DEVELOPMENT.databaseName },
+          queueProducers: { WEB_PUSH_QUEUE: DEVELOPMENT.webPushQueue },
           bindings: {
             APP_ENV: 'test',
             WEB_ENDPOINT: DEVELOPMENT.webEndpoint,
             ADMIN_ENDPOINT: DEVELOPMENT.adminEndpoint,
             GOOGLE_PROJECT_ID: DEVELOPMENT.googleProjectId,
+            GOOGLE_CLIENT_EMAIL: DEVELOPMENT.googleClientEmail,
             CF_ACCESS_TEAM_DOMAIN,
             CF_ACCESS_AUD: DEVELOPMENT.accessAud,
             ENCRYPTION_PRIMARY_KEY: 'test_ar_encryption_primary_key_0',

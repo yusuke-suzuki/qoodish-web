@@ -1,4 +1,4 @@
-import { bindings, defineConfig } from 'cf/config';
+import { bindings, defineConfig, triggers } from 'cf/config';
 import {
   CF_ACCESS_TEAM_DOMAIN,
   DEVELOPMENT,
@@ -26,15 +26,19 @@ function defineApiWorker(name: string, environment: Environment) {
       WEB_ENDPOINT: bindings.text(environment.webEndpoint),
       ADMIN_ENDPOINT: bindings.text(environment.adminEndpoint),
       GOOGLE_PROJECT_ID: bindings.text(environment.googleProjectId),
+      GOOGLE_CLIENT_EMAIL: bindings.text(environment.googleClientEmail),
       CF_ACCESS_TEAM_DOMAIN: bindings.text(CF_ACCESS_TEAM_DOMAIN),
       CF_ACCESS_AUD: bindings.text(environment.accessAud),
       ENCRYPTION_PRIMARY_KEY: bindings.secret(),
       ENCRYPTION_KEY_DERIVATION_SALT: bindings.secret(),
+      GOOGLE_PRIVATE_KEY: bindings.secret(),
       DB: bindings.d1({
         name: environment.databaseName,
         id: environment.databaseId
-      })
-    }
+      }),
+      WEB_PUSH_QUEUE: bindings.queue({ name: environment.webPushQueue })
+    },
+    triggers: [triggers.queue({ name: environment.webPushQueue })]
   };
 }
 

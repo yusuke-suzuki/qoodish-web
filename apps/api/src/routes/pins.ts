@@ -90,7 +90,11 @@ app.post('/:pinId/like', pinParams, async (c) => {
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
-  await like(db, viewer.id, { type: 'Pin', id: pin.id, userId: pin.userId });
+  await like(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
+    type: 'Pin',
+    id: pin.id,
+    userId: pin.userId
+  });
 
   return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
 });
@@ -110,7 +114,7 @@ app.post('/:pinId/comments', pinParams, jsonBody(commentInput), async (c) => {
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
-  await recordComment(db, viewer.id, {
+  await recordComment(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
     type: 'Pin',
     commentable: pin,
     body: c.req.valid('json').comment
@@ -166,7 +170,7 @@ app.post('/:pinId/comments/:commentId/like', commentParams, async (c) => {
   const viewer = c.get('viewer');
   const { pin, comment } = await pinComment(db, viewer, c.req.valid('param'));
 
-  await like(db, viewer.id, {
+  await like(db, c.env.WEB_PUSH_QUEUE, viewer.id, {
     type: 'Comment',
     id: comment.id,
     userId: comment.userId
