@@ -3,8 +3,10 @@ import { asc, eq, inArray } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { database } from '../db/client.ts';
 import {
+  chapters,
   coauthorships,
   devices,
+  images,
   journalRevisions,
   notifications,
   pins,
@@ -12,9 +14,19 @@ import {
 } from '../db/schema.ts';
 import { get, idsOf, send } from '../test/client.ts';
 import { checkinImage, seedMe } from '../test/me.ts';
-import { accountOf, pinRevisionsOf } from '../test/records.ts';
+import {
+  accountOf,
+  chapterRevisionsOf,
+  pinRevisionsOf
+} from '../test/records.ts';
 import { alice, bob, variants } from '../test/serialized.ts';
-import { at, IMAGE_BASE, ids, seedWorld } from '../test/world.ts';
+import {
+  at,
+  CHAPTER_CONTENT,
+  IMAGE_BASE,
+  ids,
+  seedWorld
+} from '../test/world.ts';
 import { signIn } from '../users.ts';
 
 beforeAll(async () => {
@@ -782,5 +794,209 @@ describe('answering an unknown invitation', () => {
         detail: "No route matches [POST] '/me/coauthorship_invitations/1/maybe'"
       }
     });
+  });
+});
+
+describe('PUT /me/chapters/:id', () => {
+  const path = `/me/chapters/${ids.noodleStory}`;
+  const emptyDocument = { root: { type: 'root', version: 1, children: [] } };
+
+  it('revises the chapter, carrying its image', async () => {
+    const { status, body } = await send('PUT', path, 'alice', {
+      title: 'Noodle Story Deluxe',
+      content: emptyDocument
+    });
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: ids.noodleStory,
+      title: 'Noodle Story Deluxe',
+      status: 'published',
+      content: emptyDocument,
+      image_url: `${IMAGE_BASE}/story/public`,
+      journey_id: 1,
+      editable: true
+    });
+    expect((await chapterRevisionsOf(ids.noodleStory)).at(-1)).toMatchObject({
+      userId: ids.alice,
+      title: 'Noodle Story Deluxe',
+      status: 'published',
+      content: JSON.stringify(emptyDocument),
+      imageIds: [ids.chapterImage]
+    });
+  });
+
+  it('appends nothing when the chapter stays the same', async () => {
+    const before = await chapterRevisionsOf(ids.noodleStory);
+
+    await send('PATCH', path, 'alice', {
+      title: 'Noodle Story Deluxe',
+      content: { root: { children: [], version: 1, type: 'root' } },
+      image_ids: [ids.chapterImage]
+    });
+    await send('PATCH', path, 'alice', { content: 'Hello' });
+
+    expect(await chapterRevisionsOf(ids.noodleStory)).toHaveLength(
+      before.length
+    );
+  });
+
+  it('replaces the image that is sent', async () => {
+    const cleared = await send('PATCH', path, 'alice', { image_ids: [] });
+    const replaced = await send('PATCH', path, 'alice', {
+      image_ids: [String(ids.ramenImage)]
+    });
+
+    expect(cleared.body).toMatchObject({ image: null, image_url: '' });
+    expect(replaced.body).toMatchObject({
+      image: variants('ramen'),
+      image_url: `${IMAGE_BASE}/ramen/public`
+    });
+    expect(
+      (await chapterRevisionsOf(ids.noodleStory))
+        .slice(-2)
+        .map((revision) => revision.imageIds)
+    ).toEqual([[], [ids.ramenImage]]);
+  });
+
+  it('keeps the image when the image ids are null', async () => {
+    const { status, body } = await send('PATCH', path, 'alice', {
+      title: 'Noodle Story Kept',
+      image_ids: null
+    });
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      title: 'Noodle Story Kept',
+      image_url: `${IMAGE_BASE}/ramen/public`
+    });
+    expect((await chapterRevisionsOf(ids.noodleStory)).at(-1)).toMatchObject({
+      title: 'Noodle Story Kept',
+      imageIds: [ids.ramenImage]
+    });
+  });
+
+  it('answers 422 for an unknown status, a blank title, an invalid document or images it cannot attach', async () => {
+    const strangerImage = 7;
+
+    await db()
+      .insert(images)
+      .values({
+        id: strangerImage,
+        userId: ids.bob,
+        url: `${IMAGE_BASE}/stranger/public`,
+        createdAt: at(1),
+        updatedAt: at(1)
+      });
+
+    const before = await chapterRevisionsOf(ids.noodleStory);
+    const responses = await Promise.all(
+      [
+        { status: 'archived', title: null },
+        { content: { foo: 'bar' }, map_features: { type: 'Feature' } },
+        { image_ids: [ids.ramenImage, ids.chapterImage] },
+        { image_ids: [strangerImage] }
+      ].map((changes) => send('PATCH', path, 'alice', changes))
+    );
+
+    expect(responses.map(({ status, body }) => [status, body.detail])).toEqual([
+      [422, 'Status is not included in the list Chapter title is required.'],
+      [
+        422,
+        'Chapter content is not a valid document. Chapter map features are not a valid GeoJSON FeatureCollection.'
+      ],
+      [422, 'Only one image can be attached to a chapter.'],
+      [422, 'The image was not uploaded by you.']
+    ]);
+    expect(
+      (await send('PATCH', path, 'alice', { image_ids: [999] })).status
+    ).toBe(404);
+    expect(await chapterRevisionsOf(ids.noodleStory)).toHaveLength(
+      before.length
+    );
+  });
+
+  it('publishes a draft and takes it back', async () => {
+    const draftPath = `/me/chapters/${ids.draft}`;
+    const published = await send('PUT', draftPath, 'alice', {
+      status: 'published'
+    });
+    const withdrawn = await send('PUT', draftPath, 'alice', {
+      status: 'draft'
+    });
+
+    expect(published.body.status).toBe('published');
+    expect(withdrawn.body.status).toBe('draft');
+    expect(
+      (await chapterRevisionsOf(ids.draft)).map((revision) => revision.status)
+    ).toEqual(['published', 'draft']);
+  });
+
+  it('discards a chapter sent with the deleted status and answers it', async () => {
+    const secretPath = `/me/chapters/${ids.secretStory}`;
+
+    await db()
+      .update(chapters)
+      .set({ journeyId: 2 })
+      .where(eq(chapters.id, ids.secretStory));
+
+    const { status, body } = await send('PUT', secretPath, 'alice', {
+      status: 'deleted'
+    });
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: ids.secretStory,
+      status: 'deleted',
+      journey_id: null
+    });
+    expect((await chapterRevisionsOf(ids.secretStory)).at(-1)).toMatchObject({
+      status: 'deleted',
+      userId: ids.alice
+    });
+    expect((await get(secretPath, 'alice')).status).toBe(404);
+    expect(
+      (await send('PUT', secretPath, 'alice', { status: 'draft' })).status
+    ).toBe(404);
+  });
+
+  it('answers 404 on a chapter of someone else', async () => {
+    expect(
+      (
+        await send('PUT', `/me/chapters/${ids.cafeStory}`, 'alice', {
+          title: 'Mine'
+        })
+      ).status
+    ).toBe(404);
+  });
+});
+
+describe('DELETE /me/chapters/:id', () => {
+  it('discards the chapter as a revision, once, and releases its journey', async () => {
+    const path = `/me/chapters/${ids.noodleStory}`;
+
+    expect((await send('DELETE', path, 'carol')).status).toBe(404);
+    expect((await send('DELETE', path, 'alice')).status).toBe(204);
+    expect((await send('DELETE', path, 'alice')).status).toBe(404);
+    expect((await get(path, 'alice')).status).toBe(404);
+
+    const [chapter] = await db()
+      .select()
+      .from(chapters)
+      .where(eq(chapters.id, ids.noodleStory));
+
+    expect(chapter).toMatchObject({ status: 'deleted', journeyId: null });
+    expect((await chapterRevisionsOf(ids.noodleStory)).at(-1)).toMatchObject({
+      status: 'deleted',
+      userId: ids.alice,
+      imageIds: [ids.ramenImage]
+    });
+    expect(
+      await send('POST', `/maps/${ids.ramen}/chapters`, 'alice', {
+        title: 'Noodle Story Again',
+        content: CHAPTER_CONTENT,
+        journey_id: 1
+      })
+    ).toMatchObject({ status: 200, body: { journey_id: 1 } });
   });
 });

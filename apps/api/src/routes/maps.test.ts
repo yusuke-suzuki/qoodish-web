@@ -5,7 +5,9 @@ import { database } from '../db/client.ts';
 import {
   blocks,
   bookmarks,
+  chapters,
   coauthorships,
+  journeys,
   mapRevisionImages,
   mapRevisions,
   maps,
@@ -14,10 +16,17 @@ import {
   pins
 } from '../db/schema.ts';
 import { get, idsOf, send } from '../test/client.ts';
-import { pinRevisionsOf } from '../test/records.ts';
+import { chapterRevisionsOf, pinRevisionsOf } from '../test/records.ts';
 import { dave, seedDave, seedRelations } from '../test/relations.ts';
 import { alice, notFound, variants } from '../test/serialized.ts';
-import { at, IMAGE_BASE, ids, seedWorld } from '../test/world.ts';
+import {
+  at,
+  CHAPTER_CONTENT,
+  IMAGE_BASE,
+  ids,
+  MAP_FEATURES,
+  seedWorld
+} from '../test/world.ts';
 
 beforeAll(async () => {
   await seedWorld(env.DB);
@@ -764,5 +773,250 @@ describe('pin properties', () => {
 
     expect(rejected).toEqual([400, 400, 400, 400, 400]);
     expect(accepted.body).toMatchObject({ name: 'Placed', position: 4 });
+  });
+});
+
+describe('POST /maps/:mapId/chapters', () => {
+  const ramenJourney = 1;
+  const secretJourney = 2;
+  const racedJourney = 3;
+
+  beforeAll(async () => {
+    await db()
+      .insert(journeys)
+      .values([
+        {
+          id: racedJourney,
+          userId: ids.alice,
+          mapId: ids.ramen,
+          createdAt: at(4),
+          updatedAt: at(4)
+        },
+        {
+          id: ramenJourney,
+          userId: ids.alice,
+          mapId: ids.ramen,
+          createdAt: at(4),
+          updatedAt: at(4)
+        },
+        {
+          id: secretJourney,
+          userId: ids.alice,
+          mapId: ids.secret,
+          createdAt: at(4),
+          updatedAt: at(4)
+        }
+      ]);
+  });
+
+  it('records a draft with its first revision on a map of someone else', async () => {
+    const { status, body } = await send(
+      'POST',
+      `/maps/${dave.map}/chapters`,
+      'carol',
+      {
+        title: 'A walk',
+        content: CHAPTER_CONTENT,
+        status: 'published',
+        image_ids: [ids.chapterImage],
+        journey_id: ''
+      }
+    );
+
+    expect(status).toBe(200);
+
+    const [revision, ...later] = await chapterRevisionsOf(body.id);
+    const [chapter] = await db()
+      .select()
+      .from(chapters)
+      .where(eq(chapters.id, body.id));
+
+    expect(body).toMatchObject({
+      map_id: dave.map,
+      journey_id: null,
+      title: 'A walk',
+      status: 'draft',
+      content: CHAPTER_CONTENT,
+      map_features: { type: 'FeatureCollection', features: [] },
+      image: null,
+      image_url: '',
+      author: { id: ids.carol, blocking: false, muting: false },
+      map: { id: dave.map, name: 'Dave Diner', private: false },
+      journal: null,
+      editable: true,
+      liked: false,
+      likes_count: 0,
+      comments_count: 0
+    });
+    expect(revision).toMatchObject({
+      userId: ids.carol,
+      title: 'A walk',
+      status: 'draft',
+      imageIds: []
+    });
+    expect(later).toEqual([]);
+    expect(chapter?.currentRevisionId).toBe(revision?.id);
+  });
+
+  it('records the journey it was written from, once', async () => {
+    const path = `/maps/${ids.ramen}/chapters`;
+    const chapter = {
+      title: 'A journey',
+      content: CHAPTER_CONTENT,
+      map_features: MAP_FEATURES
+    };
+    const recorded = await send('POST', path, 'alice', {
+      ...chapter,
+      journey_id: String(ramenJourney)
+    });
+    const repeated = await send('POST', path, 'alice', {
+      ...chapter,
+      journey_id: ramenJourney
+    });
+
+    expect(recorded.body).toMatchObject({
+      journey_id: ramenJourney,
+      map_features: MAP_FEATURES,
+      journal: { id: 1, title: "Alice's journal" }
+    });
+    expect(repeated).toMatchObject({
+      status: 422,
+      body: { detail: 'A chapter has already been created for this journey.' }
+    });
+  });
+
+  it('records one chapter for a journey sent twice at once', async () => {
+    const responses = await Promise.all(
+      [1, 2].map(() =>
+        send('POST', `/maps/${ids.ramen}/chapters`, 'alice', {
+          title: 'A race',
+          content: CHAPTER_CONTENT,
+          journey_id: racedJourney
+        })
+      )
+    );
+    const recorded = await db()
+      .select({ id: chapters.id })
+      .from(chapters)
+      .where(eq(chapters.journeyId, racedJourney));
+
+    expect(
+      responses
+        .map(({ status, body }) => [status, body.journey_id ?? body.detail])
+        .sort()
+    ).toEqual([
+      [200, racedJourney],
+      [422, 'A chapter has already been created for this journey.']
+    ]);
+    expect(recorded).toHaveLength(1);
+  });
+
+  it('answers 422 for a journey on another map and 404 for one of someone else', async () => {
+    const chapter = { title: 'A journey', content: CHAPTER_CONTENT };
+
+    expect(
+      await send('POST', `/maps/${ids.ramen}/chapters`, 'alice', {
+        ...chapter,
+        journey_id: secretJourney
+      })
+    ).toMatchObject({
+      status: 422,
+      body: {
+        detail:
+          'The journey does not belong to the author or the map of the chapter.'
+      }
+    });
+    expect(
+      (
+        await send('POST', `/maps/${dave.map}/chapters`, 'carol', {
+          ...chapter,
+          journey_id: ramenJourney
+        })
+      ).status
+    ).toBe(404);
+    expect(
+      (
+        await send('POST', `/maps/${ids.ramen}/chapters`, 'alice', {
+          ...chapter,
+          journey_id: 'first'
+        })
+      ).status
+    ).toBe(404);
+  });
+
+  it('answers 422 with the messages of every invalid field', async () => {
+    const path = `/maps/${ids.ramen}/chapters`;
+    const blank = await send('POST', path, 'alice', { content: 'Hello' });
+    const malformed = await send('POST', path, 'alice', {
+      title: 'x'.repeat(101),
+      content: { foo: 'bar' },
+      map_features: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [181, 35] }
+          }
+        ]
+      }
+    });
+    const japanese = await send(
+      'POST',
+      path,
+      'alice',
+      { title: ' ', content: CHAPTER_CONTENT },
+      'ja'
+    );
+
+    expect(blank).toMatchObject({
+      status: 422,
+      body: {
+        detail:
+          'Chapter title is required. Chapter content is not a valid document.'
+      }
+    });
+    expect(malformed).toMatchObject({
+      status: 422,
+      body: {
+        detail:
+          'Chapter title is too long. (Max: 100) Chapter content is not a valid document. Chapter map features are not a valid GeoJSON FeatureCollection.'
+      }
+    });
+    expect(japanese).toMatchObject({
+      status: 422,
+      body: { detail: 'チャプターのタイトルを入力してください。' }
+    });
+  });
+
+  it('answers 422 for a document that is too large', async () => {
+    const { status, body } = await send(
+      'POST',
+      `/maps/${ids.ramen}/chapters`,
+      'alice',
+      {
+        title: 'Long',
+        content: { root: { text: 'x'.repeat(1024 * 1024) } }
+      }
+    );
+
+    expect(status).toBe(422);
+    expect(body.detail).toBe('Chapter content is too large.');
+  });
+
+  it('answers 404 on a map the user cannot see and 401 without a user', async () => {
+    const chapter = { title: 'A walk', content: CHAPTER_CONTENT };
+
+    expect(
+      (await send('POST', `/maps/${ids.secret}/chapters`, 'bob', chapter))
+        .status
+    ).toBe(404);
+    expect(
+      (await send('POST', `/maps/${dave.map}/chapters`, 'alice', chapter))
+        .status
+    ).toBe(404);
+    expect(
+      (await send('POST', `/maps/${ids.ramen}/chapters`, undefined, chapter))
+        .status
+    ).toBe(401);
   });
 });

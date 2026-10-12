@@ -81,6 +81,8 @@ export const en = {
   chapter_map_features_invalid:
     'Chapter map features are not a valid GeoJSON FeatureCollection.',
   chapter_map_features_exceed: 'Chapter map features are too large.',
+  chapter_status_invalid: 'Status is not included in the list',
+  chapter_images_exceed: 'Only one image can be attached to a chapter.',
   chapter_journey_mismatch:
     'The journey does not belong to the author or the map of the chapter.',
   duplicate_chapter_for_journey:
