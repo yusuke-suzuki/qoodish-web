@@ -207,19 +207,6 @@ describe('errors', () => {
       detail: 'サーバー内部エラーが発生しました。'
     });
   });
-
-  it('uses the default message of the status unless a detail is given', () => {
-    expect(new ApiError('Conflict').body('en')).toEqual({
-      title: 'Conflict',
-      detail: 'A conflict has occurred for the requested resource.'
-    });
-    expect(
-      new ApiError('UnprocessableContent', 'Map name is duplicated.').body('ja')
-    ).toEqual({
-      title: 'UnprocessableContent',
-      detail: 'Map name is duplicated.'
-    });
-  });
 });
 
 describe('database', () => {

@@ -1,248 +1,43 @@
 import { env } from 'cloudflare:test';
 import { asc, eq, inArray } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { createApp } from '../app.ts';
 import { database } from '../db/client.ts';
 import {
-  blocks,
-  chapters,
-  coauthorshipInvitations,
-  images,
-  journalBookmarks,
-  journeyCheckinRevisionImages,
-  journeyCheckinRevisions,
-  journeyCheckins,
-  journeys,
-  milestones,
-  mutes,
+  coauthorships,
+  devices,
+  journalRevisions,
   notifications,
-  unblocks,
-  userPreferences,
-  users
+  pins,
+  userPreferences
 } from '../db/schema.ts';
-import { createSigner, firebaseClaims, type Signer } from '../test/jwt.ts';
+import { get, idsOf, send } from '../test/client.ts';
+import { checkinImage, seedMe } from '../test/me.ts';
+import { accountOf, pinRevisionsOf } from '../test/records.ts';
+import { alice, bob, variants } from '../test/serialized.ts';
 import { at, IMAGE_BASE, ids, seedWorld } from '../test/world.ts';
-
-const ENCODED_PATH =
-  '{"p":"kAB2zxHkHX4rYQ==","h":{"iv":"2wBiU3O0tPXjfxft","at":"ipz2YrcxjHmajSKRGx0zYg=="}}';
-const dave = 4;
-const checkinImage = 6;
-
-let signer: Signer;
-let app: ReturnType<typeof createApp>;
+import { signIn } from '../users.ts';
 
 beforeAll(async () => {
-  signer = await createSigner();
-  app = createApp({ firebaseKeys: signer.keys });
   await seedWorld(env.DB);
-
-  const db = database(env.DB);
-  const stamp = { createdAt: at(1), updatedAt: at(1) };
-
-  await db
-    .insert(users)
-    .values({ id: dave, uid: 'dave', name: 'Dave', ...stamp });
-  await db.insert(userPreferences).values([
-    { userId: ids.alice, webPush: '{"liked":false}', ...stamp },
-    {
-      userId: ids.alice,
-      webPush: '{"comment":false,"retired":true}',
-      ...stamp
-    }
-  ]);
-  await db.insert(coauthorshipInvitations).values([
-    {
-      id: 1,
-      mapId: ids.ramen,
-      inviterId: ids.alice,
-      inviteeId: ids.bob,
-      status: 0,
-      createdAt: at(3),
-      updatedAt: at(3)
-    },
-    {
-      id: 2,
-      mapId: ids.secret,
-      inviterId: ids.alice,
-      inviteeId: ids.bob,
-      status: 1,
-      ...stamp
-    }
-  ]);
-  await db.insert(blocks).values([
-    { id: 1, blockerId: ids.alice, blockedId: dave, createdAt: at(2) },
-    { id: 2, blockerId: ids.alice, blockedId: ids.carol, createdAt: at(2) }
-  ]);
-  await db.insert(unblocks).values({ blockId: 2, createdAt: at(3) });
-  await db
-    .insert(mutes)
-    .values({ muterId: ids.carol, mutedId: ids.bob, createdAt: at(2) });
-  await db
-    .insert(journalBookmarks)
-    .values({ journalId: 1, userId: ids.bob, ...stamp });
-
-  await db.insert(journeys).values([
-    {
-      id: 1,
-      userId: ids.alice,
-      mapId: ids.ramen,
-      startedAt: at(5),
-      finishedAt: at(6),
-      encodedPath: ENCODED_PATH,
-      createdAt: at(4),
-      updatedAt: at(6)
-    },
-    {
-      id: 2,
-      userId: ids.alice,
-      mapId: null,
-      createdAt: at(7),
-      updatedAt: at(7)
-    }
-  ]);
-  await db
-    .update(chapters)
-    .set({ journeyId: 1 })
-    .where(eq(chapters.id, ids.noodleStory));
-  await db.insert(milestones).values([
-    {
-      id: 1,
-      journeyId: 1,
-      pinId: ids.shoyu,
-      name: 'Shoyu Ramen',
-      latitude: 35.7,
-      longitude: 139.7,
-      position: 2,
-      ...stamp
-    },
-    {
-      id: 2,
-      journeyId: 1,
-      pinId: null,
-      name: 'Gone Stall',
-      latitude: 35.6,
-      longitude: 139.6,
-      position: 1,
-      ...stamp
-    }
-  ]);
-  const checkin = (id: number, checkedInAt: string, status = 'recorded') => ({
-    id,
-    journeyId: 1,
-    pinId: null,
-    name: `Spot ${id}`,
-    latitude: 35.5,
-    longitude: 139.5,
-    note: `Note ${id}`,
-    checkedInAt,
-    status,
-    ...stamp
+  await seedMe(env.DB);
+  await signIn(database(env.DB), {
+    uid: 'eve',
+    name: 'Eve',
+    email: 'eve@example.com',
+    locale: 'ja'
   });
-  await db
-    .insert(journeyCheckins)
-    .values([
-      checkin(1, at(5, 10)),
-      checkin(2, at(5, 1), 'deleted'),
-      checkin(3, at(5, 5))
-    ]);
-  await db.insert(journeyCheckinRevisions).values({
-    id: 1,
-    journeyCheckinId: 3,
-    userId: ids.alice,
-    checkedInAt: at(5, 5),
-    note: 'Note 3',
-    ...stamp
-  });
-  await db.insert(images).values({
-    id: checkinImage,
-    userId: ids.alice,
-    url: `${IMAGE_BASE}/spot/public`,
-    ...stamp
-  });
-  await db
-    .insert(journeyCheckinRevisionImages)
-    .values({ journeyCheckinRevisionId: 1, imageId: checkinImage, ...stamp });
-  await db
-    .update(journeyCheckins)
-    .set({ currentRevisionId: 1 })
-    .where(eq(journeyCheckins.id, 3));
-
-  const notification = (
-    id: number,
-    key: string,
-    notifiableType: string,
-    notifiableId: number,
-    notifierId: number,
-    read = false
-  ) => ({
-    id,
-    key,
-    notifiableType,
-    notifiableId,
-    notifierType: 'User',
-    notifierId,
-    recipientType: 'User',
-    recipientId: ids.alice,
-    read,
-    createdAt: at(10, id),
-    updatedAt: at(10, id)
-  });
-  for (const row of [
-    notification(1, 'liked', 'Pin', ids.shoyu, ids.bob),
-    notification(2, 'liked', 'Pin', ids.shoyu, ids.carol),
-    notification(3, 'liked', 'Pin', ids.shoyu, ids.bob),
-    notification(4, 'comment', 'Pin', ids.shoyu, ids.bob, true),
-    notification(5, 'liked', 'Comment', ids.pinComment, ids.carol),
-    notification(6, 'published', 'Chapter', ids.draft, ids.carol),
-    notification(7, 'liked', 'Pin', ids.deletedPin, ids.bob),
-    notification(8, 'followed', 'Map', ids.ramen, ids.bob),
-    notification(9, 'liked', 'Pin', ids.shoyu, dave),
-    notification(10, 'coauthor_invited', 'Map', ids.cafe, ids.bob)
-  ]) {
-    await db.insert(notifications).values(row);
-  }
 });
 
-async function get(path: string, uid: string) {
-  const token = await signer.sign(
-    firebaseClaims(env.GOOGLE_PROJECT_ID, { sub: uid })
-  );
-  const res = await app.request(
-    path,
-    { headers: { authorization: `Bearer ${token}` } },
-    env
-  );
+const db = () => database(env.DB);
 
-  return { status: res.status, body: await res.json() };
+async function coauthorsOf(mapId: number) {
+  const rows = await db()
+    .select({ userId: coauthorships.userId })
+    .from(coauthorships)
+    .where(eq(coauthorships.mapId, mapId));
+
+  return rows.map((row) => row.userId);
 }
-
-async function ids_of(path: string, uid: string): Promise<number[]> {
-  const { status, body } = await get(path, uid);
-  const list = Array.isArray(body) ? body : (body as { data: unknown[] }).data;
-
-  expect(status).toBe(200);
-  return (list as { id: number }[]).map((item) => item.id);
-}
-
-function variants(name: string) {
-  return {
-    avatar: `${IMAGE_BASE}/${name}/avatar`,
-    card: `${IMAGE_BASE}/${name}/card`,
-    hero: `${IMAGE_BASE}/${name}/hero`,
-    ogp: `${IMAGE_BASE}/${name}/ogp`,
-    url: `${IMAGE_BASE}/${name}/public`
-  };
-}
-
-const alice = {
-  id: ids.alice,
-  name: 'Alice',
-  image: variants('alice'),
-  image_url: `${IMAGE_BASE}/alice/public`
-};
-
-const bob = { id: ids.bob, name: 'Bob', image: null, image_url: '' };
-const carol = { id: ids.carol, name: 'Carol', image: null, image_url: '' };
 
 describe('GET /me/profile', () => {
   it('merges the latest web push choices over the defaults', async () => {
@@ -268,13 +63,13 @@ describe('GET /me/profile', () => {
 
 describe('own posts', () => {
   it('lists the own published maps, chapters in any status and pins', async () => {
-    expect(await ids_of('/me/maps', 'alice')).toEqual([ids.secret, ids.ramen]);
-    expect(await ids_of('/me/chapters', 'alice')).toEqual([
+    expect(await idsOf('/me/maps', 'alice')).toEqual([ids.secret, ids.ramen]);
+    expect(await idsOf('/me/chapters', 'alice')).toEqual([
       ids.secretStory,
       ids.draft,
       ids.noodleStory
     ]);
-    expect(await ids_of('/v2/me/pins', 'alice')).toEqual([
+    expect(await idsOf('/v2/me/pins', 'alice')).toEqual([
       ids.secretPin,
       ids.shoyu
     ]);
@@ -305,12 +100,12 @@ describe('own posts', () => {
 
 describe('bookmarks', () => {
   it('lists the bookmarked public maps and journals', async () => {
-    expect(await ids_of('/me/bookmarks/maps', 'bob')).toEqual([ids.ramen]);
+    expect(await idsOf('/me/bookmarks/maps', 'bob')).toEqual([ids.ramen]);
     expect((await get('/me/bookmarks/maps', 'alice')).body).toMatchObject([
       { id: ids.cafe, bookmarking: true, bookmarkable: true }
     ]);
-    expect(await ids_of('/me/bookmarks/journals', 'bob')).toEqual([1]);
-    expect(await ids_of('/me/bookmarks/journals', 'alice')).toEqual([]);
+    expect(await idsOf('/me/bookmarks/journals', 'bob')).toEqual([1]);
+    expect(await idsOf('/me/bookmarks/journals', 'alice')).toEqual([]);
   });
 });
 
@@ -414,126 +209,9 @@ describe('journeys', () => {
   });
 });
 
-describe('GET /v2/me/notifications', () => {
-  it('groups the renderable notifications from users the viewer sees', async () => {
-    const { status, body } = await get('/v2/me/notifications', 'alice');
-
-    expect(status).toBe(200);
-    expect(body).toEqual({
-      data: [
-        {
-          id: 10,
-          key: 'coauthor_invited',
-          click_action: '/coauthorship_invitations',
-          notifiable: { id: ids.cafe, type: 'map', image: null, image_url: '' },
-          notifier: bob,
-          read: false,
-          notifiers: [bob],
-          notifiers_count: 1,
-          created_at: at(10, 10),
-          updated_at: at(10, 10)
-        },
-        {
-          id: 6,
-          key: 'published',
-          click_action: `/chapters/${ids.draft}`,
-          notifiable: {
-            id: ids.draft,
-            type: 'chapter',
-            image: null,
-            image_url: ''
-          },
-          notifier: carol,
-          read: false,
-          notifiers: [carol],
-          notifiers_count: 1,
-          created_at: at(10, 6),
-          updated_at: at(10, 6)
-        },
-        {
-          id: 5,
-          key: 'liked',
-          click_action: `/pins/${ids.shoyu}`,
-          notifiable: {
-            id: ids.pinComment,
-            type: 'comment',
-            image: variants('shoyu'),
-            image_url: `${IMAGE_BASE}/shoyu/public`
-          },
-          notifier: carol,
-          read: false,
-          notifiers: [carol],
-          notifiers_count: 1,
-          created_at: at(10, 5),
-          updated_at: at(10, 5)
-        },
-        {
-          id: 4,
-          key: 'comment',
-          click_action: `/pins/${ids.shoyu}`,
-          notifiable: {
-            id: ids.shoyu,
-            type: 'pin',
-            image: variants('shoyu'),
-            image_url: `${IMAGE_BASE}/shoyu/public`
-          },
-          notifier: bob,
-          read: true,
-          notifiers: [bob],
-          notifiers_count: 1,
-          created_at: at(10, 4),
-          updated_at: at(10, 4)
-        },
-        {
-          id: 3,
-          key: 'liked',
-          click_action: `/pins/${ids.shoyu}`,
-          notifiable: {
-            id: ids.shoyu,
-            type: 'pin',
-            image: variants('shoyu'),
-            image_url: `${IMAGE_BASE}/shoyu/public`
-          },
-          notifier: bob,
-          read: false,
-          notifiers: [bob, carol],
-          notifiers_count: 2,
-          created_at: at(10, 3),
-          updated_at: at(10, 3)
-        }
-      ],
-      next_cursor: null
-    });
-  });
-
-  it('pages by the latest id and keeps unread groups only on read=false', async () => {
-    expect(await ids_of('/v2/me/notifications?cursor=6', 'alice')).toEqual([
-      5, 4, 3
-    ]);
-    expect(await ids_of('/v2/me/notifications?read=false', 'alice')).toEqual([
-      10, 6, 5, 3
-    ]);
-    expect(await ids_of('/v2/me/notifications?read=true', 'alice')).toEqual([
-      10, 6, 5, 4, 3
-    ]);
-  });
-});
-
 describe('PUT /me/notifications/:id', () => {
-  async function read(method: string, id: number, uid: string) {
-    const token = await signer.sign(
-      firebaseClaims(env.GOOGLE_PROJECT_ID, { sub: uid })
-    );
-    const res = await app.request(
-      `/me/notifications/${id}`,
-      { method, headers: { authorization: `Bearer ${token}` } },
-      env
-    );
-
-    return {
-      status: res.status,
-      body: (await res.json()) as { updated_at: string }
-    };
+  function read(method: string, id: number, uid: string) {
+    return send(method, `/me/notifications/${id}`, uid);
   }
 
   async function unread(): Promise<number[]> {
@@ -629,31 +307,480 @@ describe('PUT /me/notifications/:id', () => {
   });
 });
 
-describe('blocked and muted accounts', () => {
-  it('lists the accounts under an active block or mute', async () => {
-    expect(await get('/v2/me/blocks', 'alice')).toEqual({
+describe('PUT /me/profile', () => {
+  it('appends a revision only when the name or biography changes', async () => {
+    const changed = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'eve' },
+      { name: 'Eve Online', biography: 'Wanderer' }
+    );
+    const unchanged = await send(
+      'PATCH',
+      '/me/profile',
+      { sub: 'eve' },
+      { name: 'Eve Online' }
+    );
+    const account = await accountOf('eve');
+
+    expect(changed).toMatchObject({
       status: 200,
-      body: {
-        data: [
-          {
-            id: dave,
-            name: 'Dave',
-            biography: null,
-            image: null,
-            image_url: ''
-          }
-        ],
-        next_cursor: null
+      body: { name: 'Eve Online', biography: 'Wanderer' }
+    });
+    expect(unchanged.status).toBe(200);
+    expect(
+      account?.revisions.map(({ name, biography }) => [name, biography])
+    ).toEqual([
+      ['Eve', null],
+      ['Eve Online', 'Wanderer']
+    ]);
+    expect(account?.user.currentRevisionId).toBe(account?.revisions[1]?.id);
+  });
+
+  it('sets the avatar from the first image id and clears it with an empty list', async () => {
+    const set = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'alice' },
+      { image_ids: [ids.aliceImage] }
+    );
+    const cleared = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'alice' },
+      { image_ids: [] }
+    );
+
+    expect(set.body.image_url).toMatch(/alice\/public$/);
+    expect(cleared.body).toMatchObject({ image: null, image_url: '' });
+    expect((await accountOf('alice'))?.revisions).toHaveLength(0);
+  });
+
+  it('refuses a blank name', async () => {
+    const { status, body } = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'bob' },
+      { name: ' ' },
+      'ja'
+    );
+
+    expect(status).toBe(422);
+    expect(body.detail).toBe('名前を入力してください。');
+  });
+
+  it('refuses an image someone else uploaded', async () => {
+    const { status, body } = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'bob' },
+      { image_ids: [ids.aliceImage] },
+      'ja'
+    );
+
+    expect(status).toBe(422);
+    expect(body.detail).toBe('ご自身でアップロードした画像ではありません。');
+  });
+
+  it('answers 400 for image ids that are not a list of plain ids', async () => {
+    for (const imageIds of ['all', [0], [-1], [''], ['0x10']]) {
+      const { status } = await send(
+        'PUT',
+        '/me/profile',
+        { sub: 'bob' },
+        { image_ids: imageIds }
+      );
+
+      expect(status).toBe(400);
+    }
+  });
+});
+
+describe('PUT /me/journal', () => {
+  it('revises the journal and answers it', async () => {
+    const { status, body } = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { title: 'Field notes', description: 'Places I walked' }
+    );
+    const [journal] = (await accountOf('eve'))?.journals ?? [];
+    const revisions = await db()
+      .select()
+      .from(journalRevisions)
+      .where(eq(journalRevisions.journalId, journal?.id ?? 0));
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: journal?.id,
+      title: 'Field notes',
+      description: 'Places I walked',
+      editable: true
+    });
+    expect(revisions).toHaveLength(2);
+    expect(journal?.currentRevisionId).toBe(revisions[1]?.id);
+  });
+
+  it('answers 422 for a blank or long title', async () => {
+    const blank = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { title: '' }
+    );
+    const long = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { title: 'x'.repeat(51) }
+    );
+
+    expect(blank.body.detail).toBe('Journal title is required.');
+    expect(long.body.detail).toBe('Journal title is too long. (Max: 50)');
+  });
+
+  it('answers only the required message for a long blank title', async () => {
+    const { body } = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { title: ' '.repeat(51) }
+    );
+
+    expect(body.detail).toBe('Journal title is required.');
+  });
+
+  it('keeps carriage returns in the description', async () => {
+    const { body } = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { description: 'First\r\nSecond' }
+    );
+
+    expect(body.description).toBe('First\r\nSecond');
+  });
+});
+
+describe('PUT /me/preferences', () => {
+  it('appends a snapshot that keeps the choices it was not sent', async () => {
+    await send(
+      'PUT',
+      '/me/preferences',
+      { sub: 'bob' },
+      { web_push: { liked: false } }
+    );
+    const { status, body } = await send(
+      'PUT',
+      '/me/preferences',
+      { sub: 'bob' },
+      { web_push: { comment: false, retired: false } }
+    );
+    const rows = await db()
+      .select()
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, ids.bob));
+
+    expect(status).toBe(200);
+    expect(body).toEqual({
+      web_push: {
+        coauthor_invited: true,
+        liked: false,
+        comment: false,
+        published: true
       }
     });
-    expect(await get('/v2/me/mutes', 'carol')).toEqual({
+    expect(rows).toHaveLength(2);
+  });
+
+  it('appends nothing when the choices stay the same and ignores other keys', async () => {
+    const before = await db()
+      .select()
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, ids.bob));
+    const { status, body } = await send(
+      'PUT',
+      '/me/preferences',
+      { sub: 'bob' },
+      { web_push: { liked: false, constructor: true } }
+    );
+    const after = await db()
+      .select()
+      .from(userPreferences)
+      .where(eq(userPreferences.userId, ids.bob));
+
+    expect(status).toBe(200);
+    expect(Object.keys(body.web_push)).toEqual([
+      'coauthor_invited',
+      'liked',
+      'comment',
+      'published'
+    ]);
+    expect(after).toHaveLength(before.length);
+  });
+
+  it('answers 422 for a choice that is not a boolean and 400 without choices', async () => {
+    const invalid = await send(
+      'PUT',
+      '/me/preferences',
+      { sub: 'bob' },
+      { web_push: { liked: 'no' } }
+    );
+    const missing = await send('PUT', '/me/preferences', { sub: 'bob' }, {});
+
+    expect(invalid.status).toBe(422);
+    expect(missing.status).toBe(400);
+  });
+
+  it('ignores a choice it does not know', async () => {
+    expect(
+      (
+        await send(
+          'PUT',
+          '/me/preferences',
+          { sub: 'bob' },
+          { web_push: { followed: true } }
+        )
+      ).status
+    ).toBe(200);
+  });
+});
+
+describe('/me/devices/:token', () => {
+  it('registers a token once and forgets it', async () => {
+    const tokens = async () =>
+      (
+        await db()
+          .select({ token: devices.registrationToken })
+          .from(devices)
+          .where(eq(devices.userId, ids.bob))
+      ).map(({ token }) => token);
+
+    expect(
+      (await send('PUT', '/me/devices/a%2Fb', { sub: 'bob' })).status
+    ).toBe(204);
+    expect(
+      (await send('PUT', '/me/devices/a%2Fb', { sub: 'bob' })).status
+    ).toBe(204);
+    expect(await tokens()).toEqual(['a/b']);
+
+    expect(
+      (await send('DELETE', '/me/devices/a%2Fb', { sub: 'bob' })).status
+    ).toBe(204);
+    expect(
+      (await send('DELETE', '/me/devices/a%2Fb', { sub: 'bob' })).status
+    ).toBe(204);
+    expect(await tokens()).toEqual([]);
+  });
+
+  it('answers 400 for a token that is too long', async () => {
+    expect(
+      (await send('PUT', `/me/devices/${'a'.repeat(4097)}`, { sub: 'bob' }))
+        .status
+    ).toBe(400);
+  });
+});
+
+describe('PUT /me/pins/:id', () => {
+  it('revises the pin, carrying the images and tags', async () => {
+    const { status, body } = await send(
+      'PUT',
+      `/me/pins/${ids.shoyu}`,
+      'alice',
+      { name: 'Shoyu Ramen Deluxe' }
+    );
+    const revision = (await pinRevisionsOf(ids.shoyu)).at(-1);
+
+    expect(status).toBe(200);
+    expect(body).toMatchObject({
+      id: ids.shoyu,
+      name: 'Shoyu Ramen Deluxe',
+      comment: 'Notes on Shoyu Ramen',
+      editable: true
+    });
+    expect(revision).toMatchObject({
+      userId: ids.alice,
+      name: 'Shoyu Ramen Deluxe',
+      imageIds: [ids.shoyuImage, ids.shoyuSecondImage],
+      propertyOptionIds: [ids.salty, ids.sweet]
+    });
+  });
+
+  it('appends nothing when the pin stays the same', async () => {
+    const before = await pinRevisionsOf(ids.shoyu);
+
+    await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      name: 'Shoyu Ramen Deluxe',
+      image_ids: [ids.shoyuSecondImage, ids.shoyuImage]
+    });
+
+    expect(await pinRevisionsOf(ids.shoyu)).toHaveLength(before.length);
+  });
+
+  it('replaces the tags that are sent', async () => {
+    const { body } = await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      property_option_ids: []
+    });
+
+    expect(body.property_option_ids).toEqual([]);
+    expect((await pinRevisionsOf(ids.shoyu)).at(-1)).toMatchObject({
+      imageIds: [ids.shoyuImage, ids.shoyuSecondImage],
+      propertyOptionIds: []
+    });
+  });
+
+  it('answers 422 for a retired tag or a cleared location, appending nothing', async () => {
+    const before = await pinRevisionsOf(ids.shoyu);
+    const retired = await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      property_option_ids: [ids.sweet]
+    });
+    const cleared = await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      latitude: null
+    });
+
+    expect(retired).toMatchObject({
+      status: 422,
+      body: { detail: 'Some of the tags chosen cannot be used on this pin.' }
+    });
+    expect(cleared).toMatchObject({
+      status: 422,
+      body: { detail: 'Please choose where the pin is.' }
+    });
+    expect(await pinRevisionsOf(ids.shoyu)).toHaveLength(before.length);
+  });
+
+  it('answers 422 for a location that is not a number, even beside another error', async () => {
+    const rejected = await Promise.all(
+      ['north', null, '', ' ', true, [35.6]].map(async (latitude) =>
+        send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', { latitude })
+      )
+    );
+    const combined = await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      name: '',
+      latitude: 'north'
+    });
+
+    for (const response of rejected) {
+      expect(response).toMatchObject({
+        status: 422,
+        body: { detail: 'Please choose where the pin is.' }
+      });
+    }
+    expect(combined.status).toBe(422);
+    expect(combined.body.detail).toContain('Please choose where the pin is.');
+  });
+
+  it('rounds the location to six decimals', async () => {
+    const { body } = await send('PATCH', `/me/pins/${ids.shoyu}`, 'alice', {
+      latitude: 35.6812362,
+      longitude: '139.7671248'
+    });
+
+    expect(body).toMatchObject({
+      latitude: 35.681236,
+      longitude: 139.767125
+    });
+  });
+
+  it('answers 404 on a pin of someone else', async () => {
+    expect(
+      (await send('PUT', `/me/pins/${ids.shoyu}`, 'carol', { name: 'Mine' }))
+        .status
+    ).toBe(404);
+  });
+});
+
+describe('DELETE /me/pins/:id', () => {
+  it('discards the pin as a revision, once', async () => {
+    const path = `/me/pins/${ids.shoyu}`;
+
+    expect((await send('DELETE', path, 'carol')).status).toBe(404);
+    expect((await send('DELETE', path, 'alice')).status).toBe(204);
+    expect((await send('DELETE', path, 'alice')).status).toBe(404);
+
+    const [pin] = await db().select().from(pins).where(eq(pins.id, ids.shoyu));
+
+    expect(pin?.status).toBe('deleted');
+    expect((await pinRevisionsOf(ids.shoyu)).at(-1)).toMatchObject({
+      status: 'deleted',
+      userId: ids.alice,
+      imageIds: [ids.shoyuImage, ids.shoyuSecondImage]
+    });
+  });
+});
+
+describe('POST /me/coauthorship_invitations/:id/accept and /decline', () => {
+  it('makes the invitee a coauthor once accepted', async () => {
+    const [pending] = (await send('GET', '/me/coauthorship_invitations', 'bob'))
+      .body;
+    const accepted = await send(
+      'POST',
+      `/me/coauthorship_invitations/${pending.id}/accept`,
+      'bob'
+    );
+    const again = await send(
+      'POST',
+      `/me/coauthorship_invitations/${pending.id}/accept`,
+      'bob'
+    );
+
+    expect(accepted).toMatchObject({
       status: 200,
+      body: { id: pending.id, status: 'accepted' }
+    });
+    const declinedAfter = await send(
+      'POST',
+      `/me/coauthorship_invitations/${pending.id}/decline`,
+      'bob'
+    );
+
+    expect(again.status).toBe(404);
+    expect(declinedAfter.status).toBe(404);
+    expect(
+      (await send('GET', `/me/coauthorship_invitations`, 'bob')).body
+    ).toEqual([]);
+    expect(await coauthorsOf(ids.ramen)).toEqual(
+      expect.arrayContaining([ids.bob, ids.carol])
+    );
+  });
+
+  it('leaves the map as it was once declined', async () => {
+    const invited = await send(
+      'POST',
+      `/maps/${ids.cafe}/coauthorship_invitations`,
+      'bob',
+      { user_id: ids.alice }
+    );
+    const declined = await send(
+      'POST',
+      `/me/coauthorship_invitations/${invited.body.id}/decline`,
+      'alice'
+    );
+    const byOther = await send(
+      'POST',
+      `/me/coauthorship_invitations/${invited.body.id}/accept`,
+      'carol'
+    );
+
+    expect(declined.body).toMatchObject({ status: 'declined' });
+    expect(byOther.status).toBe(404);
+    expect(await coauthorsOf(ids.cafe)).toEqual([]);
+  });
+});
+
+describe('answering an unknown invitation', () => {
+  it('answers 404 for an unknown invitation or answer', async () => {
+    expect(
+      (await send('POST', '/me/coauthorship_invitations/999/accept', 'carol'))
+        .status
+    ).toBe(404);
+    expect(
+      await send('POST', '/me/coauthorship_invitations/1/maybe', 'bob')
+    ).toMatchObject({
+      status: 404,
       body: {
-        data: [{ ...bob, biography: null }],
-        next_cursor: null
+        detail: "No route matches [POST] '/me/coauthorship_invitations/1/maybe'"
       }
     });
-    expect(await ids_of('/v2/me/blocks?cursor=1', 'alice')).toEqual([]);
-    expect(await ids_of('/v2/me/blocks?cursor=abc', 'alice')).toEqual([]);
   });
 });
