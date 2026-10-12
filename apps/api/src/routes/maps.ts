@@ -3,34 +3,66 @@ import type {
   Chapter,
   Coauthor,
   Pin,
-  PinProperty
+  PinProperty,
+  PinPropertyOption
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, type SQL, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { viewerChapters } from '../chapters.ts';
-import { type Database, database } from '../db/client.ts';
+import { type Database, database, scalar } from '../db/client.ts';
 import { chapters, maps, pins } from '../db/schema.ts';
-import { pinPropertiesOf, viewerCoauthors, viewerMaps } from '../maps.ts';
+import {
+  createMap,
+  discardMap,
+  type MapRow,
+  mapInput,
+  newMapInput,
+  pinPropertiesOf,
+  removeCoauthor,
+  reviseMap,
+  viewerCoauthors,
+  viewerMaps
+} from '../maps.ts';
 import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
+import {
+  createPinProperty,
+  createPinPropertyOption,
+  editablePinProperty,
+  newPinPropertyInput,
+  newPinPropertyOptionInput,
+  pinPropertyDetail,
+  pinPropertyInput,
+  pinPropertyOptionDetail,
+  pinPropertyOptionInput,
+  publishedOption,
+  revisePinProperty,
+  revisePinPropertyOption
+} from '../pin-properties.ts';
 import { viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
-import { id, pathParams } from '../validation.ts';
+import { id, jsonBody, pathParams } from '../validation.ts';
 import {
+  editableMap,
   recommendableMap,
   referenceableChapter,
   referenceableMap,
   referenceablePin,
-  relatedMap
+  relatedMap,
+  type Viewer
 } from '../visibility.ts';
 
 const RECOMMENDED_MAPS_LIMIT = 10;
 
 const mapParams = pathParams(z.object({ mapId: id }));
 const idParams = pathParams(z.object({ id }));
+const coauthorParams = pathParams(z.object({ mapId: id, userId: id }));
+const propertyParams = pathParams(z.object({ mapId: id, id }));
+const optionsParams = pathParams(z.object({ mapId: id, propertyId: id }));
+const optionParams = pathParams(z.object({ mapId: id, propertyId: id, id }));
 
 async function findMap(db: Database, condition: SQL | undefined) {
   return first(
@@ -38,6 +70,28 @@ async function findMap(db: Database, condition: SQL | undefined) {
       .select({ id: maps.id, userId: maps.userId })
       .from(maps)
       .where(condition)
+  );
+}
+
+async function editableMapRow(
+  db: Database,
+  viewer: Viewer,
+  mapId: number
+): Promise<MapRow> {
+  return first(
+    await db
+      .select()
+      .from(maps)
+      .where(and(editableMap(viewer), eq(maps.id, mapId)))
+  );
+}
+
+function editableMapId(db: Database, viewer: Viewer, mapId: number): SQL {
+  return scalar(
+    db
+      .select({ id: maps.id })
+      .from(maps)
+      .where(and(editableMap(viewer), eq(maps.id, mapId)))
   );
 }
 
@@ -135,5 +189,214 @@ app.get('/:mapId/pin_properties', mapParams, async (c) => {
 
   return c.json<PinProperty[]>(await pinPropertiesOf(db, map.id));
 });
+
+app.post('/', jsonBody(newMapInput), async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const map = await createMap(db, viewer.id, c.req.valid('json'));
+
+  return c.json<AppMap>(first(await viewerMaps(db, viewer, [map])));
+});
+
+app.on(['PUT', 'PATCH'], '/:id', idParams, jsonBody(mapInput), async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const mapId = c.req.valid('param').id;
+
+  await reviseMap(db, () => editableMapRow(db, viewer, mapId), {
+    editorId: viewer.id,
+    changes: c.req.valid('json')
+  });
+
+  const revised = first(await db.select().from(maps).where(eq(maps.id, mapId)));
+
+  return c.json<AppMap>(first(await viewerMaps(db, viewer, [revised])));
+});
+
+app.delete('/:id', idParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const mapId = c.req.valid('param').id;
+
+  await discardMap(
+    db,
+    async () =>
+      first(
+        await db
+          .select()
+          .from(maps)
+          .where(
+            and(
+              eq(maps.id, mapId),
+              eq(maps.userId, viewer.id),
+              eq(maps.status, 'published')
+            )
+          )
+      ),
+    viewer.id
+  );
+
+  return c.body(null, 204);
+});
+
+app.delete('/:mapId/coauthors/:userId', coauthorParams, async (c) => {
+  const db = database(c.env.DB);
+  const { mapId, userId } = c.req.valid('param');
+  const map = await findMap(
+    db,
+    and(eq(maps.id, mapId), eq(maps.userId, c.get('viewer').id))
+  );
+
+  await removeCoauthor(db, { mapId: map.id, userId });
+
+  return c.body(null, 204);
+});
+
+app.post(
+  '/:mapId/pin_properties',
+  mapParams,
+  jsonBody(newPinPropertyInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
+    const propertyId = await createPinProperty(db, {
+      mapId: map.id,
+      editorId: viewer.id,
+      changes: c.req.valid('json')
+    });
+
+    return c.json<PinProperty>(await pinPropertyDetail(db, propertyId));
+  }
+);
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/:mapId/pin_properties/:id',
+  propertyParams,
+  jsonBody(pinPropertyInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const params = c.req.valid('param');
+
+    await revisePinProperty(
+      db,
+      () =>
+        editablePinProperty(db, {
+          id: params.id,
+          mapId: editableMapId(db, viewer, params.mapId)
+        }),
+      { editorId: viewer.id, changes: c.req.valid('json') }
+    );
+
+    return c.json<PinProperty>(await pinPropertyDetail(db, params.id));
+  }
+);
+
+app.delete('/:mapId/pin_properties/:id', propertyParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const params = c.req.valid('param');
+
+  await revisePinProperty(
+    db,
+    () =>
+      editablePinProperty(db, {
+        id: params.id,
+        mapId: editableMapId(db, viewer, params.mapId)
+      }),
+    { editorId: viewer.id, status: 'deleted' }
+  );
+
+  return c.body(null, 204);
+});
+
+function optionsProperty(
+  db: Database,
+  viewer: Viewer,
+  params: { mapId: number; propertyId: number }
+) {
+  return editablePinProperty(db, {
+    id: params.propertyId,
+    mapId: editableMapId(db, viewer, params.mapId)
+  });
+}
+
+async function editableOption(
+  db: Database,
+  viewer: Viewer,
+  params: { mapId: number; propertyId: number; id: number }
+) {
+  const property = await optionsProperty(db, viewer, params);
+
+  return publishedOption(db, { id: params.id, propertyId: property.id });
+}
+
+app.post(
+  '/:mapId/pin_properties/:propertyId/options',
+  optionsParams,
+  jsonBody(newPinPropertyOptionInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const property = await optionsProperty(db, viewer, c.req.valid('param'));
+    const optionId = await createPinPropertyOption(db, {
+      propertyId: property.id,
+      editorId: viewer.id,
+      changes: c.req.valid('json')
+    });
+
+    return c.json<PinPropertyOption>(
+      await pinPropertyOptionDetail(db, optionId)
+    );
+  }
+);
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/:mapId/pin_properties/:propertyId/options/:id',
+  optionParams,
+  jsonBody(pinPropertyOptionInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const params = c.req.valid('param');
+
+    await revisePinPropertyOption(
+      db,
+      () => editableOption(db, viewer, params),
+      {
+        editorId: viewer.id,
+        changes: c.req.valid('json')
+      }
+    );
+
+    return c.json<PinPropertyOption>(
+      await pinPropertyOptionDetail(db, params.id)
+    );
+  }
+);
+
+app.delete(
+  '/:mapId/pin_properties/:propertyId/options/:id',
+  optionParams,
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const params = c.req.valid('param');
+
+    await revisePinPropertyOption(
+      db,
+      () => editableOption(db, viewer, params),
+      {
+        editorId: viewer.id,
+        status: 'deleted'
+      }
+    );
+
+    return c.body(null, 204);
+  }
+);
 
 export default app;

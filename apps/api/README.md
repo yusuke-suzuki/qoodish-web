@@ -31,6 +31,8 @@ A write that spans several rows runs as one D1 `batch`, which D1 applies atomica
 
 - `POST /users` signs in the token's user. A new user is created with a revision, a private map named after them and a journal; an existing one only has their email and locale refreshed.
 - Edits to a user's name and biography, and to a journal's title and description, append a revision and point the record at it. An edit that changes nothing appends nothing. A revision is written only while the record still points at the revision the edit was read from; when another edit got there first, the edit is applied again to the newer record, and after three such attempts it answers 409.
+- Maps, tags (`pin_properties`) and their options are edited and discarded the same way: every change appends a revision, and discarding sets the status to `deleted` in a new revision rather than removing the row. A map's revision records its images; an edit that does not send `image_ids` carries the current ones over.
+- A map is edited by its author and coauthors, but only the author may change its privacy, discard it or remove a coauthor. Making a map private drops its bookmarks.
 - Notification settings are never updated in place: each change appends a snapshot of every choice, and the newest snapshot is the user's settings.
 
 Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`, and an id in the path that is not a positive integer answers `404`.

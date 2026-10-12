@@ -1,5 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { uniqueIds } from './db/client.ts';
 import { ApiError, type ErrorTitle } from './errors.ts';
 import { isMessageKey, type MessageKey } from './i18n/index.ts';
 import { characters, withoutCarriageReturns } from './text.ts';
@@ -41,6 +42,36 @@ export const id = z.union([
     .transform(Number)
     .pipe(z.int().positive())
 ]);
+
+const COORDINATE_SCALE = 1_000_000;
+
+function decimal(error?: MessageKey) {
+  return z.union(
+    [
+      z.number(),
+      z
+        .string()
+        .regex(/^\s*-?\d+(\.\d+)?\s*$/)
+        .transform(Number)
+    ],
+    error === undefined ? undefined : { error }
+  );
+}
+
+export function coordinate(error?: MessageKey) {
+  return decimal(error).transform(
+    (value) => Math.round(value * COORDINATE_SCALE) / COORDINATE_SCALE
+  );
+}
+
+export const position = decimal().pipe(z.int().nonnegative());
+
+export function imageIds({ max, error }: { max: number; error: MessageKey }) {
+  return z
+    .array(id)
+    .transform((ids) => uniqueIds(ids))
+    .refine((ids) => ids.length <= max, { error });
+}
 
 export function optionalId(value: unknown): number | undefined {
   const parsed = id.safeParse(value);
