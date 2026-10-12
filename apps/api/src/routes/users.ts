@@ -3,14 +3,16 @@ import type {
   Chapter,
   Journal,
   Profile,
+  UserProfile,
   UserSummary
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { profile } from '../accounts.ts';
+import { blockUser, unblockUser } from '../blocks.ts';
 import { viewerChapters } from '../chapters.ts';
-import { database } from '../db/client.ts';
+import { type Database, database } from '../db/client.ts';
 import { chapters, images, journals, maps, users } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import { viewerJournals } from '../journals.ts';
@@ -19,6 +21,7 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
+import { muteUser, unmuteUser } from '../mutes.ts';
 import { first, present } from '../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../search.ts';
 import {
@@ -32,7 +35,8 @@ import { id, pathParams } from '../validation.ts';
 import {
   notBlocking,
   referenceableChapter,
-  referenceableMap
+  referenceableMap,
+  type Viewer
 } from '../visibility.ts';
 
 const userParams = pathParams(z.object({ userId: id }));
@@ -81,18 +85,100 @@ app.get('/', async (c) => {
   return c.json<UserSummary[]>(rows.map(userSummary));
 });
 
-app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const profile = await userProfile(
-    database(c.env.DB),
-    c.get('viewer'),
-    c.req.valid('param').id
-  );
+app.get('/:id', pathParams(z.object({ id })), async (c) =>
+  c.json<UserProfile>(
+    await relatedProfile(
+      database(c.env.DB),
+      c.get('viewer'),
+      c.req.valid('param').id
+    )
+  )
+);
 
-  if (!profile) {
+function including(ids: ReadonlySet<number>, id: number) {
+  return new Set([...ids, id]);
+}
+
+function excluding(ids: ReadonlySet<number>, id: number) {
+  return new Set([...ids].filter((other) => other !== id));
+}
+
+async function relatedProfile(
+  db: Database,
+  viewer: Viewer,
+  userId: number
+): Promise<UserProfile> {
+  const related = await userProfile(db, viewer, userId);
+
+  if (!related) {
     throw new ApiError('NotFound');
   }
 
-  return c.json(profile);
+  return related;
+}
+
+app.post('/:userId/block', authenticateUser, userParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const user = await findUser(db, c.req.valid('param').userId);
+
+  await blockUser(db, { blockerId: viewer.id, blockedId: user.id });
+
+  return c.json<UserProfile>(
+    await relatedProfile(
+      db,
+      { ...viewer, blocking: including(viewer.blocking, user.id) },
+      user.id
+    )
+  );
+});
+
+app.delete('/:userId/block', authenticateUser, userParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const user = await findUser(db, c.req.valid('param').userId);
+
+  await unblockUser(db, { blockerId: viewer.id, blockedId: user.id });
+
+  return c.json<UserProfile>(
+    await relatedProfile(
+      db,
+      { ...viewer, blocking: excluding(viewer.blocking, user.id) },
+      user.id
+    )
+  );
+});
+
+app.post('/:userId/mute', authenticateUser, userParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const user = await findUser(db, c.req.valid('param').userId);
+
+  await muteUser(db, { muterId: viewer.id, mutedId: user.id });
+
+  return c.json<UserProfile>(
+    await relatedProfile(
+      db,
+      { ...viewer, muting: including(viewer.muting, user.id) },
+      user.id
+    )
+  );
+});
+
+app.delete('/:userId/mute', authenticateUser, userParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const user = await findUser(db, c.req.valid('param').userId);
+
+  await unmuteUser(db, { muterId: viewer.id, mutedId: user.id });
+
+  return c.json<UserProfile>(
+    await relatedProfile(
+      db,
+      { ...viewer, muting: excluding(viewer.muting, user.id) },
+      user.id
+    )
+  );
 });
 
 app.get('/:userId/maps', userParams, async (c) => {
