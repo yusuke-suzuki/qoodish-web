@@ -28,6 +28,7 @@ import journals from './routes/journals.ts';
 import maps from './routes/maps.ts';
 import me from './routes/me.ts';
 import pins from './routes/pins.ts';
+import reports from './routes/reports.ts';
 import users from './routes/users.ts';
 import v2Me from './routes/v2/me.ts';
 import v2Pins from './routes/v2/pins.ts';
@@ -105,6 +106,7 @@ export function createApp(options: AppOptions = {}) {
   app.route('/journals', journals);
   app.route('/images', images);
   app.route('/me', me);
+  app.route('/reports', reports);
   app.route('/v2/pins', v2Pins);
   app.route('/v2/users', v2Users);
   app.route('/v2/me', v2Me);

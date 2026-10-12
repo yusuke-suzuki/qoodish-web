@@ -1,7 +1,13 @@
 import path from 'node:path';
 import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
 import { defineConfig } from 'vitest/config';
-import { CF_ACCESS_TEAM_DOMAIN, DEVELOPMENT } from './environments.ts';
+import {
+  CF_ACCESS_TEAM_DOMAIN,
+  DEVELOPMENT,
+  MAIL_FROM,
+  MAIL_REPLY_TO,
+  REPORT_NOTIFICATION_EMAIL
+} from './environments.ts';
 
 export default defineConfig(async () => {
   const migrations = await readD1Migrations(
@@ -16,7 +22,10 @@ export default defineConfig(async () => {
           compatibilityDate: '2026-07-01',
           compatibilityFlags: ['nodejs_compat'],
           d1Databases: { DB: DEVELOPMENT.databaseName },
-          queueProducers: { WEB_PUSH_QUEUE: DEVELOPMENT.webPushQueue },
+          queueProducers: {
+            WEB_PUSH_QUEUE: DEVELOPMENT.webPushQueue,
+            MAIL_QUEUE: DEVELOPMENT.mailQueue
+          },
           bindings: {
             APP_ENV: 'test',
             WEB_ENDPOINT: DEVELOPMENT.webEndpoint,
@@ -25,6 +34,9 @@ export default defineConfig(async () => {
             GOOGLE_CLIENT_EMAIL: DEVELOPMENT.googleClientEmail,
             CF_ACCESS_TEAM_DOMAIN,
             CF_ACCESS_AUD: DEVELOPMENT.accessAud,
+            MAIL_FROM,
+            MAIL_REPLY_TO,
+            REPORT_NOTIFICATION_EMAIL,
             ENCRYPTION_PRIMARY_KEY: 'test_ar_encryption_primary_key_0',
             ENCRYPTION_KEY_DERIVATION_SALT:
               'test_ar_encryption_key_derive_salt',

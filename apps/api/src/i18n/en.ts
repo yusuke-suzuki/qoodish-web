@@ -104,7 +104,25 @@ export const en = {
   block_self: 'Account is your own and cannot be blocked.',
   mute_self: 'Account is your own and cannot be muted.',
 
-  report_type_not_supported: 'This content cannot be reported.'
+  report_type_not_supported: 'This content cannot be reported.',
+  report_category_invalid: 'Reason for reporting must be selected.',
+  report_details_required: 'Details must be filled in.',
+  report_details_exceed: 'Details must be 2000 characters or fewer.',
+  report_own_content:
+    'Reporter is the author and cannot report their own post.',
+  duplicate_pending_report:
+    'Target has already been reported by you. You can report it again once the review is complete.',
+
+  report_category_spam: 'Spam or advertising',
+  report_category_harassment: 'Harassment or bullying',
+  report_category_hate: 'Hate speech or discrimination',
+  report_category_sexual: 'Sexual content',
+  report_category_violence: 'Violent or graphic content',
+  report_category_illegal: 'Illegal activity or content',
+  report_category_privacy: 'Privacy violation or defamation',
+  report_category_copyright: 'Copyright or trademark infringement',
+  report_category_impersonation: 'Impersonation',
+  report_category_other: 'Something else'
 };
 
 export type Messages = typeof en;

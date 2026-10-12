@@ -1,10 +1,17 @@
 export const CF_ACCESS_TEAM_DOMAIN = 'yusuke-suzuki-0707.cloudflareaccess.com';
 
+export const MAIL_FROM = 'noreply@qoodish.com';
+
+export const MAIL_REPLY_TO = 'support@qoodish.com';
+
+export const REPORT_NOTIFICATION_EMAIL = 'support@qoodish.com';
+
 export type Environment = {
   appEnv: 'production' | 'development';
   databaseName: string;
   databaseId: string;
   webPushQueue: string;
+  mailQueue: string;
   webEndpoint: string;
   adminEndpoint: string;
   googleProjectId: string;
@@ -17,6 +24,7 @@ export const PRODUCTION: Environment = {
   databaseName: 'prod-qoodish-api',
   databaseId: '7d615fd7-7907-407b-b5fc-de93a6cb1d55',
   webPushQueue: 'prod-qoodish-api-web-push',
+  mailQueue: 'prod-qoodish-api-mail',
   webEndpoint: 'https://qoodish.com',
   adminEndpoint: 'https://admin.qoodish.com',
   googleProjectId: 'qoodish',
@@ -29,6 +37,7 @@ export const DEVELOPMENT: Environment = {
   databaseName: 'dev-qoodish-api',
   databaseId: '80c87870-73f2-4f5e-b057-d9296600418a',
   webPushQueue: 'dev-qoodish-api-web-push',
+  mailQueue: 'dev-qoodish-api-mail',
   webEndpoint: 'https://dev.qoodish.com',
   adminEndpoint: 'https://admin-dev.qoodish.com',
   googleProjectId: 'qoodish-dev',

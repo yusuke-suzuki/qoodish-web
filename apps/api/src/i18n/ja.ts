@@ -101,5 +101,22 @@ export const ja: Messages = {
   block_self: 'アカウントがご自身のため、ブロックできません。',
   mute_self: 'アカウントがご自身のため、ミュートできません。',
 
-  report_type_not_supported: 'このコンテンツは報告できません。'
+  report_type_not_supported: 'このコンテンツは報告できません。',
+  report_category_invalid: '報告の理由を選択してください。',
+  report_details_required: '詳しい内容をご記入ください。',
+  report_details_exceed: '詳しい内容は 2000 文字以内でご記入ください。',
+  report_own_content: '報告者が投稿者本人のため報告できません。',
+  duplicate_pending_report:
+    '対象はすでに報告を受け付けており、確認が完了するまで再度報告することはできません。',
+
+  report_category_spam: 'スパム・宣伝',
+  report_category_harassment: '嫌がらせ・いじめ',
+  report_category_hate: '差別・ヘイトスピーチ',
+  report_category_sexual: '性的なコンテンツ',
+  report_category_violence: '暴力的・残虐なコンテンツ',
+  report_category_illegal: '違法な行為・コンテンツ',
+  report_category_privacy: 'プライバシー侵害・名誉毀損',
+  report_category_copyright: '著作権・商標などの権利侵害',
+  report_category_impersonation: 'なりすまし',
+  report_category_other: 'その他'
 };
