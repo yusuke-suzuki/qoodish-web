@@ -32,6 +32,7 @@ The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 t
 ## 4. Tests
 
 - Cover every route change with a test. Tests run inside workerd through `@cloudflare/vitest-plugin` (`pnpm test`), each file against a fresh local D1 seeded by `src/test/world.ts`.
+- Put each test file next to the source file it covers and name it after that file: a test of an endpoint goes beside the route file that serves it (`src/routes/guest/v2/pins.ts` → `src/routes/guest/v2/pins.test.ts`), and a test that calls a module directly goes beside that module (`src/votes.test.ts`). Send requests through `src/test/client.ts`.
 - Insert fixture rows in chunks that stay under D1's 100 bound parameters per statement.
 
 ## 5. Migrations and Deployment
