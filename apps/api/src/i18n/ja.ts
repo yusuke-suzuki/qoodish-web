@@ -34,6 +34,8 @@ export const ja: Messages = {
   like_blocked_interaction:
     'ブロックしている、またはブロックされているアカウントの投稿にはいいねできません。',
 
+  comment_blocked_interaction:
+    'ブロックしている、またはブロックされているアカウントの投稿にはコメントできません。',
   comment_required: 'コメントを入力してください。',
   comment_exceeded: 'コメントが長すぎます。(最大: 500 文字)',
   invalid_uri: '不正な URL です。',

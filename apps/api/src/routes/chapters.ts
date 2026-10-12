@@ -8,8 +8,13 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
 import {
+  commentInput,
   commentsQuery,
+  discardComment,
   interactableComment,
+  ownComment,
+  recordComment,
+  reviseComment,
   viewerComment
 } from '../comments.ts';
 import { before, FEED_PER_PAGE, normalizeTimestamp } from '../cursor.ts';
@@ -20,7 +25,7 @@ import {
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
 import { first } from '../routing.ts';
-import { id, optionalId, pathParams } from '../validation.ts';
+import { id, jsonBody, optionalId, pathParams } from '../validation.ts';
 import {
   feedChapter,
   readableChapter,
@@ -31,6 +36,7 @@ import {
 import { like, unlike } from '../votes.ts';
 
 const chapterParams = pathParams(z.object({ chapterId: id }));
+const ownCommentParams = pathParams(z.object({ chapterId: id, id }));
 const commentParams = pathParams(z.object({ chapterId: id, commentId: id }));
 
 function chapterFeedBefore(
@@ -64,18 +70,58 @@ async function chapterComments(
   db: Database,
   viewer: Viewer,
   chapterId: number,
-  condition: SQL | undefined
+  condition: SQL | undefined,
+  includeDeleted = false
 ): Promise<ChapterComment[]> {
   const rows = await commentsQuery(db, 'Chapter', [chapterId], {
     visibleOnly: false,
     condition,
-    viewerId: viewer.id
+    viewerId: viewer.id,
+    includeDeleted
   });
 
   return rows.map((row) => ({
     ...viewerComment(row),
     editable: row.userId === viewer.id
   }));
+}
+
+async function writtenComment(
+  db: Database,
+  viewer: Viewer,
+  { chapterId, commentId }: { chapterId: number; commentId: number }
+): Promise<ChapterComment> {
+  return first(
+    await chapterComments(
+      db,
+      viewer,
+      chapterId,
+      eq(comments.id, commentId),
+      true
+    )
+  );
+}
+
+async function ownChapterComment(
+  db: Database,
+  viewer: Viewer,
+  params: { chapterId: number; id: number }
+) {
+  const chapter = await chapterOf(
+    db,
+    readableChapter(viewer),
+    params.chapterId
+  );
+
+  return {
+    chapterId: chapter.id,
+    read: () =>
+      ownComment(db, viewer.id, {
+        type: 'Chapter',
+        commentableId: chapter.id,
+        commentId: params.id
+      })
+  };
 }
 
 async function chapterComment(
@@ -158,6 +204,65 @@ app.get('/:chapterId/comments', chapterParams, async (c) => {
       chapter.id,
       shownTo(viewer, comments.userId)
     )
+  );
+});
+
+app.post(
+  '/:chapterId/comments',
+  chapterParams,
+  jsonBody(commentInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const chapter = await chapterOf(
+      db,
+      readableChapter(viewer),
+      c.req.valid('param').chapterId
+    );
+    const commentId = await recordComment(db, viewer.id, {
+      type: 'Chapter',
+      commentable: chapter,
+      body: c.req.valid('json').comment
+    });
+
+    return c.json<ChapterComment>(
+      await writtenComment(db, viewer, { chapterId: chapter.id, commentId })
+    );
+  }
+);
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/:chapterId/comments/:id',
+  ownCommentParams,
+  jsonBody(commentInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const params = c.req.valid('param');
+    const { chapterId, read } = await ownChapterComment(db, viewer, params);
+
+    await reviseComment(db, read, {
+      editorId: viewer.id,
+      body: c.req.valid('json').comment
+    });
+
+    return c.json<ChapterComment>(
+      await writtenComment(db, viewer, { chapterId, commentId: params.id })
+    );
+  }
+);
+
+app.delete('/:chapterId/comments/:id', ownCommentParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const params = c.req.valid('param');
+  const { chapterId, read } = await ownChapterComment(db, viewer, params);
+
+  await discardComment(db, read, viewer.id);
+
+  return c.json<ChapterComment>(
+    await writtenComment(db, viewer, { chapterId, commentId: params.id })
   );
 });
 
