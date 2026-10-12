@@ -22,6 +22,13 @@ export const en = {
   map_author_not_specified: 'Please specify the author of the map.',
   map_images_exceed: 'Only one image can be attached to a map.',
 
+  pin_name_required: 'Pin name is required.',
+  pin_name_exceed: 'Pin name is too long. (Max: 100)',
+  pin_location_required: 'Please choose where the pin is.',
+  pin_images_exceed: 'Up to 4 images can be attached to a pin.',
+  pin_property_options_invalid:
+    'Some of the tags chosen cannot be used on this pin.',
+
   comment_required: 'Comment is required.',
   comment_exceeded: 'Comment is too long. (Max: 500)',
   invalid_uri: 'Invalid URI.',

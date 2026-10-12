@@ -3,7 +3,10 @@ import { and, asc, eq, exists, ne, type SQL, sql } from 'drizzle-orm';
 import { type Database, inIds } from './db/client.ts';
 import { comments, images, users, votes } from './db/schema.ts';
 import { userSummary } from './users.ts';
+import { text } from './validation.ts';
 import { visible } from './visibility.ts';
+
+const COMMENT_LIMIT = 500;
 
 type CommentableType = 'Pin' | 'Chapter';
 
@@ -65,6 +68,11 @@ export function commentsQuery(
     )
     .orderBy(asc(comments.id));
 }
+
+export const commentBody = text({
+  required: 'comment_required',
+  max: { length: COMMENT_LIMIT, error: 'comment_exceeded' }
+});
 
 export type CommentRow = Awaited<ReturnType<typeof commentsQuery>>[number];
 

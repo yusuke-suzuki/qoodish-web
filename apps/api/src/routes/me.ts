@@ -6,6 +6,7 @@ import type {
   Journal,
   Journey,
   JourneySummary,
+  Pin,
   Profile,
   WebPushPreferences
 } from '@qoodish/api-contract';
@@ -27,7 +28,8 @@ import {
   journalBookmarks,
   journals,
   journeys,
-  maps
+  maps,
+  pins
 } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import { journalInput, reviseJournal, viewerJournals } from '../journals.ts';
@@ -37,6 +39,7 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
+import { discardPin, pinInput, revisePin, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { profileInput, updateProfile } from '../users.ts';
 import { id, jsonBody, pathParams } from '../validation.ts';
@@ -122,6 +125,55 @@ app.delete('/devices/:token', deviceParams, async (c) => {
     c.get('viewer').id,
     c.req.valid('param').token
   );
+
+  return c.body(null, 204);
+});
+
+async function ownPin(db: Database, viewer: Viewer, pinId: number) {
+  return first(
+    await db
+      .select()
+      .from(pins)
+      .where(
+        and(
+          eq(pins.id, pinId),
+          eq(pins.userId, viewer.id),
+          eq(pins.status, 'published')
+        )
+      )
+  );
+}
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/pins/:id',
+  idParams,
+  jsonBody(pinInput),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const pinId = c.req.valid('param').id;
+
+    await revisePin(db, () => ownPin(db, viewer, pinId), {
+      editorId: viewer.id,
+      changes: c.req.valid('json')
+    });
+
+    const revised = first(
+      await db.select().from(pins).where(eq(pins.id, pinId))
+    );
+
+    return c.json<Pin>(first(await viewerPins(db, viewer, [revised])));
+  }
+);
+
+app.delete('/pins/:id', idParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+
+  const pinId = c.req.valid('param').id;
+
+  await discardPin(db, () => ownPin(db, viewer, pinId), viewer.id);
 
   return c.body(null, 204);
 });

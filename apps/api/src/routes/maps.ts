@@ -42,7 +42,7 @@ import {
   revisePinProperty,
   revisePinPropertyOption
 } from '../pin-properties.ts';
-import { viewerPins } from '../pins.ts';
+import { createPin, newPinInput, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { id, jsonBody, pathParams } from '../validation.ts';
 import {
@@ -250,6 +250,19 @@ app.delete('/:mapId/coauthors/:userId', coauthorParams, async (c) => {
   await removeCoauthor(db, { mapId: map.id, userId });
 
   return c.body(null, 204);
+});
+
+app.post('/:mapId/pins', mapParams, jsonBody(newPinInput), async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
+  const pin = await createPin(db, {
+    mapId: map.id,
+    userId: viewer.id,
+    changes: c.req.valid('json')
+  });
+
+  return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
 });
 
 app.post(
