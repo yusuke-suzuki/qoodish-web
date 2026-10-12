@@ -1,4 +1,5 @@
 import { and, or, type SQL, type SQLWrapper, sql } from 'drizzle-orm';
+import { characters } from './text.ts';
 
 const INDEXED_TERM_LENGTH = 3;
 const FULLTEXT_TERM_LENGTH = 2;
@@ -20,10 +21,6 @@ export function searchTerms(input: string): string[] {
         .filter((term) => term.length > 0)
     )
   ];
-}
-
-function characters(term: string): number {
-  return [...term].length;
 }
 
 function escapeLike(term: string): string {

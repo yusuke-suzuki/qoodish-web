@@ -335,7 +335,7 @@ async function assertChoicesUsable(
 function newestPinOf(db: Database, userId: number): SQL<number> {
   return scalar(
     db
-      .select({ id: max(pins.id) })
+      .select({ id: max(pins.id).as('id') })
       .from(pins)
       .where(eq(pins.userId, userId))
   );
@@ -359,7 +359,7 @@ function pinRevisionStatements(
 ) {
   const revisionId = scalar(
     db
-      .select({ id: max(pinRevisions.id) })
+      .select({ id: max(pinRevisions.id).as('id') })
       .from(pinRevisions)
       .where(eq(pinRevisions.pinId, pinId))
   );

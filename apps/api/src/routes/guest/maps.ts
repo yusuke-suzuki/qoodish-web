@@ -1,10 +1,20 @@
 import type {
   GuestChapter,
   GuestCoauthor,
+  GuestMap,
   GuestPin,
   PinProperty
 } from '@qoodish/api-contract';
-import { and, asc, count, desc, eq, getTableColumns, sql } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  max,
+  sql
+} from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
@@ -47,10 +57,10 @@ app.get('/', async (c) => {
     });
 
     if (!matched) {
-      return c.json([]);
+      return c.json<GuestMap[]>([]);
     }
 
-    return c.json(
+    return c.json<GuestMap[]>(
       await guestMaps(
         db,
         await publicMaps
@@ -62,7 +72,7 @@ app.get('/', async (c) => {
   }
 
   if (present(recent)) {
-    return c.json(
+    return c.json<GuestMap[]>(
       await guestMaps(
         db,
         await publicMaps
@@ -74,7 +84,7 @@ app.get('/', async (c) => {
   }
 
   if (active !== undefined) {
-    return c.json(
+    return c.json<GuestMap[]>(
       await guestMaps(
         db,
         await publicMaps
@@ -84,14 +94,14 @@ app.get('/', async (c) => {
           )
           .where(publicMap())
           .groupBy(maps.id)
-          .orderBy(sql`max(${pins.createdAt}) DESC`, asc(maps.id))
+          .orderBy(desc(max(pins.createdAt)), asc(maps.id))
           .limit(ACTIVE_MAPS_LIMIT)
       )
     );
   }
 
   if (popular !== undefined) {
-    return c.json(
+    return c.json<GuestMap[]>(
       await guestMaps(
         db,
         await publicMaps
@@ -105,7 +115,7 @@ app.get('/', async (c) => {
   }
 
   if (recommend !== undefined) {
-    return c.json(
+    return c.json<GuestMap[]>(
       await guestMaps(
         db,
         await publicMaps
@@ -131,7 +141,7 @@ app.get('/featured', async (c) => {
       .limit(1)
   );
 
-  return c.json(first(await guestMaps(db, [map])));
+  return c.json<GuestMap>(first(await guestMaps(db, [map])));
 });
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
@@ -143,7 +153,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
       .where(and(publicMap(), eq(maps.id, c.req.valid('param').id)))
   );
 
-  return c.json(first(await guestMaps(db, [map])));
+  return c.json<GuestMap>(first(await guestMaps(db, [map])));
 });
 
 app.get('/:mapId/pins', mapParams, async (c) => {

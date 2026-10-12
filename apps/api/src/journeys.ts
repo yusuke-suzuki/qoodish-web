@@ -4,8 +4,9 @@ import type {
   JourneySummary,
   MapRef
 } from '@qoodish/api-contract';
-import { and, asc, desc, eq, ne, type SQL, sql } from 'drizzle-orm';
-import { type Database, inIds, uniqueIds } from './db/client.ts';
+import { and, asc, desc, eq, inArray, ne, type SQL, sql } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/sqlite-core';
+import type { Database } from './db/client.ts';
 import {
   chapters,
   images,
@@ -18,6 +19,8 @@ import {
 import { decryptAttribute, type EncryptionSecrets } from './encryption.ts';
 import { image } from './images.ts';
 
+const qb = new QueryBuilder();
+
 const journeyColumns = {
   id: journeys.id,
   mapId: journeys.mapId,
@@ -26,25 +29,14 @@ const journeyColumns = {
   encodedPath: journeys.encodedPath,
   createdAt: journeys.createdAt,
   updatedAt: journeys.updatedAt,
-  chapterId: sql<
-    number | null
-  >`(SELECT ${chapters.id} FROM ${chapters} WHERE ${chapters.journeyId} = ${journeys.id} ORDER BY ${chapters.id} LIMIT 1)`.as(
-    'chapter_id'
-  ),
+  chapterId: sql<number | null>`${qb
+    .select({ id: chapters.id })
+    .from(chapters)
+    .where(eq(chapters.journeyId, journeys.id))
+    .orderBy(asc(chapters.id))
+    .limit(1)}`.as('chapter_id'),
   mapName: maps.name,
   mapPrivate: maps.private
-};
-
-type JourneyRow = {
-  id: number;
-  mapId: number | null;
-  startedAt: string | null;
-  finishedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  chapterId: number | null;
-  mapName: string | null;
-  mapPrivate: boolean | null;
 };
 
 function journeysQuery(db: Database, condition: SQL | undefined) {
@@ -54,6 +46,8 @@ function journeysQuery(db: Database, condition: SQL | undefined) {
     .leftJoin(maps, eq(maps.id, journeys.mapId))
     .where(condition);
 }
+
+type JourneyRow = Awaited<ReturnType<typeof journeysQuery>>[number];
 
 function mapRef(row: JourneyRow): MapRef | null {
   return row.mapId === null || row.mapName === null
@@ -67,43 +61,31 @@ export async function journeySummaries(
   db: Database,
   userId: number
 ): Promise<JourneySummary[]> {
-  const rows = await journeysQuery(db, eq(journeys.userId, userId)).orderBy(
-    desc(journeys.createdAt),
-    asc(journeys.id)
-  );
-
-  if (rows.length === 0) {
-    return [];
-  }
-
-  const ids = rows.map((row) => row.id);
-  const [milestoneCounts, checkinCounts] = await db.batch([
-    db
-      .select({ journeyId: milestones.journeyId, count: sql<number>`count(*)` })
-      .from(milestones)
-      .where(inIds(milestones.journeyId, ids))
-      .groupBy(milestones.journeyId),
-    db
-      .select({
-        journeyId: journeyCheckins.journeyId,
-        count: sql<number>`count(*)`
-      })
-      .from(journeyCheckins)
-      .where(and(inIds(journeyCheckins.journeyId, ids), recorded))
-      .groupBy(journeyCheckins.journeyId)
-  ]);
-  const countsOf = (counts: { journeyId: number; count: number }[]) =>
-    new Map(counts.map((row) => [row.journeyId, row.count]));
-  const milestonesByJourney = countsOf(milestoneCounts);
-  const checkinsByJourney = countsOf(checkinCounts);
+  const rows = await db
+    .select({
+      ...journeyColumns,
+      milestonesCount: db
+        .$count(milestones, eq(milestones.journeyId, journeys.id))
+        .as('milestones_count'),
+      checkinsCount: db
+        .$count(
+          journeyCheckins,
+          and(eq(journeyCheckins.journeyId, journeys.id), recorded)
+        )
+        .as('checkins_count')
+    })
+    .from(journeys)
+    .leftJoin(maps, eq(maps.id, journeys.mapId))
+    .where(eq(journeys.userId, userId))
+    .orderBy(desc(journeys.createdAt), asc(journeys.id));
 
   return rows.map((row) => ({
     id: row.id,
     map_id: row.mapId,
     started_at: row.startedAt,
     finished_at: row.finishedAt,
-    milestones_count: milestonesByJourney.get(row.id) ?? 0,
-    checkins_count: checkinsByJourney.get(row.id) ?? 0,
+    milestones_count: row.milestonesCount,
+    checkins_count: row.checkinsCount,
     chapter_id: row.chapterId,
     map: mapRef(row),
     created_at: row.createdAt,
@@ -122,7 +104,8 @@ export async function journeyDetail(
     return null;
   }
 
-  const [milestoneRows, checkinRows] = await db.batch([
+  const recordedCheckins = and(eq(journeyCheckins.journeyId, row.id), recorded);
+  const [milestoneRows, checkinRows, checkinImages] = await db.batch([
     db
       .select()
       .from(milestones)
@@ -131,33 +114,27 @@ export async function journeyDetail(
     db
       .select()
       .from(journeyCheckins)
-      .where(and(eq(journeyCheckins.journeyId, row.id), recorded))
-      .orderBy(asc(journeyCheckins.checkedInAt), asc(journeyCheckins.id))
+      .where(recordedCheckins)
+      .orderBy(asc(journeyCheckins.checkedInAt), asc(journeyCheckins.id)),
+    db
+      .select({
+        revisionId: journeyCheckinRevisionImages.journeyCheckinRevisionId,
+        id: images.id,
+        url: images.url
+      })
+      .from(journeyCheckinRevisionImages)
+      .innerJoin(images, eq(images.id, journeyCheckinRevisionImages.imageId))
+      .where(
+        inArray(
+          journeyCheckinRevisionImages.journeyCheckinRevisionId,
+          db
+            .select({ id: journeyCheckins.currentRevisionId })
+            .from(journeyCheckins)
+            .where(recordedCheckins)
+        )
+      )
+      .orderBy(asc(images.id))
   ]);
-  const revisionIds = uniqueIds(
-    checkinRows.map((checkin) => checkin.currentRevisionId)
-  );
-  const checkinImages =
-    revisionIds.length === 0
-      ? []
-      : await db
-          .select({
-            revisionId: journeyCheckinRevisionImages.journeyCheckinRevisionId,
-            id: images.id,
-            url: images.url
-          })
-          .from(journeyCheckinRevisionImages)
-          .innerJoin(
-            images,
-            eq(images.id, journeyCheckinRevisionImages.imageId)
-          )
-          .where(
-            inIds(
-              journeyCheckinRevisionImages.journeyCheckinRevisionId,
-              revisionIds
-            )
-          )
-          .orderBy(asc(images.id));
   const imagesByRevision = Map.groupBy(
     checkinImages,
     (item) => item.revisionId

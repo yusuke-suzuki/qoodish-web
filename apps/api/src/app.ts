@@ -4,11 +4,7 @@ import { except } from 'hono/combine';
 import { HTTPException } from 'hono/http-exception';
 import { languageDetector } from 'hono/language';
 import type { JWTVerifyGetKey } from 'jose';
-import {
-  ACCESS_JWT_HEADER,
-  type AccessClaims,
-  verifyAccessAssertion
-} from './auth/access.ts';
+import type { AccessClaims } from './auth/access.ts';
 import {
   type FirebaseIdToken,
   verifyFirebaseIdToken
@@ -16,6 +12,7 @@ import {
 import type { Env } from './env.ts';
 import { ApiError } from './errors.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
+import { authenticateStaff } from './middleware/authenticate-staff.ts';
 import chapters from './routes/chapters.ts';
 import guestChapters from './routes/guest/chapters.ts';
 import guestMaps from './routes/guest/maps.ts';
@@ -84,24 +81,7 @@ export function createApp(options: AppOptions = {}) {
     )
   );
 
-  app.use('/admin/*', async (c, next) => {
-    const assertion = c.req.header(ACCESS_JWT_HEADER);
-    const claims = assertion
-      ? await verifyAccessAssertion(
-          assertion,
-          c.env.CF_ACCESS_TEAM_DOMAIN,
-          c.env.CF_ACCESS_AUD,
-          options.accessKeys
-        )
-      : null;
-
-    if (!claims) {
-      throw new ApiError('Unauthorized');
-    }
-
-    c.set('accessClaims', claims);
-    await next();
-  });
+  app.use('/admin/*', authenticateStaff(options.accessKeys));
 
   app.get('/healthcheck', (c) => c.text('ok'));
   app.get('/', (c) => c.text('ok'));

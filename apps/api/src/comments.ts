@@ -58,10 +58,15 @@ export function commentsQuery(
       userId: sql<number>`${users.id}`.as('author_id'),
       userName: users.name,
       userImageUrl: images.url,
-      likesCount: db.$count(
-        votes,
-        and(eq(votes.votableType, 'Comment'), eq(votes.votableId, comments.id))
-      ),
+      likesCount: db
+        .$count(
+          votes,
+          and(
+            eq(votes.votableType, 'Comment'),
+            eq(votes.votableId, comments.id)
+          )
+        )
+        .as('likes_count'),
       liked: (viewerId === undefined
         ? sql<boolean>`0`
         : sql<boolean>`${exists(
@@ -112,7 +117,7 @@ function currentRevisionStatement(db: Database, commentId: number | SQL) {
     .set({
       currentRevisionId: scalar(
         db
-          .select({ id: max(commentRevisions.id) })
+          .select({ id: max(commentRevisions.id).as('id') })
           .from(commentRevisions)
           .where(eq(commentRevisions.commentId, commentId))
       )
@@ -141,7 +146,7 @@ export async function recordComment(
   );
   const commentId = scalar(
     db
-      .select({ id: max(comments.id) })
+      .select({ id: max(comments.id).as('id') })
       .from(comments)
       .where(
         and(

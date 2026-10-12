@@ -9,10 +9,13 @@ import type {
 import {
   and,
   asc,
+  desc,
   eq,
   inArray,
   isNull,
+  lt,
   lte,
+  max,
   ne,
   notExists,
   or,
@@ -69,7 +72,7 @@ type Summary = {
   key: string | null;
   notifiableType: string | null;
   notifiableId: number | null;
-  latestId: number;
+  latestId: number | null;
   read: number | null;
 };
 
@@ -118,8 +121,8 @@ export async function notificationGroups(
       key: notifications.key,
       notifiableType: notifications.notifiableType,
       notifiableId: notifications.notifiableId,
-      latestId: sql<number>`max(${notifications.id})`,
-      read: sql<number | null>`min(${notifications.read})`
+      latestId: max(notifications.id).as('latest_id'),
+      read: sql<number | null>`min(${notifications.read})`.as('read')
     })
     .from(notifications)
     .where(received(db, viewer))
@@ -130,11 +133,11 @@ export async function notificationGroups(
     )
     .having(
       and(
-        cursor === null ? undefined : sql`max(${notifications.id}) < ${cursor}`,
+        cursor === null ? undefined : lt(max(notifications.id), cursor),
         unread ? sql`min(${notifications.read}) = 0` : undefined
       )
     )
-    .orderBy(sql`max(${notifications.id}) DESC`)
+    .orderBy(desc(max(notifications.id)))
     .limit(PER_PAGE);
   const nextCursor =
     summaries.length === PER_PAGE ? String(summaries.at(-1)?.latestId) : null;
@@ -149,7 +152,7 @@ export async function notificationGroups(
       notifiableType: notifications.notifiableType,
       notifiableId: notifications.notifiableId,
       notifierId: notifications.notifierId,
-      latestId: sql<number>`max(${notifications.id})`
+      latestId: max(notifications.id).as('latest_id')
     })
     .from(notifications)
     .where(
@@ -168,8 +171,7 @@ export async function notificationGroups(
   const latestIds = new Map(
     [...notifiersByGroup].map(([key, rows]) => [
       key,
-      rows
-        .map((row) => row.latestId)
+      uniqueIds(rows.map((row) => row.latestId))
         .sort((left, right) => right - left)
         .slice(0, NOTIFIERS_LIMIT)
     ])

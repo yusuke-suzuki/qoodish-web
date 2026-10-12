@@ -23,8 +23,8 @@ export function likesQuery(
 ) {
   return db
     .select({
-      votableId: sql<number>`${votes.votableId}`,
-      likes: count(),
+      votableId: sql<number>`${votes.votableId}`.as('votable_id'),
+      likes: count().as('likes'),
       liked:
         voterId === undefined
           ? sql<number>`0`.as('liked')

@@ -1,9 +1,17 @@
-import type { GuestChapter, GuestChapterDetail } from '@qoodish/api-contract';
+import type {
+  GuestChapter,
+  GuestChapterDetail,
+  GuestComment
+} from '@qoodish/api-contract';
 import { and, desc, eq, getTableColumns, ne } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
-import { chapterSearchResults, guestChapters } from '../../chapters.ts';
+import {
+  type ChapterSearchResult,
+  chapterSearchResults,
+  guestChapters
+} from '../../chapters.ts';
 import { commentsQuery, guestComment } from '../../comments.ts';
 import { FEED_PER_PAGE } from '../../cursor.ts';
 import { database } from '../../db/client.ts';
@@ -27,10 +35,10 @@ app.get('/', async (c) => {
     });
 
     if (!matched) {
-      return c.json([]);
+      return c.json<ChapterSearchResult[]>([]);
     }
 
-    return c.json(
+    return c.json<ChapterSearchResult[]>(
       await chapterSearchResults(
         db,
         await db
@@ -62,14 +70,16 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
     await db
       .select({
         ...getTableColumns(chapters),
-        commentsCount: db.$count(
-          comments,
-          and(
-            eq(comments.commentableType, 'Chapter'),
-            eq(comments.commentableId, chapters.id),
-            ne(comments.status, 'deleted')
+        commentsCount: db
+          .$count(
+            comments,
+            and(
+              eq(comments.commentableType, 'Chapter'),
+              eq(comments.commentableId, chapters.id),
+              ne(comments.status, 'deleted')
+            )
           )
-        )
+          .as('comments_count')
       })
       .from(chapters)
       .where(and(publicChapter(), eq(chapters.id, c.req.valid('param').id)))
@@ -98,7 +108,7 @@ app.get(
       visibleOnly: false
     });
 
-    return c.json(rows.map(guestComment));
+    return c.json<GuestComment[]>(rows.map(guestComment));
   }
 );
 

@@ -102,7 +102,7 @@ export const mapInput = z
 function newestMapOf(db: Database, userId: number | SQL) {
   return scalar(
     db
-      .select({ id: max(maps.id) })
+      .select({ id: max(maps.id).as('id') })
       .from(maps)
       .where(eq(maps.userId, userId))
   );
@@ -126,7 +126,7 @@ function mapRevisionStatements(
 ) {
   const revisionId = scalar(
     db
-      .select({ id: max(mapRevisions.id) })
+      .select({ id: max(mapRevisions.id).as('id') })
       .from(mapRevisions)
       .where(eq(mapRevisions.mapId, mapId))
   );
@@ -506,19 +506,21 @@ export async function pinPropertiesOf(
             asc(pinPropertyOptions.position),
             asc(pinPropertyOptions.id)
           );
+  const optionsByProperty = Map.groupBy(
+    options,
+    (option) => option.pinPropertyId
+  );
 
   return properties.map((property) => ({
     id: property.id,
     name: property.name,
     multiple: property.multiple,
     position: property.position,
-    options: options
-      .filter((option) => option.pinPropertyId === property.id)
-      .map((option) => ({
-        id: option.id,
-        name: option.name,
-        position: option.position
-      }))
+    options: (optionsByProperty.get(property.id) ?? []).map((option) => ({
+      id: option.id,
+      name: option.name,
+      position: option.position
+    }))
   }));
 }
 
