@@ -9,7 +9,6 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { blockedAccounts, mutedAccounts } from '../../accounts.ts';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
-import { database } from '../../db/client.ts';
 import { pins } from '../../db/schema.ts';
 import {
   authenticateUser,
@@ -49,7 +48,7 @@ app.get(
     const { cursor, read: unread } = c.req.valid('query');
 
     return c.json<ApiCursorPage<NotificationGroup>>(
-      await notificationGroups(database(c.env.DB), c.get('viewer'), {
+      await notificationGroups(c.get('db'), c.get('viewer'), {
         cursor,
         unread
       })
@@ -58,7 +57,7 @@ app.get(
 );
 
 app.get('/pins', queryParams(z.object({ cursor: feedCursor })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()
@@ -87,7 +86,7 @@ app.get('/pins', queryParams(z.object({ cursor: feedCursor })), async (c) => {
 app.get('/blocks', pageQuery, async (c) =>
   c.json<ApiCursorPage<ModeratedAccount>>(
     await blockedAccounts(
-      database(c.env.DB),
+      c.get('db'),
       c.get('viewer').id,
       c.req.valid('query').cursor
     )
@@ -97,7 +96,7 @@ app.get('/blocks', pageQuery, async (c) =>
 app.get('/mutes', pageQuery, async (c) =>
   c.json<ApiCursorPage<ModeratedAccount>>(
     await mutedAccounts(
-      database(c.env.DB),
+      c.get('db'),
       c.get('viewer').id,
       c.req.valid('query').cursor
     )

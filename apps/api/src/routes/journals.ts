@@ -3,7 +3,6 @@ import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { bookmarkJournal, unbookmarkJournal } from '../bookmarks.ts';
-import { database } from '../db/client.ts';
 import { journals } from '../db/schema.ts';
 import { viewerJournals } from '../journals.ts';
 import {
@@ -26,7 +25,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
   return c.json<Journal>(
     first(
       await viewerJournals(
-        database(c.env.DB),
+        c.get('db'),
         viewer,
         and(
           eq(journals.id, c.req.valid('param').id),
@@ -38,7 +37,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
 });
 
 app.post('/:journalId/bookmark', journalParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { journalId } = c.req.valid('param');
 
@@ -50,7 +49,7 @@ app.post('/:journalId/bookmark', journalParams, async (c) => {
 });
 
 app.delete('/:journalId/bookmark', journalParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { journalId } = c.req.valid('param');
 

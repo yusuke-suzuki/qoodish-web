@@ -3,7 +3,6 @@ import { and, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
-import { database } from '../../db/client.ts';
 import { pins } from '../../db/schema.ts';
 import {
   authenticateUser,
@@ -24,7 +23,7 @@ app.get(
   pathParams(z.object({ userId: id })),
   queryParams(z.object({ cursor: z.string().optional() })),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const user = await findUser(db, c.req.valid('param').userId);
     const rows = await db

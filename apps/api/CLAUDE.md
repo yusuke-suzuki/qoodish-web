@@ -5,7 +5,7 @@ The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 t
 ## 1. Structure
 
 - Follow Hono's best practices. Each file under `src/routes` is a `new Hono()` exported by default, its path mirrors the URL it serves (`src/routes/guest/v2/pins.ts` serves `/guest/v2/pins`), and `src/app.ts` mounts it with `app.route()`. Write each handler inline after its path. Do not add controllers or a service layer.
-- Write middleware with `createMiddleware` from `hono/factory` under `src/middleware`. A route file that acts for the signed-in user applies `authenticateUser` and reads the user with `c.get('viewer')`.
+- Write middleware with `createMiddleware` from `hono/factory` under `src/middleware`. Read the Drizzle client that `provideDatabase` creates for each request with `c.get('db')`. A route file that acts for the signed-in user applies `authenticateUser` and reads the user with `c.get('viewer')`.
 - Queries and response shapes used by more than one route file go in one module per resource at the top of `src` (`maps.ts`, `pins.ts`, `chapters.ts`, ...). A query used by one route file stays in it.
 - Response types are declared in `packages/api-contract` and shared with `apps/web` and `apps/admin`. Answer with `c.json<T>()` against the contract type.
 - Throw errors as `ApiError` (`src/errors.ts`). Their messages are user-facing and come from `src/i18n`, so a new message needs both an English and a Japanese version.

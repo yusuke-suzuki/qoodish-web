@@ -18,7 +18,7 @@ import {
   viewerComment
 } from '../comments.ts';
 import { before, FEED_PER_PAGE, normalizeTimestamp } from '../cursor.ts';
-import { type Database, database } from '../db/client.ts';
+import type { Database } from '../db/client.ts';
 import { chapters, comments } from '../db/schema.ts';
 import {
   authenticateUser,
@@ -165,7 +165,7 @@ const app = new Hono<ViewerEnv>();
 app.use(authenticateUser);
 
 app.get('/', feedQuery, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { next_timestamp: nextTimestamp, next_id: nextId } =
     c.req.valid('query');
@@ -192,7 +192,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
   return c.json<ChapterDetail>(
     first(
       await viewerChapterDetails(
-        database(c.env.DB),
+        c.get('db'),
         viewer,
         and(readableChapter(viewer), eq(chapters.id, c.req.valid('param').id))
       )
@@ -201,7 +201,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
 });
 
 app.get('/:chapterId/comments', chapterParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const chapter = await chapterOf(
     db,
@@ -224,7 +224,7 @@ app.post(
   chapterParams,
   jsonBody(commentInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const chapter = await chapterOf(
       db,
@@ -249,7 +249,7 @@ app.on(
   ownCommentParams,
   jsonBody(commentInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const params = c.req.valid('param');
     const { chapterId, read } = await ownChapterComment(db, viewer, params);
@@ -266,7 +266,7 @@ app.on(
 );
 
 app.delete('/:chapterId/comments/:id', ownCommentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const params = c.req.valid('param');
   const { chapterId, read } = await ownChapterComment(db, viewer, params);
@@ -279,7 +279,7 @@ app.delete('/:chapterId/comments/:id', ownCommentParams, async (c) => {
 });
 
 app.post('/:chapterId/like', chapterParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const chapter = await chapterOf(
     db,
@@ -297,7 +297,7 @@ app.post('/:chapterId/like', chapterParams, async (c) => {
 });
 
 app.delete('/:chapterId/like', chapterParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const chapter = await chapterOf(
     db,
@@ -311,7 +311,7 @@ app.delete('/:chapterId/like', chapterParams, async (c) => {
 });
 
 app.post('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { chapter, comment } = await chapterComment(
     db,
@@ -333,7 +333,7 @@ app.post('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
 });
 
 app.delete('/:chapterId/comments/:commentId/like', commentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { chapter, comment } = await chapterComment(
     db,

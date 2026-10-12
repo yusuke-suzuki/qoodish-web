@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { bookmarkMap, unbookmarkMap } from '../bookmarks.ts';
 import { viewerChapters } from '../chapters.ts';
 import { invitation, inviteCoauthor } from '../coauthorship-invitations.ts';
-import { type Database, database, scalar } from '../db/client.ts';
+import { type Database, scalar } from '../db/client.ts';
 import { chapters, maps, pins } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import {
@@ -112,7 +112,7 @@ const app = new Hono<ViewerEnv>();
 app.use(authenticateUser);
 
 app.get('/', queryParams(z.object({ recommend: flag })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = c.req.valid('query').recommend
     ? await db
@@ -131,7 +131,7 @@ app.get('/', queryParams(z.object({ recommend: flag })), async (c) => {
 });
 
 app.get('/:id', idParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = first(
     await db
@@ -146,7 +146,7 @@ app.get('/:id', idParams, async (c) => {
 });
 
 app.get('/:mapId/pins', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()
@@ -160,7 +160,7 @@ app.get('/:mapId/pins', mapParams, async (c) => {
 });
 
 app.get('/:mapId/coauthors', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const [map] = await db
     .select({ id: maps.id, userId: maps.userId })
@@ -173,7 +173,7 @@ app.get('/:mapId/coauthors', mapParams, async (c) => {
 });
 
 app.get('/:mapId/chapters', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = await findMap(
     db,
@@ -189,7 +189,7 @@ app.get('/:mapId/chapters', mapParams, async (c) => {
 });
 
 app.get('/:mapId/pin_properties', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const map = await findMap(
     db,
     and(
@@ -202,7 +202,7 @@ app.get('/:mapId/pin_properties', mapParams, async (c) => {
 });
 
 app.post('/', jsonBody(newMapInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = await createMap(db, viewer.id, c.req.valid('json'));
 
@@ -210,7 +210,7 @@ app.post('/', jsonBody(newMapInput), async (c) => {
 });
 
 app.on(['PUT', 'PATCH'], '/:id', idParams, jsonBody(mapInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const mapId = c.req.valid('param').id;
 
@@ -225,7 +225,7 @@ app.on(['PUT', 'PATCH'], '/:id', idParams, jsonBody(mapInput), async (c) => {
 });
 
 app.delete('/:id', idParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const mapId = c.req.valid('param').id;
 
@@ -251,7 +251,7 @@ app.delete('/:id', idParams, async (c) => {
 });
 
 app.delete('/:mapId/coauthors/:userId', coauthorParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { mapId, userId } = c.req.valid('param');
   const map = await findMap(
     db,
@@ -275,7 +275,7 @@ app.post(
     })
   ),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
     const { user_id: inviteeId } = c.req.valid('json');
@@ -295,7 +295,7 @@ app.post(
 );
 
 app.post('/:mapId/bookmark', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = await bookmarkMap(db, viewer.id, c.req.valid('param').mapId);
 
@@ -303,7 +303,7 @@ app.post('/:mapId/bookmark', mapParams, async (c) => {
 });
 
 app.delete('/:mapId/bookmark', mapParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = await unbookmarkMap(db, {
     userId: viewer.id,
@@ -314,7 +314,7 @@ app.delete('/:mapId/bookmark', mapParams, async (c) => {
 });
 
 app.post('/:mapId/pins', mapParams, jsonBody(newPinInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
   const pin = await createPin(db, {
@@ -331,7 +331,7 @@ app.post(
   mapParams,
   jsonBody(newPinPropertyInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
     const propertyId = await createPinProperty(db, {
@@ -350,7 +350,7 @@ app.on(
   propertyParams,
   jsonBody(pinPropertyInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const params = c.req.valid('param');
 
@@ -369,7 +369,7 @@ app.on(
 );
 
 app.delete('/:mapId/pin_properties/:id', propertyParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const params = c.req.valid('param');
 
@@ -412,7 +412,7 @@ app.post(
   optionsParams,
   jsonBody(newPinPropertyOptionInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const property = await optionsProperty(db, viewer, c.req.valid('param'));
     const optionId = await createPinPropertyOption(db, {
@@ -433,7 +433,7 @@ app.on(
   optionParams,
   jsonBody(pinPropertyOptionInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const params = c.req.valid('param');
 
@@ -456,7 +456,7 @@ app.delete(
   '/:mapId/pin_properties/:propertyId/options/:id',
   optionParams,
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const params = c.req.valid('param');
 

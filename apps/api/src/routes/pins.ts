@@ -10,7 +10,7 @@ import {
   recordComment,
   reviseComment
 } from '../comments.ts';
-import { type Database, database } from '../db/client.ts';
+import type { Database } from '../db/client.ts';
 import { pins } from '../db/schema.ts';
 import {
   authenticateUser,
@@ -68,7 +68,7 @@ const app = new Hono<ViewerEnv>();
 app.use(authenticateUser);
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').id);
 
@@ -77,7 +77,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
 
 app.get('/:pinId/likes', pinParams, async (c) => {
   await referenceablePinOf(
-    database(c.env.DB),
+    c.get('db'),
     c.get('viewer'),
     c.req.valid('param').pinId
   );
@@ -86,7 +86,7 @@ app.get('/:pinId/likes', pinParams, async (c) => {
 });
 
 app.post('/:pinId/like', pinParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
@@ -96,7 +96,7 @@ app.post('/:pinId/like', pinParams, async (c) => {
 });
 
 app.delete('/:pinId/like', pinParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
@@ -106,7 +106,7 @@ app.delete('/:pinId/like', pinParams, async (c) => {
 });
 
 app.post('/:pinId/comments', pinParams, jsonBody(commentInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
@@ -125,7 +125,7 @@ app.on(
   ownCommentParams,
   jsonBody(commentInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const params = c.req.valid('param');
     const pin = await referenceablePinOf(db, viewer, params.pinId);
@@ -141,7 +141,7 @@ app.on(
 );
 
 app.delete('/:pinId/comments/:id', ownCommentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const params = c.req.valid('param');
   const pin = await referenceablePinOf(db, viewer, params.pinId);
@@ -156,13 +156,13 @@ app.delete('/:pinId/comments/:id', ownCommentParams, async (c) => {
 });
 
 app.get('/:pinId/comments/:commentId/likes', commentParams, async (c) => {
-  await pinComment(database(c.env.DB), c.get('viewer'), c.req.valid('param'));
+  await pinComment(c.get('db'), c.get('viewer'), c.req.valid('param'));
 
   return c.body(null, 204);
 });
 
 app.post('/:pinId/comments/:commentId/like', commentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { pin, comment } = await pinComment(db, viewer, c.req.valid('param'));
 
@@ -176,7 +176,7 @@ app.post('/:pinId/comments/:commentId/like', commentParams, async (c) => {
 });
 
 app.delete('/:pinId/comments/:commentId/like', commentParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const { pin, comment } = await pinComment(db, viewer, c.req.valid('param'));
 

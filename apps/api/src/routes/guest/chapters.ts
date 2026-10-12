@@ -14,7 +14,6 @@ import {
 } from '../../chapters.ts';
 import { commentsQuery, guestComment } from '../../comments.ts';
 import { FEED_PER_PAGE } from '../../cursor.ts';
-import { database } from '../../db/client.ts';
 import { chapters, comments } from '../../db/schema.ts';
 import { first } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
@@ -24,7 +23,7 @@ import { publicChapter } from '../../visibility.ts';
 const app = new Hono<AppEnv>();
 
 app.get('/', queryParams(z.object({ input: searchInput })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { input } = c.req.valid('query');
 
   if (input !== undefined) {
@@ -65,7 +64,7 @@ app.get('/', queryParams(z.object({ input: searchInput })), async (c) => {
 });
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { commentsCount, ...chapter } = first(
     await db
       .select({
@@ -95,7 +94,7 @@ app.get(
   '/:chapterId/comments',
   pathParams(z.object({ chapterId: id })),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const chapter = first(
       await db
         .select({ id: chapters.id })

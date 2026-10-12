@@ -4,7 +4,6 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../../app.ts';
 import { FEED_PER_PAGE, nextCursor } from '../../../cursor.ts';
-import { database } from '../../../db/client.ts';
 import { pins } from '../../../db/schema.ts';
 import { guestPins } from '../../../pins.ts';
 import { feedPage } from '../../../routing.ts';
@@ -23,7 +22,7 @@ app.get(
   pathParams(z.object({ userId: id })),
   queryParams(z.object({ cursor: feedCursor })),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const rows = await db
       .select()
       .from(pins)

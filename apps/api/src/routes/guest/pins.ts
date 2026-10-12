@@ -3,7 +3,6 @@ import { and, asc, count, desc, eq, getTableColumns } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
-import { database } from '../../db/client.ts';
 import { pins, votes } from '../../db/schema.ts';
 import { ApiError } from '../../errors.ts';
 import { guestPins } from '../../pins.ts';
@@ -28,7 +27,7 @@ const listingQuery = queryParams(
 const app = new Hono<AppEnv>();
 
 app.get('/', listingQuery, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const { input, recent, popular } = c.req.valid('query');
 
   if (input !== undefined) {
@@ -92,7 +91,7 @@ app.get('/', listingQuery, async (c) => {
 });
 
 app.get('/:id', pathParams(z.object({ id })), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const pin = first(
     await db
       .select()

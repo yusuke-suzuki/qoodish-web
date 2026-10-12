@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { createMiddleware } from 'hono/factory';
 import type { AppEnv } from '../app.ts';
-import { type Database, database } from '../db/client.ts';
+import type { Database } from '../db/client.ts';
 import { blocks, mutes, users } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import { activeMute } from '../mutes.ts';
@@ -51,7 +51,7 @@ export async function loadViewer(
 }
 
 export const authenticateUser = createMiddleware<ViewerEnv>(async (c, next) => {
-  const viewer = await loadViewer(database(c.env.DB), c.get('idToken').sub);
+  const viewer = await loadViewer(c.get('db'), c.get('idToken').sub);
 
   if (!viewer) {
     throw new ApiError('Unauthorized');

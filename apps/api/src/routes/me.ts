@@ -27,7 +27,7 @@ import {
   invitation,
   pendingInvitations
 } from '../coauthorship-invitations.ts';
-import { type Database, database } from '../db/client.ts';
+import type { Database } from '../db/client.ts';
 import {
   chapters,
   journalBookmarks,
@@ -76,11 +76,11 @@ async function ownJournal(db: Database, viewer: Viewer): Promise<Journal> {
 }
 
 app.get('/profile', async (c) =>
-  c.json<Profile>(await profile(database(c.env.DB), c.get('viewer').id))
+  c.json<Profile>(await profile(c.get('db'), c.get('viewer').id))
 );
 
 app.on(['PUT', 'PATCH'], '/profile', jsonBody(profileInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const userId = c.get('viewer').id;
 
   await updateProfile(db, userId, c.req.valid('json'));
@@ -89,11 +89,11 @@ app.on(['PUT', 'PATCH'], '/profile', jsonBody(profileInput), async (c) => {
 });
 
 app.get('/journal', async (c) =>
-  c.json<Journal>(await ownJournal(database(c.env.DB), c.get('viewer')))
+  c.json<Journal>(await ownJournal(c.get('db'), c.get('viewer')))
 );
 
 app.on(['PUT', 'PATCH'], '/journal', jsonBody(journalInput), async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
 
   await reviseJournal(db, viewer.id, c.req.valid('json'));
@@ -108,7 +108,7 @@ app.on(
   async (c) =>
     c.json<{ web_push: WebPushPreferences }>({
       web_push: await updateWebPush(
-        database(c.env.DB),
+        c.get('db'),
         c.get('viewer').id,
         c.req.valid('json').web_push
       )
@@ -117,7 +117,7 @@ app.on(
 
 app.on(['PUT', 'PATCH'], '/devices/:token', deviceParams, async (c) => {
   await registerDevice(
-    database(c.env.DB),
+    c.get('db'),
     c.get('viewer').id,
     c.req.valid('param').token
   );
@@ -127,7 +127,7 @@ app.on(['PUT', 'PATCH'], '/devices/:token', deviceParams, async (c) => {
 
 app.delete('/devices/:token', deviceParams, async (c) => {
   await unregisterDevice(
-    database(c.env.DB),
+    c.get('db'),
     c.get('viewer').id,
     c.req.valid('param').token
   );
@@ -138,7 +138,7 @@ app.delete('/devices/:token', deviceParams, async (c) => {
 app.on(['PUT', 'PATCH'], '/notifications/:id', idParams, async (c) =>
   c.json<Notification>(
     await readNotification(
-      database(c.env.DB),
+      c.get('db'),
       c.get('viewer'),
       c.req.valid('param').id
     )
@@ -166,7 +166,7 @@ app.on(
   idParams,
   jsonBody(pinInput),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const viewer = c.get('viewer');
     const pinId = c.req.valid('param').id;
 
@@ -184,7 +184,7 @@ app.on(
 );
 
 app.delete('/pins/:id', idParams, async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
 
   const pinId = c.req.valid('param').id;
@@ -195,7 +195,7 @@ app.delete('/pins/:id', idParams, async (c) => {
 });
 
 app.get('/maps', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()
@@ -217,7 +217,7 @@ function ownChapters(userId: number): SQL | undefined {
 }
 
 app.get('/chapters', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()
@@ -234,7 +234,7 @@ app.get('/chapters/:id', idParams, async (c) => {
   return c.json<ChapterDetail>(
     first(
       await viewerChapterDetails(
-        database(c.env.DB),
+        c.get('db'),
         viewer,
         and(ownChapters(viewer.id), eq(chapters.id, c.req.valid('param').id))
       )
@@ -244,7 +244,7 @@ app.get('/chapters/:id', idParams, async (c) => {
 
 app.get('/coauthorship_invitations', async (c) =>
   c.json<CoauthorshipInvitation[]>(
-    await pendingInvitations(database(c.env.DB), c.get('viewer').id)
+    await pendingInvitations(c.get('db'), c.get('viewer').id)
   )
 );
 
@@ -252,7 +252,7 @@ app.post(
   '/coauthorship_invitations/:id/:answer{accept|decline}',
   pathParams(z.object({ id, answer: z.enum(['accept', 'decline']) })),
   async (c) => {
-    const db = database(c.env.DB);
+    const db = c.get('db');
     const { id: invitationId, answer } = c.req.valid('param');
 
     await answerInvitation(
@@ -267,13 +267,13 @@ app.post(
 
 app.get('/journeys', async (c) =>
   c.json<JourneySummary[]>(
-    await journeySummaries(database(c.env.DB), c.get('viewer').id)
+    await journeySummaries(c.get('db'), c.get('viewer').id)
   )
 );
 
 app.get('/journeys/:id', idParams, async (c) => {
   const journey = await journeyDetail(
-    database(c.env.DB),
+    c.get('db'),
     and(
       eq(journeys.userId, c.get('viewer').id),
       eq(journeys.id, c.req.valid('param').id)
@@ -292,7 +292,7 @@ app.get('/journeys/:id', idParams, async (c) => {
 });
 
 app.get('/bookmarks/maps', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db
     .select()
@@ -304,7 +304,7 @@ app.get('/bookmarks/maps', async (c) => {
 });
 
 app.get('/bookmarks/journals', async (c) => {
-  const db = database(c.env.DB);
+  const db = c.get('db');
   const viewer = c.get('viewer');
 
   return c.json<Journal[]>(
