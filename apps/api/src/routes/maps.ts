@@ -2,6 +2,7 @@ import type {
   AppMap,
   Chapter,
   Coauthor,
+  CoauthorshipInvitation,
   Pin,
   PinProperty,
   PinPropertyOption
@@ -11,8 +12,10 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { bookmarkMap, unbookmarkMap } from '../bookmarks.ts';
 import { viewerChapters } from '../chapters.ts';
+import { invitation, inviteCoauthor } from '../coauthorship-invitations.ts';
 import { type Database, database, scalar } from '../db/client.ts';
 import { chapters, maps, pins } from '../db/schema.ts';
+import { ApiError } from '../errors.ts';
 import {
   createMap,
   discardMap,
@@ -45,7 +48,8 @@ import {
 } from '../pin-properties.ts';
 import { createPin, newPinInput, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
-import { id, jsonBody, pathParams } from '../validation.ts';
+import { findUser } from '../users.ts';
+import { id, jsonBody, optionalId, pathParams } from '../validation.ts';
 import {
   editableMap,
   recommendableMap,
@@ -252,6 +256,37 @@ app.delete('/:mapId/coauthors/:userId', coauthorParams, async (c) => {
 
   return c.body(null, 204);
 });
+
+app.post(
+  '/:mapId/coauthorship_invitations',
+  mapParams,
+  jsonBody(
+    z.object({
+      user_id: z
+        .union([z.number(), z.string()])
+        .optional()
+        .transform(optionalId)
+    })
+  ),
+  async (c) => {
+    const db = database(c.env.DB);
+    const viewer = c.get('viewer');
+    const map = await editableMapRow(db, viewer, c.req.valid('param').mapId);
+    const { user_id: inviteeId } = c.req.valid('json');
+
+    if (inviteeId === undefined) {
+      throw new ApiError('NotFound');
+    }
+
+    const invitee = await findUser(db, inviteeId);
+    const invitationId = await inviteCoauthor(db, viewer, {
+      map,
+      inviteeId: invitee.id
+    });
+
+    return c.json<CoauthorshipInvitation>(await invitation(db, invitationId));
+  }
+);
 
 app.post('/:mapId/bookmark', mapParams, async (c) => {
   const db = database(c.env.DB);

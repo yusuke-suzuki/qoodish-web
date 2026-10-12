@@ -51,6 +51,8 @@ export const ja: Messages = {
     'ブロックしている、またはブロックされているアカウントの地図はブックマークできません。',
   invitation_invitee_already_author:
     '著者を共著者として招待することはできません。',
+  invitation_blocked_interaction:
+    'あなたか地図の著者がブロックしている、またはブロックされているアカウントは共著者に招待できません。',
   duplicate_pending_invitation: 'このユーザーへの招待は既に保留中です。',
 
   registration_token_is_required: '登録トークンを入力してください。',

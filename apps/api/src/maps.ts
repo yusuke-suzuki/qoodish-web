@@ -11,9 +11,11 @@ import { removeMapBookmarks } from './bookmarks.ts';
 import {
   currentTimestamp,
   type Database,
+  generatedId,
   inIds,
   reviseUntilCurrent,
   scalar,
+  selected,
   uniqueIds,
   unrevisedRecord
 } from './db/client.ts';
@@ -376,6 +378,32 @@ export async function removeCoauthor(
 
 export function mapIdsOf(db: Database, authorId: number) {
   return db.select({ id: maps.id }).from(maps).where(eq(maps.userId, authorId));
+}
+
+export function addCoauthor(
+  db: Database,
+  {
+    mapId,
+    userId,
+    now,
+    condition
+  }: { mapId: number; userId: number; now: string; condition: SQL }
+) {
+  return db
+    .insert(coauthorships)
+    .select(
+      db
+        .select({
+          id: generatedId(),
+          createdAt: selected(now, 'created_at'),
+          mapId: selected(mapId, 'map_id'),
+          updatedAt: selected(now, 'updated_at'),
+          userId: users.id
+        })
+        .from(users)
+        .where(and(eq(users.id, userId), condition))
+    )
+    .onConflictDoNothing();
 }
 
 export function removeCoauthorshipsBetween(

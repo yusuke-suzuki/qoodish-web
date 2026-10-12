@@ -15,7 +15,6 @@ import { and, asc, desc, eq, inArray, ne, type SQL } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import {
-  pendingInvitations,
   preferencesInput,
   profile,
   registerDevice,
@@ -23,6 +22,11 @@ import {
   updateWebPush
 } from '../accounts.ts';
 import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
+import {
+  answerInvitation,
+  invitation,
+  pendingInvitations
+} from '../coauthorship-invitations.ts';
 import { type Database, database } from '../db/client.ts';
 import {
   chapters,
@@ -242,6 +246,23 @@ app.get('/coauthorship_invitations', async (c) =>
   c.json<CoauthorshipInvitation[]>(
     await pendingInvitations(database(c.env.DB), c.get('viewer').id)
   )
+);
+
+app.post(
+  '/coauthorship_invitations/:id/:answer{accept|decline}',
+  pathParams(z.object({ id, answer: z.enum(['accept', 'decline']) })),
+  async (c) => {
+    const db = database(c.env.DB);
+    const { id: invitationId, answer } = c.req.valid('param');
+
+    await answerInvitation(
+      db,
+      { inviteeId: c.get('viewer').id, id: invitationId },
+      answer === 'accept' ? 'accepted' : 'declined'
+    );
+
+    return c.json<CoauthorshipInvitation>(await invitation(db, invitationId));
+  }
 );
 
 app.get('/journeys', async (c) =>

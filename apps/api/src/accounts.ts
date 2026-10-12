@@ -1,34 +1,27 @@
 import type {
   ApiCursorPage,
-  CoauthorshipInvitation,
   ModeratedAccount,
   Profile,
   WebPushPreferences
 } from '@qoodish/api-contract';
-import { and, asc, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
+import { and, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
 import { z } from 'zod';
-import { currentTimestamp, type Database, uniqueIds } from './db/client.ts';
+import { currentTimestamp, type Database } from './db/client.ts';
 import {
   blocks,
-  coauthorshipInvitations,
   devices,
   images,
-  maps,
   mutes,
   unblocks,
   unmutes,
   userPreferences,
   users
 } from './db/schema.ts';
-import { primaryImage } from './images.ts';
-import { firstImageUrls, mapImagesQuery } from './maps.ts';
 import {
   chapterAuthor,
   profileAttributes,
   profileQuery,
-  userColumns,
-  userSummary,
-  usersQuery
+  userColumns
 } from './users.ts';
 
 const ACCOUNTS_PER_PAGE = 50;
@@ -147,74 +140,6 @@ export async function unregisterDevice(
         eq(devices.registrationToken, registrationToken)
       )
     );
-}
-
-export async function pendingInvitations(
-  db: Database,
-  userId: number
-): Promise<CoauthorshipInvitation[]> {
-  const rows = await db
-    .select({
-      id: coauthorshipInvitations.id,
-      inviterId: coauthorshipInvitations.inviterId,
-      createdAt: coauthorshipInvitations.createdAt,
-      updatedAt: coauthorshipInvitations.updatedAt,
-      mapId: maps.id,
-      mapName: maps.name,
-      mapDescription: maps.description,
-      mapRevisionId: maps.currentRevisionId
-    })
-    .from(coauthorshipInvitations)
-    .innerJoin(maps, eq(maps.id, coauthorshipInvitations.mapId))
-    .where(
-      and(
-        eq(coauthorshipInvitations.inviteeId, userId),
-        eq(coauthorshipInvitations.status, 0)
-      )
-    )
-    .orderBy(
-      desc(coauthorshipInvitations.createdAt),
-      asc(coauthorshipInvitations.id)
-    );
-
-  if (rows.length === 0) {
-    return [];
-  }
-
-  const [inviters, revisionImages] = await db.batch([
-    usersQuery(db, uniqueIds(rows.map((row) => row.inviterId))),
-    mapImagesQuery(db, uniqueIds(rows.map((row) => row.mapRevisionId)))
-  ]);
-  const invitersById = new Map(inviters.map((user) => [user.id, user]));
-  const imageUrls = firstImageUrls(revisionImages);
-
-  return rows.flatMap((row) => {
-    const inviter = invitersById.get(row.inviterId);
-
-    if (!inviter) {
-      return [];
-    }
-
-    return [
-      {
-        id: row.id,
-        map: {
-          id: row.mapId,
-          name: row.mapName,
-          description: row.mapDescription,
-          ...primaryImage(
-            row.mapRevisionId === null
-              ? undefined
-              : imageUrls.get(row.mapRevisionId)
-          )
-        },
-        inviter: userSummary(inviter),
-        status: 'pending',
-        created_at: row.createdAt,
-        updated_at: row.updatedAt
-      }
-    ];
-  });
 }
 
 async function accountsPage(
