@@ -9,7 +9,17 @@ import type {
   MapFeatureCollection,
   MapRef
 } from '@qoodish/api-contract';
-import { and, asc, eq, getTableColumns, max, ne, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  getTableColumns,
+  inArray,
+  max,
+  ne,
+  type SQL,
+  type SQLWrapper
+} from 'drizzle-orm';
 import { z } from 'zod';
 import {
   constraintViolated,
@@ -742,4 +752,11 @@ export async function discardChapter(
       revised: { ...revisionContentOf(chapter), status: 'deleted' }
     });
   });
+}
+
+export function detachJourneys(db: Database, journeyIds: SQLWrapper) {
+  return db
+    .update(chapters)
+    .set({ journeyId: null })
+    .where(inArray(chapters.journeyId, journeyIds));
 }

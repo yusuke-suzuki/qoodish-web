@@ -8,7 +8,12 @@ import {
   reviseUntilCurrent,
   unrevisedRecord
 } from './client.ts';
-import { journalRevisions, journals, users } from './schema.ts';
+import {
+  journalBookmarks,
+  journalRevisions,
+  journals,
+  users
+} from './schema.ts';
 
 const JOURNAL = 1;
 
@@ -60,6 +65,37 @@ describe('unrevisedRecord', () => {
     expect(
       constraintViolated(error, 'UNIQUE', journalRevisions.journalId)
     ).toBe(false);
+  });
+});
+
+describe('constraintViolated', () => {
+  it('names every column of a composite unique index', async () => {
+    const now = new Date().toISOString();
+    const bookmark = () =>
+      db().insert(journalBookmarks).values({
+        journalId: JOURNAL,
+        userId: ids.bob,
+        createdAt: now,
+        updatedAt: now
+      });
+
+    await bookmark();
+    const error = await failureOf(bookmark);
+
+    expect(
+      constraintViolated(
+        error,
+        'UNIQUE',
+        journalBookmarks.journalId,
+        journalBookmarks.userId
+      )
+    ).toBe(true);
+    expect(
+      constraintViolated(error, 'UNIQUE', journalBookmarks.journalId)
+    ).toBe(false);
+    expect(constraintViolated(error, 'UNIQUE', journalBookmarks.userId)).toBe(
+      false
+    );
   });
 });
 

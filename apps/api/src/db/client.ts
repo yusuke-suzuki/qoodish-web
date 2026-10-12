@@ -53,16 +53,20 @@ export function chunks<Item>(items: readonly Item[], size: number): Item[][] {
 export function constraintViolated(
   error: unknown,
   constraint: 'UNIQUE' | 'NOT NULL',
-  column: Column
+  ...columns: [Column, ...Column[]]
 ): boolean {
-  const failure = `${constraint} constraint failed: ${getTableName(column.table)}.${column.name}`;
+  const failure = `${constraint} constraint failed: ${columns
+    .map((column) => `${getTableName(column.table)}.${column.name}`)
+    .join(', ')}`;
 
   for (
     let current: unknown = error;
     current instanceof Error;
     current = current.cause
   ) {
-    if (current.message.includes(failure)) {
+    const at = current.message.indexOf(failure);
+
+    if (at !== -1 && current.message[at + failure.length] !== ',') {
       return true;
     }
   }

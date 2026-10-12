@@ -5,7 +5,9 @@ import type {
   CoauthorshipInvitation,
   Journal,
   Journey,
+  JourneyCheckin,
   JourneySummary,
+  Milestone,
   Notification,
   Pin,
   Profile,
@@ -38,13 +40,33 @@ import {
   chapters,
   journalBookmarks,
   journals,
-  journeys,
   maps,
   pins
 } from '../db/schema.ts';
-import { ApiError } from '../errors.ts';
+import { encryptionSecrets } from '../encryption.ts';
+import type { Env } from '../env.ts';
 import { journalInput, reviseJournal, viewerJournals } from '../journals.ts';
-import { journeyDetail, journeySummaries } from '../journeys.ts';
+import {
+  addMilestone,
+  checkinInput,
+  destroyJourney,
+  discardCheckin,
+  finishInput,
+  finishJourney,
+  type JourneyOwner,
+  journeyCheckin,
+  journeyDetail,
+  journeySummaries,
+  milestoneInput,
+  newCheckinInput,
+  ownedJourney,
+  ownJourney,
+  recordCheckin,
+  recordedCheckin,
+  removeMilestone,
+  reviseCheckin,
+  startJourney
+} from '../journeys.ts';
 import { viewerMaps } from '../maps.ts';
 import {
   authenticateUser,
@@ -325,25 +347,149 @@ app.get('/journeys', async (c) =>
   )
 );
 
-app.get('/journeys/:id', idParams, async (c) => {
-  const journey = await journeyDetail(
-    c.get('db'),
-    and(
-      eq(journeys.userId, c.get('viewer').id),
-      eq(journeys.id, c.req.valid('param').id)
-    ),
-    {
-      primaryKey: c.env.ENCRYPTION_PRIMARY_KEY,
-      keyDerivationSalt: c.env.ENCRYPTION_KEY_DERIVATION_SALT
-    }
-  );
+function ownJourneyDetail(
+  db: Database,
+  env: Env,
+  owner: JourneyOwner
+): Promise<Journey> {
+  return journeyDetail(db, ownedJourney(owner), encryptionSecrets(env));
+}
 
-  if (!journey) {
-    throw new ApiError('NotFound');
-  }
+const journeyParams = pathParams(z.object({ journeyId: id }));
+const journeyChildParams = pathParams(z.object({ journeyId: id, id }));
 
-  return c.json<Journey>(journey);
+app.get('/journeys/:id', idParams, async (c) =>
+  c.json<Journey>(
+    await ownJourneyDetail(c.get('db'), c.env, {
+      userId: c.get('viewer').id,
+      journeyId: c.req.valid('param').id
+    })
+  )
+);
+
+app.delete('/journeys/:id', idParams, async (c) => {
+  await destroyJourney(c.get('db'), {
+    userId: c.get('viewer').id,
+    journeyId: c.req.valid('param').id
+  });
+
+  return c.body(null, 204);
 });
+
+app.post('/journeys/:id/start', idParams, async (c) => {
+  const db = c.get('db');
+  const owner = {
+    userId: c.get('viewer').id,
+    journeyId: c.req.valid('param').id
+  };
+
+  await startJourney(db, owner);
+
+  return c.json<Journey>(await ownJourneyDetail(db, c.env, owner));
+});
+
+app.post('/journeys/:id/finish', idParams, jsonBody(finishInput), async (c) => {
+  const db = c.get('db');
+  const owner = {
+    userId: c.get('viewer').id,
+    journeyId: c.req.valid('param').id
+  };
+
+  await finishJourney(db, owner, {
+    encodedPath: c.req.valid('json').encoded_path,
+    secrets: encryptionSecrets(c.env)
+  });
+
+  return c.json<Journey>(await ownJourneyDetail(db, c.env, owner));
+});
+
+app.post(
+  '/journeys/:journeyId/milestones',
+  journeyParams,
+  jsonBody(milestoneInput),
+  async (c) => {
+    const viewer = c.get('viewer');
+
+    return c.json<Milestone>(
+      await addMilestone(c.get('db'), viewer, {
+        owner: { userId: viewer.id, journeyId: c.req.valid('param').journeyId },
+        pinId: c.req.valid('json').pin_id
+      })
+    );
+  }
+);
+
+app.delete(
+  '/journeys/:journeyId/milestones/:id',
+  journeyChildParams,
+  async (c) => {
+    const { journeyId, id: milestoneId } = c.req.valid('param');
+
+    await removeMilestone(c.get('db'), {
+      userId: c.get('viewer').id,
+      journeyId,
+      milestoneId
+    });
+
+    return c.body(null, 204);
+  }
+);
+
+app.post(
+  '/journeys/:journeyId/checkins',
+  journeyParams,
+  jsonBody(newCheckinInput),
+  async (c) => {
+    const db = c.get('db');
+    const viewer = c.get('viewer');
+    const checkinId = await recordCheckin(db, viewer, {
+      owner: { userId: viewer.id, journeyId: c.req.valid('param').journeyId },
+      changes: c.req.valid('json')
+    });
+
+    return c.json<JourneyCheckin>(await journeyCheckin(db, checkinId));
+  }
+);
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/journeys/:journeyId/checkins/:id',
+  journeyChildParams,
+  jsonBody(checkinInput),
+  async (c) => {
+    const db = c.get('db');
+    const viewer = c.get('viewer');
+    const { journeyId, id: checkinId } = c.req.valid('param');
+    const journey = await ownJourney(db, { userId: viewer.id, journeyId });
+
+    await reviseCheckin(
+      db,
+      () => recordedCheckin(db, { journeyId: journey.id, checkinId }),
+      { journey, editorId: viewer.id, changes: c.req.valid('json') }
+    );
+
+    return c.json<JourneyCheckin>(await journeyCheckin(db, checkinId));
+  }
+);
+
+app.delete(
+  '/journeys/:journeyId/checkins/:id',
+  journeyChildParams,
+  async (c) => {
+    const db = c.get('db');
+    const viewer = c.get('viewer');
+    const { journeyId, id: checkinId } = c.req.valid('param');
+    const journey = await ownJourney(db, { userId: viewer.id, journeyId });
+
+    await discardCheckin(
+      db,
+      () => recordedCheckin(db, { journeyId: journey.id, checkinId }),
+      viewer.id
+    );
+
+    return c.body(null, 204);
+  }
+);
 
 app.get('/bookmarks/maps', async (c) => {
   const db = c.get('db');

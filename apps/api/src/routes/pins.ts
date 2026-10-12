@@ -1,5 +1,4 @@
 import type { Pin } from '@qoodish/api-contract';
-import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import {
@@ -11,29 +10,19 @@ import {
   reviseComment
 } from '../comments.ts';
 import type { Database } from '../db/client.ts';
-import { pins } from '../db/schema.ts';
 import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
-import { viewerPins } from '../pins.ts';
+import { referenceablePinOf, viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { id, jsonBody, pathParams } from '../validation.ts';
-import { referenceablePin, type Viewer } from '../visibility.ts';
+import type { Viewer } from '../visibility.ts';
 import { like, unlike } from '../votes.ts';
 
 const pinParams = pathParams(z.object({ pinId: id }));
 const ownCommentParams = pathParams(z.object({ pinId: id, id }));
 const commentParams = pathParams(z.object({ pinId: id, commentId: id }));
-
-async function referenceablePinOf(db: Database, viewer: Viewer, pinId: number) {
-  return first(
-    await db
-      .select()
-      .from(pins)
-      .where(and(referenceablePin(viewer), eq(pins.id, pinId)))
-  );
-}
 
 async function pinComment(
   db: Database,

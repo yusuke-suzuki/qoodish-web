@@ -1,4 +1,10 @@
+import { decodeBase64, encodeBase64 } from 'hono/utils/encode';
+import type { Env } from './env.ts';
+
 const KEY_DERIVATION_ITERATIONS = 2 ** 16;
+const IV_LENGTH = 12;
+const AUTH_TAG_LENGTH = 16;
+const COMPRESSION_THRESHOLD = 140;
 
 export type EncryptionSecrets = {
   primaryKey: string;
@@ -12,8 +18,11 @@ type EncryptedMessage = {
 
 const derivedKeys = new Map<string, Promise<CryptoKey>>();
 
-function bytes(base64: string): Uint8Array<ArrayBuffer> {
-  return Uint8Array.from(atob(base64), (character) => character.charCodeAt(0));
+export function encryptionSecrets(env: Env): EncryptionSecrets {
+  return {
+    primaryKey: env.ENCRYPTION_PRIMARY_KEY,
+    keyDerivationSalt: env.ENCRYPTION_KEY_DERIVATION_SALT
+  };
 }
 
 async function deriveKey({
@@ -39,7 +48,7 @@ async function deriveKey({
     password,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['decrypt']
+    ['encrypt', 'decrypt']
   );
 }
 
@@ -56,12 +65,40 @@ function keyFor(secrets: EncryptionSecrets): Promise<CryptoKey> {
   return key;
 }
 
-async function inflate(data: Uint8Array<ArrayBuffer>): Promise<ArrayBuffer> {
-  const stream = new Blob([data])
-    .stream()
-    .pipeThrough(new DecompressionStream('deflate'));
+function transformed(
+  data: Uint8Array<ArrayBuffer>,
+  stream: CompressionStream | DecompressionStream
+): Promise<ArrayBuffer> {
+  return new Response(
+    new Blob([data]).stream().pipeThrough(stream)
+  ).arrayBuffer();
+}
 
-  return new Response(stream).arrayBuffer();
+export async function encryptAttribute(
+  plaintext: string,
+  secrets: EncryptionSecrets
+): Promise<string> {
+  const encoded = new Uint8Array(new TextEncoder().encode(plaintext));
+  const compressed = encoded.length > COMPRESSION_THRESHOLD;
+  const data = compressed
+    ? await transformed(encoded, new CompressionStream('deflate'))
+    : encoded;
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const sealed = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    await keyFor(secrets),
+    data
+  );
+  const message: EncryptedMessage = {
+    p: encodeBase64(sealed.slice(0, sealed.byteLength - AUTH_TAG_LENGTH)),
+    h: {
+      iv: encodeBase64(iv.buffer),
+      at: encodeBase64(sealed.slice(sealed.byteLength - AUTH_TAG_LENGTH)),
+      ...(compressed ? { c: true } : {})
+    }
+  };
+
+  return JSON.stringify(message);
 }
 
 export async function decryptAttribute(
@@ -69,20 +106,22 @@ export async function decryptAttribute(
   secrets: EncryptionSecrets
 ): Promise<string> {
   const message = JSON.parse(ciphertext) as EncryptedMessage;
-  const payload = bytes(message.p);
-  const authTag = bytes(message.h.at);
-  const sealed = new Uint8Array(payload.length + authTag.length);
-
-  sealed.set(payload);
-  sealed.set(authTag, payload.length);
-
+  const sealed = new Uint8Array(
+    await new Blob([
+      decodeBase64(message.p),
+      decodeBase64(message.h.at)
+    ]).arrayBuffer()
+  );
   const opened = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: bytes(message.h.iv) },
+    { name: 'AES-GCM', iv: decodeBase64(message.h.iv) },
     await keyFor(secrets),
     sealed
   );
   const plaintext = message.h.c
-    ? await inflate(new Uint8Array(opened))
+    ? await transformed(
+        new Uint8Array(opened),
+        new DecompressionStream('deflate')
+      )
     : opened;
 
   return new TextDecoder().decode(plaintext);

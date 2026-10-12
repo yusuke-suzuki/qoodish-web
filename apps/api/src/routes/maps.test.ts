@@ -1020,3 +1020,64 @@ describe('POST /maps/:mapId/chapters', () => {
     ).toBe(401);
   });
 });
+
+describe('POST /maps/:mapId/journeys', () => {
+  const path = `/maps/${dave.map}/journeys`;
+
+  it('creates an unstarted journey on a referenceable map', async () => {
+    const { status, body } = await send('POST', path, 'carol');
+    const [row] = await db()
+      .select()
+      .from(journeys)
+      .where(eq(journeys.id, body.id));
+
+    expect(status).toBe(200);
+    expect(body).toEqual({
+      id: expect.any(Number),
+      map_id: dave.map,
+      started_at: null,
+      finished_at: null,
+      milestones: [],
+      checkins: [],
+      encoded_path: null,
+      chapter_id: null,
+      map: { id: dave.map, name: 'Dave Diner', private: false },
+      created_at: expect.any(String),
+      updated_at: body.created_at
+    });
+    expect(row).toMatchObject({
+      userId: ids.carol,
+      mapId: dave.map,
+      encodedPath: null
+    });
+  });
+
+  it('rejects a second unfinished journey on the same map until it finishes', async () => {
+    expect(await send('POST', path, 'carol')).toEqual({
+      status: 422,
+      body: {
+        title: 'UnprocessableContent',
+        detail: 'An unfinished journey already exists on this map.'
+      }
+    });
+    expect((await send('POST', path, 'bob')).status).toBe(200);
+
+    await db()
+      .update(journeys)
+      .set({ startedAt: at(2), finishedAt: at(3) })
+      .where(and(eq(journeys.userId, ids.carol), eq(journeys.mapId, dave.map)));
+
+    expect((await send('POST', path, 'carol')).status).toBe(200);
+  });
+
+  it('answers 404 on a map out of reach and 401 without a token', async () => {
+    expect(await send('POST', path, 'alice')).toEqual({
+      status: 404,
+      body: notFound
+    });
+    expect(
+      (await send('POST', `/maps/${ids.deletedMap}/journeys`, 'alice')).status
+    ).toBe(404);
+    expect((await send('POST', path)).status).toBe(401);
+  });
+});

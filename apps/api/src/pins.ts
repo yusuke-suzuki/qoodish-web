@@ -5,7 +5,7 @@ import type {
   MapRef,
   Pin
 } from '@qoodish/api-contract';
-import { asc, eq, max, type SQL } from 'drizzle-orm';
+import { and, asc, eq, max, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
 import {
   type CommentRow,
@@ -42,10 +42,29 @@ import { image, sameIds, unownedImageErrors } from './images.ts';
 import { first } from './routing.ts';
 import { relation, type UserRow, userSummary, usersQuery } from './users.ts';
 import { coordinate, id, imageIds, text } from './validation.ts';
-import { shownTo, type Viewer } from './visibility.ts';
+import { referenceablePin, shownTo, type Viewer } from './visibility.ts';
 import { type Likes, likesByVotable, likesQuery } from './votes.ts';
 
 export type PinRow = typeof pins.$inferSelect;
+
+export function referenceablePinQuery(
+  db: Database,
+  viewer: Viewer,
+  pinId: number
+) {
+  return db
+    .select()
+    .from(pins)
+    .where(and(referenceablePin(viewer), eq(pins.id, pinId)));
+}
+
+export async function referenceablePinOf(
+  db: Database,
+  viewer: Viewer,
+  pinId: number
+): Promise<PinRow> {
+  return first(await referenceablePinQuery(db, viewer, pinId));
+}
 
 export type PinParts = {
   row: PinRow;
