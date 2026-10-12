@@ -1,4 +1,8 @@
-import type { GuestChapter } from '@qoodish/api-contract';
+import type {
+  GuestChapter,
+  GuestMap,
+  GuestUserProfile
+} from '@qoodish/api-contract';
 import { and, asc, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
@@ -26,7 +30,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
     throw new ApiError('NotFound');
   }
 
-  return c.json(profile);
+  return c.json<GuestUserProfile>(profile);
 });
 
 app.get('/:userId/maps', userParams, async (c) => {
@@ -37,7 +41,7 @@ app.get('/:userId/maps', userParams, async (c) => {
     .where(and(publicMap(), eq(maps.userId, c.req.valid('param').userId)))
     .orderBy(desc(maps.createdAt), asc(maps.id));
 
-  return c.json(await guestMaps(db, rows));
+  return c.json<GuestMap[]>(await guestMaps(db, rows));
 });
 
 app.get('/:userId/chapters', userParams, async (c) => {

@@ -130,7 +130,7 @@ function propertyRevisionStatements(
       .set({
         currentRevisionId: scalar(
           db
-            .select({ id: max(pinPropertyRevisions.id) })
+            .select({ id: max(pinPropertyRevisions.id).as('id') })
             .from(pinPropertyRevisions)
             .where(eq(pinPropertyRevisions.pinPropertyId, propertyId))
         )
@@ -166,7 +166,7 @@ function optionRevisionStatements(
       .set({
         currentRevisionId: scalar(
           db
-            .select({ id: max(pinPropertyOptionRevisions.id) })
+            .select({ id: max(pinPropertyOptionRevisions.id).as('id') })
             .from(pinPropertyOptionRevisions)
             .where(eq(pinPropertyOptionRevisions.pinPropertyOptionId, optionId))
         )
@@ -232,7 +232,7 @@ export async function createPinProperty(
   const now = currentTimestamp();
   const propertyId = scalar(
     db
-      .select({ id: max(pinProperties.id) })
+      .select({ id: max(pinProperties.id).as('id') })
       .from(pinProperties)
       .where(eq(pinProperties.mapId, mapId))
   );
@@ -313,7 +313,7 @@ export async function createPinPropertyOption(
   const now = currentTimestamp();
   const optionId = scalar(
     db
-      .select({ id: max(pinPropertyOptions.id) })
+      .select({ id: max(pinPropertyOptions.id).as('id') })
       .from(pinPropertyOptions)
       .where(eq(pinPropertyOptions.pinPropertyId, propertyId))
   );

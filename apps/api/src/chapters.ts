@@ -237,15 +237,17 @@ export async function viewerChapterDetails(
   const rows = await db
     .select({
       ...getTableColumns(chapters),
-      commentsCount: db.$count(
-        comments,
-        and(
-          eq(comments.commentableType, 'Chapter'),
-          eq(comments.commentableId, chapters.id),
-          ne(comments.status, 'deleted'),
-          shownTo(viewer, comments.userId)
+      commentsCount: db
+        .$count(
+          comments,
+          and(
+            eq(comments.commentableType, 'Chapter'),
+            eq(comments.commentableId, chapters.id),
+            ne(comments.status, 'deleted'),
+            shownTo(viewer, comments.userId)
+          )
         )
-      )
+        .as('comments_count')
     })
     .from(chapters)
     .where(condition);

@@ -4,7 +4,7 @@ import type {
   Profile,
   WebPushPreferences
 } from '@qoodish/api-contract';
-import { and, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
+import { and, desc, eq, lt, max, notExists, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
 import { currentTimestamp, type Database } from './db/client.ts';
 import {
@@ -152,16 +152,15 @@ async function accountsPage(
   },
   cursor: number | null
 ): Promise<ApiCursorPage<ModeratedAccount>> {
-  const latestId = sql<number>`max(${query.recordId})`;
   const rows = await db
-    .select({ ...userColumns, latestId })
+    .select({ ...userColumns, latestId: max(query.recordId).as('latest_id') })
     .from(query.table)
     .innerJoin(users, eq(users.id, query.accountId))
     .leftJoin(images, eq(images.id, users.imageId))
     .where(query.condition)
     .groupBy(query.accountId)
-    .having(cursor === null ? undefined : sql`${latestId} < ${cursor}`)
-    .orderBy(sql`${latestId} DESC`)
+    .having(cursor === null ? undefined : lt(max(query.recordId), cursor))
+    .orderBy(desc(max(query.recordId)))
     .limit(ACCOUNTS_PER_PAGE);
 
   return {

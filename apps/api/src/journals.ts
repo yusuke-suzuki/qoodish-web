@@ -73,7 +73,7 @@ function journalRevisionStatements(
       .set({
         currentRevisionId: scalar(
           db
-            .select({ id: max(journalRevisions.id) })
+            .select({ id: max(journalRevisions.id).as('id') })
             .from(journalRevisions)
             .where(eq(journalRevisions.journalId, journalId))
         )
@@ -175,20 +175,24 @@ export async function viewerJournals(
     .select({
       ...getTableColumns(journals),
       author: userColumns,
-      chaptersCount: db.$count(
-        chapters,
-        and(
-          eq(chapters.userId, journals.userId),
-          eq(chapters.status, 'published')
+      chaptersCount: db
+        .$count(
+          chapters,
+          and(
+            eq(chapters.userId, journals.userId),
+            eq(chapters.status, 'published')
+          )
         )
-      ),
-      bookmarks: db.$count(
-        journalBookmarks,
-        and(
-          eq(journalBookmarks.journalId, journals.id),
-          eq(journalBookmarks.userId, viewer.id)
+        .as('chapters_count'),
+      bookmarks: db
+        .$count(
+          journalBookmarks,
+          and(
+            eq(journalBookmarks.journalId, journals.id),
+            eq(journalBookmarks.userId, viewer.id)
+          )
         )
-      )
+        .as('bookmarks')
     })
     .from(journals)
     .innerJoin(users, eq(users.id, journals.userId))

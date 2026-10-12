@@ -83,7 +83,7 @@ function userRevisionStatements(
       .set({
         currentRevisionId: scalar(
           db
-            .select({ id: max(userRevisions.id) })
+            .select({ id: max(userRevisions.id).as('id') })
             .from(userRevisions)
             .where(eq(userRevisions.userId, userId))
         )
@@ -317,27 +317,33 @@ export function chapterAuthor(user: UserRow): GuestChapterAuthor {
 
 export function profileCounts(db: Database) {
   return {
-    mapsCount: db.$count(
-      maps,
-      and(eq(maps.userId, users.id), eq(maps.status, 'published'))
-    ),
-    bookmarkedMapsCount: db.$count(
-      bookmarks,
-      and(
-        eq(bookmarks.userId, users.id),
-        inArray(
-          bookmarks.mapId,
-          db
-            .select({ id: maps.id })
-            .from(maps)
-            .where(eq(maps.status, 'published'))
+    mapsCount: db
+      .$count(
+        maps,
+        and(eq(maps.userId, users.id), eq(maps.status, 'published'))
+      )
+      .as('maps_count'),
+    bookmarkedMapsCount: db
+      .$count(
+        bookmarks,
+        and(
+          eq(bookmarks.userId, users.id),
+          inArray(
+            bookmarks.mapId,
+            db
+              .select({ id: maps.id })
+              .from(maps)
+              .where(eq(maps.status, 'published'))
+          )
         )
       )
-    ),
-    pinsCount: db.$count(
-      pins,
-      and(eq(pins.userId, users.id), eq(pins.status, 'published'))
-    )
+      .as('bookmarked_maps_count'),
+    pinsCount: db
+      .$count(
+        pins,
+        and(eq(pins.userId, users.id), eq(pins.status, 'published'))
+      )
+      .as('pins_count')
   };
 }
 
@@ -375,10 +381,12 @@ export async function guestProfile(
     .select({
       ...userColumns,
       ...profileCounts(db),
-      likesCount: db.$count(
-        votes,
-        and(eq(votes.voterId, users.id), eq(votes.voterType, 'User'))
-      )
+      likesCount: db
+        .$count(
+          votes,
+          and(eq(votes.voterId, users.id), eq(votes.voterType, 'User'))
+        )
+        .as('likes_count')
     })
     .from(users)
     .leftJoin(images, eq(images.id, users.imageId))

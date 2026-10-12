@@ -90,7 +90,7 @@ app.get('/:id', pathParams(z.object({ id })), async (c) => {
       .where(and(publicPin(), eq(pins.id, c.req.valid('param').id)))
   );
 
-  return c.json(first(await guestPins(db, [pin])));
+  return c.json<GuestPin>(first(await guestPins(db, [pin])));
 });
 
 export default app;
