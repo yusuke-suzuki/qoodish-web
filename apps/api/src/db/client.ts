@@ -36,6 +36,12 @@ export function uniqueIds(ids: Iterable<number | null>): number[] {
   return [...new Set([...ids].filter((id): id is number => id !== null))];
 }
 
+export function chunks<Item>(items: readonly Item[], size: number): Item[][] {
+  return Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
+    items.slice(index * size, (index + 1) * size)
+  );
+}
+
 export function constraintViolated(
   error: unknown,
   constraint: 'UNIQUE' | 'NOT NULL',

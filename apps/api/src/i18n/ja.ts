@@ -24,6 +24,13 @@ export const ja: Messages = {
   map_author_not_specified: '地図の著者を指定してください。',
   map_images_exceed: '地図に添付できる画像は 1 枚までです。',
 
+  pin_name_required: 'ピンの名前を入力してください。',
+  pin_name_exceed: 'ピンの名前が長すぎます。(最大: 100 文字)',
+  pin_location_required: 'ピンの場所を選んでください。',
+  pin_images_exceed: 'ピンに添付できる画像は 4 枚までです。',
+  pin_property_options_invalid:
+    '選んだタグの中に、このピンには使えないものがあります。',
+
   comment_required: 'コメントを入力してください。',
   comment_exceeded: 'コメントが長すぎます。(最大: 500 文字)',
   invalid_uri: '不正な URL です。',
