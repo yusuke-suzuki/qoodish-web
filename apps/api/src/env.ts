@@ -1,3 +1,4 @@
+import type { MailMessage } from './mail.ts';
 import type { WebPushMessage } from './web-push.ts';
 
 export interface Env {
@@ -7,6 +8,9 @@ export interface Env {
   GOOGLE_PROJECT_ID: string;
   CF_ACCESS_TEAM_DOMAIN: string;
   CF_ACCESS_AUD: string;
+  MAIL_FROM: string;
+  MAIL_REPLY_TO: string;
+  REPORT_NOTIFICATION_EMAIL: string;
   ENCRYPTION_PRIMARY_KEY: string;
   ENCRYPTION_KEY_DERIVATION_SALT: string;
   GOOGLE_CLIENT_EMAIL: string;
@@ -16,6 +20,8 @@ export interface Env {
   CLOUDFLARE_IMAGES_API_TOKEN: string;
   DB: D1Database;
   WEB_PUSH_QUEUE: Queue<WebPushMessage>;
+  MAIL_QUEUE: Queue<MailMessage>;
+  EMAIL: SendEmail;
 }
 
 declare global {

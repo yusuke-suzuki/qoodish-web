@@ -3,7 +3,10 @@ import {
   CF_ACCESS_TEAM_DOMAIN,
   DEVELOPMENT,
   type Environment,
-  PRODUCTION
+  MAIL_FROM,
+  MAIL_REPLY_TO,
+  PRODUCTION,
+  REPORT_NOTIFICATION_EMAIL
 } from './environments.ts';
 
 const ACCOUNT_ID = '9671c836ad132f87d892b12ccd1809e0';
@@ -30,6 +33,9 @@ function defineApiWorker(name: string, environment: Environment) {
       GOOGLE_CLIENT_EMAIL: bindings.text(environment.googleClientEmail),
       CF_ACCESS_TEAM_DOMAIN: bindings.text(CF_ACCESS_TEAM_DOMAIN),
       CF_ACCESS_AUD: bindings.text(environment.accessAud),
+      MAIL_FROM: bindings.text(MAIL_FROM),
+      MAIL_REPLY_TO: bindings.text(MAIL_REPLY_TO),
+      REPORT_NOTIFICATION_EMAIL: bindings.text(REPORT_NOTIFICATION_EMAIL),
       ENCRYPTION_PRIMARY_KEY: bindings.secret(),
       ENCRYPTION_KEY_DERIVATION_SALT: bindings.secret(),
       GOOGLE_PRIVATE_KEY: bindings.secret(),
@@ -40,9 +46,14 @@ function defineApiWorker(name: string, environment: Environment) {
         name: environment.databaseName,
         id: environment.databaseId
       }),
-      WEB_PUSH_QUEUE: bindings.queue({ name: environment.webPushQueue })
+      WEB_PUSH_QUEUE: bindings.queue({ name: environment.webPushQueue }),
+      MAIL_QUEUE: bindings.queue({ name: environment.mailQueue }),
+      EMAIL: bindings.sendEmail({ allowedSenderAddresses: [MAIL_FROM] })
     },
-    triggers: [triggers.queue({ name: environment.webPushQueue })]
+    triggers: [
+      triggers.queue({ name: environment.webPushQueue }),
+      triggers.queue({ name: environment.mailQueue })
+    ]
   };
 }
 
