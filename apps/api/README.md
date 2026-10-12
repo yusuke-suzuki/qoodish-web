@@ -36,6 +36,7 @@ A write that spans several rows runs as one D1 `batch`, which D1 applies atomica
 - Pins follow the same revisions. A pin is added to a map its author and coauthors can edit, and edited or discarded under `/me/pins` by its own author only. Its revision records its images and tags; an edit that does not send `image_ids` or `property_option_ids` carries the current ones over. A tag must be published on the pin's map, and a tag that is not `multiple` takes one option.
 - A user bookmarks the public maps they cannot edit and the journals of others, unless either of the two blocks the other.
 - Blocks and mutes are lifted by recording an `unblocks` or `unmutes` row, never by removing the block or mute; a block or mute that is already active is not recorded again. Blocking a user drops the map and journal bookmarks and the coauthorships between the two, and declines the pending coauthorship invitations between them.
+- `PUT /me/notifications/:id` marks a notification read together with the earlier unread ones of its group (same key and notifiable), and answers `404` for a notification the user would not be shown in the list.
 - Notification settings are never updated in place: each change appends a snapshot of every choice, and the newest snapshot is the user's settings.
 
 Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`, and an id in the path that is not a positive integer answers `404`.
