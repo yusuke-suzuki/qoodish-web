@@ -2,9 +2,15 @@ import type { Comment, GuestComment } from '@qoodish/api-contract';
 import { and, asc, eq, exists, ne, type SQL, sql } from 'drizzle-orm';
 import { type Database, inIds } from './db/client.ts';
 import { comments, images, users, votes } from './db/schema.ts';
+import { first } from './routing.ts';
 import { userSummary } from './users.ts';
 import { text } from './validation.ts';
-import { visible } from './visibility.ts';
+import {
+  notBlockedBy,
+  notBlocking,
+  type Viewer,
+  visible
+} from './visibility.ts';
 
 const COMMENT_LIMIT = 500;
 
@@ -75,6 +81,33 @@ export const commentBody = text({
 });
 
 export type CommentRow = Awaited<ReturnType<typeof commentsQuery>>[number];
+
+export async function interactableComment(
+  db: Database,
+  viewer: Viewer,
+  {
+    type,
+    commentableId,
+    commentId
+  }: { type: CommentableType; commentableId: number; commentId: number }
+): Promise<{ id: number; userId: number }> {
+  return first(
+    await db
+      .select({ id: comments.id, userId: comments.userId })
+      .from(comments)
+      .where(
+        and(
+          eq(comments.commentableType, type),
+          eq(comments.commentableId, commentableId),
+          eq(comments.id, commentId),
+          ne(comments.status, 'deleted'),
+          type === 'Pin' ? visible(comments.id, 'Comment') : undefined,
+          notBlocking(viewer, comments.userId),
+          notBlockedBy(viewer, comments.userId)
+        )
+      )
+  );
+}
 
 export function guestComment(row: CommentRow): GuestComment {
   return {

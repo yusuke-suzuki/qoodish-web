@@ -29,6 +29,9 @@ export const en = {
   pin_property_options_invalid:
     'Some of the tags chosen cannot be used on this pin.',
 
+  like_blocked_interaction:
+    'You cannot like a post by an account you have blocked or that has blocked you.',
+
   comment_required: 'Comment is required.',
   comment_exceeded: 'Comment is too long. (Max: 500)',
   invalid_uri: 'Invalid URI.',

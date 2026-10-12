@@ -1,9 +1,10 @@
 import type { Pin } from '@qoodish/api-contract';
-import { and, eq, ne } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
+import { interactableComment } from '../comments.ts';
 import { type Database, database } from '../db/client.ts';
-import { comments, pins } from '../db/schema.ts';
+import { pins } from '../db/schema.ts';
 import {
   authenticateUser,
   type ViewerEnv
@@ -11,13 +12,8 @@ import {
 import { viewerPins } from '../pins.ts';
 import { first } from '../routing.ts';
 import { id, pathParams } from '../validation.ts';
-import {
-  notBlockedBy,
-  notBlocking,
-  referenceablePin,
-  type Viewer,
-  visible
-} from '../visibility.ts';
+import { referenceablePin, type Viewer } from '../visibility.ts';
+import { like, unlike } from '../votes.ts';
 
 const pinParams = pathParams(z.object({ pinId: id }));
 const commentParams = pathParams(z.object({ pinId: id, commentId: id }));
@@ -29,6 +25,21 @@ async function referenceablePinOf(db: Database, viewer: Viewer, pinId: number) {
       .from(pins)
       .where(and(referenceablePin(viewer), eq(pins.id, pinId)))
   );
+}
+
+async function pinComment(
+  db: Database,
+  viewer: Viewer,
+  params: { pinId: number; commentId: number }
+) {
+  const pin = await referenceablePinOf(db, viewer, params.pinId);
+  const comment = await interactableComment(db, viewer, {
+    type: 'Pin',
+    commentableId: pin.id,
+    commentId: params.commentId
+  });
+
+  return { pin, comment };
 }
 
 const app = new Hono<ViewerEnv>();
@@ -53,30 +64,54 @@ app.get('/:pinId/likes', pinParams, async (c) => {
   return c.body(null, 204);
 });
 
-app.get('/:pinId/comments/:commentId/likes', commentParams, async (c) => {
+app.post('/:pinId/like', pinParams, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const { pinId, commentId } = c.req.valid('param');
-  const pin = await referenceablePinOf(db, viewer, pinId);
+  const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
 
-  first(
-    await db
-      .select({ id: comments.id })
-      .from(comments)
-      .where(
-        and(
-          eq(comments.commentableType, 'Pin'),
-          eq(comments.commentableId, pin.id),
-          eq(comments.id, commentId),
-          ne(comments.status, 'deleted'),
-          visible(comments.id, 'Comment'),
-          notBlocking(viewer, comments.userId),
-          notBlockedBy(viewer, comments.userId)
-        )
-      )
-  );
+  await like(db, viewer.id, { type: 'Pin', id: pin.id, userId: pin.userId });
+
+  return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
+});
+
+app.delete('/:pinId/like', pinParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const pin = await referenceablePinOf(db, viewer, c.req.valid('param').pinId);
+
+  await unlike(db, viewer.id, { type: 'Pin', id: pin.id });
+
+  return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
+});
+
+app.get('/:pinId/comments/:commentId/likes', commentParams, async (c) => {
+  await pinComment(database(c.env.DB), c.get('viewer'), c.req.valid('param'));
 
   return c.body(null, 204);
+});
+
+app.post('/:pinId/comments/:commentId/like', commentParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const { pin, comment } = await pinComment(db, viewer, c.req.valid('param'));
+
+  await like(db, viewer.id, {
+    type: 'Comment',
+    id: comment.id,
+    userId: comment.userId
+  });
+
+  return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
+});
+
+app.delete('/:pinId/comments/:commentId/like', commentParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const { pin, comment } = await pinComment(db, viewer, c.req.valid('param'));
+
+  await unlike(db, viewer.id, { type: 'Comment', id: comment.id });
+
+  return c.json<Pin>(first(await viewerPins(db, viewer, [pin])));
 });
 
 export default app;

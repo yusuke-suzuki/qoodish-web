@@ -31,6 +31,9 @@ export const ja: Messages = {
   pin_property_options_invalid:
     '選んだタグの中に、このピンには使えないものがあります。',
 
+  like_blocked_interaction:
+    'ブロックしている、またはブロックされているアカウントの投稿にはいいねできません。',
+
   comment_required: 'コメントを入力してください。',
   comment_exceeded: 'コメントが長すぎます。(最大: 500 文字)',
   invalid_uri: '不正な URL です。',

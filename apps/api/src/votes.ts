@@ -1,8 +1,19 @@
-import { and, count, eq, sql } from 'drizzle-orm';
-import { type Database, inIds } from './db/client.ts';
-import { votes } from './db/schema.ts';
+import { and, count, eq, notExists, sql } from 'drizzle-orm';
+import {
+  currentTimestamp,
+  type Database,
+  generatedId,
+  inIds,
+  selected
+} from './db/client.ts';
+import { users, votes } from './db/schema.ts';
+import { ApiError } from './errors.ts';
+import { notNotifiedYet, recordNotification } from './notifications.ts';
+import { noBlockBetween } from './visibility.ts';
 
 export type VotableType = 'Pin' | 'Chapter' | 'Comment';
+
+type Votable = { type: VotableType; id: number; userId: number };
 
 export function likesQuery(
   db: Database,
@@ -38,4 +49,84 @@ export function likesByVotable(
 
     return { likes: row?.likes ?? 0, liked: (row?.liked ?? 0) > 0 };
   };
+}
+
+function ownVote(votable: Pick<Votable, 'type' | 'id'>, voterId: number) {
+  return and(
+    eq(votes.votableType, votable.type),
+    eq(votes.votableId, votable.id),
+    eq(votes.voterType, 'User'),
+    eq(votes.voterId, voterId)
+  );
+}
+
+export async function like(
+  db: Database,
+  voterId: number,
+  votable: Votable
+): Promise<void> {
+  const now = currentTimestamp();
+  const voter = and(
+    eq(users.id, voterId),
+    noBlockBetween(db, users.id, votable.userId)
+  );
+  const notifiable = { type: votable.type, id: votable.id };
+  const [, , unblocked] = await db.batch([
+    recordNotification(db, {
+      key: 'liked',
+      notifiable,
+      notifierId: voterId,
+      recipientId: votable.userId,
+      now,
+      condition: and(
+        notNotifiedYet(db, { key: 'liked', notifiable, notifierId: voterId }),
+        notExists(
+          db
+            .select({ id: votes.id })
+            .from(votes)
+            .where(ownVote(votable, voterId))
+        )
+      )
+    }),
+    db
+      .insert(votes)
+      .select(
+        db
+          .select({
+            id: generatedId(),
+            createdAt: selected(now, 'created_at'),
+            updatedAt: selected(now, 'updated_at'),
+            votableId: selected(votable.id, 'votable_id'),
+            votableType: selected(votable.type, 'votable_type'),
+            voteFlag: selected(null, 'vote_flag'),
+            voteScope: selected(null, 'vote_scope'),
+            voteWeight: selected(null, 'vote_weight'),
+            voterId: users.id,
+            voterType: selected('User', 'voter_type')
+          })
+          .from(users)
+          .where(voter)
+      )
+      .onConflictDoNothing(),
+    db.select({ id: users.id }).from(users).where(voter)
+  ]);
+
+  if (unblocked.length === 0) {
+    throw ApiError.invalid(['like_blocked_interaction']);
+  }
+}
+
+export async function unlike(
+  db: Database,
+  voterId: number,
+  votable: Pick<Votable, 'type' | 'id'>
+): Promise<void> {
+  const removed = await db
+    .delete(votes)
+    .where(ownVote(votable, voterId))
+    .returning({ id: votes.id });
+
+  if (removed.length === 0) {
+    throw new ApiError('NotFound');
+  }
 }
