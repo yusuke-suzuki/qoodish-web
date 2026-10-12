@@ -243,18 +243,41 @@ describe('PUT /me/profile', () => {
     expect((await accountOf('alice'))?.revisions).toHaveLength(0);
   });
 
-  it('refuses an image someone else uploaded and a blank name', async () => {
+  it('refuses a blank name', async () => {
     const { status, body } = await send(
       'PUT',
       '/me/profile',
       { sub: 'bob' },
-      { body: { name: ' ', image_ids: [ids.aliceImage] }, language: 'ja' }
+      { body: { name: ' ' }, language: 'ja' }
     );
 
     expect(status).toBe(422);
-    expect(body.detail).toBe(
-      '名前を入力してください。ご自身でアップロードした画像ではありません。'
+    expect(body.detail).toBe('名前を入力してください。');
+  });
+
+  it('refuses an image someone else uploaded', async () => {
+    const { status, body } = await send(
+      'PUT',
+      '/me/profile',
+      { sub: 'bob' },
+      { body: { image_ids: [ids.aliceImage] }, language: 'ja' }
     );
+
+    expect(status).toBe(422);
+    expect(body.detail).toBe('ご自身でアップロードした画像ではありません。');
+  });
+
+  it('answers 400 for image ids that are not a list of plain ids', async () => {
+    for (const imageIds of ['all', [0], [-1], [''], ['0x10']]) {
+      const { status } = await send(
+        'PUT',
+        '/me/profile',
+        { sub: 'bob' },
+        { body: { image_ids: imageIds } }
+      );
+
+      expect(status).toBe(400);
+    }
   });
 
   it('answers 401 for a token without a user', async () => {
@@ -318,6 +341,28 @@ describe('PUT /me/journal', () => {
 
     expect(blank.body.detail).toBe('Journal title is required.');
     expect(long.body.detail).toBe('Journal title is too long. (Max: 50)');
+  });
+
+  it('answers only the required message for a long blank title', async () => {
+    const { body } = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { body: { title: ' '.repeat(51) } }
+    );
+
+    expect(body.detail).toBe('Journal title is required.');
+  });
+
+  it('keeps carriage returns in the description', async () => {
+    const { body } = await send(
+      'PUT',
+      '/me/journal',
+      { sub: 'eve' },
+      { body: { description: 'First\r\nSecond' } }
+    );
+
+    expect(body.description).toBe('First\r\nSecond');
   });
 });
 
@@ -403,6 +448,19 @@ describe('PUT /me/preferences', () => {
     expect(invalid.status).toBe(422);
     expect(missing.status).toBe(400);
   });
+
+  it('ignores a choice it does not know', async () => {
+    expect(
+      (
+        await send(
+          'PUT',
+          '/me/preferences',
+          { sub: 'bob' },
+          { body: { web_push: { followed: true } } }
+        )
+      ).status
+    ).toBe(200);
+  });
 });
 
 describe('/me/devices/:token', () => {
@@ -430,5 +488,12 @@ describe('/me/devices/:token', () => {
       (await send('DELETE', '/me/devices/a%2Fb', { sub: 'bob' })).status
     ).toBe(204);
     expect(await tokens()).toEqual([]);
+  });
+
+  it('answers 400 for a token that is too long', async () => {
+    expect(
+      (await send('PUT', `/me/devices/${'a'.repeat(4097)}`, { sub: 'bob' }))
+        .status
+    ).toBe(400);
   });
 });

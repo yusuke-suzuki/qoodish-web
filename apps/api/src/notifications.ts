@@ -62,14 +62,14 @@ function groupKey(row: {
   return JSON.stringify([row.key, row.notifiableType, row.notifiableId]);
 }
 
-function received(viewer: Viewer): SQL {
+function received(db: Database, viewer: Viewer): SQL | undefined {
   return and(
     eq(notifications.recipientType, 'User'),
     eq(notifications.recipientId, viewer.id),
     inArray(notifications.key, [...KEYS]),
-    sql`${notifications.notifierId} IN (SELECT ${users.id} FROM ${users})`,
+    inArray(notifications.notifierId, db.select({ id: users.id }).from(users)),
     shownTo(viewer, notifications.notifierId)
-  ) as SQL;
+  );
 }
 
 function firstImageUrl(subquery: SQLWrapper) {
@@ -103,7 +103,7 @@ export async function notificationGroups(
       read: sql<number | null>`min(${notifications.read})`
     })
     .from(notifications)
-    .where(received(viewer))
+    .where(received(db, viewer))
     .groupBy(
       notifications.key,
       notifications.notifiableType,
@@ -135,7 +135,7 @@ export async function notificationGroups(
     .from(notifications)
     .where(
       and(
-        received(viewer),
+        received(db, viewer),
         sql`(${notifications.key}, ${notifications.notifiableType}, ${notifications.notifiableId}) IN (SELECT value ->> 0, value ->> 1, value ->> 2 FROM json_each(${JSON.stringify(summaries.map((summary) => [summary.key, summary.notifiableType, summary.notifiableId]))}))`
       )
     )
@@ -163,7 +163,18 @@ export async function notificationGroups(
     );
   const commentIds = notifiableIds('Comment');
   const commentable = (type: string, column: SQLWrapper) =>
-    sql`${column} IN (SELECT ${comments.commentableId} FROM ${comments} WHERE ${comments.commentableType} = ${type} AND ${inIds(comments.id, commentIds)})`;
+    inArray(
+      column,
+      db
+        .select({ id: comments.commentableId })
+        .from(comments)
+        .where(
+          and(
+            eq(comments.commentableType, type),
+            inIds(comments.id, commentIds)
+          )
+        )
+    );
 
   const [records, notifiers, pinRows, mapRows, chapterRows, commentRows] =
     await db.batch([

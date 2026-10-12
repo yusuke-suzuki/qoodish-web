@@ -13,6 +13,7 @@
     "db:migrate:prod": "cf d1 migrations apply 7d615fd7-7907-407b-b5fc-de93a6cb1d55"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.9.1",
     "@qoodish/api-contract": "workspace:*",
     "drizzle-orm": "^0.45.4",
     "hono": "^4.13.8",

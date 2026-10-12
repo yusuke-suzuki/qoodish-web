@@ -1,15 +1,25 @@
 import {
   and,
   eq,
+  inArray,
   ne,
   not,
+  notInArray,
   or,
   type SQL,
   type SQLWrapper,
   sql
 } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import { inIds } from './db/client.ts';
-import { bookmarks, chapters, coauthorships, maps, pins } from './db/schema.ts';
+import {
+  bookmarks,
+  chapters,
+  coauthorships,
+  maps,
+  moderationDecisions,
+  pins
+} from './db/schema.ts';
 
 export type ModeratableType = 'Map' | 'Pin' | 'Chapter' | 'Comment';
 
@@ -32,135 +42,158 @@ export function notMutedBy(viewer: Viewer, userId: SQLWrapper): SQL {
   return not(inIds(userId, [...viewer.muting]));
 }
 
-export function shownTo(viewer: Viewer, userId: SQLWrapper): SQL {
+export function shownTo(viewer: Viewer, userId: SQLWrapper): SQL | undefined {
   return and(
     notBlocking(viewer, userId),
     notBlockedBy(viewer, userId),
     notMutedBy(viewer, userId)
-  ) as SQL;
+  );
 }
 
-export function removedIds(type: ModeratableType): SQL {
-  return sql`SELECT moderatable_id FROM (
-    SELECT moderatable_id, outcome,
-      row_number() OVER (PARTITION BY moderatable_id ORDER BY created_at DESC, id DESC) AS ordinal
-    FROM moderation_decisions WHERE moderatable_type = ${type}
-  ) WHERE ordinal = 1 AND outcome = 'removed'`;
+const qb = new QueryBuilder();
+
+function removedIds(type: ModeratableType) {
+  const latest = qb
+    .select({
+      moderatableId: moderationDecisions.moderatableId,
+      outcome: moderationDecisions.outcome,
+      ordinal:
+        sql<number>`row_number() OVER (PARTITION BY ${moderationDecisions.moderatableId} ORDER BY ${moderationDecisions.createdAt} DESC, ${moderationDecisions.id} DESC)`.as(
+          'ordinal'
+        )
+    })
+    .from(moderationDecisions)
+    .where(eq(moderationDecisions.moderatableType, type))
+    .as('latest_decisions');
+
+  return qb
+    .select({ id: latest.moderatableId })
+    .from(latest)
+    .where(and(eq(latest.ordinal, 1), eq(latest.outcome, 'removed')));
 }
 
 export function visible(column: SQLWrapper, type: ModeratableType): SQL {
-  return sql`${column} NOT IN (${removedIds(type)})`;
+  return notInArray(column, removedIds(type));
 }
 
-export function publicMap(): SQL {
+export function publicMap(): SQL | undefined {
   return and(
     eq(maps.status, 'published'),
     eq(maps.private, false),
     visible(maps.id, 'Map')
-  ) as SQL;
+  );
 }
 
-function onMap(column: SQLWrapper, condition: SQL): SQL {
-  return sql`${column} IN (SELECT ${maps.id} FROM ${maps} WHERE ${condition})`;
+function onMap(column: SQLWrapper, condition: SQL | undefined): SQL {
+  return inArray(
+    column,
+    qb.select({ id: maps.id }).from(maps).where(condition)
+  );
 }
 
-export function publicPin(): SQL {
+export function publicPin(): SQL | undefined {
   return and(
     eq(pins.status, 'published'),
     visible(pins.id, 'Pin'),
     onMap(pins.mapId, publicMap())
-  ) as SQL;
+  );
 }
 
-export function publicChapter(): SQL {
+export function publicChapter(): SQL | undefined {
   return and(
     eq(chapters.status, 'published'),
     visible(chapters.id, 'Chapter'),
     onMap(chapters.mapId, publicMap())
-  ) as SQL;
+  );
 }
 
-function coauthoredBy(viewer: Viewer): SQL {
-  return sql`${maps.id} IN (SELECT ${coauthorships.mapId} FROM ${coauthorships} WHERE ${coauthorships.userId} = ${viewer.id})`;
+function coauthoredBy(viewer: Viewer) {
+  return qb
+    .select({ id: coauthorships.mapId })
+    .from(coauthorships)
+    .where(eq(coauthorships.userId, viewer.id));
 }
 
-function bookmarkedBy(viewer: Viewer): SQL {
-  return sql`${maps.id} IN (SELECT ${bookmarks.mapId} FROM ${bookmarks} WHERE ${bookmarks.userId} = ${viewer.id})`;
+export function bookmarkedBy(viewer: Viewer) {
+  return qb
+    .select({ id: bookmarks.mapId })
+    .from(bookmarks)
+    .where(eq(bookmarks.userId, viewer.id));
 }
 
-export function referenceableMap(viewer: Viewer): SQL {
+export function referenceableMap(viewer: Viewer): SQL | undefined {
   return and(
     or(
       eq(maps.private, false),
       eq(maps.userId, viewer.id),
-      coauthoredBy(viewer)
+      inArray(maps.id, coauthoredBy(viewer))
     ),
     eq(maps.status, 'published'),
     visible(maps.id, 'Map'),
     notBlocking(viewer, maps.userId)
-  ) as SQL;
+  );
 }
 
-export function relatedMap(viewer: Viewer): SQL {
+export function relatedMap(viewer: Viewer): SQL | undefined {
   return and(
     or(
       eq(maps.userId, viewer.id),
-      coauthoredBy(viewer),
-      and(eq(maps.private, false), bookmarkedBy(viewer))
+      inArray(maps.id, coauthoredBy(viewer)),
+      and(eq(maps.private, false), inArray(maps.id, bookmarkedBy(viewer)))
     ),
     eq(maps.status, 'published'),
     visible(maps.id, 'Map')
-  ) as SQL;
+  );
 }
 
-export function recommendableMap(viewer: Viewer): SQL {
+export function recommendableMap(viewer: Viewer): SQL | undefined {
   return and(
     publicMap(),
-    sql`NOT (${bookmarkedBy(viewer)})`,
+    notInArray(maps.id, bookmarkedBy(viewer)),
     shownTo(viewer, maps.userId)
-  ) as SQL;
+  );
 }
 
-export function referenceablePin(viewer: Viewer): SQL {
+export function referenceablePin(viewer: Viewer): SQL | undefined {
   return and(
     eq(pins.status, 'published'),
     visible(pins.id, 'Pin'),
     onMap(pins.mapId, referenceableMap(viewer)),
     notBlocking(viewer, pins.userId)
-  ) as SQL;
+  );
 }
 
-export function feedPin(viewer: Viewer): SQL {
+export function feedPin(viewer: Viewer): SQL | undefined {
   return and(
     eq(pins.status, 'published'),
     visible(pins.id, 'Pin'),
     onMap(pins.mapId, relatedMap(viewer)),
     shownTo(viewer, pins.userId)
-  ) as SQL;
+  );
 }
 
-export function referenceableChapter(viewer: Viewer): SQL {
+export function referenceableChapter(viewer: Viewer): SQL | undefined {
   return and(
     eq(chapters.status, 'published'),
     visible(chapters.id, 'Chapter'),
     onMap(chapters.mapId, referenceableMap(viewer)),
     notBlocking(viewer, chapters.userId)
-  ) as SQL;
+  );
 }
 
-export function readableChapter(viewer: Viewer): SQL {
+export function readableChapter(viewer: Viewer): SQL | undefined {
   return and(
     or(referenceableChapter(viewer), eq(chapters.userId, viewer.id)),
     ne(chapters.status, 'deleted'),
     visible(chapters.id, 'Chapter')
-  ) as SQL;
+  );
 }
 
-export function feedChapter(viewer: Viewer): SQL {
+export function feedChapter(viewer: Viewer): SQL | undefined {
   return and(
     eq(chapters.status, 'published'),
     visible(chapters.id, 'Chapter'),
     onMap(chapters.mapId, relatedMap(viewer)),
     shownTo(viewer, chapters.userId)
-  ) as SQL;
+  );
 }

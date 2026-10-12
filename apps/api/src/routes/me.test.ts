@@ -544,5 +544,6 @@ describe('blocked and muted accounts', () => {
       }
     });
     expect(await ids_of('/v2/me/blocks?cursor=1', 'alice')).toEqual([]);
+    expect(await ids_of('/v2/me/blocks?cursor=abc', 'alice')).toEqual([]);
   });
 });

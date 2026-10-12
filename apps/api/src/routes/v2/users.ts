@@ -1,6 +1,7 @@
 import type { ApiCursorPage, Pin } from '@qoodish/api-contract';
-import { and, desc, eq, type SQL } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import { FEED_PER_PAGE, nextCursor } from '../../cursor.ts';
 import { database } from '../../db/client.ts';
 import { pins } from '../../db/schema.ts';
@@ -11,16 +12,17 @@ import {
 import { viewerPins } from '../../pins.ts';
 import { feedPage } from '../../routing.ts';
 import { findUser } from '../../users.ts';
+import { id, pathParams } from '../../validation.ts';
 import { referenceablePin } from '../../visibility.ts';
 
 const app = new Hono<ViewerEnv>();
 
 app.use(authenticateUser);
 
-app.get('/:userId/pins', async (c) => {
+app.get('/:userId/pins', pathParams(z.object({ userId: id })), async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const user = await findUser(db, c.req.param('userId'));
+  const user = await findUser(db, c.req.valid('param').userId);
   const rows = await db
     .select()
     .from(pins)
@@ -29,7 +31,7 @@ app.get('/:userId/pins', async (c) => {
         c.req.query('cursor'),
         pins.createdAt,
         pins.id,
-        and(referenceablePin(viewer), eq(pins.userId, user.id)) as SQL
+        and(referenceablePin(viewer), eq(pins.userId, user.id))
       )
     )
     .orderBy(desc(pins.createdAt), desc(pins.id))

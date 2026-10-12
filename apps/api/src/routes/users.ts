@@ -5,8 +5,9 @@ import type {
   Profile,
   UserSummary
 } from '@qoodish/api-contract';
-import { and, asc, desc, eq, type SQL } from 'drizzle-orm';
+import { and, asc, desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import { profile } from '../accounts.ts';
 import { viewerChapters } from '../chapters.ts';
 import { database } from '../db/client.ts';
@@ -18,7 +19,7 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
-import { first, present, toId } from '../routing.ts';
+import { first, present } from '../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../search.ts';
 import {
   findUser,
@@ -27,11 +28,14 @@ import {
   userProfile,
   userSummary
 } from '../users.ts';
+import { id, pathParams } from '../validation.ts';
 import {
   notBlocking,
   referenceableChapter,
   referenceableMap
 } from '../visibility.ts';
+
+const userParams = pathParams(z.object({ userId: id }));
 
 const app = new Hono<ViewerEnv>();
 
@@ -77,11 +81,11 @@ app.get('/', async (c) => {
   return c.json<UserSummary[]>(rows.map(userSummary));
 });
 
-app.get('/:id', async (c) => {
+app.get('/:id', pathParams(z.object({ id })), async (c) => {
   const profile = await userProfile(
     database(c.env.DB),
     c.get('viewer'),
-    toId(c.req.param('id'))
+    c.req.valid('param').id
   );
 
   if (!profile) {
@@ -91,10 +95,10 @@ app.get('/:id', async (c) => {
   return c.json(profile);
 });
 
-app.get('/:userId/maps', async (c) => {
+app.get('/:userId/maps', userParams, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const user = await findUser(db, c.req.param('userId'));
+  const user = await findUser(db, c.req.valid('param').userId);
   const rows = await db
     .select()
     .from(maps)
@@ -104,10 +108,10 @@ app.get('/:userId/maps', async (c) => {
   return c.json<AppMap[]>(await viewerMaps(db, viewer, rows));
 });
 
-app.get('/:userId/chapters', async (c) => {
+app.get('/:userId/chapters', userParams, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const user = await findUser(db, c.req.param('userId'));
+  const user = await findUser(db, c.req.valid('param').userId);
   const rows = await db
     .select()
     .from(chapters)
@@ -117,20 +121,17 @@ app.get('/:userId/chapters', async (c) => {
   return c.json<Chapter[]>(await viewerChapters(db, viewer, rows));
 });
 
-app.get('/:userId/journal', async (c) => {
+app.get('/:userId/journal', userParams, async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
-  const user = await findUser(db, c.req.param('userId'));
+  const user = await findUser(db, c.req.valid('param').userId);
 
   return c.json<Journal>(
     first(
       await viewerJournals(
         db,
         viewer,
-        and(
-          eq(journals.userId, user.id),
-          notBlocking(viewer, journals.userId)
-        ) as SQL
+        and(eq(journals.userId, user.id), notBlocking(viewer, journals.userId))
       )
     )
   );

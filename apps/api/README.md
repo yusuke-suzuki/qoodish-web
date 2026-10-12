@@ -33,7 +33,7 @@ A write that spans several rows runs as one D1 `batch`, which D1 applies atomica
 - Edits to a user's name and biography, and to a journal's title and description, append a revision and point the record at it. An edit that changes nothing appends nothing.
 - Notification settings are never updated in place: each change appends a snapshot of every choice, and the newest snapshot is the user's settings.
 
-Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`.
+Validation failures answer `422` with the localized messages joined in `detail`; a request body of the wrong shape answers `400`, and an id in the path that is not a positive integer answers `404`.
 
 ## Search
 

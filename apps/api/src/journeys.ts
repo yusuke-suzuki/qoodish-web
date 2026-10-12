@@ -47,7 +47,7 @@ type JourneyRow = {
   mapPrivate: boolean | null;
 };
 
-function journeysQuery(db: Database, condition: SQL) {
+function journeysQuery(db: Database, condition: SQL | undefined) {
   return db
     .select(journeyColumns)
     .from(journeys)
@@ -113,7 +113,7 @@ export async function journeySummaries(
 
 export async function journeyDetail(
   db: Database,
-  condition: SQL,
+  condition: SQL | undefined,
   secrets: EncryptionSecrets
 ): Promise<Journey | null> {
   const [row] = await journeysQuery(db, condition);

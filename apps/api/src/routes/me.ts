@@ -9,11 +9,12 @@ import type {
   Profile,
   WebPushPreferences
 } from '@qoodish/api-contract';
-import { and, asc, desc, eq, ne, type SQL, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, ne, type SQL } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import {
   pendingInvitations,
+  preferencesInput,
   profile,
   registerDevice,
   unregisterDevice,
@@ -22,7 +23,6 @@ import {
 import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
 import { type Database, database } from '../db/client.ts';
 import {
-  bookmarks,
   chapters,
   journalBookmarks,
   journals,
@@ -30,16 +30,22 @@ import {
   maps
 } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
-import { reviseJournal, viewerJournals } from '../journals.ts';
+import { journalInput, reviseJournal, viewerJournals } from '../journals.ts';
 import { journeyDetail, journeySummaries } from '../journeys.ts';
 import { viewerMaps } from '../maps.ts';
 import {
   authenticateUser,
   type ViewerEnv
 } from '../middleware/authenticate-user.ts';
-import { first, jsonInput, paramInput, toId } from '../routing.ts';
-import { updateProfile } from '../users.ts';
-import { publicMap, type Viewer, visible } from '../visibility.ts';
+import { first } from '../routing.ts';
+import { profileInput, updateProfile } from '../users.ts';
+import { id, jsonBody, pathParams } from '../validation.ts';
+import {
+  bookmarkedBy,
+  publicMap,
+  type Viewer,
+  visible
+} from '../visibility.ts';
 
 const app = new Hono<ViewerEnv>();
 
@@ -47,26 +53,12 @@ app.use(authenticateUser);
 
 const REGISTRATION_TOKEN_LIMIT = 4096;
 
-const profileChanges = z.object({
-  name: z.string().optional(),
-  biography: z.string().nullable().optional(),
-  image_ids: z.array(z.coerce.number().int()).optional()
-});
+const idParams = pathParams(z.object({ id }));
 
-const journalChanges = z.object({
-  title: z.string().optional(),
-  description: z.string().nullable().optional()
-});
-
-const preferenceChanges = z.object({
-  web_push: z
-    .record(z.string(), z.unknown())
-    .refine((changes) => Object.keys(changes).length > 0)
-});
-
-const deviceParams = z.object({
-  token: z.string().min(1).max(REGISTRATION_TOKEN_LIMIT)
-});
+const deviceParams = pathParams(
+  z.object({ token: z.string().min(1).max(REGISTRATION_TOKEN_LIMIT) }),
+  'BadRequest'
+);
 
 async function ownJournal(db: Database, viewer: Viewer): Promise<Journal> {
   return first(
@@ -78,16 +70,11 @@ app.get('/profile', async (c) =>
   c.json<Profile>(await profile(database(c.env.DB), c.get('viewer').id))
 );
 
-app.on(['PUT', 'PATCH'], '/profile', jsonInput(profileChanges), async (c) => {
+app.on(['PUT', 'PATCH'], '/profile', jsonBody(profileInput), async (c) => {
   const db = database(c.env.DB);
   const userId = c.get('viewer').id;
-  const { name, biography, image_ids } = c.req.valid('json');
 
-  await updateProfile(db, userId, {
-    name,
-    biography,
-    imageId: image_ids === undefined ? undefined : (image_ids[0] ?? null)
-  });
+  await updateProfile(db, userId, c.req.valid('json'));
 
   return c.json<Profile>(await profile(db, userId));
 });
@@ -96,7 +83,7 @@ app.get('/journal', async (c) =>
   c.json<Journal>(await ownJournal(database(c.env.DB), c.get('viewer')))
 );
 
-app.on(['PUT', 'PATCH'], '/journal', jsonInput(journalChanges), async (c) => {
+app.on(['PUT', 'PATCH'], '/journal', jsonBody(journalInput), async (c) => {
   const db = database(c.env.DB);
   const viewer = c.get('viewer');
 
@@ -108,7 +95,7 @@ app.on(['PUT', 'PATCH'], '/journal', jsonInput(journalChanges), async (c) => {
 app.on(
   ['PUT', 'PATCH'],
   '/preferences',
-  jsonInput(preferenceChanges),
+  jsonBody(preferencesInput),
   async (c) =>
     c.json<{ web_push: WebPushPreferences }>({
       web_push: await updateWebPush(
@@ -119,22 +106,17 @@ app.on(
     })
 );
 
-app.on(
-  ['PUT', 'PATCH'],
-  '/devices/:token',
-  paramInput(deviceParams),
-  async (c) => {
-    await registerDevice(
-      database(c.env.DB),
-      c.get('viewer').id,
-      c.req.valid('param').token
-    );
+app.on(['PUT', 'PATCH'], '/devices/:token', deviceParams, async (c) => {
+  await registerDevice(
+    database(c.env.DB),
+    c.get('viewer').id,
+    c.req.valid('param').token
+  );
 
-    return c.body(null, 204);
-  }
-);
+  return c.body(null, 204);
+});
 
-app.delete('/devices/:token', paramInput(deviceParams), async (c) => {
+app.delete('/devices/:token', deviceParams, async (c) => {
   await unregisterDevice(
     database(c.env.DB),
     c.get('viewer').id,
@@ -162,11 +144,8 @@ app.get('/maps', async (c) => {
   return c.json<AppMap[]>(await viewerMaps(db, viewer, rows));
 });
 
-function ownChapters(userId: number): SQL {
-  return and(
-    eq(chapters.userId, userId),
-    ne(chapters.status, 'deleted')
-  ) as SQL;
+function ownChapters(userId: number): SQL | undefined {
+  return and(eq(chapters.userId, userId), ne(chapters.status, 'deleted'));
 }
 
 app.get('/chapters', async (c) => {
@@ -181,7 +160,7 @@ app.get('/chapters', async (c) => {
   return c.json<Chapter[]>(await viewerChapters(db, viewer, rows));
 });
 
-app.get('/chapters/:id', async (c) => {
+app.get('/chapters/:id', idParams, async (c) => {
   const viewer = c.get('viewer');
 
   return c.json<ChapterDetail>(
@@ -189,10 +168,7 @@ app.get('/chapters/:id', async (c) => {
       await viewerChapterDetails(
         database(c.env.DB),
         viewer,
-        and(
-          ownChapters(viewer.id),
-          eq(chapters.id, toId(c.req.param('id')))
-        ) as SQL
+        and(ownChapters(viewer.id), eq(chapters.id, c.req.valid('param').id))
       )
     )
   );
@@ -210,13 +186,13 @@ app.get('/journeys', async (c) =>
   )
 );
 
-app.get('/journeys/:id', async (c) => {
+app.get('/journeys/:id', idParams, async (c) => {
   const journey = await journeyDetail(
     database(c.env.DB),
     and(
       eq(journeys.userId, c.get('viewer').id),
-      eq(journeys.id, toId(c.req.param('id')))
-    ) as SQL,
+      eq(journeys.id, c.req.valid('param').id)
+    ),
     {
       primaryKey: c.env.ENCRYPTION_PRIMARY_KEY,
       keyDerivationSalt: c.env.ENCRYPTION_KEY_DERIVATION_SALT
@@ -236,25 +212,27 @@ app.get('/bookmarks/maps', async (c) => {
   const rows = await db
     .select()
     .from(maps)
-    .where(
-      and(
-        publicMap(),
-        sql`${maps.id} IN (SELECT ${bookmarks.mapId} FROM ${bookmarks} WHERE ${bookmarks.userId} = ${viewer.id})`
-      )
-    )
+    .where(and(publicMap(), inArray(maps.id, bookmarkedBy(viewer))))
     .orderBy(desc(maps.createdAt), asc(maps.id));
 
   return c.json<AppMap[]>(await viewerMaps(db, viewer, rows));
 });
 
 app.get('/bookmarks/journals', async (c) => {
+  const db = database(c.env.DB);
   const viewer = c.get('viewer');
 
   return c.json<Journal[]>(
     await viewerJournals(
-      database(c.env.DB),
+      db,
       viewer,
-      sql`${journals.id} IN (SELECT ${journalBookmarks.journalId} FROM ${journalBookmarks} WHERE ${journalBookmarks.userId} = ${viewer.id})`
+      inArray(
+        journals.id,
+        db
+          .select({ id: journalBookmarks.journalId })
+          .from(journalBookmarks)
+          .where(eq(journalBookmarks.userId, viewer.id))
+      )
     )
   );
 });

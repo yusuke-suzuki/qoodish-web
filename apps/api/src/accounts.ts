@@ -6,6 +6,7 @@ import type {
   WebPushPreferences
 } from '@qoodish/api-contract';
 import { and, asc, desc, eq, notExists, type SQL, sql } from 'drizzle-orm';
+import { z } from 'zod';
 import { currentTimestamp, type Database, uniqueIds } from './db/client.ts';
 import {
   blocks,
@@ -19,7 +20,6 @@ import {
   userPreferences,
   users
 } from './db/schema.ts';
-import { ApiError } from './errors.ts';
 import { primaryImage } from './images.ts';
 import { firstImageUrls, mapImagesQuery } from './maps.ts';
 import {
@@ -73,29 +73,36 @@ export async function profile(db: Database, userId: number): Promise<Profile> {
   };
 }
 
+const webPushChoice = z.boolean({ error: 'web_push_invalid' }).optional();
+
+export const preferencesInput = z.object({
+  web_push: z
+    .record(z.string(), z.unknown())
+    .refine((changes) => Object.keys(changes).length > 0)
+    .pipe(
+      z.object({
+        coauthor_invited: webPushChoice,
+        liked: webPushChoice,
+        comment: webPushChoice,
+        published: webPushChoice
+      })
+    )
+});
+
 export async function updateWebPush(
   db: Database,
   userId: number,
-  changes: Record<string, unknown>
+  changes: Partial<WebPushPreferences>
 ): Promise<WebPushPreferences> {
   const [preference] = await latestPreferenceQuery(db, userId);
   const current = effectiveWebPush(preference?.webPush);
-  const snapshot: Record<string, unknown> = {
-    ...current,
-    ...Object.fromEntries(
-      Object.entries(changes).filter(([key]) =>
-        Object.hasOwn(WEB_PUSH_DEFAULTS, key)
-      )
-    )
-  };
-
-  if (!Object.values(snapshot).every((value) => typeof value === 'boolean')) {
-    throw ApiError.invalid(['web_push_invalid']);
-  }
+  const snapshot: WebPushPreferences = { ...current, ...changes };
 
   if (
     preference &&
-    Object.entries(current).every(([key, value]) => snapshot[key] === value)
+    (Object.keys(current) as (keyof WebPushPreferences)[]).every(
+      (key) => snapshot[key] === current[key]
+    )
   ) {
     return current;
   }
@@ -109,7 +116,7 @@ export async function updateWebPush(
     updatedAt: now
   });
 
-  return snapshot as WebPushPreferences;
+  return snapshot;
 }
 
 export async function registerDevice(
@@ -216,7 +223,7 @@ async function accountsPage(
     accountId: typeof blocks.blockedId | typeof mutes.mutedId;
     recordId: typeof blocks.id | typeof mutes.id;
     table: typeof blocks | typeof mutes;
-    condition: SQL;
+    condition: SQL | undefined;
   },
   cursor: number | null
 ): Promise<ApiCursorPage<ModeratedAccount>> {
@@ -258,7 +265,7 @@ export function blockedAccounts(
             .from(unblocks)
             .where(eq(unblocks.blockId, blocks.id))
         )
-      ) as SQL
+      )
     },
     cursor
   );
@@ -283,7 +290,7 @@ export function mutedAccounts(
             .from(unmutes)
             .where(eq(unmutes.muteId, mutes.id))
         )
-      ) as SQL
+      )
     },
     cursor
   );

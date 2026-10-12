@@ -1,13 +1,15 @@
 import type { GuestPin } from '@qoodish/api-contract';
 import { and, asc, count, desc, eq, getTableColumns } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import type { AppEnv } from '../../app.ts';
 import { database } from '../../db/client.ts';
 import { pins, votes } from '../../db/schema.ts';
 import { ApiError } from '../../errors.ts';
 import { guestPins } from '../../pins.ts';
-import { first, present, toId } from '../../routing.ts';
+import { first, present } from '../../routing.ts';
 import { SEARCH_LIMIT, searchCondition } from '../../search.ts';
+import { id, pathParams } from '../../validation.ts';
 import { publicPin } from '../../visibility.ts';
 
 const RECENT_PINS_LIMIT = 8;
@@ -79,13 +81,13 @@ app.get('/', async (c) => {
   throw new ApiError('BadRequest');
 });
 
-app.get('/:id', async (c) => {
+app.get('/:id', pathParams(z.object({ id })), async (c) => {
   const db = database(c.env.DB);
   const pin = first(
     await db
       .select()
       .from(pins)
-      .where(and(publicPin(), eq(pins.id, toId(c.req.param('id')))))
+      .where(and(publicPin(), eq(pins.id, c.req.valid('param').id)))
   );
 
   return c.json(first(await guestPins(db, [pin])));

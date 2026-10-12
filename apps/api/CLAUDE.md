@@ -9,7 +9,8 @@ The Qoodish API: a Hono app on Cloudflare Workers that keeps its records in D1 t
 - Queries and response shapes used by more than one route file go in one module per resource at the top of `src` (`maps.ts`, `pins.ts`, `chapters.ts`, ...). A query used by one route file stays in it.
 - Response types are declared in `packages/api-contract` and shared with `apps/web` and `apps/admin`. Answer with `c.json<T>()` against the contract type.
 - Throw errors as `ApiError` (`src/errors.ts`). Their messages are user-facing and come from `src/i18n`, so a new message needs both an English and a Japanese version.
-- Validate request input with zod before it reaches a query.
+- Validate request bodies and path params with the `jsonBody` and `pathParams` validators in `src/validation.ts`, which wrap `@hono/zod-validator`, and read them with `c.req.valid()`. Express every rule on the input's shape and content (type, presence, length) in the zod schema, with a message key from `src/i18n` as the issue's error so that it answers 422 with that message. Keep in code only the checks that need the database, such as a duplicate name or an image the user does not own.
+- Compatibility with the previous API extends to the HTTP contract (paths, status codes, JSON shapes, messages) and stops there. Write the code behind it the way Hono, Drizzle and zod document, rather than reproducing how the previous implementation was structured.
 
 ## 2. Queries
 

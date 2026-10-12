@@ -2,6 +2,10 @@ export function characters(text: string): number {
   return [...text].length;
 }
 
+export function withoutCarriageReturns(text: string): string {
+  return text.replaceAll('\r', '');
+}
+
 export function truncate(text: string, length: number): string {
   const omission = '...';
 
