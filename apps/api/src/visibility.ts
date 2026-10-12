@@ -4,21 +4,24 @@ import {
   inArray,
   ne,
   not,
+  notExists,
   notInArray,
   or,
   type SQL,
   type SQLWrapper,
   sql
 } from 'drizzle-orm';
-import { QueryBuilder } from 'drizzle-orm/sqlite-core';
-import { inIds } from './db/client.ts';
+import { QueryBuilder, type SQLiteColumn } from 'drizzle-orm/sqlite-core';
+import { type Database, inIds } from './db/client.ts';
 import {
+  blocks,
   bookmarks,
   chapters,
   coauthorships,
   maps,
   moderationDecisions,
-  pins
+  pins,
+  unblocks
 } from './db/schema.ts';
 
 export type ModeratableType = 'Map' | 'Pin' | 'Chapter' | 'Comment';
@@ -29,6 +32,36 @@ export type Viewer = {
   blockedBy: ReadonlySet<number>;
   muting: ReadonlySet<number>;
 };
+
+export function activeBlock(db: Database): SQL {
+  return notExists(
+    db
+      .select({ id: unblocks.id })
+      .from(unblocks)
+      .where(eq(unblocks.blockId, blocks.id))
+  );
+}
+
+export function noBlockBetween(
+  db: Database,
+  userColumn: SQLiteColumn,
+  userId: number
+): SQL {
+  return notExists(
+    db
+      .select({ id: blocks.id })
+      .from(blocks)
+      .where(
+        and(
+          activeBlock(db),
+          or(
+            and(eq(blocks.blockerId, userColumn), eq(blocks.blockedId, userId)),
+            and(eq(blocks.blockerId, userId), eq(blocks.blockedId, userColumn))
+          )
+        )
+      )
+  );
+}
 
 export function notBlocking(viewer: Viewer, userId: SQLWrapper): SQL {
   return not(inIds(userId, [...viewer.blockedBy]));

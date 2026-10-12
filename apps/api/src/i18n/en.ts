@@ -41,6 +41,8 @@ export const en = {
   bookmark_map_editable:
     'The author and coauthors cannot bookmark a map they can edit.',
   duplicate_bookmark: 'The map is already bookmarked.',
+  bookmark_blocked_interaction:
+    'You cannot bookmark a map by an account you have blocked or that has blocked you.',
   invitation_invitee_already_author:
     'The author cannot be invited as a coauthor.',
   duplicate_pending_invitation:
@@ -87,6 +89,11 @@ export const en = {
   journal_description_exceed: 'Journal description is too long. (Max: 200)',
   journal_bookmark_own: 'The author cannot bookmark their own journal.',
   duplicate_journal_bookmark: 'The journal is already bookmarked.',
+  journal_bookmark_blocked_interaction:
+    'You cannot bookmark the journal of an account you have blocked or that has blocked you.',
+
+  block_self: 'Account is your own and cannot be blocked.',
+  mute_self: 'Account is your own and cannot be muted.',
 
   report_type_not_supported: 'This content cannot be reported.'
 };

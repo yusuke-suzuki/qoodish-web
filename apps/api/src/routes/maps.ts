@@ -9,6 +9,7 @@ import type {
 import { and, asc, desc, eq, type SQL, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
+import { bookmarkMap, unbookmarkMap } from '../bookmarks.ts';
 import { viewerChapters } from '../chapters.ts';
 import { type Database, database, scalar } from '../db/client.ts';
 import { chapters, maps, pins } from '../db/schema.ts';
@@ -250,6 +251,25 @@ app.delete('/:mapId/coauthors/:userId', coauthorParams, async (c) => {
   await removeCoauthor(db, { mapId: map.id, userId });
 
   return c.body(null, 204);
+});
+
+app.post('/:mapId/bookmark', mapParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const map = await bookmarkMap(db, viewer.id, c.req.valid('param').mapId);
+
+  return c.json<AppMap>(first(await viewerMaps(db, viewer, [map])));
+});
+
+app.delete('/:mapId/bookmark', mapParams, async (c) => {
+  const db = database(c.env.DB);
+  const viewer = c.get('viewer');
+  const map = await unbookmarkMap(db, {
+    userId: viewer.id,
+    mapId: c.req.valid('param').mapId
+  });
+
+  return c.json<AppMap>(first(await viewerMaps(db, viewer, [map])));
 });
 
 app.post('/:mapId/pins', mapParams, jsonBody(newPinInput), async (c) => {

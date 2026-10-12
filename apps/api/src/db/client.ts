@@ -28,6 +28,14 @@ export function scalar(query: SQLWrapper): SQL<number> {
   return sql<number>`(${query})`;
 }
 
+export function generatedId(): SQL.Aliased<number> {
+  return sql<number>`NULL`.as('id');
+}
+
+export function selected<Value>(value: Value, alias: string) {
+  return sql<Value>`${value}`.as(alias);
+}
+
 export function currentTimestamp(): string {
   return new Date().toISOString().replace('Z', '000Z');
 }

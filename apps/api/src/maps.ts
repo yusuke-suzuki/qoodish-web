@@ -5,8 +5,9 @@ import type {
   GuestMap,
   PinProperty
 } from '@qoodish/api-contract';
-import { and, asc, eq, max, type SQL } from 'drizzle-orm';
+import { and, asc, eq, inArray, max, or, type SQL } from 'drizzle-orm';
 import { z } from 'zod';
+import { removeMapBookmarks } from './bookmarks.ts';
 import {
   currentTimestamp,
   type Database,
@@ -307,7 +308,7 @@ async function writeMapRevision(
       now
     }),
     ...(content.private && !current.private
-      ? [db.delete(bookmarks).where(eq(bookmarks.mapId, map.id))]
+      ? [removeMapBookmarks(db, map.id)]
       : [])
   ]);
 }
@@ -371,6 +372,25 @@ export async function removeCoauthor(
   if (!removed) {
     throw new ApiError('NotFound');
   }
+}
+
+export function mapIdsOf(db: Database, authorId: number) {
+  return db.select({ id: maps.id }).from(maps).where(eq(maps.userId, authorId));
+}
+
+export function removeCoauthorshipsBetween(
+  db: Database,
+  [userId, otherId]: readonly [number, number]
+) {
+  const coauthoring = (coauthorId: number, authorId: number) =>
+    and(
+      eq(coauthorships.userId, coauthorId),
+      inArray(coauthorships.mapId, mapIdsOf(db, authorId))
+    );
+
+  return db
+    .delete(coauthorships)
+    .where(or(coauthoring(userId, otherId), coauthoring(otherId, userId)));
 }
 
 export function firstImageUrls(

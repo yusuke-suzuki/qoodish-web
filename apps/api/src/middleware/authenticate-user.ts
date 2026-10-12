@@ -1,31 +1,16 @@
-import { and, eq, notExists } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { createMiddleware } from 'hono/factory';
 import type { AppEnv } from '../app.ts';
 import { type Database, database } from '../db/client.ts';
-import { blocks, mutes, unblocks, unmutes, users } from '../db/schema.ts';
+import { blocks, mutes, users } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
-import type { Viewer } from '../visibility.ts';
+import { activeMute } from '../mutes.ts';
+import { activeBlock, type Viewer } from '../visibility.ts';
 
 export type ViewerEnv = {
   Bindings: AppEnv['Bindings'];
   Variables: AppEnv['Variables'] & { viewer: Viewer };
 };
-
-const activeBlock = (db: Database) =>
-  notExists(
-    db
-      .select({ id: unblocks.id })
-      .from(unblocks)
-      .where(eq(unblocks.blockId, blocks.id))
-  );
-
-const activeMute = (db: Database) =>
-  notExists(
-    db
-      .select({ id: unmutes.id })
-      .from(unmutes)
-      .where(eq(unmutes.muteId, mutes.id))
-  );
 
 export async function loadViewer(
   db: Database,

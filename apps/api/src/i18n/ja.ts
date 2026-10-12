@@ -42,6 +42,8 @@ export const ja: Messages = {
   bookmark_map_editable:
     '著者・共著者は自身が編集できる地図をブックマークできません。',
   duplicate_bookmark: '既にブックマーク済みです。',
+  bookmark_blocked_interaction:
+    'ブロックしている、またはブロックされているアカウントの地図はブックマークできません。',
   invitation_invitee_already_author:
     '著者を共著者として招待することはできません。',
   duplicate_pending_invitation: 'このユーザーへの招待は既に保留中です。',
@@ -84,6 +86,11 @@ export const ja: Messages = {
   journal_description_exceed: '手帳の説明が長すぎます。(最大: 200 文字)',
   journal_bookmark_own: '著者は自身の手帳をブックマークできません。',
   duplicate_journal_bookmark: '既にブックマーク済みです。',
+  journal_bookmark_blocked_interaction:
+    'ブロックしている、またはブロックされているアカウントの手帳はブックマークできません。',
+
+  block_self: 'アカウントがご自身のため、ブロックできません。',
+  mute_self: 'アカウントがご自身のため、ミュートできません。',
 
   report_type_not_supported: 'このコンテンツは報告できません。'
 };
