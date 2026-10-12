@@ -8,10 +8,10 @@ import {
   authenticateUser,
   type ViewerEnv
 } from '../../middleware/authenticate-user.ts';
+import { requireUser } from '../../middleware/require-user.ts';
 import { viewerPins } from '../../pins.ts';
 import { feedPage } from '../../routing.ts';
-import { findUser } from '../../users.ts';
-import { id, pathParams, queryParams } from '../../validation.ts';
+import { feedCursorQuery, id, pathParams } from '../../validation.ts';
 import { referenceablePin } from '../../visibility.ts';
 
 const app = new Hono<ViewerEnv>();
@@ -21,11 +21,11 @@ app.use(authenticateUser);
 app.get(
   '/:userId/pins',
   pathParams(z.object({ userId: id })),
-  queryParams(z.object({ cursor: z.string().optional() })),
+  requireUser,
+  feedCursorQuery,
   async (c) => {
     const db = c.get('db');
     const viewer = c.get('viewer');
-    const user = await findUser(db, c.req.valid('param').userId);
     const rows = await db
       .select()
       .from(pins)
@@ -34,7 +34,10 @@ app.get(
           c.req.valid('query').cursor,
           pins.createdAt,
           pins.id,
-          and(referenceablePin(viewer), eq(pins.userId, user.id))
+          and(
+            referenceablePin(viewer),
+            eq(pins.userId, c.req.valid('param').userId)
+          )
         )
       )
       .orderBy(desc(pins.createdAt), desc(pins.id))

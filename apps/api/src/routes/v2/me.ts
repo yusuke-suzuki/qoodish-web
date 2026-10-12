@@ -17,7 +17,7 @@ import {
 import { notificationGroups } from '../../notifications.ts';
 import { viewerPins } from '../../pins.ts';
 import { feedPage, present } from '../../routing.ts';
-import { feedCursor, optionalId, queryParams } from '../../validation.ts';
+import { feedCursorQuery, optionalId, queryParams } from '../../validation.ts';
 import { visible } from '../../visibility.ts';
 
 const FALSE_PARAMS = new Set(['0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF']);
@@ -36,27 +36,24 @@ app.use(authenticateUser);
 app.get(
   '/notifications',
   queryParams(
-    z.object({
-      cursor: pageCursor,
-      read: z
-        .string()
-        .optional()
-        .transform((read) => read !== undefined && FALSE_PARAMS.has(read))
-    })
-  ),
-  async (c) => {
-    const { cursor, read: unread } = c.req.valid('query');
-
-    return c.json<ApiCursorPage<NotificationGroup>>(
-      await notificationGroups(c.get('db'), c.get('viewer'), {
+    z
+      .object({ cursor: pageCursor, read: z.string().optional() })
+      .transform(({ cursor, read }) => ({
         cursor,
-        unread
-      })
-    );
-  }
+        unread: read !== undefined && FALSE_PARAMS.has(read)
+      }))
+  ),
+  async (c) =>
+    c.json<ApiCursorPage<NotificationGroup>>(
+      await notificationGroups(
+        c.get('db'),
+        c.get('viewer'),
+        c.req.valid('query')
+      )
+    )
 );
 
-app.get('/pins', queryParams(z.object({ cursor: feedCursor })), async (c) => {
+app.get('/pins', feedCursorQuery, async (c) => {
   const db = c.get('db');
   const viewer = c.get('viewer');
   const rows = await db

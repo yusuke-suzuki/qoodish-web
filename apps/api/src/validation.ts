@@ -68,11 +68,13 @@ export function decoded<Output>(decode: (text: string) => Output) {
   });
 }
 
-export const feedCursor = z
+const feedCursor = z
   .literal('')
   .transform(() => undefined)
   .or(decoded(decodeCursor))
   .optional();
+
+export const feedCursorQuery = queryParams(z.object({ cursor: feedCursor }));
 
 export const flag = z
   .string()
