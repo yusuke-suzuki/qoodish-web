@@ -1,7 +1,9 @@
 import { env } from 'cloudflare:test';
 import { and, asc, eq } from 'drizzle-orm';
-import { database } from '../db/client.ts';
+import { database, inIds } from '../db/client.ts';
 import {
+  chapterRevisionImages,
+  chapterRevisions,
   commentRevisions,
   journals,
   maps,
@@ -63,6 +65,31 @@ export async function pinRevisionsOf(pinId: number) {
   }));
 }
 
+export async function chapterRevisionsOf(chapterId: number) {
+  const revisions = await db()
+    .select()
+    .from(chapterRevisions)
+    .where(eq(chapterRevisions.chapterId, chapterId))
+    .orderBy(asc(chapterRevisions.id));
+  const revisionImages = await db()
+    .select()
+    .from(chapterRevisionImages)
+    .where(
+      inIds(
+        chapterRevisionImages.chapterRevisionId,
+        revisions.map((revision) => revision.id)
+      )
+    )
+    .orderBy(asc(chapterRevisionImages.imageId));
+
+  return revisions.map((revision) => ({
+    ...revision,
+    imageIds: revisionImages
+      .filter((image) => image.chapterRevisionId === revision.id)
+      .map((image) => image.imageId)
+  }));
+}
+
 export async function commentRevisionsOf(commentId: number) {
   return db()
     .select({
@@ -97,6 +124,10 @@ export function likedNotifications(type: string, id: number) {
 
 export function commentNotifications(type: string, id: number) {
   return notificationsOf('comment', type, id);
+}
+
+export function publishedNotifications(chapterId: number) {
+  return notificationsOf('published', 'Chapter', chapterId);
 }
 
 export async function chapterVotesBy(voterId: number) {

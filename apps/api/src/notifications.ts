@@ -257,7 +257,8 @@ export function recordNotification(
     notifierId,
     recipientId,
     now,
-    condition
+    condition,
+    acrossBlocks = false
   }: {
     key: NotificationKey;
     notifiable: { type: ModeratableType; id: number };
@@ -265,6 +266,7 @@ export function recordNotification(
     recipientId: number;
     now: string;
     condition?: SQL;
+    acrossBlocks?: boolean;
   }
 ) {
   return db
@@ -289,7 +291,7 @@ export function recordNotification(
           and(
             eq(users.id, recipientId),
             ne(users.id, notifierId),
-            noBlockBetween(db, users.id, notifierId),
+            acrossBlocks ? undefined : noBlockBetween(db, users.id, notifierId),
             condition
           )
         )
@@ -306,7 +308,7 @@ export function notNotifiedYet(
   }: {
     key: NotificationKey;
     notifiable: { type: ModeratableType; id: number };
-    notifierId: number;
+    notifierId?: number;
   }
 ): SQL {
   return notExists(
@@ -318,8 +320,12 @@ export function notNotifiedYet(
           eq(notifications.key, key),
           eq(notifications.notifiableType, notifiable.type),
           eq(notifications.notifiableId, notifiable.id),
-          eq(notifications.notifierType, 'User'),
-          eq(notifications.notifierId, notifierId)
+          notifierId === undefined
+            ? undefined
+            : and(
+                eq(notifications.notifierType, 'User'),
+                eq(notifications.notifierId, notifierId)
+              )
         )
       )
   );

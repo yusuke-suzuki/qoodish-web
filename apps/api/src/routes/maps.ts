@@ -1,6 +1,7 @@
 import type {
   AppMap,
   Chapter,
+  ChapterDetail,
   Coauthor,
   CoauthorshipInvitation,
   Pin,
@@ -11,10 +12,16 @@ import { and, asc, desc, eq, type SQL, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { bookmarkMap, unbookmarkMap } from '../bookmarks.ts';
-import { viewerChapters } from '../chapters.ts';
+import {
+  createChapter,
+  type JourneyRef,
+  newChapterInput,
+  viewerChapterDetails,
+  viewerChapters
+} from '../chapters.ts';
 import { invitation, inviteCoauthor } from '../coauthorship-invitations.ts';
-import { type Database, scalar } from '../db/client.ts';
-import { chapters, maps, pins } from '../db/schema.ts';
+import { type Database, inIds, scalar, uniqueIds } from '../db/client.ts';
+import { chapters, journeys, maps, pins } from '../db/schema.ts';
 import { ApiError } from '../errors.ts';
 import {
   createMap,
@@ -187,6 +194,52 @@ app.get('/:mapId/chapters', mapParams, async (c) => {
 
   return c.json<Chapter[]>(await viewerChapters(db, viewer, rows));
 });
+
+app.post(
+  '/:mapId/chapters',
+  mapParams,
+  jsonBody(newChapterInput),
+  async (c) => {
+    const db = c.get('db');
+    const viewer = c.get('viewer');
+    const { journey_id: journeyId, ...changes } = c.req.valid('json');
+
+    if (journeyId === undefined) {
+      throw new ApiError('NotFound');
+    }
+
+    const [mapRows, journeyRows] = await db.batch([
+      db
+        .select({ id: maps.id })
+        .from(maps)
+        .where(
+          and(referenceableMap(viewer), eq(maps.id, c.req.valid('param').mapId))
+        ),
+      db
+        .select({ id: journeys.id, mapId: journeys.mapId })
+        .from(journeys)
+        .where(
+          and(
+            inIds(journeys.id, uniqueIds([journeyId])),
+            eq(journeys.userId, viewer.id)
+          )
+        )
+    ]);
+    const map = first(mapRows);
+    const journey: JourneyRef | null =
+      journeyId === null ? null : first(journeyRows);
+    const chapterId = await createChapter(db, {
+      userId: viewer.id,
+      mapId: map.id,
+      journey,
+      changes
+    });
+
+    return c.json<ChapterDetail>(
+      first(await viewerChapterDetails(db, viewer, eq(chapters.id, chapterId)))
+    );
+  }
+);
 
 app.get('/:mapId/pin_properties', mapParams, async (c) => {
   const db = c.get('db');

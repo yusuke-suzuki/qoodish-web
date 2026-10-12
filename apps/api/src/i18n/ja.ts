@@ -79,6 +79,8 @@ export const ja: Messages = {
   chapter_map_features_invalid:
     'チャプターの地図データの形式が正しくありません。',
   chapter_map_features_exceed: 'チャプターの地図データが大きすぎます。',
+  chapter_status_invalid: 'チャプターの公開状態が正しくありません。',
+  chapter_images_exceed: 'チャプターに添付できる画像は 1 枚までです。',
   chapter_journey_mismatch:
     '指定された旅はチャプターの著者または地図に属していません。',
   duplicate_chapter_for_journey: 'この旅のチャプターは既に作成されています。',

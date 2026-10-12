@@ -15,6 +15,27 @@ export function sameIds(
   );
 }
 
+export function imageOwnersQuery(db: Database, imageIds: readonly number[]) {
+  return db
+    .select({ userId: images.userId })
+    .from(images)
+    .where(inIds(images.id, imageIds));
+}
+
+export function unownedImages(
+  owners: readonly { userId: number }[],
+  imageIds: readonly number[],
+  editorId: number
+): MessageKey[] {
+  if (owners.length !== imageIds.length) {
+    throw new ApiError('NotFound');
+  }
+
+  return owners.every((owner) => owner.userId === editorId)
+    ? []
+    : ['image_not_owned'];
+}
+
 export async function unownedImageErrors(
   db: Database,
   imageIds: readonly number[],
@@ -24,18 +45,11 @@ export async function unownedImageErrors(
     return [];
   }
 
-  const rows = await db
-    .select({ userId: images.userId })
-    .from(images)
-    .where(inIds(images.id, imageIds));
-
-  if (rows.length !== imageIds.length) {
-    throw new ApiError('NotFound');
-  }
-
-  return rows.every((row) => row.userId === editorId)
-    ? []
-    : ['image_not_owned'];
+  return unownedImages(
+    await imageOwnersQuery(db, imageIds),
+    imageIds,
+    editorId
+  );
 }
 
 export function variantUrl(url: string, variant: string): string {

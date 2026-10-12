@@ -21,7 +21,13 @@ import {
   unregisterDevice,
   updateWebPush
 } from '../accounts.ts';
-import { viewerChapterDetails, viewerChapters } from '../chapters.ts';
+import {
+  chapterInput,
+  discardChapter,
+  reviseChapter,
+  viewerChapterDetails,
+  viewerChapters
+} from '../chapters.ts';
 import {
   answerInvitation,
   invitation,
@@ -240,6 +246,54 @@ app.get('/chapters/:id', idParams, async (c) => {
       )
     )
   );
+});
+
+async function ownChapter(db: Database, viewer: Viewer, chapterId: number) {
+  return first(
+    await db
+      .select()
+      .from(chapters)
+      .where(and(ownChapters(viewer.id), eq(chapters.id, chapterId)))
+  );
+}
+
+app.on(
+  ['PUT', 'PATCH'],
+  '/chapters/:id',
+  idParams,
+  jsonBody(chapterInput),
+  async (c) => {
+    const db = c.get('db');
+    const viewer = c.get('viewer');
+    const chapterId = c.req.valid('param').id;
+
+    await reviseChapter(
+      db,
+      c.env.WEB_PUSH_QUEUE,
+      () => ownChapter(db, viewer, chapterId),
+      { editorId: viewer.id, changes: c.req.valid('json') }
+    );
+
+    return c.json<ChapterDetail>(
+      first(
+        await viewerChapterDetails(
+          db,
+          viewer,
+          and(eq(chapters.userId, viewer.id), eq(chapters.id, chapterId))
+        )
+      )
+    );
+  }
+);
+
+app.delete('/chapters/:id', idParams, async (c) => {
+  const db = c.get('db');
+  const viewer = c.get('viewer');
+  const chapterId = c.req.valid('param').id;
+
+  await discardChapter(db, () => ownChapter(db, viewer, chapterId), viewer.id);
+
+  return c.body(null, 204);
 });
 
 app.get('/coauthorship_invitations', async (c) =>
