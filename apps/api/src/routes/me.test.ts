@@ -1,21 +1,36 @@
-import { env } from 'cloudflare:test';
-import { and, asc, eq, inArray } from 'drizzle-orm';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { env, introspectWorkflow } from 'cloudflare:test';
+import { and, asc, eq, inArray, or } from 'drizzle-orm';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { DELETE_ACCOUNT_URL } from '../auth/identity-platform.ts';
+import { GOOGLE_TOKEN_URL } from '../auth/service-account.ts';
 import { database } from '../db/client.ts';
 import {
+  bookmarks,
   chapters,
+  coauthorshipInvitations,
   coauthorships,
+  comments,
   devices,
   images,
+  journalBookmarks,
   journalRevisions,
+  journals,
   journeyCheckinRevisionImages,
   journeyCheckinRevisions,
   journeyCheckins,
   journeys,
+  mapRevisions,
+  maps,
   milestones,
+  moderationDecisions,
   notifications,
+  pinRevisions,
   pins,
-  userPreferences
+  reports,
+  userPreferences,
+  userRevisions,
+  users,
+  votes
 } from '../db/schema.ts';
 import { decryptAttribute, encryptionSecrets } from '../encryption.ts';
 import { get, idsOf, send } from '../test/client.ts';
@@ -1561,5 +1576,418 @@ describe('journey writes', () => {
       await db().select().from(images).where(eq(images.id, checkinImage))
     ).toHaveLength(1);
     expect(await milestonesOf(cafeJourney)).toHaveLength(2);
+  });
+});
+
+describe('DELETE /me/account', () => {
+  const ACCESS_TOKEN = 'identity-platform-token';
+  const IMAGES_URL =
+    'https://api.cloudflare.com/client/v4/accounts/test-account/images/v1/';
+  const DELIVERY_BASE = `https://imagedelivery.net/${env.CLOUDFLARE_IMAGES_ACCOUNT_HASH}/`;
+  const stamp = { createdAt: at(1), updatedAt: at(1) };
+  const fixture = {
+    bobImage: 0,
+    bobPinOnRamen: 0,
+    bobJourneyOnRamen: 0,
+    bobChapterOnRamen: 0
+  };
+
+  beforeAll(async () => {
+    const bobImage = await db()
+      .insert(images)
+      .values({ userId: ids.bob, url: `${IMAGE_BASE}/bob/public`, ...stamp })
+      .returning({ id: images.id })
+      .get();
+    const bobPin = await db()
+      .insert(pins)
+      .values({
+        mapId: ids.ramen,
+        userId: ids.bob,
+        name: 'Bob Stall',
+        comment: 'By Bob',
+        latitude: 35.7,
+        longitude: 139.7,
+        ...stamp
+      })
+      .returning({ id: pins.id })
+      .get();
+    const bobJourney = await db()
+      .insert(journeys)
+      .values({ userId: ids.bob, mapId: ids.ramen, ...stamp })
+      .returning({ id: journeys.id })
+      .get();
+    const bobChapter = await db()
+      .insert(chapters)
+      .values({
+        userId: ids.bob,
+        mapId: ids.ramen,
+        title: 'Bob on Ramen',
+        content: '{}',
+        mapFeatures: '{}',
+        ...stamp
+      })
+      .returning({ id: chapters.id })
+      .get();
+
+    fixture.bobImage = bobImage.id;
+    fixture.bobPinOnRamen = bobPin.id;
+    fixture.bobJourneyOnRamen = bobJourney.id;
+    fixture.bobChapterOnRamen = bobChapter.id;
+
+    await db()
+      .insert(pinRevisions)
+      .values({
+        pinId: bobPin.id,
+        userId: ids.bob,
+        name: 'Bob Stall',
+        comment: 'By Bob',
+        latitude: 35.7,
+        longitude: 139.7,
+        ...stamp
+      });
+    await db()
+      .insert(mapRevisions)
+      .values({
+        mapId: ids.cafe,
+        userId: ids.alice,
+        name: 'Kyoto Cafe',
+        description: 'Edited by Alice',
+        latitude: 35,
+        longitude: 135.5,
+        ...stamp
+      });
+    await db()
+      .insert(comments)
+      .values({
+        commentableType: 'Pin',
+        commentableId: ids.latte,
+        userId: ids.alice,
+        body: 'Nice',
+        ...stamp
+      });
+    await db()
+      .insert(devices)
+      .values({
+        userId: ids.alice,
+        registrationToken: 'alice-account-device',
+        ...stamp
+      });
+    await db()
+      .insert(userRevisions)
+      .values({ userId: ids.alice, name: 'Alice', ...stamp });
+    await db()
+      .insert(reports)
+      .values({
+        category: 'spam',
+        createdAt: at(30),
+        locale: 'en',
+        moderatableId: ids.latte,
+        moderatableType: 'Pin',
+        reporterId: ids.alice
+      });
+    await db()
+      .update(moderationDecisions)
+      .set({ authorId: ids.alice })
+      .where(eq(moderationDecisions.id, 4));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  type Answers = {
+    identityPlatform?: () => Response;
+    images?: () => Response;
+  };
+
+  function mockServices(answers: Answers = {}) {
+    const identityRequests: {
+      method: string;
+      authorization: string | null;
+      body: unknown;
+    }[] = [];
+    const imageRequests: Request[] = [];
+    const fetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async (input, init) => {
+        const request = new Request(input, init);
+
+        if (request.url === GOOGLE_TOKEN_URL) {
+          return Response.json({
+            access_token: ACCESS_TOKEN,
+            expires_in: 3599
+          });
+        }
+
+        if (request.url === DELETE_ACCOUNT_URL) {
+          identityRequests.push({
+            method: request.method,
+            authorization: request.headers.get('authorization'),
+            body: await request.json()
+          });
+          return answers.identityPlatform?.() ?? Response.json({});
+        }
+
+        expect(request.url.startsWith(IMAGES_URL)).toBe(true);
+        imageRequests.push(request);
+        return answers.images?.() ?? Response.json({ success: true });
+      });
+
+    return { fetch, identityRequests, imageRequests };
+  }
+
+  async function imagesOf(userId: number) {
+    return (
+      await db()
+        .select({ id: images.id, url: images.url })
+        .from(images)
+        .where(eq(images.userId, userId))
+    ).sort((left, right) => left.id - right.id);
+  }
+
+  async function imageDeletionsOf(userId: number) {
+    const deletions = (await imagesOf(userId)).map(({ url }) => [
+      'DELETE',
+      `${IMAGES_URL}${url.slice(DELIVERY_BASE.length, url.lastIndexOf('/'))}`
+    ]);
+
+    expect(deletions.length).toBeGreaterThan(0);
+
+    return deletions.sort();
+  }
+
+  function sentDeletions(requests: readonly Request[]) {
+    return requests.map((request) => [request.method, request.url]).sort();
+  }
+
+  async function aliceRows() {
+    const [rows] = await db().batch([
+      db().select({ id: users.id }).from(users).where(eq(users.id, ids.alice)),
+      db().select({ id: maps.id }).from(maps).where(eq(maps.userId, ids.alice))
+    ]);
+
+    return rows;
+  }
+
+  async function foreignKeyViolations() {
+    const { results } = await env.DB.prepare('PRAGMA foreign_key_check').all();
+
+    return results;
+  }
+
+  async function deleteAccountOf(
+    name: string,
+    outcome: 'complete' | 'errored'
+  ) {
+    await using workflow = await introspectWorkflow(env.ACCOUNT_DELETION);
+    await workflow.modifyAll(async (instance) => {
+      await instance.disableRetryDelays();
+    });
+
+    expect(await send('DELETE', '/me/account', name)).toEqual({
+      status: 204,
+      body: null
+    });
+
+    const instances = await workflow.get();
+
+    expect(instances).toHaveLength(1);
+    await instances[0]?.waitForStatus(outcome);
+  }
+
+  it('answers 401 without a signed-in user and starts no deletion', async () => {
+    await using workflow = await introspectWorkflow(env.ACCOUNT_DELETION);
+    const { fetch } = mockServices();
+
+    expect((await send('DELETE', '/me/account')).status).toBe(401);
+    expect((await send('DELETE', '/me/account', 'stranger')).status).toBe(401);
+    expect(await workflow.get()).toEqual([]);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('deletes the account and everything it owns, keeping what others own', async () => {
+    const expectedDeletions = await imageDeletionsOf(ids.alice);
+    const { identityRequests, imageRequests } = mockServices();
+
+    await deleteAccountOf('alice', 'complete');
+
+    expect(identityRequests).toEqual([
+      {
+        method: 'POST',
+        authorization: `Bearer ${ACCESS_TOKEN}`,
+        body: { localId: 'alice', targetProjectId: env.GOOGLE_PROJECT_ID }
+      }
+    ]);
+    expect(sentDeletions(imageRequests)).toEqual(expectedDeletions);
+
+    expect(await foreignKeyViolations()).toEqual([]);
+    expect(await aliceRows()).toEqual([]);
+
+    const owned = await db().batch([
+      db().select().from(pins).where(eq(pins.userId, ids.alice)),
+      db().select().from(chapters).where(eq(chapters.userId, ids.alice)),
+      db().select().from(comments).where(eq(comments.userId, ids.alice)),
+      db().select().from(journeys).where(eq(journeys.userId, ids.alice)),
+      db().select().from(journals).where(eq(journals.userId, ids.alice)),
+      db().select().from(images).where(eq(images.userId, ids.alice)),
+      db().select().from(devices).where(eq(devices.userId, ids.alice)),
+      db()
+        .select()
+        .from(userPreferences)
+        .where(eq(userPreferences.userId, ids.alice)),
+      db()
+        .select()
+        .from(userRevisions)
+        .where(eq(userRevisions.userId, ids.alice)),
+      db().select().from(bookmarks).where(eq(bookmarks.userId, ids.alice)),
+      db()
+        .select()
+        .from(coauthorships)
+        .where(eq(coauthorships.mapId, ids.ramen)),
+      db()
+        .select()
+        .from(coauthorshipInvitations)
+        .where(eq(coauthorshipInvitations.inviterId, ids.alice)),
+      db()
+        .select()
+        .from(journalBookmarks)
+        .where(eq(journalBookmarks.journalId, 1)),
+      db().select().from(votes).where(eq(votes.voterId, ids.alice)),
+      db().select().from(votes).where(eq(votes.votableId, ids.shoyu)),
+      db()
+        .select()
+        .from(notifications)
+        .where(eq(notifications.notifiableId, ids.ramen)),
+      db()
+        .select()
+        .from(notifications)
+        .where(
+          or(
+            and(
+              eq(notifications.recipientType, 'User'),
+              eq(notifications.recipientId, ids.alice)
+            ),
+            and(
+              eq(notifications.notifierType, 'User'),
+              eq(notifications.notifierId, ids.alice)
+            )
+          )
+        )
+    ]);
+
+    expect(owned.map((rows) => rows.length)).toEqual(owned.map(() => 0));
+
+    const [
+      othersOnRamen,
+      [bobJourney],
+      [bobChapter],
+      [aliceEditOfCafe],
+      [aliceReport],
+      [authoredDecision],
+      bobsMaps,
+      [bobsImage]
+    ] = await db().batch([
+      db()
+        .select({ id: pins.id })
+        .from(pins)
+        .where(
+          or(eq(pins.id, fixture.bobPinOnRamen), eq(pins.mapId, ids.ramen))
+        ),
+      db()
+        .select({ mapId: journeys.mapId })
+        .from(journeys)
+        .where(eq(journeys.id, fixture.bobJourneyOnRamen)),
+      db()
+        .select({ mapId: chapters.mapId })
+        .from(chapters)
+        .where(eq(chapters.id, fixture.bobChapterOnRamen)),
+      db()
+        .select({ userId: mapRevisions.userId })
+        .from(mapRevisions)
+        .where(eq(mapRevisions.description, 'Edited by Alice')),
+      db()
+        .select({ reporterId: reports.reporterId })
+        .from(reports)
+        .where(eq(reports.moderatableId, ids.latte)),
+      db()
+        .select({ authorId: moderationDecisions.authorId })
+        .from(moderationDecisions)
+        .where(eq(moderationDecisions.id, 4)),
+      db().select({ id: maps.id }).from(maps).where(eq(maps.userId, ids.bob)),
+      db()
+        .select({ id: images.id })
+        .from(images)
+        .where(eq(images.id, fixture.bobImage))
+    ]);
+
+    expect(othersOnRamen).toEqual([]);
+    expect(bobJourney).toEqual({ mapId: null });
+    expect(bobChapter).toEqual({ mapId: null });
+    expect(aliceEditOfCafe).toEqual({ userId: null });
+    expect(aliceReport).toEqual({ reporterId: null });
+    expect(authoredDecision).toEqual({ authorId: null });
+    expect(bobsMaps.map((map) => map.id).sort()).toEqual(
+      [ids.removedMap, ids.cafe, ids.reinstatedMap].sort()
+    );
+    expect(bobsImage).toEqual({ id: fixture.bobImage });
+    expect((await send('GET', '/me/profile', 'alice')).status).toBe(401);
+  });
+
+  it('retries a failed image deletion and treats an account already gone from Identity Platform as deleted', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const expectedDeletions = await imageDeletionsOf(ids.bob);
+    let imageFailures = 1;
+    const { imageRequests } = mockServices({
+      identityPlatform: () =>
+        Response.json(
+          { error: { code: 400, message: 'USER_NOT_FOUND' } },
+          { status: 400 }
+        ),
+      images: () =>
+        imageFailures-- > 0
+          ? Response.json({ success: false }, { status: 500 })
+          : Response.json({ success: true })
+    });
+
+    await deleteAccountOf('bob', 'complete');
+
+    expect(imageRequests.length).toBeGreaterThan(expectedDeletions.length);
+    expect([...new Set(sentDeletions(imageRequests).map(String))]).toEqual(
+      expectedDeletions.map(String)
+    );
+    expect(warn).toHaveBeenCalledWith(
+      'Identity Platform account bob was already deleted'
+    );
+    expect(await foreignKeyViolations()).toEqual([]);
+    expect(
+      await db()
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.id, ids.bob))
+    ).toEqual([]);
+  });
+
+  it('keeps every record and image while Identity Platform refuses', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const carolImages = await imagesOf(ids.carol);
+    const { identityRequests, imageRequests } = mockServices({
+      identityPlatform: () =>
+        Response.json(
+          { error: { code: 403, message: 'PERMISSION_DENIED' } },
+          { status: 403 }
+        )
+    });
+
+    await deleteAccountOf('carol', 'errored');
+
+    expect(identityRequests.length).toBeGreaterThan(1);
+    expect(imageRequests).toEqual([]);
+    expect(
+      await db()
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.id, ids.carol))
+    ).toEqual([{ id: ids.carol }]);
+    expect(await imagesOf(ids.carol)).toEqual(carolImages);
   });
 });

@@ -5,7 +5,15 @@ import type {
   MapRef,
   Pin
 } from '@qoodish/api-contract';
-import { and, asc, eq, max, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  inArray,
+  max,
+  type SQL,
+  type SQLWrapper
+} from 'drizzle-orm';
 import { z } from 'zod';
 import {
   type CommentRow,
@@ -597,4 +605,34 @@ export function discardPin(
       submitted: {}
     });
   });
+}
+
+export function pinRevisionsDeletion(db: Database, pinIds: SQLWrapper) {
+  const revisionIds = db
+    .select({ id: pinRevisions.id })
+    .from(pinRevisions)
+    .where(inArray(pinRevisions.pinId, pinIds));
+
+  return [
+    db
+      .delete(pinRevisionImages)
+      .where(inArray(pinRevisionImages.pinRevisionId, revisionIds)),
+    db
+      .delete(pinRevisionPropertyOptions)
+      .where(inArray(pinRevisionPropertyOptions.pinRevisionId, revisionIds)),
+    db.delete(pinRevisions).where(inArray(pinRevisions.pinId, pinIds))
+  ] as const;
+}
+
+export function pinRevisionImagesOfImagesDeletion(
+  db: Database,
+  imageIds: SQLWrapper
+) {
+  return db
+    .delete(pinRevisionImages)
+    .where(inArray(pinRevisionImages.imageId, imageIds));
+}
+
+export function pinsDeletion(db: Database, pinIds: SQLWrapper) {
+  return db.delete(pins).where(inArray(pins.id, pinIds));
 }

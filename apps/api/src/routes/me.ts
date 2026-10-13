@@ -116,6 +116,14 @@ app.on(['PUT', 'PATCH'], '/profile', jsonBody(profileInput), async (c) => {
   return c.json<Profile>(await profile(db, userId));
 });
 
+app.delete('/account', async (c) => {
+  await c.env.ACCOUNT_DELETION.create({
+    params: { id: c.get('viewer').id, uid: c.get('idToken').sub }
+  });
+
+  return c.body(null, 204);
+});
+
 app.get('/journal', async (c) =>
   c.json<Journal>(await ownJournal(c.get('db'), c.get('viewer')))
 );

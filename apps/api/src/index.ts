@@ -3,6 +3,8 @@ import type { Env } from './env.ts';
 import { deliverMails } from './mail.ts';
 import { deliverWebPush, type WebPushMessage } from './web-push.ts';
 
+export { AccountDeletion } from './account-deletion.ts';
+
 const app = createApp();
 
 export default {

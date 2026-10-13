@@ -9,7 +9,7 @@ import {
 } from './accounts.ts';
 import {
   forgetServiceAccountToken,
-  type ServiceAccount,
+  serviceAccountOf,
   serviceAccountToken
 } from './auth/service-account.ts';
 import {
@@ -247,13 +247,6 @@ async function postToFcm(
   }
 
   return outcomeOf(response);
-}
-
-function serviceAccountOf(env: Env): ServiceAccount {
-  return {
-    clientEmail: env.GOOGLE_CLIENT_EMAIL,
-    privateKey: env.GOOGLE_PRIVATE_KEY
-  };
 }
 
 export async function deliverWebPush(

@@ -1,4 +1,5 @@
 import type { Image, ImageVariants } from '@qoodish/api-contract';
+import { and, inArray, type SQLWrapper } from 'drizzle-orm';
 import { currentTimestamp, type Database, inIds } from './db/client.ts';
 import { images } from './db/schema.ts';
 import { ApiError } from './errors.ts';
@@ -94,4 +95,14 @@ export function primaryImage(url: string | undefined): {
   return url === undefined
     ? { image: null, image_url: '' }
     : { image: imageVariants(url), image_url: url };
+}
+
+export function imagesDeletion(
+  db: Database,
+  imageIds: SQLWrapper,
+  readImageIds: readonly number[]
+) {
+  return db
+    .delete(images)
+    .where(and(inArray(images.id, imageIds), inIds(images.id, readImageIds)));
 }

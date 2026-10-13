@@ -568,3 +568,35 @@ export async function readNotification(
     updated_at: read?.updatedAt ?? rendered.updated_at
   };
 }
+
+export function notificationsOnDeletion(
+  db: Database,
+  type: ModeratableType,
+  notifiableIds: SQLWrapper
+) {
+  return db
+    .delete(notifications)
+    .where(
+      and(
+        eq(notifications.notifiableType, type),
+        inArray(notifications.notifiableId, notifiableIds)
+      )
+    );
+}
+
+export function notificationsOfUserDeletion(db: Database, userId: number) {
+  return db
+    .delete(notifications)
+    .where(
+      or(
+        and(
+          eq(notifications.recipientType, 'User'),
+          eq(notifications.recipientId, userId)
+        ),
+        and(
+          eq(notifications.notifierType, 'User'),
+          eq(notifications.notifierId, userId)
+        )
+      )
+    );
+}

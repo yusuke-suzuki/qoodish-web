@@ -25,7 +25,7 @@ import {
   votes
 } from '../db/schema.ts';
 
-export const IMAGE_BASE = 'https://imagedelivery.net/hash/qoodish';
+export const IMAGE_BASE = 'https://imagedelivery.net/mockhash/qoodish';
 
 export function at(day: number, micros = 0): string {
   return `2026-01-${String(day).padStart(2, '0')}T00:00:00.${String(micros).padStart(6, '0')}Z`;
