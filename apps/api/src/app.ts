@@ -15,6 +15,9 @@ import { ApiError } from './errors.ts';
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './i18n/index.ts';
 import { authenticateStaff } from './middleware/authenticate-staff.ts';
 import { provideDatabase } from './middleware/provide-database.ts';
+import adminReports from './routes/admin/reports.ts';
+import adminRoles from './routes/admin/roles.ts';
+import adminStaffMembers from './routes/admin/staff_members.ts';
 import chapters from './routes/chapters.ts';
 import guestChapters from './routes/guest/chapters.ts';
 import guestMaps from './routes/guest/maps.ts';
@@ -110,6 +113,9 @@ export function createApp(options: AppOptions = {}) {
   app.route('/v2/pins', v2Pins);
   app.route('/v2/users', v2Users);
   app.route('/v2/me', v2Me);
+  app.route('/admin/reports', adminReports);
+  app.route('/admin/staff_members', adminStaffMembers);
+  app.route('/admin/roles', adminRoles);
 
   app.notFound((c) => {
     const error = new ApiError(

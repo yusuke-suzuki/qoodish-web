@@ -3,7 +3,17 @@ import type {
   ReportCategory,
   ReportReceipt
 } from '@qoodish/api-contract';
-import { and, asc, eq, gte, inArray, ne, notExists, sql } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  gte,
+  inArray,
+  ne,
+  notExists,
+  type SQL,
+  sql
+} from 'drizzle-orm';
 import {
   currentTimestamp,
   type Database,
@@ -69,7 +79,7 @@ export const MODERATABLE_TYPES = [
   'User'
 ] as const satisfies readonly ModeratableType[];
 
-type ReportedContent = {
+export type ModeratableContent = {
   authorId: number;
   currentRevisionId: number | null;
   body: string;
@@ -80,11 +90,11 @@ function urls(rows: readonly { url: string }[]): string[] {
   return rows.map((row) => row.url);
 }
 
-async function reportedPin(
+async function moderatablePin(
   db: Database,
-  viewer: Viewer,
-  id: number
-): Promise<ReportedContent | undefined> {
+  id: number,
+  viewer: Viewer | undefined
+): Promise<ModeratableContent | undefined> {
   const [[pin], pinImages] = await db.batch([
     db
       .select({
@@ -94,7 +104,7 @@ async function reportedPin(
         comment: pins.comment
       })
       .from(pins)
-      .where(and(eq(pins.id, id), referenceablePin(viewer))),
+      .where(and(eq(pins.id, id), viewer && referenceablePin(viewer))),
     db
       .select({ url: images.url })
       .from(pins)
@@ -116,11 +126,23 @@ async function reportedPin(
   );
 }
 
-async function reportedComment(
+function reportableComment(db: Database, viewer: Viewer) {
+  return and(
+    ne(comments.status, 'deleted'),
+    visible(comments.id, 'Comment'),
+    eq(comments.commentableType, 'Pin'),
+    inArray(
+      comments.commentableId,
+      db.select({ id: pins.id }).from(pins).where(referenceablePin(viewer))
+    )
+  );
+}
+
+async function moderatableComment(
   db: Database,
-  viewer: Viewer,
-  id: number
-): Promise<ReportedContent | undefined> {
+  id: number,
+  viewer: Viewer | undefined
+): Promise<ModeratableContent | undefined> {
   const [comment] = await db
     .select({
       authorId: comments.userId,
@@ -128,27 +150,16 @@ async function reportedComment(
       body: comments.body
     })
     .from(comments)
-    .where(
-      and(
-        eq(comments.id, id),
-        ne(comments.status, 'deleted'),
-        visible(comments.id, 'Comment'),
-        eq(comments.commentableType, 'Pin'),
-        inArray(
-          comments.commentableId,
-          db.select({ id: pins.id }).from(pins).where(referenceablePin(viewer))
-        )
-      )
-    );
+    .where(and(eq(comments.id, id), viewer && reportableComment(db, viewer)));
 
   return comment && { ...comment, imageUrls: [] };
 }
 
-async function reportedMap(
+async function moderatableMap(
   db: Database,
-  viewer: Viewer,
-  id: number
-): Promise<ReportedContent | undefined> {
+  id: number,
+  viewer: Viewer | undefined
+): Promise<ModeratableContent | undefined> {
   const [[map], mapImages] = await db.batch([
     db
       .select({
@@ -158,7 +169,7 @@ async function reportedMap(
         description: maps.description
       })
       .from(maps)
-      .where(and(eq(maps.id, id), referenceableMap(viewer))),
+      .where(and(eq(maps.id, id), viewer && referenceableMap(viewer))),
     db
       .select({ url: images.url })
       .from(maps)
@@ -180,11 +191,11 @@ async function reportedMap(
   );
 }
 
-async function reportedChapter(
+async function moderatableChapter(
   db: Database,
-  viewer: Viewer,
-  id: number
-): Promise<ReportedContent | undefined> {
+  id: number,
+  viewer: Viewer | undefined
+): Promise<ModeratableContent | undefined> {
   const [[chapter], chapterImages] = await db.batch([
     db
       .select({
@@ -196,7 +207,7 @@ async function reportedChapter(
         >`(SELECT group_concat(value, ' ') FROM (SELECT value FROM json_tree(${chapters.content}) WHERE key = 'text' ORDER BY id))`
       })
       .from(chapters)
-      .where(and(eq(chapters.id, id), referenceableChapter(viewer))),
+      .where(and(eq(chapters.id, id), viewer && referenceableChapter(viewer))),
     db
       .select({ url: images.url })
       .from(chapters)
@@ -218,10 +229,10 @@ async function reportedChapter(
   );
 }
 
-async function reportedJournal(
+async function moderatableJournal(
   db: Database,
   id: number
-): Promise<ReportedContent | undefined> {
+): Promise<ModeratableContent | undefined> {
   const [journal] = await db
     .select({
       authorId: journals.userId,
@@ -241,10 +252,10 @@ async function reportedJournal(
   );
 }
 
-async function reportedUser(
+async function moderatableUser(
   db: Database,
   id: number
-): Promise<ReportedContent | undefined> {
+): Promise<ModeratableContent | undefined> {
   const [user] = await db
     .select({
       authorId: users.id,
@@ -266,29 +277,36 @@ async function reportedUser(
   );
 }
 
-function reportedContent(
+export function moderatableType(type: string): ModeratableType | undefined {
+  return MODERATABLE_TYPES.find((candidate) => candidate === type);
+}
+
+export function moderatableContent(
   db: Database,
-  viewer: Viewer,
   type: ModeratableType,
-  id: number
-): Promise<ReportedContent | undefined> {
+  id: number,
+  viewer: Viewer | undefined
+): Promise<ModeratableContent | undefined> {
   switch (type) {
     case 'Pin':
-      return reportedPin(db, viewer, id);
+      return moderatablePin(db, id, viewer);
     case 'Comment':
-      return reportedComment(db, viewer, id);
+      return moderatableComment(db, id, viewer);
     case 'Map':
-      return reportedMap(db, viewer, id);
+      return moderatableMap(db, id, viewer);
     case 'Chapter':
-      return reportedChapter(db, viewer, id);
+      return moderatableChapter(db, id, viewer);
     case 'Journal':
-      return reportedJournal(db, id);
+      return moderatableJournal(db, id);
     case 'User':
-      return reportedUser(db, id);
+      return moderatableUser(db, id);
   }
 }
 
-function contentSnapshot({ body, imageUrls }: ReportedContent): string | null {
+export function contentSnapshot({
+  body,
+  imageUrls
+}: ModeratableContent): string | null {
   const lines = [
     truncate(body, MAX_CONTENT_SNAPSHOT_LENGTH),
     ...imageUrls
@@ -319,11 +337,11 @@ export async function fileReport(
     throw new ApiError('NotFound');
   }
 
-  const content = await reportedContent(
+  const content = await moderatableContent(
     db,
-    viewer,
     moderatableType,
-    moderatableId
+    moderatableId,
+    viewer
   );
 
   if (content === undefined) {
@@ -386,6 +404,21 @@ export async function fileReport(
   };
 }
 
+export function pendingReport(db: Database): SQL {
+  return notExists(
+    db
+      .select({ id: moderationDecisions.id })
+      .from(moderationDecisions)
+      .where(
+        and(
+          eq(moderationDecisions.moderatableType, reports.moderatableType),
+          eq(moderationDecisions.moderatableId, reports.moderatableId),
+          gte(moderationDecisions.createdAt, reports.createdAt)
+        )
+      )
+  );
+}
+
 function pendingReportBy(
   db: Database,
   reporterId: number,
@@ -400,21 +433,7 @@ function pendingReportBy(
         eq(reports.reporterId, reporterId),
         eq(reports.moderatableType, moderatableType),
         eq(reports.moderatableId, moderatableId),
-        notExists(
-          db
-            .select({ id: moderationDecisions.id })
-            .from(moderationDecisions)
-            .where(
-              and(
-                eq(
-                  moderationDecisions.moderatableType,
-                  reports.moderatableType
-                ),
-                eq(moderationDecisions.moderatableId, reports.moderatableId),
-                gte(moderationDecisions.createdAt, reports.createdAt)
-              )
-            )
-        )
+        pendingReport(db)
       )
     );
 }

@@ -11,7 +11,7 @@ export type Report = {
   category: ReportCategory;
   moderatable_type: ModeratableType;
   moderatable_id: number;
-  reporter: { id: number; name: string } | null;
+  reporter: { id: number; name: string | null } | null;
   created_at: IsoTimestamp;
 };
 

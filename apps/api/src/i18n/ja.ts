@@ -118,5 +118,26 @@ export const ja: Messages = {
   report_category_privacy: 'プライバシー侵害・名誉毀損',
   report_category_copyright: '著作権・商標などの権利侵害',
   report_category_impersonation: 'なりすまし',
-  report_category_other: 'その他'
+  report_category_other: 'その他',
+
+  moderation_outcome_kept:
+    '利用規約に違反するとは判断しなかったため、報告された投稿の削除その他の措置は行いませんでした。',
+  moderation_outcome_removed:
+    '利用規約に違反すると判断し、報告された投稿を削除しました。',
+  moderation_outcome_unavailable:
+    '確認した時点で、報告された投稿はすでに削除されていました。',
+
+  decision_outcome_invalid: '対応結果を選択してください。',
+  decision_reason_required: '理由を入力してください。',
+  decision_target_gone:
+    '対象は既に存在しません。「対象がないため終了する」を選んでください。',
+  decision_target_present:
+    '対象はまだ存在します。「対象を維持する」か「対象を非表示にする」を選んでください。',
+  decision_type_unremovable:
+    '対象の種類がアカウントか手帳の場合は、非表示にできません。「対象を維持する」を選んでください。',
+
+  staff_email_required: 'メールアドレスを入力してください。',
+  staff_email_invalid: 'メールアドレスの形式が正しくありません。',
+  staff_self_change:
+    '操作者が変更対象の担当者本人のため、ロールの削除や取り消しはできません。ほかの管理者に依頼してください。'
 };
