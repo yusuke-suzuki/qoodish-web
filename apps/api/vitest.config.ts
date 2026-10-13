@@ -1,3 +1,4 @@
+import { generateKeyPairSync } from 'node:crypto';
 import path from 'node:path';
 import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin';
 import { defineConfig } from 'vitest/config';
@@ -13,6 +14,11 @@ export default defineConfig(async () => {
   const migrations = await readD1Migrations(
     path.join(import.meta.dirname, 'migrations')
   );
+  const { privateKey } = generateKeyPairSync('rsa', {
+    modulusLength: 2048,
+    privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+    publicKeyEncoding: { type: 'spki', format: 'pem' }
+  });
 
   return {
     plugins: [
@@ -26,12 +32,19 @@ export default defineConfig(async () => {
             WEB_PUSH_QUEUE: DEVELOPMENT.webPushQueue,
             MAIL_QUEUE: DEVELOPMENT.mailQueue
           },
+          workflows: {
+            ACCOUNT_DELETION: {
+              name: 'account-deletion',
+              className: 'AccountDeletion'
+            }
+          },
           bindings: {
             APP_ENV: 'test',
             WEB_ENDPOINT: DEVELOPMENT.webEndpoint,
             ADMIN_ENDPOINT: DEVELOPMENT.adminEndpoint,
             GOOGLE_PROJECT_ID: DEVELOPMENT.googleProjectId,
             GOOGLE_CLIENT_EMAIL: DEVELOPMENT.googleClientEmail,
+            GOOGLE_PRIVATE_KEY: privateKey,
             CF_ACCESS_TEAM_DOMAIN,
             CF_ACCESS_AUD: DEVELOPMENT.accessAud,
             MAIL_FROM,

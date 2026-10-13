@@ -274,3 +274,11 @@ export function mutedAccounts(
     cursor
   );
 }
+
+export function devicesOfUserDeletion(db: Database, userId: number) {
+  return db.delete(devices).where(eq(devices.userId, userId));
+}
+
+export function preferencesOfUserDeletion(db: Database, userId: number) {
+  return db.delete(userPreferences).where(eq(userPreferences.userId, userId));
+}

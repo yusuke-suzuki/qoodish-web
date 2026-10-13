@@ -1,4 +1,4 @@
-import { bindings, defineConfig, triggers } from 'cf/config';
+import { bindings, defineConfig, exports, triggers } from 'cf/config';
 import {
   CF_ACCESS_TEAM_DOMAIN,
   DEVELOPMENT,
@@ -13,6 +13,8 @@ const ACCOUNT_ID = '9671c836ad132f87d892b12ccd1809e0';
 const IMAGES_ACCOUNT_HASH = 'ij3ygWRDWuATHKgheHKS5A';
 
 function defineApiWorker(name: string, environment: Environment) {
+  const accountDeletion = `${name}-account-deletion`;
+
   return {
     name,
     entrypoint: 'src/index.ts',
@@ -48,7 +50,15 @@ function defineApiWorker(name: string, environment: Environment) {
       }),
       WEB_PUSH_QUEUE: bindings.queue({ name: environment.webPushQueue }),
       MAIL_QUEUE: bindings.queue({ name: environment.mailQueue }),
-      EMAIL: bindings.sendEmail({ allowedSenderAddresses: [MAIL_FROM] })
+      EMAIL: bindings.sendEmail({ allowedSenderAddresses: [MAIL_FROM] }),
+      ACCOUNT_DELETION: bindings.workflow({
+        name: accountDeletion,
+        worker: name,
+        exportName: 'AccountDeletion'
+      })
+    },
+    exports: {
+      AccountDeletion: exports.workflow({ name: accountDeletion })
     },
     triggers: [
       triggers.queue({ name: environment.webPushQueue }),

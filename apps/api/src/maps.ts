@@ -5,7 +5,16 @@ import type {
   GuestMap,
   PinProperty
 } from '@qoodish/api-contract';
-import { and, asc, eq, inArray, max, or, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  inArray,
+  max,
+  or,
+  type SQL,
+  type SQLWrapper
+} from 'drizzle-orm';
 import { z } from 'zod';
 import { removeMapBookmarks } from './bookmarks.ts';
 import {
@@ -22,6 +31,7 @@ import {
 import {
   bookmarks,
   coauthorships,
+  featuredMaps,
   images,
   mapRevisionImages,
   mapRevisions,
@@ -657,4 +667,53 @@ export async function viewerCoauthors(
       updated_at
     })
   );
+}
+
+export function mapRevisionsDeletion(db: Database, mapIds: SQLWrapper) {
+  const revisionIds = db
+    .select({ id: mapRevisions.id })
+    .from(mapRevisions)
+    .where(inArray(mapRevisions.mapId, mapIds));
+
+  return [
+    db
+      .delete(mapRevisionImages)
+      .where(inArray(mapRevisionImages.mapRevisionId, revisionIds)),
+    db.delete(mapRevisions).where(inArray(mapRevisions.mapId, mapIds))
+  ] as const;
+}
+
+export function mapRevisionImagesOfImagesDeletion(
+  db: Database,
+  imageIds: SQLWrapper
+) {
+  return db
+    .delete(mapRevisionImages)
+    .where(inArray(mapRevisionImages.imageId, imageIds));
+}
+
+export function coauthorshipsDeletion(
+  db: Database,
+  { userId, mapIds }: { userId: number; mapIds: SQLWrapper }
+) {
+  return db
+    .delete(coauthorships)
+    .where(
+      or(inArray(coauthorships.mapId, mapIds), eq(coauthorships.userId, userId))
+    );
+}
+
+export function featuredMapsDeletion(db: Database, mapIds: SQLWrapper) {
+  return db.delete(featuredMaps).where(inArray(featuredMaps.mapId, mapIds));
+}
+
+export function mapsDeletion(db: Database, mapIds: SQLWrapper) {
+  return db.delete(maps).where(inArray(maps.id, mapIds));
+}
+
+export function detachMapRevisionsFromUser(db: Database, userId: number) {
+  return db
+    .update(mapRevisions)
+    .set({ userId: null })
+    .where(eq(mapRevisions.userId, userId));
 }

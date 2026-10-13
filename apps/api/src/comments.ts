@@ -1,5 +1,16 @@
 import type { Comment, GuestComment } from '@qoodish/api-contract';
-import { and, asc, eq, exists, max, ne, type SQL, sql } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  exists,
+  inArray,
+  max,
+  ne,
+  type SQL,
+  type SQLWrapper,
+  sql
+} from 'drizzle-orm';
 import { z } from 'zod';
 import {
   currentTimestamp,
@@ -357,4 +368,14 @@ export function viewerComment(row: CommentRow): Comment {
     created_at,
     updated_at
   };
+}
+
+export function commentRevisionsDeletion(db: Database, commentIds: SQLWrapper) {
+  return db
+    .delete(commentRevisions)
+    .where(inArray(commentRevisions.commentId, commentIds));
+}
+
+export function commentsDeletion(db: Database, commentIds: SQLWrapper) {
+  return db.delete(comments).where(inArray(comments.id, commentIds));
 }

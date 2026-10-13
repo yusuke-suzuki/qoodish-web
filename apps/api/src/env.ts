@@ -1,3 +1,4 @@
+import type { Account } from './account-deletion.ts';
 import type { MailMessage } from './mail.ts';
 import type { WebPushMessage } from './web-push.ts';
 
@@ -22,6 +23,7 @@ export interface Env {
   WEB_PUSH_QUEUE: Queue<WebPushMessage>;
   MAIL_QUEUE: Queue<MailMessage>;
   EMAIL: SendEmail;
+  ACCOUNT_DELETION: Workflow<Account>;
 }
 
 declare global {

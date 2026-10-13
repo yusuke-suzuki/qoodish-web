@@ -5,8 +5,10 @@ import {
   desc,
   eq,
   getTableColumns,
+  inArray,
   max,
-  type SQL
+  type SQL,
+  type SQLWrapper
 } from 'drizzle-orm';
 import { z } from 'zod';
 import {
@@ -211,4 +213,13 @@ export async function viewerJournals(
     created_at: row.createdAt,
     updated_at: row.updatedAt
   }));
+}
+
+export function journalsDeletion(db: Database, journalIds: SQLWrapper) {
+  return [
+    db
+      .delete(journalRevisions)
+      .where(inArray(journalRevisions.journalId, journalIds)),
+    db.delete(journals).where(inArray(journals.id, journalIds))
+  ] as const;
 }

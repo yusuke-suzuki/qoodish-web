@@ -429,3 +429,11 @@ export async function userProfile(
     muting: viewer.muting.has(user.id)
   };
 }
+
+export function userRevisionsDeletion(db: Database, userId: number) {
+  return db.delete(userRevisions).where(eq(userRevisions.userId, userId));
+}
+
+export function userDeletion(db: Database, userId: number) {
+  return db.delete(users).where(eq(users.id, userId));
+}

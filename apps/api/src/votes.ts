@@ -1,4 +1,12 @@
-import { and, count, eq, notExists, sql } from 'drizzle-orm';
+import {
+  and,
+  count,
+  eq,
+  inArray,
+  notExists,
+  type SQLWrapper,
+  sql
+} from 'drizzle-orm';
 import {
   currentTimestamp,
   type Database,
@@ -9,7 +17,7 @@ import {
 import { users, votes } from './db/schema.ts';
 import { ApiError } from './errors.ts';
 import { notNotifiedYet, recordNotification } from './notifications.ts';
-import { noBlockBetween } from './visibility.ts';
+import { type ModeratableType, noBlockBetween } from './visibility.ts';
 import { enqueueWebPush, type WebPushMessage } from './web-push.ts';
 
 export type VotableType = 'Pin' | 'Chapter' | 'Comment';
@@ -133,4 +141,22 @@ export async function unlike(
   if (removed.length === 0) {
     throw new ApiError('NotFound');
   }
+}
+
+export function votesOnDeletion(
+  db: Database,
+  type: ModeratableType,
+  votableIds: SQLWrapper
+) {
+  return db
+    .delete(votes)
+    .where(
+      and(eq(votes.votableType, type), inArray(votes.votableId, votableIds))
+    );
+}
+
+export function votesByUserDeletion(db: Database, userId: number) {
+  return db
+    .delete(votes)
+    .where(and(eq(votes.voterType, 'User'), eq(votes.voterId, userId)));
 }

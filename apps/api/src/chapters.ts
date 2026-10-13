@@ -760,3 +760,39 @@ export function detachJourneys(db: Database, journeyIds: SQLWrapper) {
     .set({ journeyId: null })
     .where(inArray(chapters.journeyId, journeyIds));
 }
+
+export function detachChaptersFromMaps(db: Database, mapIds: SQLWrapper) {
+  return db
+    .update(chapters)
+    .set({ mapId: null })
+    .where(inArray(chapters.mapId, mapIds));
+}
+
+export function chapterRevisionsDeletion(db: Database, chapterIds: SQLWrapper) {
+  const revisionIds = db
+    .select({ id: chapterRevisions.id })
+    .from(chapterRevisions)
+    .where(inArray(chapterRevisions.chapterId, chapterIds));
+
+  return [
+    db
+      .delete(chapterRevisionImages)
+      .where(inArray(chapterRevisionImages.chapterRevisionId, revisionIds)),
+    db
+      .delete(chapterRevisions)
+      .where(inArray(chapterRevisions.chapterId, chapterIds))
+  ] as const;
+}
+
+export function chapterRevisionImagesOfImagesDeletion(
+  db: Database,
+  imageIds: SQLWrapper
+) {
+  return db
+    .delete(chapterRevisionImages)
+    .where(inArray(chapterRevisionImages.imageId, imageIds));
+}
+
+export function chaptersDeletion(db: Database, chapterIds: SQLWrapper) {
+  return db.delete(chapters).where(inArray(chapters.id, chapterIds));
+}

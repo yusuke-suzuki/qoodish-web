@@ -12,7 +12,8 @@ import {
   ne,
   notExists,
   or,
-  type SQL
+  type SQL,
+  type SQLWrapper
 } from 'drizzle-orm';
 import {
   currentTimestamp,
@@ -342,4 +343,19 @@ export async function answerInvitation(
   if (answered.length === 0) {
     throw new ApiError('NotFound');
   }
+}
+
+export function coauthorshipInvitationsDeletion(
+  db: Database,
+  { userId, mapIds }: { userId: number; mapIds: SQLWrapper }
+) {
+  return db
+    .delete(coauthorshipInvitations)
+    .where(
+      or(
+        inArray(coauthorshipInvitations.mapId, mapIds),
+        eq(coauthorshipInvitations.inviterId, userId),
+        eq(coauthorshipInvitations.inviteeId, userId)
+      )
+    );
 }

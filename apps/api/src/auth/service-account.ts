@@ -1,5 +1,6 @@
 import { importPKCS8, SignJWT } from 'jose';
 import { z } from 'zod';
+import type { Env } from '../env.ts';
 
 export const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
@@ -7,6 +8,15 @@ const REQUEST_TIMEOUT_MS = 10_000;
 const REFRESH_MARGIN_MS = 5 * 60 * 1000;
 
 export type ServiceAccount = { clientEmail: string; privateKey: string };
+
+export function serviceAccountOf(
+  env: Pick<Env, 'GOOGLE_CLIENT_EMAIL' | 'GOOGLE_PRIVATE_KEY'>
+): ServiceAccount {
+  return {
+    clientEmail: env.GOOGLE_CLIENT_EMAIL,
+    privateKey: env.GOOGLE_PRIVATE_KEY
+  };
+}
 
 const tokenResponse = z.object({
   access_token: z.string(),

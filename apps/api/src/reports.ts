@@ -418,3 +418,20 @@ function pendingReportBy(
       )
     );
 }
+
+export function detachReportsFromUser(db: Database, userId: number) {
+  return [
+    db
+      .update(reports)
+      .set({ reporterId: null })
+      .where(eq(reports.reporterId, userId)),
+    db
+      .update(moderationDecisions)
+      .set({ authorId: null })
+      .where(eq(moderationDecisions.authorId, userId)),
+    db
+      .update(moderationDecisions)
+      .set({ moderatorId: null })
+      .where(eq(moderationDecisions.moderatorId, userId))
+  ] as const;
+}

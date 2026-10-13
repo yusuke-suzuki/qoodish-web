@@ -452,14 +452,10 @@ export async function finishJourney(
   first(finished);
 }
 
-export async function destroyJourney(
+export function journeyDependentsDeletion(
   db: Database,
-  owner: JourneyOwner
-): Promise<void> {
-  const journeyIds = db
-    .select({ id: journeys.id })
-    .from(journeys)
-    .where(ownedJourney(owner));
+  journeyIds: SQLWrapper
+) {
   const checkinIds = db
     .select({ id: journeyCheckins.id })
     .from(journeyCheckins)
@@ -468,7 +464,8 @@ export async function destroyJourney(
     .select({ id: journeyCheckinRevisions.id })
     .from(journeyCheckinRevisions)
     .where(inArray(journeyCheckinRevisions.journeyCheckinId, checkinIds));
-  const results = await db.batch([
+
+  return [
     db
       .delete(journeyCheckinRevisionImages)
       .where(
@@ -484,7 +481,53 @@ export async function destroyJourney(
       .delete(journeyCheckins)
       .where(inArray(journeyCheckins.journeyId, journeyIds)),
     db.delete(milestones).where(inArray(milestones.journeyId, journeyIds)),
-    detachJourneys(db, journeyIds),
+    detachJourneys(db, journeyIds)
+  ] as const;
+}
+
+export function checkinRevisionImagesOfImagesDeletion(
+  db: Database,
+  imageIds: SQLWrapper
+) {
+  return db
+    .delete(journeyCheckinRevisionImages)
+    .where(inArray(journeyCheckinRevisionImages.imageId, imageIds));
+}
+
+export function journeysDeletion(db: Database, journeyIds: SQLWrapper) {
+  return db.delete(journeys).where(inArray(journeys.id, journeyIds));
+}
+
+export function detachJourneysFromPins(db: Database, pinIds: SQLWrapper) {
+  return [
+    db
+      .update(milestones)
+      .set({ pinId: null })
+      .where(inArray(milestones.pinId, pinIds)),
+    db
+      .update(journeyCheckins)
+      .set({ pinId: null })
+      .where(inArray(journeyCheckins.pinId, pinIds))
+  ] as const;
+}
+
+export function detachJourneysFromMaps(db: Database, mapIds: SQLWrapper) {
+  return db
+    .update(journeys)
+    .set({ mapId: null })
+    .where(inArray(journeys.mapId, mapIds));
+}
+
+export async function destroyJourney(
+  db: Database,
+  owner: JourneyOwner
+): Promise<void> {
+  const journeyIds = db
+    .select({ id: journeys.id })
+    .from(journeys)
+    .where(ownedJourney(owner));
+  const results = await db.batch([
+    ...journeyDependentsDeletion(db, journeyIds),
     db
       .delete(journeys)
       .where(ownedJourney(owner))

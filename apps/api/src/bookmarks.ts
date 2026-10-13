@@ -1,4 +1,12 @@
-import { and, eq, inArray, ne, notExists, or } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  inArray,
+  ne,
+  notExists,
+  or,
+  type SQLWrapper
+} from 'drizzle-orm';
 import {
   currentTimestamp,
   type Database,
@@ -277,4 +285,27 @@ export function removeBookmarksBetween(
       .delete(journalBookmarks)
       .where(or(onJournalOf(userId, otherId), onJournalOf(otherId, userId)))
   ] as const;
+}
+
+export function bookmarksDeletion(
+  db: Database,
+  { userId, mapIds }: { userId: number; mapIds: SQLWrapper }
+) {
+  return db
+    .delete(bookmarks)
+    .where(or(inArray(bookmarks.mapId, mapIds), eq(bookmarks.userId, userId)));
+}
+
+export function journalBookmarksDeletion(
+  db: Database,
+  { userId, journalIds }: { userId: number; journalIds: SQLWrapper }
+) {
+  return db
+    .delete(journalBookmarks)
+    .where(
+      or(
+        inArray(journalBookmarks.journalId, journalIds),
+        eq(journalBookmarks.userId, userId)
+      )
+    );
 }

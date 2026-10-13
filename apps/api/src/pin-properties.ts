@@ -2,7 +2,15 @@ import type {
   PinProperty,
   PinPropertyOption as PinPropertyOptionShape
 } from '@qoodish/api-contract';
-import { and, asc, eq, max, type SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  eq,
+  inArray,
+  max,
+  type SQL,
+  type SQLWrapper
+} from 'drizzle-orm';
 import { z } from 'zod';
 import {
   currentTimestamp,
@@ -422,4 +430,26 @@ export async function pinPropertyOptionDetail(
         .where(eq(pinPropertyOptions.id, optionId))
     )
   );
+}
+
+export function pinPropertiesDeletion(db: Database, propertyIds: SQLWrapper) {
+  const optionIds = db
+    .select({ id: pinPropertyOptions.id })
+    .from(pinPropertyOptions)
+    .where(inArray(pinPropertyOptions.pinPropertyId, propertyIds));
+
+  return [
+    db
+      .delete(pinPropertyOptionRevisions)
+      .where(
+        inArray(pinPropertyOptionRevisions.pinPropertyOptionId, optionIds)
+      ),
+    db
+      .delete(pinPropertyOptions)
+      .where(inArray(pinPropertyOptions.pinPropertyId, propertyIds)),
+    db
+      .delete(pinPropertyRevisions)
+      .where(inArray(pinPropertyRevisions.pinPropertyId, propertyIds)),
+    db.delete(pinProperties).where(inArray(pinProperties.id, propertyIds))
+  ] as const;
 }
