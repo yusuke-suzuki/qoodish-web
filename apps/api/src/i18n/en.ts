@@ -122,7 +122,28 @@ export const en = {
   report_category_privacy: 'Privacy violation or defamation',
   report_category_copyright: 'Copyright or trademark infringement',
   report_category_impersonation: 'Impersonation',
-  report_category_other: 'Something else'
+  report_category_other: 'Something else',
+
+  moderation_outcome_kept:
+    'We did not find that the reported content violates our Terms of Service, so we did not remove it or take any other measure.',
+  moderation_outcome_removed:
+    'We found that the reported content violates our Terms of Service and removed it.',
+  moderation_outcome_unavailable:
+    'The reported content had already been deleted when we reviewed it.',
+
+  decision_outcome_invalid: 'Outcome must be selected.',
+  decision_reason_required: 'Reason must be filled in.',
+  decision_target_gone:
+    'Target is gone. Choose "Close because the content is gone" instead.',
+  decision_target_present:
+    'Target is still there. Choose "Keep the content" or "Remove the content" instead.',
+  decision_type_unremovable:
+    'Target type is an account or a journal, which cannot be removed. Choose "Keep the content" instead.',
+
+  staff_email_required: 'Email must be filled in.',
+  staff_email_invalid: 'Email is not a valid email address.',
+  staff_self_change:
+    'Operator is the staff member being changed. Ask another administrator to remove your roles or revoke you.'
 };
 
 export type Messages = typeof en;
