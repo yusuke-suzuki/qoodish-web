@@ -97,6 +97,11 @@ function AppDialog({
   const compact = useMediaQuery(theme.breakpoints.down('sm'));
   const fullScreen = Boolean(fullScreenOnMobile) && compact;
 
+  const submitOwnFormOnly = (event: FormEvent<HTMLFormElement>) => {
+    event.stopPropagation();
+    onSubmit?.(event);
+  };
+
   const confirmProps = confirmAction && {
     type: confirmAction.type ?? ('button' as const),
     onClick: confirmAction.onClick,
@@ -189,7 +194,11 @@ function AppDialog({
       }}
     >
       {onSubmit || formAction ? (
-        <form onSubmit={onSubmit} action={formAction} style={formStyle}>
+        <form
+          onSubmit={submitOwnFormOnly}
+          action={formAction}
+          style={formStyle}
+        >
           {body}
         </form>
       ) : (
