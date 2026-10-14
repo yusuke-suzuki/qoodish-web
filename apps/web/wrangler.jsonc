@@ -91,11 +91,8 @@
   "env": {
     "dev": {
       "name": "dev-qoodish-web",
-      // Routes and URL toggles are inherited from the top level, so dev has to
-      // restate them or it would claim qoodish.com and lose the workers.dev URL
-      // it is reached through.
-      "routes": [],
-      "workers_dev": true,
+      "routes": [{ "pattern": "dev.qoodish.com", "custom_domain": true }],
+      "workers_dev": false,
       "preview_urls": true,
       "services": [
         {
