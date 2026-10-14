@@ -59,12 +59,15 @@ function defineApiWorker(name: string, environment: Environment) {
     },
     exports: {
       AccountDeletion: exports.workflow({ name: accountDeletion })
-    },
-    triggers: [
-      triggers.queue({ name: environment.webPushQueue }),
-      triggers.queue({ name: environment.mailQueue })
-    ]
+    }
   };
+}
+
+function queueConsumers(environment: Environment) {
+  return [
+    triggers.queue({ name: environment.webPushQueue }),
+    triggers.queue({ name: environment.mailQueue })
+  ];
 }
 
 function selectWorker(mode: string | undefined, isPreview: boolean) {
@@ -75,6 +78,7 @@ function selectWorker(mode: string | undefined, isPreview: boolean) {
   if (mode === 'production') {
     return {
       ...defineApiWorker('prod-qoodish-api', PRODUCTION),
+      triggers: queueConsumers(PRODUCTION),
       workersDev: false,
       previewUrls: false,
       domains: ['api-next.qoodish.com']
@@ -83,9 +87,10 @@ function selectWorker(mode: string | undefined, isPreview: boolean) {
 
   return {
     ...defineApiWorker('dev-qoodish-api', DEVELOPMENT),
+    triggers: queueConsumers(DEVELOPMENT),
     workersDev: false,
     previewUrls: true,
-    domains: ['api-next-dev.qoodish.com']
+    domains: ['api-dev.qoodish.com']
   };
 }
 
