@@ -102,7 +102,17 @@ function JourneyFab({
           color={active ? 'default' : 'secondary'}
           disabled={disabled}
           onClick={handleClick}
-          sx={active ? { bgcolor: 'background.paper' } : undefined}
+          sx={
+            active
+              ? (theme) => ({
+                  bgcolor: 'background.paper',
+                  color: 'text.primary',
+                  ...theme.applyStyles('dark', {
+                    '&:hover': { bgcolor: 'grey.800' }
+                  })
+                })
+              : undefined
+          }
         >
           {icon}
           {label}
