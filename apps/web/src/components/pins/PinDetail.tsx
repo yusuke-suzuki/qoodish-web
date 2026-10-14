@@ -5,7 +5,12 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import type { ContentRef, Pin, PinProperty } from '../../../types/index.ts';
+import type {
+  AppMap,
+  ContentRef,
+  Pin,
+  PinProperty
+} from '../../../types/index.ts';
 import useDictionary from '../../hooks/useDictionary.ts';
 import CommentList from '../common/CommentList.tsx';
 import PinPropertyValues from '../common/PinPropertyValues.tsx';
@@ -20,10 +25,11 @@ import PinMenuButton from './PinMenuButton.tsx';
 
 type Props = {
   pin: Pin;
+  map: AppMap | null;
   pinProperties: PinProperty[];
 };
 
-export default function PinDetail({ pin, pinProperties }: Props) {
+export default function PinDetail({ pin, map, pinProperties }: Props) {
   const dictionary = useDictionary();
 
   const { lang } = useParams<{ lang: string }>();
@@ -101,7 +107,7 @@ export default function PinDetail({ pin, pinProperties }: Props) {
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         currentPin={pin}
-        map={null}
+        map={map}
         pinProperties={pinProperties}
         onSaved={router.refresh}
       />
