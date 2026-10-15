@@ -81,7 +81,7 @@ function selectWorker(mode: string | undefined, isPreview: boolean) {
       triggers: queueConsumers(PRODUCTION),
       workersDev: false,
       previewUrls: false,
-      domains: ['api-next.qoodish.com']
+      domains: ['api.qoodish.com']
     };
   }
 
