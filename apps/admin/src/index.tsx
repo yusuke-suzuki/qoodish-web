@@ -33,7 +33,7 @@ import { ReportList } from './views/ReportList.tsx';
 import { type GrantFormState, StaffList } from './views/StaffList.tsx';
 
 type Env = {
-  API_ENDPOINT: string;
+  API: Fetcher;
   WEB_ENDPOINT: string;
   TIME_ZONE: string;
   CF_ACCESS_TEAM_DOMAIN?: string;
@@ -97,7 +97,7 @@ function localeOf(c: Context<AppEnv>): Locale {
 
 function apiContext(c: Context<AppEnv>, locale: Locale): ApiContext {
   return {
-    endpoint: c.env.API_ENDPOINT,
+    api: c.env.API,
     assertion: c.get('assertion'),
     locale
   };

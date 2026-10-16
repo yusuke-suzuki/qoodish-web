@@ -14,7 +14,7 @@ Verification fails closed: until `CF_ACCESS_TEAM_DOMAIN` (the team domain Zero T
 
 ## Develop
 
-`pnpm dev` runs the dev environment locally. Requests need an Access assertion that verifies against `CF_ACCESS_TEAM_DOMAIN`, so a local run needs that value, `CF_ACCESS_AUD` and `API_ENDPOINT` pointed at a server that can sign and accept such a token. The `BROWSER` binding reaches the account's Browser Rendering, so rendering assets counts against its usage even from a local run.
+`pnpm dev` runs the dev environment locally. Requests need an Access assertion that verifies against `CF_ACCESS_TEAM_DOMAIN`, so a local run needs that value, `CF_ACCESS_AUD` and the `API` service binding pointed at an API Worker that accepts such a token. The `BROWSER` binding reaches the account's Browser Rendering, so rendering assets counts against its usage even from a local run.
 
 ```bash
 pnpm test
