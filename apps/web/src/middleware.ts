@@ -1,9 +1,4 @@
-import {
-  type NextFetchEvent,
-  type NextRequest,
-  NextResponse
-} from 'next/server';
-import { isTimeoutError } from './lib/apiRequest.ts';
+import { type NextRequest, NextResponse } from 'next/server';
 import {
   clearedSessionCookies,
   needsRenewal,
@@ -13,7 +8,6 @@ import {
   type SessionCookie,
   sessionCookies
 } from './lib/session.ts';
-import describeError from './utils/describeError.ts';
 import {
   LOCALE_COOKIE,
   LOCALE_COOKIE_MAX_AGE,
@@ -22,28 +16,6 @@ import {
   pathLocale,
   rememberedOrPreferredLocale
 } from './utils/locales.ts';
-
-const WARMUP_INTERVAL_MS = 60000;
-
-// Module state resets with every fresh runtime instance, so this throttle is
-// best-effort: each new instance pings once immediately. The healthcheck
-// renders a constant string, so those extra pings are cheap; the throttle
-// only keeps warm instances from pinging on every request.
-let lastWarmupAt = 0;
-
-async function warmUpApi(): Promise<void> {
-  try {
-    // The response is irrelevant — the connection alone starts the boot, so
-    // the timeout only bounds how long this background task lingers.
-    await fetch(`${process.env.API_ENDPOINT}/healthcheck`, {
-      signal: AbortSignal.timeout(10000)
-    });
-  } catch (error) {
-    console.warn(
-      `API warmup request failed [${isTimeoutError(error) ? 'timeout' : 'network'}]: ${describeError(error)}`
-    );
-  }
-}
 
 function servePage(request: NextRequest, locale: Locale): NextResponse {
   const requestHeaders = new Headers(request.headers);
@@ -116,7 +88,7 @@ async function renewSession(request: NextRequest): Promise<SessionCookie[]> {
   return [];
 }
 
-function route(request: NextRequest, event: NextFetchEvent): NextResponse {
+function route(request: NextRequest): NextResponse {
   if (request.nextUrl.pathname.startsWith('/api/')) {
     return NextResponse.next({ request: { headers: request.headers } });
   }
@@ -127,17 +99,12 @@ function route(request: NextRequest, event: NextFetchEvent): NextResponse {
     return redirectToLocale(request);
   }
 
-  if (Date.now() - lastWarmupAt >= WARMUP_INTERVAL_MS) {
-    lastWarmupAt = Date.now();
-    event.waitUntil(warmUpApi());
-  }
-
   return servePage(request, locale);
 }
 
-export async function middleware(request: NextRequest, event: NextFetchEvent) {
+export async function middleware(request: NextRequest) {
   const renewedCookies = await renewSession(request);
-  const response = route(request, event);
+  const response = route(request);
 
   for (const { name, value, options } of renewedCookies) {
     response.cookies.set(name, value, options);
