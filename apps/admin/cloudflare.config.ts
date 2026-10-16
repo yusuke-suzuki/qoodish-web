@@ -3,19 +3,19 @@ import { bindings, defineConfig } from 'cf/config';
 const ACCOUNT_ID = '9671c836ad132f87d892b12ccd1809e0';
 
 type Environment = {
-  apiEndpoint: string;
+  apiWorker: string;
   webEndpoint: string;
   accessAud: string;
 };
 
 const PRODUCTION: Environment = {
-  apiEndpoint: 'https://api.qoodish.com',
+  apiWorker: 'prod-qoodish-api',
   webEndpoint: 'https://qoodish.com',
   accessAud: '252ee6aa24f3b11f170ed50fd16a11d569890edc4f228ca76c36d46bd74c0f3b'
 };
 
 const DEVELOPMENT: Environment = {
-  apiEndpoint: 'https://api-dev.qoodish.com',
+  apiWorker: 'dev-qoodish-api',
   webEndpoint: 'https://dev.qoodish.com',
   accessAud: '3ee39327262eb73242846c4cfc838367252dd82641f8370f089d6c6979147cb6'
 };
@@ -32,7 +32,7 @@ function defineAdminWorker(name: string, environment: Environment) {
       issues: { enabled: true }
     },
     env: {
-      API_ENDPOINT: bindings.text(environment.apiEndpoint),
+      API: bindings.worker({ worker: environment.apiWorker }),
       WEB_ENDPOINT: bindings.text(environment.webEndpoint),
       TIME_ZONE: bindings.text('Asia/Tokyo'),
       CF_ACCESS_TEAM_DOMAIN: bindings.text(

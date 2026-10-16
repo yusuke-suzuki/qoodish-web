@@ -5,10 +5,12 @@ import type { GrantInput, Role, StaffMember } from './staff.ts';
 
 const API_TIMEOUT_MS = 15000;
 
+const SERVICE_BINDING_ORIGIN = 'https://api.internal';
+
 export class ApiUnavailableError extends Error {}
 
 export type ApiContext = {
-  endpoint: string;
+  api: Fetcher;
   assertion: string;
   locale: Locale;
 };
@@ -25,7 +27,7 @@ async function request<T>(
   let res: Response;
 
   try {
-    res = await fetch(`${context.endpoint}${path}`, {
+    res = await context.api.fetch(`${SERVICE_BINDING_ORIGIN}${path}`, {
       ...init,
       signal: AbortSignal.timeout(API_TIMEOUT_MS),
       headers: {
