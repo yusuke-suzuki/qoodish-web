@@ -1,37 +1,7 @@
-import { randomUUID } from 'node:crypto';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
-import withSerwistInit from '@serwist/next';
 import type { NextConfig } from 'next';
-import { LOCALES } from './src/utils/locales.ts';
-import { offlinePath } from './src/utils/offline.ts';
 
 initOpenNextCloudflareForDev();
-
-const offlinePageRevision = randomUUID();
-
-const withSerwist = withSerwistInit({
-  swSrc: 'src/worker/index.ts',
-  swDest: 'public/sw.js',
-  register: false,
-  reloadOnOnline: false,
-  disable: process.env.NODE_ENV === 'development',
-  manifestTransforms: [
-    (entries) => ({
-      manifest: [
-        ...entries,
-        ...LOCALES.map((locale) => ({
-          url: offlinePath(locale),
-          revision: offlinePageRevision,
-          size: 0
-        }))
-      ]
-    })
-  ],
-  // _headers configures the Cloudflare asset host and is not served as an
-  // asset, so precaching it leaves the install waiting on a redirect that
-  // never resolves into a response the worker can store.
-  globPublicPatterns: ['**/!(_headers)']
-});
 
 const nextConfig: NextConfig = {
   // Workers Builds exposes the commit only while building, so the health
@@ -80,14 +50,13 @@ const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.md$/,
-      type: 'asset/source'
-    });
-
-    return config;
+  turbopack: {
+    rules: {
+      '*.md': {
+        type: 'raw'
+      }
+    }
   }
 };
 
-export default withSerwist(nextConfig);
+export default nextConfig;

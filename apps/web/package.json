@@ -3,8 +3,8 @@
   "version": "4.0.2",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack -p 5000",
-    "build": "next build --webpack",
+    "dev": "next dev -p 5000",
+    "build": "next build && NODE_OPTIONS=--disable-warning=MODULE_TYPELESS_PACKAGE_JSON serwist build serwist.config.mts",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-test-module-mocks --test \"src/**/*.test.ts\"",
@@ -34,7 +34,7 @@
     "@mui/material": "^7.3.4",
     "@mui/material-nextjs": "^9.3.0",
     "@qoodish/api-contract": "workspace:*",
-    "@serwist/window": "^9.2.1",
+    "@serwist/window": "^9.5.13",
     "firebase": "^12.4.0",
     "lexical": "^0.46.0",
     "next": "^16.4.2",
@@ -46,13 +46,15 @@
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.12",
     "@playwright/test": "^1.62.1",
-    "@serwist/next": "^9.2.1",
+    "@serwist/cli": "^9.5.13",
+    "@serwist/next": "^9.5.13",
     "@types/google.maps": "^3.54.6",
     "@types/node": "^22.20.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "babel-plugin-react-compiler": "^1.0.0",
-    "serwist": "^9.2.1",
+    "esbuild": "^0.28.2",
+    "serwist": "^9.5.13",
     "typescript": "^7.0.2",
     "wrangler": "^4.151.1"
   }
