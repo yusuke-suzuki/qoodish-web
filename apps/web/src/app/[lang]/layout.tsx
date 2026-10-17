@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import type {
   CursorPage,
@@ -16,6 +17,7 @@ import { getMyProfile, getNotifications } from '../../lib/users.ts';
 import { THEME_COLOR } from '../../utils/brand.ts';
 import { getDictionary } from '../../utils/getDictionary.ts';
 import { pendingTermsRevision } from '../../utils/getLegalDocument.ts';
+import { isLocale } from '../../utils/locales.ts';
 import { defaultOgImage, ogImages, SITE_ORIGIN } from '../../utils/metadata.ts';
 import { siteStructuredData } from '../../utils/structuredData.ts';
 import { fontVariables } from '../fonts.ts';
@@ -84,6 +86,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
+
+  if (!isLocale(lang)) {
+    notFound();
+  }
+
   const dict = getDictionary(lang);
   const maintenancePromise = getMaintenance();
   const { authenticated, pending, uid, token } = await getServerAuthState();
