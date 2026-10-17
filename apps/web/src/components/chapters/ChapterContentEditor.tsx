@@ -45,9 +45,7 @@ function ChapterContentEditor({
   editorRef
 }: Props) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'), {
-    noSsr: true
-  });
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleChange = (editorState: EditorState) => {
     onChange(editorState.toJSON());
