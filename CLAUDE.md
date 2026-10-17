@@ -10,8 +10,8 @@ This document provides essential context for Claude Code to understand the Qoodi
 
 ## 2. Technology Stack
 
-- **Framework:** Next.js (v15) with App Router
-- **Language:** TypeScript
+- **Framework:** Next.js (v16) with App Router and React 19, deployed to Cloudflare Workers through OpenNext (`@opennextjs/cloudflare`)
+- **Language:** TypeScript 7 (the native compiler). It ships no JavaScript compiler API, so tooling that imports `typescript` programmatically will not work; `next build` type-checks through the `tsc` CLI.
 - **UI Components:** Material-UI (MUI) v7 and Emotion for styling.
 - **Data Fetching:** An internal BFF (`src/lib/api.ts`) wraps the API. Server Components and Server Actions call per-domain fetchers in `src/lib/`; client components reach the same backend through internal route handlers under `src/app/api/`. SWR is no longer used.
 - **Backend & Authentication:** The backend is the API Worker in `apps/api`, a Hono app that keeps its records in D1 through Drizzle ORM. Firebase is used for authentication and possibly file storage.
