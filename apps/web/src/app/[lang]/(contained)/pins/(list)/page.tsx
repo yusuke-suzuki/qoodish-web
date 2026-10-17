@@ -1,15 +1,15 @@
 import { FiberNew } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import type { Metadata } from 'next';
-import PinFeed from '../../../../components/pins/PinFeed.tsx';
-import { getPinFeed } from '../../../../lib/pins.ts';
-import { getDictionary } from '../../../../utils/getDictionary.ts';
-import { localePath } from '../../../../utils/locales.ts';
+import PinFeed from '../../../../../components/pins/PinFeed.tsx';
+import { getPinFeed } from '../../../../../lib/pins.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
-} from '../../../../utils/metadata.ts';
+} from '../../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;
