@@ -4,14 +4,15 @@ import {
   type KeyboardEvent,
   memo,
   type ReactNode,
+  Suspense,
+  use,
   useEffect,
   useRef,
   useState
 } from 'react';
-import { createPortal } from 'react-dom';
+import { browser, createPortal } from 'react-dom';
 import useDictionary from '../../hooks/useDictionary.ts';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
-import useHydrated from '../../hooks/useHydrated.ts';
 
 const ARROW_SIZE = 16;
 
@@ -23,7 +24,9 @@ type Props = {
   onClose: () => void;
 };
 
-function MountedMapPopup({ children, label, position, open, onClose }: Props) {
+function BrowserMapPopup({ children, label, position, open, onClose }: Props) {
+  use(browser());
+
   const dictionary = useDictionary();
   const { googleMap, loader } = useGoogleMap();
 
@@ -151,7 +154,11 @@ function MountedMapPopup({ children, label, position, open, onClose }: Props) {
 }
 
 function MapPopup(props: Props) {
-  return useHydrated() ? <MountedMapPopup {...props} /> : null;
+  return (
+    <Suspense fallback={null}>
+      <BrowserMapPopup {...props} />
+    </Suspense>
+  );
 }
 
 export default memo(MapPopup);

@@ -1,7 +1,13 @@
-import { memo, type ReactNode, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import {
+  memo,
+  type ReactNode,
+  Suspense,
+  use,
+  useEffect,
+  useState
+} from 'react';
+import { browser, createPortal } from 'react-dom';
 import { useGoogleMap } from '../../hooks/useGoogleMap.ts';
-import useHydrated from '../../hooks/useHydrated.ts';
 
 type Props = {
   children: ReactNode;
@@ -9,7 +15,9 @@ type Props = {
   fullWidth?: boolean;
 };
 
-function MountedMapControl({ children, controlPosition, fullWidth }: Props) {
+function BrowserMapControl({ children, controlPosition, fullWidth }: Props) {
+  use(browser());
+
   const { googleMap } = useGoogleMap();
 
   const [container] = useState(() => document.createElement('div'));
@@ -35,5 +43,9 @@ function MountedMapControl({ children, controlPosition, fullWidth }: Props) {
 }
 
 export default memo(function MapControl(props: Props) {
-  return useHydrated() ? <MountedMapControl {...props} /> : null;
+  return (
+    <Suspense fallback={null}>
+      <BrowserMapControl {...props} />
+    </Suspense>
+  );
 });
