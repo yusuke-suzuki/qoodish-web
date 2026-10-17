@@ -56,9 +56,7 @@ export default function MapDetailView({
   currentJourney
 }: Props) {
   const theme = useTheme();
-  const canRecord = useMediaQuery(theme.breakpoints.down('lg'), {
-    noSsr: true
-  });
+  const canRecord = useMediaQuery(theme.breakpoints.down('lg'));
   const dictionary = useDictionary();
 
   const { lang } = useParams<{ lang: string }>();
