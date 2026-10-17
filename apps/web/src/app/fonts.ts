@@ -15,7 +15,7 @@ const cinzel = Cinzel({
 });
 
 const shipporiMincho = Shippori_Mincho({
-  weight: ['400', '600', '700'],
+  weight: ['400', '700'],
   subsets: ['latin'],
   variable: '--font-shippori-mincho',
   display: 'swap',
