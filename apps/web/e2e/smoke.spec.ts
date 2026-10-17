@@ -137,6 +137,14 @@ test('answers the health check', async ({ request }) => {
   expect(body.sha).not.toHaveLength(0);
 });
 
+for (const path of ['/.env', '/wp-login.php']) {
+  test(`answers ${path} with 404`, async ({ request }) => {
+    const res = await request.get(path, { maxRedirects: 0 });
+
+    expect(res.status(), `${path} was served as a page`).toBe(404);
+  });
+}
+
 for (const lang of LOCALES) {
   test(`boots the map detail page in ${lang}`, async ({ page, request }) => {
     const mapId = await firstMapId(request);
