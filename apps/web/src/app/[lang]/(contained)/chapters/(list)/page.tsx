@@ -1,15 +1,15 @@
 import { HistoryEdu } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import type { Metadata } from 'next';
-import ChapterFeed from '../../../../components/chapters/ChapterFeed.tsx';
-import { getChapterFeed } from '../../../../lib/chapters.ts';
-import { getDictionary } from '../../../../utils/getDictionary.ts';
-import { localePath } from '../../../../utils/locales.ts';
+import ChapterFeed from '../../../../../components/chapters/ChapterFeed.tsx';
+import { getChapterFeed } from '../../../../../lib/chapters.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
-} from '../../../../utils/metadata.ts';
+} from '../../../../../utils/metadata.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

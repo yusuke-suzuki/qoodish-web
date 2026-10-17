@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import SignInRequired from '../../../../components/auth/SignInRequired.tsx';
-import UserJourneys from '../../../../components/profiles/UserJourneys.tsx';
-import { getServerAuthState } from '../../../../lib/auth.ts';
-import { getMyJourneys } from '../../../../lib/journeys.ts';
-import { getDictionary } from '../../../../utils/getDictionary.ts';
+import SignInRequired from '../../../../../components/auth/SignInRequired.tsx';
+import UserJourneys from '../../../../../components/profiles/UserJourneys.tsx';
+import { getServerAuthState } from '../../../../../lib/auth.ts';
+import { getMyJourneys } from '../../../../../lib/journeys.ts';
+import { getDictionary } from '../../../../../utils/getDictionary.ts';
 
 type Props = {
   params: Promise<{ lang: string }>;

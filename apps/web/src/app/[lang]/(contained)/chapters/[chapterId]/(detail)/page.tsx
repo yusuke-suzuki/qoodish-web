@@ -1,24 +1,24 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import ChapterContent from '../../../../../components/chapters/ChapterContent.tsx';
-import ChapterReadView from '../../../../../components/chapters/ChapterReadView.tsx';
-import JsonLd from '../../../../../components/common/JsonLd.tsx';
-import { getServerAuthState } from '../../../../../lib/auth.ts';
+import ChapterContent from '../../../../../../components/chapters/ChapterContent.tsx';
+import ChapterReadView from '../../../../../../components/chapters/ChapterReadView.tsx';
+import JsonLd from '../../../../../../components/common/JsonLd.tsx';
+import { getServerAuthState } from '../../../../../../lib/auth.ts';
 import {
   getChapter,
   getChapterComments,
   getUserChapters
-} from '../../../../../lib/chapters.ts';
-import { getMap } from '../../../../../lib/maps.ts';
-import { getUserJournal } from '../../../../../lib/users.ts';
-import { getDictionary } from '../../../../../utils/getDictionary.ts';
-import { localePath } from '../../../../../utils/locales.ts';
+} from '../../../../../../lib/chapters.ts';
+import { getMap } from '../../../../../../lib/maps.ts';
+import { getUserJournal } from '../../../../../../lib/users.ts';
+import { getDictionary } from '../../../../../../utils/getDictionary.ts';
+import { localePath } from '../../../../../../utils/locales.ts';
 import {
   buildAlternates,
   defaultOgImage,
   ogImages
-} from '../../../../../utils/metadata.ts';
-import { chapterStructuredData } from '../../../../../utils/structuredData.ts';
+} from '../../../../../../utils/metadata.ts';
+import { chapterStructuredData } from '../../../../../../utils/structuredData.ts';
 
 type Props = {
   params: Promise<{ lang: string; chapterId: string }>;
